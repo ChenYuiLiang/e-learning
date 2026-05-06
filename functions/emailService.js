@@ -86,8 +86,13 @@ async function sendWelcomeEmail(email, displayName, expiryDateStr) {
  * @param {string} orderId - Order ID
  * @param {number} amount - Total amount paid
  * @param {string} itemsDesc - Description of items purchased
+ * @param {boolean} hasPhysical - Whether the order contains physical items
  */
-async function sendPaymentSuccessEmail(email, orderId, amount, itemsDesc) {
+async function sendPaymentSuccessEmail(email, orderId, amount, itemsDesc, hasPhysical = false) {
+    const fulfillmentMessage = hasPhysical 
+        ? '若購買的是實體教材，我們將於 1-3 個工作天內為您寄出。您可以在儀表板追蹤出貨狀態。'
+        : '您現在可以隨時登入平台存取您的課程內容。';
+
     const mailOptions = {
         from: '"Vibe Coding" <info@vibe-coding.tw>',
         to: email,
@@ -101,7 +106,7 @@ async function sendPaymentSuccessEmail(email, orderId, amount, itemsDesc) {
                     <p style="margin: 0 0 10px 0;"><strong style="color: #64748b; font-size: 13px; text-transform: uppercase;">購買項目</strong><br><strong>${itemsDesc}</strong></p>
                     <p style="margin: 0;"><strong style="color: #64748b; font-size: 13px; text-transform: uppercase;">實付金額</strong><br><span style="font-size: 18px; color: #10b981; font-weight: bold;">TWD $${amount}</span></p>
                 </div>
-                <p>您現在可以隨時登入平台存取您的課程內容。若購買的是實體教材，我們將於 1-3 個工作天內為您寄出。</p>
+                <p>${fulfillmentMessage}</p>
                 <p style="margin-top: 30px;">
                     <a href="https://vibe-coding.tw/dashboard.html" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: bold; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);">前往學習儀表板</a>
                 </p>
@@ -511,6 +516,45 @@ async function sendAdminAssignmentReminder(adminEmail, pendingList) {
     }
 }
 
+/**
+ * Send a summary email to the admin about pending shipments.
+ */
+async function sendAdminShipmentReminder(adminEmail, pendingList) {
+    const dashboardUrl = 'https://vibe-coding.tw/dashboard.html?tab=admin';
+    const listHtml = pendingList.map(item => `
+        <li style="margin-bottom: 15px; border-bottom: 1px solid #edf2f7; padding-bottom: 10px;">
+            <div style="font-weight: bold; color: #2d3748;">訂單: ${item.orderId}</div>
+            <div style="font-size: 14px; color: #4a5568;">買家: ${item.email} | 付款時間: ${item.paidAt}</div>
+            <div style="font-size: 14px; color: #4f46e5; margin-top: 5px;">項目: ${item.items.join(', ')}</div>
+        </li>
+    `).join('');
+
+    const mailOptions = {
+        from: '"Vibe Coding System" <info@vibe-coding.tw>',
+        to: adminEmail,
+        subject: `[每日提醒] 尚有 ${pendingList.length} 筆訂單等待出貨`,
+        html: getEmailHtmlWrapper(
+            '待處理的實體出貨任務',
+            `
+                <p>管理員您好，系統掃描到以下訂單包含實體教材且尚未標記為已出貨，請撥冗處理：</p>
+                <ul style="background-color: #f8fafc; padding: 25px; border-radius: 12px; list-style-type: none; border: 1px solid #e2e8f0; margin: 25px 0;">
+                    ${listHtml}
+                </ul>
+                <p>及時的出貨與精美的包裝能顯著提升品牌信任感。加油！</p>
+                <p style="margin-top: 30px;">
+                    <a href="${dashboardUrl}" style="display: inline-block; background-color: #3b82f6; color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: bold; box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);">前往後台處理</a>
+                </p>
+            `,
+            'Vibe Coding 自動化管家'
+        )
+    };
+    try {
+        await transporter.sendMail(mailOptions);
+    } catch (error) {
+        console.error('Error sending admin shipment reminder email:', error);
+    }
+}
+
 module.exports = {
     sendWelcomeEmail,
     sendPaymentSuccessEmail,
@@ -522,6 +566,7 @@ module.exports = {
     sendStudentLinkedToTutorEmail,
     sendTutorLinkedToStudentEmail,
     sendAdminAssignmentReminder,
+    sendAdminShipmentReminder,
     sendAdminNewApplicationEmail,
     sendApplicationResultEmail
 };

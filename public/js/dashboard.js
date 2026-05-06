@@ -208,9 +208,10 @@ async function loadDashboard() {
 
         myRole = data.role;
         const isAdmin = myRole === 'admin';
+        const hasPaidAnything = (data.students?.[0]?.orders?.length > 0 || data.students?.[0]?.accountStatus === 'paid');
         
-        // Final Rule enforcement: No unit context + Not Admin = Access Denied
-        if (!hasUnitContext && !isAdmin) {
+        // Final Rule enforcement: Allow access if Admin OR has Unit Context OR has any paid orders (Hardware)
+        if (!hasUnitContext && !isAdmin && !hasPaidAnything) {
             console.warn("[Security] Non-Admin global access denied.");
             showAccessDenied("ADMIN_ONLY_NO_UNIT");
             return;
@@ -220,7 +221,7 @@ async function loadDashboard() {
 
         const isPaidStudent = hasUnitContext
             ? await hasPaidStudentAccessForUnit(filterCourseId, filterUnitId)
-            : false;
+            : hasPaidAnything;
             
         updateCurrentDashboardPermissions({ isAdmin, isQualifiedTutor, isPaidStudent });
         const requestedTab = getRequestedTabFromUrl();
@@ -612,13 +613,20 @@ function renderStudentDashboard(data, filterUnitId = null) {
     let courseTitle = filterCourseId ? (lessonsMap[filterCourseId] || filterCourseId) : "我的學習概況";
     if (filterUnitId) courseTitle += ` - ${formatUnitName(filterUnitId)}`;
 
+    // Check for physical products and fulfillment status
+    const physicalItems = (myData.orderRecords || []).flatMap(o => 
+        Object.keys(o.items || {}).filter(id => allLessons.find(l => l.id === id)?.isPhysical === true)
+    );
+    const hasPhysical = physicalItems.length > 0;
+    const isShipped = (myData.orderRecords || []).some(o => o.fulfillmentStatus === 'SHIPPED');
+
     container.innerHTML = `
         <div class="mb-6">
             <h2 class="text-2xl font-bold text-gray-800">${escapeHtml(courseTitle)}</h2>
             ${filterCourseId && mode !== 'iframe' ? '<a href="dashboard.html" class="text-sm text-blue-600 hover:underline">← 查看所有課程</a>' : ''}
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div class="card border-l-4 border-blue-500">
                 <p class="text-gray-500 text-sm font-medium">${filterUnitId ? '本單元學習時數' : '學習時數'}</p>
                 <h3 class="text-3xl font-bold text-gray-800 mt-1">${((myData.totalTime || 0) / 3600).toFixed(1)} <span class="text-sm font-normal text-gray-400">hours</span></h3>
@@ -631,6 +639,12 @@ function renderStudentDashboard(data, filterUnitId = null) {
                 <p class="text-gray-500 text-sm font-medium">帳號狀態</p>
                 <h3 class="text-3xl font-bold text-green-600 mt-1">Active</h3>
             </div>
+            ${hasPhysical ? `
+            <div class="card border-l-4 border-orange-500">
+                <p class="text-gray-500 text-sm font-medium">實體教材出貨</p>
+                <h3 class="text-3xl font-bold ${isShipped ? 'text-green-600' : 'text-orange-600'} mt-1">${isShipped ? '已出貨' : '準備中'}</h3>
+            </div>
+            ` : ''}
         </div>
 
         <!-- My Assignments -->

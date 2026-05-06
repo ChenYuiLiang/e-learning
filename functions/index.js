@@ -377,7 +377,12 @@ exports.paymentNotify = onRequest(async (req, res) => {
                     if (userEmail) {
                         const items = orderData.items || {};
                         const itemDesc = Object.values(items).map(i => `${i.name} x${i.quantity || 1}`).join(', ');
-                        await sendPaymentSuccessEmail(userEmail, orderId, orderData.amount, itemDesc);
+                        
+                        // [V14.16] Check if any item is physical to customize email message
+                        const lessons = await getLessons();
+                        const hasPhysical = Object.keys(items).some(id => lessons.find(l => l.id === id)?.isPhysical === true);
+                        
+                        await sendPaymentSuccessEmail(userEmail, orderId, orderData.amount, itemDesc, hasPhysical);
                     }
 
                     if (orderData.uid && orderData.uid !== 'GUEST') {
@@ -868,7 +873,7 @@ async function resolveStudentAssignmentAccess(db, uid, courseId, unitId, lessons
         canonicalUnitId,
         effectiveCourseId,
         assignedTutorEmail,
-        requiresTutorAssignment: true,
+        requiresTutorAssignment: !isPhysicalProduct,
         course
     };
 }
@@ -2284,6 +2289,7 @@ exports.getDashboardData = onCall(async (request) => {
                             createdAt: order.createdAt || null,
                             paymentDate: order.paymentDate || null,
                             expiryDate: order.expiryDate || null,
+                            fulfillmentStatus: order.fulfillmentStatus || 'PENDING',
                             items: order.items
                         });
                         Object.keys(order.items).forEach(originalCid => {
@@ -2876,6 +2882,9 @@ exports.remindAdminPendingAssignments = onSchedule({
     if (!adminEmail) return;
 
     try {
+        const lessons = await getLessons();
+        const physicalUnitIds = new Set(lessons.filter(l => l.isPhysical === true).map(l => l.id));
+
         // 1. Get all successful orders
         const ordersSnapshot = await db.collection('orders').where('status', '==', 'SUCCESS').get();
         const pendingMap = new Map(); // uid -> Set of unitIds
@@ -2884,6 +2893,9 @@ exports.remindAdminPendingAssignments = onSchedule({
             const data = doc.data();
             if (data.uid && data.items) {
                 Object.keys(data.items).forEach(unitId => {
+                    // [V14.15] Skip physical units for tutor assignment reminders
+                    if (physicalUnitIds.has(unitId)) return;
+
                     if (!pendingMap.has(data.uid)) pendingMap.set(data.uid, new Set());
                     pendingMap.get(data.uid).add(unitId);
                 });
@@ -2926,6 +2938,61 @@ exports.remindAdminPendingAssignments = onSchedule({
 
     } catch (error) {
         console.error("Error in remindAdminPendingAssignments:", error);
+    }
+});
+
+// ==========================================
+// 8.7 管理員出貨提醒 (remindAdminPendingShipments)
+// ==========================================
+// Run every day at 9:30 AM Asia/Taipei
+exports.remindAdminPendingShipments = onSchedule({
+    schedule: '30 9 * * *',
+    timeZone: 'Asia/Taipei'
+}, async (event) => {
+    const db = admin.firestore();
+    const adminEmail = process.env.ADMIN_EMAIL || process.env.MAIL_USER;
+    if (!adminEmail) return;
+
+    try {
+        const lessons = await getLessons();
+        const physicalUnitIds = new Set(lessons.filter(l => l.isPhysical === true).map(l => l.id));
+
+        // 1. Get all successful orders that contain physical items and aren't shipped
+        const ordersSnapshot = await db.collection('orders')
+            .where('status', '==', 'SUCCESS')
+            .get();
+
+        const pendingShipments = [];
+
+        for (const doc of ordersSnapshot.docs) {
+            const data = doc.data();
+            if (data.fulfillmentStatus === 'SHIPPED') continue;
+
+            const physicalItems = Object.keys(data.items || {}).filter(id => physicalUnitIds.has(id));
+            if (physicalItems.length > 0) {
+                // Fetch user info for the email
+                const userDoc = await db.collection('users').doc(data.uid).get();
+                const userData = userDoc.exists ? userDoc.data() : {};
+
+                pendingShipments.push({
+                    orderId: doc.id,
+                    email: userData.email || '未提供',
+                    items: physicalItems.map(id => lessons.find(l => l.id === id)?.title || id),
+                    paidAt: data.paidAt ? data.paidAt.toDate().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }) : '未知'
+                });
+            }
+        }
+
+        if (pendingShipments.length > 0) {
+            console.log(`Found ${pendingShipments.length} pending shipments. Notifying admin.`);
+            const { sendAdminShipmentReminder } = require('./emailService');
+            await sendAdminShipmentReminder(adminEmail, pendingShipments);
+        } else {
+            console.log("No pending shipments found.");
+        }
+
+    } catch (error) {
+        console.error("Error in remindAdminPendingShipments:", error);
     }
 });
 
