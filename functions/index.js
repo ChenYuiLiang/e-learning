@@ -2517,6 +2517,7 @@ exports.getDashboardData = onCall(async (request) => {
                         });
                     }
                 });
+                console.log(`[getDashboardData] Found ${pendingShipments.length} pending shipments for admin.`);
                 // Sort by paidAt descending
                 pendingShipments.sort((a, b) => new Date(b.paidAt) - new Date(a.paidAt));
                 result.pendingShipments = pendingShipments;
