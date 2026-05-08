@@ -738,6 +738,7 @@ function initFirebaseFeatures() {
 
     document.body.appendChild(script);
     injectSubmissionModal();
+    injectAssignmentLinkModal();
 }
 
 /**
@@ -796,6 +797,90 @@ function injectSubmissionModal() {
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 }
 
+/**
+ * Injects the Assignment Link Modal (for self-binding)
+ */
+function injectAssignmentLinkModal() {
+    if (document.getElementById('assignment-link-modal')) return;
+    const modalHTML = `
+    <div id="assignment-link-modal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-[70]">
+        <div class="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl transform transition-all scale-100 border border-blue-100">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+                    🔗
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800">連結您的授課老師</h3>
+                <p class="text-sm text-gray-500 mt-2">此單元需要指派老師才能開始作業。<br>請輸入老師提供的 <b>GitHub Classroom 作業連結</b>。</p>
+            </div>
+            
+            <input type="hidden" id="link-course-id">
+            <input type="hidden" id="link-unit-id">
+            <input type="hidden" id="link-assignment-id">
+            <input type="hidden" id="link-assignment-title">
+
+            <div class="mb-6">
+                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">老師提供的作業連結</label>
+                <input type="url" id="link-referral-url" placeholder="https://classroom.github.com/a/..."
+                    class="w-full border-2 border-gray-100 bg-gray-50 p-4 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 outline-none transition font-mono text-sm">
+                <p class="text-[10px] text-gray-400 mt-2">※ 系統將自動辨識連結並綁定您的導師關係。</p>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <button id="btn-bind-tutor" onclick="submitBindTutorAction()"
+                    class="w-full py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition font-bold shadow-lg flex items-center justify-center gap-2">
+                    <span>✅</span> 驗證並綁定老師
+                </button>
+                <button onclick="closeAssignmentLinkModal()"
+                    class="w-full py-3 text-gray-400 hover:text-gray-600 transition font-medium text-sm">稍後再說</button>
+            </div>
+        </div>
+    </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+window.closeAssignmentLinkModal = function () {
+    document.getElementById('assignment-link-modal').classList.add('hidden');
+};
+
+window.submitBindTutorAction = async function () {
+    const btn = document.getElementById('btn-bind-tutor');
+    const urlInput = document.getElementById('link-referral-url');
+    const referralLink = urlInput.value.trim();
+    const courseId = document.getElementById('link-course-id').value;
+    const unitId = document.getElementById('link-unit-id').value;
+    const assignmentId = document.getElementById('link-assignment-id').value;
+    const title = document.getElementById('link-assignment-title').value;
+
+    if (!referralLink) {
+        alert("請輸入連結！");
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '正在驗證連結...';
+
+    try {
+        const bindTutorToUnit = httpsCallable(getFunctions(undefined, 'asia-east1'), 'bindTutorToUnit');
+        const result = await bindTutorToUnit({ unitId, courseId, referralLink });
+
+        if (result.data && result.data.success) {
+            alert(`✅ 成功綁定導師：${result.data.tutorEmail}\n現在您可以開始作業了！`);
+            closeAssignmentLinkModal();
+            // Re-open the submission modal to refresh access state
+            openSubmissionModal(assignmentId, title);
+        } else {
+            alert("❌ 綁定失敗：" + (result.data.message || "未知錯誤"));
+        }
+    } catch (e) {
+        console.error("Binding error:", e);
+        alert("❌ 錯誤：" + e.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>✅</span> 驗證並綁定老師';
+    }
+};
+
 // Global functions for Modal
 window.openSubmissionModal = async function (assignmentId, title) {
     const pathParts = window.location.pathname.split('/');
@@ -811,7 +896,13 @@ window.openSubmissionModal = async function (assignmentId, title) {
             classroomUrl = assignmentAccess?.classroomUrl || null;
 
             if (assignmentAccess?.requiresTutorAssignment && !assignmentAccess?.assignedTutorEmail) {
-                alert("此單元尚未完成老師指派，作業入口會在老師指派完成後開放。");
+                // [V16.1] Instead of alert, show the self-binding modal
+                document.getElementById('link-course-id').value = courseId;
+                document.getElementById('link-unit-id').value = fileName;
+                document.getElementById('link-assignment-id').value = assignmentId;
+                document.getElementById('link-assignment-title').value = title;
+                document.getElementById('link-referral-url').value = '';
+                document.getElementById('assignment-link-modal').classList.remove('hidden');
                 return;
             }
 

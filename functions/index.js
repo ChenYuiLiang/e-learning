@@ -3268,3 +3268,71 @@ exports.markOrderShipped = onCall(async (request) => {
         throw new HttpsError('internal', error.message);
     }
 });
+
+/**
+ * [V16.1] Bind a tutor to a unit via a Classroom URL (Self-Binding)
+ * Triggered when a student enters a tutor's link in the assignment modal.
+ */
+exports.bindTutorToUnit = onCall(async (request) => {
+    const { data, auth } = request;
+    if (!auth) throw new HttpsError('unauthenticated', '請先登入');
+
+    const { unitId, courseId, referralLink } = data;
+    if (!unitId || !referralLink) throw new HttpsError('invalid-argument', '缺少必要參數');
+
+    const db = admin.firestore();
+    const uid = auth.uid;
+
+    try {
+        // 1. Verify Payment
+        const lessons = await getLessons();
+        const access = await resolveStudentAssignmentAccess(db, uid, courseId, unitId, lessons);
+        if (!access.authorized) throw new HttpsError('permission-denied', '尚未取得此單元之付款授權。');
+
+        // 2. Verify Link
+        const normalizedLink = normalizeGitHubUrl(referralLink);
+        const linkId = Buffer.from(normalizedLink).toString('base64');
+        const linkDoc = await db.collection('referral_links').doc(linkId).get();
+
+        if (!linkDoc.exists) throw new HttpsError('not-found', '查無此作業連結對應的導師。');
+
+        const lData = linkDoc.data();
+        const tutorEmail = lData.tutorEmail;
+
+        // 3. Verify Tutor Qualification
+        const tutorUserSnap = await db.collection('users').where('email', '==', tutorEmail).limit(1).get();
+        if (tutorUserSnap.empty) throw new HttpsError('not-found', '對應的導師帳號已被移除。');
+        
+        const tutorData = tutorUserSnap.docs[0].data();
+        const canonicalUnitId = resolveCanonicalUnitId(unitId, lessons);
+        const effectiveCourseId = findParentCourseIdByUnit(canonicalUnitId, lessons) || courseId;
+
+        const config = getEffectiveTutorConfig(canonicalUnitId, tutorData.tutorConfigs || {});
+        if (!config || config.authorized !== true) {
+             throw new HttpsError('permission-denied', '此導師尚未取得該單元的指導認證。');
+        }
+
+        // 4. Bind (Upsert)
+        await upsertStudentUnitAssignment(db, uid, canonicalUnitId, tutorEmail, 'selfBinding', true);
+
+        // 5. Cascade Assignment (If it's a course bundle)
+        const course = lessons.find(l => l.courseId === effectiveCourseId);
+        if (course && Array.isArray(course.courseUnits) && course.courseUnits.includes(canonicalUnitId)) {
+             // If teacher is fully qualified for the course, cascade to all units
+             if (isTutorFullyQualifiedForCourse(tutorData, effectiveCourseId, lessons)) {
+                 for (const uId of course.courseUnits) {
+                     const cId = resolveCanonicalUnitId(uId, lessons);
+                     await upsertStudentUnitAssignment(db, uid, cId, tutorEmail, 'selfBinding_cascade', true);
+                 }
+                 console.log(`[bindTutorToUnit] Cascade-assigned ${uid} -> ${tutorEmail} for ${course.courseUnits.length} units in ${effectiveCourseId}`);
+             }
+        }
+
+        return { success: true, tutorEmail };
+
+    } catch (error) {
+        console.error("Self-binding failed:", error);
+        if (error instanceof HttpsError) throw error;
+        throw new HttpsError('internal', error.message);
+    }
+});
