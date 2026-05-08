@@ -2502,7 +2502,10 @@ exports.getDashboardData = onCall(async (request) => {
                     if (data.fulfillmentStatus === 'SHIPPED') return;
 
                     const items = data.items || {};
-                    const physicalItems = Object.keys(items).filter(id => physicalUnitIds.has(id));
+                    const physicalItems = Object.keys(items).filter(id => {
+                        const canonicalId = legacyMap[id] || id;
+                        return physicalUnitIds.has(canonicalId) || physicalUnitIds.has(id);
+                    });
 
                     if (physicalItems.length > 0) {
                         const student = usersMap[data.uid] || {};
