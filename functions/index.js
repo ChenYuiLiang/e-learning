@@ -398,15 +398,18 @@ exports.paymentNotify = onRequest(async (req, res) => {
                             const targetUnitId = resolveCanonicalUnitId(referralData.unitId, lessons);
 
                             if (targetUnitId && assignment.purchasedUnits.includes(targetUnitId) && referralData.tutorEmail) {
-                                await upsertStudentUnitAssignment(
-                                    db,
-                                    orderData.uid,
-                                    targetUnitId,
-                                    referralData.tutorEmail,
-                                    'paymentNotify',
-                                    true
-                                );
-                                console.log(`[paymentNotify] Auto-assigned ${orderData.uid} -> ${referralData.tutorEmail} for ${targetUnitId}`);
+                                // [V16.0] Cascade Assignment: Assign ALL purchased units to this tutor if the link matches any of them
+                                for (const unitId of assignment.purchasedUnits) {
+                                    await upsertStudentUnitAssignment(
+                                        db,
+                                        orderData.uid,
+                                        unitId,
+                                        referralData.tutorEmail,
+                                        'paymentNotify',
+                                        true
+                                    );
+                                }
+                                console.log(`[paymentNotify] Cascade-assigned ${orderData.uid} -> ${referralData.tutorEmail} for ${assignment.purchasedUnits.length} units (triggered by ${targetUnitId})`);
                             } else {
                                 console.warn(`[paymentNotify] Referral link ${assignment.referralLink} did not match purchased units for order ${orderId}`);
                             }
