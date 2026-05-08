@@ -16,9 +16,12 @@
     - **API 服務**: 包含 `initiatePayment` (綠界支付)、`verifyReferralLink` (老師作業連結驗證)、`getDashboardData` (各項數據導出) 等。
     - **定時任務 (Scheduled Functions)**:
         - `calculateMonthlySharing`: 每月 1 號自動計算並分配推薦利潤。
-        - `remindAdminPendingAssignments`: 定期提醒未批改作業。
+        - `remindAdminPendingAssignments`: 每日提醒尚未完成老師指派的已付款單元。
+        - `remindAdminPendingShipments`: 每日提醒待出貨的實體教材訂單。
+        - `checkTrialExpiration`: 每日檢查試用期即將到期帳號並寄送提醒。
+        - `checkCourseExpiration`: 每日檢查課程到期前 7 天/1 天並寄送提醒。
 - **數據庫 (Firestore)**:
-    - `users`: 使用者角色 (`admin`, `user`)、UID 與權限映射。
+    - `users`: 使用者角色（實務上含 `admin`, `user`, `student`）、UID 與權限映射。
     - `activity_logs`: 毫秒級追蹤學生觀看影片、閱讀文件的學習時數。
     - `orders`: 支付訂單；老師作業連結與導師關係綁在各個 `items[itemId]` 上，而非整張訂單。
     - `profit_ledger`: 自動化產出的月度分潤清單。
@@ -69,7 +72,7 @@
 6. 只有該筆作業的 `assignedTeacherEmail` 對應老師，或 admin，才可以：
    - 評分
    - 推薦學生成為合格教師
-7. 老師推薦學生時，會建立 `teacher_applications` 待審資料並寄送 admin 通知；admin 核准/拒絕後，系統再寄結果通知。
+7. 老師推薦學生時，會建立 `tutor_applications` 待審資料並寄送 admin 通知；admin 核准/拒絕後，系統再寄結果通知。
 
 ### 對於導師與管理員 (Admin/Teacher)
 1. **進入 Dashboard**: 登入後點擊右上角「儀表板」。
@@ -129,7 +132,8 @@
 ### 環境變數
 `functions/.env` 包含：
 - `MAIL_USER` / `MAIL_PASS`: 告警與通知郵件發送。
-- `ECPAY_MERCHANT_ID` / `HASH_KEY` / `HASH_IV`: 綠界金流密鑰。
+- `ECPAY_MERCHANT_ID` / `ECPAY_HASH_KEY` / `ECPAY_HASH_IV`: 綠界金流密鑰。
+- `ECPAY_API_URL` / `ECPAY_LOGISTICS_MAP_URL`: 綠界付款與物流地圖 API 端點。
 
 ### 部署命令
 ```bash
