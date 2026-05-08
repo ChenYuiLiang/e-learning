@@ -43,6 +43,7 @@
 - **遞迴計算 (Recursive Sharing)**: 
     - 直接推廣者獲得 20% 分潤。
     - 其上級導師可獲得後者分潤金額的 20%，直到根結點 (Admin)。
+- **自動連動指派 (Cascade Assignment)**：當學生輸入特定單元的推薦連結並購買「全套課程」時，系統會自動將該老師指派為該課程包下 **所有單元** 的負責人（前提是該老師具備全單元認證）。
 - **為期一年**: 對於每位學生，分潤追蹤在初始訂閱後一年內有效。
 
 ### 4. 程式載體車子平台 (Hardware Platform)
@@ -62,7 +63,7 @@
 3. 綠界付款成功後，`paymentNotify` 會：
    - 將訂單標記為 `SUCCESS`
    - 保留各 item 的 `referralLink` / `referredTutorEmail`
-   - 逐 item 檢查推薦連結對應單元，並自動把使用者指派到該單元老師 (`users/{uid}.unitAssignments[{unitId}] = teacherEmail`)
+   - **自動連動指派 (Cascade Assignment)**：逐 item 檢查推薦連結，若推薦連結對應單元 A，且該 item 為包含單元 A 的全套課程項目，則自動將該項目的 **所有單元** 通通指派給該位老師 (`users/{uid}.unitAssignments[{unitId}] = teacherEmail`)，確保學生學習路徑不中斷。
    - 自動寄出付款成功、老師指派成功的 email 通知
 4. 學生在課程頁或 Dashboard 點擊作業時，前端不再直接讀第一個 Classroom URL，而是先呼叫 `resolveAssignmentAccess`：
    - 若未付款：不開放作業入口
