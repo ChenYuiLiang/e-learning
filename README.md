@@ -1,4 +1,4 @@
-# Vibe Coding - 學習管理與分潤系統 (E-Learning & Profit Sharing System)
+# Vibe Coding - 學習管理系統 (E-Learning & Profit Sharing System)
 
 本專案是一個基於 Firebase 的現代化程式教學平台，結合了互動式課程、作業自動化、綠界金流 (ECPay) 以及多層級分潤架構。
 
