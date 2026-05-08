@@ -57,27 +57,7 @@
     - **一鍵標記**: 管理員可在後台直接查看收件門市資訊並在寄出後標記為 `SHIPPED`。
     - **學生端狀態**: 學生可即時在儀表板查看實體教材的物流準備狀態。
 
-## 🛠️ 操作使用說明 (Usage Guide)
-
-### 0. 付款、老師指派、作業與推薦的正式流程
-1. 學生在 `cart.html` 結帳前可輸入老師提供的 GitHub Classroom 作業連結。
-2. 前端先呼叫 `verifyReferralLink` 驗證老師作業連結，成功後會把該連結綁到對應的購物車 item，並記錄該 item 的 `referralLink` / `referredTutorEmail`。
-3. 綠界付款成功後，`paymentNotify` 會：
-   - 將訂單標記為 `SUCCESS`
-   - 保留各 item 的 `referralLink` / `referredTutorEmail`
-   - **自動連動指派 (Cascade Assignment)**：逐 item 檢查推薦連結，若推薦連結對應單元 A，且該 item 為包含單元 A 的全套課程項目，則自動將該項目的 **所有單元** 通通指派給該位老師 (`users/{uid}.unitAssignments[{unitId}] = teacherEmail`)，確保學生學習路徑不中斷。
-   - 自動寄出付款成功、老師指派成功的 email 通知
-4. 學生在課程頁或 Dashboard 點擊作業時，前端不再直接讀第一個 Classroom URL，而是先呼叫 `resolveAssignmentAccess`：
-    - 若未付款：不開放作業入口。
-    - 若已付款但尚未完成老師指派：跳出對話框要求輸入「老師提供的作業連結」。輸入並經驗證後，系統自動執行 `bindTutorToUnit` 完成綁定並開放入口。
-    - 若已付款且已指派老師：回傳該老師對應的 GitHub Classroom 連結。
-5. 學生透過該入口開始作業後，`submitAssignment` 才允許建立作業紀錄；若該單元需要老師指派但尚未指派，後端會拒絕寫入。
-6. 只有該筆作業的 `assignedTeacherEmail` 對應老師，或 admin，才可以：
-   - 評分
-   - 推薦學生成為合格教師
-7. 老師推薦學生時，會建立 `tutor_applications` 待審資料並寄送 admin 通知；admin 核准/拒絕後，系統再寄結果通知。
-
-### 對於導師與管理員 (Admin/Teacher)
+## 對於導師與管理員 (Admin/Teacher)
 1. **進入 Dashboard**: 登入後點擊右上角「儀表板」。
 2. **作業批改**:
     - 在「作業 (Assignments)」標籤中查看所有學生提交。
@@ -121,14 +101,6 @@
 ### 3. 深層連結 (Deep Linking) 技術
 - **URL 直接導航**: 支援在網址後方加上標籤 (如 `#assignment-guide`) 直接跳轉至特定段落。
 - **標準化錨點**: 所有單元的課程概述、資源區、範例程式、實作任務皆設有固定錨點。
-
-## 📅 平台演進紀錄 (Platform Evolution)
-
-### 2026 大更新
-- **全單元指引標準化**: 所有 Basic (00-10) 與 Advanced (01-15) 單元皆已補齊「作業指引」與「講師手冊」。
-- **Firebase V2 架構遷移**: 升級後端 API 至 V2，大幅提升部署速度與系統穩定度。
-- **Hero 資源管理系統**: 標準化各單元 `window.RESOURCES` 與檔案存取路徑。
-- **UI/UX 優化**: 導入玻璃卡片設計、沉浸式實作體驗、以及全螢幕專注模式。
 
 ## 🚀 開發與部署 (DevOps)
 
