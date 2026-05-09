@@ -28,20 +28,19 @@
                 class="badge-header inline-block py-1.5 px-4 rounded-full bg-white/10 border border-white/20 text-white/90 text-sm font-medium mb-6 tracking-wider uppercase backdrop-blur-sm font-[Outfit]">
                 進階 8 - 單元 1
             </span>
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit]">數位影像處理基礎：<br><span class="text-purple-400">顏色空間 (Color Spaces)</span>
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit]">
+                數位影像處理基礎：<br><span class="text-purple-400">顏色空間 (Color Spaces)</span>
             </h1>
             <p class="text-xl md:text-2xl text-purple-100 max-w-2xl mx-auto font-light leading-relaxed">
                 理解 RGB、HSV 與 YUV 的本質差異。學習在不同的場景下選擇最適合的「色彩語言」。
             </p>
 
             <div class="mt-8 flex flex-wrap justify-center gap-4">
-                <button
-                    onclick="enterMediaMode('video', window.RESOURCES.video)"
+                <button onclick="enterMediaMode('video', window.RESOURCES.video)"
                     class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
                     <span>📺</span> 觀看教學影片
                 </button>
-                <button
-                    onclick="enterMediaMode('doc', window.RESOURCES.doc)"
+                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
                     class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
                     <span>📄</span> 閱讀課程講義
                 </button>
@@ -66,25 +65,38 @@
                                 RGB (Red, Green, Blue) 是最直覺的色彩空間，直接對應顯示器硬體。然而，它最大的限制是「亮度與顏色耦合」，這對電腦視覺識別來說非常致命。
                             </p>
                             <div class="bg-red-50 p-6 rounded-2xl border border-red-100">
-                                <h4 class="font-bold text-red-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">Coupling Limitation</h4>
+                                <h4
+                                    class="font-bold text-red-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
+                                    Coupling Limitation</h4>
                                 <ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify">
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span> <div><strong>環境變數干擾</strong>：當燈光變暗，R、G、B 數值會同時等比例下降。</div></li>
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span> <div><strong>硬體依賴</strong>：不同攝像頭感測到的 RGB 原色分布可能完全不同。</div></li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span>
+                                        <div><strong>環境變數干擾</strong>：當燈光變暗，R、G、B 數值會同時等比例下降。</div>
+                                    </li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span>
+                                        <div><strong>硬體依賴</strong>：不同攝像頭感測到的 RGB 原色分布可能完全不同。</div>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-                           <div class="absolute inset-0 bg-red-500/5 group-hover:bg-red-500/10 transition-colors"></div>
-                           <h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-justify">Pixel Intensity Projection</h4>
-                           <div class="relative z-10 flex flex-col items-center">
-                               <div class="flex gap-1 mb-4 text-justify">
-                                   <div class="w-12 h-12 bg-red-600 rounded"></div>
-                                   <div class="w-12 h-12 bg-green-600 rounded"></div>
-                                   <div class="w-12 h-12 bg-blue-600 rounded"></div>
-                               </div>
-                               <div class="text-[9px] text-slate-500 font-mono tracking-widest uppercase">Additive Color Model: 24-bit Depth</div>
-                           </div>
+                        <div
+                            class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
+                            <div class="absolute inset-0 bg-red-500/5 group-hover:bg-red-500/10 transition-colors">
+                            </div>
+                            <h4
+                                class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-justify">
+                                Pixel Intensity Projection</h4>
+                            <div class="relative z-10 flex flex-col items-center">
+                                <div class="flex gap-1 mb-4 text-justify">
+                                    <div class="w-12 h-12 bg-red-600 rounded"></div>
+                                    <div class="w-12 h-12 bg-green-600 rounded"></div>
+                                    <div class="w-12 h-12 bg-blue-600 rounded"></div>
+                                </div>
+                                <div class="text-[9px] text-slate-500 font-mono tracking-widest uppercase">Additive
+                                    Color Model: 24-bit Depth</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -105,7 +117,9 @@
                                 透過解除亮度耦合，HSV 讓我們能鎖定 **H (Hue, 色相)**。即使在陰影下，只要色相不變，系統就能穩定地定位目標物體。
                             </p>
                             <div class="bg-purple-50 p-8 rounded-3xl border border-purple-100 text-center text-justify">
-                                <h4 class="text-purple-900 font-bold mb-4 text-xs uppercase tracking-widest text-justify">Cylindrical Coordinate System</h4>
+                                <h4
+                                    class="text-purple-900 font-bold mb-4 text-xs uppercase tracking-widest text-justify">
+                                    Cylindrical Coordinate System</h4>
                                 <div class="grid grid-cols-3 gap-2 text-[10px] text-slate-600 font-mono text-justify">
                                     <div class="p-2 bg-white rounded border">H: 0-360°</div>
                                     <div class="p-2 bg-white rounded border">S: 0-100%</div>
@@ -114,28 +128,36 @@
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-                           <div class="absolute inset-0 bg-purple-500/5 text-justify"></div>
-                           <h4 class="text-purple-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-justify">Object Tracking Range</h4>
-                           <div class="w-full space-y-2 px-10 relative z-10 font-mono text-[9px] text-slate-400 text-justify">
-                               <div class="text-purple-300">// Filtering Red Objects</div>
-                               <div>if (H > 350 || H < 10) {</div>
-                               <div class="ml-4">if (S > 50 && V > 30) return TARGET_LOCKED;</div>
-                               <div>}</div>
-                           </div>
-                           <p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic text-center">Robust Detection Architecture</p>
+                        <div
+                            class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
+                            <div class="absolute inset-0 bg-purple-500/5 text-justify"></div>
+                            <h4
+                                class="text-purple-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-justify">
+                                Object Tracking Range</h4>
+                            <div
+                                class="w-full space-y-2 px-10 relative z-10 font-mono text-[9px] text-slate-400 text-justify">
+                                <div class="text-purple-300">// Filtering Red Objects</div>
+                                <div>if (H > 350 || H < 10) {</div>
+                                        <div class="ml-4">if (S > 50 && V > 30) return TARGET_LOCKED;</div>
+                                        <div>}</div>
+                                </div>
+                                <p
+                                    class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic text-center">
+                                    Robust Detection Architecture</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
         </section>
 
         <!-- Module 3: YUV -->
         <section class="module-section mb-16">
-            <div class="glass-card bg-slate-900 rounded-3xl shadow-xl overflow-hidden text-white border border-slate-700">
+            <div
+                class="glass-card bg-slate-900 rounded-3xl shadow-xl overflow-hidden text-white border border-slate-700">
                 <div class="p-8 md:p-14">
                     <h2 class="text-3xl font-bold mb-8 flex items-center gap-3 text-indigo-400">
-                        <span class="p-2 bg-indigo-500/20 rounded-lg text-indigo-400 text-2xl">🎞️</span> 3. YUV/YCbCr：影像傳輸與壓縮
+                        <span class="p-2 bg-indigo-500/20 rounded-lg text-indigo-400 text-2xl">🎞️</span> 3.
+                        YUV/YCbCr：影像傳輸與壓縮
                     </h2>
                     <div class="flex flex-col lg:flex-row gap-16 items-center">
                         <div class="flex-1 space-y-6">
@@ -143,21 +165,42 @@
                                 YUV 將影像拆分為亮度 (Y) 與色度 (UV)。由於人類視覺對明暗極其敏感，但對顏色細節相對遲鈍，這成為 JPEG 壓縮與 ESP32 攝像頭輸出的核心協議。
                             </p>
                             <div class="bg-indigo-500/10 p-8 rounded-3xl border border-indigo-500/20 shadow-inner">
-                                <h4 class="font-bold text-indigo-400 mb-4 text-xs uppercase tracking-widest text-center text-justify text-left">Compression Logistics</h4>
+                                <h4
+                                    class="font-bold text-indigo-400 mb-4 text-xs uppercase tracking-widest text-center text-justify text-left">
+                                    Compression Logistics</h4>
                                 <ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify">
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span><div><strong class="text-white">Chroma Subsampling</strong>：捨棄部分 UV 數據（如 4:2:2），節省 33% 頻寬而不失真感官體驗。</div></li>
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span><div><strong class="text-white">Y-Channel Focus</strong>：利用亮度頻道進行高效率的邊緣檢測 (Edge Detection)。</div></li>
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span><div><strong class="text-white">RGB565 Optimization</strong>：理解 16-bit 像素如何在 MCU 記憶體中節省每一分 Byte。</div></li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
+                                        <div><strong class="text-white">Chroma Subsampling</strong>：捨棄部分 UV 數據（如
+                                            4:2:2），節省 33% 頻寬而不失真感官體驗。</div>
+                                    </li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
+                                        <div><strong class="text-white">Y-Channel Focus</strong>：利用亮度頻道進行高效率的邊緣檢測 (Edge
+                                            Detection)。</div>
+                                    </li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
+                                        <div><strong class="text-white">RGB565 Optimization</strong>：理解 16-bit 像素如何在 MCU
+                                            記憶體中節省每一分 Byte。</div>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="lg:w-80 bg-indigo-600/10 p-10 rounded-3xl border border-indigo-500/20 text-center relative overflow-hidden group">
-                           <div class="absolute -right-8 -top-8 w-32 h-32 bg-indigo-500/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
-                           <h4 class="text-indigo-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">Bandwidth Dial</h4>
-                           <div class="text-3xl font-mono text-white mb-2">3:2:1 <span class="text-indigo-500">Ratio</span></div>
-                           <p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center text-justify text-left">
-                               "看見人類看不見的細節，捨棄人類沒察覺的冗餘。"
-                           </p>
+                        <div
+                            class="lg:w-80 bg-indigo-600/10 p-10 rounded-3xl border border-indigo-500/20 text-center relative overflow-hidden group">
+                            <div
+                                class="absolute -right-8 -top-8 w-32 h-32 bg-indigo-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
+                            </div>
+                            <h4
+                                class="text-indigo-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">
+                                Bandwidth Dial</h4>
+                            <div class="text-3xl font-mono text-white mb-2">3:2:1 <span
+                                    class="text-indigo-500">Ratio</span></div>
+                            <p
+                                class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center text-justify text-left">
+                                "看見人類看不見的細節，捨棄人類沒察覺的冗餘。"
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -177,9 +220,13 @@
                     <div class="p-8 flex-grow">
                         <div class="flex justify-between items-start mb-4">
                             <span class="text-4xl text-purple-500 group-hover:scale-110 transition-transform">🏹</span>
-                            <span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold uppercase uppercase font-black text-justify">60 min</span>
+                            <span
+                                class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold uppercase uppercase font-black text-justify">60
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-purple-600 transition text-justify">【作業 1-1】</h3>
+                        <h3
+                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-purple-600 transition text-justify">
+                            【作業 1-1】</h3>
                         <h4 class="font-medium text-gray-500 mb-4 text-justify">「色彩獵人」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-justify">
                             實作即時 HSV 滑桿控制介面。透過調整 H, S, V 的 Min/Max 範圍，將符合紅球特徵的像素「二值化」為白色，其餘黑色，徹底過濾複雜背景。
@@ -193,10 +240,15 @@
                     <div class="bg-indigo-500 h-2"></div>
                     <div class="p-8 flex-grow">
                         <div class="flex justify-between items-start mb-4">
-                            <span class="text-4xl text-indigo-500 group-hover:rotate-12 transition-transform text-justify">📉</span>
-                            <span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded font-bold uppercase uppercase tracking-tighter text-justify font-black">60 min</span>
+                            <span
+                                class="text-4xl text-indigo-500 group-hover:rotate-12 transition-transform text-justify">📉</span>
+                            <span
+                                class="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded font-bold uppercase uppercase tracking-tighter text-justify font-black">60
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-indigo-600 transition text-justify">【作業 1-2】</h3>
+                        <h3
+                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-indigo-600 transition text-justify">
+                            【作業 1-2】</h3>
                         <h4 class="font-medium text-gray-500 mb-4 text-justify">「記憶體瘦身計畫」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-left text-justify">
                             理解 ESP32 內部儲存邏輯。利用位元運算將 24-bit 影像壓為 16-bit RGB565。計算在 QVGA 解析度下省下的傳輸頻寬，並觀察色彩斷層 (Banding) 現象。
@@ -210,10 +262,15 @@
                     <div class="bg-blue-500 h-2"></div>
                     <div class="p-8 flex-grow">
                         <div class="flex justify-between items-start mb-4">
-                            <span class="text-4xl text-blue-500 group-hover:translate-x-1 transition-transform text-justify uppercase tracking-tighter">💡</span>
-                            <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold uppercase font-black text-justify">45 min</span>
+                            <span
+                                class="text-4xl text-blue-500 group-hover:translate-x-1 transition-transform text-justify uppercase tracking-tighter">💡</span>
+                            <span
+                                class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold uppercase font-black text-justify">45
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-blue-600 transition text-justify">【作業 1-3】</h3>
+                        <h3
+                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-blue-600 transition text-justify">
+                            【作業 1-3】</h3>
                         <h4 class="font-medium text-gray-500 mb-4 text-justify">「亮度自適應實驗」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-justify">
                             利用 YUV 空間解決控制難點。提取 Y 頻道分析環境亮度，若過暗則動態補償 V 或 Y 值，確保無人車在進入陰影區時依然能正確識別色相。
@@ -250,15 +307,17 @@
             <div class="quest-workflow">
                 <h4 class="text-justify uppercase tracking-tighter font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
                 <ol>
-                    <li><strong>建立倉庫</strong>：從 GitHub Classroom 連結建立個人作業倉庫並 Clone 到本地。</li>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
                     <li><strong>介面組件化</strong>：在網頁實作 6 組 <code>&lt;input type="range"&gt;</code> 滑桿。</li>
-                    <li><strong>空間轉換邏輯</strong>：實作 <code>RGBtoHSV()</code> 數學函數，將 <code>pointermove</code> 取得的點陣像素色值進行即時轉換。</li>
+                    <li><strong>空間轉換邏輯</strong>：實作 <code>RGBtoHSV()</code> 數學函數，將 <code>pointermove</code>
+                        取得的點陣像素色值進行即時轉換。</li>
                     <li><strong>背景屏蔽 (Masking)</strong>：實作條件過濾，將不符合範圍的像素點設為 (0,0,0)，在 README 貼上成功屏蔽背景後「紅球」輪廓的截圖。</li>
                 </ol>
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>過濾精確度</strong>：是否能成功分離紅球與周圍相似色（如橘色桌面）？</li>
                     <li>[ ] <strong>邊界處理</strong>：Hue 值在 0°/360° 處的跨越邏輯是否正確處理？</li>
@@ -273,9 +332,11 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
-                    <li><strong>位元運算實作</strong>：利用 <code>&gt;&gt;</code> 與 <code>&lt;&lt;</code> 運算子，將 8-8-8 RGB 映射為 5-6-5 標準。</li>
+                    <li><strong>位元運算實作</strong>：利用 <code>&gt;&gt;</code> 與 <code>&lt;&lt;</code> 運算子，將 8-8-8 RGB 映射為
+                        5-6-5 標準。</li>
                     <li><strong>帶寬分析報告</strong>：在 README 中詳細計算 QVGA 解析度下，從 24bit 降至 16bit 每秒可節省的總字節數。</li>
                     <li><strong>視覺品質評估</strong>：截圖並說明顏色斷層 (Banding) 在深色陰影區是否明顯。</li>
                     <li><strong>Push Final</strong>：提交具備「空間意識」的高效傳輸引擎。</li>
@@ -283,7 +344,8 @@
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>位元映射正確性</strong>：轉出的 RGB565 是否在後端能被正確還原為視覺顏色？</li>
                     <li>[ ] <strong>數學嚴謹度</strong>：報告中的頻寬計算是否排除了 Header 等冗餘開銷，反映真實 Payload 節省？</li>
@@ -298,7 +360,8 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
                     <li><strong>亮度提取</strong>：從模擬 YUV 流中僅提取 Y 頻道，繪製亮度直方圖。</li>
                     <li><strong>動態增益補償</strong>：實作邏輯：若 Average(Y) < 50，則自動對所有像素進行 V-Value 的線性補償。</li>
@@ -308,7 +371,8 @@
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>反應即時性</strong>：亮度補償邏輯是否造成了嚴重的 FPS 下驚？</li>
                     <li>[ ] <strong>算法魯棒性</strong>：在光影劇烈變化下，識別結果是否發生劇烈抖動？</li>

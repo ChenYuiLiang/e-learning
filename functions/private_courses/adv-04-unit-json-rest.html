@@ -21,23 +21,23 @@
         </div>
         <div class="absolute inset-0 bg-gradient-to-t from-gray-50 to-transparent bottom-0 h-16"></div>
 
-        
+
         <div class="container mx-auto px-4 relative z-10 text-center">
-            
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit]">JSON 數據打包與 RESTful 回傳
+
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit]">JSON 數據打包與
+                RESTful 回傳
             </h1>
             <div class="mt-8 flex flex-wrap justify-center gap-4">
-            <button onclick="enterMediaMode('video', window.RESOURCES.video)"
-                class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
-                <span>📺</span> 觀看教學影片
-            </button>
-            <button
-                onclick="enterMediaMode('doc', window.RESOURCES.doc)"
-                class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
-                <span>📄</span> 閱讀課程講義
-            </button>
-        </div>
+                <button onclick="enterMediaMode('video', window.RESOURCES.video)"
+                    class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
+                    <span>📺</span> 觀看教學影片
+                </button>
+                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
+                    class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
+                    <span>📄</span> 閱讀課程講義
+                </button>
             </div>
+        </div>
     </header>
 
     <!-- Main Content -->
@@ -175,7 +175,7 @@
                             <ul class="space-y-2 text-slate-300">
                                 <li class="flex items-center gap-2">
                                     <span class="text-blue-500 font-bold">Step 1.</span>
-                                    <span>接受 GitHub Classroom 邀請，複製 (Clone) 專屬任務倉庫。</span>
+                                    <span>接受 GitHub Classroom 邀請，複製 (Clone) 專屬任務程式庫。</span>
                                 </li>
                                 <li class="flex items-center gap-2">
                                     <span class="text-blue-500 font-bold">Step 2.</span>
@@ -255,19 +255,23 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
-                    <li><strong>建立倉庫</strong>：從 GitHub Classroom 連結建立個人作業倉庫並 Clone 到本地。</li>
-                    <li><strong>數據建模</strong>：設計一個包含 <code>device_info</code>, <code>sensors</code>, <code>status</code> 的巢狀 JSON 物件模板。</li>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>數據建模</strong>：設計一個包含 <code>device_info</code>, <code>sensors</code>, <code>status</code>
+                        的巢狀 JSON 物件模板。</li>
                     <li><strong>接口實作</strong>：在 ESP32 上實作 <code>GET /api/telemetry</code> 路由，將感測器數據動態序列化後回傳。</li>
                     <li><strong>Push Final</strong>：提交具備「高層次結構清晰」且符合標準 Web 規範的數據源接口。</li>
                 </ol>
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
-                    <li>[ ] <strong>語義化命名</strong>：JSON 中的 Key 是否具備高度可讀性？（例如 <code>temp_c</code> 而非 <code>t1</code>）</li>
+                    <li>[ ] <strong>語義化命名</strong>：JSON 中的 Key 是否具備高度可讀性？（例如 <code>temp_c</code> 而非 <code>t1</code>）
+                    </li>
                     <li>[ ] <strong>層級合理性</strong>：物件嵌套是否逻辑一致？相關聯的數據是否被正確歸類在同一個 Parent 物件下？</li>
                 </ul>
             </div>
@@ -280,17 +284,20 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
                     <li><strong>路由配置</strong>：實作 <code>POST /api/control</code> 接口，接收來自網頁端的 JSON 格式操控指令。</li>
-                    <li><strong>解析與執行</strong>：使用 ArduinoJson 解析 <code>cmd</code> 與 <code>val</code>，並即時轉換為對應的硬體控制信號。</li>
+                    <li><strong>解析與執行</strong>：使用 ArduinoJson 解析 <code>cmd</code> 與 <code>val</code>，並即時轉換為對應的硬體控制信號。
+                    </li>
                     <li><strong>異常防禦</strong>：針對格式錯誤或內容損毀的 JSON Payload，實作 <code>400 Bad Request</code> 的錯誤攔截機制。</li>
                     <li><strong>Push Final</strong>：提交具備「高度魯棒性」且具備錯誤處理回饋的指令接收模組。</li>
                 </ol>
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>防崩潰校驗</strong>：在接收異常 JSON 時，系統是否能穩定返回錯誤碼而非導致硬體重新啟動？</li>
                     <li>[ ] <strong>通訊對話感</strong>：Response 中是否包含了執行結果的狀態碼與具體的原因描述？</li>
@@ -305,7 +312,8 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
                     <li><strong>封包瘦身</strong>：對比「冗長語義」與「極致精簡」兩種不同 Key 長度的封包，測量其序列化耗時與體積差異。</li>
                     <li><strong>高頻壓力測試</strong>：模擬每秒 10 次以上的並發請求，紀錄 ESP32 的 CPU 負載與 API 回應延遲變化。</li>
@@ -315,7 +323,8 @@
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>數據權衡能力</strong>：報告中是否能清晰指出「Key 長度」對序列化速度的具體影響？</li>
                     <li>[ ] <strong>架構思考度</strong>：是否考慮到了縮寫 Key 對後端資料庫索引與前端維護的易讀性損失？</li>

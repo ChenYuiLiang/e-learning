@@ -177,7 +177,7 @@
 ### 7-A. 三位一體同步原則 (Triple Sync Rule)
 - **核心規則**: 任何功能開發、Bug 修復或配置更動完成後，**必須**緊接著執行代碼同步與環境部署。
 - **標準 SOP**:
-    1. **Git Sync**: `git add .` -> `git commit` -> `git push`。確保 remote 倉庫為最新狀態。
+    1. **Git Sync**: `git add .` -> `git commit` -> `git push`。確保 remote 程式庫為最新狀態。
     2. **Firebase Deploy**: `firebase deploy`。確保生產環境（Hosting & Functions）與最新的代碼邏輯一致。
 - **目標**: 杜絕環境漂移 (Environment Drift)，確保開發代理人 (AI Agent) 隨時能在最新的生產環境基礎上進行下一次迭代。
 

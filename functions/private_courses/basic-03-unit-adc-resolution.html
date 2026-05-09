@@ -69,13 +69,18 @@
                                     <strong>ADC</strong> 就像數位量尺，將 0V 到 3.3V 的電壓切成好幾格，來度量目前在哪個刻度上。
                                 </p>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
-                                    <div class="p-6 bg-slate-50 border border-slate-200 rounded-2xl shadow-sm text-justify">
-                                        <div class="text-xs text-slate-400 font-mono mb-2 uppercase tracking-widest">10-bit</div>
+                                    <div
+                                        class="p-6 bg-slate-50 border border-slate-200 rounded-2xl shadow-sm text-justify">
+                                        <div class="text-xs text-slate-400 font-mono mb-2 uppercase tracking-widest">
+                                            10-bit</div>
                                         <div class="text-2xl font-bold text-slate-800 mb-1">1,024 Steps</div>
                                         <p class="text-xs text-slate-500 text-justify">Uno 典型精細度</p>
                                     </div>
-                                    <div class="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl shadow-sm text-justify">
-                                        <div class="text-xs text-emerald-500 font-mono mb-2 uppercase tracking-widest text-justify">12-bit</div>
+                                    <div
+                                        class="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl shadow-sm text-justify">
+                                        <div
+                                            class="text-xs text-emerald-500 font-mono mb-2 uppercase tracking-widest text-justify">
+                                            12-bit</div>
                                         <div class="text-2xl font-bold text-emerald-700 mb-1">4,096 Steps</div>
                                         <p class="text-xs text-emerald-600 text-justify">ESP32 預設解析度</p>
                                     </div>
@@ -84,7 +89,8 @@
                         </div>
 
                         <div class="md:w-80 flex items-center justify-center">
-                            <div class="bg-slate-100 p-6 rounded-3xl border border-slate-200 shadow-inner overflow-hidden group">
+                            <div
+                                class="bg-slate-100 p-6 rounded-3xl border border-slate-200 shadow-inner overflow-hidden group">
                                 <img src="/assets/basic-03/adc_resolution_ruler.png" alt="ADC Resolution Ruler"
                                     class="w-full h-auto rounded-2xl group-hover:scale-105 transition-transform duration-500">
                                 <p class="text-center text-[10px] text-slate-400 mt-4 italic font-medium text-justify">
@@ -115,14 +121,19 @@
                                 <h4 class="font-bold text-indigo-900 mb-4 flex items-center gap-2">
                                     <span>∑</span> 線性變換公式
                                 </h4>
-                                <div class="bg-white p-6 rounded-2xl shadow-inner border border-indigo-200 text-center text-lg overflow-x-auto font-serif">
-                                    \[V_{out} = (V_{in} - In_{min}) \times \frac{(Out_{max} - Out_{min})}{(In_{max} - In_{min})} + Out_{min}\]
+                                <div
+                                    class="bg-white p-6 rounded-2xl shadow-inner border border-indigo-200 text-center text-lg overflow-x-auto font-serif">
+                                    \[V_{out} = (V_{in} - In_{min}) \times \frac{(Out_{max} - Out_{min})}{(In_{max} -
+                                    In_{min})} + Out_{min}\]
                                 </div>
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 p-10 rounded-3xl border border-slate-700 relative shadow-2xl overflow-hidden group text-justify">
-                            <div class="absolute top-0 right-0 p-4 font-mono text-[10px] text-slate-500 tracking-widest uppercase">mapping-logic</div>
+                        <div
+                            class="bg-slate-900 p-10 rounded-3xl border border-slate-700 relative shadow-2xl overflow-hidden group text-justify">
+                            <div
+                                class="absolute top-0 right-0 p-4 font-mono text-[10px] text-slate-500 tracking-widest uppercase">
+                                mapping-logic</div>
                             <h4 class="text-white font-bold mb-6 flex items-center gap-2">
                                 <span class="w-2 h-2 bg-indigo-400 rounded-full"></span>
                                 Arduino 語法實境應用
@@ -157,22 +168,27 @@
                                 <span class="text-4xl text-justify">⚠️</span> 3. ESP32 ADC 的真實面貌
                             </h2>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-justify">
-                                <div class="p-6 bg-slate-800/50 rounded-2xl border border-slate-700 hover:border-red-500/50 transition">
+                                <div
+                                    class="p-6 bg-slate-800/50 rounded-2xl border border-slate-700 hover:border-red-500/50 transition">
                                     <h4 class="font-bold text-red-400 mb-2 text-justify">非線性「死區」現象</h4>
                                     <p class="text-xs text-slate-400 leading-relaxed italic text-justify">
                                         電壓接近 0V 與 3.3V 時，讀值變化會趨於平緩，精準量測需補償。
                                     </p>
                                 </div>
-                                <div class="p-6 bg-slate-800/50 rounded-2xl border border-slate-700 hover:border-amber-500/50 transition text-justify">
-                                    <h4 class="font-bold text-amber-400 text-justify uppercase tracking-widest">Wi-Fi & ADC2 衝突</h4>
+                                <div
+                                    class="p-6 bg-slate-800/50 rounded-2xl border border-slate-700 hover:border-amber-500/50 transition text-justify">
+                                    <h4 class="font-bold text-amber-400 text-justify uppercase tracking-widest">Wi-Fi &
+                                        ADC2 衝突</h4>
                                     <p class="text-xs text-slate-400 leading-relaxed italic text-justify">
                                         Wi-Fi 開啟時，ADC2 將被占用。通訊時務必選擇 ADC1 (GPIO 32-39)。
                                     </p>
                                 </div>
                             </div>
                         </div>
-                        <div class="lg:w-80 bg-emerald-500/10 p-8 rounded-3xl border border-emerald-500/20 shadow-inner flex flex-col justify-center text-center">
-                            <h3 class="font-bold mb-4 text-emerald-400 uppercase tracking-widest text-xs text-justify">Simulate First</h3>
+                        <div
+                            class="lg:w-80 bg-emerald-500/10 p-8 rounded-3xl border border-emerald-500/20 shadow-inner flex flex-col justify-center text-center">
+                            <h3 class="font-bold mb-4 text-emerald-400 uppercase tracking-widest text-xs text-justify">
+                                Simulate First</h3>
                             <p class="text-sm text-slate-300 mb-8 font-light text-justify">
                                 在 Wokwi 預先測試 Mapping 邏輯，避免燒毀感應器。
                             </p>
@@ -199,9 +215,13 @@
                     <div class="p-8 flex-grow">
                         <div class="flex justify-between items-start mb-4">
                             <span class="text-4xl text-emerald-500 group-hover:scale-110 transition-transform">📏</span>
-                            <span class="bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded font-bold uppercase text-justify">45 min</span>
+                            <span
+                                class="bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded font-bold uppercase text-justify">45
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-emerald-600 transition text-justify">【作業 3-1】</h3>
+                        <h3
+                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-emerald-600 transition text-justify">
+                            【作業 3-1】</h3>
                         <h4 class="font-medium text-gray-500 mb-4">「精準採樣對應」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-justify">
                             記錄 12-bit ADC 讀值。分析在 0.1V 以下的「死區」誤差。
@@ -216,9 +236,13 @@
                     <div class="p-8 flex-grow">
                         <div class="flex justify-between items-start mb-4">
                             <span class="text-4xl text-blue-500 group-hover:rotate-12 transition-transform">🌓</span>
-                            <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold uppercase text-justify">45 min</span>
+                            <span
+                                class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold uppercase text-justify">45
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-blue-600 transition text-justify">【作業 3-2】</h3>
+                        <h3
+                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-blue-600 transition text-justify">
+                            【作業 3-2】</h3>
                         <h4 class="font-medium text-gray-500 mb-4">「反向映射與濾波」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-left text-justify">
                             實作旋鈕控制亮度。挑戰反向映射（越轉越暗），加入濾波消除跳動。
@@ -232,10 +256,15 @@
                     <div class="bg-indigo-500 h-2"></div>
                     <div class="p-8 flex-grow">
                         <div class="flex justify-between items-start mb-4">
-                            <span class="text-4xl text-indigo-500 group-hover:rotate-45 transition-transform text-justify">🏎️</span>
-                            <span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded font-bold uppercase text-justify">60 min</span>
+                            <span
+                                class="text-4xl text-indigo-500 group-hover:rotate-45 transition-transform text-justify">🏎️</span>
+                            <span
+                                class="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded font-bold uppercase text-justify">60
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-indigo-600 transition text-justify text-left">【作業 3-3】</h3>
+                        <h3
+                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-indigo-600 transition text-justify text-left">
+                            【作業 3-3】</h3>
                         <h4 class="font-medium text-gray-500 mb-4">「盲區補償與運動」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-justify">
                             轉換為無人車轉角。實作死區設定防止震顫，輸出左右輪速差。
@@ -267,7 +296,8 @@
     <script src="/js/course-shared.js?v=2026.04.09.V19.STABLE"></script>
     <!-- Assignment Guide (Hidden) -->
     <section id="assignment-guide" style="display: none;">
-        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">ADC 解析度與量測實驗室：數位量尺、反轉映射與盲區補償實戰</h2>
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">ADC 解析度與量測實驗室：數位量尺、反轉映射與盲區補償實戰
+        </h2>
 
         <div class="assignment-quest">
             <h3 class="quest-title text-justify">任務 1：「數位量尺」：電壓量測實驗 (Digital Ruler)</h3>
@@ -278,7 +308,7 @@
             <div class="quest-workflow">
                 <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
                 <ol>
-                    <li><strong>建立倉庫</strong>：從 GitHub Classroom 建立個人作業倉庫並 Clone 到本地。</li>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 建立個人作業程式庫並 Clone 到本地。</li>
                     <li><strong>採樣量測</strong>：連接電位計，記錄 12-bit ADC 與三用電表讀值。</li>
                     <li><strong>邊界分析</strong>：標註硬體非線性死區。</li>
                     <li><strong>結果記錄</strong>：彙整對應表，說明讀值線性誤差。</li>
@@ -301,7 +331,8 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
                     <li><strong>映射開發</strong>：實作 <code>map()</code> 將 0-4095 映射到 0-255。</li>
                     <li><strong>反轉邏輯</strong>：修改代碼，讓旋轉方向與亮度呈現反向。</li>

@@ -26,7 +26,8 @@
                 class="badge-header inline-block py-1.5 px-4 rounded-full bg-white/10 border border-white/20 text-white/90 text-sm font-medium mb-6 tracking-wide uppercase backdrop-blur-sm font-[Outfit]">
                 進階 15 - 通訊底層
             </span>
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit] text-center">Web Bluetooth <br><span class="text-blue-400">非同步與連線優化</span>
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit] text-center">
+                Web Bluetooth <br><span class="text-blue-400">非同步與連線優化</span>
             </h1>
             <p class="text-xl md:text-2xl text-blue-100 max-w-2xl mx-auto font-light leading-relaxed text-center">
                 深入探討 async/await 在硬體控制中的核心應用，打造具備「自動重連、異常防湧」的健壯通訊架構。
@@ -61,27 +62,47 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
                         <div class="space-y-6">
                             <p class="text-lg text-gray-600 leading-relaxed font-light">
-                                藍牙連線是一個充滿不確定性且緩慢的過程。使用現代語法 <code>async/await</code> 代替繁瑣的 <code>.then()</code> 地獄，讓複雜的硬體連線邏輯具備極高的高可讀性。
+                                藍牙連線是一個充滿不確定性且緩慢的過程。使用現代語法 <code>async/await</code> 代替繁瑣的 <code>.then()</code>
+                                地獄，讓複雜的硬體連線邏輯具備極高的高可讀性。
                             </p>
                             <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-                                <h4 class="font-bold text-blue-900 mb-2 text-xs uppercase tracking-widest leading-relaxed">Sequential Connection Pipeline</h4>
+                                <h4
+                                    class="font-bold text-blue-900 mb-2 text-xs uppercase tracking-widest leading-relaxed">
+                                    Sequential Connection Pipeline</h4>
                                 <ul class="text-xs text-slate-500 space-y-2 font-light">
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span> <div><strong>過濾選取 (Request)</strong>：利用 UUID 與多重 Filter 精確鎖定目標車輛。</div></li>
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span> <div><strong>服務鏈結 (GATT)</strong>：建立連線橋樑並取得 Primary Service 核心特徵。</div></li>
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span> <div><strong>訂閱推送 (Notify)</strong>：開啟底層自動通知，實現零延遲的非阻塞式數據回填。</div></li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span>
+                                        <div><strong>過濾選取 (Request)</strong>：利用 UUID 與多重 Filter 精確鎖定目標車輛。</div>
+                                    </li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span>
+                                        <div><strong>服務鏈結 (GATT)</strong>：建立連線橋樑並取得 Primary Service 核心特徵。</div>
+                                    </li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span>
+                                        <div><strong>訂閱推送 (Notify)</strong>：開啟底層自動通知，實現零延遲的非阻塞式數據回填。</div>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group">
-                           <div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors"></div>
-                           <h4 class="text-xs font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10">Asynchronous Logic Sequence</h4>
-                           <div class="relative z-10 space-y-3">
-                               <div class="text-xs font-mono text-blue-400">await bleDevice.connect() <span class="text-slate-600">... ESTABLISHED</span></div>
-                               <div class="text-xs font-mono text-blue-400">await charNotify.startNotifications() <span class="text-slate-600">... STREAMING</span></div>
-                               <div class="w-full bg-slate-800 h-1 rounded-full flex"><div class="bg-blue-500 h-full w-full animate-pulse"></div></div>
-                           </div>
-                           <p class="text-[10px] text-slate-600 mt-10 font-mono tracking-widest uppercase font-black">Linear Resource Allocation Active</p>
+                        <div
+                            class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group">
+                            <div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors">
+                            </div>
+                            <h4 class="text-xs font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10">
+                                Asynchronous Logic Sequence</h4>
+                            <div class="relative z-10 space-y-3">
+                                <div class="text-xs font-mono text-blue-400">await bleDevice.connect() <span
+                                        class="text-slate-600">... ESTABLISHED</span></div>
+                                <div class="text-xs font-mono text-blue-400">await charNotify.startNotifications() <span
+                                        class="text-slate-600">... STREAMING</span></div>
+                                <div class="w-full bg-slate-800 h-1 rounded-full flex">
+                                    <div class="bg-blue-500 h-full w-full animate-pulse"></div>
+                                </div>
+                            </div>
+                            <p class="text-[10px] text-slate-600 mt-10 font-mono tracking-widest uppercase font-black">
+                                Linear Resource Allocation Active</p>
                         </div>
                     </div>
                 </div>
@@ -99,27 +120,46 @@
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
                         <div class="space-y-8">
                             <p class="text-lg text-gray-600 leading-relaxed font-light">
-                                在真實極端環境中，通訊隨時會因干擾或斷電中斷。學會監聽 <code>gattserverdisconnected</code> 並實施「指數退避」重連策略，打造具備自癒能力的工業級控制面板。
+                                在真實極端環境中，通訊隨時會因干擾或斷電中斷。學會監聽 <code>gattserverdisconnected</code>
+                                並實施「指數退避」重連策略，打造具備自癒能力的工業級控制面板。
                             </p>
                             <div class="bg-purple-50 p-8 rounded-3xl border border-purple-100">
-                                <h4 class="text-purple-900 font-bold mb-4 text-xs uppercase tracking-widest text-center">Exponential Reconnect Strategy</h4>
+                                <h4
+                                    class="text-purple-900 font-bold mb-4 text-xs uppercase tracking-widest text-center">
+                                    Exponential Reconnect Strategy</h4>
                                 <div class="flex justify-center gap-4">
-                                    <div class="text-xs p-3 bg-white rounded-xl border border-purple-200 text-center">Attempt 1<br><span class="text-slate-400 uppercase font-black mt-1 inline-block">1.5s Wait</span></div>
-                                    <div class="text-xs p-3 bg-white rounded-xl border border-purple-200 text-center">Attempt 2<br><span class="text-slate-400 uppercase font-black mt-1 inline-block">3.0s Wait</span></div>
-                                    <div class="text-xs p-3 bg-white rounded-xl border border-purple-500 bg-purple-500/10 text-purple-600 font-bold text-center">Attempt 3<br><span class="text-purple-400 uppercase font-black mt-1 inline-block">6.0s Wait</span></div>
+                                    <div class="text-xs p-3 bg-white rounded-xl border border-purple-200 text-center">
+                                        Attempt 1<br><span
+                                            class="text-slate-400 uppercase font-black mt-1 inline-block">1.5s
+                                            Wait</span></div>
+                                    <div class="text-xs p-3 bg-white rounded-xl border border-purple-200 text-center">
+                                        Attempt 2<br><span
+                                            class="text-slate-400 uppercase font-black mt-1 inline-block">3.0s
+                                            Wait</span></div>
+                                    <div
+                                        class="text-xs p-3 bg-white rounded-xl border border-purple-500 bg-purple-500/10 text-purple-600 font-bold text-center">
+                                        Attempt 3<br><span
+                                            class="text-purple-400 uppercase font-black mt-1 inline-block">6.0s
+                                            Wait</span></div>
                                 </div>
-                                <p class="text-xs text-slate-400 mt-6 italic font-light text-center">"Avoid Drowning the Radio spectrum during signal failure"</p>
+                                <p class="text-xs text-slate-400 mt-6 italic font-light text-center">"Avoid Drowning the
+                                    Radio spectrum during signal failure"</p>
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group">
-                           <div class="absolute inset-0 bg-purple-500/5"></div>
-                           <h4 class="text-purple-400 font-bold mb-6 text-xs uppercase tracking-widest relative z-10">Link Redundancy Logic</h4>
-                           <div class="flex items-center gap-3">
-                               <div class="w-3 h-3 rounded-full bg-red-500 animate-ping"></div>
-                               <div class="text-xs text-slate-400 font-mono tracking-tighter uppercase">Link Lost. Reconnecting in 4500ms...</div>
-                           </div>
-                           <p class="text-[10px] text-slate-600 mt-10 font-mono tracking-widest uppercase text-center italic font-black">Self-Healing Protocol: ENGAGED</p>
+                        <div
+                            class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group">
+                            <div class="absolute inset-0 bg-purple-500/5"></div>
+                            <h4 class="text-purple-400 font-bold mb-6 text-xs uppercase tracking-widest relative z-10">
+                                Link Redundancy Logic</h4>
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full bg-red-500 animate-ping"></div>
+                                <div class="text-xs text-slate-400 font-mono tracking-tighter uppercase">Link Lost.
+                                    Reconnecting in 4500ms...</div>
+                            </div>
+                            <p
+                                class="text-[10px] text-slate-600 mt-10 font-mono tracking-widest uppercase text-center italic font-black">
+                                Self-Healing Protocol: ENGAGED</p>
                         </div>
                     </div>
                 </div>
@@ -128,7 +168,8 @@
 
         <!-- Module 3: Concurrent Streams -->
         <section class="module-section mb-16">
-            <div class="glass-card bg-slate-900 rounded-3xl shadow-2xl overflow-hidden text-white border border-slate-700">
+            <div
+                class="glass-card bg-slate-900 rounded-3xl shadow-2xl overflow-hidden text-white border border-slate-700">
                 <div class="p-8 md:p-14">
                     <h2 class="text-3xl font-bold mb-8 flex items-center gap-3 text-blue-400">
                         <span class="p-2 bg-blue-500/20 rounded-lg text-blue-400 text-2xl">⚡</span> 3. 非同步並行：雙向流控處理
@@ -139,30 +180,47 @@
                                 徹底解決「控制指令」與「遙測數據」相互衝撞的瓶頸。實現高頻控制寫入 (Write) 與實時狀態接收 (Notify) 的並行處理，確保毫秒級的響應穩定度。
                             </p>
                             <div class="bg-blue-500/10 p-8 rounded-3xl border border-blue-500/20 shadow-inner">
-                                <h4 class="font-bold text-blue-400 mb-4 text-xs uppercase tracking-widest">Concurrency Rules & Throttling</h4>
+                                <h4 class="font-bold text-blue-400 mb-4 text-xs uppercase tracking-widest">Concurrency
+                                    Rules & Throttling</h4>
                                 <ul class="grid grid-cols-1 gap-4 text-sm text-slate-400 font-light">
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span><div><strong class="text-white">智能節流 (Throttling)</strong>：限制寫入頻率，防止 BLE 傳輸緩衝區發生暫時性阻塞與溢位。</div></li>
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span><div><strong class="text-white">異步隔離模式</strong>：將數據通訊解析與 UI DOM 渲染完全隔離，維持介面 60 FPS 流暢度。</div></li>
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span><div><strong class="text-white">多路併發 (Promise.all)</strong>：對不同特徵值執行併行初始化，最大化利用握手時間。</div></li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span>
+                                        <div><strong class="text-white">智能節流 (Throttling)</strong>：限制寫入頻率，防止 BLE
+                                            傳輸緩衝區發生暫時性阻塞與溢位。</div>
+                                    </li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span>
+                                        <div><strong class="text-white">異步隔離模式</strong>：將數據通訊解析與 UI DOM 渲染完全隔離，維持介面 60
+                                            FPS 流暢度。</div>
+                                    </li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span>
+                                        <div><strong class="text-white">多路併發
+                                                (Promise.all)</strong>：對不同特徵值執行併行初始化，最大化利用握手時間。</div>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="lg:w-80 bg-blue-600/10 p-10 rounded-3xl border border-blue-500/20 text-center relative overflow-hidden group">
-                           <div class="absolute -right-8 -top-8 w-32 h-32 bg-blue-500/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
-                           <h4 class="text-blue-400 font-bold mb-4 text-xs uppercase tracking-widest">Duplex Stream Monitoring</h4>
-                           <div class="flex justify-between items-center h-20 px-8">
-                               <div class="flex flex-col items-center">
-                                   <div class="text-[10px] text-blue-400 uppercase mb-2 font-black">TX CMD</div>
-                                   <div class="w-2 bg-blue-500 h-10 animate-[pulse_1.2s_infinite]"></div>
-                               </div>
-                               <div class="flex flex-col items-center">
-                                   <div class="text-[10px] text-indigo-400 uppercase mb-2 font-black">RX TLM</div>
-                                   <div class="w-2 bg-indigo-500 h-14 animate-[pulse_1.8s_infinite]"></div>
-                               </div>
-                           </div>
-                           <p class="text-xs text-slate-500 mt-10 leading-relaxed font-light italic">
-                               "讓通訊層不再成為控制系統的性能天花板。"
-                           </p>
+                        <div
+                            class="lg:w-80 bg-blue-600/10 p-10 rounded-3xl border border-blue-500/20 text-center relative overflow-hidden group">
+                            <div
+                                class="absolute -right-8 -top-8 w-32 h-32 bg-blue-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
+                            </div>
+                            <h4 class="text-blue-400 font-bold mb-4 text-xs uppercase tracking-widest">Duplex Stream
+                                Monitoring</h4>
+                            <div class="flex justify-between items-center h-20 px-8">
+                                <div class="flex flex-col items-center">
+                                    <div class="text-[10px] text-blue-400 uppercase mb-2 font-black">TX CMD</div>
+                                    <div class="w-2 bg-blue-500 h-10 animate-[pulse_1.2s_infinite]"></div>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div class="text-[10px] text-indigo-400 uppercase mb-2 font-black">RX TLM</div>
+                                    <div class="w-2 bg-indigo-500 h-14 animate-[pulse_1.8s_infinite]"></div>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-10 leading-relaxed font-light italic">
+                                "讓通訊層不再成為控制系統的性能天花板。"
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -172,7 +230,8 @@
         <!-- Homework Section -->
         <section class="module-section">
             <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-[Outfit]">核心任務：打造永不失聯的控制鏈</h2>
-            <p class="text-center text-gray-500 max-w-3xl mx-auto mb-12">實踐自癒系統，對抗現實世界的無線訊號不穩定性。當系統斷線自動找回的那一刻，才是軟體工程的終極浪漫。透過 Git Workflow 建立高健壯性的非同步通訊模組。</p>
+            <p class="text-center text-gray-500 max-w-3xl mx-auto mb-12">
+                實踐自癒系統，對抗現實世界的無線訊號不穩定性。當系統斷線自動找回的那一刻，才是軟體工程的終極浪漫。透過 Git Workflow 建立高健壯性的非同步通訊模組。</p>
 
             <div class="grid md:grid-cols-3 gap-6">
                 <!-- Task 15-1 -->
@@ -182,12 +241,16 @@
                     <div class="p-8 flex-grow">
                         <div class="flex justify-between items-start mb-4">
                             <span class="text-4xl text-blue-500 group-hover:scale-110 transition-transform">🔗</span>
-                            <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold uppercase tracking-widest">60 min</span>
+                            <span
+                                class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold uppercase tracking-widest">60
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-blue-600 transition">【作業 15-1】</h3>
+                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-blue-600 transition">【作業 15-1】
+                        </h3>
                         <h4 class="font-medium text-gray-500 mb-4">「非同步握手重組」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed">
-                            利用 <code>async/await</code> 完全粉碎 <code>.then()</code> 地獄。將選取、掛載與訂閱 Notify 線性化。實作嚴謹的錯誤防護，優雅處理「使用者手動取消連線」等多樣邊際行為。
+                            利用 <code>async/await</code> 完全粉碎 <code>.then()</code> 地獄。將選取、掛載與訂閱 Notify
+                            線性化。實作嚴謹的錯誤防護，優雅處理「使用者手動取消連線」等多樣邊際行為。
                         </p>
                     </div>
                 </div>
@@ -199,9 +262,12 @@
                     <div class="p-8 flex-grow">
                         <div class="flex justify-between items-start mb-4">
                             <span class="text-4xl text-purple-500 group-hover:rotate-12 transition-transform">🩹</span>
-                            <span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold uppercase tracking-widest">60 min</span>
+                            <span
+                                class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold uppercase tracking-widest">60
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-purple-600 transition">【作業 15-2】</h3>
+                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-purple-600 transition">【作業
+                            15-2】</h3>
                         <h4 class="font-medium text-gray-500 mb-4">「斷線防護機制」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed">
                             監聽 GATT 斷層事件並部署「指數退避」演算法。當車輛意外斷電或超距時，系統應能安靜等待並在裝置回場時「自動恢復數據流」，無需手動刷新網頁。
@@ -215,10 +281,14 @@
                     <div class="bg-indigo-500 h-2"></div>
                     <div class="p-8 flex-grow">
                         <div class="flex justify-between items-start mb-4">
-                            <span class="text-4xl text-indigo-500 group-hover:translate-x-1 transition-transform">⚡</span>
-                            <span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded font-bold uppercase tracking-widest">45 min</span>
+                            <span
+                                class="text-4xl text-indigo-500 group-hover:translate-x-1 transition-transform">⚡</span>
+                            <span
+                                class="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded font-bold uppercase tracking-widest">45
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-indigo-600 transition">【作業 15-3】</h3>
+                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-indigo-600 transition">【作業
+                            15-3】</h3>
                         <h4 class="font-medium text-gray-500 mb-4">「高效雙向流控」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed">
                             優化控制迴圈代碼，確保在大流量控制指令寫入的同時，遙測解析不掉幀。實現寫入緩衝與節流，確保 Web Bluetooth 在極限帶寬下的傳輸穩定。
@@ -252,9 +322,10 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
-                    <li><strong>建立倉庫</strong>：從 GitHub Classroom 連結建立個人作業倉庫并 Clone 到本地。</li>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫并 Clone 到本地。</li>
                     <li><strong>線性結構部署</strong>：將舊有的連線邏輯封裝進一個 <code>connectToCar()</code> 的 Async Function 中。</li>
                     <li><strong>優雅異常捕獲</strong>：實作 <code>DOMException</code> 攔截，確保當使用者關閉裝置選取框時，系統能顯示「連線已取消」而非崩饋。</li>
                     <li><strong>Push Final</strong>：提交具備「高度邏輯一致性」的非同步連線代碼。</li>
@@ -262,7 +333,8 @@
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>邏輯透明度</strong>：連線代碼是否已完全擺脫 <code>.then()</code> callback，呈現直覺的垂直讀取流？</li>
                     <li>[ ] <strong>狀態穩定度</strong>：在多次反覆連線與取消操作下，各個特徵值物件是否能正確釋放或重新分配？</li>
@@ -277,7 +349,8 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
                     <li><strong>斷線截斷監聽</strong>：針對目標裝置掛載動態 <code>disconnected</code> 事件處理器。</li>
                     <li><strong>重連冷卻實作</strong>：開發 Exponential Backoff 模組，分別在 1s, 2s, 4s 後觸發遞進式的重連嘗試。</li>
@@ -287,7 +360,8 @@
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>復歸成功率</strong>：手動斷開 ESP32 電源後恢復，系統是否能在設想的次數內自動找回數據流？</li>
                     <li>[ ] <strong>UI 反饋力</strong>：重連過程中是否有清晰的進度視窗或 Loading 狀態告知使用者當前正在嘗試復歸？</li>
@@ -302,17 +376,20 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
                     <li><strong>競態模型檢視</strong>：分析在高頻寫入 <code>Throttle</code> 指令時，遙測數據接收是否產生排隊延遲（Queue Delay）。</li>
-                    <li><strong>異步併發重構</strong>：實作一個通訊調度器，確保 <code>Write</code> 指令與 <code>Notify</code> 數據處理使用完全獨立的微任務隊列。</li>
+                    <li><strong>異步併發重構</strong>：實作一個通訊調度器，確保 <code>Write</code> 指令與 <code>Notify</code>
+                        數據處理使用完全獨立的微任務隊列。</li>
                     <li><strong>節流器部署</strong>：在指令入口加入 50ms 節流，保護低功耗藍牙 (BLE) 限額的傳輸窗口。</li>
                     <li><strong>Push Final</strong>：提交具備「極致交互響應度」的最終版本通訊與控制代碼。</li>
                 </ol>
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>通訊流暢度</strong>：在大規模控制輸入下，遙測儀表板是否依然能維持穩定的數據刷新速度？</li>
                     <li>[ ] <strong>資源利用率</strong>：代碼中是否有效處理了非同步競爭風險，有無不必要的、重複的重連邏輯？</li>

@@ -28,20 +28,19 @@
                 class="badge-header inline-flex items-center gap-2 px-4 py-1 rounded-full bg-emerald-500/20 text-emerald-200 border border-emerald-400/30 backdrop-blur-sm mb-6 text-xs font-semibold tracking-wide uppercase font-[Outfit]">
                 進階 6 - 單元 3
             </div>
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit]">為何電腦看不懂紅色：<br>HSV 的故事
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit]">
+                為何電腦看不懂紅色：<br>HSV 的故事
             </h1>
             <p class="text-xl md:text-2xl text-purple-100 max-w-2xl mx-auto font-light leading-relaxed">
                 深入探討 HSV 相比於 RGB 在變動光影環境下的穩定性，學習如何定義精準的顏色區間。
             </p>
 
             <div class="mt-8 flex flex-wrap justify-center gap-4">
-                <button
-                    onclick="enterMediaMode('video', window.RESOURCES.video)"
+                <button onclick="enterMediaMode('video', window.RESOURCES.video)"
                     class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
                     <span>📺</span> 觀看教學影片
                 </button>
-                <button
-                    onclick="enterMediaMode('doc', window.RESOURCES.doc)"
+                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
                     class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
                     <span>📄</span> 閱讀課程講義
                 </button>
@@ -66,23 +65,41 @@
                                 在 RGB 空間中，如果你調暗燈光，$R, G, B$ 三個數值會同時下降。這導致針對「紅色」的門檻值會隨著環境光變動而頻繁失效。
                             </p>
                             <div class="bg-red-50 p-6 rounded-2xl border border-red-100">
-                                <h4 class="font-bold text-red-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">Coupling Problem</h4>
+                                <h4
+                                    class="font-bold text-red-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
+                                    Coupling Problem</h4>
                                 <ul class="text-[9px] text-slate-500 space-y-2 font-light">
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span> <div><strong>數值漂移</strong>：同一物體在陽光與陰影下的特徵不一致。</div></li>
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span> <div><strong>非互斥性</strong>：R 分量包含亮度與顏色訊息。</div></li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span>
+                                        <div><strong>數值漂移</strong>：同一物體在陽光與陰影下的特徵不一致。</div>
+                                    </li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span>
+                                        <div><strong>非互斥性</strong>：R 分量包含亮度與顏色訊息。</div>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group">
-                           <div class="absolute inset-0 bg-red-500/5 group-hover:bg-red-500/10 transition-colors"></div>
-                           <h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10">RGB Space Observation</h4>
-                           <div class="relative z-10 space-y-2">
-                               <div class="flex justify-between text-[8px] font-mono"><span class="text-red-400">Light: (255, 60, 60)</span> <span class="text-slate-500">Bright Red</span></div>
-                               <div class="w-full bg-slate-800 h-1 rounded-full"><div class="bg-red-500 h-full w-[100%]"></div></div>
-                               <div class="flex justify-between text-[8px] font-mono"><span class="text-red-900">Dark: (110, 20, 20)</span> <span class="text-slate-500">Deep Red</span></div>
-                               <div class="w-full bg-slate-800 h-1 rounded-full"><div class="bg-red-900 h-full w-[43%]"></div></div>
-                           </div>
+                        <div
+                            class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group">
+                            <div class="absolute inset-0 bg-red-500/5 group-hover:bg-red-500/10 transition-colors">
+                            </div>
+                            <h4
+                                class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10">
+                                RGB Space Observation</h4>
+                            <div class="relative z-10 space-y-2">
+                                <div class="flex justify-between text-[8px] font-mono"><span class="text-red-400">Light:
+                                        (255, 60, 60)</span> <span class="text-slate-500">Bright Red</span></div>
+                                <div class="w-full bg-slate-800 h-1 rounded-full">
+                                    <div class="bg-red-500 h-full w-[100%]"></div>
+                                </div>
+                                <div class="flex justify-between text-[8px] font-mono"><span class="text-red-900">Dark:
+                                        (110, 20, 20)</span> <span class="text-slate-500">Deep Red</span></div>
+                                <div class="w-full bg-slate-800 h-1 rounded-full">
+                                    <div class="bg-red-900 h-full w-[43%]"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -103,24 +120,38 @@
                                 將亮度 (Value) 與顏色 (Hue) 徹底分離。在 HSV 中，只要顏色不變，即使燈光強弱改變，Hue (色相) 依然保持高度穩定。
                             </p>
                             <div class="bg-blue-50 p-8 rounded-3xl border border-blue-100 text-center">
-                                <h4 class="text-blue-900 font-bold mb-4 text-xs uppercase tracking-widest">Component Roles</h4>
+                                <h4 class="text-blue-900 font-bold mb-4 text-xs uppercase tracking-widest">Component
+                                    Roles</h4>
                                 <div class="grid grid-cols-3 gap-2 text-[9px]">
-                                    <div class="p-2 border rounded border-blue-200"><strong>H (色相)</strong><br>它是什麼顏色</div>
-                                    <div class="p-2 border rounded border-blue-200"><strong>S (飽和度)</strong><br>有多紅</div>
+                                    <div class="p-2 border rounded border-blue-200"><strong>H (色相)</strong><br>它是什麼顏色
+                                    </div>
+                                    <div class="p-2 border rounded border-blue-200"><strong>S (飽和度)</strong><br>有多紅
+                                    </div>
                                     <div class="p-2 border rounded border-blue-200"><strong>V (亮度)</strong><br>有多亮</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group">
-                           <div class="absolute inset-0 bg-blue-500/5"></div>
-                           <h4 class="text-blue-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10">Stability Simulation</h4>
-                           <div class="w-64 h-24 bg-black/40 rounded border border-slate-800 p-4 flex items-center justify-around">
-                               <div class="text-center"><div class="text-[14px] font-bold text-white font-mono">358°</div><div class="text-[7px] text-slate-500">H (Shadow)</div></div>
-                               <div class="w-px h-full bg-slate-800"></div>
-                               <div class="text-center"><div class="text-[14px] font-bold text-white font-mono">002°</div><div class="text-[7px] text-slate-500">H (Sunlight)</div></div>
-                           </div>
-                           <p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic">Hue remains within 1.1% delta</p>
+                        <div
+                            class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group">
+                            <div class="absolute inset-0 bg-blue-500/5"></div>
+                            <h4
+                                class="text-blue-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10">
+                                Stability Simulation</h4>
+                            <div
+                                class="w-64 h-24 bg-black/40 rounded border border-slate-800 p-4 flex items-center justify-around">
+                                <div class="text-center">
+                                    <div class="text-[14px] font-bold text-white font-mono">358°</div>
+                                    <div class="text-[7px] text-slate-500">H (Shadow)</div>
+                                </div>
+                                <div class="w-px h-full bg-slate-800"></div>
+                                <div class="text-center">
+                                    <div class="text-[14px] font-bold text-white font-mono">002°</div>
+                                    <div class="text-[7px] text-slate-500">H (Sunlight)</div>
+                                </div>
+                            </div>
+                            <p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic">Hue
+                                remains within 1.1% delta</p>
                         </div>
                     </div>
                 </div>
@@ -129,7 +160,8 @@
 
         <!-- Module 3: Circle Continuity -->
         <section class="module-section mb-16">
-            <div class="glass-card bg-slate-900 rounded-3xl shadow-2xl overflow-hidden text-white border border-slate-700">
+            <div
+                class="glass-card bg-slate-900 rounded-3xl shadow-2xl overflow-hidden text-white border border-slate-700">
                 <div class="p-8 md:p-14">
                     <h2 class="text-3xl font-bold mb-8 flex items-center gap-3 text-emerald-400">
                         <span class="p-2 bg-emerald-500/20 rounded-lg text-emerald-400 text-2xl">⭕</span> 3. 色環的連續性與斷點
@@ -140,19 +172,35 @@
                                 紅色在色環的「斷點」處 ($0^{\circ}$ 與 $360^{\circ}$)。學習如何處理數值上的跨區過濾，讓追蹤不因為微小的角度跳變而失效。
                             </p>
                             <div class="bg-emerald-500/10 p-8 rounded-3xl border border-emerald-500/20 shadow-inner">
-                                <h4 class="font-bold text-emerald-400 mb-4 text-xs uppercase tracking-widest text-center">Binary Mask Strategy</h4>
+                                <h4
+                                    class="font-bold text-emerald-400 mb-4 text-xs uppercase tracking-widest text-center">
+                                    Binary Mask Strategy</h4>
                                 <ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify">
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span><div><strong class="text-white">雙重門檻 (Dual Threshold)</strong>：同時檢查 $H > 350$ 或 $H < 10$。</div></li>
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span><div><strong class="text-white">飽和過濾 (S-Filter)</strong>：排除灰度背景雜訊。</div></li>
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span><div><strong class="text-white">多區間合併 (Union)</strong>：將多段色值結果整合成最終 Mask。</div></li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
+                                        <div><strong class="text-white">雙重門檻 (Dual Threshold)</strong>：同時檢查 $H > 350$ 或
+                                            $H < 10$。</div>
+                                    </li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
+                                        <div><strong class="text-white">飽和過濾 (S-Filter)</strong>：排除灰度背景雜訊。</div>
+                                    </li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
+                                        <div><strong class="text-white">多區間合併 (Union)</strong>：將多段色值結果整合成最終 Mask。</div>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
                         <div class="lg:w-80 flex justify-center items-center">
                             <!-- Color Ring Icon -->
-                            <div class="relative w-48 h-48 rounded-full border-4 border-slate-700 shadow-[0_0_80px_rgba(16,185,129,0.15)] bg-[conic-gradient(red,yellow,lime,cyan,blue,magenta,red)] mask-image:radial-gradient(transparent_55%,black_56%)">
-                                <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-6 text-[10px] font-bold text-red-500 uppercase tracking-widest">360/0 Target</div>
-                                <div class="absolute inset-0 border-4 border-white/20 rounded-full pointer-events-none"></div>
+                            <div
+                                class="relative w-48 h-48 rounded-full border-4 border-slate-700 shadow-[0_0_80px_rgba(16,185,129,0.15)] bg-[conic-gradient(red,yellow,lime,cyan,blue,magenta,red)] mask-image:radial-gradient(transparent_55%,black_56%)">
+                                <div
+                                    class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-6 text-[10px] font-bold text-red-500 uppercase tracking-widest">
+                                    360/0 Target</div>
+                                <div class="absolute inset-0 border-4 border-white/20 rounded-full pointer-events-none">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -173,9 +221,11 @@
                     <div class="p-8 flex-grow">
                         <div class="flex justify-between items-start mb-4">
                             <span class="text-4xl text-orange-500 group-hover:scale-110 transition-transform">⚖️</span>
-                            <span class="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded font-bold uppercase">60 min</span>
+                            <span class="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded font-bold uppercase">60
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-orange-600 transition">【作業 3-1】</h3>
+                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-orange-600 transition">【作業 3-1】
+                        </h3>
                         <h4 class="font-medium text-gray-500 mb-4">「色彩空間對決」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-justify">
                             手動模擬光照變化（手電筒與陰影）。分析 RGB 與 HSV 數值的波動係數，撰寫「特徵穩定性報告」，數據化呈現 HSV 的科學優勢。
@@ -190,9 +240,11 @@
                     <div class="p-8 flex-grow">
                         <div class="flex justify-between items-start mb-4">
                             <span class="text-4xl text-blue-500 group-hover:rotate-12 transition-transform">🎭</span>
-                            <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold uppercase">60 min</span>
+                            <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold uppercase">60
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-blue-600 transition">【作業 3-2】</h3>
+                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-blue-600 transition">【作業 3-2】
+                        </h3>
                         <h4 class="font-medium text-gray-500 mb-4">「動態遮罩產生器」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-justify">
                             撰寫 <code>rgbToHsv()</code> 邏輯。實作拖曳滑桿來定義 HSV 區間遮罩。特別挑戰：處理紅色在 $0/360$ 度處的斷點邏輯。
@@ -206,10 +258,13 @@
                     <div class="bg-purple-500 h-2"></div>
                     <div class="p-8 flex-grow">
                         <div class="flex justify-between items-start mb-4">
-                            <span class="text-4xl text-purple-500 group-hover:translate-x-1 transition-transform">🚦</span>
-                            <span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold uppercase">45 min</span>
+                            <span
+                                class="text-4xl text-purple-500 group-hover:translate-x-1 transition-transform">🚦</span>
+                            <span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold uppercase">45
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-purple-600 transition">【作業 3-3】</h3>
+                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-purple-600 transition">【作業 3-3】
+                        </h3>
                         <h4 class="font-medium text-gray-500 mb-4">「紅綠燈行為決策」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-justify">
                             並行執行兩組 HSV 濾鏡找出紅心與綠心。實作「紅燈停、綠燈行」的優先權判定邏輯，當兩色並存時系統該如何抉擇？
@@ -244,9 +299,10 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
-                    <li><strong>建立倉庫</strong>：從 GitHub Classroom 連結建立個人作業倉庫並 Clone 到本地。</li>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
                     <li><strong>環境變數紀錄</strong>：對同一目標（紅球）在陽光直射與陰影處分別截取 RGB 像素值與換算後的 HSV 值。</li>
                     <li><strong>變異係數計算</strong>：在 README 中列出表格。計算 $\sigma / \mu$ (標準差/均值)，量化對比 RGB 的混亂度與 HSV 的穩定度。</li>
                     <li><strong>診斷提交</strong>：在 PR 中論述為何在高動態光照下（如賽道反光）必須捨棄 RGB 模型。</li>
@@ -254,7 +310,8 @@
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>實驗數據嚴謹度</strong>：報告中是否明確包含不同照度下的數據對照？</li>
                     <li>[ ] <strong>邏輯洞察力</strong>：能否指認出 RGB 中哪個通道受亮度 (Intensity) 影響最劇烈？</li>
@@ -269,17 +326,20 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
                     <li><strong>數學轉換實作</strong>：在 <code>JS</code> 中實作 <code>rgbToHsv()</code> 函式。</li>
-                    <li><strong>互動控制建立</strong>：建立滑桿 (Sliders) 以定義 H_min, H_max, S_min 等參數。當 $H_{min} > H_{max}$ 時，自動轉換為 OR 邏輯以應對紅色斷點。</li>
+                    <li><strong>互動控制建立</strong>：建立滑桿 (Sliders) 以定義 H_min, H_max, S_min 等參數。當 $H_{min} > H_{max}$ 時，自動轉換為
+                        OR 邏輯以應對紅色斷點。</li>
                     <li><strong>Mask 即時渲染</strong>：將畫面上符合條件的像素塗白，不符合的塗黑，產出純淨的二值化遮罩。</li>
                     <li><strong>Push PR</strong>：提交具備「紅色斷點處理能力」的強大遮罩產生器。</li>
                 </ol>
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>算法邊界處理</strong>：當滑桿拉至 350-10 度區間（跨越 0 度）時，遮罩是否能正確顯現紅色區域而不消失？</li>
                     <li>[ ] <strong>物件封裝性</strong>：<code>rgbToHsv</code> 函式是否足夠獨立且能被其他模組輕鬆調用？</li>
@@ -294,17 +354,21 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
                     <li><strong>多色彩遮罩配置</strong>：定義紅燈 (H~0) 與 綠燈 (H~120) 兩組 HSV 設定。</li>
-                    <li><strong>決策引擎實作</strong>：撰寫 <code>DecisionMaker()</code>。邏輯：<code>IF red_count > threshold THEN mode = STOP; ELSE IF green_count > threshold THEN mode = FOLLOW;</code>。</li>
+                    <li><strong>決策引擎實作</strong>：撰寫
+                        <code>DecisionMaker()</code>。邏輯：<code>IF red_count > threshold THEN mode = STOP; ELSE IF green_count > threshold THEN mode = FOLLOW;</code>。
+                    </li>
                     <li><strong>連通測試</strong>：在畫面中同時移動紅、綠板，錄製影片證明系統在「衝突情境」下依然能做出符合安全優先順序的判斷。</li>
                     <li><strong>Push Final</strong>：提交具備視覺邏輯決策能力的專案。</li>
                 </ol>
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>邏輯完備性</strong>：當畫面上同時出現紅綠顏色時，是否能依照「安全優先」原則輸出停止指令？</li>
                     <li>[ ] <strong>虛警率 (False Positives)</strong>：透過 S (飽和度) 過濾，是否能有效排除淺色背景引起的誤判？</li>

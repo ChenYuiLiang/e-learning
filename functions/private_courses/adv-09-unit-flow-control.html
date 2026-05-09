@@ -28,20 +28,19 @@
                 class="badge-header inline-block py-1.5 px-4 rounded-full bg-white/10 border border-white/20 text-white/90 text-sm font-medium mb-6 tracking-wider uppercase backdrop-blur-sm font-[Outfit]">
                 進階 9 - 單元 4
             </span>
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit]">前端資料緩衝與流控<br><span class="text-purple-400">Debouncing & Throttling</span>
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit]">
+                前端資料緩衝與流控<br><span class="text-purple-400">Debouncing & Throttling</span>
             </h1>
             <p class="text-xl md:text-2xl text-purple-100 max-w-2xl mx-auto font-light leading-relaxed">
                 優化數據傳輸頻率，消除硬體延遲與不必要的運算，讓操控體驗更絲滑。
             </p>
 
             <div class="mt-8 flex flex-wrap justify-center gap-4">
-                <button
-                    onclick="enterMediaMode('video', window.RESOURCES.video)"
+                <button onclick="enterMediaMode('video', window.RESOURCES.video)"
                     class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
                     <span>📺</span> 觀看教學影片
                 </button>
-                <button
-                    onclick="enterMediaMode('doc', window.RESOURCES.doc)"
+                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
                     class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
                     <span>📄</span> 閱讀課程講義
                 </button>
@@ -66,24 +65,38 @@
                                 在即時控制中「傳越多越準」是誤區。未經過濾的高頻訊號會堵塞 ESP32 的藍牙緩衝區，導致嚴重的封包排隊 (Queuing Delay)，讓你的操控產生顯著的「延遲感」。
                             </p>
                             <div class="bg-yellow-50 p-6 rounded-2xl border border-yellow-100">
-                                <h4 class="font-bold text-yellow-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">Congestion Theory</h4>
+                                <h4
+                                    class="font-bold text-yellow-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
+                                    Congestion Theory</h4>
                                 <ul class="text-[9px] text-slate-500 space-y-2 font-light">
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-yellow-500 rounded-full mt-1"></span> <div><strong>頻寬瓶頸</strong>：無線連結的吞吐量有限，必須精打細算。</div></li>
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-yellow-500 rounded-full mt-1"></span> <div><strong>資料噪音</strong>：手指的生理顫抖不需要傳送給馬達，這只會浪費資源。</div></li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-yellow-500 rounded-full mt-1"></span>
+                                        <div><strong>頻寬瓶頸</strong>：無線連結的吞吐量有限，必須精打細算。</div>
+                                    </li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-yellow-500 rounded-full mt-1"></span>
+                                        <div><strong>資料噪音</strong>：手指的生理顫抖不需要傳送給馬達，這只會浪費資源。</div>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group">
-                           <div class="absolute inset-0 bg-yellow-500/5 group-hover:bg-yellow-500/10 transition-colors"></div>
-                           <h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10">Packet Buffer Status</h4>
-                           <div class="relative z-10 space-y-2 px-10">
-                               <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
-                                   <div class="h-full bg-red-500 w-[95%] animate-pulse"></div>
-                               </div>
-                               <div class="text-[8px] text-red-400 font-mono">WARNING: BUFFER OVERFLOW (95%)</div>
-                           </div>
-                           <p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic">Latency & Congestion Simulation</p>
+                        <div
+                            class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group">
+                            <div
+                                class="absolute inset-0 bg-yellow-500/5 group-hover:bg-yellow-500/10 transition-colors">
+                            </div>
+                            <h4
+                                class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10">
+                                Packet Buffer Status</h4>
+                            <div class="relative z-10 space-y-2 px-10">
+                                <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
+                                    <div class="h-full bg-red-500 w-[95%] animate-pulse"></div>
+                                </div>
+                                <div class="text-[8px] text-red-400 font-mono">WARNING: BUFFER OVERFLOW (95%)</div>
+                            </div>
+                            <p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic">Latency
+                                & Congestion Simulation</p>
                         </div>
                     </div>
                 </div>
@@ -108,7 +121,8 @@
                                 <div class="w-2 h-2 rounded-full bg-blue-300"></div>
                                 <div class="w-4 h-4 rounded-full bg-blue-600"></div>
                             </div>
-                            <p class="mt-8 text-[9px] text-slate-400 uppercase tracking-widest italic">Ideal for: Config Changes</p>
+                            <p class="mt-8 text-[9px] text-slate-400 uppercase tracking-widest italic">Ideal for: Config
+                                Changes</p>
                         </div>
 
                         <div class="bg-cyan-50 p-10 rounded-3xl border border-cyan-100 text-center">
@@ -119,7 +133,8 @@
                                 <div class="w-4 h-4 rounded-full bg-cyan-600"></div>
                                 <div class="w-4 h-4 rounded-full bg-cyan-600"></div>
                             </div>
-                            <p class="mt-8 text-[9px] text-slate-400 uppercase tracking-widest italic text-center">Ideal for: Joystick Data</p>
+                            <p class="mt-8 text-[9px] text-slate-400 uppercase tracking-widest italic text-center">Ideal
+                                for: Joystick Data</p>
                         </div>
                     </div>
                 </div>
@@ -128,7 +143,8 @@
 
         <!-- Module 3: Optimization Metrics -->
         <section class="module-section mb-16">
-            <div class="glass-card bg-slate-900 rounded-3xl shadow-2xl overflow-hidden text-white border border-slate-700">
+            <div
+                class="glass-card bg-slate-900 rounded-3xl shadow-2xl overflow-hidden text-white border border-slate-700">
                 <div class="p-8 md:p-14">
                     <h2 class="text-3xl font-bold mb-8 flex items-center gap-3 text-purple-400">
                         <span class="p-2 bg-purple-500/20 rounded-lg text-purple-400 text-2xl">🧠</span> 3. 高階流控優化
@@ -139,21 +155,41 @@
                                 除了時間限制，我們還能透過數據本身進行過濾。設置變化閾值 (Threshold) 與死區 (Deadzone)，消除無效的微小抖動，確保只有「有意義的改變」才會被傳輸。
                             </p>
                             <div class="bg-purple-500/10 p-8 rounded-3xl border border-purple-500/20 shadow-inner">
-                                <h4 class="font-bold text-purple-400 mb-4 text-xs uppercase tracking-widest text-center">Efficiency Engineering</h4>
+                                <h4
+                                    class="font-bold text-purple-400 mb-4 text-xs uppercase tracking-widest text-center">
+                                    Efficiency Engineering</h4>
                                 <ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify">
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span><div><strong class="text-white">Deadzone (死區)</strong>：忽略中心點 $\pm 10\%$ 的極小位移，防止馬達空轉嗡鳴。</div></li>
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span><div><strong class="text-white">Threshold (變動門檻)</strong>：只有當數值變動 $|V_{now} - V_{last}| > \epsilon$ 時才發送。</div></li>
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span><div><strong class="text-white">Leading Execution</strong>：確保流控下，第一個動作能被立即執行（零延遲起步）。</div></li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span>
+                                        <div><strong class="text-white">Deadzone (死區)</strong>：忽略中心點 $\pm 10\%$
+                                            的極小位移，防止馬達空轉嗡鳴。</div>
+                                    </li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span>
+                                        <div><strong class="text-white">Threshold (變動門檻)</strong>：只有當數值變動 $|V_{now} -
+                                            V_{last}| > \epsilon$ 時才發送。</div>
+                                    </li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span>
+                                        <div><strong class="text-white">Leading
+                                                Execution</strong>：確保流控下，第一個動作能被立即執行（零延遲起步）。</div>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="lg:w-80 bg-purple-600/10 p-10 rounded-3xl border border-purple-500/20 text-center relative overflow-hidden group">
-                           <div class="absolute -right-8 -top-8 w-32 h-32 bg-purple-500/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
-                           <h4 class="text-purple-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">Network Load</h4>
-                           <div class="text-5xl font-extrabold text-white mb-2">-80%</div>
-                           <p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center text-justify">
-                               "最好的優化是乾脆不執行不需要的運算。"
-                           </p>
+                        <div
+                            class="lg:w-80 bg-purple-600/10 p-10 rounded-3xl border border-purple-500/20 text-center relative overflow-hidden group">
+                            <div
+                                class="absolute -right-8 -top-8 w-32 h-32 bg-purple-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
+                            </div>
+                            <h4
+                                class="text-purple-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">
+                                Network Load</h4>
+                            <div class="text-5xl font-extrabold text-white mb-2">-80%</div>
+                            <p
+                                class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center text-justify">
+                                "最好的優化是乾脆不執行不需要的運算。"
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -173,9 +209,13 @@
                     <div class="p-8 flex-grow">
                         <div class="flex justify-between items-start mb-4">
                             <span class="text-4xl text-indigo-500 group-hover:scale-110 transition-transform">🎛️</span>
-                            <span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded font-bold uppercase font-black uppercase tracking-widest text-justify">60 min</span>
+                            <span
+                                class="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded font-bold uppercase font-black uppercase tracking-widest text-justify">60
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-indigo-600 transition tracking-tighter text-justify">【作業 4-1】</h3>
+                        <h3
+                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-indigo-600 transition tracking-tighter text-justify">
+                            【作業 4-1】</h3>
                         <h4 class="font-medium text-gray-500 mb-4 text-justify">「UI 事件節流器」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-justify">
                             為 Slider 的 <code>oninput</code> 加入節流機制。實測 100ms 與 20ms 的通訊頻率差異。利用封包計數器驗證數據減量效果，並維持馬達運作的連續性。
@@ -189,10 +229,15 @@
                     <div class="bg-cyan-500 h-2"></div>
                     <div class="p-8 flex-grow">
                         <div class="flex justify-between items-start mb-4">
-                            <span class="text-4xl text-cyan-500 group-hover:rotate-12 transition-transform text-justify">⌨️</span>
-                            <span class="bg-cyan-100 text-cyan-700 text-xs px-2 py-1 rounded font-bold uppercase uppercase tracking-widest font-black text-justify">60 min</span>
+                            <span
+                                class="text-4xl text-cyan-500 group-hover:rotate-12 transition-transform text-justify">⌨️</span>
+                            <span
+                                class="bg-cyan-100 text-cyan-700 text-xs px-2 py-1 rounded font-bold uppercase uppercase tracking-widest font-black text-justify">60
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-cyan-600 transition text-justify uppercase tracking-tighter">【作業 4-2】</h3>
+                        <h3
+                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-cyan-600 transition text-justify uppercase tracking-tighter">
+                            【作業 4-2】</h3>
                         <h4 class="font-medium text-gray-500 mb-4 text-justify">「按鍵防抖緩衝」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-left text-justify">
                             實作具備 <code>leading: true</code> 特性的防抖邏輯。確保手動控制時按下的那一瞬間即刻起步，但後續的頻繁抖動會被靜默，消除指令堆積。
@@ -206,10 +251,15 @@
                     <div class="bg-amber-500 h-2"></div>
                     <div class="p-8 flex-grow">
                         <div class="flex justify-between items-start mb-4">
-                            <span class="text-4xl text-amber-500 group-hover:translate-x-1 transition-transform text-justify uppercase tracking-tighter">📊</span>
-                            <span class="bg-amber-100 text-amber-700 text-xs px-2 py-1 rounded font-bold uppercase font-black text-justify">45 min</span>
+                            <span
+                                class="text-4xl text-amber-500 group-hover:translate-x-1 transition-transform text-justify uppercase tracking-tighter">📊</span>
+                            <span
+                                class="bg-amber-100 text-amber-700 text-xs px-2 py-1 rounded font-bold uppercase font-black text-justify">45
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-amber-600 transition text-justify uppercase tracking-widest tracking-tighter">【作業 4-3】</h3>
+                        <h3
+                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-amber-600 transition text-justify uppercase tracking-widest tracking-tighter">
+                            【作業 4-3】</h3>
                         <h4 class="font-medium text-gray-500 mb-4 text-justify">「性能瓶頸診斷」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-justify">
                             利用 Chrome DevTools 診斷事件處理耗時。撰寫報告說明在 BLE/Web Serial 環境下，流控技術如何透過減少封包數 (PPS) 來縮短系統整體的端到端延遲。
@@ -244,9 +294,10 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
-                    <li><strong>建立倉庫</strong>：從 GitHub Classroom 連結建立個人作業倉庫並 Clone 到本地。</li>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
                     <li><strong>速率監控器</strong>：在 <code>telemetry.js</code> 撰寫一個計數器，顯示每秒發送的網包數量。</li>
                     <li><strong>節流邏輯</strong>：實作 <code>_.throttle</code> 原型，確保 Slider 移動時每 100ms 僅觸發一次 BLE 寫入。</li>
                     <li><strong>量化報告</strong>：在 README 紀錄優化前後的「封包每秒 (PPS)」數據，並描述在硬體端觀察到的延遲變化。</li>
@@ -254,7 +305,8 @@
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>精準頻率控制</strong>：節流函式是否能穩定的將發送速率限制在預期頻率內？</li>
                     <li>[ ] <strong>連續性測試</strong>：馬達的運作是否因為節流而產生明顯的「瞬停」感？應追求絲滑的控制流。</li>
@@ -269,7 +321,8 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
                     <li><strong>死區過濾 (Deadzone)</strong>：撰寫過濾代碼，當數值在中心點範圍 $\pm 10\%$ 時強制視為 0。</li>
                     <li><strong>變動門檻 (Threshold)</strong>：只有當移動幅度超過 5 個單位時才觸發事件發送。</li>
@@ -279,7 +332,8 @@
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>響應即時性</strong>：學員是否正確理解了 Leading Edge 在實時控制中的關鍵作用？</li>
                     <li>[ ] <strong>死區精度</strong>：死區邏輯是否成功消除了硬體在「靜止狀態」下的低頻抖動電流聲？</li>
@@ -294,9 +348,11 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
-                    <li><strong>計時標記 (Performance Markers)</strong>：在代碼中加入 <code>performance.now()</code> 測量事件從點擊到傳核的耗時。</li>
+                    <li><strong>計時標記 (Performance Markers)</strong>：在代碼中加入 <code>performance.now()</code> 測量事件從點擊到傳核的耗時。
+                    </li>
                     <li><strong>網路負載分析</strong>：使用 DevTools 觀察在「暴力連續發送」下，瀏覽器主執行緒的卡頓 (Long Task) 情況。</li>
                     <li><strong>對抗測試</strong>：模擬不穩定的網路環境，分析流控對提高連線成功率的實質貢獻。</li>
                     <li><strong>Push Final</strong>：完成一份專業的系統通訊性能診斷報告。</li>
@@ -304,7 +360,8 @@
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>剖析深度</strong>：能否利用開發者工具指出具體的 Scripting 延遲點？</li>
                     <li>[ ] <strong>工程直覺</strong>：對「多即是少，少即是多」的流控哲學是否有深度的反思與實踐？</li>

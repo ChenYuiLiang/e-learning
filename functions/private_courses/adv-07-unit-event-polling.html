@@ -28,20 +28,19 @@
                 class="badge-header inline-block py-1.5 px-4 rounded-full bg-white/10 border border-white/20 text-white/90 text-sm font-medium mb-6 tracking-wider uppercase backdrop-blur-sm font-[Outfit]">
                 進階 7 - 單元 4
             </span>
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit]">事件驅動 vs 輪詢<br><span class="text-purple-400">Event-Driven Architecture</span>
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit]">事件驅動 vs
+                輪詢<br><span class="text-purple-400">Event-Driven Architecture</span>
             </h1>
             <p class="text-xl md:text-2xl text-purple-100 max-w-2xl mx-auto font-light leading-relaxed">
                 優化數據存取效能：理解中斷 (Interrupt) 與輪詢 (Polling) 的差異，打造高效的即時監控系統。
             </p>
 
             <div class="mt-8 flex flex-wrap justify-center gap-4">
-                <button
-                    onclick="enterMediaMode('video', window.RESOURCES.video)"
+                <button onclick="enterMediaMode('video', window.RESOURCES.video)"
                     class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
                     <span>📺</span> 觀看教學影片
                 </button>
-                <button
-                    onclick="enterMediaMode('doc', window.RESOURCES.doc)"
+                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
                     class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
                     <span>📄</span> 閱讀課程講義
                 </button>
@@ -67,30 +66,39 @@
                             </p>
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-                                    <h4 class="font-bold text-blue-900 mb-2 text-[10px] uppercase tracking-widest">Polling</h4>
+                                    <h4 class="font-bold text-blue-900 mb-2 text-[10px] uppercase tracking-widest">
+                                        Polling</h4>
                                     <p class="text-[9px] text-slate-500 leading-relaxed">主動詢問、邏輯簡單，但極度浪費資源且具備固定延遲。</p>
                                 </div>
                                 <div class="bg-purple-50 p-6 rounded-2xl border border-purple-100">
-                                    <h4 class="font-bold text-purple-900 mb-2 text-[10px] uppercase tracking-widest">Event-Driven</h4>
+                                    <h4 class="font-bold text-purple-900 mb-2 text-[10px] uppercase tracking-widest">
+                                        Event-Driven</h4>
                                     <p class="text-[9px] text-slate-500 leading-relaxed">被動中斷、零閒置浪費，反應即時但程式流程較跳躍。</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group">
-                           <div class="absolute inset-0 bg-purple-500/5 group-hover:bg-purple-500/10 transition-colors"></div>
-                           <h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10">Logic Flow Comparison</h4>
-                           <div class="relative z-10 flex items-center justify-around">
-                               <div class="flex flex-col items-center">
-                                   <div class="w-8 h-8 rounded-full border-2 border-dashed border-slate-600 animate-spin"></div>
-                                   <div class="text-[8px] mt-2 text-slate-500 font-mono">POLLING (LOOP)</div>
-                               </div>
-                               <div class="text-2xl text-slate-700">VS</div>
-                               <div class="flex flex-col items-center">
-                                   <div class="w-8 h-8 bg-purple-500 rounded-lg animate-bounce"></div>
-                                   <div class="text-[8px] mt-2 text-purple-400 font-mono">EVENT (INTERRUPT)</div>
-                               </div>
-                           </div>
+                        <div
+                            class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group">
+                            <div
+                                class="absolute inset-0 bg-purple-500/5 group-hover:bg-purple-500/10 transition-colors">
+                            </div>
+                            <h4
+                                class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10">
+                                Logic Flow Comparison</h4>
+                            <div class="relative z-10 flex items-center justify-around">
+                                <div class="flex flex-col items-center">
+                                    <div
+                                        class="w-8 h-8 rounded-full border-2 border-dashed border-slate-600 animate-spin">
+                                    </div>
+                                    <div class="text-[8px] mt-2 text-slate-500 font-mono">POLLING (LOOP)</div>
+                                </div>
+                                <div class="text-2xl text-slate-700">VS</div>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-8 h-8 bg-purple-500 rounded-lg animate-bounce"></div>
+                                    <div class="text-[8px] mt-2 text-purple-400 font-mono">EVENT (INTERRUPT)</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -108,27 +116,37 @@
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
                         <div class="space-y-8">
                             <p class="text-lg text-gray-600 leading-relaxed font-light text-justify">
-                                理解 <code>addEventListener</code> 如何監聽藍牙斷線與按鈕點擊。在 JavaScript 中，Event Loop 決定了回調函式的執行時機，而輪詢則常透過 <code>setInterval</code> 實作。
+                                理解 <code>addEventListener</code> 如何監聽藍牙斷線與按鈕點擊。在 JavaScript 中，Event Loop
+                                決定了回調函式的執行時機，而輪詢則常透過 <code>setInterval</code> 實作。
                             </p>
                             <div class="bg-indigo-50 p-8 rounded-3xl border border-indigo-100">
-                                <h4 class="text-indigo-900 font-bold mb-4 text-xs uppercase tracking-widest">Scenario Selection</h4>
+                                <h4 class="text-indigo-900 font-bold mb-4 text-xs uppercase tracking-widest">Scenario
+                                    Selection</h4>
                                 <ul class="text-[10px] text-slate-500 space-y-3 font-light">
-                                    <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span> <strong>搖桿控制</strong>：適合輪詢 (定時更新座標)。</li>
-                                    <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span> <strong>連線成功/失敗</strong>：適合事件 (異步回調)。</li>
+                                    <li class="flex items-center gap-2"><span
+                                            class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
+                                        <strong>搖桿控制</strong>：適合輪詢 (定時更新座標)。</li>
+                                    <li class="flex items-center gap-2"><span
+                                            class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
+                                        <strong>連線成功/失敗</strong>：適合事件 (異步回調)。</li>
                                 </ul>
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group">
-                           <div class="absolute inset-0 bg-indigo-500/5"></div>
-                           <h4 class="text-indigo-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10">Event Loop Tracker</h4>
-                           <div class="w-full space-y-2 px-10 relative z-10 font-mono text-[9px]">
-                               <div class="text-slate-500">// Stack processing...</div>
-                               <div class="text-purple-400">CALLBACK QUEUE: [ bleNotify, clickMsg ]</div>
-                               <div class="w-full h-px bg-slate-800 my-2"></div>
-                               <div class="text-indigo-300">WAITING FOR NEXT EVENT...</div>
-                           </div>
-                           <p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic">Non-Blocking I/O Architecture</p>
+                        <div
+                            class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group">
+                            <div class="absolute inset-0 bg-indigo-500/5"></div>
+                            <h4
+                                class="text-indigo-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10">
+                                Event Loop Tracker</h4>
+                            <div class="w-full space-y-2 px-10 relative z-10 font-mono text-[9px]">
+                                <div class="text-slate-500">// Stack processing...</div>
+                                <div class="text-purple-400">CALLBACK QUEUE: [ bleNotify, clickMsg ]</div>
+                                <div class="w-full h-px bg-slate-800 my-2"></div>
+                                <div class="text-indigo-300">WAITING FOR NEXT EVENT...</div>
+                            </div>
+                            <p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic">
+                                Non-Blocking I/O Architecture</p>
                         </div>
                     </div>
                 </div>
@@ -137,10 +155,12 @@
 
         <!-- Module 3: Hardware Interrupts -->
         <section class="module-section mb-16">
-            <div class="glass-card bg-slate-900 rounded-3xl shadow-2xl overflow-hidden text-white border border-slate-700">
+            <div
+                class="glass-card bg-slate-900 rounded-3xl shadow-2xl overflow-hidden text-white border border-slate-700">
                 <div class="p-8 md:p-14">
                     <h2 class="text-3xl font-bold mb-8 flex items-center gap-3 text-red-400">
-                        <span class="p-2 bg-red-500/20 rounded-lg text-red-400 text-2xl">🚨</span> 3. 硬體端的中斷 (Hardware Interrupts)
+                        <span class="p-2 bg-red-500/20 rounded-lg text-red-400 text-2xl">🚨</span> 3. 硬體端的中斷 (Hardware
+                        Interrupts)
                     </h2>
                     <div class="flex flex-col lg:flex-row gap-16 items-center">
                         <div class="flex-1 space-y-6">
@@ -148,21 +168,38 @@
                                 當網頁傳送「緊急停止」或車子撞到東西時，ESP32 如何利用 <code>attachInterrupt</code> 立即跳出主程式進行處理？這是安全性通訊的最終防線。
                             </p>
                             <div class="bg-red-500/10 p-8 rounded-3xl border border-red-500/20 shadow-inner">
-                                <h4 class="font-bold text-red-400 mb-4 text-xs uppercase tracking-widest text-center">Fail-safe Logic</h4>
+                                <h4 class="font-bold text-red-400 mb-4 text-xs uppercase tracking-widest text-center">
+                                    Fail-safe Logic</h4>
                                 <ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify">
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span><div><strong class="text-white">致命延遲</strong>：輪詢 100ms 代表你可能有 100ms 的空白期無法煞車。</div></li>
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span><div><strong class="text-white">優先級調色</strong>：中斷處理器 (ISR) 會強制暫停 CPU 目前的工作。</div></li>
-                                    <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span><div><strong class="text-white">連線監聽</strong>：瀏覽器 <code>gattserverdisconnected</code> 的零秒感應能力。</div></li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span>
+                                        <div><strong class="text-white">致命延遲</strong>：輪詢 100ms 代表你可能有 100ms 的空白期無法煞車。
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span>
+                                        <div><strong class="text-white">優先級調色</strong>：中斷處理器 (ISR) 會強制暫停 CPU 目前的工作。
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-2"><span
+                                            class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span>
+                                        <div><strong class="text-white">連線監聽</strong>：瀏覽器
+                                            <code>gattserverdisconnected</code> 的零秒感應能力。</div>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="lg:w-80 bg-red-600/10 p-10 rounded-3xl border border-red-500/20 text-center relative overflow-hidden group">
-                           <div class="absolute -right-8 -top-8 w-32 h-32 bg-red-500/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
-                           <h4 class="text-red-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">Emergency Vector</h4>
-                           <div class="text-5xl font-bold text-white mb-2 animate-pulse">STOP</div>
-                           <p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center">
-                               "事件驅動不僅是為了效能，更是為了安全。"
-                           </p>
+                        <div
+                            class="lg:w-80 bg-red-600/10 p-10 rounded-3xl border border-red-500/20 text-center relative overflow-hidden group">
+                            <div
+                                class="absolute -right-8 -top-8 w-32 h-32 bg-red-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
+                            </div>
+                            <h4 class="text-red-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">
+                                Emergency Vector</h4>
+                            <div class="text-5xl font-bold text-white mb-2 animate-pulse">STOP</div>
+                            <p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center">
+                                "事件驅動不僅是為了效能，更是為了安全。"
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -182,12 +219,15 @@
                     <div class="p-8 flex-grow">
                         <div class="flex justify-between items-start mb-4">
                             <span class="text-4xl text-blue-500 group-hover:scale-110 transition-transform">⏱️</span>
-                            <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold uppercase">60 min</span>
+                            <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold uppercase">60
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-blue-600 transition">【作業 4-1】</h3>
+                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-blue-600 transition">【作業 4-1】
+                        </h3>
                         <h4 class="font-medium text-gray-500 mb-4">「效率極限大挑戰」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-justify">
-                            實作 WiFi 密碼輸入框按鈕啟動邏輯。首度對比 <code>setInterval</code> 與 <code>input</code> 事件的效能開銷，並使用 Performance Tab 截圖 CPU Idle 時間差異。
+                            實作 WiFi 密碼輸入框按鈕啟動邏輯。首度對比 <code>setInterval</code> 與 <code>input</code> 事件的效能開銷，並使用
+                            Performance Tab 截圖 CPU Idle 時間差異。
                         </p>
                     </div>
                 </div>
@@ -199,9 +239,11 @@
                     <div class="p-8 flex-grow">
                         <div class="flex justify-between items-start mb-4">
                             <span class="text-4xl text-purple-500 group-hover:rotate-12 transition-transform">🕹️</span>
-                            <span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold uppercase">60 min</span>
+                            <span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold uppercase">60
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-purple-600 transition">【作業 4-2】</h3>
+                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-purple-600 transition">【作業 4-2】
+                        </h3>
                         <h4 class="font-medium text-gray-500 mb-4">「搖桿混合調校器」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-left">
                             解決「事件雨」導致的 BLE 崩潰。將高頻 Mousemove 事件存入 Buffer，但實作定時發送 (Hybrid) 策略，在手感即時性與頻寬壓力之間取得完美平衡。
@@ -216,9 +258,11 @@
                     <div class="p-8 flex-grow">
                         <div class="flex justify-between items-start mb-4">
                             <span class="text-4xl text-red-500 group-hover:translate-x-1 transition-transform">🆘</span>
-                            <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded font-bold uppercase">45 min</span>
+                            <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded font-bold uppercase">45
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-red-600 transition">【作業 4-3】</h3>
+                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-red-600 transition">【作業 4-3】
+                        </h3>
                         <h4 class="font-medium text-gray-500 mb-4">「零秒煞車系統」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-justify">
                             模擬中斷概念。利用 <code>gattserverdisconnected</code> 事件，實作一旦連線斷開即刻清空所有馬達暫存器的安全機制。對比「定時監控連線」的危險延遲。
@@ -253,17 +297,21 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
-                    <li><strong>建立倉庫</strong>：從 GitHub Classroom 連結建立個人作業倉庫並 Clone 到本地。</li>
-                    <li><strong>對比實驗 A (Polling)</strong>：使用 <code>setInterval</code> 每 100ms 檢查輸入框 <code>value.length > 8</code>，開啟按鈕。</li>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>對比實驗 A (Polling)</strong>：使用 <code>setInterval</code> 每 100ms 檢查輸入框
+                        <code>value.length > 8</code>，開啟按鈕。</li>
                     <li><strong>對比實驗 B (Event)</strong>：移除 Timer，改用 <code>input</code> 事件回調實現相同邏輯。</li>
-                    <li><strong>效能分析</strong>：錄製 Chrome DevTools Performance 面板的截圖，對比兩者在靜止與輸入時的 Scripting Scripting 負載，並寫入 README。</li>
+                    <li><strong>效能分析</strong>：錄製 Chrome DevTools Performance 面板的截圖，對比兩者在靜止與輸入時的 Scripting Scripting
+                        負載，並寫入 README。</li>
                 </ol>
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>資源消耗觀察</strong>：是否能清楚識別出 Timer 在背後不斷「空轉」造成的能耗浪費？</li>
                     <li>[ ] <strong>代碼可維護性</strong>：事件驅動後的代碼是否更具備處理特定動作的語意化特徵？</li>
@@ -278,17 +326,20 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
                     <li><strong>數據緩衝區實作</strong>：在 global 變數中保存最新的 X, Y 座標。</li>
-                    <li><strong>事件與輪詢解耦</strong>：<code>mousemove</code> 事件只負責更新變數（極快）；另起一個 20Hz 的 <code>setInterval</code> 負責讀取變數並發送 BLE 指令。</li>
+                    <li><strong>事件與輪詢解耦</strong>：<code>mousemove</code> 事件只負責更新變數（極快）；另起一個 20Hz 的
+                        <code>setInterval</code> 負責讀取變數並發送 BLE 指令。</li>
                     <li><strong>穩定性測試</strong>：快速晃動搖桿 30 秒，觀察是否有發生 BLE 底層的「Write Busy」錯誤。</li>
                     <li><strong>Push Final</strong>：提交具備「流量節流 (Throttling)」能力的通訊引擎。</li>
                 </ol>
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>流量控制效果</strong>：是否有效防止了高頻事件導致的藍牙協議棧堵塞？</li>
                     <li>[ ] <strong>操作平滑度</strong>：20Hz 的發送速率是否依然能提供足夠流暢的車體反應？</li>
@@ -303,7 +354,8 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
                     <li><strong>中斷事件監聽</strong>：建立 <code>gattserverdisconnected</code> 回調。</li>
                     <li><strong>安全性重置</strong>：一旦進入回調，強制將馬達變數歸零，並在畫面上顯示紅色的「CONNECTION LOST - SAFETY STOP」全屏警告。</li>
@@ -312,7 +364,8 @@
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>事故處理及時性</strong>：當藍牙斷開時，UI 與系統狀態是否能「瞬間」轉變為安全模式？</li>
                     <li>[ ] <strong>狀態清理徹度</strong>：是否正確清理了所有待處理的 Timer 或未發送的數據包？</li>

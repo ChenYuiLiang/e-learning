@@ -19,7 +19,7 @@
             font-size: 0.875rem;
             overflow-x: auto;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
@@ -76,17 +76,25 @@
 
                     <div class="grid lg:grid-cols-3 gap-8">
                         <div class="p-8 rounded-3xl bg-red-50 border border-red-100 transition hover:shadow-lg">
-                            <div class="w-12 h-12 bg-red-200 text-red-700 rounded-2xl flex items-center justify-center text-2xl mb-6 text-justify">🔒</div>
+                            <div
+                                class="w-12 h-12 bg-red-200 text-red-700 rounded-2xl flex items-center justify-center text-2xl mb-6 text-justify">
+                                🔒</div>
                             <h3 class="font-bold text-gray-900 mb-3 text-justify">攔截與偽造 (MITM)</h3>
-                            <p class="text-sm text-gray-600 leading-relaxed text-justify">理解「中間人攻擊」。防止攻擊者接管無人車甚至引發危害。</p>
+                            <p class="text-sm text-gray-600 leading-relaxed text-justify">理解「中間人攻擊」。防止攻擊者接管無人車甚至引發危害。
+                            </p>
                         </div>
                         <div class="p-8 rounded-3xl bg-orange-50 border border-orange-100 transition hover:shadow-lg">
-                            <div class="w-12 h-12 bg-orange-200 text-orange-700 rounded-2xl flex items-center justify-center text-2xl mb-6 text-justify">📉</div>
+                            <div
+                                class="w-12 h-12 bg-orange-200 text-orange-700 rounded-2xl flex items-center justify-center text-2xl mb-6 text-justify">
+                                📉</div>
                             <h3 class="font-bold text-gray-900 mb-3 text-justify uppercase tracking-widest">版本倒退風險</h3>
-                            <p class="text-sm text-gray-600 leading-relaxed text-justify">舊版韌體漏洞可能導致硬體失效。好的系統必須「拒絕降級」。</p>
+                            <p class="text-sm text-gray-600 leading-relaxed text-justify">舊版韌體漏洞可能導致硬體失效。好的系統必須「拒絕降級」。
+                            </p>
                         </div>
                         <div class="p-8 rounded-3xl bg-slate-100 border border-slate-200 transition hover:shadow-lg">
-                            <div class="w-12 h-12 bg-slate-300 text-slate-700 rounded-2xl flex items-center justify-center text-2xl mb-6 text-justify">🎭</div>
+                            <div
+                                class="w-12 h-12 bg-slate-300 text-slate-700 rounded-2xl flex items-center justify-center text-2xl mb-6 text-justify">
+                                🎭</div>
                             <h3 class="font-bold text-gray-900 mb-3 text-justify">硬體規格不匹配</h3>
                             <p class="text-sm text-gray-600 leading-relaxed text-justify">誤刷錯誤機型可能導致損壞。更新前必須確認設備型號。</p>
                         </div>
@@ -106,38 +114,57 @@
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                         <div class="space-y-8">
-                            <div class="bg-indigo-50 p-8 rounded-3xl border border-indigo-100 shadow-sm relative overflow-hidden group">
-                                <div class="absolute -right-4 -top-4 w-24 h-24 bg-indigo-500/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
-                                <h3 class="font-bold text-xl text-indigo-900 mb-4 flex items-center gap-2">HTTP Basic Auth 流程</h3>
+                            <div
+                                class="bg-indigo-50 p-8 rounded-3xl border border-indigo-100 shadow-sm relative overflow-hidden group">
+                                <div
+                                    class="absolute -right-4 -top-4 w-24 h-24 bg-indigo-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
+                                </div>
+                                <h3 class="font-bold text-xl text-indigo-900 mb-4 flex items-center gap-2">HTTP Basic
+                                    Auth 流程</h3>
                                 <ul class="space-y-4">
                                     <li class="flex items-start gap-3">
-                                        <div class="w-5 h-5 bg-indigo-200 rounded-full flex items-center justify-center text-[10px] text-indigo-700 font-bold mt-0.5 shrink-0">1</div>
-                                        <p class="text-sm text-indigo-800 leading-relaxed text-justify">發送請求，ESP32 檢查 Auth Header 資訊。</p>
+                                        <div
+                                            class="w-5 h-5 bg-indigo-200 rounded-full flex items-center justify-center text-[10px] text-indigo-700 font-bold mt-0.5 shrink-0">
+                                            1</div>
+                                        <p class="text-sm text-indigo-800 leading-relaxed text-justify">發送請求，ESP32 檢查
+                                            Auth Header 資訊。</p>
                                     </li>
                                     <li class="flex items-start gap-3">
-                                        <div class="w-5 h-5 bg-indigo-200 rounded-full flex items-center justify-center text-[10px] text-indigo-700 font-bold mt-0.5 shrink-0">2</div>
-                                        <p class="text-sm text-indigo-800 leading-relaxed text-justify">若無，回傳 <strong>401 Unauthorized</strong> 觸發登入視窗。</p>
+                                        <div
+                                            class="w-5 h-5 bg-indigo-200 rounded-full flex items-center justify-center text-[10px] text-indigo-700 font-bold mt-0.5 shrink-0">
+                                            2</div>
+                                        <p class="text-sm text-indigo-800 leading-relaxed text-justify">若無，回傳
+                                            <strong>401 Unauthorized</strong> 觸發登入視窗。</p>
                                     </li>
                                     <li class="flex items-start gap-3">
-                                        <div class="w-5 h-5 bg-indigo-200 rounded-full flex items-center justify-center text-[10px] text-indigo-700 font-bold mt-0.5 shrink-0">3</div>
-                                        <p class="text-sm text-indigo-800 leading-relaxed text-justify">密碼儲存於 NVS，確保每個設備擁有獨特認證。</p>
+                                        <div
+                                            class="w-5 h-5 bg-indigo-200 rounded-full flex items-center justify-center text-[10px] text-indigo-700 font-bold mt-0.5 shrink-0">
+                                            3</div>
+                                        <p class="text-sm text-indigo-800 leading-relaxed text-justify">密碼儲存於
+                                            NVS，確保每個設備擁有獨特認證。</p>
                                     </li>
                                 </ul>
                             </div>
                         </div>
 
                         <div class="bg-slate-900 rounded-3xl p-8 relative shadow-2xl overflow-hidden group">
-                           <div class="absolute top-0 right-0 p-4 font-mono text-[10px] text-slate-500 tracking-widest uppercase">auth-logic-snippet</div>
-                           <h4 class="text-white font-bold mb-6 flex items-center gap-2">網頁路徑攔截器</h4>
-                           <div class="code-block group-hover:border-indigo-500/50 transition">
-                                server.<span class="text-indigo-300">on</span>(<span class="text-emerald-300">"/update"</span>, HTTP_GET, []() {<br>
-                                &nbsp;&nbsp;<span class="text-slate-500 italic text-justify">// 檢查 Preferences 帳密</span><br>
-                                &nbsp;&nbsp;<span class="text-indigo-300">if</span> (!server.<span class="text-blue-300">authenticate</span>(username, password)) {<br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-indigo-300">return</span> server.<span class="text-blue-300">requestAuthentication</span>();<br>
+                            <div
+                                class="absolute top-0 right-0 p-4 font-mono text-[10px] text-slate-500 tracking-widest uppercase">
+                                auth-logic-snippet</div>
+                            <h4 class="text-white font-bold mb-6 flex items-center gap-2">網頁路徑攔截器</h4>
+                            <div class="code-block group-hover:border-indigo-500/50 transition">
+                                server.<span class="text-indigo-300">on</span>(<span
+                                    class="text-emerald-300">"/update"</span>, HTTP_GET, []() {<br>
+                                &nbsp;&nbsp;<span class="text-slate-500 italic text-justify">// 檢查 Preferences
+                                    帳密</span><br>
+                                &nbsp;&nbsp;<span class="text-indigo-300">if</span> (!server.<span
+                                    class="text-blue-300">authenticate</span>(username, password)) {<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-indigo-300">return</span> server.<span
+                                    class="text-blue-300">requestAuthentication</span>();<br>
                                 &nbsp;&nbsp;}<br>
                                 &nbsp;&nbsp;server.<span class="text-blue-300">sendContent</span>(index_html);<br>
                                 });
-                           </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -157,20 +184,29 @@
                     </p>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div class="p-8 bg-emerald-50 rounded-3xl border border-emerald-100 text-center group hover:bg-emerald-500 transition-all duration-500">
+                        <div
+                            class="p-8 bg-emerald-50 rounded-3xl border border-emerald-100 text-center group hover:bg-emerald-500 transition-all duration-500">
                             <div class="text-4xl mb-4 group-hover:scale-125 transition">📦</div>
                             <h4 class="font-bold text-emerald-900 group-hover:text-white mb-2 text-justify">語義化版本</h4>
-                            <p class="text-xs text-emerald-700 group-hover:text-white/80 leading-relaxed text-justify">理解 MAJOR.MINOR.PATCH。確保更新方向正確。</p>
+                            <p class="text-xs text-emerald-700 group-hover:text-white/80 leading-relaxed text-justify">
+                                理解 MAJOR.MINOR.PATCH。確保更新方向正確。</p>
                         </div>
-                        <div class="p-8 bg-emerald-50 rounded-3xl border border-emerald-100 text-center group hover:bg-emerald-500 transition-all duration-500">
+                        <div
+                            class="p-8 bg-emerald-50 rounded-3xl border border-emerald-100 text-center group hover:bg-emerald-500 transition-all duration-500">
                             <div class="text-4xl mb-4 group-hover:scale-125 transition">🏷️</div>
-                            <h4 class="font-bold text-emerald-900 group-hover:text-white mb-2 text-justify uppercase tracking-widest">韌體標頭解析</h4>
-                            <p class="text-xs text-emerald-700 group-hover:text-white/80 leading-relaxed text-justify">讀取前 1K Bytes，提取型號。防止誤刷。</p>
+                            <h4
+                                class="font-bold text-emerald-900 group-hover:text-white mb-2 text-justify uppercase tracking-widest">
+                                韌體標頭解析</h4>
+                            <p class="text-xs text-emerald-700 group-hover:text-white/80 leading-relaxed text-justify">
+                                讀取前 1K Bytes，提取型號。防止誤刷。</p>
                         </div>
-                        <div class="p-8 bg-emerald-50 rounded-3xl border border-emerald-100 text-center group hover:bg-emerald-500 transition-all duration-500">
+                        <div
+                            class="p-8 bg-emerald-50 rounded-3xl border border-emerald-100 text-center group hover:bg-emerald-500 transition-all duration-500">
                             <div class="text-4xl mb-4 group-hover:scale-125 transition">🛡️</div>
-                            <h4 class="font-bold text-emerald-900 group-hover:text-white mb-2 text-justify">主動攔截 (Abort)</h4>
-                            <p class="text-xs text-emerald-700 group-hover:text-white/80 leading-relaxed text-justify">寫入 Flash 前調用 `Update.abort()` 除後患。</p>
+                            <h4 class="font-bold text-emerald-900 group-hover:text-white mb-2 text-justify">主動攔截 (Abort)
+                            </h4>
+                            <p class="text-xs text-emerald-700 group-hover:text-white/80 leading-relaxed text-justify">
+                                寫入 Flash 前調用 `Update.abort()` 除後患。</p>
                         </div>
                     </div>
                 </div>
@@ -190,9 +226,11 @@
                     <div class="p-8 flex-grow">
                         <div class="flex justify-between items-start mb-4">
                             <span class="text-4xl text-red-500 group-hover:scale-110 transition-transform">🔐</span>
-                            <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded font-bold uppercase">45 min</span>
+                            <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded font-bold uppercase">45
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-red-600 transition">【作業 3-1】</h3>
+                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-red-600 transition">【作業 3-1】
+                        </h3>
                         <h4 class="font-medium text-gray-500 mb-4">「身份驗證與持久化」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-justify">
                             增加密碼防護，練習將管理員帳密存放於 NVS。
@@ -207,9 +245,13 @@
                     <div class="p-8 flex-grow">
                         <div class="flex justify-between items-start mb-4">
                             <span class="text-4xl text-orange-500 group-hover:rotate-12 transition-transform">🤖</span>
-                            <span class="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded font-bold uppercase text-justify">60 min</span>
+                            <span
+                                class="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded font-bold uppercase text-justify">60
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-orange-600 transition text-justify">【作業 3-2】</h3>
+                        <h3
+                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-orange-600 transition text-justify">
+                            【作業 3-2】</h3>
                         <h4 class="font-medium text-gray-500 mb-4">「防止降級預檢」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-justify">
                             解析版本號。若偵測版本過舊，立即主動叫停流程。
@@ -223,10 +265,15 @@
                     <div class="bg-slate-800 h-2"></div>
                     <div class="p-8 flex-grow">
                         <div class="flex justify-between items-start mb-4">
-                            <span class="text-4xl text-slate-500 group-hover:translate-x-1 transition-transform">🆔</span>
-                            <span class="bg-slate-100 text-slate-700 text-xs px-2 py-1 rounded font-bold uppercase text-justify">45 min</span>
+                            <span
+                                class="text-4xl text-slate-500 group-hover:translate-x-1 transition-transform">🆔</span>
+                            <span
+                                class="bg-slate-100 text-slate-700 text-xs px-2 py-1 rounded font-bold uppercase text-justify">45
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-slate-600 transition text-justify">【作業 3-3】</h3>
+                        <h3
+                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-slate-600 transition text-justify">
+                            【作業 3-3】</h3>
                         <h4 class="font-medium text-gray-500 mb-4">「晶片型號鎖定」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-justify text-left">
                             獲取 ID。若與硬體架構不符立即攔截更新。
@@ -269,7 +316,7 @@
             <div class="quest-workflow">
                 <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
                 <ol>
-                    <li><strong>建立倉庫</strong>：從 GitHub Classroom 連結建立個人作業倉庫教 Clone 到本地。</li>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫教 Clone 到本地。</li>
                     <li><strong>身份驗證實作</strong>：為 <code>/update</code> 路由增加 HTTP Basic Auth。</li>
                     <li><strong>參數持久化</strong>：使用 <code>Preferences</code> 將帳密儲存於 NVS。</li>
                     <li><strong>防禦演練</strong>：實作錯誤計數器，在 README 截圖。</li>

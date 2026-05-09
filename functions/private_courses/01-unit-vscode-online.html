@@ -10,7 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <!-- Link to parent directory css -->
     <link rel="stylesheet" href="/style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js?v=2026.04.05.FINAL_V8.1_STABLE"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js?v=2026.04.05.FINAL_V8.1_STABLE"></script>
 
 
 </head>
@@ -376,60 +377,61 @@
 
 
     <script>
-    // --- Lab Logic ---
-    function triggerMagic() {
-        const mockup = document.getElementById('mock-browser');
-        const urlBar = document.getElementById('url-bar');
-        const githubState = document.getElementById('github-state');
-        const vscodeState = document.getElementById('vscode-state');
-        const contentArea = document.getElementById('browser-content');
-        
-        // 1. Sparkle Effect
-        createSparkles();
-        
-        // 2. Transform UI
-        mockup.classList.add('vscode-mode');
-        mockup.classList.remove('bg-white');
-        mockup.style.borderColor = '#333';
-        
-        // 3. Change URL
-        urlBar.innerHTML = 'https://github<span class="text-green-400 font-bold">.dev</span>/vibe-coding/esp32-project';
-        urlBar.classList.replace('bg-white', 'bg-[#1e1e1e]');
-        urlBar.classList.replace('text-gray-600', 'text-gray-300');
-        
-        // 4. Switch Content
-        githubState.style.display = 'none';
-        vscodeState.classList.remove('hidden');
-    }
+        // --- Lab Logic ---
+        function triggerMagic() {
+            const mockup = document.getElementById('mock-browser');
+            const urlBar = document.getElementById('url-bar');
+            const githubState = document.getElementById('github-state');
+            const vscodeState = document.getElementById('vscode-state');
+            const contentArea = document.getElementById('browser-content');
 
-    function createSparkles() {
-        const btn = document.querySelector('.key-hint');
-        if (!btn) return;
-        const rect = btn.getBoundingClientRect();
-        for (let i = 0; i < 8; i++) {
-            const sparkle = document.createElement('div');
-            sparkle.innerHTML = '✨';
-            sparkle.style.position = 'fixed';
-            sparkle.style.left = (rect.left + rect.width / 2) + 'px';
-            sparkle.style.top = (rect.top + rect.height / 2) + 'px';
-            sparkle.style.fontSize = '20px';
-            sparkle.style.pointerEvents = 'none';
-            sparkle.style.zIndex = '9999';
-            // Random destination
-            const tx = (Math.random() - 0.5) * 100;
-            const ty = (Math.random() - 0.5) * 100 - 50;
-            sparkle.animate([
-                { transform: 'translate(0,0) scale(0)', opacity: 1 },
-                { transform: `translate(${tx}px, ${ty}px) scale(1.5)`, opacity: 0 }
-            ], { duration: 800, easing: 'ease-out' }).onfinish = () => sparkle.remove();
-            document.body.appendChild(sparkle);
+            // 1. Sparkle Effect
+            createSparkles();
+
+            // 2. Transform UI
+            mockup.classList.add('vscode-mode');
+            mockup.classList.remove('bg-white');
+            mockup.style.borderColor = '#333';
+
+            // 3. Change URL
+            urlBar.innerHTML = 'https://github<span class="text-green-400 font-bold">.dev</span>/vibe-coding/esp32-project';
+            urlBar.classList.replace('bg-white', 'bg-[#1e1e1e]');
+            urlBar.classList.replace('text-gray-600', 'text-gray-300');
+
+            // 4. Switch Content
+            githubState.style.display = 'none';
+            vscodeState.classList.remove('hidden');
         }
-    }
+
+        function createSparkles() {
+            const btn = document.querySelector('.key-hint');
+            if (!btn) return;
+            const rect = btn.getBoundingClientRect();
+            for (let i = 0; i < 8; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.innerHTML = '✨';
+                sparkle.style.position = 'fixed';
+                sparkle.style.left = (rect.left + rect.width / 2) + 'px';
+                sparkle.style.top = (rect.top + rect.height / 2) + 'px';
+                sparkle.style.fontSize = '20px';
+                sparkle.style.pointerEvents = 'none';
+                sparkle.style.zIndex = '9999';
+                // Random destination
+                const tx = (Math.random() - 0.5) * 100;
+                const ty = (Math.random() - 0.5) * 100 - 50;
+                sparkle.animate([
+                    { transform: 'translate(0,0) scale(0)', opacity: 1 },
+                    { transform: `translate(${tx}px, ${ty}px) scale(1.5)`, opacity: 0 }
+                ], { duration: 800, easing: 'ease-out' }).onfinish = () => sparkle.remove();
+                document.body.appendChild(sparkle);
+            }
+        }
     </script>
 
     <!-- Assignment Guide (Hidden) -->
     <section id="assignment-guide" style="display: none;">
-        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">雲端開發環境：VS Code Online 與 Codespaces 實戰</h2>
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">雲端開發環境：VS Code Online 與 Codespaces
+            實戰</h2>
 
         <div class="assignment-quest">
             <h3 class="quest-title text-justify">任務 1：Web Serial 硬體讀取測試 (Web Serial Connectivity Lab)</h3>
@@ -440,7 +442,7 @@
             <div class="quest-workflow">
                 <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
                 <ol>
-                    <li><strong>開啟環境</strong>：在瀏覽器開啟任一 GitHub 倉庫。</li>
+                    <li><strong>開啟環境</strong>：在瀏覽器開啟任一 GitHub 程式庫。</li>
                     <li><strong>核心指令</strong>：按下鍵盤的 <code>.</code> 進入 <code>vscode.dev</code> 網頁環境。</li>
                     <li><strong>連結硬體</strong>：打開序列埠監控視窗 (Serial Monitor) 並連結 ESP32。</li>
                     <li><strong>權限授權</strong>：觀察並同意瀏覽器跳出的權限請求視窗，成功讀取到 "Hello" 訊號。</li>
@@ -466,7 +468,8 @@
                 <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
                 <ol>
                     <li><strong>啟動容器</strong>：在 GitHub 專案頁面點選 "Code" -> "Codespaces" 建立雲端虛擬機。</li>
-                    <li><strong>指令操作</strong>：開啟雲端終端機 (Terminal) 並執行 <code>npm install</code> 或 <code>npm --version</code>。</li>
+                    <li><strong>指令操作</strong>：開啟雲端終端機 (Terminal) 並執行 <code>npm install</code> 或
+                        <code>npm --version</code>。</li>
                     <li><strong>雲端體驗</strong>：嘗試在雲端環境中運行一個簡單的腳本（如 <code>node cloud-test.js</code>）。</li>
                     <li><strong>環境獨立性</strong>：觀察並理解雲端環境與個人電腦環境的獨立性。</li>
                 </ol>
@@ -507,4 +510,5 @@
         </div>
     </section>
 </body>
+
 </html>

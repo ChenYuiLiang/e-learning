@@ -28,7 +28,8 @@
                 class="badge-header inline-block py-1.5 px-4 rounded-full bg-white/10 border border-white/20 text-white/90 text-sm font-medium mb-6 tracking-wide uppercase backdrop-blur-sm font-[Outfit]">
                 進階 12 - 數學直覺
             </span>
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit] text-center">PID 三兄弟的<br><span class="text-pink-400">控制直覺</span>
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit] text-center">
+                PID 三兄弟的<br><span class="text-pink-400">控制直覺</span>
             </h1>
             <p class="text-xl md:text-2xl text-pink-100 max-w-2xl mx-auto font-light leading-relaxed text-center">
                 為什麼機器人會抖？深入 P、I、D 的物理意涵，從直覺掌握控制公式。
@@ -66,26 +67,35 @@
                                 比例項就像是你的腳踩油門的力度。離目標越遠，踩得越重；快到了，就慢慢放開。這是最直觀的控制邏輯。
                             </p>
                             <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-justify text-justify">
-                                <h4 class="font-bold text-blue-900 mb-4 text-[10px] uppercase tracking-widest leading-relaxed text-center">P Output Formula</h4>
+                                <h4
+                                    class="font-bold text-blue-900 mb-4 text-[10px] uppercase tracking-widest leading-relaxed text-center">
+                                    P Output Formula</h4>
                                 <div class="text-xl font-mono text-blue-600 mb-4 text-center text-justify">
-                                   \[Output_p = K_p \times Error\]
+                                    \[Output_p = K_p \times Error\]
                                 </div>
-                                <p class="text-[9px] text-slate-500 italic text-center text-justify">Error = Target - Current</p>
+                                <p class="text-[9px] text-slate-500 italic text-center text-justify">Error = Target -
+                                    Current</p>
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-                           <div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors"></div>
-                           <h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-center text-justify">Static Error Barrier</h4>
-                           <div class="relative z-10 flex items-center justify-center gap-4 text-justify">
+                        <div
+                            class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
+                            <div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors">
+                            </div>
+                            <h4
+                                class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-center text-justify">
+                                Static Error Barrier</h4>
+                            <div class="relative z-10 flex items-center justify-center gap-4 text-justify">
                                 <div class="w-1 h-20 bg-slate-700 rounded-full overflow-hidden text-justify text-left">
-                                   <div class="w-full h-2/3 bg-blue-500 animate-[pulse_2s_infinite] text-justify"></div>
+                                    <div class="w-full h-2/3 bg-blue-500 animate-[pulse_2s_infinite] text-justify">
+                                    </div>
                                 </div>
                                 <div class="text-left text-[10px] text-slate-400 text-justify text-justify">
-                                   <p class="text-blue-400 font-bold mb-1 text-justify">❌ 靜態誤差 (Steady state error)</p>
-                                   <p class="text-justify text-left text-justify">純 P 控制永遠差那麼一點。<br>因為推力與誤差平衡時，<br>系統會卡在終點前不前進。</p>
+                                    <p class="text-blue-400 font-bold mb-1 text-justify">❌ 靜態誤差 (Steady state error)</p>
+                                    <p class="text-justify text-left text-justify">純 P
+                                        控制永遠差那麼一點。<br>因為推力與誤差平衡時，<br>系統會卡在終點前不前進。</p>
                                 </div>
-                           </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -106,25 +116,34 @@
                                 積分項會記住過去「沒到達目標」的時間。如果卡在終點前太久，它會越來越「不爽」，慢慢增加推力直到剷平誤差。
                             </p>
                             <div class="bg-emerald-50 p-8 rounded-3xl border border-emerald-100 text-justify">
-                                <h4 class="text-emerald-900 font-bold mb-4 text-xs uppercase tracking-widest text-center text-justify text-justify">I Output Formula</h4>
+                                <h4
+                                    class="text-emerald-900 font-bold mb-4 text-xs uppercase tracking-widest text-center text-justify text-justify">
+                                    I Output Formula</h4>
                                 <div class="text-xl font-mono text-emerald-600 text-center text-justify text-justify">
-                                   \[Output_i = K_i \times \sum (Error \cdot \Delta t)\]
+                                    \[Output_i = K_i \times \sum (Error \cdot \Delta t)\]
                                 </div>
-                                <p class="text-[10px] text-slate-400 mt-4 italic font-light text-center text-justify text-justify">消除靜態誤差的最後一哩路</p>
+                                <p
+                                    class="text-[10px] text-slate-400 mt-4 italic font-light text-center text-justify text-justify">
+                                    消除靜態誤差的最後一哩路</p>
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-                           <div class="absolute inset-0 bg-emerald-500/5 text-justify"></div>
-                           <h4 class="text-emerald-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-center text-justify">Accumulation Effect</h4>
-                           <div class="w-full h-12 flex items-end gap-1 relative z-10 px-4 text-justify text-left">
+                        <div
+                            class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
+                            <div class="absolute inset-0 bg-emerald-500/5 text-justify"></div>
+                            <h4
+                                class="text-emerald-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-center text-justify">
+                                Accumulation Effect</h4>
+                            <div class="w-full h-12 flex items-end gap-1 relative z-10 px-4 text-justify text-left">
                                 <div class="w-2 bg-emerald-500/20 h-2 text-justify"></div>
                                 <div class="w-2 bg-emerald-500/40 h-4 text-justify"></div>
                                 <div class="w-2 bg-emerald-500/60 h-7 text-justify text-left"></div>
                                 <div class="w-2 bg-emerald-500/80 h-10 text-justify text-left"></div>
                                 <div class="w-2 bg-emerald-500 h-full text-justify text-left"></div>
-                           </div>
-                           <p class="text-[9px] text-slate-500 mt-4 font-mono tracking-tighter uppercase relative z-10 text-center text-justify">Side Effect: Overshoot Risk</p>
+                            </div>
+                            <p
+                                class="text-[9px] text-slate-500 mt-4 font-mono tracking-tighter uppercase relative z-10 text-center text-justify">
+                                Side Effect: Overshoot Risk</p>
                         </div>
                     </div>
                 </div>
@@ -133,40 +152,67 @@
 
         <!-- Module 3: D - Derivative -->
         <section class="module-section mb-16 text-justify">
-            <div class="glass-card bg-slate-900 rounded-3xl shadow-2xl overflow-hidden text-white border border-slate-700 text-justify">
+            <div
+                class="glass-card bg-slate-900 rounded-3xl shadow-2xl overflow-hidden text-white border border-slate-700 text-justify">
                 <div class="p-8 md:p-14 text-justify">
-                    <h2 class="text-3xl font-bold mb-8 flex items-center gap-3 text-purple-400 text-justify text-justify">
-                        <span class="p-2 bg-purple-500/20 rounded-lg text-purple-400 text-2xl text-justify text-left">D</span> 3. 微分 (D)：預測未來的預警師
+                    <h2
+                        class="text-3xl font-bold mb-8 flex items-center gap-3 text-purple-400 text-justify text-justify">
+                        <span
+                            class="p-2 bg-purple-500/20 rounded-lg text-purple-400 text-2xl text-justify text-left">D</span>
+                        3. 微分 (D)：預測未來的預警師
                     </h2>
                     <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
                         <div class="flex-1 space-y-6 text-justify">
                             <p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
                                 微分項關注的是誤差變化的「斜率」。當系統衝得太快，它會提前踩下阻尼，防止系統衝過頭 (Overshoot)。
                             </p>
-                            <div class="bg-purple-500/10 p-8 rounded-3xl border border-purple-500/20 shadow-inner text-justify text-justify text-left">
-                                <h4 class="font-bold text-purple-400 mb-4 text-xs uppercase tracking-widest text-center text-justify">D Output Formula</h4>
+                            <div
+                                class="bg-purple-500/10 p-8 rounded-3xl border border-purple-500/20 shadow-inner text-justify text-justify text-left">
+                                <h4
+                                    class="font-bold text-purple-400 mb-4 text-xs uppercase tracking-widest text-center text-justify">
+                                    D Output Formula</h4>
                                 <div class="text-xl font-mono text-purple-600 text-center text-justify text-justify">
-                                   \[Output_d = K_d \times \frac{Error - Last\_Error}{\Delta t}\]
+                                    \[Output_d = K_d \times \frac{Error - Last\_Error}{\Delta t}\]
                                 </div>
-                                <ul class="grid grid-cols-1 gap-2 mt-6 text-[11px] text-slate-400 font-light text-justify text-left">
-                                    <li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1.5 text-justify"></span><div><strong class="text-white text-justify">抑制震盪</strong>：像避震器一樣讓系統平滑且安分地到達目標。</div></li>
-                                    <li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1.5 text-justify"></span><div><strong class="text-white text-justify text-justify text-left">預判阻尼</strong>：提前感應速度變化，防止機械結構因慣性受損。</div></li>
+                                <ul
+                                    class="grid grid-cols-1 gap-2 mt-6 text-[11px] text-slate-400 font-light text-justify text-left">
+                                    <li class="flex items-start gap-2 text-justify text-left text-justify"><span
+                                            class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1.5 text-justify"></span>
+                                        <div><strong class="text-white text-justify">抑制震盪</strong>：像避震器一樣讓系統平滑且安分地到達目標。
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-2 text-justify text-left text-justify"><span
+                                            class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1.5 text-justify"></span>
+                                        <div><strong
+                                                class="text-white text-justify text-justify text-left">預判阻尼</strong>：提前感應速度變化，防止機械結構因慣性受損。
+                                        </div>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="lg:w-80 bg-purple-600/10 p-10 rounded-3xl border border-purple-500/20 text-center relative overflow-hidden group text-justify">
-                           <div class="absolute -right-8 -top-8 w-32 h-32 bg-purple-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify"></div>
-                           <h4 class="text-purple-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center text-justify">Future Prediction Engine</h4>
-                           <div class="w-full h-32 bg-black/50 rounded-xl relative overflow-hidden border border-purple-500/20 flex items-center justify-center text-justify">
-                               <svg viewBox="0 0 100 60" class="w-full h-full p-4 text-justify">
-                                   <path d="M0,50 Q40,10 80,45 T100,50" fill="none" stroke="#a855f7" stroke-width="2" class="text-justify" />
-                                   <line x1="40" y1="10" x2="60" y2="10" stroke="#ef4444" stroke-width="2" stroke-dasharray="4" class="text-justify" />
-                                   <text x="50" y="8" fill="#ef4444" font-size="6" text-anchor="middle" class="text-justify">PREDICTION BRAKE</text>
-                               </svg>
-                           </div>
-                           <p class="text-[11px] text-slate-500 mt-6 leading-relaxed font-light italic text-center text-justify">
-                               "微分讓我們看見變動的趨勢，而非僅僅是數字。"
-                           </p>
+                        <div
+                            class="lg:w-80 bg-purple-600/10 p-10 rounded-3xl border border-purple-500/20 text-center relative overflow-hidden group text-justify">
+                            <div
+                                class="absolute -right-8 -top-8 w-32 h-32 bg-purple-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify">
+                            </div>
+                            <h4
+                                class="text-purple-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center text-justify">
+                                Future Prediction Engine</h4>
+                            <div
+                                class="w-full h-32 bg-black/50 rounded-xl relative overflow-hidden border border-purple-500/20 flex items-center justify-center text-justify">
+                                <svg viewBox="0 0 100 60" class="w-full h-full p-4 text-justify">
+                                    <path d="M0,50 Q40,10 80,45 T100,50" fill="none" stroke="#a855f7" stroke-width="2"
+                                        class="text-justify" />
+                                    <line x1="40" y1="10" x2="60" y2="10" stroke="#ef4444" stroke-width="2"
+                                        stroke-dasharray="4" class="text-justify" />
+                                    <text x="50" y="8" fill="#ef4444" font-size="6" text-anchor="middle"
+                                        class="text-justify">PREDICTION BRAKE</text>
+                                </svg>
+                            </div>
+                            <p
+                                class="text-[11px] text-slate-500 mt-6 leading-relaxed font-light italic text-center text-justify">
+                                "微分讓我們看見變動的趨勢，而非僅僅是數字。"
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -175,8 +221,10 @@
 
         <!-- Homework Section -->
         <section class="module-section text-justify">
-            <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-[Outfit] text-justify">控制實驗室：PID 調校馬拉松</h2>
-            <p class="text-center text-gray-500 mb-12 text-justify text-justify text-left">掌握數學直覺，從物理體感到參數最佳化，打造最穩定流暢的控制系統。透過 Git Workflow 建立具備「算法感知」能力的強健核心。</p>
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-[Outfit] text-justify">控制實驗室：PID 調校馬拉松
+            </h2>
+            <p class="text-center text-gray-500 mb-12 text-justify text-justify text-left">
+                掌握數學直覺，從物理體感到參數最佳化，打造最穩定流暢的控制系統。透過 Git Workflow 建立具備「算法感知」能力的強健核心。</p>
 
             <div class="grid md:grid-cols-3 gap-6 text-justify">
                 <!-- Task 12-1 -->
@@ -186,9 +234,13 @@
                     <div class="p-8 flex-grow text-justify text-justify">
                         <div class="flex justify-between items-start mb-4 text-justify text-left">
                             <span class="text-4xl text-blue-500 group-hover:scale-110 transition-transform">🤝</span>
-                            <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold uppercase font-black text-justify uppercase tracking-widest text-justify">45 min</span>
+                            <span
+                                class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold uppercase font-black text-justify uppercase tracking-widest text-justify">45
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-blue-600 transition text-justify uppercase tracking-tighter">【作業 12-1】</h3>
+                        <h3
+                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-blue-600 transition text-justify uppercase tracking-tighter">
+                            【作業 12-1】</h3>
                         <h4 class="font-medium text-gray-500 mb-4 text-justify">「人肉控制競賽」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-left text-justify">
                             與隊友扮演感測器與執行器，手動模擬 P、I、D。體會「修正過頭」與「遲緩累積」的物理體感，撰寫控制決策報告。
@@ -202,10 +254,15 @@
                     <div class="bg-emerald-500 h-2"></div>
                     <div class="p-8 flex-grow text-justify text-justify">
                         <div class="flex justify-between items-start mb-4 text-justify">
-                            <span class="text-4xl text-emerald-500 group-hover:rotate-12 transition-transform text-justify">⚙️</span>
-                            <span class="bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded font-bold uppercase font-black text-justify uppercase tracking-widest text-justify">75 min</span>
+                            <span
+                                class="text-4xl text-emerald-500 group-hover:rotate-12 transition-transform text-justify">⚙️</span>
+                            <span
+                                class="bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded font-bold uppercase font-black text-justify uppercase tracking-widest text-justify">75
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-emerald-600 transition text-justify uppercase tracking-tighter">【作業 12-2】</h3>
+                        <h3
+                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-emerald-600 transition text-justify uppercase tracking-tighter">
+                            【作業 12-2】</h3>
                         <h4 class="font-medium text-gray-500 mb-4 text-justify">「波形最佳化挑戰」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-left text-justify">
                             實作離散 PID 公式並動態調校。目標：讓系統在階躍訊號下能以最快速度收斂至目標且無明顯 Overshoot，Push 波形報告至 repo。
@@ -219,10 +276,15 @@
                     <div class="bg-purple-500 h-2"></div>
                     <div class="p-8 flex-grow text-justify text-justify">
                         <div class="flex justify-between items-start mb-4 text-justify text-left">
-                            <span class="text-4xl text-purple-500 group-hover:translate-x-1 transition-transform">🌩️</span>
-                            <span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold uppercase font-black text-justify uppercase tracking-widest text-justify">45 min</span>
+                            <span
+                                class="text-4xl text-purple-500 group-hover:translate-x-1 transition-transform">🌩️</span>
+                            <span
+                                class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold uppercase font-black text-justify uppercase tracking-widest text-justify">45
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-purple-600 transition text-justify uppercase tracking-tighter text-justify">【作業 12-3】</h3>
+                        <h3
+                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-purple-600 transition text-justify uppercase tracking-tighter text-justify">
+                            【作業 12-3】</h3>
                         <h4 class="font-medium text-gray-500 mb-4 text-justify">「抗干擾壓力測試」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-left text-justify">
                             在反饋中注入隨機雜訊，觀察 D 項對不穩定性的放大效應。並在 README 中提出與實作簡單的數位濾波解決方案。
@@ -259,7 +321,7 @@
             <div class="quest-workflow">
                 <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
                 <ol>
-                    <li><strong>建立倉庫</strong>：從 GitHub Classroom 連結建立個人作業倉庫並 Clone 到本地。</li>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
                     <li><strong>行為建模</strong>：手動模擬「只看距離 (P)」、「累積推力 (I)」與「預判減速 (D)」的決策過程。</li>
                     <li><strong>數據對比</strong>：記錄不同策略下，到達目標的時間與穩定度差異。</li>
                     <li><strong>Push Final</strong>：提交具備「物理直覺」的控制邏輯分析筆記。</li>
@@ -267,7 +329,8 @@
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>物理意涵理解</strong>：能否在 README 正確說明 P/I/D 各自在控制鏈中的角色？</li>
                     <li>[ ] <strong>實驗嚴效性</strong>：記錄的數據是否能具體支撐「單純 P 會導致靜態誤差」的理論點？</li>
@@ -282,7 +345,8 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-tighter font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-tighter font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
                     <li><strong>公式實作</strong>：在代碼中完成離散 PID 核心算法。</li>
                     <li><strong>階躍響應</strong>：設定目標突變，使用 Serial Plotter 觀測過衝與收斂時間。</li>
@@ -292,7 +356,8 @@
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>響應品質</strong>：波形是否能在極短時間收斂？Overshoot 是否在 10% 內？</li>
                     <li>[ ] <strong>代碼穩健性</strong>：是否處理了積分飽和 (Windup) 或微分跳火的極端情況？</li>
@@ -307,7 +372,8 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
                     <li><strong>雜訊干擾</strong>：在輸入端注入模擬雜訊，觀察 D 項對高頻干擾的反應。</li>
                     <li><strong>濾波重構</strong>：嘗試在計算微分前，對誤差值進行簡單的平均濾波。</li>
@@ -317,7 +383,8 @@
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>雜訊分析力</strong>：能否說明 \(K_d\) 為何對高頻雜訊如此敏感？</li>
                     <li>[ ] <strong>濾波實作正確性</strong>：所選用的濾波策略是否有效減少了輸出抖動且不引入過大延遲？</li>

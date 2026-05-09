@@ -22,16 +22,15 @@
         <div class="absolute inset-0 bg-gradient-to-t from-gray-50 to-transparent bottom-0 h-16"></div>
 
         <div class="container mx-auto px-4 relative z-10 text-center">
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit]">MTU 與分段傳輸<br><span class="text-3xl md:text-4xl opacity-90">破除傳輸邊界</span>
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit]">MTU
+                與分段傳輸<br><span class="text-3xl md:text-4xl opacity-90">破除傳輸邊界</span>
             </h1>
             <div class="mt-8 flex flex-wrap justify-center gap-4">
-                <button
-                    onclick="enterMediaMode('video', window.RESOURCES.video)"
+                <button onclick="enterMediaMode('video', window.RESOURCES.video)"
                     class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
                     <span>📺</span> 觀看教學影片
                 </button>
-                <button
-                    onclick="enterMediaMode('doc', window.RESOURCES.doc)"
+                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
                     class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
                     <span>📄</span> 閱讀課程講義
                 </button>
@@ -188,7 +187,7 @@
                             <ul class="space-y-2 text-slate-300">
                                 <li class="flex items-center gap-2">
                                     <span class="text-blue-500 font-bold">Step 1.</span>
-                                    <span>接受 GitHub Classroom 邀請，複製 (Clone) 專屬任務倉庫。</span>
+                                    <span>接受 GitHub Classroom 邀請，複製 (Clone) 專屬任務程式庫。</span>
                                 </li>
                                 <li class="flex items-center gap-2">
                                     <span class="text-blue-500 font-bold">Step 2.</span>
@@ -272,17 +271,20 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
-                    <li><strong>建立倉庫</strong>：從 GitHub Classroom 連結建立個人作業倉庫並 Clone 到本地。</li>
-                    <li><strong>實作分段</strong>：撰寫 <code>fragmentData(text, size)</code> 函式，將長 JSON 字串依據 MTU 限制（如 20 Bytes）進行切分。</li>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>實作分段</strong>：撰寫 <code>fragmentData(text, size)</code> 函式，將長 JSON 字串依據 MTU 限制（如 20
+                        Bytes）進行切分。</li>
                     <li><strong>邊界驗證</strong>：測試當字串長度非倍數時，最後一個片段是否被正確發送。</li>
                     <li><strong>Push Final</strong>：提交具備「手動分段能力」且能穩定發送長數據的通訊專案。</li>
                 </ol>
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>片段完整性</strong>：最後一個片段是否被遺漏或截斷？</li>
                     <li>[ ] <strong>時序穩定性</strong>：片段間是否加入了適當延遲以防止發送端 Buffer 溢位？</li>
@@ -297,7 +299,8 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
                     <li><strong>緩衝機制</strong>：在接收端建立臨時累加 Buffer，持續接收並存儲零散片段。</li>
                     <li><strong>終止符偵測</strong>：實作對 <code>\n</code> 或自定義結束符號的自動掃描。</li>
@@ -307,7 +310,8 @@
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>魯棒性測試</strong>：當接收到不完整 JSON 時，代碼是否能有效捕獲錯誤而非導致程式鎖死？</li>
                     <li>[ ] <strong>內存管理</strong>：Buffer 是否在每次成功解析後正確清空，避免數據疊加污染？</li>
@@ -322,7 +326,8 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
                     <li><strong>權限提升</strong>：嘗試在連線後調用 <code>requestMTU(247)</code> 並紀錄系統響應。</li>
                     <li><strong>效率對比</strong>：紀錄並對比「多小包」與「單一大包」在同一段長數據下的傳輸總耗時。</li>
@@ -332,7 +337,8 @@
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>實驗嚴謹度</strong>：報告中是否針對多次實驗結果取平均值，並標註測試環境？</li>
                     <li>[ ] <strong>理論理解</strong>：能否原理解釋為何增加 MTU 能降低傳輸負擔 (Protocol Overhead)？</li>
@@ -342,7 +348,7 @@
     </section>
 
 
-                <script src="/js/course-shared.js?v=2026.04.09.V19.STABLE"></script>
+    <script src="/js/course-shared.js?v=2026.04.09.V19.STABLE"></script>
 </body>
 
 </html>

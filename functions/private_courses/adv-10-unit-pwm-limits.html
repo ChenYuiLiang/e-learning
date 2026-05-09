@@ -28,21 +28,20 @@
                 class="badge-header inline-block py-1.5 px-4 rounded-full bg-white/10 border border-white/20 text-white/90 text-sm font-medium mb-6 tracking-wide uppercase backdrop-blur-sm font-[Outfit]">
                 進階 10 - 單元 3
             </span>
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit] text-center">限制與飽和：<br><span class="text-blue-400">PWM 的物理極限</span>
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit] text-center">
+                限制與飽和：<br><span class="text-blue-400">PWM 的物理極限</span>
             </h1>
             <p class="text-xl md:text-2xl text-blue-100 max-w-2xl mx-auto font-light leading-relaxed text-center">
                 當數學計算遇上物理極限，如何保持幾何軌跡的完美？探索飽和處理與死區補償。
             </p>
 
             <div class="mt-8 flex flex-wrap justify-center gap-4 text-center">
-                <button
-                    onclick="enterMediaMode('video', window.RESOURCES.video)"
+                <button onclick="enterMediaMode('video', window.RESOURCES.video)"
                     class="group flex items-center gap-3 bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full font-bold shadow-xl transition-all duration-300 hover:scale-105">
                     <span class="text-xl group-hover:animate-pulse">📺</span>
                     <span>觀看教學影片</span>
                 </button>
-                <button
-                    onclick="enterMediaMode('doc', window.RESOURCES.doc)"
+                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
                     class="group flex items-center gap-3 bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-full font-bold shadow-xl transition-all duration-300 hover:scale-105">
                     <span class="text-xl">📄</span>
                     <span>閱讀課程講義</span>
@@ -68,24 +67,39 @@
                                 物理世界是有天花板的。ESP32 的 8-bit PWM 上限是 255；當幾何公式計算出「需要 300 電力」時，直接裁剪（Clipping）會破壞左右輪的速度比例。
                             </p>
                             <div class="bg-red-50 p-6 rounded-2xl border border-red-100">
-                                <h4 class="font-bold text-red-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">System Bottleneck</h4>
+                                <h4
+                                    class="font-bold text-red-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
+                                    System Bottleneck</h4>
                                 <ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify text-justify">
-                                    <li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1 text-justify"></span> <div><strong>比例失衡</strong>：原本 2:1 的速度比，因為一方飽和而變回 1.7:1，導致轉彎半徑偏離。</div></li>
-                                    <li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1 text-justify"></span> <div><strong>指令溢位</strong>：未妥善處理的 0-255 映射會導致馬達驅動異常。</div></li>
+                                    <li class="flex items-start gap-2 text-justify text-left text-justify"><span
+                                            class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1 text-justify"></span>
+                                        <div><strong>比例失衡</strong>：原本 2:1 的速度比，因為一方飽和而變回 1.7:1，導致轉彎半徑偏離。</div>
+                                    </li>
+                                    <li class="flex items-start gap-2 text-justify text-left text-justify"><span
+                                            class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1 text-justify"></span>
+                                        <div><strong>指令溢位</strong>：未妥善處理的 0-255 映射會導致馬達驅動異常。</div>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-                           <div class="absolute inset-0 bg-red-500/5 group-hover:bg-red-500/10 transition-colors"></div>
-                           <h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-justify">Clipping vs. Scaling</h4>
-                           <div class="relative z-10 flex flex-col items-center gap-2 text-justify">
-                               <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                                   <div class="bg-red-500 h-full w-[120%] -translate-x-4 animate-pulse"></div>
-                               </div>
-                               <span class="text-[8px] text-red-400 font-mono tracking-tighter uppercase">Signal Overflow detected</span>
-                           </div>
-                           <p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic text-center">Differential Fidelity Loss</p>
+                        <div
+                            class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
+                            <div class="absolute inset-0 bg-red-500/5 group-hover:bg-red-500/10 transition-colors">
+                            </div>
+                            <h4
+                                class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-justify">
+                                Clipping vs. Scaling</h4>
+                            <div class="relative z-10 flex flex-col items-center gap-2 text-justify">
+                                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                                    <div class="bg-red-500 h-full w-[120%] -translate-x-4 animate-pulse"></div>
+                                </div>
+                                <span class="text-[8px] text-red-400 font-mono tracking-tighter uppercase">Signal
+                                    Overflow detected</span>
+                            </div>
+                            <p
+                                class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic text-center">
+                                Differential Fidelity Loss</p>
                         </div>
                     </div>
                 </div>
@@ -105,24 +119,33 @@
                             <p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
                                 並非 PWM > 1 馬達就會轉。受限於靜摩擦力，馬達在低速區間僅會發出嗡嗡聲。理解「有效作業區間」是實作絲滑緩啟動的關鍵。
                             </p>
-                            <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100 text-center text-justify text-left text-justify">
-                                <h4 class="text-slate-900 font-bold mb-4 text-xs uppercase tracking-widest text-left text-justify">Operating Range</h4>
+                            <div
+                                class="bg-slate-50 p-8 rounded-3xl border border-slate-100 text-center text-justify text-left text-justify">
+                                <h4
+                                    class="text-slate-900 font-bold mb-4 text-xs uppercase tracking-widest text-left text-justify">
+                                    Operating Range</h4>
                                 <div class="flex items-center gap-2 text-[10px] text-slate-600 font-mono text-justify">
                                     <div class="p-2 bg-red-100 rounded text-red-700 text-justify">0-40 (Dead)</div>
                                     <span class="text-justify">➔</span>
-                                    <div class="p-2 bg-emerald-100 rounded text-emerald-700 text-justify">41-255 (Linear)</div>
+                                    <div class="p-2 bg-emerald-100 rounded text-emerald-700 text-justify">41-255
+                                        (Linear)</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-                           <div class="absolute inset-0 bg-slate-500/5 text-justify"></div>
-                           <h4 class="text-slate-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-justify">Linearization Map</h4>
-                           <div class="text-[9px] font-mono text-slate-500 space-y-1 text-justify text-justify">
-                               <div>$PWM_{out} = \text{map}(X, 0, 255, 40, 255)$</div>
-                               <div class="text-emerald-500">// Offset compensation applied</div>
-                           </div>
-                           <p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic text-center">Torque-Voltage Bridge</p>
+                        <div
+                            class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
+                            <div class="absolute inset-0 bg-slate-500/5 text-justify"></div>
+                            <h4
+                                class="text-slate-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-justify">
+                                Linearization Map</h4>
+                            <div class="text-[9px] font-mono text-slate-500 space-y-1 text-justify text-justify">
+                                <div>$PWM_{out} = \text{map}(X, 0, 255, 40, 255)$</div>
+                                <div class="text-emerald-500">// Offset compensation applied</div>
+                            </div>
+                            <p
+                                class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic text-center">
+                                Torque-Voltage Bridge</p>
                         </div>
                     </div>
                 </div>
@@ -131,31 +154,52 @@
 
         <!-- Module 3: Scaling Algorithm -->
         <section class="module-section mb-16 text-justify">
-            <div class="glass-card bg-slate-900 rounded-3xl shadow-xl overflow-hidden text-white border border-slate-700 text-justify">
+            <div
+                class="glass-card bg-slate-900 rounded-3xl shadow-xl overflow-hidden text-white border border-slate-700 text-justify">
                 <div class="p-8 md:p-14">
                     <h2 class="text-3xl font-bold mb-8 flex items-center gap-3 text-blue-400">
-                        <span class="p-2 bg-blue-500/20 rounded-lg text-blue-400 text-2xl text-left text-justify">⚖️</span> 3. 等比例縮放演算法
+                        <span
+                            class="p-2 bg-blue-500/20 rounded-lg text-blue-400 text-2xl text-left text-justify">⚖️</span>
+                        3. 等比例縮放演算法
                     </h2>
                     <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
                         <div class="flex-1 space-y-6 text-justify">
                             <p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
-                                當最大輪需求超過 255，我們使用「縮放（Scaling）」而非「裁剪（Clipping）」。計算縮放係數 $Factor = 255 / \max(L, R)$，確保運動幾何關係不變。
+                                當最大輪需求超過 255，我們使用「縮放（Scaling）」而非「裁剪（Clipping）」。計算縮放係數 $Factor = 255 / \max(L,
+                                R)$，確保運動幾何關係不變。
                             </p>
-                            <div class="bg-blue-500/10 p-8 rounded-3xl border border-blue-500/20 shadow-inner text-justify text-justify">
-                                <h4 class="font-bold text-blue-400 mb-4 text-xs uppercase tracking-widest text-center text-justify text-left">Geometric Scaling</h4>
-                                <ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify text-justify">
-                                    <li class="flex items-start gap-2 text-justify text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span><div><strong class="text-white text-justify">維繫比例</strong>：即使速度變慢，轉彎半徑依然維持理論預期。</div></li>
-                                    <li class="flex items-start gap-2 text-justify text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify text-justify"></span><div><strong class="text-white text-justify">平滑過渡</strong>：防止在高負擔動作下車體發生劇烈抖動或打滑。</div></li>
+                            <div
+                                class="bg-blue-500/10 p-8 rounded-3xl border border-blue-500/20 shadow-inner text-justify text-justify">
+                                <h4
+                                    class="font-bold text-blue-400 mb-4 text-xs uppercase tracking-widest text-center text-justify text-left">
+                                    Geometric Scaling</h4>
+                                <ul
+                                    class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify text-justify">
+                                    <li class="flex items-start gap-2 text-justify text-justify"><span
+                                            class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span>
+                                        <div><strong class="text-white text-justify">維繫比例</strong>：即使速度變慢，轉彎半徑依然維持理論預期。
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-2 text-justify text-justify"><span
+                                            class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify text-justify"></span>
+                                        <div><strong class="text-white text-justify">平滑過渡</strong>：防止在高負擔動作下車體發生劇烈抖動或打滑。
+                                        </div>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="lg:w-80 bg-blue-600/10 p-10 rounded-3xl border border-blue-500/20 text-center relative overflow-hidden group">
-                           <div class="absolute -right-8 -top-8 w-32 h-32 bg-blue-500/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
-                           <h4 class="text-blue-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">Fidelity Shield</h4>
-                           <div class="text-4xl font-extrabold text-white mb-2">1:1 Ratio</div>
-                           <p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center text-justify text-left">
-                               "物理極限是限制，但縮放讓幾何依然自由。"
-                           </p>
+                        <div
+                            class="lg:w-80 bg-blue-600/10 p-10 rounded-3xl border border-blue-500/20 text-center relative overflow-hidden group">
+                            <div
+                                class="absolute -right-8 -top-8 w-32 h-32 bg-blue-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
+                            </div>
+                            <h4 class="text-blue-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">
+                                Fidelity Shield</h4>
+                            <div class="text-4xl font-extrabold text-white mb-2">1:1 Ratio</div>
+                            <p
+                                class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center text-justify text-left">
+                                "物理極限是限制，但縮放讓幾何依然自由。"
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -175,9 +219,13 @@
                     <div class="p-8 flex-grow text-justify text-justify">
                         <div class="flex justify-between items-start mb-4 text-justify">
                             <span class="text-4xl text-red-500 group-hover:scale-110 transition-transform">💥</span>
-                            <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded font-bold text-justify uppercase font-black uppercase tracking-widest">60 min</span>
+                            <span
+                                class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded font-bold text-justify uppercase font-black uppercase tracking-widest">60
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-red-600 transition text-justify uppercase tracking-tighter">【作業 3-1】</h3>
+                        <h3
+                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-red-600 transition text-justify uppercase tracking-tighter">
+                            【作業 3-1】</h3>
                         <h4 class="font-medium text-gray-500 mb-4 text-justify">「飽和失控器」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-left text-justify">
                             故意給予超出 255 的指令。使用 <code>constrain()</code> 裁剪並觀察軌跡變形。記錄幾何中心偏離理論圓周的路徑誤差。
@@ -192,9 +240,13 @@
                     <div class="p-8 flex-grow text-justify">
                         <div class="flex justify-between items-start mb-4 text-justify text-left text-justify">
                             <span class="text-4xl text-blue-500 group-hover:rotate-12 transition-transform">🛡️</span>
-                            <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold text-justify uppercase font-black uppercase tracking-widest text-justify">60 min</span>
+                            <span
+                                class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold text-justify uppercase font-black uppercase tracking-widest text-justify">60
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-blue-600 transition text-justify uppercase tracking-tighter">【作業 3-2】</h3>
+                        <h3
+                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-blue-600 transition text-justify uppercase tracking-tighter">
+                            【作業 3-2】</h3>
                         <h4 class="font-medium text-gray-500 mb-4 text-justify">「比例保衛員」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-left text-justify">
                             撰寫 <code>normalizePWM()</code>。若任一輪需求大於 255，則同步按比例下拉。驗證在飽和狀態下，轉向半徑是否仍趨近理論預期。
@@ -208,13 +260,19 @@
                     <div class="bg-purple-500 h-2"></div>
                     <div class="p-8 flex-grow text-justify">
                         <div class="flex justify-between items-start mb-4 text-justify text-left text-justify">
-                            <span class="text-4xl text-purple-500 group-hover:translate-x-1 transition-transform text-justify text-left text-justify text-justify text-left text-justify">💊</span>
-                            <span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold text-justify uppercase font-black uppercase tracking-widest">45 min</span>
+                            <span
+                                class="text-4xl text-purple-500 group-hover:translate-x-1 transition-transform text-justify text-left text-justify text-justify text-left text-justify">💊</span>
+                            <span
+                                class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold text-justify uppercase font-black uppercase tracking-widest">45
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-purple-600 transition text-justify uppercase tracking-tighter text-justify">【作業 3-3】</h3>
+                        <h3
+                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-purple-600 transition text-justify uppercase tracking-tighter text-justify">
+                            【作業 3-3】</h3>
                         <h4 class="font-medium text-gray-500 mb-4 text-justify">「平滑補償器」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-left text-justify">
-                            測量馬達 $PWM_{min}$。使用 <code>map()</code> 映射 0-255 至 $PWM_{min}$ 到 255。測試極低速（如 PWM=50）行駛的平順度與轉向精度。
+                            測量馬達 $PWM_{min}$。使用 <code>map()</code> 映射 0-255 至 $PWM_{min}$ 到 255。測試極低速（如
+                            PWM=50）行駛的平順度與轉向精度。
                         </p>
                     </div>
                 </div>
@@ -248,7 +306,7 @@
             <div class="quest-workflow">
                 <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
                 <ol>
-                    <li><strong>建立倉庫</strong>：從 GitHub Classroom 連結建立個人作業倉庫並 Clone 到本地。</li>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
                     <li><strong>極限指令</strong>：在代碼中輸入不合理參數（例如超量 $V$ 與小轉向 $R$）。</li>
                     <li><strong>軌跡記錄</strong>：使用 `constrain()` 處理輸出，錄製一段影片展示軌跡如何從「圓弧」變成「奇怪的拋物線」。</li>
                     <li><strong>README 紀錄</strong>：解釋為何單純裁剪會破壞左右輪的速度比例。</li>
@@ -256,7 +314,8 @@
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>現象觀察</strong>：是否能在 README 清楚描述比例失衡導致的物理軌跡偏差？</li>
                     <li>[ ] <strong>邏輯嚴謹度</strong>：是否正確指出 clipping 與 scaling 的視覺差異？</li>
@@ -280,7 +339,8 @@
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>代碼健壯性</strong>：縮放邏輯是否處理了分母為零或 $Factor > 1$ 的例外？</li>
                     <li>[ ] <strong>實測一致性</strong>：修正後的圓周半徑是否與理論值保持 95% 以上重合？</li>
@@ -305,7 +365,8 @@
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>控制平滑度</strong>：馬達在極低速下是否依然保有穩定的轉動？</li>
                     <li>[ ] <strong>工程細節</strong>：是否針對左右馬達的不同死區分別進行了補償校準？</li>

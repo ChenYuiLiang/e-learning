@@ -28,7 +28,8 @@
                 class="badge-header inline-block py-1.5 px-4 rounded-full bg-white/10 border border-white/20 text-white/90 text-sm font-medium mb-6 tracking-wide uppercase backdrop-blur-sm font-[Outfit]">
                 進階 13 - 系統健壯性
             </span>
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit] text-center">軟體健壯性<br><span class="text-blue-400">與錯誤處理</span>
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit] text-center">
+                軟體健壯性<br><span class="text-blue-400">與錯誤處理</span>
             </h1>
             <p class="text-xl md:text-2xl text-blue-100 max-w-2xl mx-auto font-light leading-relaxed text-center">
                 打造牢不可破的防禦鏈：從防禦性編程到自動跳閘機制，為一切意外做好準備。
@@ -58,7 +59,8 @@
                 <div class="p-1 bg-gradient-to-r from-blue-500 to-indigo-500 text-justify"></div>
                 <div class="p-8 md:p-14 text-justify">
                     <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center gap-3 text-justify text-justify">
-                        <span class="text-4xl text-blue-500 text-justify text-left text-justify">🛡️</span> 1. 防禦性編程 (Defensive Programming)
+                        <span class="text-4xl text-blue-500 text-justify text-left text-justify">🛡️</span> 1. 防禦性編程
+                        (Defensive Programming)
                     </h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
                         <div class="space-y-6 text-justify">
@@ -66,24 +68,49 @@
                                 永遠假設外部輸入是不可信的。在執行核心硬體指令前，必須進行嚴格的「邊界檢查」與「格式驗證」，防止系統因單一錯誤封包而癱瘓。
                             </p>
                             <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-justify">
-                                <h4 class="font-bold text-blue-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed text-center text-justify">Safety Patterns</h4>
+                                <h4
+                                    class="font-bold text-blue-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed text-center text-justify">
+                                    Safety Patterns</h4>
                                 <ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify text-justify">
-                                    <li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span> <div><strong class="text-justify text-left">輸入驗證 (Input Validation)</strong>：檢查數值是否在合法硬體區間 (如 PWM 0-255)。</div></li>
-                                    <li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span> <div><strong class="text-justify">數值鉗位 (Clamping)</strong>：強制將溢位值拉回安全邊界，防止馬達反轉。</div></li>
-                                    <li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify text-left"></span> <div><strong class="text-justify">故障隔離 (Sandboxing)</strong>：確保通訊模組的錯誤不應導致主控制迴圈鎖死。</div></li>
+                                    <li class="flex items-start gap-2 text-justify text-left text-justify"><span
+                                            class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span>
+                                        <div><strong class="text-justify text-left">輸入驗證 (Input
+                                                Validation)</strong>：檢查數值是否在合法硬體區間 (如 PWM 0-255)。</div>
+                                    </li>
+                                    <li class="flex items-start gap-2 text-justify text-left text-justify"><span
+                                            class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span>
+                                        <div><strong class="text-justify">數值鉗位 (Clamping)</strong>：強制將溢位值拉回安全邊界，防止馬達反轉。
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-2 text-justify text-left text-justify"><span
+                                            class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify text-left"></span>
+                                        <div><strong class="text-justify">故障隔離
+                                                (Sandboxing)</strong>：確保通訊模組的錯誤不應導致主控制迴圈鎖死。</div>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-                           <div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors text-justify"></div>
-                           <h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-center text-justify">Runtime Guard Logic</h4>
-                           <div class="relative z-10 space-y-4 text-justify">
-                               <div class="text-[9px] font-mono p-2 bg-red-900/20 border border-red-500/30 rounded italic text-red-300 text-justify text-left text-justify">ILLEGAL_INPUT: "999,999" (Corruption)</div>
-                               <div class="text-blue-500 text-xl font-bold text-justify">⬇️ SHIELD ⬇️</div>
-                               <div class="text-[9px] font-mono p-2 bg-emerald-900/20 border border-emerald-500/30 rounded text-emerald-300 font-bold tracking-widest text-justify text-left text-justify">CLAMPED_RESULT: 255 (Safe)</div>
-                           </div>
-                           <p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest text-center text-justify">DATA RECOVERY FILTERING ACTIVE</p>
+                        <div
+                            class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
+                            <div
+                                class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors text-justify">
+                            </div>
+                            <h4
+                                class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-center text-justify">
+                                Runtime Guard Logic</h4>
+                            <div class="relative z-10 space-y-4 text-justify">
+                                <div
+                                    class="text-[9px] font-mono p-2 bg-red-900/20 border border-red-500/30 rounded italic text-red-300 text-justify text-left text-justify">
+                                    ILLEGAL_INPUT: "999,999" (Corruption)</div>
+                                <div class="text-blue-500 text-xl font-bold text-justify">⬇️ SHIELD ⬇️</div>
+                                <div
+                                    class="text-[9px] font-mono p-2 bg-emerald-900/20 border border-emerald-500/30 rounded text-emerald-300 font-bold tracking-widest text-justify text-left text-justify">
+                                    CLAMPED_RESULT: 255 (Safe)</div>
+                            </div>
+                            <p
+                                class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest text-center text-justify">
+                                DATA RECOVERY FILTERING ACTIVE</p>
                         </div>
                     </div>
                 </div>
@@ -92,11 +119,14 @@
 
         <!-- Module 2: Fail-safe & Heartbeat -->
         <section class="module-section mb-16 text-justify text-justify">
-            <div class="glass-card bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 text-justify text-justify">
+            <div
+                class="glass-card bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 text-justify text-justify">
                 <div class="p-1 bg-gradient-to-r from-red-500 to-pink-500 text-justify text-justify"></div>
                 <div class="p-8 md:p-14 text-justify">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center gap-3 text-justify text-justify text-justify">
-                        <span class="text-4xl text-red-500 text-justify text-left text-justify">💓</span> 2. 心跳機制與自動煞車 (Fail-safe)
+                    <h2
+                        class="text-3xl font-bold text-gray-900 mb-8 flex items-center gap-3 text-justify text-justify text-justify">
+                        <span class="text-4xl text-red-500 text-justify text-left text-justify">💓</span> 2. 心跳機制與自動煞車
+                        (Fail-safe)
                     </h2>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
                         <div class="space-y-8 text-justify">
@@ -104,23 +134,34 @@
                                 若無線連線不幸中斷，車子必須在「一秒內」自動停止。這就是 Fail-safe：讓系統在失敗時，自動進入預定義的最安全狀態（通常是切斷馬達電力）。
                             </p>
                             <div class="bg-red-50 p-8 rounded-3xl border border-red-100 text-justify">
-                                <h4 class="text-red-900 font-bold mb-4 text-xs uppercase tracking-widest text-center text-justify text-justify">Watchdog Timer Logic</h4>
+                                <h4
+                                    class="text-red-900 font-bold mb-4 text-xs uppercase tracking-widest text-center text-justify text-justify">
+                                    Watchdog Timer Logic</h4>
                                 <div class="text-xl font-mono text-red-600 text-center text-justify text-justify">
-                                   \[if (millis() - last_heartbeat > 1500ms)\]
+                                    \[if (millis() - last_heartbeat > 1500ms)\]
                                 </div>
-                                <p class="text-[10px] text-slate-400 mt-4 italic font-light text-center text-justify text-justify text-justify">執行 stopMotors() 煞車指令：為軟體異常加上物理保險絲</p>
+                                <p
+                                    class="text-[10px] text-slate-400 mt-4 italic font-light text-center text-justify text-justify text-justify">
+                                    執行 stopMotors() 煞車指令：為軟體異常加上物理保險絲</p>
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-                           <div class="absolute inset-0 bg-red-500/5 text-justify"></div>
-                           <h4 class="text-red-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-center text-justify">Connection Heartbeat</h4>
-                           <div class="flex items-center gap-4 relative z-10 text-justify">
+                        <div
+                            class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
+                            <div class="absolute inset-0 bg-red-500/5 text-justify"></div>
+                            <h4
+                                class="text-red-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-center text-justify">
+                                Connection Heartbeat</h4>
+                            <div class="flex items-center gap-4 relative z-10 text-justify">
                                 <div class="w-3 h-3 bg-red-500 rounded-full animate-ping text-justify"></div>
-                                <div class="text-xs text-red-400 font-bold uppercase tracking-tighter text-justify">LINK INTERRUPTED</div>
-                                <div class="px-3 py-1 bg-white text-black text-[8px] font-bold rounded text-justify">AUTO-BRAKE</div>
-                           </div>
-                           <p class="text-[9px] text-slate-600 mt-8 font-mono tracking-widest uppercase text-center text-justify">SAFETY TRIP SYSTEM ENGAGED</p>
+                                <div class="text-xs text-red-400 font-bold uppercase tracking-tighter text-justify">LINK
+                                    INTERRUPTED</div>
+                                <div class="px-3 py-1 bg-white text-black text-[8px] font-bold rounded text-justify">
+                                    AUTO-BRAKE</div>
+                            </div>
+                            <p
+                                class="text-[9px] text-slate-600 mt-8 font-mono tracking-widest uppercase text-center text-justify">
+                                SAFETY TRIP SYSTEM ENGAGED</p>
                         </div>
                     </div>
                 </div>
@@ -129,34 +170,64 @@
 
         <!-- Module 3: Error Reporting -->
         <section class="module-section mb-16 text-justify">
-            <div class="glass-card bg-slate-900 rounded-3xl shadow-2xl overflow-hidden text-white border border-slate-700 text-justify">
+            <div
+                class="glass-card bg-slate-900 rounded-3xl shadow-2xl overflow-hidden text-white border border-slate-700 text-justify">
                 <div class="p-8 md:p-14 text-justify">
-                    <h2 class="text-3xl font-bold mb-8 flex items-center gap-3 text-orange-400 text-justify text-justify text-justify">
-                        <span class="p-2 bg-orange-500/20 rounded-lg text-orange-400 text-2xl text-justify text-left">⚠️</span> 3. 異常狀態回報介面 (UX/DX)
+                    <h2
+                        class="text-3xl font-bold mb-8 flex items-center gap-3 text-orange-400 text-justify text-justify text-justify">
+                        <span
+                            class="p-2 bg-orange-500/20 rounded-lg text-orange-400 text-2xl text-justify text-left">⚠️</span>
+                        3. 異常狀態回報介面 (UX/DX)
                     </h2>
                     <div class="flex flex-col lg:flex-row gap-16 items-center text-justify text-justify">
                         <div class="flex-1 space-y-6 text-justify">
                             <p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
                                 一個優秀的工業系統不應在出錯時保持「沈默」。UI 必須能讓操作者即時區分是通訊不良、電力負載過重還是內部組件失效。
                             </p>
-                            <div class="bg-orange-500/10 p-8 rounded-3xl border border-orange-500/20 shadow-inner text-justify text-justify">
-                                <h4 class="font-bold text-orange-400 mb-4 text-xs uppercase tracking-widest text-center text-justify text-left">Diagnostic UI Layers</h4>
-                                <ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify text-justify">
-                                    <li class="flex items-start gap-2 text-justify text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-orange-500 rounded-full mt-1 text-justify"></span><div><strong class="text-white text-justify">延遲度量 (Latency)</strong>：當連線延遲過高時變更配色，給予操作者視覺預警。</div></li>
-                                    <li class="flex items-start gap-2 text-justify text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-orange-500 rounded-full mt-1 text-justify"></span><div><strong class="text-white text-justify text-justify">標準錯誤代碼</strong>：定義 E01 (通訊)、E02 (超載) 等異常類別機制。</div></li>
-                                    <li class="flex items-start gap-2 text-justify text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-orange-500 rounded-full mt-1 text-justify"></span><div><strong class="text-white text-justify">故障日誌紀錄</strong>：在本地端緩存最近 10 次的異常事件，協助遠端除錯。</div></li>
+                            <div
+                                class="bg-orange-500/10 p-8 rounded-3xl border border-orange-500/20 shadow-inner text-justify text-justify">
+                                <h4
+                                    class="font-bold text-orange-400 mb-4 text-xs uppercase tracking-widest text-center text-justify text-left">
+                                    Diagnostic UI Layers</h4>
+                                <ul
+                                    class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify text-justify">
+                                    <li class="flex items-start gap-2 text-justify text-justify text-left text-justify">
+                                        <span class="w-1.5 h-1.5 bg-orange-500 rounded-full mt-1 text-justify"></span>
+                                        <div><strong class="text-white text-justify">延遲度量
+                                                (Latency)</strong>：當連線延遲過高時變更配色，給予操作者視覺預警。</div>
+                                    </li>
+                                    <li class="flex items-start gap-2 text-justify text-justify text-left text-justify">
+                                        <span class="w-1.5 h-1.5 bg-orange-500 rounded-full mt-1 text-justify"></span>
+                                        <div><strong class="text-white text-justify text-justify">標準錯誤代碼</strong>：定義 E01
+                                            (通訊)、E02 (超載) 等異常類別機制。</div>
+                                    </li>
+                                    <li class="flex items-start gap-2 text-justify text-justify text-left text-justify">
+                                        <span class="w-1.5 h-1.5 bg-orange-500 rounded-full mt-1 text-justify"></span>
+                                        <div><strong class="text-white text-justify">故障日誌紀錄</strong>：在本地端緩存最近 10
+                                            次的異常事件，協助遠端除錯。</div>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="lg:w-80 bg-orange-600/10 p-10 rounded-3xl border border-orange-500/20 text-center relative overflow-hidden group text-justify">
-                           <div class="absolute -right-8 -top-8 w-32 h-32 bg-orange-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify"></div>
-                           <h4 class="text-orange-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center text-justify">Diagnostic Console</h4>
-                           <div class="w-full bg-slate-800 rounded-xl p-4 text-left font-mono text-justify">
-                               <div class="text-[8px] text-orange-400 mb-1 text-justify text-left text-justify">RSSI: -85dBm (POOR SIGNAL)</div>
-                               <div class="text-[8px] text-red-500 mb-1 text-justify text-left text-justify">LATENCY: 540ms (LIMIT EXCEEDED)</div>
-                               <div class="text-[8px] text-slate-400 uppercase tracking-tighter text-justify text-left">[SYS] TRIGGERING RECOVERY...</div>
-                           </div>
-                           <p class="text-[9px] text-slate-500 mt-6 font-mono uppercase text-center text-justify">Real-time Telemetry Active</p>
+                        <div
+                            class="lg:w-80 bg-orange-600/10 p-10 rounded-3xl border border-orange-500/20 text-center relative overflow-hidden group text-justify">
+                            <div
+                                class="absolute -right-8 -top-8 w-32 h-32 bg-orange-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify">
+                            </div>
+                            <h4
+                                class="text-orange-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center text-justify">
+                                Diagnostic Console</h4>
+                            <div class="w-full bg-slate-800 rounded-xl p-4 text-left font-mono text-justify">
+                                <div class="text-[8px] text-orange-400 mb-1 text-justify text-left text-justify">RSSI:
+                                    -85dBm (POOR SIGNAL)</div>
+                                <div class="text-[8px] text-red-500 mb-1 text-justify text-left text-justify">LATENCY:
+                                    540ms (LIMIT EXCEEDED)</div>
+                                <div
+                                    class="text-[8px] text-slate-400 uppercase tracking-tighter text-justify text-left">
+                                    [SYS] TRIGGERING RECOVERY...</div>
+                            </div>
+                            <p class="text-[9px] text-slate-500 mt-6 font-mono uppercase text-center text-justify">
+                                Real-time Telemetry Active</p>
                         </div>
                     </div>
                 </div>
@@ -165,8 +236,10 @@
 
         <!-- Homework Section -->
         <section class="module-section text-justify">
-            <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-[Outfit] text-justify text-justify">核心任務：打造牢不可破的防禦系統</h2>
-            <p class="text-center text-gray-500 mb-12 text-justify text-justify text-left">模擬真實世界的殘酷：通訊中斷、惡意輸入與電力波動。這是從「玩具模型」邁向「商務產品」的最終試煉。透過 Git Workflow 建立具備工業防護思想的控制大腦。</p>
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-[Outfit] text-justify text-justify">
+                核心任務：打造牢不可破的防禦系統</h2>
+            <p class="text-center text-gray-500 mb-12 text-justify text-justify text-left">
+                模擬真實世界的殘酷：通訊中斷、惡意輸入與電力波動。這是從「玩具模型」邁向「商務產品」的最終試煉。透過 Git Workflow 建立具備工業防護思想的控制大腦。</p>
 
             <div class="grid md:grid-cols-3 gap-6 text-justify">
                 <!-- Task 13-1 -->
@@ -176,9 +249,13 @@
                     <div class="p-8 flex-grow text-justify text-justify">
                         <div class="flex justify-between items-start mb-4 text-justify text-left">
                             <span class="text-4xl text-blue-500 group-hover:scale-110 transition-transform">🌩️</span>
-                            <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold uppercase font-black text-justify uppercase tracking-widest text-justify">60 min</span>
+                            <span
+                                class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold uppercase font-black text-justify uppercase tracking-widest text-justify">60
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-blue-600 transition text-justify uppercase tracking-tighter">【作業 13-1】</h3>
+                        <h3
+                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-blue-600 transition text-justify uppercase tracking-tighter">
+                            【作業 13-1】</h3>
                         <h4 class="font-medium text-gray-500 mb-4 text-justify">「防禦性編程實戰」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-left text-justify">
                             實作韌體端的邊界限制 (Clamping) 與格式校驗。確保當接收到損毀封包或不合理參數（如 PWM=999）時，系統能主動丟棄而非陷入當機或反轉。
@@ -192,10 +269,15 @@
                     <div class="bg-red-500 h-2"></div>
                     <div class="p-8 flex-grow text-justify text-justify">
                         <div class="flex justify-between items-start mb-4 text-justify">
-                            <span class="text-4xl text-red-500 group-hover:rotate-12 transition-transform text-justify">🆘</span>
-                            <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded font-bold uppercase font-black text-justify uppercase tracking-widest text-justify">60 min</span>
+                            <span
+                                class="text-4xl text-red-500 group-hover:rotate-12 transition-transform text-justify">🆘</span>
+                            <span
+                                class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded font-bold uppercase font-black text-justify uppercase tracking-widest text-justify">60
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-red-600 transition text-justify uppercase tracking-tighter">【作業 13-2】</h3>
+                        <h3
+                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-red-600 transition text-justify uppercase tracking-tighter">
+                            【作業 13-2】</h3>
                         <h4 class="font-medium text-gray-500 mb-4 text-justify">「心跳計時器部署」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-left text-justify">
                             部署通訊 watchdog。模擬機器人全速前進時強行關閉藍牙，驗證系統能否於 1.5 秒內自動鎖死馬達防止暴衝，並 Push 包含安全鎖功能的 PR。
@@ -209,10 +291,15 @@
                     <div class="bg-orange-500 h-2"></div>
                     <div class="p-8 flex-grow text-justify text-justify">
                         <div class="flex justify-between items-start mb-4 text-justify text-left">
-                            <span class="text-4xl text-orange-500 group-hover:translate-x-1 transition-transform">📊</span>
-                            <span class="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded font-bold uppercase font-black text-justify uppercase tracking-widest text-justify">40 min</span>
+                            <span
+                                class="text-4xl text-orange-500 group-hover:translate-x-1 transition-transform">📊</span>
+                            <span
+                                class="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded font-bold uppercase font-black text-justify uppercase tracking-widest text-justify">40
+                                min</span>
                         </div>
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 group-hover:text-orange-600 transition text-justify uppercase tracking-tighter">【作業 13-3】</h3>
+                        <h3
+                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-orange-600 transition text-justify uppercase tracking-tighter">
+                            【作業 13-3】</h3>
                         <h4 class="font-medium text-gray-500 mb-4 text-justify">「異常感知面板」</h4>
                         <p class="text-sm text-gray-600 leading-relaxed text-left text-justify text-justify">
                             在前端擴充診斷介面，實時顯現指令延遲與 RSSI。實作動態警告色塊與斷線日誌，讓操作者即便在異常時也能掌握設備狀況。
@@ -247,17 +334,20 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
-                    <li><strong>建立倉庫</strong>：從 GitHub Classroom 連結建立個人作業倉庫並 Clone 到本地。</li>
-                    <li><strong>硬性邊界實作</strong>：在 <code>motor_write()</code> 前加入 <code>constrain(val, 0, 255)</code>。</li>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>硬性邊界實作</strong>：在 <code>motor_write()</code> 前加入 <code>constrain(val, 0, 255)</code>。
+                    </li>
                     <li><strong>異常解析攔截</strong>：實作 JSON 校驗，對於格式不完整或包含亂碼的數據包進行主動過濾。</li>
                     <li><strong>Push Final</strong>：提交具備「數據洗滌能力」的強韌型核心邏輯。</li>
                 </ol>
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>邊界嚴密性</strong>：嘗試從前端發送 \(-500\) 或 \(800\)，觀察韌體是否能穩健地將其修正為 \(0\) 與 \(255\)？</li>
                     <li>[ ] <strong>抗死機能力</strong>：在高速發送隨機字符時，ESP32 韌體是否會發生 Kernel Panic 重啟？</li>
@@ -272,17 +362,20 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-tighter font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-tighter font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
                     <li><strong>計時閥門部署</strong>：實作全局變數 <code>lastMsgTime</code>。每次成功解析指令時重置該計時器。</li>
-                    <li><strong>超時跳閘邏輯</strong>：在主迴圈檢測 <code>millis() - lastMsgTime > 1200</code>，觸發 <code>lockMotors()</code>。</li>
+                    <li><strong>超時跳閘邏輯</strong>：在主迴圈檢測 <code>millis() - lastMsgTime > 1200</code>，觸發
+                        <code>lockMotors()</code>。</li>
                     <li><strong>復歸安全性驗證</strong>：實作「手動解除鎖定」邏輯，防止在連線剛恢復時因舊緩存指令導致馬達暴衝。</li>
                     <li><strong>Push Final</strong>：提交具備「自動跳閘與重置保護」的安全專案。</li>
                 </ol>
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>觸發準確度</strong>：模擬斷網後，馬達是否在約 1.2 秒（誤差 \(\pm 200ms\)）內停止轉動？</li>
                     <li>[ ] <strong>代碼邏輯性</strong>：心跳檢測是否獨立於任務迴圈，不受其他耗時函數（如 Serial Print）干擾？</li>
@@ -297,7 +390,8 @@
             </div>
 
             <div class="quest-workflow">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
                 <ol>
                     <li><strong>遙測封包設計</strong>：在回傳 JSON 中加入 <code>rssi</code> (訊號強度) 與 <code>error_code</code> 欄位。</li>
                     <li><strong>界面預警實作</strong>：實現動態延遲波形圖，並在訊號低於 \(-80dBm\) 時彈出警告提示。</li>
@@ -307,7 +401,8 @@
             </div>
 
             <div class="tutor-benchmark">
-                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
                 <ul>
                     <li>[ ] <strong>反饋及時性</strong>：當通訊發生異常時，UI 面板是否能在 1 秒內呈現出相應的視覺警告？</li>
                     <li>[ ] <strong>代碼架構感</strong>：診斷邏輯是否與主控制邏輯解耦，易於未來擴展其他感測器診斷？</li>
