@@ -1351,7 +1351,7 @@ exports.resolveAssignmentAccess = onCall(async (request) => {
     const { data, auth } = request;
     if (!auth) throw new HttpsError('unauthenticated', '請先登入');
 
-    const { unitId, courseId, tutorMode } = data || {};
+    const { unitId, courseId, tutorMode, assignmentId } = data || {};
     if (!unitId) throw new HttpsError('invalid-argument', '缺少單元 ID');
 
     const db = admin.firestore();
@@ -1401,10 +1401,29 @@ exports.resolveAssignmentAccess = onCall(async (request) => {
         }
     }
 
+    // [V17.0.1] Personalized Repository Check: If student already started, prioritize their personal repo
+    let personalRepoUrl = null;
+    if (assignmentId) {
+        try {
+            const assignmentDoc = await db.collection('assignments').doc(`${auth.uid}_${assignmentId}`).get();
+            if (assignmentDoc.exists) {
+                const aData = assignmentDoc.data();
+                const existingUrl = aData.assignmentUrl || aData.url;
+                // Only prioritize if it's a real GitHub repo (not a classroom invitation link with /a/)
+                if (existingUrl && existingUrl.includes('github.com/') && !existingUrl.includes('classroom.github.com/a/')) {
+                    personalRepoUrl = existingUrl;
+                    console.log(`[resolveAssignmentAccess] Found personal repo for student: ${personalRepoUrl}`);
+                }
+            }
+        } catch (e) {
+            console.warn("[resolveAssignmentAccess] Failed to lookup personal repo:", e.message);
+        }
+    }
+
     return {
         authorized: true,
         accessMode,
-        classroomUrl: classroomUrl || null,
+        classroomUrl: personalRepoUrl || classroomUrl || null,
         assignedTutorEmail: assignedTutorEmail || null,
         canonicalUnitId,
         courseId: effectiveCourseId,

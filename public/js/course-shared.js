@@ -892,7 +892,7 @@ window.openSubmissionModal = async function (assignmentId, title) {
 
     try {
         if (typeof window.firebaseResolveAssignmentAccess === 'function') {
-            assignmentAccess = await window.firebaseResolveAssignmentAccess({ courseId, unitId: fileName });
+            assignmentAccess = await window.firebaseResolveAssignmentAccess({ courseId, unitId: fileName, assignmentId });
             classroomUrl = assignmentAccess?.classroomUrl || null;
 
             if (assignmentAccess?.requiresTutorAssignment && !assignmentAccess?.assignedTutorEmail) {
