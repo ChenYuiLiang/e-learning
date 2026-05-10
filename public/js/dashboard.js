@@ -1413,50 +1413,56 @@ async function vibeRefreshReadmeContent(filterUnitId) {
     try {
         const repoName = filterUnitId.replace(/\.html$/, '');
         const GITHUB_ORG = 'vibe-coding-classroom';
-        
-        // [V17.0.4] Prioritized Fetching: .github/tutor_guide.md > tutor_guide.md > tutor-guide.md > README.md
-        const possibleFiles = ['.github/tutor_guide.md', 'tutor_guide.md', 'tutor-guide.md', 'README.md'];
-        let markdownHtml = null;
 
-        for (const fileName of possibleFiles) {
-            const fileUrl = `https://raw.githubusercontent.com/${GITHUB_ORG}/${repoName}/main/${fileName}`;
-            console.log(`[V17.0.3] Attempting to fetch: ${fileUrl}`);
-            
-            readmePlaceholders.forEach(p => {
-                p.innerHTML = `<div class="flex items-center gap-3 text-slate-400 italic"><span class="animate-pulse">⏳</span> 正在抓取 ${fileName}...</div>`;
-            });
+        for (const placeholder of readmePlaceholders) {
+            const isSettingsTab = placeholder.id === 'github-readme-placeholder-settings';
+            let markdownHtml = null;
 
-            const result = await loadMarkdown(fileUrl);
-            
-            // If loadMarkdown returns successful content (not a red error div)
-            if (result && !result.includes('無法讀取')) {
-                markdownHtml = result;
-                console.log(`[V17.0.3] Successfully loaded: ${fileName}`);
-                break;
+            if (isSettingsTab) {
+                // [V17.0.5] SETTINGS TAB: Prioritized Fetching (Tutor Guide Focus)
+                const possibleFiles = ['.github/tutor_guide.md', 'tutor_guide.md', 'tutor-guide.md', 'README.md'];
+                
+                for (const fileName of possibleFiles) {
+                    const fileUrl = `https://raw.githubusercontent.com/${GITHUB_ORG}/${repoName}/main/${fileName}`;
+                    console.log(`[V17.0.5] SettingsTab attempting: ${fileUrl}`);
+                    
+                    placeholder.innerHTML = `<div class="flex items-center gap-3 text-slate-400 italic"><span class="animate-pulse">⏳</span> 正在抓取導師指南 ${fileName}...</div>`;
+                    const result = await loadMarkdown(fileUrl);
+                    
+                    if (result && !result.includes('無法讀取')) {
+                        markdownHtml = result;
+                        break;
+                    }
+                }
+            } else {
+                // [V17.0.5] ASSIGNMENT TAB: Directly use README.md
+                const readmeUrl = `https://raw.githubusercontent.com/${GITHUB_ORG}/${repoName}/main/README.md`;
+                console.log(`[V17.0.5] AssignmentTab attempting: ${readmeUrl}`);
+                
+                placeholder.innerHTML = `<div class="flex items-center gap-3 text-slate-400 italic"><span class="animate-pulse">⏳</span> 正在抓取任務說明 (README.md)...</div>`;
+                markdownHtml = await loadMarkdown(readmeUrl);
+            }
+
+            // Final Injection
+            if (markdownHtml && !markdownHtml.includes('無法讀取')) {
+                placeholder.innerHTML = markdownHtml;
+                placeholder.classList.remove('hidden');
+                console.log(`[V17.0.5] Content successfully injected into: ${placeholder.id}`);
+            } else {
+                console.warn(`[V17.0.5] No content found for placeholder: ${placeholder.id}`);
+                placeholder.innerHTML = `
+                    <div class="flex items-center gap-3 text-red-500 bg-red-50 p-4 rounded-xl border border-red-100">
+                        <span>⚠️</span>
+                        <div>
+                            <div class="font-bold">無法載入外部說明檔案</div>
+                            <div class="text-xs opacity-75">GitHub 儲存庫中找不到可用說明。</div>
+                        </div>
+                    </div>
+                `;
             }
         }
-        
-        if (!markdownHtml || markdownHtml.includes('無法讀取')) {
-            throw new Error("GitHub 儲存庫中找不到可用說明 (tutor_guide.md 或 README.md)。");
-        }
-
-        readmePlaceholders.forEach(placeholder => {
-            placeholder.innerHTML = markdownHtml;
-            console.log("[V17.0.2] Guide content successfully injected into:", placeholder.id);
-        });
     } catch (error) {
-        console.error("[V17.0.2] External Content Loading Error:", error);
-        readmePlaceholders.forEach(p => {
-            p.innerHTML = `
-                <div class="flex items-center gap-3 text-red-500 bg-red-50 p-4 rounded-xl border border-red-100">
-                    <span>⚠️</span>
-                    <div>
-                        <div class="font-bold">無法載入外部說明檔案</div>
-                        <div class="text-xs opacity-75">${error.message || "請檢查 GitHub 儲存庫狀態。"}</div>
-                    </div>
-                </div>
-            `;
-        });
+        console.error("[V17.0.5] External Content Loading Error:", error);
     }
 }
 
