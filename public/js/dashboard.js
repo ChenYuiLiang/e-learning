@@ -1318,9 +1318,10 @@ window.renderAssignmentsTable = window.renderAssignmentsTable || function(assign
     
     // logic constants
     const showActionCol = (context === 'unit-integrated') && canManageAssignments;
-    const clickAction = (context === 'global' || context === 'unit-integrated') 
-                        ? 'modal' 
-                        : (context === 'unit-main' ? 'url' : 'modal');
+    // [V17.0.6] Integrated Assignments Row click should open URL directly, as there is a dedicated Grade button
+    const clickAction = (context === 'unit-integrated') 
+                        ? 'url' 
+                        : (context === 'global' ? 'modal' : (context === 'unit-main' ? 'url' : 'modal'));
 
     if (!assignments || assignments.length === 0) {
         const emptyMsg = `<tr><td colspan="${showActionCol ? 6 : 5}" class="text-center py-8 text-gray-400">尚無作業繳交紀錄</td></tr>`;
