@@ -3358,7 +3358,7 @@ exports.bindTutorToUnit = onCall(async (request) => {
 // ==========================================
 // [TEMP] Maintenance: Update Classroom URL
 // ==========================================
-exports.maintenanceUpdateClassroomUrl = onRequest(async (req, res) => {
+exports.maintenanceUpdateClassroomUrl = onRequest({ region: "asia-east1" }, async (req, res) => {
     // Security check: Only allow if a specific key is provided in the query string
     const { key } = req.query;
     if (key !== 'vibe_maintenance_2026_05_11_update_url') {
