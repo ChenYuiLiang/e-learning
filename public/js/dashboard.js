@@ -1978,6 +1978,7 @@ window.toggleAdminTutorMode = function (enabled) {
  * [NEW] Inject Admin Tutor Mode Toggle into Assignments & Settings Tabs
  */
 window.vibeInjectAdminTutorModeToggle = function() {
+    console.log("[TutorMode] Injection attempt. Role:", myRole);
     if (myRole !== 'admin') return;
     
     const toggleHtml = `
@@ -1990,29 +1991,23 @@ window.vibeInjectAdminTutorModeToggle = function() {
         </div>
     `;
 
-    // 1. Assignments Tab
-    const assignmentsHeader = document.getElementById('assignments-header');
-    if (assignmentsHeader) {
-        let container = assignmentsHeader.querySelector('.admin-tutor-mode-container');
-        if (!container) {
-            container = document.createElement('div');
-            container.className = 'admin-tutor-mode-container';
-            assignmentsHeader.appendChild(container);
+    const targetIds = ['assignments-header', 'assignments-header-integrated', 'settings-header'];
+    
+    targetIds.forEach(id => {
+        const header = document.getElementById(id);
+        if (header) {
+            console.log(`[TutorMode] Injecting into ${id}`);
+            let container = header.querySelector('.admin-tutor-mode-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.className = 'admin-tutor-mode-container';
+                header.appendChild(container);
+            }
+            container.innerHTML = toggleHtml;
+        } else {
+            // console.log(`[TutorMode] Header ${id} not found in DOM.`);
         }
-        container.innerHTML = toggleHtml;
-    }
-
-    // 2. Settings Tab
-    const settingsHeader = document.getElementById('settings-header');
-    if (settingsHeader) {
-        let container = settingsHeader.querySelector('.admin-tutor-mode-container');
-        if (!container) {
-            container = document.createElement('div');
-            container.className = 'admin-tutor-mode-container';
-            settingsHeader.appendChild(container);
-        }
-        container.innerHTML = toggleHtml;
-    }
+    });
 };
 
 window.handleAssignTutor = async function (studentUid, unitId, tutorEmail) {
