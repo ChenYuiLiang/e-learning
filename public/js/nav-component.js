@@ -108,8 +108,7 @@ window.renderNav = function (rootPath = '.', options = {}) {
                             </button>
                             <div class="dropdown-menu absolute hidden group-hover:block bg-white shadow-xl rounded-lg py-2 w-48 mt-0 border border-gray-100 left-0">
                                 <a href="${resolve('examples/index.html')}" class="block px-4 py-2 hover:bg-cyan-50 hover:text-cyan-700">範例展示參考</a>
-                                <a href="${resolve('students.html')}" class="block px-4 py-2 bg-cyan-50 text-cyan-700">課程使用說明</a>
-                                <a href="${resolve('about.html')}" class="block px-4 py-2 hover:bg-cyan-50 hover:text-cyan-700">關於付費與購買</a>
+                                <a href="${resolve('students.html')}" class="block px-4 py-2 hover:bg-cyan-50 hover:text-cyan-700">購買與課程使用說明</a>
                                 <a href="${resolve('tutors.html')}" class="block px-4 py-2 hover:bg-cyan-50 hover:text-cyan-700">專業導師與合作</a>
                             </div>
                         </div>
@@ -161,7 +160,7 @@ window.renderNav = function (rootPath = '.', options = {}) {
                             </a>
                             <div class="grid grid-cols-2 gap-3">
                                 <a href="${resolve('examples/index.html')}" class="flex items-center gap-2 py-3 px-4 bg-slate-50 rounded-2xl hover:bg-cyan-50 hover:text-cyan-600 transition-all border border-transparent hover:border-cyan-100 text-sm"><i class="fa-solid fa-code text-xs opacity-50"></i> 範例展示</a>
-                                <a href="${resolve('about.html')}" class="flex items-center gap-2 py-3 px-4 bg-slate-50 rounded-2xl hover:bg-cyan-50 hover:text-cyan-600 transition-all border border-transparent hover:border-cyan-100 text-sm"><i class="fa-solid fa-credit-card text-xs opacity-50"></i> 購買說明</a>
+                                <a href="${resolve('students.html')}" class="flex items-center gap-2 py-3 px-4 bg-slate-50 rounded-2xl hover:bg-cyan-50 hover:text-cyan-600 transition-all border border-transparent hover:border-cyan-100 text-sm"><i class="fa-solid fa-credit-card text-xs opacity-50"></i> 購買與使用說明</a>
                                 <a href="${resolve('tutors.html')}" class="flex items-center gap-2 py-3 px-4 bg-slate-50 rounded-2xl hover:bg-cyan-50 hover:text-cyan-600 transition-all border border-transparent hover:border-cyan-100 text-sm"><i class="fa-solid fa-handshake text-xs opacity-50"></i> 導師與合作洽談</a>
                             </div>
                         </div>

@@ -2331,10 +2331,10 @@ window.aggregateData = window.aggregateData || function(data) {
     if (!data.students) return;
 
     const MENU_PAGES = new Set([
-        'index.html', 'about.html', 'advanced.html', 'basic.html', 
+        'index.html', 'advanced.html', 'basic.html', 
         'started.html', 'prepare.html', 'auth.html', 'dashboard.html', 
         'cart.html', 'students.html', 'payment-return.html', 'tutors.html',
-        'index', 'about', 'advanced', 'basic', 'started', 'prepare', 'auth', 'dashboard', 'cart', 'students'
+        'index', 'advanced', 'basic', 'started', 'prepare', 'auth', 'dashboard', 'cart', 'students'
     ]);
 
     data.students.forEach(student => {
