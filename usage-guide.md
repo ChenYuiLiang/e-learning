@@ -28,6 +28,51 @@
     2. 回到 [儀表板 (Dashboard)](dashboard.html) 點擊 **「提交作業」**。
     3. 貼上您的 Repo 連結完成最終繳交。
 
+### 4. GitHub Classroom 接受作業後的完整流程
+
+當您點擊老師提供的 GitHub Classroom 邀請連結並按下 **「Accept this assignment」** 後，系統會自動執行以下步驟：
+
+> [!NOTE]
+> 這就像老師發下一份數位考卷，系統會自動幫每個學生印好考卷並寫上名字。
+
+#### Step 1：自動建立專屬程式庫 (Repository Creation)
+系統根據老師設定的模板 (Template) 自動建立一個您專屬的程式庫。
+- **命名規則：** `作業名稱-您的GitHub帳號`（例如：`lab01-yuiliang27`）。
+- **權限設定：**
+  - **您（學生）：** 獲得 **Write（寫入）** 權限，可以上傳程式碼。
+  - **老師/助教：** 擁有 **Admin（管理）** 權限，可查看、評分或留言。
+  - **其他同學：** 除非老師設定為 Public，否則其他同學看不到（保護隱私與預防抄襲）。
+
+#### Step 2：複製模板內容 (Content Initializing)
+系統會將老師預先準備好的程式碼模板（Starter Code）複製到新建的程式庫中，包括：
+- 程式碼架構與說明文件（README.md）
+- 測試檔案（Unit Tests）
+- 若老師啟用 **Autograding（自動評分）**，相關設定檔（如 `.github/workflows`）也會同步產生
+
+#### Step 3：開始作業
+當網頁顯示 **「Your assignment repository has been created」** 後，即可開始：
+1. **Clone（複製到本地）：**
+   ```bash
+   git clone https://github.com/組織名稱/作業名稱-帳號.git
+   ```
+2. **Coding（撰寫程式碼）：** 在本地完成程式碼。
+3. **Push（上傳回 GitHub）：**
+   ```bash
+   git add .
+   git commit -m "完成作業"
+   git push origin main
+   ```
+
+#### Step 4：自動化評分與回饋 (若老師啟用)
+- 每次 `push` 程式碼時，**GitHub Actions** 會自動執行測試。
+- 在程式庫的 **「Actions」** 分頁查看結果（✅ 綠色打勾 = 通過，❌ 紅色叉叉 = 失敗）。
+- 分數會自動同步回老師的 GitHub Classroom 控制台。
+
+#### Step 5：繳交與回饋 (Feedback Pull Request)
+- GitHub Classroom 會自動建立一個名為 **「Feedback」** 的 Pull Request (PR)。
+- 老師可直接在 PR 中的程式碼行旁留下建議與回饋。
+- 老師可設定 **Deadline**，超過時間的 Push 可能會被標記為遲交。
+
 ---
 
 ## 👩‍🏫 導師與管理員指南 (Admin/Tutor Guide)
@@ -59,6 +104,9 @@
   - 完成付款後，通常擁有一年的課程存取權限（具體依方案而定）。
 - **Q: 實體教材何時寄出？**
   - 我們通常在付款確認後的 2 個工作天內安排出貨。
+- **Q: 接受 GitHub Classroom 邀請後沒有看到程式庫？**
+  - **伺服器延遲：** GitHub 伺服器忙碌時，建立程式庫需要 1-2 分鐘，請重新整理頁面稍候。
+  - **權限卡住：** 若您尚未加入 Classroom 所屬的 Organization（組織），系統可能無法賦予權限。請確認已接受組織邀請。
 
 ---
 
@@ -73,6 +121,12 @@
     - 老師指派 -> 學生/老師同步通知。
     - 作業繳交 -> 通知對應導師。
     - 評分完成 -> 通知學生。
+4. **GitHub Classroom 自動化流程**：
+    - 學生按下「Accept this assignment」後，系統自動建立命名為 `作業名稱-學生帳號` 的專屬程式庫。
+    - 模板程式碼（Starter Code）、測試檔案及 Autograding 設定檔自動複製至新程式庫。
+    - 每次 `git push` 自動觸發 GitHub Actions 執行測試，結果同步至 Classroom 控制台。
+    - 系統自動建立 **Feedback Pull Request** 作為老師與學生的程式碼溝通管道。
+    - 老師可設定 Deadline，逾期 Push 自動標記為遲交。
 
 ---
 
