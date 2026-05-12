@@ -40,8 +40,33 @@ const handleMenuClick = (e) => {
         e.preventDefault();
         e.stopPropagation();
         window.toggleMobileMenu();
+        return;
+    }
+
+    // Auto-close mobile menu when a link is clicked
+    const link = e.target.closest('#mobile-menu a');
+    if (link) {
+        window.toggleMobileMenu();
+        return;
+    }
+
+    // Close mobile menu when clicking outside
+    const menu = document.getElementById('mobile-menu');
+    const isMenuOpen = menu && !menu.classList.contains('hidden');
+    if (isMenuOpen && !e.target.closest('#main-nav')) {
+        window.toggleMobileMenu();
     }
 };
+
+// Handle Escape key to close mobile menu
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const menu = document.getElementById('mobile-menu');
+        if (menu && !menu.classList.contains('hidden')) {
+            window.toggleMobileMenu();
+        }
+    }
+});
 
 document.addEventListener('click', handleMenuClick, true);
 
@@ -56,15 +81,28 @@ window.renderNav = function (rootPath = '.', options = {}) {
         return `${rootPath}/${path}`.replace('./http', 'http').replace('//', '/');
     };
 
-    const style = document.createElement('style');
-    style.innerHTML = `
-        @media (hover: hover) { .dropdown:hover .dropdown-menu { display: block; } }
-        #mobile-menu { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: top; }
-        #mobile-menu-btn { cursor: pointer; touch-action: manipulation; }
-        #mobile-menu.hidden { display: none !important; opacity: 0; transform: scaleY(0.95); }
-        #mobile-menu:not(.hidden) { display: block !important; opacity: 1; transform: scaleY(1); }
-    `;
-    document.head.appendChild(style);
+    // [Refactored] Use unique ID for style block to avoid duplicates
+    let style = document.getElementById('nav-comp-styles');
+    if (!style) {
+        style = document.createElement('style');
+        style.id = 'nav-comp-styles';
+        style.innerHTML = `
+            @media (hover: hover) { 
+                .dropdown:hover .dropdown-menu { display: block; } 
+            }
+            /* [A11y] Focus-within support for keyboard users */
+            .dropdown:focus-within .dropdown-menu { display: block; }
+            
+            #mobile-menu { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: top; }
+            #mobile-menu-btn { cursor: pointer; touch-action: manipulation; }
+            #mobile-menu.hidden { display: none !important; opacity: 0; transform: scaleY(0.95); }
+            #mobile-menu:not(.hidden) { display: block !important; opacity: 1; transform: scaleY(1); }
+            
+            /* Focus ring for better visibility */
+            .dropdown button:focus { outline: 2px solid #06b6d4; border-radius: 0.5rem; }
+        `;
+        document.head.appendChild(style);
+    }
 
     // [New] Inject FontAwesome for global icon support
     if (!document.querySelector('link[href*="font-awesome"]')) {
@@ -217,10 +255,13 @@ window.renderNav = function (rootPath = '.', options = {}) {
 
     const placeholder = document.getElementById('nav-placeholder');
     if (placeholder) {
-        placeholder.outerHTML = navHTML;
+        placeholder.innerHTML = navHTML;
     } else {
         const existingNav = document.getElementById('main-nav') || document.querySelector('nav');
-        if (existingNav) { existingNav.outerHTML = navHTML; }
+        if (existingNav) { 
+            // If we already have a nav, replace its content or outer
+            existingNav.outerHTML = navHTML; 
+        }
         else { document.body.insertAdjacentHTML('afterbegin', navHTML); }
     }
 
@@ -397,7 +438,13 @@ function initNavComponent() {
                 loginBtn.onclick = () => auth.signOut();
             } else {
                 userDisplay.innerText = '訪客';
-                userDisplay.classList.add('hidden');
+                // [Fix] Desktop user display usually has 'hidden md:inline' classes,
+                // while mobile usually doesn't. We should respect the desktop-only hidden rule.
+                if (userDisplay.id === 'user-display') {
+                    userDisplay.classList.add('hidden');
+                } else {
+                    userDisplay.classList.remove('hidden');
+                }
                 loginBtn.innerText = '登入';
                 loginBtn.onclick = () => {
                     const root = placeholder ? (placeholder.getAttribute('data-root') || '.') : '.';
