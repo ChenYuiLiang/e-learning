@@ -87,11 +87,13 @@ window.renderNav = function (rootPath = '.', options = {}) {
         style = document.createElement('style');
         style.id = 'nav-comp-styles';
         style.innerHTML = `
-            @media (hover: hover) { 
-                .dropdown:hover .dropdown-menu { display: block !important; } 
+            /* Pure CSS hover and focus support (bypasses Tailwind CDN timing issues) */
+            .dropdown:hover .dropdown-menu,
+            .dropdown:focus-within .dropdown-menu { 
+                display: block !important; 
+                opacity: 1 !important;
+                visibility: visible !important;
             }
-            /* [A11y] Focus-within support for keyboard users */
-            .dropdown:focus-within .dropdown-menu { display: block !important; }
             
             #mobile-menu { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: top; }
             #mobile-menu-btn { cursor: pointer; touch-action: manipulation; }
@@ -124,10 +126,10 @@ window.renderNav = function (rootPath = '.', options = {}) {
                     <div class="hidden md:flex items-center space-x-6 font-medium text-gray-600">
                         <!-- Courses Dropdown -->
                         <div class="relative dropdown group">
-                            <button class="flex items-center hover:text-cyan-600 transition-all cursor-pointer py-2 gap-1 group-hover:text-cyan-600">
+                            <button class="flex items-center hover:text-cyan-600 transition-all cursor-pointer py-2 gap-1">
                                 學習路徑 <svg class="w-4 h-4 opacity-50 group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                             </button>
-                            <div class="dropdown-menu absolute hidden group-hover:block bg-white/95 backdrop-blur-md shadow-2xl rounded-2xl py-3 w-56 mt-0 border border-slate-100 left-0 animate-in fade-in slide-in-from-top-2 duration-200">
+                            <div class="dropdown-menu absolute hidden bg-white/95 backdrop-blur-md shadow-2xl rounded-2xl py-3 w-56 mt-0 border border-slate-100 left-0 animate-in fade-in slide-in-from-top-2 duration-200">
                                 <a href="${resolve('prepare.html')}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
                                     <i class="fa-solid fa-book-open text-xs opacity-40"></i> 課前準備
                                 </a>
@@ -148,7 +150,7 @@ window.renderNav = function (rootPath = '.', options = {}) {
                             <button class="flex items-center text-cyan-600 font-bold transition-all cursor-pointer py-2 gap-1">
                                 支援與合作 <svg class="w-4 h-4 opacity-50 group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                             </button>
-                            <div class="dropdown-menu absolute hidden group-hover:block bg-white/95 backdrop-blur-md shadow-2xl rounded-2xl py-3 w-64 mt-0 border border-slate-100 left-0 animate-in fade-in slide-in-from-top-2 duration-200">
+                            <div class="dropdown-menu absolute hidden bg-white/95 backdrop-blur-md shadow-2xl rounded-2xl py-3 w-64 mt-0 border border-slate-100 left-0 animate-in fade-in slide-in-from-top-2 duration-200">
                                 <a href="${resolve('students.html')}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-cyan-50 hover:text-cyan-700 transition-colors">
                                     <i class="fa-solid fa-graduation-cap text-xs opacity-40"></i> 課程購買與使用指南
                                 </a>
