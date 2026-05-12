@@ -108,7 +108,7 @@ window.renderNav = function (rootPath = '.', options = {}) {
     <nav class="bg-white/90 backdrop-blur-md shadow-md w-full sticky top-0 z-[99999]" id="main-nav">
         <div class="${isFluid ? 'w-full px-6' : 'container mx-auto px-4'}">
             <div class="flex justify-between items-center py-4">
-                <a href="${resolve('index.html')}" class="text-2xl font-extrabold text-blue-900 tracking-tight flex items-center gap-2 shrink-0">
+                <a href="${resolve('index.html')}" class="text-2xl font-extrabold text-blue-900 tracking-tight flex items-center gap-2 min-w-0">
                     <span>🚀</span> Vibe Coding ${brandSuffix ? `<span class="text-sm font-normal text-gray-500 ml-2">${brandSuffix}</span>` : ''}
                 </a>
                 <div class="flex items-center gap-6">
@@ -172,7 +172,7 @@ window.renderNav = function (rootPath = '.', options = {}) {
                 </div>
             </div>
         </div>
-        <div id="mobile-menu" class="hidden md:hidden pb-8 border-t border-slate-100 absolute w-full left-0 bg-white/95 backdrop-blur-lg shadow-2xl z-[9998] px-6 max-h-[85vh] overflow-y-auto">
+        <div id="mobile-menu" class="hidden md:hidden pb-8 border-t border-slate-100 absolute inset-x-0 box-border bg-white/95 backdrop-blur-lg shadow-2xl z-[9998] px-6 max-h-[85vh] overflow-y-auto">
             <div class="flex flex-col space-y-6 pt-6 font-medium text-slate-600">
                 ${showAuth ? `
                 <div id="mobile-auth-section" class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
