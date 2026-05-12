@@ -120,3 +120,39 @@
 1. 角色已統一為 `admin` 與 `user`，歷史 `student` 角色需遷移為 `user`。
 2. `tutor_applications` 與 `users.tutorApplications` 可能並存於過渡期；新流程以 `tutor_applications` 為主。
 3. 單元 key 含 `.html` 時，Firestore update 請使用 `FieldPath` 或一致正規化，避免 dot-in-key 巢狀化問題。
+
+---
+
+## 8. 規劃中互動欄位 (Planned)
+以下欄位屬於 Tutor x Student 互動層 MVP 的規劃，請以實際部署版本為準。
+
+### `assignments` 擴充（規劃）
+| 欄位名稱 | 類型 | 說明 |
+| :--- | :--- | :--- |
+| `learningState` | string | 學習狀態：`new`, `in_progress`, `blocked`, `coaching`, `resolved`。 |
+| `latestBlocker` | map | 最近卡點（例：`type`, `note`, `createdAt`）。 |
+| `hintLevelUsed` | number | 最近提示層級（`0~3`）。 |
+| `attemptSummary` | string | 學生嘗試摘要。 |
+| `nextAction` | string | Tutor 指定下一步。 |
+
+### `assignment_coaching_logs`（新集合，規劃）
+| 欄位名稱 | 類型 | 說明 |
+| :--- | :--- | :--- |
+| `assignmentId` | string | 關聯作業。 |
+| `studentUid` | string | 學生 UID。 |
+| `tutorEmail` | string | 指導導師。 |
+| `hintLevel` | number | 提示層級（`1/2/3`）。 |
+| `blockerType` | string | 卡點類型（`concept/debug/environment`）。 |
+| `coachNote` | string | 三段式教學回饋。 |
+| `createdAt` | timestamp | 建立時間。 |
+
+### `assignment_interventions`（新集合，規劃）
+| 欄位名稱 | 類型 | 說明 |
+| :--- | :--- | :--- |
+| `assignmentId` | string | 關聯作業。 |
+| `studentUid` | string | 學生 UID。 |
+| `triggerScore` | number | 觸發介入時分數。 |
+| `threshold` | number | 觸發門檻。 |
+| `status` | string | `open`, `in_progress`, `resolved`。 |
+| `ownerTutorEmail` | string | 負責導師。 |
+| `createdAt` / `resolvedAt` | timestamp | 建立與完成時間。 |

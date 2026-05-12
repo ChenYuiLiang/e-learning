@@ -7,6 +7,7 @@
 ## 📖 相關文件 (Documentation)
 - **[📘 學生與導師指南](public/students.html)**：包含付款、導師指派、作業提交及師資申請流程。
 - **[課前準備事項 (Preparation)](public/prepare.html)**：軟硬體環境準備與教材購買指引。
+- **[🤝 Tutor x Student 互動層 MVP 規格](docs/tutor-student-interaction-mvp.md)**：自動評分之外的教學互動設計（卡點、提示階梯、成長軌跡、介入任務）。
 
 ---
 
