@@ -114,7 +114,7 @@ window.renderNav = function (rootPath = '.', options = {}) {
                 <div class="flex items-center gap-6">
                     <div class="hidden md:flex items-center space-x-6 font-medium text-gray-600">
                         <div class="relative dropdown group">
-                            <button class="flex items-center hover:text-cyan-600 transition-all cursor-pointer py-2 gap-1">
+                            <button aria-expanded="false" aria-haspopup="true" class="flex items-center hover:text-cyan-600 transition-all cursor-pointer py-2 gap-1">
                                 學習路徑 <svg class="w-4 h-4 opacity-50 group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                             </button>
                             <div class="dropdown-menu absolute hidden bg-white/95 backdrop-blur-md shadow-2xl rounded-2xl py-3 w-56 mt-0 border border-slate-100 left-0 animate-in fade-in slide-in-from-top-2 duration-200">
@@ -133,7 +133,7 @@ window.renderNav = function (rootPath = '.', options = {}) {
                             </div>
                         </div>
                         <div class="relative dropdown group">
-                            <button class="flex items-center text-cyan-600 font-bold transition-all cursor-pointer py-2 gap-1">
+                            <button aria-expanded="false" aria-haspopup="true" class="flex items-center text-cyan-600 font-bold transition-all cursor-pointer py-2 gap-1">
                                 支援與合作 <svg class="w-4 h-4 opacity-50 group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                             </button>
                             <div class="dropdown-menu absolute hidden bg-white/95 backdrop-blur-md shadow-2xl rounded-2xl py-3 w-64 mt-0 border border-slate-100 left-0 animate-in fade-in slide-in-from-top-2 duration-200">
@@ -172,7 +172,7 @@ window.renderNav = function (rootPath = '.', options = {}) {
                 </div>
             </div>
         </div>
-        <div id="mobile-menu" class="hidden pb-8 border-t border-slate-100 absolute w-full left-0 bg-white/95 backdrop-blur-lg shadow-2xl z-[9998] px-6 max-h-[85vh] overflow-y-auto">
+        <div id="mobile-menu" class="hidden md:hidden pb-8 border-t border-slate-100 absolute w-full left-0 bg-white/95 backdrop-blur-lg shadow-2xl z-[9998] px-6 max-h-[85vh] overflow-y-auto">
             <div class="flex flex-col space-y-6 pt-6 font-medium text-slate-600">
                 ${showAuth ? `
                 <div id="mobile-auth-section" class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
