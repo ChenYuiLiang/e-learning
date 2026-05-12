@@ -81,7 +81,7 @@ window.renderNav = function (rootPath = '.', options = {}) {
     }
 
     const navHTML = `
-    <nav class="bg-white/90 backdrop-blur-md shadow-md sticky top-0 z-[99999]" id="main-nav">
+    <nav class="bg-white/90 backdrop-blur-md shadow-md w-full" id="main-nav">
         <div class="${isFluid ? 'w-full px-6' : 'container mx-auto px-4'}">
             <div class="flex justify-between items-center py-4">
                 <a href="${resolve('index.html')}"
@@ -377,7 +377,10 @@ function initNavComponent() {
     const root = placeholder ? (placeholder.getAttribute('data-root') || '.') : '/';
     const showAuth = placeholder ? (placeholder.getAttribute('data-show-auth') === 'true') : false;
 
-    // Always render, using fallback in renderNav if placeholder is missing
+    if (placeholder) {
+        // Ensure the placeholder itself allows the nav to be sticky or is sticky itself
+        placeholder.classList.add('sticky', 'top-0', 'z-[99999]');
+    }
     window.renderNav(root, { showAuth });
 
     try {
