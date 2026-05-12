@@ -44,13 +44,7 @@ const handleMenuClick = (e) => {
 };
 
 document.addEventListener('click', handleMenuClick, true);
-document.addEventListener('touchend', function (e) {
-    const btn = e.target.closest('#mobile-menu-btn');
-    if (btn) {
-        e.preventDefault();
-        window.toggleMobileMenu();
-    }
-}, { passive: false });
+
 
 window.renderNav = function (rootPath = '.', options = {}) {
     const showAuth = options.showAuth || false;
