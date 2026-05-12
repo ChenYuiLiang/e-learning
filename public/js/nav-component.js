@@ -399,11 +399,12 @@ function initNavComponent() {
         const desktopLogin = document.getElementById('login-btn');
         const mobileUser = document.getElementById('mobile-user-display');
         const mobileLogin = document.getElementById('mobile-login-btn');
+        let resolvedDisplayName = '使用者';
 
         const updateUI = (userDisplay, loginBtn) => {
             if (!userDisplay || !loginBtn) return;
             if (user) {
-                userDisplay.innerText = user.email.split('@')[0];
+                userDisplay.innerText = resolvedDisplayName;
                 userDisplay.classList.remove('hidden');
                 loginBtn.innerText = '登出';
                 loginBtn.onclick = () => auth.signOut();
@@ -421,6 +422,20 @@ function initNavComponent() {
                 };
             }
         };
+
+        if (user) {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                const userData = userDoc.exists() ? (userDoc.data() || {}) : {};
+                resolvedDisplayName = userData.name ||
+                    userData.displayName ||
+                    user.displayName ||
+                    (user.email ? user.email.split('@')[0] : '使用者');
+            } catch (e) {
+                console.warn('[NavComp] Failed to resolve user display name from Firestore:', e);
+                resolvedDisplayName = user.displayName || (user.email ? user.email.split('@')[0] : '使用者');
+            }
+        }
 
         updateUI(desktopUser, desktopLogin);
         updateUI(mobileUser, mobileLogin);
