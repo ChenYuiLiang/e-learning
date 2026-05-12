@@ -675,8 +675,8 @@ function renderStudentDashboard(data, filterUnitId = null) {
                                 </td>
                                 <td class="py-3 px-2 text-gray-500 text-xs">${a.submittedAt ? new Date(a.submittedAt.seconds * 1000).toLocaleString() : '-'}</td>
                                 <td class="py-3 px-2">
-                                    <span class="px-2 py-1 rounded text-xs font-bold ${isAssignmentGraded(a) ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">
-                                        ${isAssignmentGraded(a) ? '已評分' : '待批改'}
+                                    <span class="px-2 py-1 rounded text-xs font-bold ${isAssignmentGraded(a) ? 'bg-green-100 text-green-700' : ((a.currentStatus || a.status) === 'started' ? 'bg-blue-100 text-blue-700' : 'bg-yellow-100 text-yellow-700')}">
+                                        ${isAssignmentGraded(a) ? '已評分' : resolveAssignmentStatusLabel(a.currentStatus || a.status || 'submitted')}
                                     </span>
                                 </td>
                                 <td class="py-3 px-2 text-right font-bold text-blue-600">${resolveAssignmentGradeDisplay(a)}</td>
@@ -1332,6 +1332,13 @@ function isAssignmentGraded(assignment) {
     return assignment.autoGrade?.score !== null && assignment.autoGrade?.score !== undefined;
 }
 
+function resolveAssignmentStatusLabel(status) {
+    if (status === 'started') return '進行中';
+    if (status === 'submitted') return '待評分';
+    if (status === 'graded') return '已評分';
+    return status || 'new';
+}
+
 window.renderAssignmentsTable = window.renderAssignmentsTable || function(assignments, canManageAssignments, context = 'unit-main', targetSelector = '.assignment-table-body') {
     const tableBodies = document.querySelectorAll(targetSelector);
     if (tableBodies.length === 0) return;
@@ -1360,7 +1367,12 @@ window.renderAssignmentsTable = window.renderAssignmentsTable || function(assign
 
         const currentStatus = a.currentStatus || a.status || 'new';
         const normalizedStatus = isAssignmentGraded(a) ? 'graded' : currentStatus;
-        const badge = `<span class="${normalizedStatus === 'submitted' ? 'bg-yellow-100 text-yellow-800' : (normalizedStatus === 'graded' ? 'bg-green-100 text-green-800' : 'bg-gray-100')} px-2 py-0.5 rounded text-[10px] font-bold">${normalizedStatus === 'submitted' ? '待評分' : (normalizedStatus === 'graded' ? '已評分' : normalizedStatus)}</span>`;
+        const badgeColor = normalizedStatus === 'submitted'
+            ? 'bg-yellow-100 text-yellow-800'
+            : (normalizedStatus === 'graded'
+                ? 'bg-green-100 text-green-800'
+                : (normalizedStatus === 'started' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100'));
+        const badge = `<span class="${badgeColor} px-2 py-0.5 rounded text-[10px] font-bold">${resolveAssignmentStatusLabel(normalizedStatus)}</span>`;
 
         // Determine Row Onclick logic
         let rowOnClick = '';

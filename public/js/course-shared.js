@@ -748,7 +748,7 @@ function injectSubmissionModal() {
     const modalHTML = `
     <div id="submission-modal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-[60]">
         <div class="bg-white rounded-xl p-8 w-full max-w-lg shadow-2xl transform transition-all scale-100">
-            <h3 class="text-2xl font-bold mb-6 text-gray-800 border-b pb-4">📝 繳交作業 (Submit Assignment)</h3>
+            <h3 class="text-2xl font-bold mb-6 text-gray-800 border-b pb-4">📝 正式提交作業 (Submit for Review)</h3>
             
             <input type="hidden" id="sub-assignment-id">
             <input type="hidden" id="sub-assignment-title">
@@ -758,7 +758,7 @@ function injectSubmissionModal() {
                     <span class="text-xl">🐙</span>
                     <h4 class="font-bold text-gray-800">GitHub Classroom</h4>
                 </div>
-                <p class="text-xs text-gray-600 mb-4">本單元已整合 GitHub Classroom。請先領取作業範本，完成後將您的 Repo 連結貼到下方。</p>
+                <p class="text-xs text-gray-600 mb-4">本單元已整合 GitHub Classroom。點擊作業卡片會先建立「開始作業」紀錄；完成後請回到這裡正式提交 Repo 連結。</p>
                 <a id="sub-github-link" href="#" target="_blank"
                     class="block w-full text-center py-2 bg-slate-800 text-white rounded-lg font-bold hover:bg-slate-700 transition shadow-md flex items-center justify-center gap-2">
                     <span>🚀</span> 領取 GitHub Classroom 作業
@@ -788,7 +788,7 @@ function injectSubmissionModal() {
                     class="px-5 py-2 text-gray-600 hover:bg-gray-100 rounded-lg font-bold transition">取消</button>
                 <button id="btn-confirm-submit" onclick="submitAssignmentAction()"
                     class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-bold shadow-lg flex items-center gap-2">
-                    <span>🚀</span> 送出作業
+                    <span>🚀</span> 正式提交（通知老師）
                 </button>
             </div>
         </div>

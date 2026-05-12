@@ -2612,7 +2612,7 @@ exports.assignStudentToTutor = onCall(async (request) => {
 // 8. 作業系統 (Assignment System)
 // ==========================================
 
-// 8.1 繳交作業 (Student)
+// 8.1 作業紀錄寫入/正式提交 (Student)
 exports.submitAssignment = onCall(async (request) => {
     const { data, auth } = request;
     // 1. Verify Auth
