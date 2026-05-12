@@ -90,26 +90,43 @@ window.renderNav = function (rootPath = '.', options = {}) {
                 </a>
                 <div class="flex items-center gap-6">
                     <div class="hidden md:flex items-center space-x-6 font-medium text-gray-600">
+                        <!-- Courses Dropdown -->
                         <div class="relative dropdown group">
-                            <button class="flex items-center hover:text-cyan-600 transition cursor-pointer py-2">
-                                課程連結 <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            <button class="flex items-center hover:text-cyan-600 transition-all cursor-pointer py-2 gap-1 group-hover:text-cyan-600">
+                                學習路徑 <svg class="w-4 h-4 opacity-50 group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                             </button>
-                            <div class="dropdown-menu absolute hidden group-hover:block bg-white shadow-xl rounded-lg py-2 w-48 mt-0 border border-gray-100 left-0">
-                                <a href="${resolve('prepare.html')}" class="block px-4 py-2 hover:bg-cyan-50 hover:text-cyan-700">課前準備</a>
-                                <a href="${resolve('started.html')}" class="block px-4 py-2 hover:bg-cyan-50 hover:text-cyan-700">入門課程</a>
-                                <a href="${resolve('basic.html')}" class="block px-4 py-2 hover:bg-cyan-50 hover:text-cyan-700">基礎實作</a>
-                                <a href="${resolve('advanced.html')}" class="block px-4 py-2 hover:bg-cyan-50 hover:text-cyan-700">進階應用</a>
+                            <div class="dropdown-menu absolute hidden group-hover:block bg-white/95 backdrop-blur-md shadow-2xl rounded-2xl py-3 w-56 mt-0 border border-slate-100 left-0 animate-in fade-in slide-in-from-top-2 duration-200">
+                                <a href="${resolve('prepare.html')}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
+                                    <i class="fa-solid fa-book-open text-xs opacity-40"></i> 課前準備
+                                </a>
+                                <a href="${resolve('started.html')}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
+                                    <i class="fa-solid fa-rocket text-xs opacity-40"></i> 入門課程
+                                </a>
+                                <a href="${resolve('basic.html')}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
+                                    <i class="fa-solid fa-code text-xs opacity-40"></i> 基礎實作
+                                </a>
+                                <a href="${resolve('advanced.html')}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
+                                    <i class="fa-solid fa-microchip text-xs opacity-40"></i> 進階應用
+                                </a>
                             </div>
                         </div>
 
+                        <!-- Support Dropdown -->
                         <div class="relative dropdown group">
-                            <button class="flex items-center text-cyan-600 font-bold transition cursor-pointer py-2">
-                                關於我們 <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            <button class="flex items-center text-cyan-600 font-bold transition-all cursor-pointer py-2 gap-1">
+                                支援與合作 <svg class="w-4 h-4 opacity-50 group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                             </button>
-                            <div class="dropdown-menu absolute hidden group-hover:block bg-white shadow-xl rounded-lg py-2 w-48 mt-0 border border-gray-100 left-0">
-                                <a href="${resolve('examples/index.html')}" class="block px-4 py-2 hover:bg-cyan-50 hover:text-cyan-700">範例展示參考</a>
-                                <a href="${resolve('students.html')}" class="block px-4 py-2 hover:bg-cyan-50 hover:text-cyan-700">課程購買與使用</a>
-                                <a href="${resolve('tutors.html')}" class="block px-4 py-2 hover:bg-cyan-50 hover:text-cyan-700">專業導師與合作</a>
+                            <div class="dropdown-menu absolute hidden group-hover:block bg-white/95 backdrop-blur-md shadow-2xl rounded-2xl py-3 w-64 mt-0 border border-slate-100 left-0 animate-in fade-in slide-in-from-top-2 duration-200">
+                                <a href="${resolve('students.html')}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-cyan-50 hover:text-cyan-700 transition-colors">
+                                    <i class="fa-solid fa-graduation-cap text-xs opacity-40"></i> 課程購買與使用指南
+                                </a>
+                                <a href="${resolve('tutors.html')}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-cyan-50 hover:text-cyan-700 transition-colors">
+                                    <i class="fa-solid fa-handshake text-xs opacity-40"></i> 專業導師與合作洽談
+                                </a>
+                                <div class="my-2 border-t border-slate-50"></div>
+                                <a href="${resolve('examples/index.html')}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-slate-50 hover:text-slate-700 transition-colors">
+                                    <i class="fa-solid fa-display text-xs opacity-40"></i> 範例展示參考
+                                </a>
                             </div>
                         </div>
                     </div>
