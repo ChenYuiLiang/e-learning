@@ -27,7 +27,8 @@ const {
     sendAssignmentNotification, sendTutorAuthorizationEmail, sendGradingNotification,
     sendStudentLinkedToTutorEmail, sendTutorLinkedToStudentEmail, sendAdminAssignmentReminder,
     sendAdminNewApplicationEmail, sendApplicationResultEmail,
-    sendAutogradeResultToStudent, sendAutogradeResultToTutor, sendOrderShippedEmail
+    sendAutogradeResultToStudent, sendAutogradeResultToTutor, sendOrderShippedEmail,
+    sendTutorRecommendationCandidateEmail, sendAutogradeFailureAlertEmail
 } = require('./emailService');
 
 admin.initializeApp({
@@ -1727,6 +1728,7 @@ exports.recommendTutorForUnit = onCall(async (request) => {
 
     const adminEmail = process.env.ADMIN_EMAIL || 'rover.k.chen@gmail.com';
     await sendAdminNewApplicationEmail(adminEmail, candidateEmail, canonicalUnitId);
+    await sendTutorRecommendationCandidateEmail(candidateEmail, canonicalUnitId, auth.token.email || '');
 
     return { success: true, applicationId: newAppRef.id };
 });
@@ -2802,18 +2804,33 @@ exports.ingestGithubAutograde = onRequest(async (req, res) => {
         const resolvedDocId = assignmentDocId || (userId && assignmentId ? `${userId}_${assignmentId}` : null);
 
         if (!resolvedDocId) {
+            try {
+                await sendAutogradeFailureAlertEmail(process.env.ADMIN_EMAIL || process.env.MAIL_USER, 'Missing assignment identifier', payload);
+            } catch (notifyErr) {
+                console.error("[ingestGithubAutograde] Failed to send alert for missing identifier:", notifyErr);
+            }
             return res.status(400).json({
                 success: false,
                 error: "Missing assignment identifier. Provide assignmentDocId or userId + assignmentId."
             });
         }
         if (!Number.isFinite(score)) {
+            try {
+                await sendAutogradeFailureAlertEmail(process.env.ADMIN_EMAIL || process.env.MAIL_USER, 'Invalid score value', payload);
+            } catch (notifyErr) {
+                console.error("[ingestGithubAutograde] Failed to send alert for invalid score:", notifyErr);
+            }
             return res.status(400).json({ success: false, error: "Invalid score value." });
         }
 
         const assignmentRef = db.collection("assignments").doc(resolvedDocId);
         const assignmentDoc = await assignmentRef.get();
         if (!assignmentDoc.exists) {
+            try {
+                await sendAutogradeFailureAlertEmail(process.env.ADMIN_EMAIL || process.env.MAIL_USER, `Assignment not found: ${resolvedDocId}`, payload);
+            } catch (notifyErr) {
+                console.error("[ingestGithubAutograde] Failed to send alert for missing assignment doc:", notifyErr);
+            }
             return res.status(404).json({ success: false, error: "Assignment not found." });
         }
 
@@ -2886,6 +2903,15 @@ exports.ingestGithubAutograde = onRequest(async (req, res) => {
         return res.status(200).json({ success: true, assignmentId: resolvedDocId });
     } catch (error) {
         console.error("ingestGithubAutograde Error:", error);
+        try {
+            await sendAutogradeFailureAlertEmail(
+                process.env.ADMIN_EMAIL || process.env.MAIL_USER,
+                `Internal server error: ${error.message || 'unknown'}`,
+                (req.body && typeof req.body === "object") ? req.body : {}
+            );
+        } catch (notifyErr) {
+            console.error("[ingestGithubAutograde] Failed to send alert for internal error:", notifyErr);
+        }
         return res.status(500).json({ success: false, error: "Internal server error" });
     }
 });

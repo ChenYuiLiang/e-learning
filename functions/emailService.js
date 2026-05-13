@@ -786,6 +786,85 @@ async function sendOrderShippedEmail(email, orderId, itemsDesc = "", logistics =
     }
 }
 
+/**
+ * Notify candidate student that they were recommended for tutor qualification.
+ */
+async function sendTutorRecommendationCandidateEmail(email, unitId, recommenderEmail = "") {
+    if (!email) return;
+    const cleanUnitId = unitId ? unitId.replace('.html', '') : '';
+    const dashboardUrl = cleanUnitId ? appUrl(`/dashboard.html?unitId=${cleanUnitId}&tab=assignments`) : appUrl('/dashboard.html?tab=assignments');
+
+    const mailOptions = {
+        from: '"Vibe Coding" <info@vibe-coding.tw>',
+        to: email,
+        subject: `[資格通知] 您已被推薦申請單元 "${unitId}" 合格導師`,
+        html: getEmailHtmlWrapper(
+            '您已被推薦為合格導師候選',
+            `
+                <p>您好，恭喜您！</p>
+                <p>您已被推薦申請單元 <strong>${unitId}</strong> 的合格導師資格，系統已建立申請並送交管理員審核。</p>
+                ${recommenderEmail ? `<p>推薦者：<strong>${recommenderEmail}</strong></p>` : ''}
+                ${renderNextSteps('建議您現在先做：', [
+                    '到儀表板確認該單元作業與分數狀態。',
+                    '整理 1-2 個可代表教學能力的作品或解題說明。',
+                    '留意後續審核通知信。'
+                ])}
+                <p style="margin-top: 30px;">
+                    <a href="${dashboardUrl}" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: bold;">前往儀表板查看</a>
+                </p>
+            `,
+            'Vibe Coding 合格教師計畫'
+        )
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+    } catch (error) {
+        console.error('Error sending tutor recommendation candidate email:', error);
+    }
+}
+
+/**
+ * Notify admin about autograde ingestion failures.
+ */
+async function sendAutogradeFailureAlertEmail(adminEmail, reason, payload = {}) {
+    if (!adminEmail) return;
+    const dashboardUrl = appUrl('/dashboard.html?tab=admin');
+    const payloadPreview = JSON.stringify(payload || {}, null, 2).slice(0, 3000);
+
+    const mailOptions = {
+        from: '"Vibe Coding System" <info@vibe-coding.tw>',
+        to: adminEmail,
+        subject: `[告警] GitHub 自動評分回寫異常`,
+        html: getEmailHtmlWrapper(
+            'GitHub 自動評分回寫異常',
+            `
+                <p>管理員您好，系統偵測到自動評分回寫異常。</p>
+                <p><strong>原因：</strong>${reason}</p>
+                <div style="background-color: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0; margin: 20px 0;">
+                    <p style="margin: 0 0 8px 0; font-weight: bold;">Payload 摘要</p>
+                    <pre style="margin: 0; white-space: pre-wrap; word-break: break-word; font-size: 12px; color: #334155;">${payloadPreview.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+                </div>
+                ${renderNextSteps('建議處理：', [
+                    '先確認 assignmentDocId 或 userId+assignmentId 是否正確。',
+                    '確認 GitHub webhook 簽名與 secret 一致。',
+                    '必要時重送 webhook。'
+                ])}
+                <p style="margin-top: 30px;">
+                    <a href="${dashboardUrl}" style="display: inline-block; background-color: #ef4444; color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: bold;">前往管理後台</a>
+                </p>
+            `,
+            'Vibe Coding 監控告警'
+        )
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+    } catch (error) {
+        console.error('Error sending autograde failure alert email:', error);
+    }
+}
+
 module.exports = {
     sendWelcomeEmail,
     sendPaymentSuccessEmail,
@@ -802,5 +881,7 @@ module.exports = {
     sendApplicationResultEmail,
     sendAutogradeResultToStudent,
     sendAutogradeResultToTutor,
-    sendOrderShippedEmail
+    sendOrderShippedEmail,
+    sendTutorRecommendationCandidateEmail,
+    sendAutogradeFailureAlertEmail
 };
