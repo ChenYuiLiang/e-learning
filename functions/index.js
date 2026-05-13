@@ -1762,7 +1762,7 @@ exports.recommendTutorForUnit = onCall(async (request) => {
         throw new HttpsError('failed-precondition', 'Assignment metadata is incomplete.');
     }
     const autoGradeScore = Number(assignment.autoGrade?.score);
-    const recommendationThreshold = 80;
+    const recommendationThreshold = 100;
     if (!Number.isFinite(autoGradeScore)) {
         throw new HttpsError('failed-precondition', 'Assignment must have a valid auto-grade score before recommendation.');
     }

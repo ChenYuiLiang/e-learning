@@ -34,7 +34,7 @@ graph TD
 - **Interface**: Located within assignment workflow actions in Dashboard.
 - **Function**: `window.submitTutorRecommendation()`.
 - **Action**: Creates a document in the `tutor_applications` collection with `source: "tutor_recommendation"`.
-- **Gate**: Requires valid `autoGrade.score` and score threshold check on backend.
+- **Gate**: Requires valid `autoGrade.score` and backend threshold check (`score >= 100`) before recommendation is allowed.
 - **Notification**:
   - Sends candidate-facing notification via `sendTutorRecommendationCandidateEmail`.
 
