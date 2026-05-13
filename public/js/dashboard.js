@@ -1084,8 +1084,6 @@ function renderAdminDashboard(data, filterUnitId = null) {
         });
     }
 
-    const guideContent = resolveAssignmentGuide(data, filterCourseId, filterUnitId);
-
     renderChart(chartData);
     // [V8.1] GitHub README loading moved to renderAssignments for better container management
 
@@ -1093,45 +1091,7 @@ function renderAdminDashboard(data, filterUnitId = null) {
     vibeRefreshReadmeContent(filterUnitId);
 
     // [V8.1] GitHub README loading moved to renderAssignments for better container management
-    renderAssignments(displayAssignments, guideContent);
-}
-
-// Helper: Resolve assignment guide for a unit
-window.resolveAssignmentGuide = window.resolveAssignmentGuide || function(data, filterCourseId, filterUnitId) {
-    if (!filterCourseId || !filterUnitId) return "";
-    filterUnitId = resolveCanonicalUnitId(filterUnitId);
-
-    try {
-        const guideConfig = data.courseGuideIndex?.[filterCourseId] || {};
-        const rawInstructor = guideConfig.tutorGuide || null;
-        const rawAssignment = guideConfig.assignmentGuide || null;
-
-        const guideData = robustExtractGuideSegments(rawInstructor, rawAssignment);
-
-        const cleanUnitId = filterUnitId.replace('.html', '');
-        const candidateIds = getEquivalentUnitIds(filterUnitId);
-        let assignmentGuide = candidateIds.map(id => guideData.assignmentGuides[id]).find(Boolean) ||
-            guideData.assignmentGuides[cleanUnitId] ||
-            guideData.assignmentGuides[cleanUnitId + '.html'] || "";
-
-        console.log(`[Debug] Guide resolution for ${filterUnitId}: ${assignmentGuide ? 'Found by FileName/CleanID' : 'Not Found by ID'}`);
-
-        if (!assignmentGuide.trim()) {
-            const lesson = allLessons.find(l => l.courseId === filterCourseId);
-            const units = lesson?.courseUnits || [];
-
-            const unitIdx = units.findIndex(u => unitIdsMatch(u, filterUnitId) || u.replace('.html', '') === cleanUnitId);
-            if (unitIdx !== -1) {
-                const unitNum = unitIdx + 1;
-                assignmentGuide = (guideData.assignmentGuides[unitNum] || "").trim();
-                console.log(`[Debug] Fallback guide for index ${unitNum}: ${assignmentGuide ? 'Found' : 'Not Found'}`);
-            }
-        }
-        return assignmentGuide;
-    } catch (err) {
-        console.error("[Debug] Error resolving assignment guide:", err);
-        return "";
-    }
+    renderAssignments(displayAssignments, "", { showGuide: false });
 }
 
 // --- Global Toggle Functions ---
@@ -1665,37 +1625,7 @@ window.switchTab = function (tabName) {
         }
         console.log("[DebugTab] tab assignments: Final count to render:", displayAssignments.length);
 
-        // [NEW] Extract and pass assignment guide
-        let assignmentGuide = "";
-        if (filterCourseId && filterUnitId) {
-            try {
-                const guideConfig = dashboardData.courseGuideIndex?.[filterCourseId] || {};
-                const rawInstructor = guideConfig.tutorGuide || null;
-                const rawAssignment = guideConfig.assignmentGuide || null;
-
-                const guideData = robustExtractGuideSegments(rawInstructor, rawAssignment);
-
-                const cleanUnitId = filterUnitId.replace('.html', '');
-                const candidateIds = getEquivalentUnitIds(filterUnitId);
-                assignmentGuide = (candidateIds.map(id => guideData.assignmentGuides[id]).find(Boolean) ||
-                    guideData.assignmentGuides[cleanUnitId] ||
-                    guideData.assignmentGuides[cleanUnitId + '.html'] || "").trim();
-
-                if (!assignmentGuide) {
-                    const lesson = allLessons.find(l => l.courseId === filterCourseId);
-                    const units = lesson?.courseUnits || [];
-
-                    const unitIdx = units.findIndex(u => unitIdsMatch(u, filterUnitId) || u.replace('.html', '') === cleanUnitId);
-                    if (unitIdx !== -1) {
-                        assignmentGuide = (guideData.assignmentGuides[unitIdx + 1] || "").trim();
-                    }
-                }
-                console.log(`[Debug] Guide resolution (switchTab) for ${filterUnitId}: ${assignmentGuide ? 'Found' : 'Not Found'}`);
-            } catch (guideErr) {
-                console.error("[Debug] Error resolving assignment guide in switchTab:", guideErr);
-            }
-        }
-        renderAssignments(displayAssignments, assignmentGuide);
+        renderAssignments(displayAssignments, "", { showGuide: false });
     }
     if (tabName === 'admin') {
         renderAdminConsole();

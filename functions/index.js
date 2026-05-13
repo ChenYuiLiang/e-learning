@@ -2109,7 +2109,6 @@ exports.getDashboardData = onCall(async (request) => {
                             const html = fs.readFileSync(filePath, 'utf8');
 
                             const guideContent = extractHiddenSectionContent(html, 'tutor-guide');
-                            const assignContent = extractHiddenSectionContent(html, 'assignment-guide');
                             const attachContent = extractHiddenSectionContent(html, 'attachment-guide');
 
                             if (attachContent) {
@@ -2125,13 +2124,6 @@ exports.getDashboardData = onCall(async (request) => {
                                 console.log(`[getDashboardData] ❌ No Tutor Guide match for ${file} in ${cid}`);
                             }
 
-                            if (assignContent) {
-                                if (!aggregatedGuides.assignment) aggregatedGuides.assignment = {};
-                                aggregatedGuides.assignment[file] = assignContent;
-                                console.log(`[getDashboardData] ✅ Found Assignment Guide for ${file} in ${cid}`);
-                            } else {
-                                console.log(`[getDashboardData] ❌ No Assignment Guide match for ${file} in ${cid}`);
-                            }
                         }
 
                         if (Object.keys(aggregatedGuides).length > 0) {
@@ -2139,9 +2131,6 @@ exports.getDashboardData = onCall(async (request) => {
                             // [MERGE] Use Object.assign to preserve existing properties from Firestore
                             if (aggregatedGuides.tutor) {
                                 courseGuideIndex[cid].tutorGuide = Object.assign({}, courseGuideIndex[cid].tutorGuide || {}, aggregatedGuides.tutor);
-                            }
-                            if (aggregatedGuides.assignment) {
-                                courseGuideIndex[cid].assignmentGuide = Object.assign({}, courseGuideIndex[cid].assignmentGuide || {}, aggregatedGuides.assignment);
                             }
                             if (aggregatedGuides.attachment) {
                                 courseGuideIndex[cid].attachmentGuide = Object.assign({}, courseGuideIndex[cid].attachmentGuide || {}, aggregatedGuides.attachment);
