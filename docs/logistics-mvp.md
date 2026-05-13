@@ -1,9 +1,9 @@
-# Logistics Management Control Protocol (MCP)
+# Logistics Management Minimum Viable Product (MVP)
 **Version**: 2026.05.13.V1
 **Objective**: Define the automated management and fulfillment protocol for physical hardware products.
 
 ## 1. System Overview
-The Logistics MCP governs the lifecycle of "Physical Products" from payment confirmation to final shipment. It centralizes order tracking for administrators and provides transparency for students.
+The Logistics MVP governs the lifecycle of "Physical Products" from payment confirmation to final shipment. It centralizes order tracking for administrators and provides transparency for students.
 
 ```mermaid
 graph TD

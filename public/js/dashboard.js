@@ -1901,7 +1901,7 @@ window.renderAdminConsole = window.renderAdminConsole || function() {
         <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
             <h3 class="text-2xl font-black text-orange-900 flex items-center gap-3">
                 <span class="p-2.5 bg-orange-100 rounded-xl">🛠️</span> 
-                課程管理控制台 (Course Management)
+                合格教師課程管理 (Tutor Course Management)
             </h3>
 
             <p id="admin-msg" class="text-sm font-bold text-orange-600 animate-pulse"></p>
@@ -2032,7 +2032,7 @@ window.renderAdminConsole = window.renderAdminConsole || function() {
     } catch (totalErr) {
         console.error("Admin Console Crash:", totalErr);
         html += `<div class="p-8 text-center bg-red-50 text-red-600 rounded-2xl border border-red-100">
-            <h4 class="font-black mb-2">管理控制台發生錯誤</h4>
+            <h4 class="font-black mb-2">合格教師控制台發生錯誤</h4>
             <p class="text-xs opacity-75">${totalErr.message}</p>
         </div>`;
     }
@@ -2232,7 +2232,7 @@ window.setupGradingFunctions = window.setupGradingFunctions || function() {
 
         setTutorRecommendationState({
             visible: true,
-            message: '推薦送出後，管理員控制台會出現待審申請卡片。',
+            message: '推薦送出後，合格教師分頁會出現待審申請卡片。',
             messageClass: 'text-orange-700',
             buttonLabel: '推薦此學生',
             buttonDisabled: false
