@@ -659,6 +659,133 @@ async function sendAdminShipmentReminder(adminEmail, pendingList) {
     }
 }
 
+/**
+ * Send auto-grade result to student.
+ */
+async function sendAutogradeResultToStudent(email, studentName, assignmentTitle, score, maxScore, dashboardUrl, runUrl = "") {
+    if (!email) return;
+    const scoreText = Number.isFinite(maxScore) ? `${score}/${maxScore}` : `${score}`;
+    const targetUrl = dashboardUrl || appUrl('/dashboard.html?tab=assignments');
+    const runLinkHtml = runUrl ? `<p style="margin-top: 12px; font-size: 14px;">GitHub 執行紀錄：<a href="${runUrl}" style="color: #4f46e5; text-decoration: none;">查看自動評分流程</a></p>` : '';
+
+    const mailOptions = {
+        from: '"Vibe Coding" <info@vibe-coding.tw>',
+        to: email,
+        subject: `[自動評分更新] "${assignmentTitle}" 成績已同步`,
+        html: getEmailHtmlWrapper(
+            '作業自動評分已更新',
+            `
+                <p>Hi ${studentName || '同學'},</p>
+                <p>您的作業 <strong>${assignmentTitle}</strong> 已完成自動評分，最新分數如下：</p>
+                <div style="background-color: #f0fdf4; border-radius: 12px; padding: 25px; margin: 25px 0; border: 1px solid #dcfce7;">
+                    <p style="margin: 0;"><strong style="color: #166534; font-size: 13px; text-transform: uppercase;">最新分數</strong><br><span style="font-size: 34px; color: #10b981; font-weight: 800;">${scoreText}</span></p>
+                </div>
+                ${renderNextSteps('接下來建議：', [
+                    '先到儀表板確認本次分數與作業狀態。',
+                    '若未達目標分數，依錯誤訊息修正後再次 push。',
+                    '有卡點時，主動向導師提問，聚焦在「哪一段不確定」。'
+                ])}
+                <p style="margin-top: 30px;">
+                    <a href="${targetUrl}" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: bold;">前往查看作業</a>
+                </p>
+                ${runLinkHtml}
+            `,
+            'Vibe Coding 自動評分系統'
+        )
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+    } catch (error) {
+        console.error('Error sending student autograde email:', error);
+    }
+}
+
+/**
+ * Send auto-grade result to assigned tutor.
+ */
+async function sendAutogradeResultToTutor(email, studentName, assignmentTitle, score, maxScore, dashboardUrl, runUrl = "") {
+    if (!email) return;
+    const scoreText = Number.isFinite(maxScore) ? `${score}/${maxScore}` : `${score}`;
+    const targetUrl = dashboardUrl || appUrl('/dashboard.html?tab=assignments');
+    const runLinkHtml = runUrl ? `<p style="margin-top: 12px; font-size: 14px;">GitHub 執行紀錄：<a href="${runUrl}" style="color: #4f46e5; text-decoration: none;">查看自動評分流程</a></p>` : '';
+
+    const mailOptions = {
+        from: '"Vibe Coding" <info@vibe-coding.tw>',
+        to: email,
+        subject: `[自動評分更新] ${studentName || '學生'} - "${assignmentTitle}"`,
+        html: getEmailHtmlWrapper(
+            '學生作業自動評分已更新',
+            `
+                <p>老師您好，</p>
+                <p>學生 <strong>${studentName || '未提供姓名'}</strong> 的作業 <strong>${assignmentTitle}</strong> 已完成自動評分。</p>
+                <div style="background-color: #eff6ff; border-radius: 12px; padding: 25px; margin: 25px 0; border: 1px solid #dbeafe;">
+                    <p style="margin: 0;"><strong style="color: #1d4ed8; font-size: 13px; text-transform: uppercase;">最新分數</strong><br><span style="font-size: 30px; color: #2563eb; font-weight: 800;">${scoreText}</span></p>
+                </div>
+                ${renderNextSteps('建議後續教學動作：', [
+                    '若分數未達標，優先指出 1-2 個最關鍵修正點。',
+                    '請學生先嘗試修正再 push，建立解題迭代節奏。',
+                    '分數達標時，補一則「為何這樣寫是好的」強化理解。'
+                ])}
+                <p style="margin-top: 30px;">
+                    <a href="${targetUrl}" style="display: inline-block; background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%); color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: bold;">前往導師後台</a>
+                </p>
+                ${runLinkHtml}
+            `,
+            'Vibe Coding 教學協作系統'
+        )
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+    } catch (error) {
+        console.error('Error sending tutor autograde email:', error);
+    }
+}
+
+/**
+ * Send shipment completion email to student.
+ */
+async function sendOrderShippedEmail(email, orderId, itemsDesc = "", logistics = {}) {
+    if (!email) return;
+    const dashboardUrl = appUrl('/dashboard.html?tab=overview');
+    const logisticsText = logistics && typeof logistics === 'object'
+        ? Object.entries(logistics).map(([k, v]) => `${k}: ${v}`).join('<br>')
+        : '';
+
+    const mailOptions = {
+        from: '"Vibe Coding" <info@vibe-coding.tw>',
+        to: email,
+        subject: `[出貨通知] 訂單 ${orderId} 已出貨`,
+        html: getEmailHtmlWrapper(
+            '您的教材已出貨',
+            `
+                <p>您好，您的實體教材已完成出貨。</p>
+                <div style="background-color: #f8fafc; padding: 25px; border-radius: 12px; margin: 25px 0; border: 1px solid #e2e8f0;">
+                    <p style="margin: 0 0 10px 0;"><strong>訂單編號：</strong>${orderId}</p>
+                    <p style="margin: 0 0 10px 0;"><strong>出貨品項：</strong>${itemsDesc || '請至儀表板查看'}</p>
+                    ${logisticsText ? `<p style="margin: 0;"><strong>物流資訊：</strong><br>${logisticsText}</p>` : ''}
+                </div>
+                ${renderNextSteps('接下來建議：', [
+                    '到儀表板確認本筆訂單狀態已更新為 SHIPPED。',
+                    '請留意物流到貨通知與取件時效。',
+                    '收到教材後即可開始對應單元實作。'
+                ])}
+                <p style="margin-top: 30px;">
+                    <a href="${dashboardUrl}" style="display: inline-block; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: bold;">前往儀表板查看</a>
+                </p>
+            `,
+            'Vibe Coding 物流通知'
+        )
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+    } catch (error) {
+        console.error('Error sending order shipped email:', error);
+    }
+}
+
 module.exports = {
     sendWelcomeEmail,
     sendPaymentSuccessEmail,
@@ -672,5 +799,8 @@ module.exports = {
     sendAdminAssignmentReminder,
     sendAdminShipmentReminder,
     sendAdminNewApplicationEmail,
-    sendApplicationResultEmail
+    sendApplicationResultEmail,
+    sendAutogradeResultToStudent,
+    sendAutogradeResultToTutor,
+    sendOrderShippedEmail
 };

@@ -26,7 +26,8 @@ const {
     sendWelcomeEmail, sendPaymentSuccessEmail, sendTrialExpiringEmail, sendCourseExpiringEmail,
     sendAssignmentNotification, sendTutorAuthorizationEmail, sendGradingNotification,
     sendStudentLinkedToTutorEmail, sendTutorLinkedToStudentEmail, sendAdminAssignmentReminder,
-    sendAdminNewApplicationEmail, sendApplicationResultEmail
+    sendAdminNewApplicationEmail, sendApplicationResultEmail,
+    sendAutogradeResultToStudent, sendAutogradeResultToTutor, sendOrderShippedEmail
 } = require('./emailService');
 
 admin.initializeApp({
@@ -2849,6 +2850,39 @@ exports.ingestGithubAutograde = onRequest(async (req, res) => {
             })
         }, { merge: true });
 
+        try {
+            const assignmentData = assignmentDoc.data() || {};
+            const dashboardUrl = assignmentData.unitId
+                ? `https://vibe-coding.tw/dashboard.html?unitId=${encodeURIComponent(assignmentData.unitId)}&tab=assignments`
+                : 'https://vibe-coding.tw/dashboard.html?tab=assignments';
+            const assignmentTitle = assignmentData.assignmentTitle || assignmentData.assignmentId || resolvedDocId;
+            const studentEmail = assignmentData.userEmail || assignmentData.studentEmail || '';
+            const studentName = assignmentData.userName || assignmentData.studentName || '';
+            const tutorEmail = assignmentData.assignedTutorEmail || assignmentData.assignedTeacherEmail || '';
+
+            await sendAutogradeResultToStudent(
+                studentEmail,
+                studentName,
+                assignmentTitle,
+                score,
+                Number.isFinite(maxScore) ? maxScore : null,
+                dashboardUrl,
+                autoGrade.runUrl || ''
+            );
+
+            await sendAutogradeResultToTutor(
+                tutorEmail,
+                studentName || studentEmail || '學生',
+                assignmentTitle,
+                score,
+                Number.isFinite(maxScore) ? maxScore : null,
+                dashboardUrl,
+                autoGrade.runUrl || ''
+            );
+        } catch (notifyErr) {
+            console.error("[ingestGithubAutograde] Notification send failed:", notifyErr);
+        }
+
         return res.status(200).json({ success: true, assignmentId: resolvedDocId });
     } catch (error) {
         console.error("ingestGithubAutograde Error:", error);
@@ -3384,6 +3418,23 @@ exports.markOrderShipped = onCall(async (request) => {
             fulfillmentStatus: 'SHIPPED',
             shippedAt: admin.firestore.FieldValue.serverTimestamp()
         });
+
+        try {
+            const orderDoc = await db.collection('orders').doc(orderId).get();
+            if (orderDoc.exists) {
+                const order = orderDoc.data() || {};
+                const studentUid = order.uid;
+                if (studentUid && studentUid !== 'GUEST') {
+                    const userRecord = await admin.auth().getUser(studentUid);
+                    const studentEmail = userRecord?.email || '';
+                    const items = order.items || {};
+                    const itemsDesc = Object.values(items).map(item => item?.name || '教材').join(', ');
+                    await sendOrderShippedEmail(studentEmail, orderId, itemsDesc, order.logistics || {});
+                }
+            }
+        } catch (notifyErr) {
+            console.error(`[markOrderShipped] Failed to send shipped email for ${orderId}:`, notifyErr);
+        }
 
         console.log(`Order ${orderId} marked as SHIPPED by ${uid}`);
         return { success: true };
