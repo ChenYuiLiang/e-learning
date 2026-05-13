@@ -533,7 +533,7 @@
             <!-- Card 3: WiFi Config -->
             <div class="info-card course-card group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col border border-slate-100"
                 data-course-id="cvhofqxc" data-course-name="WiFi 組態設定" data-course-price="0"
-                data-classroom-url="/courses/03-master-wifi-motor.html?tab=wifi">
+                data-classroom-url="/courses/03-master-wifi-motor.html?tab=wifi" data-lock-title="true">
 
                 <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-orange-400 to-amber-500"></div>
 
@@ -604,7 +604,7 @@
             <!-- Card 4: Motor Config -->
             <div class="info-card course-card group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col border border-slate-100"
                 data-course-id="cvhofqxc" data-course-name="馬達 Ramping 調校" data-course-price="0"
-                data-classroom-url="/courses/03-master-wifi-motor.html?tab=motor">
+                data-classroom-url="/courses/03-master-wifi-motor.html?tab=motor" data-lock-title="true">
 
                 <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-red-400 to-pink-500"></div>
 
@@ -992,13 +992,16 @@
                 const cid = card.dataset.courseId;
                 const meta = lessons.find(l => l.courseId === cid || l.id === cid);
                 if (meta) {
-                    card.dataset.courseName = meta.title || meta.courseName || card.dataset.courseName;
+                    const keepTitle = card.dataset.lockTitle === 'true';
+                    if (!keepTitle) {
+                        card.dataset.courseName = meta.title || meta.courseName || card.dataset.courseName;
+                    }
                     card.dataset.coursePrice = meta.price !== undefined ? meta.price : card.dataset.coursePrice;
                     card.dataset.isPhysical = meta.isPhysical !== undefined ? meta.isPhysical : (card.dataset.isPhysical === 'true');
 
                     // Update UI title if exists
                     const titleEl = card.querySelector('h2');
-                    if (titleEl && meta.title) titleEl.textContent = meta.title;
+                    if (!keepTitle && titleEl && meta.title) titleEl.textContent = meta.title;
                 }
             });
             // Update UI after sync
