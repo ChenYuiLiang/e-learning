@@ -588,9 +588,19 @@ function findParentCourseIdByUnit(unitId, lessons = []) {
 }
 
 function findCourseByPageOrUnit(pageId, fileName, lessons = []) {
+    const legacyCourseAliasMap = {
+        '04-master-ai-agents.html': '02-master-ai-agents.html',
+        '04-unit-agent-mode.html': '02-unit-agent-mode.html',
+        '04-unit-web-agents.html': '02-unit-web-agents.html',
+        '04-unit-vibe-coding.html': '02-unit-vibe-coding.html',
+        '02-unit-vibe-coding-intro.html': '03-unit-github-classroom.html',
+        '02-unit-classroom-workflow.html': '03-unit-github-classroom.html',
+        '02-unit-teacher-matrix.html': '03-unit-github-classroom.html'
+    };
     const normalizeCourseFile = (value = '') => {
         if (!value) return '';
-        return String(value).split('/').pop().split('?')[0];
+        const filePart = String(value).split('/').pop().split('?')[0];
+        return legacyCourseAliasMap[filePart] || filePart;
     };
     const normalizedPageId = normalizeCourseFile(pageId);
     const normalizedFileName = normalizeCourseFile(fileName);
