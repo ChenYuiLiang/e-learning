@@ -9,6 +9,7 @@
 - **[🧑‍🏫 導師操作指南](public/tutors.html)**：導師端日常操作與協作流程說明。
 - **[課前準備事項 (Preparation)](public/prepare.html)**：軟硬體環境準備與教材購買指引。
 - **[🗄️ Firestore 結構文件](docs/database.md)**：集合、欄位與遷移備註（以實作為準）。
+- **[💸 多層級分潤規格](docs/recursive-sharing.md)**：分潤公式、上線鏈條、冪等與對帳流程。
 - **[✉️ Email 通知規格](docs/email-notifications.md)**：通知觸發條件、收件者、深連結與異常告警規範。
 - **[🚚 物流管理 MVP](docs/logistics-mvp.md)**：硬體訂單出貨流程與 Admin Logistics 分頁規格。
 - **[✅ 合格教師管理 MVP](docs/tutor-management-mvp.md)**：申請、推薦、審核與授權流程。

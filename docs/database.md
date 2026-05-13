@@ -126,6 +126,8 @@
 | `calculatedAt` | timestamp | 本次計算寫入時間。 |
 | `idempotencyKey` | string | 冪等鍵（`period+orderId+orderItemId+level+tutorEmail` 雜湊），避免重跑重複入帳。 |
 
+> 分潤公式、上線鏈條與月結規則詳見 `docs/recursive-sharing.md`。
+
 ---
 
 ## 7. `activity_logs` 集合
