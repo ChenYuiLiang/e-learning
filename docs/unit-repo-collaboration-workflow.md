@@ -23,6 +23,21 @@
 4. 至少 1 位 Tutor + 1 位 Admin Review 後 merge
 5. merge 後在課堂公告或群組同步「本次單元 repo 改動重點」
 
+### 流程圖：提案到合併
+```mermaid
+flowchart TD
+    A["Student / Tutor / Admin 發現問題"] --> B["建立 Issue（Unit Repo 改進提案）"]
+    B --> C["指派負責人與優先級"]
+    C --> D["建立 PR（README / tutor-guide / tests/workflows）"]
+    D --> E["CI / Autograde / 文件自檢"]
+    E --> F{"審查通過？"}
+    F -- "否" --> G["回到 PR 修正"]
+    G --> E
+    F -- "是" --> H["Tutor Review + Admin Review"]
+    H --> I["Merge 到 main"]
+    I --> J["發布更新重點（課堂/社群）"]
+```
+
 ## 內容改版原則
 - 聚焦可執行：學生看完 README 應知道「現在要做什麼」。
 - 教學可介入：導師看完 tutor guide 應知道「何時、如何介入」。
@@ -52,3 +67,19 @@
 - Dashboard 作業流程
 - Autograde payload 與 webhook 規格
 - 權限模型（admin/user、tutor status）
+
+### 流程圖：內容治理邊界
+```mermaid
+flowchart LR
+    A["Unit Repo 改動提案"] --> B{"改動類型"}
+    B --> C["README.md<br/>學生任務與提交規範"]
+    B --> D["tutor-guide.md / .github/tutor_guide.md<br/>導師引導與介入策略"]
+    B --> E["tests/ + .github/workflows/<br/>驗收與自動評分一致性"]
+    B --> F["系統層變更<br/>Firestore / Dashboard / Webhook / 權限"]
+
+    C --> G["走 Repo PR 流程"]
+    D --> G
+    E --> G
+    F --> H["同步建立系統變更議題"]
+    H --> I["系統 PR + 風險評估 + 部署驗證"]
+```
