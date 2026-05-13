@@ -483,63 +483,6 @@
     </script>
 
     <!-- Assignment Guide (Hidden) -->
-    <section id="assignment-guide" style="display: none;">
-        <h2>二進位資料調校師</h2>
-
-        <div class="assignment-quest">
-            <h3 class="quest-title">任務 1：封裝雙通道馬達指令 (Binary Encoder)</h3>
-            <div class="quest-meta">
-                <span>角色扮演：通訊協定設計師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：35 min</span>
-            </div>
-
-            <div class="quest-workflow">
-                <h4>🛠️ 執行技術流程 (Git Workflow)</h4>
-                <ol>
-                    <li><strong>接受作業</strong>：從 GitHub Classroom 建立專屬程式庫，確認範本已含 <code>parser.js</code> 或等效檔案。</li>
-                    <li><strong>撰寫封裝函式</strong>：建立將左右馬達速度寫入 <code>Uint8Array</code> 的函式，確保值限制在 0 到 255。</li>
-                    <li><strong>驗證輸出</strong>：在頁面或測試檔中印出 Hex 結果，確認索引順序與預期一致。</li>
-                    <li><strong>提交成果</strong>：將測試方式與封包格式說明寫入 README，再 <code>commit</code> / <code>push</code>。</li>
-                </ol>
-            </div>
-
-            <div class="tutor-benchmark">
-                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
-                <ul>
-                    <li>[ ] <strong>封包格式</strong>：左右通道位元組順序是否正確且穩定？</li>
-                    <li>[ ] <strong>範圍控制</strong>：是否有處理超出 1 Byte 範圍的輸入值？</li>
-                    <li>[ ] <strong>驗證紀錄</strong>：README 或測試輸出是否能證明封裝結果正確？</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="assignment-quest" style="margin-top: 2rem;">
-            <h3 class="quest-title">任務 2：還原感測器的 16-bit 數值 (Data Decoder)</h3>
-            <div class="quest-meta">
-                <span>角色扮演：數據逆向工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
-            </div>
-
-            <div class="quest-workflow">
-                <h4>🛠️ 執行技術流程 (Git Workflow)</h4>
-                <ol>
-                    <li><strong>建立測試 Buffer</strong>：先準備一組 2-byte 範例資料，明確標出高位與低位。</li>
-                    <li><strong>使用 DataView 解碼</strong>：用 <code>getUint16()</code> 還原數值，並比較 Big-Endian 與 Little-Endian
-                        的差異。</li>
-                    <li><strong>寫下觀察</strong>：在註解或 README 說明為什麼同一組位元組在不同端序下會得到不同結果。</li>
-                    <li><strong>同步到雲端</strong>：提交解碼函式、測試案例與說明文件。</li>
-                </ol>
-            </div>
-
-            <div class="tutor-benchmark">
-                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
-                <ul>
-                    <li>[ ] <strong>端序理解</strong>：是否能正確說明並切換 Big-Endian / Little-Endian？</li>
-                    <li>[ ] <strong>API 使用</strong>：<code>DataView</code> 的 offset 與參數是否使用正確？</li>
-                    <li>[ ] <strong>測試品質</strong>：是否用具體例子驗證解碼結果，而不是只相信直覺？</li>
-                </ul>
-            </div>
-        </div>
-
-    </section>
 </body>
 
 </html>
