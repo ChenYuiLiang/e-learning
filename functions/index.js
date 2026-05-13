@@ -2398,11 +2398,20 @@ exports.getDashboardData = onCall(async (request) => {
                     // This ensures the student appears under the specific course/unit management listing
                     if (studentStats[sid] && order.items) {
                         if (!studentStats[sid].orderRecords) studentStats[sid].orderRecords = [];
+                        const logistics = order.logistics || {};
                         studentStats[sid].orderRecords.push({
+                            id: doc.id,
                             createdAt: order.createdAt || null,
+                            paidAt: order.paidAt || null,
                             paymentDate: order.paymentDate || null,
                             expiryDate: order.expiryDate || null,
                             fulfillmentStatus: order.fulfillmentStatus || 'PENDING',
+                            logistics,
+                            shippingContact: {
+                                name: logistics.receiverName || logistics.ReceiverName || '',
+                                phone: logistics.receiverPhone || logistics.ReceiverCellPhone || logistics.ReceiverPhone || ''
+                            },
+                            shippingAddress: logistics.storeAddress || logistics.CVSAddress || logistics.ReceiverAddress || '',
                             items: order.items
                         });
                         Object.keys(order.items).forEach(originalCid => {
@@ -2421,6 +2430,61 @@ exports.getDashboardData = onCall(async (request) => {
                 });
             } catch (orderErr) {
                 console.error("Error fetching orders for dashboard:", orderErr);
+            }
+        }
+
+        // [NEW] Student view: include own successful order records (shipment status/details)
+        if (!isManagementView) {
+            try {
+                const myOrdersSnapshot = await db.collection('orders')
+                    .where('uid', '==', uid)
+                    .where('status', '==', 'SUCCESS')
+                    .get();
+
+                if (!studentStats[uid] && usersMap[uid]) {
+                    studentStats[uid] = {
+                        uid,
+                        email: usersMap[uid]?.email || 'Unknown',
+                        name: usersMap[uid]?.name || '',
+                        role: usersMap[uid]?.role || 'user',
+                        totalTime: 0, videoTime: 0, docTime: 0, pageTime: 0, lastActive: null,
+                        courseProgress: {},
+                        unitAssignments: usersMap[uid]?.unitAssignments || {},
+                        orders: [],
+                        orderRecords: []
+                    };
+                }
+
+                myOrdersSnapshot.forEach(doc => {
+                    const order = doc.data() || {};
+                    const logistics = order.logistics || {};
+                    if (!studentStats[uid].orderRecords) studentStats[uid].orderRecords = [];
+                    studentStats[uid].orderRecords.push({
+                        id: doc.id,
+                        createdAt: order.createdAt || null,
+                        paidAt: order.paidAt || null,
+                        paymentDate: order.paymentDate || null,
+                        expiryDate: order.expiryDate || null,
+                        fulfillmentStatus: order.fulfillmentStatus || 'PENDING',
+                        logistics,
+                        shippingContact: {
+                            name: logistics.receiverName || logistics.ReceiverName || '',
+                            phone: logistics.receiverPhone || logistics.ReceiverCellPhone || logistics.ReceiverPhone || ''
+                        },
+                        shippingAddress: logistics.storeAddress || logistics.CVSAddress || logistics.ReceiverAddress || '',
+                        items: order.items || {}
+                    });
+
+                    Object.keys(order.items || {}).forEach(originalCid => {
+                        const cid = legacyMap[originalCid] || originalCid;
+                        if (!studentStats[uid].orders) studentStats[uid].orders = [];
+                        if (!studentStats[uid].orders.includes(cid)) {
+                            studentStats[uid].orders.push(cid);
+                        }
+                    });
+                });
+            } catch (myOrderErr) {
+                console.error("Error fetching student's own orders for dashboard:", myOrderErr);
             }
         }
 

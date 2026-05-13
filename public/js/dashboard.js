@@ -625,6 +625,14 @@ function renderStudentDashboard(data, filterUnitId = null) {
     );
     const hasPhysical = physicalItems.length > 0;
     const isShipped = (myData.orderRecords || []).some(o => o.fulfillmentStatus === 'SHIPPED');
+    const shipmentRecords = (myData.orderRecords || []).filter(o => {
+        const itemIds = Object.keys(o.items || {});
+        return itemIds.some(id => {
+            const lesson = allLessons.find(l => l.id === id);
+            if (lesson?.isPhysical === true) return true;
+            return (o.items?.[id]?.isPhysical === true);
+        });
+    });
 
     container.innerHTML = `
         <div class="mb-6">
@@ -652,6 +660,53 @@ function renderStudentDashboard(data, filterUnitId = null) {
             </div>
             ` : ''}
         </div>
+
+        ${shipmentRecords.length > 0 ? `
+        <div class="card mb-8">
+            <h3 class="text-lg font-bold text-gray-800 mb-4">我的出貨狀態 (My Shipments)</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="text-sm text-gray-500 border-b">
+                            <th class="py-3 px-2">訂單</th>
+                            <th class="py-3 px-2">收件資訊</th>
+                            <th class="py-3 px-2">物流地址</th>
+                            <th class="py-3 px-2 text-center">狀態</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm text-gray-700 divide-y">
+                        ${shipmentRecords.map(o => {
+                            const receiverName = o.shippingContact?.name || o.logistics?.receiverName || o.logistics?.ReceiverName || '未提供';
+                            const receiverPhone = o.shippingContact?.phone || o.logistics?.receiverPhone || o.logistics?.ReceiverCellPhone || o.logistics?.ReceiverPhone || '未提供';
+                            const shippingAddress = o.shippingAddress || o.logistics?.storeAddress || o.logistics?.CVSAddress || o.logistics?.ReceiverAddress || '未提供';
+                            const isDone = o.fulfillmentStatus === 'SHIPPED';
+                            const paidAtText = o.paidAt?.seconds
+                                ? new Date(o.paidAt.seconds * 1000).toLocaleString()
+                                : (o.paymentDate || '-');
+                            return `
+                                <tr class="hover:bg-gray-50">
+                                    <td class="py-3 px-2">
+                                        <div class="font-mono text-xs font-bold text-gray-800">${escapeHtml(o.id || '-')}</div>
+                                        <div class="text-[10px] text-gray-400 mt-0.5">${escapeHtml(paidAtText)}</div>
+                                    </td>
+                                    <td class="py-3 px-2">
+                                        <div class="text-xs text-slate-700 font-semibold">收件人: ${escapeHtml(receiverName)}</div>
+                                        <div class="text-xs text-slate-600">電話: ${escapeHtml(receiverPhone)}</div>
+                                    </td>
+                                    <td class="py-3 px-2 text-xs text-slate-700 break-all">${escapeHtml(shippingAddress)}</td>
+                                    <td class="py-3 px-2 text-center">
+                                        <span class="px-2 py-1 rounded text-xs font-bold ${isDone ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}">
+                                            ${isDone ? '已出貨' : '待出貨'}
+                                        </span>
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        ` : ''}
 
         <!-- My Assignments -->
         <div class="card">
