@@ -23,8 +23,8 @@ graph TD
 | State | Description | Trigger |
 | :--- | :--- | :--- |
 | `PENDING` | Initial state after a recommendation or application is submitted. | Tutor clicks "Recommend Student" in assignment workflow. |
-| `APPROVED` | Applicant is granted tutoring rights for a specific unit. | Admin clicks "Approve" in Admin Console. |
-| `REJECTED` | Application is dismissed. | Admin clicks "Reject" in Admin Console. |
+| `APPROVED` | Applicant is granted tutoring rights for a specific unit. | Admin clicks "Approve" in Tutor Admin tab. |
+| `REJECTED` | Application is dismissed. | Admin clicks "Reject" in Tutor Admin tab. |
 
 ## 3. Workflow Implementation
 
@@ -38,7 +38,7 @@ graph TD
   - Sends candidate-facing notification via `sendTutorRecommendationCandidateEmail`.
 
 ### 3.2 Step 2: Administrative Review (Admin Action)
-- **Interface**: The **Admin Console** tab (`#view-admin`) in the Dashboard.
+- **Interface**: The **Tutor Admin** tab (`#view-admin`) in the Dashboard.
 - **Aggregation**: `getDashboardData` collects all documents in `tutor_applications` where `status === 'pending'`.
 - **Decision Logic**:
     - **Approval**: `decideTutorApplication` updates `tutor_applications` status and writes `users.tutorConfigs[unitId].authorized = true`.

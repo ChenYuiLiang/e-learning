@@ -507,7 +507,7 @@ async function sendAdminNewApplicationEmail(adminEmail, userEmail, unitId) {
                     '完成後確認申請人已收到結果通知。'
                 ])}
                 <p style="margin-top: 30px;">
-                    <a href="${dashboardUrl}" style="display: inline-block; background-color: #ea580c; color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: bold; box-shadow: 0 4px 6px rgba(234, 88, 12, 0.2);">開啟管理控制台</a>
+                    <a href="${dashboardUrl}" style="display: inline-block; background-color: #ea580c; color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: bold; box-shadow: 0 4px 6px rgba(234, 88, 12, 0.2);">開啟合格教師審核</a>
                 </p>
             `,
             'Vibe Coding 自動化管家'
