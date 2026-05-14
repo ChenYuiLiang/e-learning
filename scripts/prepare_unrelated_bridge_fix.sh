@@ -30,9 +30,14 @@ echo "[INFO] Report: $REPORT"
     [[ -z "$bridge_repo" ]] && continue
     [[ "$bridge_repo" =~ ^# ]] && continue
 
-    # Derive template from naming convention: vibe-coding-classroom/vibe-coding-classroom-<unit>-<unit>
+    # Derive template from naming convention:
+    # bridge: vibe-coding-classroom/vibe-coding-classroom-<unit>-<unit>
+    # template: vibe-coding-classroom/<unit>
     repo_tail="${bridge_repo#vibe-coding-classroom/vibe-coding-classroom-}"
-    unit_id="$(echo "$repo_tail" | sed -E 's/(.*)-\1$/\1/')"
+    # Split by "-" and keep the first half tokens as unit id.
+    parts_count="$(awk -F- '{print NF}' <<< "$repo_tail")"
+    half_count=$((parts_count / 2))
+    unit_id="$(awk -F- -v n="$half_count" '{for(i=1;i<=n;i++){printf "%s%s",$i,(i<n?"-":"")}}' <<< "$repo_tail")"
     template_repo="vibe-coding-classroom/${unit_id}"
 
     repo_dir="$WORKDIR/${bridge_repo##*/}"
