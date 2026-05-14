@@ -184,7 +184,7 @@ PRBODY
       fi
 
       set +e
-      pr_url="$(${pr_cmd[@]} 2>/tmp/gh_bridge_pr_err.txt)"
+      pr_url="$("${pr_cmd[@]}" 2>/tmp/gh_bridge_pr_err.txt)"
       pr_rc=$?
       set -e
 
