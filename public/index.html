@@ -6,79 +6,86 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vibe Coding 教學網站</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; }
+        .hero-gradient { background: radial-gradient(circle at top right, #f8fafc 0%, #e0e7ff 100%); }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .section-title-underline { width: 96px; height: 4px; margin: 0 auto 2rem auto; border-radius: 9999px; background: #4f46e5; }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 18px 35px -20px rgba(15, 23, 42, 0.4); }
+    </style>
 </head>
 
-<body class="flex flex-col min-h-screen">
+<body class="bg-slate-50 text-slate-900 overflow-x-hidden flex flex-col min-h-screen">
     <div id="nav-placeholder" data-root="." data-show-auth="true"></div>
     <script type="module" src="js/nav-component.js?v=2026.05.12"></script>
     
 
-    <header
-        class="bg-gradient-to-br from-[#1D3557] to-[#457B9D] text-white py-16 sm:py-24 rounded-b-[3rem] shadow-2xl relative overflow-hidden">
-        <div
-            class="absolute top-0 left-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl">
-        </div>
-        <div
-            class="absolute bottom-0 right-0 w-96 h-96 bg-cyan-400 opacity-10 rounded-full translate-x-1/3 translate-y-1/3 blur-3xl">
-        </div>
+    <header class="relative pt-28 pb-20 hero-gradient overflow-hidden">
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-indigo-600/5 -skew-x-12 translate-x-1/4"></div>
+        <div class="absolute top-0 left-0 w-64 h-64 bg-indigo-200/30 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-cyan-300/20 rounded-full translate-x-1/3 translate-y-1/3 blur-3xl"></div>
 
         <div class="container mx-auto px-4 text-center relative z-10">
-            <h1 class="text-4xl sm:text-6xl font-extrabold mb-4 animate-pulse tracking-tight">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-100 text-indigo-700 text-sm font-bold mb-8">
+                <i class="fa-solid fa-sparkles"></i> VIBE CODING OVERVIEW
+            </div>
+            <h1 class="text-4xl sm:text-6xl font-extrabold mb-4 tracking-tight text-slate-900">
                 Vibe Coding
             </h1>
-            <h2 class="text-xl sm:text-3xl font-light mb-8 text-cyan-200">
+            <h2 class="text-xl sm:text-3xl font-light mb-8 text-indigo-700">
                 瞄準 AI 教育市場的藍海策略
             </h2>
 
-            <div
-                class="mb-8 max-w-sm mx-auto p-2 bg-white/10 backdrop-blur-sm rounded-xl shadow-lg border border-white/20">
+            <div class="mb-8 max-w-sm mx-auto p-2 glass-card rounded-xl shadow-lg">
                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSn2zZn3SPhLGxHFRcR-Tz_4-iBAAjQFztFyg&s"
                     alt="台灣教育科技市場增長趨勢示意圖" class="w-full h-auto rounded-lg">
-                <p class="text-xs text-cyan-100 mt-2">執行摘要：我們正在彌合程式教育與實際應用的鴻溝。</p>
+                <p class="text-xs text-slate-600 mt-2">執行摘要：我們正在彌合程式教育與實際應用的鴻溝。</p>
             </div>
 
-            <p class="text-lg text-blue-50 max-w-4xl mx-auto mb-10 leading-relaxed">
+            <p class="text-lg text-slate-600 max-w-4xl mx-auto mb-10 leading-relaxed">
                 本方案專注於提供創新且具體可見的 <b>Physical AI </b> 教育。透過實作、AI 輔助程式與業界標準的技術，我們不僅教授程式，更培養 AI 時代不可或缺的<b>邏輯思維與創造力</b>。
             </p>
             <a href="tutors.html"
-                class="inline-block bg-yellow-400 text-gray-900 font-bold py-4 px-10 rounded-full text-lg hover:bg-yellow-300 transition duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl">
-                深入了解核心策略 👇
+                class="inline-block px-8 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-xl shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-1 transition-all">
+                深入了解核心策略
             </a>
         </div>
     </header>
 
-    <section class="py-20 bg-white">
+    <section class="py-24 bg-white">
         <div class="container mx-auto px-4">
-            <h3 class="text-3xl font-bold text-center mb-4 text-gray-800">
+            <h3 class="text-3xl md:text-5xl font-bold text-center mb-6 text-slate-900">
                 Vibe Coding 核心價值主張
             </h3>
             <div class="section-title-underline"></div>
             <div class="grid md:grid-cols-4 gap-8">
-                <div class="p-8 text-center vibe-card rounded-2xl bg-white border border-gray-50">
+                <div class="p-8 text-center vibe-card rounded-3xl bg-slate-50 border border-slate-100">
                     <div class="text-6xl mb-6 text-cyan-500 tech-icon">🛠️</div>
                     <h4 class="text-xl font-bold mb-3 text-gray-800">實作與專案導向</h4>
                     <p class="text-gray-600 leading-relaxed">
                         彌合抽象程式概念與具體應用鴻溝，每堂課都有看得見、摸得著的成果。
                     </p>
                 </div>
-                <div class="p-8 text-center vibe-card rounded-2xl bg-white border border-gray-50">
+                <div class="p-8 text-center vibe-card rounded-3xl bg-slate-50 border border-slate-100">
                     <div class="text-6xl mb-6 text-cyan-500 tech-icon">🧠</div>
                     <h4 class="text-xl font-bold mb-3 text-gray-800">AI 輔助程式生成</h4>
                     <p class="text-gray-600 leading-relaxed">
                         運用 AI 輔助工具降低學習門檻，讓學員專注於邏輯與設計，而非語法細節。
                     </p>
                 </div>
-                <div class="p-8 text-center vibe-card rounded-2xl bg-white border border-gray-50">
+                <div class="p-8 text-center vibe-card rounded-3xl bg-slate-50 border border-slate-100">
                     <div class="text-6xl mb-6 text-cyan-500 tech-icon">💡</div>
                     <h4 class="text-xl font-bold mb-3 text-gray-800">培養 AI 關鍵能力</h4>
                     <p class="text-gray-600 leading-relaxed">
                         著重於邏輯思維、問題解決與<b>創造力</b>，為未來職場打下堅實基礎。
                     </p>
                 </div>
-                <div class="p-8 text-center vibe-card rounded-2xl bg-white border border-gray-50">
+                <div class="p-8 text-center vibe-card rounded-3xl bg-slate-50 border border-slate-100">
                     <div class="text-6xl mb-6 text-cyan-500 tech-icon">🚀</div>
                     <h4 class="text-xl font-bold mb-3 text-gray-800">Physical AI 精神</h4>
                     <p class="text-gray-600 leading-relaxed">
@@ -89,9 +96,9 @@
         </div>
     </section>
 
-    <section class="py-20 bg-white">
+    <section class="py-24 bg-slate-50">
         <div class="container mx-auto px-4 text-center">
-            <h3 class="text-3xl font-bold mb-4 text-gray-800">
+            <h3 class="text-3xl md:text-5xl font-bold mb-6 text-slate-900">
                 Vibe Coding 的目標客群 (TA)
             </h3>
             <div class="section-title-underline"></div>
@@ -101,7 +108,7 @@
                 </p>
                 <div class="grid sm:grid-cols-2 gap-8 text-left">
                     <div
-                        class="p-6 bg-green-50 rounded-xl shadow-md border border-green-100 hover:shadow-lg transition">
+                        class="p-6 bg-white rounded-3xl shadow-sm border border-green-100 hover:shadow-lg transition">
                         <h4 class="text-xl font-bold text-green-700 mb-4 border-b border-green-200 pb-2">✅ 產品亮點</h4>
                         <ul class="list-disc pl-5 text-gray-700 space-y-2">
                             <li>教學方法符合現代教育最佳實踐 (Project-Based Learning)。</li>
@@ -112,7 +119,7 @@
                                     搖桿實例</a></li>
                         </ul>
                     </div>
-                    <div class="p-6 bg-red-50 rounded-xl shadow-md border border-red-100 hover:shadow-lg transition">
+                    <div class="p-6 bg-white rounded-3xl shadow-sm border border-red-100 hover:shadow-lg transition">
                         <h4 class="text-xl font-bold text-red-700 mb-4 border-b border-red-200 pb-2">❌ 我們不只是 (排除市場競爭者)
                         </h4>
                         <ul class="list-disc pl-5 text-gray-700 space-y-2">
@@ -126,16 +133,16 @@
         </div>
     </section>
 
-    <section class="py-20 bg-white">
+    <section class="py-24 bg-white">
         <div class="container mx-auto px-4">
-            <h3 class="text-3xl font-bold text-center mb-4 text-gray-800">
+            <h3 class="text-3xl md:text-5xl font-bold text-center mb-6 text-slate-900">
                 課程連結
             </h3>
             <div class="section-title-underline"></div>
             <div class="grid md:grid-cols-4 gap-8">
 
                 <a href="prepare.html"
-                    class="block p-8 text-center vibe-card rounded-2xl bg-white border border-gray-50 group hover:border-cyan-300 transition-all duration-300">
+                    class="block p-8 text-center vibe-card card-hover rounded-3xl bg-slate-50 border border-slate-100 group hover:border-cyan-300 transition-all duration-300">
                     <div class="flex justify-center mb-6">
                         <svg class="w-14 h-14 text-cyan-500 group-hover:text-cyan-600 group-hover:scale-110 transition-transform duration-300"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -155,7 +162,7 @@
                 </a>
 
                 <a href="started.html"
-                    class="block p-8 text-center vibe-card rounded-2xl bg-white border border-gray-50 group hover:border-cyan-300 transition-all duration-300">
+                    class="block p-8 text-center vibe-card card-hover rounded-3xl bg-slate-50 border border-slate-100 group hover:border-cyan-300 transition-all duration-300">
                     <div class="flex justify-center mb-6">
                         <svg class="w-14 h-14 text-cyan-500 group-hover:text-cyan-600 group-hover:scale-110 transition-transform duration-300"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -175,7 +182,7 @@
                 </a>
 
                 <a href="basic.html"
-                    class="block p-8 text-center vibe-card rounded-2xl bg-white border border-gray-50 group hover:border-cyan-300 transition-all duration-300">
+                    class="block p-8 text-center vibe-card card-hover rounded-3xl bg-slate-50 border border-slate-100 group hover:border-cyan-300 transition-all duration-300">
                     <div class="flex justify-center mb-6">
                         <svg class="w-14 h-14 text-cyan-500 group-hover:text-cyan-600 group-hover:scale-110 transition-transform duration-300"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -195,7 +202,7 @@
                 </a>
 
                 <a href="advanced.html"
-                    class="block p-8 text-center vibe-card rounded-2xl bg-white border border-gray-50 group hover:border-cyan-300 transition-all duration-300">
+                    class="block p-8 text-center vibe-card card-hover rounded-3xl bg-slate-50 border border-slate-100 group hover:border-cyan-300 transition-all duration-300">
                     <div class="flex justify-center mb-6">
                         <svg class="w-14 h-14 text-cyan-500 group-hover:text-cyan-600 group-hover:scale-110 transition-transform duration-300"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
