@@ -87,7 +87,18 @@ echo "[INFO] Report: $REPORT"
       set -e
 
       if [[ $pr_rc -ne 0 ]]; then
-        if rg -q "label.*not found" /tmp/gh_manual_sync_pr_err.txt; then
+        label_not_found=1
+        if command -v rg >/dev/null 2>&1; then
+          if rg -q "label.*not found" /tmp/gh_manual_sync_pr_err.txt; then
+            label_not_found=0
+          fi
+        else
+          if grep -Eq "label.*not found" /tmp/gh_manual_sync_pr_err.txt; then
+            label_not_found=0
+          fi
+        fi
+
+        if [[ $label_not_found -eq 0 ]]; then
           pr_url=$(gh pr create --repo "$bridge_repo" --base main --head "$fix_branch" \
             --title "$pr_title" \
             --body "$pr_body")
