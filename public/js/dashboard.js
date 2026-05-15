@@ -1471,7 +1471,7 @@ async function vibeRefreshReadmeContent(filterUnitId) {
 
     try {
         const repoName = filterUnitId.replace(/\.html$/, '');
-        const GITHUB_ORG = 'vibe-coding-classroom';
+        const GITHUB_ORG = 'vibe-coding-template';
 
         for (const placeholder of readmePlaceholders) {
             const isSettingsTab = placeholder.id === 'github-readme-placeholder-settings';
