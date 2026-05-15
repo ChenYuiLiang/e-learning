@@ -60,8 +60,8 @@ graph TD
 
 ### Firestore Collections
 - `tutor_applications`: Source of truth for all tutor requests and review status.
-- `tutor_configs`: Stores unit-level tutor authorizations and GitHub Classroom URLs.
-- `users`: Tracks `tutorConfigs`; `tutorApplications` is a legacy-compatible snapshot.
+- `users.tutorConfigs`: Stores unit-level tutor authorizations and GitHub Classroom URLs.
+- `users`: Also keeps `tutorApplications` as a legacy-compatible snapshot.
 
 ### Cloud Functions
 - `getDashboardData`: Aggregates pending applications for the admin view.
@@ -78,6 +78,7 @@ graph TD
 - `docs/email-notifications.md` (notification matrix and runbook)
 - `docs/classroom-bridge-sync-workflow.md` (template -> bridge sync SOP)
 - `docs/template-org-migration-runbook.md` (source/publish layer policy)
+- `docs/admin-invite-binding-tool.md` (admin invite-link binding lookup)
 
 ## 7. Invite URL Validation (Updated 2026-05-15)
 為避免推薦綁定錯誤到不相干單元，系統在多個入口採用一致的 GitHub Classroom 邀請連結檢查：

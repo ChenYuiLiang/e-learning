@@ -20,7 +20,7 @@ graph TD
 ## 2. Fulfillment Lifecycle States
 | State | Description | Trigger |
 | :--- | :--- | :--- |
-| `PENDING` | Default state for successful orders containing physical items. | `onPaymentSuccess` trigger. |
+| `PENDING` | Default state for successful orders containing physical items. | `paymentNotify` success flow. |
 | `SHIPPED` | Order has been processed and handed over to the logistics provider. | Admin clicks "Mark as Shipped" in Logistics Tab. |
 | `ARCHIVED` | Completed and historic orders (Future expansion). | Manual or automated cleanup. |
 
@@ -67,12 +67,12 @@ An atomic Cloud Function that transitions an order's `fulfillmentStatus` to `SHI
 ### 5.2 Student Confirmation (`sendPaymentSuccessEmail`)
 - **Trigger**: Immediate post-payment.
 - **Protocol**: Notifies the student of successful hardware registration.
-- **Deep Link**: Points to `${APP_BASE_URL}/dashboard.html?tab=overview` where the student can monitor their personal shipment status.
+- **Deep Link**: Points to `${APP_BASE_URL}/dashboard.html?tab=overview`（學生在 Overview 檢視個人出貨狀態卡片）。
 
 ### 5.3 Student Shipment Notice (`sendOrderShippedEmail`)
 - **Trigger**: Admin marks order as shipped (`markOrderShipped`).
 - **Protocol**: Notifies student that hardware order is now `SHIPPED`, including order/item summary and logistics metadata (if available).
-- **Deep Link**: Points to `${APP_BASE_URL}/dashboard.html?tab=overview`.
+- **Deep Link**: Points to `${APP_BASE_URL}/dashboard.html?tab=overview`（與目前學生端 UI 一致）。
 
 ## 6. Implementation Notes
 - **Zero-Cost Strategy**: Relies on Cloud Functions `onCall` and `Firestore` triggers without expensive 3rd party logistics API polling (manual transition to `SHIPPED`).

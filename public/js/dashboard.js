@@ -1,4 +1,4 @@
-console.log("Dashboard Script v2026.04.07.V14.10.3_FIX_404 Loaded");
+console.log("Dashboard Script v2026.05.15.V23.INVITE_BINDING_TOOL Loaded");
 // alert("Dashboard Script v6 Loaded"); // Uncomment if needed for hard debugging
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
