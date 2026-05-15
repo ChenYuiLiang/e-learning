@@ -1228,6 +1228,10 @@ window.handleAssignmentClick = function (courseId, unitId, assignmentUrl = null)
                 finalUrl = inviteLink[myEmail] || inviteLink.default || Object.values(inviteLink)[0];
             }
             if (finalUrl) {
+                if (isLikelyGitHubClassroomLink(finalUrl) && !isValidGitHubClassroomInviteUrl(normalizeGitHubClassroomInviteUrl(finalUrl))) {
+                    alert("此單元設定的 Classroom 連結格式不正確，請到課程設定修正為 https://classroom.github.com/a/xxxxx");
+                    return;
+                }
                 window.open(finalUrl, '_blank');
                 return;
             }
@@ -1259,6 +1263,10 @@ window.handleAssignmentClick = function (courseId, unitId, assignmentUrl = null)
             }
 
             if (access.classroomUrl) {
+                if (isLikelyGitHubClassroomLink(access.classroomUrl) && !isValidGitHubClassroomInviteUrl(normalizeGitHubClassroomInviteUrl(access.classroomUrl))) {
+                    alert("此單元設定的 Classroom 連結格式不正確，請通知管理員/老師修正。");
+                    return;
+                }
                 window.open(access.classroomUrl, '_blank');
                 return;
             }
@@ -2395,14 +2403,19 @@ window.maybeHandleTutorRecommendationInviteAction = window.maybeHandleTutorRecom
     if (!appEntry) return;
     if (appEntry.status !== 'awaiting_candidate_link') return;
 
-    const inviteUrl = window.prompt('請貼上此單元的 GitHub Classroom 邀請連結（classroom.github.com/a/...）：', '');
-    if (!inviteUrl || !inviteUrl.trim()) return;
+    const inviteUrlRaw = window.prompt('請貼上此單元的 GitHub Classroom 邀請連結（classroom.github.com/a/...）：', '');
+    if (!inviteUrlRaw || !inviteUrlRaw.trim()) return;
+    const inviteUrl = normalizeGitHubClassroomInviteUrl(inviteUrlRaw);
+    if (!isValidGitHubClassroomInviteUrl(inviteUrl)) {
+        alert('連結格式錯誤。請使用 GitHub Classroom 邀請連結格式：https://classroom.github.com/a/xxxxx');
+        return;
+    }
 
     try {
         const submitLink = httpsCallable(functions, 'submitTutorRecommendationInviteLink');
         await submitLink({
             applicationId,
-            classroomInviteUrl: inviteUrl.trim()
+            classroomInviteUrl: inviteUrl
         });
 
         vibeShowToast('已送出 Classroom 邀請連結，管理員已收到審核通知。', 'success');
@@ -2417,6 +2430,25 @@ window.maybeHandleTutorRecommendationInviteAction = window.maybeHandleTutorRecom
         alert(`送出失敗：${error.message || '請稍後再試'}`);
     }
 };
+
+function normalizeGitHubClassroomInviteUrl(raw = '') {
+    try {
+        const url = new URL(String(raw).trim());
+        if (url.hostname !== 'classroom.github.com') return String(raw).trim();
+        return `${url.origin}${url.pathname}`.replace(/\/+$/, '');
+    } catch (_) {
+        return String(raw).trim();
+    }
+}
+
+function isValidGitHubClassroomInviteUrl(url = '') {
+    return /^https:\/\/classroom\.github\.com\/a\/[A-Za-z0-9_-]+\/?$/.test(String(url).trim());
+}
+
+function isLikelyGitHubClassroomLink(url = '') {
+    const s = String(url || '').toLowerCase();
+    return s.includes('classroom.github.com') || s.includes('github.com/classroom');
+}
 
 // Utils
 window.escapeHtml = window.escapeHtml || function(text) {
@@ -2895,6 +2927,7 @@ window.saveAllSettings = async function (clickedBtn = null) {
     const configsByCourse = {};
 
     // Collect data from DOM
+    let invalidEntry = null;
     document.querySelectorAll('.unit-config-card').forEach(card => {
         const cid = card.dataset.courseId;
         const fname = card.dataset.fileName;
@@ -2904,8 +2937,13 @@ window.saveAllSettings = async function (clickedBtn = null) {
         const tutorMap = {};
         card.querySelectorAll('.assignment-link-row').forEach(row => {
             const tid = row.querySelector('.assignment-id-input').value.trim();
-            const url = row.querySelector('.assignment-url-input').value.trim();
+            const rawUrl = row.querySelector('.assignment-url-input').value.trim();
+            const url = normalizeGitHubClassroomInviteUrl(rawUrl);
             if (tid && url) {
+                if (!isValidGitHubClassroomInviteUrl(url)) {
+                    invalidEntry = { unit: fname, tutor: tid, url };
+                    return;
+                }
                 tutorMap[tid] = url;
             }
         });
@@ -2914,6 +2952,15 @@ window.saveAllSettings = async function (clickedBtn = null) {
             configsByCourse[cid][fname] = tutorMap;
         }
     });
+
+    if (invalidEntry) {
+        alert(`連結格式錯誤\\n單元：${invalidEntry.unit}\\nTutor：${invalidEntry.tutor}\\n請使用：https://classroom.github.com/a/xxxxx`);
+        btns.forEach(btn => {
+            btn.disabled = false;
+            btn.textContent = originalTexts.get(btn) || "儲存變更";
+        });
+        return;
+    }
 
     try {
         const saveTutorConfigs = httpsCallable(functions, 'saveTutorConfigs');

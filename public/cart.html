@@ -199,6 +199,46 @@
             return null;
         }
 
+        function extractClassroomInviteCandidates(urlConfig) {
+            if (!urlConfig) return [];
+            if (typeof urlConfig === 'string') return [normalizeClassroomInviteUrl(urlConfig)];
+            if (typeof urlConfig === 'object') {
+                return Object.values(urlConfig)
+                    .filter(v => typeof v === 'string' && v.trim())
+                    .map(v => normalizeClassroomInviteUrl(v));
+            }
+            return [];
+        }
+
+        function getCartItemUnitCandidates(itemId, item = {}) {
+            return [
+                normalizeId(item.unitId || ''),
+                normalizeId(item.sourceUnitId || ''),
+                normalizeId(itemId || '')
+            ].filter(Boolean);
+        }
+
+        async function isKnownInviteForCartItem(inviteUrl, targetItemId) {
+            const normalizedInvite = normalizeClassroomInviteUrl(inviteUrl);
+            if (!isClassroomInviteUrl(normalizedInvite)) return false;
+
+            const cart = JSON.parse(localStorage.getItem('vibeCodingCart') || '{}');
+            const targetItem = cart[targetItemId] || {};
+            const unitCandidates = getCartItemUnitCandidates(targetItemId, targetItem);
+            if (unitCandidates.length === 0) return false;
+
+            const lessons = await getLessonsList();
+            for (const lesson of lessons) {
+                const urlMap = lesson?.githubClassroomUrls || {};
+                for (const unitId of unitCandidates) {
+                    const cfg = urlMap[unitId] || urlMap[`${unitId}.html`] || null;
+                    const candidates = extractClassroomInviteCandidates(cfg);
+                    if (candidates.includes(normalizedInvite)) return true;
+                }
+            }
+            return false;
+        }
+
         function addCartItem(productId, productName, productPrice, isPhysical, options = {}) {
             let cart = JSON.parse(localStorage.getItem('vibeCodingCart') || '{}');
             if (cart[productId]) return false;
@@ -317,14 +357,6 @@
                     const input = document.querySelector(`.item-promo-input[data-product-id="${itemId}"]`);
                     const status = document.querySelector(`.item-promo-status[data-product-id="${itemId}"]`);
                     const code = input?.value?.trim() || '';
-                    if (!code) {
-                        if (status) {
-                            status.textContent = '請先輸入老師作業連結。';
-                            status.className = 'item-promo-status mt-2 text-sm text-amber-600';
-                            status.classList.remove('hidden');
-                        }
-                        return;
-                    }
                     await applyReferralLink(code, {
                         targetItemId: itemId,
                         inputElement: input,
@@ -442,6 +474,21 @@
         // B-2. 老師作業連結 / Referral Link 邏輯
         // ===============================================
         const DEFAULT_MENTOR = 'info@vibe-coding.tw';
+        const CLASSROOM_INVITE_RE = /^https:\/\/classroom\.github\.com\/a\/[A-Za-z0-9_-]+\/?$/;
+
+        function normalizeClassroomInviteUrl(raw = '') {
+            try {
+                const url = new URL(String(raw).trim());
+                if (url.hostname !== 'classroom.github.com') return String(raw).trim();
+                return `${url.origin}${url.pathname}`.replace(/\/+$/, '');
+            } catch (_) {
+                return String(raw).trim();
+            }
+        }
+
+        function isClassroomInviteUrl(raw = '') {
+            return CLASSROOM_INVITE_RE.test(String(raw).trim());
+        }
 
         function clearItemPromo(itemId) {
             const cart = JSON.parse(localStorage.getItem('vibeCodingCart') || '{}');
@@ -457,10 +504,11 @@
         }
 
         async function applyReferralLink(code, options = {}) {
-            const isUrl = code.toLowerCase().includes('github.com/classroom/');
+            const lowerCode = (code || '').toLowerCase();
+            const isUrl = lowerCode.includes('github.com/classroom/') || lowerCode.includes('classroom.github.com/');
             // URLs should NOT be forced to uppercase
-            const normalizedCode = isUrl ? code.trim() : (code || '').trim().toUpperCase();
-            
+            const normalizedCode = isUrl ? normalizeClassroomInviteUrl(code.trim()) : (code || '').trim().toUpperCase();
+
             const {
                 silent = false,
                 keepEditable = false,
@@ -469,7 +517,41 @@
                 statusElement = null,
                 buttonElement = null
             } = options;
-            if (!normalizedCode) return { success: false, message: '缺少老師作業連結' };
+
+            if (!normalizedCode) {
+                if (targetItemId) {
+                    clearItemPromo(targetItemId);
+                }
+                if (statusElement) {
+                    statusElement.textContent = '已清除老師作業連結';
+                    statusElement.className = 'item-promo-status mt-2 text-sm text-slate-500';
+                }
+                return { success: true, message: 'cleared' };
+            }
+            if (isUrl) {
+                const normalizedInvite = normalizeClassroomInviteUrl(normalizedCode);
+                if (!isClassroomInviteUrl(normalizedInvite)) {
+                    const msg = '連結格式錯誤，請使用 GitHub Classroom 邀請連結：https://classroom.github.com/a/xxxxx';
+                    if (statusElement) {
+                        statusElement.textContent = `❌ ${msg}`;
+                        statusElement.className = 'item-promo-status mt-2 text-sm text-red-600';
+                        statusElement.classList.remove('hidden');
+                    }
+                    return { success: false, message: msg };
+                }
+                if (targetItemId) {
+                    const known = await isKnownInviteForCartItem(normalizedInvite, targetItemId);
+                    if (!known) {
+                        const msg = '此邀請連結不在目前系統課程單元設定中，或不屬於此購物車課程項目。';
+                        if (statusElement) {
+                            statusElement.textContent = `❌ ${msg}`;
+                            statusElement.className = 'item-promo-status mt-2 text-sm text-red-600';
+                            statusElement.classList.remove('hidden');
+                        }
+                        return { success: false, message: msg };
+                    }
+                }
+            }
 
             if (inputElement) inputElement.value = normalizedCode;
             if (buttonElement) {
@@ -551,7 +633,7 @@
             const unitId = params.get('unitId') || courseId;
             const rawReferral = (params.get('referralLink') || params.get('promoCode') || '').trim();
             const isUrl = rawReferral.toLowerCase().includes('github.com/classroom/') || rawReferral.toLowerCase().includes('classroom.github.com/');
-            const referralLink = isUrl ? rawReferral : rawReferral;
+            const referralLink = isUrl ? normalizeClassroomInviteUrl(rawReferral) : rawReferral;
             const fallbackName = params.get('courseName') || courseId;
             const fallbackPrice = parseInt(params.get('coursePrice') || '0', 10) || 0;
             const fallbackPhysical = params.get('isPhysical') === 'true';
@@ -588,6 +670,10 @@
                 : `「${productName}」原本已在購物車中，已保留現有品項。`;
 
             if (referralLink) {
+                if (isUrl && !isClassroomInviteUrl(referralLink)) {
+                    setPrefillStatus('推薦連結格式錯誤，請使用 GitHub Classroom 邀請連結：https://classroom.github.com/a/xxxxx', 'error');
+                    return;
+                }
                 // Find the UI elements for the item that was just added/rendered
                 const targetInput = document.querySelector(`.item-promo-input[data-product-id="${courseId}"]`);
                 const targetStatus = document.querySelector(`.item-promo-status[data-product-id="${courseId}"]`);

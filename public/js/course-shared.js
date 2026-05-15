@@ -846,7 +846,7 @@ window.closeAssignmentLinkModal = function () {
 window.submitBindTutorAction = async function () {
     const btn = document.getElementById('btn-bind-tutor');
     const urlInput = document.getElementById('link-referral-url');
-    const referralLink = urlInput.value.trim();
+    const referralLink = normalizeGitHubClassroomInviteUrl(urlInput.value.trim());
     const courseId = document.getElementById('link-course-id').value;
     const unitId = document.getElementById('link-unit-id').value;
     const assignmentId = document.getElementById('link-assignment-id').value;
@@ -854,6 +854,15 @@ window.submitBindTutorAction = async function () {
 
     if (!referralLink) {
         alert("請輸入連結！");
+        return;
+    }
+    if (!isValidGitHubClassroomInviteUrl(referralLink)) {
+        alert("連結格式錯誤，請使用 GitHub Classroom 邀請連結：https://classroom.github.com/a/xxxxx");
+        return;
+    }
+    const knownForUnit = await isKnownInviteForUnit(unitId, referralLink);
+    if (!knownForUnit) {
+        alert("此邀請連結不在目前單元的既有設定中，請確認貼上的是該課程單元的 GitHub Classroom 邀請連結。");
         return;
     }
 
@@ -970,6 +979,10 @@ window.openSubmissionModal = async function (assignmentId, title) {
     // If we have a link and Shift is NOT held, navigate directly (User Request)
     const isShiftPressed = window.event && window.event.shiftKey;
     if (shouldUseDirectClassroomLink && classroomUrl && !isShiftPressed) {
+        if (isLikelyGitHubClassroomLink(classroomUrl) && !isValidGitHubClassroomInviteUrl(normalizeGitHubClassroomInviteUrl(classroomUrl))) {
+            alert("此單元設定的 Classroom 連結格式不正確，請通知管理員/老師修正。");
+            return;
+        }
         console.log(`[CourseShared] Direct navigation to: ${classroomUrl}`);
         
         // [NEW] Automated Assignment Tracking
@@ -1019,6 +1032,58 @@ function resolveClassroomUrl(urlConfig) {
         return urlConfig.default || Object.values(urlConfig)[0];
     }
     return null;
+}
+
+function normalizeGitHubClassroomInviteUrl(raw = '') {
+    try {
+        const url = new URL(String(raw).trim());
+        if (url.hostname !== 'classroom.github.com') return String(raw).trim();
+        return `${url.origin}${url.pathname}`.replace(/\/+$/, '');
+    } catch (_) {
+        return String(raw).trim();
+    }
+}
+
+function isValidGitHubClassroomInviteUrl(url = '') {
+    return /^https:\/\/classroom\.github\.com\/a\/[A-Za-z0-9_-]+\/?$/.test(String(url).trim());
+}
+
+function isLikelyGitHubClassroomLink(url = '') {
+    const s = String(url || '').toLowerCase();
+    return s.includes('classroom.github.com') || s.includes('github.com/classroom');
+}
+
+function extractClassroomInviteCandidates(urlConfig) {
+    if (!urlConfig) return [];
+    if (typeof urlConfig === 'string') return [normalizeGitHubClassroomInviteUrl(urlConfig)];
+    if (typeof urlConfig === 'object') {
+        return Object.values(urlConfig)
+            .filter(v => typeof v === 'string' && v.trim())
+            .map(v => normalizeGitHubClassroomInviteUrl(v));
+    }
+    return [];
+}
+
+async function isKnownInviteForUnit(unitId, inviteUrl) {
+    const normalizedInvite = normalizeGitHubClassroomInviteUrl(inviteUrl);
+    if (!isValidGitHubClassroomInviteUrl(normalizedInvite)) return false;
+    try {
+        if (!globalLessonsData || globalLessonsData.length === 0) {
+            globalLessonsData = await vibeFetchLessons();
+        }
+        const unitCandidates = [unitId, String(unitId || '').replace(/\.html$/, '')].filter(Boolean);
+        for (const course of (globalLessonsData || [])) {
+            const map = course?.githubClassroomUrls || {};
+            for (const key of unitCandidates) {
+                const cfg = map[key] || map[`${key}.html`] || null;
+                const candidates = extractClassroomInviteCandidates(cfg);
+                if (candidates.includes(normalizedInvite)) return true;
+            }
+        }
+    } catch (err) {
+        console.warn('[CourseShared] Invite existence check failed:', err);
+    }
+    return false;
 }
 
 window.closeSubmissionModal = function () {
