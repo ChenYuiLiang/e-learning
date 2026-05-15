@@ -567,18 +567,9 @@
                     }
                     return { success: false, message: msg };
                 }
-                if (targetItemId) {
-                    const known = await isKnownInviteForCartItem(normalizedInvite, targetItemId);
-                    if (!known) {
-                        const msg = '此邀請連結不在目前系統課程單元設定中，或不屬於此購物車課程項目。';
-                        if (statusElement) {
-                            statusElement.textContent = `❌ ${msg}`;
-                            statusElement.className = 'item-promo-status mt-2 text-sm text-red-600';
-                            statusElement.classList.remove('hidden');
-                        }
-                        return { success: false, message: msg };
-                    }
-                }
+                // [V16.2] Client-side pre-check removed to allow dynamic referral_links lookup via Cloud Function
+                // This prevents issues where new tutor links aren't yet in the static metadata_lessons cache.
+
             }
 
             if (inputElement) inputElement.value = normalizedCode;
