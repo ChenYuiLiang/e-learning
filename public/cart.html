@@ -221,12 +221,28 @@
             return [];
         }
 
-        function getCartItemUnitCandidates(itemId, item = {}) {
-            return [
+        function getCartItemUnitCandidates(itemId, item = {}, lessons = []) {
+            const seeds = [
                 normalizeId(item.unitId || ''),
                 normalizeId(item.sourceUnitId || ''),
                 normalizeId(itemId || '')
             ].filter(Boolean);
+
+            const foundUnits = new Set(seeds);
+            const foundCourseIds = new Set();
+
+            for (const lesson of lessons) {
+                const courseId = normalizeId(lesson?.courseId || '');
+                const units = (Array.isArray(lesson?.courseUnits) ? lesson.courseUnits : []).map(u => normalizeId(u));
+                const hits = seeds.some(seed => seed === courseId || units.includes(seed));
+                if (!hits) continue;
+
+                if (courseId) foundCourseIds.add(courseId);
+                units.forEach(u => u && foundUnits.add(u));
+            }
+
+            foundCourseIds.forEach(cid => foundUnits.add(cid));
+            return Array.from(foundUnits);
         }
 
         async function isKnownInviteForCartItem(inviteUrl, targetItemId) {
@@ -235,10 +251,10 @@
 
             const cart = JSON.parse(localStorage.getItem('vibeCodingCart') || '{}');
             const targetItem = cart[targetItemId] || {};
-            const unitCandidates = getCartItemUnitCandidates(targetItemId, targetItem);
+            const lessons = await getLessonsList();
+            const unitCandidates = getCartItemUnitCandidates(targetItemId, targetItem, lessons);
             if (unitCandidates.length === 0) return false;
 
-            const lessons = await getLessonsList();
             for (const lesson of lessons) {
                 const urlMap = lesson?.githubClassroomUrls || {};
                 for (const unitId of unitCandidates) {
@@ -333,7 +349,6 @@
                     <div class="mt-4 rounded-lg border border-purple-200 bg-white px-3 py-3">
                         <div class="flex items-center justify-between gap-3 mb-2">
                             <h3 class="text-sm font-bold text-gray-800">🎟️ 教學作業連結 (GitHub Link)</h3>
-                            ${item.referralLink ? `<button class="clear-item-promo-btn text-xs font-semibold text-gray-500 hover:text-gray-700" data-product-id="${id}">清除連結</button>` : ''}
                         </div>
                         <div class="flex flex-col gap-2 sm:flex-row">
                             <input type="text"
@@ -377,11 +392,6 @@
                 });
             });
 
-            document.querySelectorAll('.clear-item-promo-btn').forEach(button => {
-                button.addEventListener('click', (event) => {
-                    clearItemPromo(event.currentTarget.dataset.productId);
-                });
-            });
         }
 
         renderCartItems();
@@ -501,19 +511,6 @@
             return CLASSROOM_INVITE_RE.test(String(raw).trim());
         }
 
-        function clearItemPromo(itemId) {
-            const cart = JSON.parse(localStorage.getItem('vibeCodingCart') || '{}');
-            if (!cart[itemId]) return;
-            cart[itemId] = {
-                ...cart[itemId],
-                referralLink: null,
-                referredTutorEmail: null,
-                referredTutorName: null
-            };
-            localStorage.setItem('vibeCodingCart', JSON.stringify(cart));
-            renderCartItems();
-        }
-
         async function applyReferralLink(code, options = {}) {
             const lowerCode = (code || '').toLowerCase();
             const isUrl = lowerCode.includes('github.com/classroom/') || lowerCode.includes('classroom.github.com/');
@@ -530,14 +527,16 @@
             } = options;
 
             if (!normalizedCode) {
-                if (targetItemId) {
-                    clearItemPromo(targetItemId);
+                if (targetItemId && inputElement) {
+                    const cart = JSON.parse(localStorage.getItem('vibeCodingCart') || '{}');
+                    inputElement.value = cart[targetItemId]?.referralLink || '';
                 }
                 if (statusElement) {
-                    statusElement.textContent = '已清除老師作業連結';
+                    statusElement.textContent = '未變更綁定：可先留白，或輸入有效 GitHub Classroom 邀請連結再套用。';
                     statusElement.className = 'item-promo-status mt-2 text-sm text-slate-500';
+                    statusElement.classList.remove('hidden');
                 }
-                return { success: true, message: 'cleared' };
+                return { success: true, message: 'unchanged' };
             }
             if (isUrl) {
                 const normalizedInvite = normalizeClassroomInviteUrl(normalizedCode);

@@ -40,3 +40,13 @@ scripts/sync_classroom_bridge_repos.sh \
 2. 既有學生 repo 請再跑 `scripts/sync_classroom_repos.sh` 回補。
 3. 同步完成後，請用測試帳號重新接受 assignment 驗證 starter 內容。
 4. 若 bridge 先有修正，請同步回 template 開 PR/issue；template 合併後再重跑 bridge sync，避免雙方長期漂移。
+
+## 今日執行補充（2026-05-15）
+1. 常見失敗：`non-fast-forward` push rejected
+   - 原因：同名同步分支已存在且遠端較新。
+   - 建議：改用新的分支名（例如加上 timestamp）重推，避免覆蓋既有 PR 討論脈絡。
+2. 常見失敗：`refusing to merge unrelated histories`
+   - 代表 bridge 與 template 無共同祖先，不能直接 merge 策略同步。
+   - 建議改走 manual-sync（以檔案對齊建立獨立 PR）流程。
+3. `classroom-bridge-sync` label 不存在時
+   - PR 可先建立，不阻塞同步；後續再於 repo 建立 label 即可。

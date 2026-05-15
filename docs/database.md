@@ -46,6 +46,7 @@
 | `createdAt` / `updatedAt` | timestamp | 建立/更新時間。 |
 
 > 推薦綁定採 item-level：`items[itemId].referralLink` 與 `items[itemId].referredTutorEmail`。
+> 購物車允許推薦連結留白，後續可再補上正確的 GitHub Classroom 邀請連結。
 > 實體商品下單會在 `initiatePayment` 驗證物流必要欄位（收件人、電話、門市/地址）；若歷史資料或例外流程造成缺漏，`paymentNotify` 會標記 `logisticsMissing=true` 供後台追蹤。
 
 ---

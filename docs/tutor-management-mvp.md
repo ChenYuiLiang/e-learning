@@ -76,3 +76,17 @@ graph TD
 
 ## 6. Related Specs
 - `docs/email-notifications.md` (notification matrix and runbook)
+- `docs/classroom-bridge-sync-workflow.md` (template -> bridge sync SOP)
+- `docs/template-org-migration-runbook.md` (source/publish layer policy)
+
+## 7. Invite URL Validation (Updated 2026-05-15)
+為避免推薦綁定錯誤到不相干單元，系統在多個入口採用一致的 GitHub Classroom 邀請連結檢查：
+
+- 格式檢查：
+  - 僅接受 `https://classroom.github.com/a/<invite-code>`。
+  - 會先做 URL normalize（去掉多餘 query/hash、標準化尾斜線）再驗證。
+- 單元對應檢查：
+  - 在課程單元頁（Assignments/Settings 綁定）提交時，會比對該單元既有授權設定與已知映射，避免把連結綁到錯誤單元。
+  - 在購物車填寫時，會依「本次購買課程項目 -> 對應 courseUnits」縮小可接受範圍，再檢查連結是否可對應到該範圍。
+- 購物車留白策略：
+  - 購物車允許不填推薦連結。
