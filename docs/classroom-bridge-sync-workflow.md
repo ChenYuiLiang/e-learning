@@ -3,6 +3,10 @@
 ## 目的
 將中間層 Classroom repo（例如 `vibe-coding-classroom-...`）從 canonical template repo 同步更新，避免學生後續接受作業時仍拿到舊內容。
 
+目前建議來源/發佈分工：
+- `template_repo`: `vibe-coding-template/*`（source）
+- `bridge_repo`: `vibe-coding-classroom/vibe-coding-classroom-*`（publish）
+
 ## 工具
 - `scripts/sync_classroom_bridge_repos.sh`
 - 範例 CSV: `docs/examples/classroom-bridge-sync-sample.csv`
@@ -35,3 +39,4 @@ scripts/sync_classroom_bridge_repos.sh \
 1. 這只更新中間層 repo，不會自動更新既有學生 repo。
 2. 既有學生 repo 請再跑 `scripts/sync_classroom_repos.sh` 回補。
 3. 同步完成後，請用測試帳號重新接受 assignment 驗證 starter 內容。
+4. 若 bridge 先有修正，請同步回 template 開 PR/issue；template 合併後再重跑 bridge sync，避免雙方長期漂移。

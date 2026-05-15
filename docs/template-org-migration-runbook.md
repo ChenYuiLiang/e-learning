@@ -4,8 +4,8 @@
 
 ## 1. 目前架構（建議）
 
-- Source layer: `template` repos（教材內容來源）
-- Publish layer: `bridge` repos（GitHub Classroom starter code 實際指向）
+- Source layer: `vibe-coding-template/*`（教材內容來源，public + template）
+- Publish layer: `vibe-coding-classroom/vibe-coding-classroom-*`（bridge 發佈層，GitHub Classroom starter code 實際指向）
 - Student layer: student repos（學員接受邀請後建立）
 
 > 若 Classroom assignment 的 starter code 已指向 bridge repo，學生拿到的是 bridge 當下內容，而非 template 直接內容。
@@ -26,6 +26,17 @@
 3. 合併 bridge PR
 4. 新一批學生接受邀請後拿到新內容
 
+## 3.1 Bridge 異動提案回流（Downstream -> Upstream）
+
+當教學現場先在 bridge 修正內容時，採用以下流程：
+
+1. 在 bridge repo 先開 PR（快速修復現場問題）
+2. 同步建立回 upstream template 的 PR 或 issue（標註 `source: bridge feedback`）
+3. 由 template maintainer 決定是否吸收
+4. 若吸收，template 合併後再跑一次 template -> bridge 同步，保持兩層一致
+
+> 原則：bridge 是發佈層；template 才是長期來源層（source of truth）。
+
 ## 4. 無停機遷移流程（需要改 org 時）
 
 1. 建立新 template org（例如 `vibe-coding-template`）
@@ -41,6 +52,7 @@
 - `VC_AUTOGRADE_URL` / `VC_AUTOGRADE_TOKEN` secrets 是否齊全
 - 學生 push 後 `assignments.autoGrade.score` 是否更新
 - Dashboard 是否能正確開啟作業入口
+- 新老師建立 assignment 時 starter code 是否指向 bridge repo（非 student repo）
 
 ## 6. 風險與避免方式
 
@@ -50,4 +62,3 @@
   - 避免：先雙軌驗證，再分批切換
 - 風險：舊資料夾帶入無效 invite URL
   - 避免：前端 + 後端都驗證 `https://classroom.github.com/a/...`
-
