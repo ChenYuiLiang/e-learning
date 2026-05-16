@@ -21,6 +21,7 @@
 - **[🧱 Classroom 中間層同步流程](docs/classroom-bridge-sync-workflow.md)**：批次將 `vibe-coding-classroom-*` 中間層 repo 從 canonical template repo 同步更新。
 - **[🛡️ Classroom 安全檢查](docs/classroom-safety-preflight.md)**：發佈前檢查 starter repo 是否含解答/教師專用檔案，避免外洩。
 - **[🧭 Dashboard Legacy 遷移計畫](docs/dashboard-legacy-migration-plan.md)**：舊欄位相容、ID 歸一化與遷移策略。
+- **[🧹 Firestore Legacy ID 遷移](docs/legacy-id-migration.md)**：舊課程/單元 ID 批次轉換為新 canonical ID（含 dry-run / apply 報表流程）。
 
 ---
 
