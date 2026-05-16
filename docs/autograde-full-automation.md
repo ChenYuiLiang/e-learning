@@ -13,6 +13,19 @@ Make GitHub Classroom grading write back to Vibe Coding automatically with no ma
 Prepare CSV from sample:
 - [autograde-repo-mapping.sample.csv](/Users/roverchen/Documents/Apps/vibe-coding-tw/docs/examples/autograde-repo-mapping.sample.csv)
 
+If you want to auto-fill mapping from Firestore assignments, generate one with:
+```bash
+node functions/scripts/export_autograde_mapping_from_firestore.js \
+  --bridge-csv=docs/examples/classroom-bridge-sync-units-only.csv \
+  --output=docs/examples/autograde-repo-mapping.firestore.csv
+```
+
+Then apply:
+```bash
+scripts/setup_autograde_repo_mapping.sh --dry-run docs/examples/autograde-repo-mapping.firestore.csv
+scripts/setup_autograde_repo_mapping.sh --apply docs/examples/autograde-repo-mapping.firestore.csv
+```
+
 Run:
 ```bash
 scripts/setup_autograde_repo_mapping.sh --dry-run /path/to/mapping.csv
