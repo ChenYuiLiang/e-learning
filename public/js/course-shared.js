@@ -1283,7 +1283,7 @@ async function findCourseIdByUnit(fileName) {
     }
     
     // Fallback logic
-    const fallbackId = fileName.startsWith('04-') ? 'ai-agents-vibe' : (fileName.split('-')[0] + "-master");
+    const fallbackId = fileName.startsWith('02-') ? '04-master-ai-agents.html' : (fileName.split('-')[0] + "-master");
     console.log(`[CourseShared] Fallback resolution for ${fileName} -> ${fallbackId}`);
     return fallbackId;
 }

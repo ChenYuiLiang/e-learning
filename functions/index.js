@@ -45,7 +45,6 @@ function normalizeLegacyId(value) {
         '03': 'a7smdfeq',
         '04': 'hkdq5j3m',
         '05': 'io5rxgxl',
-        'ai-agents-vibe': 'ai-agents-vibe',
         '01-master-identity': '01-master-getting-started.html'
     };
     return map[value] || value;
@@ -693,13 +692,34 @@ function findCourseByPageOrUnit(pageId, fileName, lessons = []) {
     };
     const normalizedPageId = normalizeCourseFile(pageId);
     const normalizedFileName = normalizeCourseFile(fileName);
+    const normalizedPageIdNoHtml = normalizedPageId.replace(/\.html$/i, '');
+    const normalizedFileNameNoHtml = normalizedFileName.replace(/\.html$/i, '');
 
-    return lessons.find(l =>
-        l.courseId === pageId ||
-        l.courseId === normalizedPageId ||
-        (normalizedFileName && Array.isArray(l.courseUnits) && l.courseUnits.includes(normalizedFileName)) ||
-        (normalizedFileName && l.classroomUrl && normalizeCourseFile(l.classroomUrl) === normalizedFileName)
-    ) || null;
+    return lessons.find(l => {
+        const lessonCourseId = String(l.courseId || '');
+        const lessonCourseIdNoHtml = lessonCourseId.replace(/\.html$/i, '');
+        const units = Array.isArray(l.courseUnits) ? l.courseUnits : [];
+        const unitMatch = units.some(unit => {
+            const normalizedUnit = normalizeCourseFile(String(unit || ''));
+            return unitIdsMatch(normalizedUnit, normalizedFileName) ||
+                unitIdsMatch(normalizedUnit, normalizedFileNameNoHtml) ||
+                unitIdsMatch(normalizedUnit, normalizedPageId) ||
+                unitIdsMatch(normalizedUnit, normalizedPageIdNoHtml);
+        });
+
+        const classroomUnitMatch = !!(l.classroomUrl && (
+            unitIdsMatch(normalizeCourseFile(l.classroomUrl), normalizedFileName) ||
+            unitIdsMatch(normalizeCourseFile(l.classroomUrl), normalizedFileNameNoHtml) ||
+            unitIdsMatch(normalizeCourseFile(l.classroomUrl), normalizedPageId) ||
+            unitIdsMatch(normalizeCourseFile(l.classroomUrl), normalizedPageIdNoHtml)
+        ));
+
+        return unitIdsMatch(lessonCourseId, pageId) ||
+            unitIdsMatch(lessonCourseId, normalizedPageId) ||
+            unitIdsMatch(lessonCourseIdNoHtml, normalizedPageIdNoHtml) ||
+            unitMatch ||
+            classroomUnitMatch;
+    }) || null;
 }
 
 function collectPurchasedUnitIds(items = {}, lessons = []) {
@@ -946,16 +966,18 @@ async function upsertStudentUnitAssignment(db, studentUid, unitId, tutorEmail, a
 }
 
 async function resolveStudentAssignmentAccess(db, uid, courseId, unitId, lessons = [], tutorMode = false) {
+    const normalizedCourseId = normalizeLegacyId(courseId || '');
+    const normalizedUnitId = normalizeLegacyId(unitId || '');
     // 1. Fetch User Data and Security Role
     const userDoc = await db.collection('users').doc(uid).get();
     const userData = userDoc.exists ? (userDoc.data() || {}) : {};
     const isAdminRole = userData.role === 'admin';
-    const assignedTutorEmail = userData.unitAssignments?.[resolveCanonicalUnitId(unitId, lessons)] || null;
+    const assignedTutorEmail = userData.unitAssignments?.[resolveCanonicalUnitId(normalizedUnitId, lessons)] || null;
 
     // 2. Resolve Canonical Context
-    const canonicalUnitId = resolveCanonicalUnitId(unitId, lessons);
-    const course = findCourseByPageOrUnit(courseId, canonicalUnitId, lessons) || findCourseByPageOrUnit(courseId, unitId, lessons);
-    const effectiveCourseId = course ? course.courseId : (courseId || findParentCourseIdByUnit(canonicalUnitId, lessons));
+    const canonicalUnitId = resolveCanonicalUnitId(normalizedUnitId, lessons);
+    const course = findCourseByPageOrUnit(normalizedCourseId, canonicalUnitId, lessons) || findCourseByPageOrUnit(normalizedCourseId, normalizedUnitId, lessons);
+    const effectiveCourseId = course ? course.courseId : (normalizedCourseId || findParentCourseIdByUnit(canonicalUnitId, lessons));
     const isPhysicalProduct = !!(course && course.isPhysical === true);
 
     // [V13.6] Special Physical Product Enforcement
@@ -1114,7 +1136,8 @@ exports.serveCourse = onRequest(async (req, res) => {
     const legacyCourseAliasMap = {
         '02-unit-vibe-coding-intro.html': '03-unit-github-classroom.html',
         '02-unit-classroom-workflow.html': '03-unit-github-classroom.html',
-        '02-unit-teacher-matrix.html': '03-unit-github-classroom.html'
+        '02-unit-teacher-matrix.html': '03-unit-github-classroom.html',
+        '02-master-ai-agents.html': '04-master-ai-agents.html'
     };
     const normalizeLegacyAlias = (value = '') => {
         if (!value) return value;
@@ -1194,7 +1217,10 @@ exports.serveCourse = onRequest(async (req, res) => {
                 lessons = await getLessons();
 
                 // Find the course by pageId/courseId or scopePart
+                const normalizedPageId = normalizeCourseFile(pageId || '');
                 const course = lessons.find(l =>
+                    l.courseId === pageId ||
+                    l.courseId === normalizedPageId ||
                     l.courseId === normalizedScopePart ||
                     normalizeCourseFile(l.classroomUrl || '') === normalizedScopePart
                 );
@@ -1221,7 +1247,10 @@ exports.serveCourse = onRequest(async (req, res) => {
         }
 
         if (!isAuthorizedScope) {
+            const normalizedPageId = normalizeCourseFile(pageId || '');
             const manualFallback = lessons.find(l =>
+                l.courseId === pageId ||
+                l.courseId === normalizedPageId ||
                 l.courseUnits &&
                 (l.courseUnits.includes(normalizedScopePart) || l.courseUnits.includes(scopePart))
             );
@@ -2133,7 +2162,6 @@ exports.getDashboardData = onCall(async (request) => {
         '03': 'a7smdfeq',
         '04': 'hkdq5j3m',
         '05': 'io5rxgxl',
-        'ai-agents-vibe': 'ai-agents-vibe', // Explicit mapping for new course
         '01-master-identity': '01-master-getting-started.html'
     };
 
