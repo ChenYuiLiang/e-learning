@@ -39,7 +39,7 @@
     <!-- Content Area (Iframe) -->
     <div class="flex-grow w-full relative">
         <iframe id="content-frame" src="" class="w-full h-full border-0 absolute inset-0 bg-gray-50 option-opacity"
-            onload="resizeIframe(this)"></iframe>
+            onload="this.style.opacity='1'"></iframe>
     </div>
 
     <script>
@@ -93,15 +93,10 @@
                 // Construct final URL
                 iframe.src = query ? `${url}${separator}${query}` : url;
 
-                iframe.onload = () => {
-                    iframe.style.opacity = '1';
-                };
             }, 300);
         }
 
-        // Auto-sizing logic for Iframe is tricky if cross-origin, but here it is same-origin.
-        // However, we want the iframe to just fill the viewport minus the header.
-        // CSS `absolute inset-0` on `flex-grow` container handles this if parent is flex-col h-screen.
+        // Keep iframe full-fill behavior consistent with other master pages.
     </script>
 
 </body>

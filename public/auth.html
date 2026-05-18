@@ -126,13 +126,31 @@
                 }
 
                 const isTutorMode = localStorage.getItem('adminTutorMode') === 'true';
-                const result = await checkAuthFunction({ 
-                    pageId: courseId,
+                const isFreeHint = String(price || '') === '0';
+                const primaryPageId = courseId || fileName;
+                const fallbackPageId = fileName || courseId;
+
+                let result = await checkAuthFunction({
+                    pageId: primaryPageId,
                     fileName: fileName,
                     tutorMode: isTutorMode
                 });
 
-                if (result.data && result.data.authorized) {
+                // 免費課程常用前端 alias id（如 *-free），若找不到則改以 fileName 再試一次。
+                if ((!result?.data?.authorized) && fallbackPageId && fallbackPageId !== primaryPageId && isFreeHint) {
+                    console.warn("[Auth] Primary pageId check failed on free course alias. Retrying with fileName as pageId.", {
+                        primaryPageId,
+                        fallbackPageId,
+                        fileName
+                    });
+                    result = await checkAuthFunction({
+                        pageId: fallbackPageId,
+                        fileName: fileName,
+                        tutorMode: isTutorMode
+                    });
+                }
+
+                if (result?.data?.authorized) {
                     // 驗證成功！
                     const token = result.data.token;
                     let finalUrl = decodeURIComponent(targetUrl);

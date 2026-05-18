@@ -387,8 +387,8 @@
             
             <!-- Card 0.5A: AI Agent Mode (FREE) -->
             <div class="info-card course-card group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col border border-slate-100"
-                data-course-id="ai-agents-vibe" data-course-name="AI Agent 模式實務" data-course-price="0"
-                data-classroom-url="/courses/04-master-ai-agents.html?tab=mode">
+                data-course-id="02-master-ai-agents.html" data-course-name="AI Agent 模式實務" data-course-price="0"
+                data-classroom-url="/courses/02-master-ai-agents.html?tab=mode">
 
                 <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-purple-500 to-indigo-600"></div>
 
@@ -435,8 +435,8 @@
 
             <!-- Card 0.5B: Web-based AI Agents (FREE) -->
             <div class="info-card course-card group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col border border-slate-100"
-                data-course-id="ai-agents-vibe" data-course-name="網頁版 AI 代理人實務" data-course-price="0"
-                data-classroom-url="/courses/04-master-ai-agents.html?tab=web">
+                data-course-id="02-master-ai-agents.html" data-course-name="網頁版 AI 代理人實務" data-course-price="0"
+                data-classroom-url="/courses/02-master-ai-agents.html?tab=web">
 
                 <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
 
@@ -483,8 +483,8 @@
 
             <!-- Card 0.5C: Vibe Coding Practice (FREE) -->
             <div class="info-card course-card group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col border border-slate-100"
-                data-course-id="ai-agents-vibe" data-course-name="Vibe Coding 實戰" data-course-price="0"
-                data-classroom-url="/courses/04-master-ai-agents.html?tab=vibe">
+                data-course-id="02-master-ai-agents.html" data-course-name="Vibe Coding 實戰" data-course-price="0"
+                data-classroom-url="/courses/02-master-ai-agents.html?tab=vibe">
 
                 <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-purple-600 to-pink-500"></div>
 
@@ -904,6 +904,10 @@
                     }
                     window.location.href = `${AUTH_URL}?url=${encodeURIComponent(classroomUrl)}&id=${courseId}&price=${coursePrice}`;
                 };
+            } else if (status === 'NOT_LOGGED_IN') {
+                btn.textContent = isFreeCourse ? '👤 請先登入 (免費)' : '👤 請先登入';
+                btn.className = `${baseBtnClass} bg-indigo-600 hover:bg-indigo-700 text-white`;
+                btn.onclick = handleLogin;
             } else if (status === 'UNAUTHORIZED' || status === 'ERROR') {
                 if (isFreeCourse) {
                     btn.textContent = '👤 請先登入 (免費)';
@@ -916,19 +920,6 @@
                         handleAddToCartConfirmation(courseId, courseName, coursePrice, isPhysical);
                     };
                 }
-            } else if (status === 'NOT_LOGGED_IN') {
-                if (isFreeCourse) {
-                    btn.textContent = '👤 請先登入 (免費)';
-                    btn.className = `${baseBtnClass} bg-indigo-600 hover:bg-indigo-700 text-white`;
-                    btn.onclick = handleLogin;
-                } else {
-                    btn.textContent = `🛒 加入購物車 (${priceText})`;
-                    btn.className = `${baseBtnClass} bg-indigo-600 hover:bg-indigo-700 text-white`;
-                    btn.onclick = () => {
-                        handleAddToCartConfirmation(courseId, courseName, coursePrice, isPhysical);
-                    };
-                }
-
             } else if (status === 'LOADING') {
                 btn.innerHTML = `
                     <span class="flex items-center justify-center gap-2">

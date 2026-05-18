@@ -947,7 +947,28 @@ function renderAdminDashboard(data, filterUnitId = null) {
 
     const tbody = document.getElementById('student-table-body');
     tbody.innerHTML = sortedStudents.map(s => {
-        const courses = s.courseProgress || {};
+        const courseIdAliasMap = {
+            'start-01-master-web-app': 'ydb63bg',
+            'start-02-master-web-ble': 'a45cwlak',
+            'start-03-master-remote-control': 'a7smdfeq',
+            'start-04-master-touch-events': 'hkdq5j3m',
+            'start-05-master-joystick-lab': 'io5rxgxl'
+        };
+        const coursesRaw = s.courseProgress || {};
+        const courses = Object.entries(coursesRaw).reduce((acc, [key, value]) => {
+            const canonicalKey = courseIdAliasMap[key] || key;
+            const prev = acc[canonicalKey] || { total: 0, video: 0, doc: 0, page: 0, units: {} };
+            acc[canonicalKey] = {
+                ...prev,
+                ...(value || {}),
+                total: (prev.total || 0) + (value?.total || 0),
+                video: (prev.video || 0) + (value?.video || 0),
+                doc: (prev.doc || 0) + (value?.doc || 0),
+                page: (prev.page || 0) + (value?.page || 0),
+                units: { ...(prev.units || {}), ...(value?.units || {}) }
+            };
+            return acc;
+        }, {});
 
         // [Fix] Filter stats based on courseId
         let displayTotal = s.totalTime;
@@ -998,36 +1019,36 @@ function renderAdminDashboard(data, filterUnitId = null) {
         });
 
         // Generate Course Detail Rows
-        // 1. Definition of "Starter Course" (入門課程) - 5 units
-        const starterMasters = [
-            'start-01-master-web-app',
-            'start-02-master-web-ble',
-            'start-03-master-remote-control',
-            'start-04-master-touch-events',
-            'start-05-master-joystick-lab'
+        // 1. Definition of "Starter Course" (入門課程) - canonical courseIds only
+        const starterCourseIds = [
+            'ydb63bg',
+            'a45cwlak',
+            'a7smdfeq',
+            'hkdq5j3m',
+            'io5rxgxl'
         ];
         const starterTitles = {
-            'start-01-master-web-app': 'Web App 遙控器設計',
-            'start-02-master-web-ble': 'Web BLE 整合實務',
-            'start-03-master-remote-control': '遠端控制邏輯',
-            'start-04-master-touch-events': '觸控事件處理',
-            'start-05-master-joystick-lab': '搖桿控制實務'
+            'ydb63bg': 'Web App 遙控器設計',
+            'a45cwlak': 'Web BLE 整合實務',
+            'a7smdfeq': '遠端控制邏輯',
+            'hkdq5j3m': '觸控事件處理',
+            'io5rxgxl': '搖桿控制實務'
         };
 
         // 2. Definition of "Prepare" units (課前準備)
         const prepareCids = [
             'github-classroom-free',
-            'ai-agents-vibe',
+            '02-master-ai-agents.html',
             'cvhofqxc'              // WiFi & Motor
         ];
         const prepareTitles = {
             'github-classroom-free': 'GitHub Classroom & Vibe Coding 實務',
-            'ai-agents-vibe': 'AI 代理人與 Vibe Coding 實務',
+            '02-master-ai-agents.html': 'AI 代理人與 Vibe Coding 實務',
             'cvhofqxc': 'WiFi 組態設定'
         };
         
         // Combine into "Always Show" list
-        const showAlways = new Set([...starterMasters, ...prepareCids]);
+        const showAlways = new Set([...starterCourseIds, ...prepareCids]);
         const allCourseIds = new Set(Object.keys(courses));
         showAlways.forEach(cid => allCourseIds.add(cid));
 
@@ -1037,11 +1058,12 @@ function renderAdminDashboard(data, filterUnitId = null) {
             const cleanTitle = courseTitle.replace('course-', '').replace('unit-', '');
             
             let statusLabel = '';
-            const isStarter = starterMasters.includes(cid);
+            const isStarter = starterCourseIds.includes(cid);
             const isPrepare = prepareCids.includes(cid);
-            
-            if (orderItemMap[cid]) {
-                statusLabel = `<span class="text-emerald-600 font-semibold ml-2">繳費至：${orderItemMap[cid]}</span>`;
+            const paidUntil = orderItemMap[cid];
+
+            if (paidUntil) {
+                statusLabel = `<span class="text-emerald-600 font-semibold ml-2">繳費至：${paidUntil}</span>`;
             } else if (isStarter) {
                 if (isTrialActive) {
                     statusLabel = `<span class="text-blue-600 font-semibold ml-2">免費試用(至${trialExpiryStr})</span>`;

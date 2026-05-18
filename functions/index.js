@@ -1136,8 +1136,7 @@ exports.serveCourse = onRequest(async (req, res) => {
     const legacyCourseAliasMap = {
         '02-unit-vibe-coding-intro.html': '03-unit-github-classroom.html',
         '02-unit-classroom-workflow.html': '03-unit-github-classroom.html',
-        '02-unit-teacher-matrix.html': '03-unit-github-classroom.html',
-        '02-master-ai-agents.html': '04-master-ai-agents.html'
+        '02-unit-teacher-matrix.html': '03-unit-github-classroom.html'
     };
     const normalizeLegacyAlias = (value = '') => {
         if (!value) return value;
