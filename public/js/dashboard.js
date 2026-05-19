@@ -1984,6 +1984,7 @@ window.renderAdminConsole = window.renderAdminConsole || function() {
                                             <tr class="bg-orange-50/50 text-orange-700 border-b border-orange-100 uppercase tracking-tighter font-black">
                                                 <th class="py-2.5 px-4">姓名 / Name</th>
                                                 <th class="py-2.5 px-4">Email</th>
+                                                <th class="py-2.5 px-4">Classroom 邀請連結</th>
                                                 <th class="py-2.5 px-4">合格時間 / Qualified At</th>
                                                 <th class="py-2.5 px-4 text-right">操作</th>
                                             </tr>
@@ -1994,6 +1995,15 @@ window.renderAdminConsole = window.renderAdminConsole || function() {
                                     const details = unitDocConfig.tutorDetails?.[email] || {};
                                     const displayEmail = email.includes('@') ? email : (details.email || email);
                                     const name = details.name || displayEmail.split('@')[0];
+                                    const unitUrls = unitDocConfig.githubClassroomUrls || {};
+                                    const inviteUrlRaw =
+                                        unitUrls[displayEmail] ||
+                                        unitUrls[email] ||
+                                        details.assignmentUrl ||
+                                        details.githubClassroomUrl ||
+                                        unitUrls.default ||
+                                        '';
+                                    const inviteUrl = typeof inviteUrlRaw === 'string' ? inviteUrlRaw.trim() : '';
                                     const time = details.qualifiedAt
                                         ? new Date(details.qualifiedAt).toLocaleString('zh-TW', { hour12: false })
                                         : '—';
@@ -2002,6 +2012,12 @@ window.renderAdminConsole = window.renderAdminConsole || function() {
                                             <tr class="hover:bg-orange-50/20 transition-colors group/row">
                                                 <td class="py-2.5 px-4 font-bold text-gray-800">${escapeHtml(name)}</td>
                                                 <td class="py-2.5 px-4 font-mono text-gray-500">${escapeHtml(displayEmail)}</td>
+                                                <td class="py-2.5 px-4 font-mono text-[10px]">
+                                                    ${inviteUrl
+                                                        ? `<a href="${escapeHtml(inviteUrl)}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline break-all">${escapeHtml(inviteUrl)}</a>`
+                                                        : '<span class="text-gray-300 italic">尚未設定</span>'
+                                                    }
+                                                </td>
                                                 <td class="py-2.5 px-4 text-gray-400">${escapeHtml(time)}</td>
                                                 <td class="py-2.5 px-4 text-right">
                                                     <button onclick="handleUnitTutorAuth('${lesson.courseId}', '${unitFile}', '${displayEmail}', 'remove', '${lesson.courseId}')" 
@@ -2012,7 +2028,7 @@ window.renderAdminConsole = window.renderAdminConsole || function() {
                                             </tr>
                                         `;
                                 }).join('')
-                                : '<tr><td colspan="4" class="py-8 text-center text-gray-300 italic">目前無核心授權導師</td></tr>'
+                                : '<tr><td colspan="5" class="py-8 text-center text-gray-300 italic">目前無核心授權導師</td></tr>'
                             }
                                         </tbody>
                                     </table>

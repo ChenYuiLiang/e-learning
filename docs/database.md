@@ -104,6 +104,7 @@
 - 建議固定使用 `assignments/{userId_assignmentId}`。
 - `submitAssignment` 第一次寫入時即建立該 docId（至少 `currentStatus=started`）。
 - `ingestGithubAutograde` 成功回寫分數後，系統會自動嘗試回填 GitHub Actions variable：`VC_ASSIGNMENT_DOC_ID=<docId>`，讓後續 workflow 可直接帶 identifier 回寫。
+- Admin TutorMode 測試入口不會自動建立 `started` 紀錄，避免觸發學生付款授權檢查。
 
 ---
 

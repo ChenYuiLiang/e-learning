@@ -4168,16 +4168,19 @@ exports.bindTutorByPromotionCode = onCall(async (request) => {
 
     const db = admin.firestore();
     const uid = auth.uid;
+    const requesterRole = await getRole(uid);
 
     try {
         const lessons = await getLessons();
         const canonicalUnitId = resolveCanonicalUnitId(unitIdRaw, lessons);
         const effectiveCourseId = findParentCourseIdByUnit(canonicalUnitId, lessons) || courseIdRaw;
 
-        // Payment authorization gate stays the same.
-        const access = await resolveStudentAssignmentAccess(db, uid, effectiveCourseId, canonicalUnitId, lessons);
-        if (!access.authorized) {
-            throw new HttpsError('permission-denied', '尚未取得此單元之付款授權。');
+        // Admin tutor-mode debugging/support flow should not be blocked by student payment gate.
+        if (requesterRole !== 'admin') {
+            const access = await resolveStudentAssignmentAccess(db, uid, effectiveCourseId, canonicalUnitId, lessons);
+            if (!access.authorized) {
+                throw new HttpsError('permission-denied', '尚未取得此單元之付款授權。');
+            }
         }
 
         const DEFAULT_TUTOR_EMAIL = 'rover.k.chen@gmail.com';

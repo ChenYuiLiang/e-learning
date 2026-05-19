@@ -11,6 +11,7 @@ Make GitHub Classroom grading write back to Vibe Coding automatically with no ma
 - Backend:
   - `ingestGithubAutograde` 接收 webhook 後，會解析 payload 並將分數回寫至 `assignments` 集合的 `autoGrade` 欄位。
   - `submitAssignment` 在學生第一次開始作業時即建立 `assignments/{docId}`，規則為：`docId = userId_assignmentId`。
+  - **Admin TutorMode 特例**：Admin 在 TutorMode 測試作業入口時，前端不會自動送出 `status=started`，避免誤觸學生付款授權檢查與產生測試噪音紀錄。
   - `ingestGithubAutograde` 成功解析作業後，會自動回填該 repo 的 GitHub Actions variable：`VC_ASSIGNMENT_DOC_ID=<docId>`，讓後續評分回寫更穩定。
   - 系統會透過 Webhook 內的 repository 等資訊自動解析並比對學生的作業記錄。若配對失敗或存在多筆相同的作業記錄，會回傳錯誤並發送管理員通知信。
 

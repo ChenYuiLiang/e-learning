@@ -1079,7 +1079,7 @@ window.openSubmissionModal = async function (assignmentId, title, options = {}) 
         console.log(`[CourseShared] Direct navigation to: ${classroomUrl}`);
         
         // [NEW] Automated Assignment Tracking
-        if (typeof window.firebaseSubmitAssignment === 'function') {
+        if (typeof window.firebaseSubmitAssignment === 'function' && !isAdminTutorModeActive()) {
             window.firebaseSubmitAssignment({
                 courseId: courseId,
                 unitId: fileName,
@@ -1144,6 +1144,14 @@ function isValidGitHubClassroomInviteUrl(url = '') {
 function isLikelyGitHubClassroomLink(url = '') {
     const s = String(url || '').toLowerCase();
     return s.includes('classroom.github.com') || s.includes('github.com/classroom');
+}
+
+function isAdminTutorModeActive() {
+    try {
+        return localStorage.getItem('adminTutorMode') === 'true';
+    } catch (_) {
+        return false;
+    }
 }
 
 function buildSubmitFailureMessage(rawMessage = '', submitUrl = '') {
