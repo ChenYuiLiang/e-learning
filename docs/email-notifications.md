@@ -56,7 +56,7 @@ It is the source of truth for:
    - Verify `MAIL_USER` and `MAIL_PASS`.
    - Check Cloud Functions logs for transporter/auth errors.
 2. If autograde alert spam appears:
-   - Check GitHub payload mapping (`assignmentDocId` or `userId+assignmentId`).
+   - Check GitHub payload mapping (`userId+unitId`).
    - Verify `GITHUB_WEBHOOK_SECRET` signature setup.
 3. If admin links open wrong tab:
    - Verify `APP_BASE_URL` and deep link query params in templates.

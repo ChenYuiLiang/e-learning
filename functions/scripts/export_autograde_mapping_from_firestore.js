@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Build autograde mapping CSV by merging bridge repo list with Firestore assignments.
+ * Build autograde bootstrap CSV by merging bridge repo list with Firestore assignments.
  *
  * Usage:
  *   node functions/scripts/export_autograde_mapping_from_firestore.js \
@@ -154,11 +154,12 @@ async function main() {
   const { byAssignmentId, byAssignmentKey } = await loadAssignmentsIndex();
 
   const out = [];
-  out.push("repo,assignment_doc_id,user_id,assignment_id,candidate_count,selected_status");
+  out.push("repo,unit_id,user_id,candidate_count,selected_status");
 
   for (const line of lines.slice(1)) {
     const [repo] = line.split(",");
     const assignmentId = extractAssignmentIdFromBridgeRepo(repo);
+    const unitId = assignmentId;
     const unitKey = normalizeUnitKey(assignmentId);
 
     let candidates = byAssignmentId.get(assignmentId) || [];
@@ -167,16 +168,14 @@ async function main() {
     }
     const best = pickBestCandidate(candidates, preferredStatuses);
 
-    const docId = best ? best.docId : "";
     const userId = best ? best.userId : "";
     const status = best ? best.currentStatus : "";
 
     out.push(
       [
         repo,
-        docId,
+        unitId,
         userId,
-        assignmentId,
         String(candidates.length),
         status,
       ].join(",")
@@ -186,7 +185,10 @@ async function main() {
   fs.writeFileSync(outputPath, `${out.join("\n")}\n`, "utf8");
 
   const total = out.length - 1;
-  const matched = out.slice(1).filter((r) => r.split(",")[1]).length;
+  const matched = out.slice(1).filter((r) => {
+    const cols = r.split(",");
+    return !!(cols[2] && cols[1]);
+  }).length;
   const unmatched = total - matched;
 
   console.log(`[DONE] ${outputPath}`);

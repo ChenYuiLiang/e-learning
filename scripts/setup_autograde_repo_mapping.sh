@@ -1,10 +1,10 @@
 #!/bin/zsh
 set -euo pipefail
 
-# Batch configure per-repo mapping variables for autograde sync.
+# Batch configure per-repo unit-level mapping variables for autograde sync.
 # CSV format:
-# repo,assignment_doc_id,user_id,assignment_id
-# vibe-coding-classroom/vibe-coding-classroom-xx,uid_assignmentId,,
+# repo,unit_id,user_id
+# vibe-coding-classroom/vibe-coding-classroom-xx,01-unit-developer-identity.html,uid_xxx
 
 if [[ $# -lt 2 ]]; then
   echo "Usage: $0 --apply|--dry-run <csv_path>"
@@ -49,32 +49,29 @@ set_var() {
   $GH api "repos/${repo}/actions/variables" -X POST -f name="$name" -f value="$value" >/dev/null 2>&1
 }
 
-tail -n +2 "$CSV" | while IFS=, read -r repo assignment_doc_id user_id assignment_id; do
+tail -n +2 "$CSV" | while IFS=, read -r repo unit_id user_id _rest; do
   repo="${repo//$'\r'/}"
-  assignment_doc_id="${assignment_doc_id//$'\r'/}"
+  unit_id="${unit_id//$'\r'/}"
   user_id="${user_id//$'\r'/}"
-  assignment_id="${assignment_id//$'\r'/}"
 
   if [[ -z "$repo" ]]; then
     continue
   fi
 
-  if [[ -z "$assignment_doc_id" && ( -z "$user_id" || -z "$assignment_id" ) ]]; then
+  if [[ -z "$unit_id" || -z "$user_id" ]]; then
     echo "${repo},skip,missing_mapping" >> "$OUT"
     continue
   fi
 
   if [[ "$MODE" == "--dry-run" ]]; then
-    set_var "$repo" "VC_ASSIGNMENT_DOC_ID" "$assignment_doc_id" >/dev/null
     set_var "$repo" "VC_USER_ID" "$user_id" >/dev/null
-    set_var "$repo" "VC_ASSIGNMENT_ID" "$assignment_id" >/dev/null
+    set_var "$repo" "VC_UNIT_ID" "$unit_id" >/dev/null
     echo "${repo},dry-run,ok" >> "$OUT"
     continue
   fi
 
-  if set_var "$repo" "VC_ASSIGNMENT_DOC_ID" "$assignment_doc_id" \
-    && set_var "$repo" "VC_USER_ID" "$user_id" \
-    && set_var "$repo" "VC_ASSIGNMENT_ID" "$assignment_id"; then
+  if set_var "$repo" "VC_USER_ID" "$user_id" \
+    && set_var "$repo" "VC_UNIT_ID" "$unit_id"; then
     echo "${repo},updated,ok" >> "$OUT"
   else
     echo "${repo},failed,variable_update_failed" >> "$OUT"

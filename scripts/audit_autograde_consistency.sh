@@ -5,7 +5,7 @@ set -euo pipefail
 # - workflow presence/shape
 # - grader script presence
 # - README alignment (heuristic)
-# - required secrets/vars
+# - required secrets/vars (unit-level)
 # - latest writeback run status
 #
 # Usage:
@@ -134,13 +134,11 @@ tail -n +2 "$CSV_PATH" | while IFS=, read -r bridge_repo _rest; do
     issues+=("missing_autograde_secrets")
   fi
 
-  # Either VC_ASSIGNMENT_DOC_ID or (VC_USER_ID + VC_ASSIGNMENT_ID)
-  if has_var "$repo" "VC_ASSIGNMENT_DOC_ID"; then
-    vars_ok="yes"
-  elif has_var "$repo" "VC_USER_ID" && has_var "$repo" "VC_ASSIGNMENT_ID"; then
+  # Unit-level mapping is required: VC_USER_ID + VC_UNIT_ID
+  if has_var "$repo" "VC_USER_ID" && has_var "$repo" "VC_UNIT_ID"; then
     vars_ok="yes"
   else
-    issues+=("missing_assignment_mapping_vars")
+    issues+=("missing_unit_mapping_vars")
   fi
 
   run_state="$(latest_run_status "$repo")"

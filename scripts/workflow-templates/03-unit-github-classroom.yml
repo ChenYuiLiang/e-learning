@@ -1,0 +1,171 @@
+name: Classroom Grade + Sync
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_mode:
+        description: "grade_and_sync or sync_only"
+        required: false
+        default: "grade_and_sync"
+        type: choice
+        options:
+          - grade_and_sync
+          - sync_only
+      score_override:
+        description: "Optional score override (e.g. 83)"
+        required: false
+        type: string
+      max_score:
+        description: "Max score"
+        required: false
+        default: "100"
+        type: string
+      status_override:
+        description: "Optional status override"
+        required: false
+        default: ""
+        type: string
+  push:
+    branches: [ main, master ]
+
+permissions:
+  contents: read
+
+jobs:
+  grade_and_sync:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      contains(github.event.head_commit.message, 'autograde')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Grader
+        id: grader
+        shell: bash
+        run: |
+          set -euo pipefail
+          RUN_MODE="${{ github.event.inputs.run_mode }}"
+          SCORE_OVERRIDE="${{ github.event.inputs.score_override }}"
+          MAX_SCORE="${{ github.event.inputs.max_score || '100' }}"
+          STATUS_OVERRIDE="${{ github.event.inputs.status_override }}"
+
+          if [ -n "$SCORE_OVERRIDE" ]; then
+            echo "score=$SCORE_OVERRIDE" >> "$GITHUB_OUTPUT"
+            echo "max_score=$MAX_SCORE" >> "$GITHUB_OUTPUT"
+            echo "status=${STATUS_OVERRIDE:-completed}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ "$RUN_MODE" = "sync_only" ]; then
+            echo "score=100" >> "$GITHUB_OUTPUT"
+            echo "max_score=$MAX_SCORE" >> "$GITHUB_OUTPUT"
+            echo "status=${STATUS_OVERRIDE:-completed}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          SCORE_VAL=0
+          if [ -f submission/classroom-entry.md ]; then
+            if grep -Eiq 'https://classroom\.github\.com/a/[A-Za-z0-9_-]+' submission/classroom-entry.md && \
+               grep -Eiq 'https://github\.com/.+/.+' submission/classroom-entry.md; then
+              SCORE_VAL=$((SCORE_VAL + 40))
+            fi
+          fi
+          if [ -f submission/repo-sync-plan.md ]; then
+            if grep -Fq '## Current Status' submission/repo-sync-plan.md && \
+               grep -Fq '## Sync Steps' submission/repo-sync-plan.md && \
+               grep -Fq '## Risks and Fallback' submission/repo-sync-plan.md; then
+              SCORE_VAL=$((SCORE_VAL + 35))
+            fi
+          fi
+          if [ -f submission/reflection.md ]; then
+            NON_EMPTY_LINES=$(grep -cve '^\s*$' submission/reflection.md || true)
+            if [ "$NON_EMPTY_LINES" -ge 5 ]; then
+              SCORE_VAL=$((SCORE_VAL + 25))
+            fi
+          fi
+
+          if [ "$SCORE_VAL" -gt "$MAX_SCORE" ]; then
+            SCORE_VAL="$MAX_SCORE"
+          fi
+
+          echo "score=$SCORE_VAL" >> "$GITHUB_OUTPUT"
+          echo "max_score=$MAX_SCORE" >> "$GITHUB_OUTPUT"
+          if [ "$SCORE_VAL" -ge "$MAX_SCORE" ]; then
+            echo "status=${STATUS_OVERRIDE:-completed}" >> "$GITHUB_OUTPUT"
+          elif [ "$SCORE_VAL" -gt 0 ]; then
+            echo "status=${STATUS_OVERRIDE:-in_progress}" >> "$GITHUB_OUTPUT"
+          else
+            echo "status=${STATUS_OVERRIDE:-failed}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build Payload
+        id: payload
+        shell: bash
+        env:
+          DEFAULT_USER_ID: ${{ vars.VC_USER_ID }}
+          DEFAULT_UNIT_ID: ${{ vars.VC_UNIT_ID }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          WORKFLOW_NAME: ${{ github.workflow }}
+          COMMIT_SHA: ${{ github.sha }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+          USER_ID="${DEFAULT_USER_ID:-}"
+          UNIT_ID="${DEFAULT_UNIT_ID:-}"
+          SCORE="${{ steps.grader.outputs.score }}"
+          MAX_SCORE="${{ steps.grader.outputs.max_score }}"
+          STATUS="${{ steps.grader.outputs.status }}"
+
+          if [ -z "$SCORE" ]; then
+            echo "score missing"; exit 1
+          fi
+          if [ -z "$USER_ID" ] || [ -z "$UNIT_ID" ]; then
+            echo "Need vars.VC_USER_ID+VC_UNIT_ID."; exit 1
+          fi
+
+          PAYLOAD=$(jq -cn \
+            --arg userId "$USER_ID" \
+            --arg unitId "$UNIT_ID" \
+            --argjson score "$SCORE" \
+            --argjson maxScore "$MAX_SCORE" \
+            --arg status "$STATUS" \
+            --arg runUrl "$RUN_URL" \
+            --arg workflow "$WORKFLOW_NAME" \
+            --arg commitSha "$COMMIT_SHA" \
+            --arg repo "$REPO" \
+            --arg actor "$ACTOR" \
+            '{
+              userId: ($userId | select(length > 0)),
+              unitId: ($unitId | select(length > 0)),
+              score: $score,
+              maxScore: $maxScore,
+              status: $status,
+              runUrl: $runUrl,
+              workflow: $workflow,
+              commitSha: $commitSha,
+              repo: $repo,
+              actor: $actor
+            }')
+
+          echo "payload=$PAYLOAD" >> "$GITHUB_OUTPUT"
+
+      - name: Send Score To Vibe Coding
+        shell: bash
+        env:
+          VC_AUTOGRADE_URL: ${{ secrets.VC_AUTOGRADE_URL }}
+          VC_AUTOGRADE_TOKEN: ${{ secrets.VC_AUTOGRADE_TOKEN }}
+          PAYLOAD: ${{ steps.payload.outputs.payload }}
+        run: |
+          set -euo pipefail
+          [ -n "${VC_AUTOGRADE_URL:-}" ] || { echo "Missing VC_AUTOGRADE_URL"; exit 1; }
+          [ -n "${VC_AUTOGRADE_TOKEN:-}" ] || { echo "Missing VC_AUTOGRADE_TOKEN"; exit 1; }
+
+          SIG="sha256=$(printf %s "$PAYLOAD" | openssl dgst -sha256 -hmac "$VC_AUTOGRADE_TOKEN" | sed 's/^.* //')"
+
+          curl -sS -X POST "$VC_AUTOGRADE_URL" \
+            -H "Content-Type: application/json" \
+            -H "X-Hub-Signature-256: $SIG" \
+            -d "$PAYLOAD"

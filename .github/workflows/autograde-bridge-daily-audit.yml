@@ -1,0 +1,23 @@
+name: Autograde Bridge Daily Audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "33 2 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          scripts/audit_autograde_consistency.sh docs/examples/classroom-bridge-sync-units-only.csv
+

@@ -1,0 +1,108 @@
+name: Autograde Bootstrap Automation
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "single_repo or daily_backfill"
+        required: true
+        default: "daily_backfill"
+        type: choice
+        options:
+          - single_repo
+          - daily_backfill
+      repo:
+        description: "repo full name (for single_repo)"
+        required: false
+        type: string
+      unit_id:
+        description: "unit id (for single_repo)"
+        required: false
+        type: string
+      user_id:
+        description: "optional user id (for single_repo)"
+        required: false
+        type: string
+  repository_dispatch:
+    types: [classroom_repo_created]
+  schedule:
+    - cron: "17 2 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    env:
+      GOOGLE_CLOUD_PROJECT: e-learning-942f7
+      GCLOUD_PROJECT: e-learning-942f7
+      VC_AUTOGRADE_URL_VALUE: ${{ secrets.VC_AUTOGRADE_URL }}
+      VC_AUTOGRADE_TOKEN_VALUE: ${{ secrets.VC_AUTOGRADE_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install function dependencies
+        run: npm --prefix functions ci
+
+      - name: Build single-repo csv (event-driven)
+        if: >-
+          github.event_name == 'repository_dispatch' ||
+          (github.event_name == 'workflow_dispatch' && inputs.mode == 'single_repo')
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp
+          CSV=/tmp/autograde_bootstrap_single.csv
+          echo "repo,unit_id,user_id" > "$CSV"
+
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            REPO="${{ github.event.client_payload.repo }}"
+            UNIT_ID="${{ github.event.client_payload.unit_id }}"
+            USER_ID="${{ github.event.client_payload.user_id }}"
+          else
+            REPO="${{ inputs.repo }}"
+            UNIT_ID="${{ inputs.unit_id }}"
+            USER_ID="${{ inputs.user_id }}"
+          fi
+
+          if [ -z "${REPO:-}" ] || [ -z "${UNIT_ID:-}" ]; then
+            echo "repo and unit_id are required for single_repo mode"
+            exit 1
+          fi
+
+          echo "${REPO},${UNIT_ID},${USER_ID:-}" >> "$CSV"
+          echo "CSV_PATH=$CSV" >> "$GITHUB_ENV"
+
+      - name: Build daily-backfill csv (low-waste)
+        if: >-
+          github.event_name == 'schedule' ||
+          (github.event_name == 'workflow_dispatch' && inputs.mode == 'daily_backfill')
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT=docs/examples/autograde-repo-mapping.firestore.csv
+          node functions/scripts/export_autograde_mapping_from_firestore.js \
+            --bridge-csv=docs/examples/classroom-bridge-sync-units-only.csv \
+            --output="$OUT"
+
+          FILTERED=/tmp/autograde_bootstrap_daily.csv
+          echo "repo,unit_id,user_id" > "$FILTERED"
+          awk -F, 'NR>1 { if ($3 != "" && $2 != "") print $1","$2","$3 }' "$OUT" >> "$FILTERED"
+          echo "CSV_PATH=$FILTERED" >> "$GITHUB_ENV"
+
+      - name: Bootstrap repos
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${CSV_PATH:-}" ] || [ ! -f "$CSV_PATH" ]; then
+            echo "CSV_PATH not found"
+            exit 1
+          fi
+          scripts/bootstrap_classroom_repo_autograde.sh --apply "$CSV_PATH"

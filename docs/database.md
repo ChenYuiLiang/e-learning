@@ -103,8 +103,9 @@
 作業 docId 規則與回寫關聯：
 - 建議固定使用 `assignments/{userId_assignmentId}`。
 - `submitAssignment` 第一次寫入時即建立該 docId（至少 `currentStatus=started`）。
-- `ingestGithubAutograde` 成功回寫分數後，系統會自動嘗試回填 GitHub Actions variable：`VC_ASSIGNMENT_DOC_ID=<docId>`，讓後續 workflow 可直接帶 identifier 回寫。
+- `ingestGithubAutograde` 採 `unitId-first`：以 `userId + unitId` 解析同單元最新作業並回寫分數。
 - Admin TutorMode 測試入口不會自動建立 `started` 紀錄，避免觸發學生付款授權檢查。
+- 若某單元尚未有任何學生建立 assignment 紀錄，該單元在 bootstrap 匯出時會顯示 `missing_mapping`（屬預期），待首次 assignment 建立後即可由補漏流程自動補齊。
 
 ---
 
@@ -194,6 +195,11 @@
 2. 申請/推薦/審核流程以 `tutor_applications` 為單一真實來源（Source of Truth）；`users.tutorApplications` 僅作歷史快照，不得作為執行期判斷來源。
 3. 單元 key 含 `.html` 時，Firestore update 請使用 `FieldPath` 或一致正規化，避免 dot-in-key 巢狀化問題。
 4. 禁止新增白名單、相容名單、legacyMap 類型的執行期判斷層；需先完成 Firestore 資料遷移再上線。
+5. `courseId` 建議統一採用課程主頁檔名（page URL），例如：`01-master-getting-started.html`、`02-master-ai-agents.html`。
+6. 若要從舊 `courseId`（短碼/舊字串）遷移至 page URL，請使用：
+   - `node functions/scripts/migrate_courseid_to_page_url.js --dry-run`
+   - `node functions/scripts/migrate_courseid_to_page_url.js --apply`
+   - 來源映射會以 `metadata_lessons.classroomUrl` 的檔名為準，並同步更新 `orders`、`assignments`、`users.courseProgress`、`users.tutorConfigs` 的課程層 key。
 
 ---
 

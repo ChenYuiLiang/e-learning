@@ -16,7 +16,7 @@
 - **[💸 多層級分潤規格](docs/recursive-sharing.md)**：分潤公式、上線鏈條、冪等與對帳流程。
 - **[🤝 導師與學生的互動層 MVP](docs/tutor-student-interaction-mvp.md)**：自動評分之外的教學互動設計（卡點、提示階梯、成長軌跡、介入任務）。
 - **[🧩 單元 Repo 協作改善流程](docs/unit-repo-collaboration-workflow.md)**：學生、導師、管理員共同迭代 README、tutor-guide 與測試/流程設定的提案與審核流程。
-- **[🤖 Autograde 全自動化](docs/autograde-full-automation.md)**：批次設定 `assignmentDocId`/`userId+assignmentId` 對應、workflow 觸發策略與精準分數回傳模式。
+- **[🤖 Autograde 全自動化](docs/autograde-full-automation.md)**：批次設定 `userId+unitId` 對應、workflow 觸發策略與分數回寫模式。
 - **[🔄 Classroom 同步 PR 流程](docs/classroom-sync-pr-workflow.md)**：當單元 template 更新後，批次對學生作業 repo 開同步 PR（含 dry-run 與衝突處理）。
 - **[🧱 Classroom 中間層同步流程](docs/classroom-bridge-sync-workflow.md)**：批次將 `vibe-coding-classroom-*` 中間層 repo 從 canonical template repo 同步更新。
 - **[🛡️ Classroom 安全檢查](docs/classroom-safety-preflight.md)**：發佈前檢查 starter repo 是否含解答/教師專用檔案，避免外洩。
@@ -143,9 +143,7 @@
   - 若要 push 觸發，需滿足其一：
     - Repo variable `VC_AUTOGRADE_ON_PUSH=true`
     - commit message 含 `[autograde]`
-- 文件定位方式（二選一）：
-  - `assignmentDocId`
-  - `userId + assignmentId`（系統會組成 `${userId}_${assignmentId}`）
+- 文件定位方式：`userId + unitId`（單元層級綁定，自動定位同單元最新作業）
 - MVP 安全策略：只寫入 `autoGrade*` 欄位，不覆蓋人工 `grade`。
 
 ### GitHub Classroom 學生 Repo 同步（建議）
@@ -157,7 +155,8 @@
 範例 payload：
 ```json
 {
-  "assignmentDocId": "uid_xxx_unit-01",
+  "userId": "uid_xxx",
+  "unitId": "01-unit-developer-identity.html",
   "score": 92,
   "maxScore": 100,
   "status": "completed",
@@ -174,7 +173,7 @@
     VC_AUTOGRADE_URL: ${{ secrets.VC_AUTOGRADE_URL }}
     VC_AUTOGRADE_TOKEN: ${{ secrets.VC_AUTOGRADE_TOKEN }}
   run: |
-    payload='{"assignmentDocId":"'"$ASSIGNMENT_DOC_ID"'","score":92,"maxScore":100,"status":"completed","runUrl":"'"$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"'","workflow":"'"$GITHUB_WORKFLOW"'","commitSha":"'"$GITHUB_SHA"'"}'
+    payload='{"userId":"'"$VC_USER_ID"'","unitId":"'"$VC_UNIT_ID"'","score":92,"maxScore":100,"status":"completed","runUrl":"'"$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"'","workflow":"'"$GITHUB_WORKFLOW"'","commitSha":"'"$GITHUB_SHA"'"}'
     sig="sha256=$(printf %s "$payload" | openssl dgst -sha256 -hmac "$VC_AUTOGRADE_TOKEN" | sed 's/^.* //')"
     curl -sS -X POST "$VC_AUTOGRADE_URL" \
       -H "Content-Type: application/json" \
