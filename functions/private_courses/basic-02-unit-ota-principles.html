@@ -331,6 +331,140 @@
     </script>
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">空中韌體分發實驗室：路由實作、進度視覺化與 A/B 分區回滾實戰
+        </h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：「無線進化」基礎 Web OTA (Foundation of Web OTA)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：IoT 部署工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫教 Clone 到本地。</li>
+                    <li><strong>路由實作</strong>：在 ESP32 上建立 <code>/update</code> 路由處理 HTTP POST 請求。</li>
+                    <li><strong>前端部署</strong>：建立 HTML 頁面，包含檔案選擇器並透過 AJAX 發送二進位檔。</li>
+                    <li><strong>無線驗證</strong>：斷開 USB 線，僅透過 Wi-Fi 成功將修改後韧體上傳。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>服務通聯</strong>：能否在瀏覽器輸入 <code>esp32.local/update</code> 並加載上傳介面？</li>
+                    <li>[ ] <strong>功能驗證</strong>：燒錄後，設備能否自動重啟並執行新版本邏輯？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：「更新進度條」視覺化體驗 (OTA Progress Visualization)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：前端體驗設計師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>事件監聽</strong>：使用 <code>XMLHttpRequest</code> 監聽 <code>progress</code> 事件獲取進度。</li>
+                    <li><strong>UI 同步</strong>：實作動態 CSS 進度條反映 <code>(e.loaded / e.total)</code>。</li>
+                    <li><strong>狀態引導</strong>：上傳完畢顯示「進入燒錄模式」並在 3 秒後導向新首頁。</li>
+                    <li><strong>效能記錄</strong>：記錄不同環境下上傳 1MB 韌體的平均延遲。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>數據同步性</strong>：進度條的視覺位移是否與真實數據發送匹配？</li>
+                    <li>[ ] <strong>用戶告知</strong>：上傳後是否具備「更新中，請勿關機」提示？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：「安全防線」故障與回滾測試 (Security & Rollback Challenge)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：安全測試專家</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>分區表透視</strong>：配置 <code>ota_0</code> 與 <code>ota_1</code> 邊界。</li>
+                    <li><strong>故障模擬演練</strong>：在進度達到一半時故意中斷 Wi-Fi 或拔除電源。</li>
+                    <li><strong>魯棒性驗證</strong>：確認 ESP32 能否偵測分區損毀並安全回滾 (Rollback) 至原版本。</li>
+                    <li><strong>深度報告</strong>：撰寫 A/B 分區如何實現「零故障更新」技術原理。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>容錯機制認知</strong>：是否理解 <code>Update.abort()</code> 與數據校驗的重要性？</li>
+                    <li>[ ] <strong>系統恢復力</strong>：發生異常中斷後，裝置是否能在 10 秒內恢復功能？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify text-left">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：掌握「韌體生命週期管理」，理解硬體如何透過軟體分區實現長治久安。</p>
+            <ol class="space-y-4 text-slate-600 text-justify">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：打破燒錄恐懼</strong> - 讓學生體會部署硬體可以像 Push 網頁一樣輕鬆。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：強化回饋感</strong> - 經由 JavaScript 進度條，實踐全棧開發中的「狀態同步」。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：穩定性第一</strong> - 實作 A/B 分區回滾實驗，建立「Failure is expected, recovery is mandatory」意識。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800 text-justify">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm">
+.
+├── platformio.ini   # (練習點) 配置分區表 partitions = ota.csv
+├── ota.csv          # 讓學生自行修改調整 app 空間大小
+├── src/main.cpp      # 包含 HTTP Update 平臺框架
+└── README.md         # 紀錄分區映射圖、異常恢復報告
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-justify">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看「ESP32 OTA 原理：A/B 分區奧義」影片。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試是否理解更新失敗為何不變磚的原因。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black text-justify">領取作業 (Repo)，實作無線更新頁面並挑戰「極限斷電」實驗。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>雲端助教:</strong> 協助演示如何在 <code>update.onProgress</code> 中注入錯誤輸出。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black text-justify">撰寫「OTA 異常處理與安全性報告」並 Push，總結分區表心得。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評學員對分區對齊與韌體校驗。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

@@ -286,6 +286,146 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">數據實驗室：結構化協議與容錯性處理</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：封包拆解員 (JSON Packet Decoder Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：數據通訊工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>數據源連接</strong>：訂閱來自傳感器的模擬數據流（字串格式）。</li>
+                    <li><strong>健壯解析實作</strong>：撰寫 <code>decodePayload(raw)</code> 函式。使用 <code>try-catch</code> 攔截 JSON
+                        語法錯誤。</li>
+                    <li><strong>看板渲染</strong>：利用 ES6 解構提取 <code>{ speed, temp }</code>，並動態更新至看板 HTML。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>崩潰測試</strong>：當手動傳入破壞性的惡意字串（如 "abc"）時，網頁是否能正常報錯而非卡死？</li>
+                    <li>[ ] <strong>解構語法成熟度</strong>：代碼中是否正確運用了 ES6 解構而非傳統的 <code>data.x.y.z</code> 鏈式寫法？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：配置管理器 (Nested Config Manager)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：系統架構師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>深層協議設計</strong>：建立一個巢狀配置物件 <code>{ pid: { p: 1.2, i: 0 }, ... }</code>。</li>
+                    <li><strong>安全提取邏輯</strong>：在解構時賦予 Default Values，如 <code>const { kp = 1.0 } = data.pid;</code>。
+                    </li>
+                    <li><strong>即時序列化</strong>：當使用者調整滑桿後，自動調用 <code>JSON.stringify</code> 並顯示輸出的字串。</li>
+                    <li><strong>Push Final</strong>：提交具備「配置一致性檢查」能力的管理器。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>預設值健壯性</strong>：當刪除 JSON 中某個非必填欄位時，系統顯示的預設數據是否正確？</li>
+                    <li>[ ] <strong>協議擴展力</strong>：若要增加一個「馬達電平」欄位，學員是否能在不破壞舊有解析架構下完成？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：數據壓縮挑戰 (Payload Slimming Challenge)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：帶寬優化專家</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>指標建立</strong>：計算初始 JSON 封包的 Byte 長度。</li>
+                    <li><strong>重構 Key 命名</strong>：將冗長的 <code>battery_voltage</code> 替換為 <code>bv</code>。</li>
+                    <li><strong>數據截斷</strong>：將 <code>3.1415926</code> 處理為 <code>3.14</code>。</li>
+                    <li><strong>對比數據提交</strong>：在 README 中列出優化前後的位元組減少比例。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>壓縮效率</strong>：封包大小是否至少減少了 30% 以上？</li>
+                    <li>[ ] <strong>可讀性權衡</strong>：縮寫後的 Key 是否依然具備足夠的語意辨識度（或有完整的 Documentation 對應表）？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：讓學生掌握「數據契約 (Data Contract)」的概念。這是專業通訊與前後端分離的基礎。</p>
+            <ol class="space-y-4 text-slate-600">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：安全性優先</strong> - 學生往往會直接 <code>JSON.parse</code> 數據。必須強迫他們使用 <code>try-catch</code>，因為通訊過程中的亂碼是常態。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：寫得少做得多</strong> - 重點展示解構語法 (Destructuring) 的美學。讓程式碼更具備「聲明式 (Declarative)」的質感。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：頻寬意識</strong> - 尤其在藍牙 BLE 這種窄頻通訊中，Key 名稱的長度直接影響發送頻率。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── mock/data_stream.txt # 原始數據：包含壞損、不完整、與正確的 JSON 範本
+├── js/decoder.js        # 核心：待填寫 Parse 與 Destructure 邏輯
+└── tests/packet.test.js # 單元測試：提供多種 Schema 的驗證基準
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5">觀看「物件解構語法」快節奏短片。練習基本的 Key 提取小測驗。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 觀察學員對深層巢狀物件 (Depth > 2) 的提取準確率。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900">領取作業 (Repo)，挑戰對抗傳輸壓力測試。修正因解析錯誤導致的畫面閃爍問題。</td>
+                        <td class="px-6 py-5 text-left"><strong>技術架構師:</strong> 巡場指導如何撰寫健壯的 JSON 驗證器 (Validator)。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify">完成 Payload 壓縮比挑戰並提交 PR。閱讀教師關於「數據序列化性能」的進階回饋。</td>
+                        <td class="px-6 py-5 text-justify text-left"><strong>Feedback PR:</strong> 點評對「數據契約」一致性的維護程度，表揚命名規範嚴謹的學員。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

@@ -338,6 +338,144 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none text-justify;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">控制實驗室：PID 演算法視覺化診斷與工業級加固</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：高效 PID 動態遙測儀表板 (High-Frequency PID Telemetry Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：控制系統 UI 開發者</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>波形繪圖矩陣建立</strong>：在 <code>dashboard.js</code> 整合 Chart.js 並鎖定 60fps 渲染。</li>
+                    <li><strong>參數閉迴路實施</strong>：實作一個 WebSocket 或 BLE 推送頻道。確保網頁端微調 Kp 數值時，車輛端能瞬時同步更新演算權重。</li>
+                    <li><strong>Push Final</strong>：提交具備即時互動能力的調參儀表板原始碼。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>監測流暢度</strong>：當調整參數時，視覺波形是否能立即反映出系統穩定度的變化（如：更明顯的震盪）？</li>
+                    <li>[ ] <strong>同步一致性</strong>：參數滑軌的數值與下方顯示的 Log 是否嚴格對應？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：基於 Z-N 法的極致收斂性能調校 (Optimal Tuning via Ziegler-Nichols Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：演算法調優專家</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-tighter font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>基準性能審計</strong>：記錄原始參數下的階躍響應截圖。標註 Overshoot 值。</li>
+                    <li><strong>臨界增益尋找</strong>：僅開啟 Kp 並逐步加壓，直到波形呈現完美的連續等幅震盪。</li>
+                    <li><strong>最終參數合成</strong>：代入 Z-N 公式推算出 \(K_p, K_i, K_d\) 終極比例。</li>
+                    <li><strong>Push Final</strong>：發起 PR，內容包含「調校日誌報告」與最終達成的最速收斂波形圖。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>調校科學力</strong>：報告中是否包含對 \(K_u\) (臨界增益) 與 \(T_u\) (震盪週期) 的實驗量測數值？</li>
+                    <li>[ ] <strong>指標達成度</strong>：收斂後的穩定系統是否已完全消除了目視可見的殘差 (Steady-state error)？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：具備 Anti-windup 能力的加固型控制器 (Hardened Controller Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：魯棒性架構師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>核心演算重寫</strong>：在 <code>ControlSystem.cpp</code> 中實作條件積分保護。當輸出達飽和時暫停 I 項累加。</li>
+                    <li><strong>安全限幅層佈建</strong>：部署 <code>clamp</code> 函式對最終出力進行範圍縮減。</li>
+                    <li><strong>暴力測試模擬</strong>：人為卡死馬達 3 秒後釋放。觀察具備 Anti-windup 的系統是否能立即回歸準線，而非爆衝。</li>
+                    <li><strong>Push Final</strong>：推送具備「工業級安全防範」的最終控制組件代碼。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>加固邏輯確證</strong>：代碼中是否顯現了對溢位 (Overflow) 與積分飽和的明確防禦判斷？</li>
+                    <li>[ ] <strong>代碼架構力</strong>：控制器類別設計是否模組化，易於橫向移植到不同的自動化載體上？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none text-justify;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify text-left">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：將抽象的「控制理論」轉化為學生可感知的動態回饋。引導學員建立工業級的安全性保護意識。</p>
+            <ol class="space-y-4 text-slate-600 text-justify text-left">
+                <li><strong class="text-blue-600 font-bold uppercase tracking-widest text-justify">重點 1：誤差是控制的靈魂</strong> - 強化學員對「誤差 (Error)」數值的敏感度。透過看見波形，讓他們理解 P, I, D 各項是如何對誤差進行分割處理的。</li>
+                <li><strong class="text-blue-600 font-bold text-justify uppercase tracking-widest">重點 2：從玄學調校到科學實驗</strong> - 拒絕「感覺比較穩」的描述。強制要求產出 Overshoot % 與 Settling Time 等量化報告，建立標準化工程術語。</li>
+                <li><strong class="text-blue-600 font-bold text-justify uppercase tracking-tighter text-justify">重點 3：不完美機械系統的防禦設計</strong> - 重點介紹「積分飽和」與「輸出限幅」。這是讓業餘愛好者與專業控制工程師產生區隔的關鍵細節。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300 text-justify">
+            <h3 class="text-blue-400 font-bold mb-3">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── src/core_pid.cpp      # 診斷對象：一個需要加強防範、純數學實作的控制器
+├── public/control_lab/    # 實驗室：具備波形對比功能的前端介面
+└── docs/Stability_Lab.md # 實驗日誌：記錄關鍵參數點與性能增益分析
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-justify">
+            <table class="w-full text-left border-collapse border-justify">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify text-left">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看「PID 三劍客的博弈：比例、積分、微分的視覺化解釋」影片。預習 Z-N 調校的基本算式。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試學員能否分析一段波形中是否存在「積分項過度堆積」產生的特徵。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black text-justify">領取作業 (Repo)，挑戰實作「零殘差、低過衝」控制組件。同步在 GitHub PR 頁面分享自己的最佳波形曲線。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>控制導師:</strong> 指導學員解讀「臨界震盪」。扮演「干擾源」，引導學員觀察系統如何在中斷後依靠 I 項找回精準度。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black text-justify text-justify">提交具備 Anti-windup 保護的演算法代碼。更新 README 建立你的系統性能承諾邊界。</td>
+                        <td class="px-6 py-5 text-left text-justify font-black text-justify"><strong>Feedback PR:</strong> 點評對「系統安全防護」的思維深度。表揚調校結果最精湛且論證嚴密的「控制專家」。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

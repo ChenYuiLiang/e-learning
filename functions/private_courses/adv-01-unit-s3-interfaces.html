@@ -259,6 +259,90 @@
     </footer>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">影像實驗室：ESP32-S3 硬體架構與 PSRAM 優化</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：PSRAM 初始化與壓力測試 (Memory Stress Test)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：硬體工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>啟用檢查</strong>：撰寫代碼檢測當前硬體是否有 8MB PSRAM 並輸出類型。</li>
+                    <li><strong>分配對比</strong>：實作 <code>heap_caps_malloc</code> 與 <code>malloc</code> 的對比測試。</li>
+                    <li><strong>Push Final</strong>：提交包含「內部 RAM vs PSRAM 讀寫速度對比」的實驗報告。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>分配正確性</strong>：是否正確使用 <code>MALLOC_CAP_SPIRAM</code> 標籤？</li>
+                    <li>[ ] <strong>穩定性回報</strong>：README 中是否記錄了分配失敗時的錯誤處理邏輯？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：影像緩衝區 management (Frame Buffer ROI)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：系統架構師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>空間申請</strong>：在 PSRAM 中申請一個 640x480x2 的 VGA 影像 Buffer。</li>
+                    <li><strong>數據封裝</strong>：實作指針運算，從大 Buffer 中精確提取中央 100x100 的 ROI 區域。</li>
+                    <li><strong>內存監控</strong>：使用 <code>esp_get_free_heap_size()</code> 監控是否有洩漏。</li>
+                    <li><strong>Push Final</strong>：提交具備「空間敏感」特性的影像緩衝區管理模組。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>指針嚴謹度</strong>：ROI 提取邏輯是否考慮了邊界檢查（避免指針越界）？</li>
+                    <li>[ ] <strong>性能表現</strong>：提取過程是否保證了 O(1) 或極低複雜度的指針偏移？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：感測器與 PSRAM 聯動除錯 (Resource Competition)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：韌體除錯工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>頻率測試</strong>：對比 40MHz 與 80MHz PSRAM 時鐘對影像雜訊的具體影響。</li>
+                    <li><strong>中斷分析</strong>：觀察大量 PSRAM 讀寫是否會干擾 I2C/SCCB 的響應延遲。</li>
+                    <li><strong>報告撰寫</strong>：在 README 總結硬體競爭下「頻率 vs 穩定性」的甜點區。</li>
+                    <li><strong>Push Final</strong>：提交經過「時序優化」的最終硬體配置檔。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>衝突識別</strong>：能否準確描述 PSRAM 與其他週邊在匯流排上的競爭關係？</li>
+                    <li>[ ] <strong>優化建議</strong>：報告中是否提出了合理的降低資源衝突的軟體策略？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
     <script>
         // Define Resources - Used by course-shared.js?v=2026.04.05.FINAL_V6
         window.RESOURCES = {
@@ -267,6 +351,61 @@
         };
     </script>
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GitHub Classroom 詳細操作指南</h2>
+
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：開啟「硬體開發者的眼」。讓學生理解 S3 不只是一顆晶片，而是一個具備記憶體分層架構的小型電腦。</p>
+            <ol class="space-y-4 text-slate-600">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：記憶體分工思維</strong> - 在 1-1 中，強調 SRAM 是「金錢」，PSRAM 是「倉庫」。學會把頻繁訪問的數據留在金錢區。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：指針的藝術</strong> - 1-2 的核心是 ROI，這是視覺演算法降低運算量的第一步。學生必須掌握指針偏移。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：時序與競爭</strong> - 1-3 帶著學生進入「類比與數位交界」。理解時鐘頻率如何影響訊號完整性。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800 text-justify">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── src/mem_test.cpp      # 核心：學員需填寫 PSRAM 壓力測試代碼
+├── src/platformio.ini    # 配置：啟用 -DBOARD_HAS_PSRAM 選項
+└── README.md             # 紀錄：PSRAM 分配數據與 Heap 管理心得
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-justify">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看「ESP32-S3 雙緩衝與 DMA 原理」短片。理解數據搬運不佔 CPU 的重要性。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試學員是否能預估 VGA RGB565 影像的內存佔用。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black">領取作業 (Repo)，執行 PSRAM 分配與 ROI 提取。觀察並解決指針偏移導致的當機。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>技術教練:</strong> 現場示範如何透過 VSYNC 中斷來同步緩衝區。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify border-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black">提交包含硬體競爭分析的最終專案。閱讀導師對「OPI 相位延遲」在高頻 PSRAM 下的補充。</td>
+                        <td class="px-6 py-5 text-left text-justify border-justify"><strong>Feedback PR:</strong> 點評對「內存映射 (MMU)」概念的理解度。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

@@ -287,6 +287,147 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">架構實驗室：效率通訊與非阻塞 I/O</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：從輪詢到監聽 (From Polling to Event)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：介面效能優化師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>對比實驗 A (Polling)</strong>：使用 <code>setInterval</code> 每 100ms 檢查輸入框
+                        <code>value.length > 8</code>，開啟按鈕。</li>
+                    <li><strong>對比實驗 B (Event)</strong>：移除 Timer，改用 <code>input</code> 事件回調實現相同邏輯。</li>
+                    <li><strong>效能分析</strong>：錄製 Chrome DevTools Performance 面板的截圖，對比兩者在靜止與輸入時的 Scripting Scripting
+                        負載，並寫入 README。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>資源消耗觀察</strong>：是否能清楚識別出 Timer 在背後不斷「空轉」造成的能耗浪費？</li>
+                    <li>[ ] <strong>代碼可維護性</strong>：事件驅動後的代碼是否更具備處理特定動作的語意化特徵？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：搖桿的自適應輪詢 (Hybrid Joystick Logic)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：遙控通訊協議開發者</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>數據緩衝區實作</strong>：在 global 變數中保存最新的 X, Y 座標。</li>
+                    <li><strong>事件與輪詢解耦</strong>：<code>mousemove</code> 事件只負責更新變數（極快）；另起一個 20Hz 的
+                        <code>setInterval</code> 負責讀取變數並發送 BLE 指令。</li>
+                    <li><strong>穩定性測試</strong>：快速晃動搖桿 30 秒，觀察是否有發生 BLE 底層的「Write Busy」錯誤。</li>
+                    <li><strong>Push Final</strong>：提交具備「流量節流 (Throttling)」能力的通訊引擎。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>流量控制效果</strong>：是否有效防止了高頻事件導致的藍牙協議棧堵塞？</li>
+                    <li>[ ] <strong>操作平滑度</strong>：20Hz 的發送速率是否依然能提供足夠流暢的車體反應？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：安全緊急停止系統 (Emergency Fail-safe)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：安全架構工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>中斷事件監聽</strong>：建立 <code>gattserverdisconnected</code> 回調。</li>
+                    <li><strong>安全性重置</strong>：一旦進入回調，強制將馬達變數歸零，並在畫面上顯示紅色的「CONNECTION LOST - SAFETY STOP」全屏警告。</li>
+                    <li><strong>Push Final</strong>：提交具備「系統自我意識」的安全應對方案。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>事故處理及時性</strong>：當藍牙斷開時，UI 與系統狀態是否能「瞬間」轉變為安全模式？</li>
+                    <li>[ ] <strong>狀態清理徹度</strong>：是否正確清理了所有待處理的 Timer 或未發送的數據包？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：破解「程式就是一條路走到底」的線性思考。學習非阻塞 I/O 與異步思維。</p>
+            <ol class="space-y-4 text-slate-600">
+                <li><strong class="text-purple-600">重點 1：事件雨 (Event Flood)</strong> - 教導學員面對高頻率事件（如滑鼠移動、高速感測器）時，必須學會「節流 (Throttling)」而非盲目響應。</li>
+                <li><strong class="text-purple-600">重點 2：資源佔用可視化</strong> - 透過 Performance Tab 讓學員第一次看到「程式沒在動、CPU 卻在燒」的真相 (Polling 缺點)。</li>
+                <li><strong class="text-purple-600">重點 3：安全防範意識</strong> - 強調「中斷」在生命安全系統（如自動駕駛煞車）中的不可取代性。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-purple-400 font-bold mb-3">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── js/bench_polling.js # 測試：實作低效輪詢版本
+├── js/bench_event.js   # 優化：實作高效事件監聽版本
+├── js/joystick_lib.js  # 庫：待學員撰寫 Throttling 數據發送邏輯
+└── performance_logs/    # 作業成果：需放置對比測試的效能截圖
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5">觀看「JavaScript Event Loop 機制」科普影片。理解單執行緒如何處理異步任務。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試學員是否能正確分辨同步 (Sync) 與異步 (Async) 的執行順序。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify">領取作業 (Repo)，調教搖桿發送頻率。觀察不同 Hz 下藍牙斷連的機率，找出最優發送區間。</td>
+                        <td class="px-6 py-5 text-justify text-left"><strong>技術架構師:</strong> 演示如何使用 Performance Tab 追蹤「Long Task」並進行優化。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課後精進</td>
+                        <td class="px-6 py-5">完成「Fail-safe 安全中斷」機制並 Push。分析為何事件驅動比輪詢更安全。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Feedback PR:</strong> 點評對「混合架構 (Hybrid)」的理解深度，表揚具備系統安全性思維的學員。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

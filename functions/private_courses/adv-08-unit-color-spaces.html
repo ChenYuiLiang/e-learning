@@ -295,6 +295,145 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">影像實驗室：色彩空間轉換與穩健性過濾</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：HSV 色彩獵人 (HSV Filtering Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：影像識別工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-tighter font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>介面組件化</strong>：在網頁實作 6 組 <code>&lt;input type="range"&gt;</code> 滑桿。</li>
+                    <li><strong>空間轉換邏輯</strong>：實作 <code>RGBtoHSV()</code> 數學函數，將 <code>pointermove</code>
+                        取得的點陣像素色值進行即時轉換。</li>
+                    <li><strong>背景屏蔽 (Masking)</strong>：實作條件過濾，將不符合範圍的像素點設為 (0,0,0)，在 README 貼上成功屏蔽背景後「紅球」輪廓的截圖。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>過濾精確度</strong>：是否能成功分離紅球與周圍相似色（如橘色桌面）？</li>
+                    <li>[ ] <strong>邊界處理</strong>：Hue 值在 0°/360° 處的跨越邏輯是否正確處理？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：RGB565 位元壓縮 (Memory Optimization Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：嵌入式優化師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>位元運算實作</strong>：利用 <code>&gt;&gt;</code> 與 <code>&lt;&lt;</code> 運算子，將 8-8-8 RGB 映射為
+                        5-6-5 標準。</li>
+                    <li><strong>帶寬分析報告</strong>：在 README 中詳細計算 QVGA 解析度下，從 24bit 降至 16bit 每秒可節省的總字節數。</li>
+                    <li><strong>視覺品質評估</strong>：截圖並說明顏色斷層 (Banding) 在深色陰影區是否明顯。</li>
+                    <li><strong>Push Final</strong>：提交具備「空間意識」的高效傳輸引擎。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>位元映射正確性</strong>：轉出的 RGB565 是否在後端能被正確還原為視覺顏色？</li>
+                    <li>[ ] <strong>數學嚴謹度</strong>：報告中的頻寬計算是否排除了 Header 等冗餘開銷，反映真實 Payload 節省？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：YUV 亮度自適應 (Auto-Exposure Leveling)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：控制演算法工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>亮度提取</strong>：從模擬 YUV 流中僅提取 Y 頻道，繪製亮度直方圖。</li>
+                    <li><strong>動態增益補償</strong>：實作邏輯：若 Average(Y) < 50，則自動對所有像素進行 V-Value 的線性補償。</li>
+                    <li><strong>壓力測試</strong>：錄製影片展示從明亮區快速移入陰影區時，物體識別輪廓是否能瞬間「追回」穩定度。</li>
+                    <li><strong>Push Final</strong>：提交具備光影魯棒性的環境感知方案。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>反應即時性</strong>：亮度補償邏輯是否造成了嚴重的 FPS 下驚？</li>
+                    <li>[ ] <strong>算法魯棒性</strong>：在光影劇烈變化下，識別結果是否發生劇烈抖動？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：破解「影像只是圖片」的迷思。讓學生理解影像本質上是數組陣列，而顏色空間是觀察數組的「濾鏡」。</p>
+            <ol class="space-y-4 text-slate-600 text-justify">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：HSV 的神性</strong> - 在電腦視覺中，HSV 是識別的「救星」。必須讓學生親手調校滑桿，感受它在光影下比 RGB 穩定得多的特性。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：位元級思維</strong> - 嵌入式系統不再是無限容量。學習 RGB565 能讓學生對 0 與 1 的排列組合更有感。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：感知優先</strong> - 透過 YUV 的案例，教導學員「有選擇地捨棄數據」在大型通訊系統中的戰略價值。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── js/color_spaces.js # 核心：實作 RGB, HSV, YUV 的轉換邏輯
+├── js/gui_ranges.js   # 工具：自動建立滑桿與二值化預覽畫面
+└── samples/           # 樣本：提供過曝、低亮度、與強對比的測試圖檔
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看「為什麼藍色在陰影下還是藍色」科普影片。理解 HSV 的物理意義。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試學員是否能預測在光照增強時，RGB 各頻道的數值變化趨勢。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black">領取作業 (Repo)，調校滑桿對抗「反光」。實作 RGB565 位元封裝並在模擬器上驗證顏色正確性。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>影像教練:</strong> 指導如何使用直方圖 (Histogram) 分析二值化過慮的「切割點」是否準確。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black">提交「亮度自適應」演算法報告並 Push PR。閱讀教師對「高頻像素運算優化」的回饋。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評對「數據映射」與「位元效率」的理解深度。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

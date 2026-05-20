@@ -291,6 +291,145 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">AI 實驗室：輕量化模型部屬與數據驅動決策</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：MobileNet 效能診斷 (Inference Benchmarking Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：AI 優化工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>環境預熱 (Warming-up)</strong>：載入 TensorFlow.js，並先進行一次空推論以喚醒 GPU。</li>
+                    <li><strong>信心閾值分析</strong>：測試至少 5 種日常物品。記錄信心分數。在剖析報告中說明「背景雜訊」如何影響 Top-1 分類正確率。</li>
+                    <li><strong>提交報告</strong>：在 README 中彙整 WebGL vs CPU 在同一個物體辨識下的延遲 (Latency) 數據對比。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>效能理解度</strong>：學員是否能正確辨識出硬體加速帶來的效能提升量級？</li>
+                    <li>[ ] <strong>判斷嚴謹性</strong>：針對誤判 (False Positive) 案例是否提出了合理的視覺環境解釋？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：SSD 數據過濾器 (Detection ROI Filter)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：視覺邏輯開發者</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>數據清洗</strong>：實作一個過濾函式，剔除信心門檻低於 0.6 的雜訊框。</li>
+                    <li><strong>ROI (Region of Interest)</strong>：在 Canvas 中心繪製一個矩形警戒區。</li>
+                    <li><strong>幾何碰撞檢測</strong>：計算 SSD 回傳的 Bounding Box 中心點是否位於 ROI 矩形內部。</li>
+                    <li><strong>Push Final</strong>：提交具備「目標鎖定」與「入域警報」功能的偵測框架。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>數據處理力</strong>：學員是否展現了處理 Array 數據流（多個偵測框）的高效邏輯？</li>
+                    <li>[ ] <strong>座標轉換精準度</strong>：Bounding Box 的幾何計算是否正確地對應了畫面的像素座標？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：導航行為樹預演 (Behavior Decision Logic)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：系統決策工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>狀態機設計</strong>：根據偵測標籤（Person, Obstacle, Empty）定義無人車的三種狀態。</li>
+                    <li><strong>誤差映射</strong>：將 <code>box.x_center</code> 映射為轉向修正 $X_e$。將 <code>box.width</code> 映射為距離預估
+                        $d$。</li>
+                    <li><strong>應急停擋實作</strong>：當偵測到「Person」且 $d$ 小於閾值時，強制馬達輸出 0（停止）。</li>
+                    <li><strong>Push Final</strong>：提交具備安全優先權的 AI 避障邏輯。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>決策穩定性</strong>：當模型快速閃爍 (Flicker) 時，控制邏輯是否有防止車體頻繁抖動的平滑技術？</li>
+                    <li>[ ] <strong>優先級賦予</strong>：是否正確實作了「行人絕對優先」的避讓規則？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：讓學生跨越「影像處理」進入「人工智慧推論」。強調模型不是魔法，而是機率與統計的疊加結果。</p>
+            <ol class="space-y-4 text-slate-600">
+                <li><strong class="text-emerald-600">重點 1：速度是關鍵</strong> - 無論模型多準，如果推論需要 2 秒，在移動中的車端就是不可用的。必須強調 30 FPS 的實戰意義。</li>
+                <li><strong class="text-emerald-600">重點 2：數據的質感</strong> - 教導學員如何解析 <code>[x, y, w, h]</code> 陣列。物件偵測回傳的是空間資訊，而非單純的類別。</li>
+                <li><strong class="text-emerald-600">重點 3：決策邊界</strong> - 信心分數 0.5 跟 0.9 的差別在哪？引導學員建立自己的過濾原則。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-emerald-400 font-bold mb-3">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── models/             # 存放：MobileNet-SSD 的靜態權重與配置 JSON
+├── js/inference_core.js# 處理：模型的 Load 與 Run 基本呼叫
+└── js/decision_node.js # 提供：空函式待學員填入物體避讓判斷邏輯
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看「卷積神經網路 (CNN) 基礎」概念短片。理解特徵提取的概念。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試學員是否能區分「影像分類」與「物件定位」的輸出差異。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter">領取作業 (Repo)，執行 GPU 壓力測試。實作 ROI 過濾與狀態機導航邏輯。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>AI 教練:</strong> 指導如何解讀「置信度」分佈，並調整 NMS 參數優化視覺流。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課後精進</td>
+                        <td class="px-6 py-5 text-justify">上傳針對極端角度下物體誤判的分析報告並 Push。閱讀教師對「邊緣運算優化」的回饋。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評對「決策代價」的思考，表揚能主動為系統添加「容錯機制」的學員。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

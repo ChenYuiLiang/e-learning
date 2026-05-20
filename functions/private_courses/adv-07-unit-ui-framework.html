@@ -307,6 +307,150 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">架構實驗室：前端元件化與狀態通訊</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：通用原子組件 (Atomic Data Component)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：UI 系統設計師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>類別/函式宣告</strong>：在 <code>components/Gauge.js</code> 中定義組件類別。</li>
+                    <li><strong>屬性 (Props) 處理</strong>：實作 <code>render()</code> 函式，根據傳入的 <code>this.props.value</code>
+                        動態改變 CSS 類名（例如：數值 > 100 報警紅）。</li>
+                    <li><strong>多實例化測試</strong>：在 <code>index.html</code> 中同時呼叫三次組件，分別顯示「電池」、「轉速」、「溫度」。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>封裝完整度</strong>：組件的樣式是否會意外「溢出」影響到頁面其他按鈕？</li>
+                    <li>[ ] <strong>代碼複用力</strong>：是否只需透過修改參數即可產生截然不同的顯示效果？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：事件發射器 (Joystick Event Emitter)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：交互開發專家</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>Canvas 封裝</strong>：將原本寫在全域的搖桿代碼移入 <code>Joystick</code> 類別中。</li>
+                    <li><strong>自定義事件 (Custom Events)</strong>：當 <code>pointermove</code> 觸發時，發射包含 <code>{x, y}</code> 的
+                        <code>'joystick:change'</code> 事件。</li>
+                    <li><strong>父子通訊測試</strong>：在 <code>app.js</code> 監聽該事件，並呼叫藍牙發送模組。</li>
+                    <li><strong>Push Final</strong>：提交具備「關注點分離」架構的控制核心。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>架構層次感</strong>：搖桿組件內部是否真的「不含有」任何關於藍牙發送的代碼？</li>
+                    <li>[ ] <strong>事件解耦力</strong>：更換父層邏輯後（例如改為儲存數據而非發送），搖桿組件是否能不經修改直接運行？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：響應式佈局重構 (Responsive Dashboard Refactor)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：佈局工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>Grid 系統建立</strong>：設計 <code>.dashboard-grid</code>，在手機版使用 <code>1fr</code>，電腦版使用
+                        <code>repeat(3, 1fr)</code>。</li>
+                    <li><strong>狀態驅動樣式</strong>：當連線成功時，給予 <code><body></code> 一個 <code>.is-connected</code> 類名，全局 CSS
+                        自動切換背景色調。</li>
+                    <li><strong>提交截圖報告</strong>：在 README 中貼上橫屏與豎屏的對比截圖。</li>
+                    <li><strong>Push Final</strong>：完成具備生產環境等級的遙控儀表板。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>適配精確度</strong>：在不同寬度下，組件是否會發生嚴重的重疊或破圖？</li>
+                    <li>[ ] <strong>視覺專業感</strong>：配色與間距是否符合 Vibe Coding 的 Premium 審美標準？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：讓學生體驗「宣告式 UI」相對於「指令式 DOM 操作」的維護優勢。</p>
+            <ol class="space-y-4 text-slate-600">
+                <li><strong class="text-emerald-600">重點 1：封裝思維</strong> - 學生常習慣把所有代碼寫在 <code>app.js</code>。必須強制練習將介面拆分為獨立的組件檔案。</li>
+                <li><strong class="text-emerald-600">重點 2：資料流向</strong> - 明確區分 Data (Props) 進與 Signaling (Events) 出的單向循環。</li>
+                <li><strong class="text-emerald-600">重點 3：響應式基礎</strong> - 雖然有 Tailwind，但理解原生 CSS Grid 與 Flexbox 的原理對未來掌握 React 元件庫至關重要。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-emerald-400 font-bold mb-3">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── components/          # 學員需在此目錄創建各類組件
+│   ├── Component.js     # 組件基類 (Base Class)
+│   └── index.js         # 組件匯出入口
+├── js/app.js            # 主控邏輯：負責初始化組件並裝配
+└── css/layout.css       # 佈局：定義 Grid 與 Responsive 斷點
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5">觀看「Lego vs. UI Components」概念短片。完成基本 CSS Grid 佈局練習。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試學員是否能正確辨識 UI 頁面中的「最小重複單元」。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify">領取作業 (Repo)，執行代碼大重構。將原本混雜的 HTML 標籤轉化為由 JS 類別驅動的動態標籤。</td>
+                        <td class="px-6 py-5 text-left"><strong>技術教練:</strong> 排除 Props 傳遞錯誤，指導如何偵錯 (Debug) 元件內部狀態。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5">上傳跨載具測試截圖報告並 Push PR。閱讀教師對「元件邊界設計」的專業回饋。</td>
+                        <td class="px-6 py-5 text-left"><strong>Feedback PR:</strong> 點評對「響應式設計」的執行細膩度，表揚能主動優化 UI 穩定性的學員。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

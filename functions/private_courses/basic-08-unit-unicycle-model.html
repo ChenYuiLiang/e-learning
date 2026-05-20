@@ -330,6 +330,139 @@
     </script>
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">差速運動學與控制保護實驗室：Unicycle
+            Model、飽和處理與敏感度調校實戰</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：基礎差速混合機實作 (Kinematics Mixer)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：運動學工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>混控器編寫</strong>：在驅動代碼中實作 <code>L = v - ω</code> 與 <code>R = v + ω</code>。</li>
+                    <li><strong>原地自旋校準</strong>：輸入 <code>v=0, ω=0.5</code> 觀察。</li>
+                    <li><strong>直覺同步驗證</strong>：搖桿往右，右輪轉速應低於左輪。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>模型一致性</strong>：馬達轉向呼應指示？</li>
+                    <li>[ ] <strong>自旋對稱</strong>：PWM 數值嚴格對應？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：飽和度處理與比例縮放 (Saturation Scaling)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：優化專家</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>飽和診斷</strong>：全速前進急轉向，記錄控制失效現象。</li>
+                    <li><strong>限幅演算法</strong>：實作等比例縮放邏輯。</li>
+                    <li><strong>穩定度測試</strong>：極限場景執行蛇行。</li>
+                    <li><strong>模塊化交付</strong>：推送 <code>MotorMixer</code> 類別。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>控制韌性感</strong>：遵循角速度意圖進行偏轉？</li>
+                    <li>[ ] <strong>代碼穩健</strong>：處理極小分母異常值？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：轉向敏感度調教 (Dynamic Sensitivity)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：調校教練</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>權重係數</strong>：引入 <code>K</code> 敏感度參數。</li>
+                    <li><strong>環境適配測試</strong>：在不同地板測試響應。</li>
+                    <li><strong>日誌彙整</strong>：尋找黃金 K 值。</li>
+                    <li><strong>提交成果</strong>：將數據與心得 Push PR。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>架構靈活性</strong>：支持外部動態調校？</li>
+                    <li>[ ] <strong>調教實效</strong>：改善操控精確性？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：掌握差速模型與限幅思維。</p>
+            <ol class="space-y-4 text-slate-600 text-left text-justify">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：向量拆解</strong> - 理解幾何關係。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：Clipping vs Scaling</strong> - 強調等比例縮放重要性。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：數據驅動</strong> - 參數 K 是工程選擇。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800 text-justify uppercase tracking-widest font-black">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300 text-justify uppercase tracking-widest font-black text-left">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm text-justify uppercase tracking-widest font-black border border-slate-100">
+.
+├── src/kinematics_mix.cpp # (核心) 混控保護邏輯
+├── include/constants.h    # 感度定義
+└── README.md              # 實驗報告
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify uppercase tracking-widest font-black">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-center text-justify font-black">
+            <table class="w-full text-left border-collapse border border-slate-100 text-justify font-black">
+                <thead>
+                    <tr class="bg-slate-100 border border-slate-100 text-justify font-black">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify font-black uppercase tracking-widest">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify font-black uppercase tracking-widest">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify font-black uppercase tracking-widest">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600 border border-slate-100 text-justify font-black">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">練習預算轉速差。</td>
+                        <td class="px-6 py-5 text-justify border border-slate-100"><strong>Dashboard:</strong> 檢查預習理解。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify border border-slate-100">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black text-justify text-left">領取 Repo，實作線性混控。</td>
+                        <td class="px-6 py-5 text-left text-justify border border-slate-100 font-black"><strong>巡場點評:</strong> 演示 Clipping 鎖死現象。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black">將限幅擴增為類別提交。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 評價工程權衡嚴密度。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

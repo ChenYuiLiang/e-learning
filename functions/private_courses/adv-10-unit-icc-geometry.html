@@ -308,6 +308,140 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">視覺實驗室：差速驅動與 ICC 數學模型驗證</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：精準圓周控制 (Precision Circle Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：控制演算法工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>公式推導</strong>：在 README 撰寫 $V_L$ 與 $V_R$ 映射到 PWM 的轉換常數（考量馬達死區）。</li>
+                    <li><strong>路徑實測</strong>：設定 $R=50$cm，錄製一段長度 10 秒的圓周運動。</li>
+                    <li><strong>誤差分析</strong>：比較「空車旋轉」與「加重載（放上電池）」後的轉向半徑差異。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>幾何精度</strong>：實際畫出的圓直徑與理論值（100cm）誤差是否在 10% 以內？</li>
+                    <li>[ ] <strong>數學嚴謹度</strong>：是否能正確推導出輪矩 $L$ 在公式中扮演的角色？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：ICC 漂移量測 (ICC Drift Observation)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：機器人感知專家</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-tighter font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>標記實驗</strong>：在車體幾何中心（兩輪連線中點）垂直固定一支畫筆。</li>
+                    <li><strong>極限旋轉</strong>：執行 $V_L = -V_R$。若旋轉中心與車體幾何中心不重合，代表左右馬達出力不對稱。</li>
+                    <li><strong>參數校準</strong>：調整左右 PWM 補償值，直到 ICC 完美鎖定在兩輪連線中點。</li>
+                    <li><strong>Push Final</strong>：提交具備「馬達補償係數」的校準代碼。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>校準成果</strong>：原地旋轉時，車體是否有發生明顯的「位移」？</li>
+                    <li>[ ] <strong>分析深度</strong>：在 README 說明為何地面材質（地毯 vs 硬地）會影響轉向中心的位置。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：變半徑螺旋線 (Dynamic Trajectory Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：路徑規劃工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>函數式路徑</strong>：在 <code>loop()</code> 中實作 $R(t) = R_0 + k \cdot t$。</li>
+                    <li><strong>邊界控制</strong>：設定 $R$ 的上下限，防止超出馬達負荷或車體物理極限。</li>
+                    <li><strong>Push Final</strong>：提交具備「動態幾何調整」的路徑控制專案。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>代碼穩健度</strong>：當 $R$ 過量增加時，代碼是否會自動轉向「直線行駛」邏輯？</li>
+                    <li>[ ] <strong>軌跡美學</strong>：實測螺旋線是否具備流暢的變率，沒有發生劇烈抖動。</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：將「直覺式操作」提升為「幾何式操作」。讓學生理解機器人的每一個動作都是座標系的變換。</p>
+            <ol class="space-y-4 text-slate-600 text-justify">
+                <li><strong class="text-blue-600 font-black uppercase tracking-widest">重點 1：公式不是死背</strong> - 學生應親自手算出 $V_L$ 為什麼在公式中有 $+\frac{L}{2}$。這是空間幾何的理解。</li>
+                <li><strong class="text-blue-600 font-bold text-justify uppercase tracking-widest">重點 2：物理世界的摩擦</strong> - 幾何模型是理想化的。引導學員發現為什麼算出來 50cm，走出來卻是 55cm。</li>
+                <li><strong class="text-blue-600 font-bold text-justify uppercase tracking-tighter">重點 3：邊界處理的重要性</strong> - 教導學員在代碼中防止「分母為 0」或是 $R = \infty$ 時的條件分支。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-blue-400 font-bold mb-3">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── include/kinematics.h  # 介面：定義 setSteering(R, V) 介面
+├── src/kinematics.cpp    # 實作：待學生寫入幾何推導邏輯
+└── tests/geometry.test.js # 測試：驗證 V_L/V_R 比值是否符合 ICC 公式
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看「為什麼差速驅動總是畫不出圓」短片。理解滑移角概念。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試學員是否能指出：當 $R=L/2$ 時，內側輪的速度是多少？</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black">領取作業 (Repo)，挑戰「精準 360 度旋轉」。記錄地板雜訊對轉向中心的干擾。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>技術教練:</strong> 指導如何建立「馬達補償係數 (Compensation Factor)」來對抗硬體不對稱。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black">提交「螺旋軌跡」推導報告。閱讀教師對「非定常運動 (Non-steady state)」的進階分析。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評對「ICC 幾何意義」的理解廣度，並核發單元認證徽章。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

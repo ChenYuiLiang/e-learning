@@ -294,6 +294,140 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none text-justify;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">控制實驗室：物理極限、飽和處理與死區補償</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：飽和軌跡觀測 (Saturation Analysis Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：系統分析師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>極限指令</strong>：在代碼中輸入不合理參數（例如超量 $V$ 與小轉向 $R$）。</li>
+                    <li><strong>軌跡記錄</strong>：使用 `constrain()` 處理輸出，錄製一段影片展示軌跡如何從「圓弧」變成「奇怪的拋物線」。</li>
+                    <li><strong>README 紀錄</strong>：解釋為何單純裁剪會破壞左右輪的速度比例。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>現象觀察</strong>：是否能在 README 清楚描述比例失衡導致的物理軌跡偏差？</li>
+                    <li>[ ] <strong>邏輯嚴謹度</strong>：是否正確指出 clipping 與 scaling 的視覺差異？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：等比例縮放實作 (Scaling Logic Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：控制演算法工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-tighter font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>因子計算</strong>：實作 $Factor = 255 / \max(L, R)$ 縮放邏輯。</li>
+                    <li><strong>軌跡修正</strong>：重新執行任務 1 的測試，觀察車速變慢但半徑維持不變的現象。</li>
+                    <li><strong>Push Final</strong>：提交具備「比例完整性」的馬達控制核心。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>代碼健壯性</strong>：縮放邏輯是否處理了分母為零或 $Factor > 1$ 的例外？</li>
+                    <li>[ ] <strong>實測一致性</strong>：修正後的圓周半徑是否與理論值保持 95% 以上重合？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：馬達線性化 (Dead-zone Linearization Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：硬體調校專家</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>測量門檻</strong>：手動增加 PWM，記錄左右馬達分別啟動的最小值。</li>
+                    <li><strong>軟體補償</strong>：實作 <code>map(val, 0, 255, PWM_MIN, 255)</code> 映射。</li>
+                    <li><strong>極低速演示</strong>：錄製一段穩定行駛錄影，展示低速下無抖動的控制品質。</li>
+                    <li><strong>Push Final</strong>：提交具備「個體化物理校準」功能的代碼。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>控制平滑度</strong>：馬達在極低速下是否依然保有穩定的轉動？</li>
+                    <li>[ ] <strong>工程細節</strong>：是否針對左右馬達的不同死區分別進行了補償校準？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：讓學生理解「軟體設計必須尊重物理現實」。當計算結果超出硬體極限，優先保護「幾何關係」。</p>
+            <ol class="space-y-4 text-slate-600 text-justify">
+                <li><strong class="text-blue-600 font-bold uppercase tracking-widest text-justify">重點 1：裁剪是惡魔</strong> - 學生需親眼看見 Clipping 破壞控制穩定性的慘痛代價。</li>
+                <li><strong class="text-blue-600 font-bold text-justify uppercase tracking-widest">重點 2：不對稱死區</strong> - 引導學員發現為什麼車子明明代碼一樣卻走歪：通常是左右輪死區電壓不同（摩擦力不對稱）。</li>
+                <li><strong class="text-blue-600 font-bold text-justify uppercase tracking-tighter text-justify">重點 3：線性化映射</strong> - 教導學員如何建立「虛擬的線性通道」，讓 PID 演算法在真實物理世界更穩定。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-blue-400 font-bold mb-3">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── include/motor_limits.h # 介面：定義 normalizePWM 與補償函式
+├── src/motor_limits.cpp   # 實作：待學生寫入縮放演算法
+└── tests/scaling.test.js  # 測試：驗證 V_L/V_R 比值在飽和時是否恆定
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-justify">
+            <table class="w-full text-left border-collapse text-justify">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify uppercase tracking-tighter">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看「為什麼便宜的馬達低速會卡住」短片。理解摩擦力與死區。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試學員是否能計算比例縮放因子 $Factor$。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black">領取作業 (Repo)，調教「低速絲滑參數」。實作防飽和缩放演算法。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>技術教練:</strong> 指導如何透過「動態係數 (Dynamic Factor)」在硬體飽和時自動保護系統穩定性。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black">提交飽和對比報告並 Push。閱讀教師對「非線性補償曲面」的進階思維回饋。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評對「幾何優先」原則的實作理解度。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

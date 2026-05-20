@@ -326,6 +326,144 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">控制大腦實驗室：高性能邏輯與異常處理</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：循跡狀態機規劃 (State Machine Logic Plan)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：系統架構分析師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>行為建模</strong>：用偽代碼寫下當「感測器突然全白」或「感測器全黑」時，系統應如何切換狀態？</li>
+                    <li><strong>模式轉換</strong>：規劃手動遙控模式與 PID 自動模式的「熱切換 (Hot Swap)」邏輯。</li>
+                    <li><strong>Push Final</strong>：提交具備「狀態轉移地圖」與「行為偽文本」的架構專案。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>邏輯覆蓋率</strong>：偽代碼是否處理了「異常脫線」後的搜尋策略？</li>
+                    <li>[ ] <strong>轉換合理性</strong>：狀態機是否存在死循環或無法到達的狀態分支？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：非阻塞併行時序實作 (Asynchronous Timing Implementation)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：實時系統工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-tighter font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>迴圈重構</strong>：全面移除 <code>delay()</code>，改用時鐘閥門控制 PID 採樣率。</li>
+                    <li><strong>任務併行</strong>：在每一幀控制中，併行插入數據藍牙發送與視覺指示燈閃爍。</li>
+                    <li><strong>抖動測試</strong>：在 Serial Plotter 中記錄每一次 PID 計算的時間間隔 \(\Delta t\)，觀測其均勻度。</li>
+                    <li><strong>Push Final</strong>：提交具備「準時序、無阻塞」特質的高性能控制代碼。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>代碼純淨度</strong>：全文是否徹底移除了會導致阻塞的指令？</li>
+                    <li>[ ] <strong>計算定標性</strong>：PID 的積分與微分項是否正確使用了實測的 \(\Delta t\) 而非固定常數？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：系統魯棒性防線 (Robustness Engineering)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：系統安全性驗證專家</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>數據完整性保護</strong>：實作輸入 Clamping，保證 PID 計算值永不溢位。</li>
+                    <li><strong>異常探針部署</strong>：實作「馬達堵轉偵測」：若有輸出但編碼器讀值未變達 3 秒，強制切斷馬達輸出。</li>
+                    <li><strong>故障模式分析</strong>：在 README 中模擬 3 種失效場景，並用代碼證明系統能安全停機。</li>
+                    <li><strong>Push Final</strong>：提交具備「工業級安全防護」的強韌型控制引擎專案。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>安全性評分</strong>：在模擬意外（如斷訊、卡死）時，代碼是否能有效防止設備受損？</li>
+                    <li>[ ] <strong>魯棒性思維</strong>：對界外值 (Outlier) 與硬體極限的考量是否足夠周全？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none text-justify;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：掌握控制系統的「時效性」與「可靠性」。理解程式邏輯中的併行處理藝術。</p>
+            <ol class="space-y-4 text-slate-600 text-justify">
+                <li><strong class="text-orange-600 font-bold uppercase tracking-widest text-justify">重點 1：思維視覺化</strong> - 強制繪製 FSM 狀態圖，這能讓學生學會將複雜任務「分而治之 (Divide and Conquer)」。</li>
+                <li><strong class="text-orange-600 font-bold text-justify uppercase tracking-widest text-justify">重點 2：對時間的控制力</strong> - 糾正 <code>delay()</code> 是為了讓學生跨入「實時系統 (Real-time System)」的進階門檻。</li>
+                <li><strong class="text-orange-600 font-bold text-justify uppercase tracking-tighter text-justify">重點 3：工程式的謹慎</strong> - 透過防護任務，傳達「功能正確只是基本，行為安全才是專業」的觀念。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-orange-400 font-bold mb-3">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── src/FSM_Framework.ino  # 核心：提供狀態切換骨架，學員需填寫 Action
+├── src/SafeHandler.cpp    # 工具：馬達安全性處理與數據鉗位
+└── docs/Flowchart.md      # 文檔：繪製決策树與異常狀態處理圖
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-justify">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看「狀態機如何簡化無人機邏輯」影片。構思不同循跡場景的狀態劃分。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試學員能否指出在非阻塞環境下，如何達成「邊開車邊閃燈」的效果。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black text-justify">領取作業 (Repo)，執行「代碼大手術」：將阻塞式舊代碼重構，並加入 Stall Guard 防護措施。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>代碼醫生:</strong> 協助學員診斷導致控制迴圈抖動 (Jitter) 的低效感測器讀取語法。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black text-justify">提交具備「災難抵抗力」的最終控制中樞代碼。閱讀教師對「看門狗定時器 (Watchdog Timer)」的硬體層科普。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評對「系統併行效能」與「故障模式涵蓋率」的設計深度。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

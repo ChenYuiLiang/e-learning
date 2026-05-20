@@ -339,6 +339,157 @@ document.addEventListener(<span class="text-green-400">'touchmove'</span>, (e) =
     </script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2>原生觸控體驗封印師</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title">任務 1：鎖住背景捲動與回彈 (Overscroll Prevention)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：App 體驗優化師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：35 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4>🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>接受作業</strong>：從老師提供的 GitHub Classroom 建立專屬程式庫。</li>
+                    <li><strong>攔截預設行為</strong>：在需要的 touch 事件中加入 <code>preventDefault()</code>，並明確設定
+                        <code>{ passive: false }</code>。</li>
+                    <li><strong>配合 CSS 鎖定</strong>：對操作區加入 <code>touch-action: none</code> 等樣式，防止捲動、縮放與橡皮筋回彈。</li>
+                    <li><strong>同步雲端</strong>：將優化前後的操作差異紀錄到 README 後再提交。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>背景靜止</strong>：在操作區滑動時，背景頁面是否保持穩定不捲動？</li>
+                    <li>[ ] <strong>事件設定</strong>：是否正確使用 <code>preventDefault()</code> 與
+                        <code>{ passive: false }</code>？</li>
+                    <li>[ ] <strong>CSS 配合</strong>：是否理解 <code>touch-action</code> 與 JS 攔截要一起工作？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title">任務 2：做出像原生 App 的手勢鎖定區 (Native-Like Surface)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：行動裝置前端工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：40 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4>🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>封鎖系統干擾</strong>：加入
+                        <code>user-select: none</code>、<code>-webkit-touch-callout: none</code> 等設定，避免文字選取或長按選單。</li>
+                    <li><strong>建立全螢幕模式</strong>：讓控制介面在啟用時成為專注操作區，降低瀏覽器預設 UI 的打擾。</li>
+                    <li><strong>跨平台測試</strong>：至少在 iOS Safari 與 Android Chrome 其中兩種環境測試一次。</li>
+                    <li><strong>提交成果</strong>：把不同裝置的測試觀察與對應修正推送到 GitHub。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>原生感</strong>：控制區是否不再出現惱人的選取、回彈或系統選單？</li>
+                    <li>[ ] <strong>平台兼容</strong>：是否有考慮 iOS 與 Android 對手勢限制的差異？</li>
+                    <li>[ ] <strong>驗證完整</strong>：是否提供實際測試情境，而不只是單看程式碼？</li>
+                </ul>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2>GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide">
+            <p><strong>第一步：準備範本倉庫 (Template Repo)</strong></p>
+            <ol>
+                <li>上傳帶有「橡皮筋回彈」問題的框架代碼，並勾選 <strong>"Template repository"</strong>。</li>
+            </ol>
+
+            <p style="margin-top: 1rem;"><strong>第二步：建立 Classroom 作業</strong></p>
+            <ol>
+                <li>建立作業並連結範本，啟用 <strong>"Enable feedback pull requests"</strong> 以便對比優化前後的觸控體感。</li>
+            </ol>
+
+            <p style="margin-top: 1rem;"><strong>第三步：學生端操作 (Flipped Workflow)</strong></p>
+            <ol>
+                <li>學生領取作業，實作 <code>preventDefault()</code> 攔截與 CSS <code>touch-action</code> 鎖定。</li>
+                <li>本地開發後 <strong>Push 代碼</strong>。</li>
+            </ol>
+
+            <p style="margin-top: 1rem;"><strong>第四步：教師回饋 (Review)</strong></p>
+            <ol>
+                <li>打開 Feedback PR，確認學生是否正確使用 <code>{passive: false}</code> 並針對 iOS Safari 的相容性處理給予評價。</li>
+            </ol>
+        </div>
+
+        <h2>在 GitHub Classroom 的實戰部署建議</h2>
+        <p>此單元引導學生優化網頁的移動端體驗，透過阻止預設行為使 Web App 表現得像原生 App，建議範本倉庫設置如下：</p>
+
+        <h3>A. 範本倉庫 (Template Repo) 結構</h3>
+        <pre><code>.
+├── index.html       # 包含 Viewport 設定與按鈕介面
+├── style.css        # (重點) 需加入 touch-action: none 與選取遏止
+├── js/ux.js         # (重點) 實作 preventDefault() 攔截邏輯
+└── README.md        # 體驗優化規範與 iOS/Android 兼容測試報告</code></pre>
+
+        <h3>B. 參考範例代碼 (Reference Example Code)</h3>
+        <p><strong>ux.js (阻止滾動與彈回)</strong></p>
+        <pre><code>// 鎖定全螢幕，防止手機端下拉重新整理或底層捲動
+document.addEventListener('touchmove', (e) => {
+    if (window.isLocked) {
+        e.preventDefault();
+    }
+}, { passive: false }); // 必須設為 passive: false 才能 preventDefault</code></pre>
+
+        <p><strong>style.css (手勢鎖定)</strong></p>
+        <pre><code>.control-pad {
+    touch-action: none;   /* 徹底禁止瀏覽器處理手勢 (縮放/捲動) */
+    user-select: none;    /* 防止長按選取文字 */
+    -webkit-touch-callout: none; /* 防止 iOS 彈出選單 */
+}</code></pre>
+
+        <h3>C. 自動評分 (Autograding) 的設計</h3>
+        <ul>
+            <li><strong>語法檢查：</strong> 使用 Actions 掃描 <code>ux.js</code> 是否正確聲明了 <code>{passive: false}</code>。</li>
+            <li><strong>樣式屬性：</strong> 驗證 <code>style.css</code> 中是否包含 <code>touch-action: none</code> 以解決縮放延遲。</li>
+        </ul>
+
+        <h2>翻轉教室的實施策略</h2>
+        <table border="1" style="width:100%; border-collapse: collapse; margin-top: 1rem;">
+            <thead>
+                <tr style="background-color: #f8fafc;">
+                    <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">階段</th>
+                    <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">學生行動 (Git Workflow)</th>
+                    <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">教師/平台角色</th>
+                </tr>
+            </thead>
+            <tbody style="color: #4b5563;">
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>課前 (預習)</strong></td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;">操作本頁的互動對比實驗，觀察普通網頁與 App 在滑動時的體感差異。</td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;">
+                        <strong>Dashboard：</strong>確認學生已體驗講義中的「反面教材」案例。
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>課中 (實作)</strong></td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;">實作全螢幕鎖定 (3-1) 並處理 iOS Safari 的相容性挑戰後 Commit。
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;">
+                        <strong>互動演示：</strong>分享學生優化後的頁面，討論「攔截」與「讓渡」的平衡。</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>課後 (精進)</strong></td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;">挑戰局部滾動區鎖定 (3-3) 並在 README 記錄優化前後的心得。</td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>Feedback PR：</strong>審核學生對事件冒泡與網頁轉 App
+                        體驗優化的理解。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
 </body>
 
 </html>

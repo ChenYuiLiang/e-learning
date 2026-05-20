@@ -317,6 +317,144 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">視覺實驗室：二值化門檻調校與數位濾波</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：互動式二值化工具 (Interactive Threshold Tool)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：影像處理工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>灰階轉換實作</strong>：在 <code>App.js</code> 中撰寫迴圈，利用加權公式將彩圖轉為灰階。</li>
+                    <li><strong>門檻邏輯串接</strong>：監聽 UI 滑桿事件，將灰階值與門檻比對，產出純黑白 (0/255) 的二值化結果。</li>
+                    <li><strong>截圖提交</strong>：在 README 中分別記錄「強光」與「暗處」環境下，取得最純淨黑線的最佳 Threshold 數值。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>轉換正確性</strong>：輸出的 Canvas 影像是否確實只有 0 與 255 兩種數值？</li>
+                    <li>[ ] <strong>UI 反饋一致性</strong>：滑桿拖動時，影像是否具備足夠流暢的即時刷新感？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：「噪點消滅者」濾波器實驗 (Noise Killer Filter Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：訊號處理專家</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>雜訊產生器</strong>：實作一個 Function，在影像中隨機撒入 2% 的白點雜訊 (Salt noise)。</li>
+                    <li><strong>卷積算法開發</strong>：撰寫 $3 \times 3$ 的滑動視窗逻辑。</li>
+                    <li><strong>比較分析</strong>：在同一雜訊來源下，對比「均值濾波」與「中值濾波」對黑白雜訊的抹除能力。</li>
+                    <li><strong>代碼提交</strong>：Push 效能最佳化的濾波函式，並附上處理前後的對比截圖。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>去噪質量評估</strong>：中值濾波是否能完美拔除「孤立噪點」而不同時模糊特徵邊緣？</li>
+                    <li>[ ] <strong>算法效率</strong>：在處理 $320 \times 240$ 影像時，是否能維持在 30 幀以上？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：特徵中心提取 (Feature Centroid Detection)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：視覺演算法開發者</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>重心公式應用</strong>：統計所有二值化後為「黑」點的 X, Y 總和除以總點數。</li>
+                    <li><strong>座標標註</strong>：在處理後的 Canvas 上，利用 <code>context.strokeRect</code> 標記出計算出的導航重心。</li>
+                    <li><strong>Push Final</strong>：提交具備「從雜亂背景中穩定定位黑線中心」能力的最終專案。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>中心點穩定度</strong>：在影像光暗微調時，計算出的中心座標是否發生劇烈跳變？</li>
+                    <li>[ ] <strong>邏輯嚴謹性</strong>：代碼中是否正確處理了「完全沒有目標物 (n=0)」時的除以零邊界情況？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：引導學生理解「機器視覺」不是在看照片，而是在進行「特徵提取 (Feature Extraction)」。</p>
+            <ol class="space-y-4 text-slate-600">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：降維的藝術</strong> - 解釋為什麼要丟棄色彩訊息。將 $320 \times 240 \times 3$ 的複雜數據簡化為一組座標，是提升自駕系統響應速度的關鍵。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：噪聲是數學問題</strong> - 讓學生體悟到「中值濾波」如何利用統計學（中位數）來對抗不可避免的物理電噪。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：門檻的相對性</strong> - 強調沒有「絕對正確」的 Threshold。這為後續單元引進「自適應門檻」埋下伏筆。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── js/filter.js        # 核心：待填寫均值與中值濾波逻辑
+├── js/threshold.js     # 核心：待填寫二值化與重心計算公式
+├── tests/              # 單元測試：提供像素匹配基準
+└── README.md           # 繳交區：分析 Threshold 與光強的關係
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5">觀看「卷積核滑動過程」的動畫影片。預習 2D 陣列的巢狀迴圈遍歷技巧。</td>
+                        <td class="px-6 py-5"><strong>Dashboard:</strong> 監測預習進度，發布關於「中值 vs 均值」的趣味小測驗。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900">領取作業 (Repo)，調校出能完美過濾背景的二值化面板。挑戰實作 5x5 的卷積窗口。</td>
+                        <td class="px-6 py-5"><strong>技術導航員:</strong> 巡場排除座標越界 (Index Out of Bounds) 的常見邏輯錯誤。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課後精進</td>
+                        <td class="px-6 py-5">將具備中值濾波能力的穩定偵測代碼 Push 至 Classroom。撰寫算法效率心得。</td>
+                        <td class="px-6 py-5"><strong>Feedback PR:</strong> 點評對「形態學處理」的使用細緻度，表揚代碼結構清晰、命名語意化的學員。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

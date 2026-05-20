@@ -338,6 +338,144 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none text-justify;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">除錯劇場：命案現場與防禦性設計</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：犯罪現場偵查實錄 (Crime Scene Investigation Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：軟體鑑識偵探</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>故障重現</strong>：運行專案，記錄：在何種極端參數下馬達會發生反轉或死機？</li>
+                    <li><strong>假設定位</strong>：利用 <code>console.log()</code> 或斷點追蹤追蹤變數。判斷是「型別轉換錯誤」還是「變數作用域污染」。</li>
+                    <li><strong>Push Final</strong>：提交包含「詳細偵調報告」的 README。記錄從發現、假說、證偽到最終修正的全過程。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>邏輯洞察力</strong>：是否正確找出了專案中預埋的 3 個邏輯陷阱（如負值映射溢位）？</li>
+                    <li>[ ] <strong>排查完整性</strong>：日誌是否呈現了找到答案之前的「證偽」過程？（證明使用了科學方法而非盲目猜測）。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：通訊黑盒診斷 (Communication Blackbox Analysis Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：全鏈路通訊專家</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-tighter font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>數據抓包</strong>：利用 DevTools Network 面板捕捉點擊按鈕時的 fetch / ws 請求包。</li>
+                    <li><strong>封包校驗</strong>：比對 Web 發出的 JSON 欄位與 ESP32 解析器預期的變數名，找出拼寫或大小寫不一致的「隱形錯誤」。</li>
+                    <li><strong>故障隔離</strong>：撰寫診斷，判斷問題發生在「前端發送」、「傳輸協議」還是「後端解析」層次。</li>
+                    <li><strong>Push Final</strong>：提交包含「抓包數據比對圖」與「隔離修復代碼」的 PR。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>工具熟練度</strong>：能否從 Network 面板中準確提取出傳輸 Payload 並解讀其結構？</li>
+                    <li>[ ] <strong>推論嚴謹性</strong>：給出的故障定位是否具備充分的「數據證據」支持？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：防禦性重構實戰 (Defensive Refactoring Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：系統健壯性工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>脆弱性掃描</strong>：對 PID 運算模組進行單元測試：輸入 NaN 或極大值時，系統是否會崩潰？</li>
+                    <li><strong>加固代碼</strong>：部署 Clamping 防護、型別強制校驗與逾時自動復位機制。</li>
+                    <li><strong>回報機制實作</strong>：在前端實作 Toast 警告通知，當捕獲到異常數據時，主動告知操作者具體原因而非沈默失靈。</li>
+                    <li><strong>Push Final</strong>：提交具備「自我防護、感知異常」的最終版高階控制庫。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>防護廣度</strong>：代碼是否考慮了所有可能的非法輸入（負值、空值、非法字串）？</li>
+                    <li>[ ] <strong>用戶告知力</strong>：當系統進入失效保護 (Fail-Safe) 狀態時，介面是否提供了清晰的診斷訊息引導？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none text-justify;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：將「Debug」視為一種嚴謹的科學實驗。由「隨機修改」進化為「邏輯觀察」。</p>
+            <ol class="space-y-4 text-slate-600 text-justify">
+                <li><strong class="text-pink-600 font-bold uppercase tracking-widest text-justify">重點 1：重現是修復的前題</strong> - 強調沒有被重現的 Bug 是無法被徹底消滅的。指導學生建立重現步驟紀錄。</li>
+                <li><strong class="text-pink-600 font-bold text-justify uppercase tracking-widest">重點 2：工具是延伸的感官</strong> - 指導學生使用 Breakpoints 與 Network 面板代替盲目的 console.log，獲取更完整的「時空上下文」。</li>
+                <li><strong class="text-pink-600 font-bold text-justify uppercase tracking-tighter text-justify">重點 3：免疫比治療更划算</strong> - 透過「防禦性重構」任務，讓學員體認到預防錯誤代碼比排查錯誤更快。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-pink-400 font-bold mb-3">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── src/CrimeScene.cpp     # 高階 Bug 挑戰區：內含 3 個隱藏的邏輯與通訊 Bug
+├── src/Hardened.h         # 重構加固區：預留邊界檢查介面
+└── docs/Case_Report.md    # 調查日誌模板：包含現象、假說、驗證三個章節
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-justify">
+            <table class="w-full text-left border-collapse border-justify">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看「如何讀懂 Stack Trace 與除錯心理學」影片。預習二分搜尋法定位錯誤的原理。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試學員能否分析出一張 Network 面板截圖中的欄位拼寫錯誤。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black text-justify">領取作業 (Repo)，挑戰「命案現場」。利用專業抓包工具比對，並執行系統代碼的防禦性重構。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>鑑識教官:</strong> 扮演「橡皮鴨」，讓學員對其解釋修法邏輯。當面檢核學員對「競態條件 (Race Condition)」的理解。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black text-justify text-justify">提交除錯偵查日誌。閱讀教師針對「單元測試 (Unit Test)」如何預防回歸错误的補充導讀。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評對「非法輸入」的考量範圍是否足夠。表彰邏輯推導具備科學嚴謹性的學員日誌。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

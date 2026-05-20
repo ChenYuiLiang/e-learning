@@ -363,6 +363,138 @@
     </script>
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">數位控制與去彈跳實驗室：浮空偵測、機械彈跳量化與非阻塞演算法實戰
+        </h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：「天線實驗」：體會浮空狀態 (Floating State)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：電磁相容性實習生</span> | <span>難度：⭐️</span> | <span>估計時長：30 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>硬體浮空測試</strong>：將 GPIO 設為負邏輯純 INPUT，手部靠近觀察雜訊。</li>
+                    <li><strong>對比觀察</strong>：開啟 INPUT_PULLUP 記錄波形如何穩定。</li>
+                    <li><strong>現象記錄</strong>：解釋為何不允許「浮空引腳」。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>原理描述</strong>：描述浮空引腳為何會吸收雜訊？</li>
+                    <li>[ ] <strong>邏輯掌握</strong>：理解開啟上拉電阻後邏輯反向？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：「計數器挑戰」：捕捉按鈕彈跳 (Bouncing Capture)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：韌體除錯工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>累積計數實作</strong>：偵測到 LOW 就 count++。</li>
+                    <li><strong>量測量化</strong>：按壓記錄 count 增加的「連發」倍數。</li>
+                    <li><strong>數據歸檔</strong>：歸納按下速度對彈跳次數影響。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>量化分析能力</strong>：量化物理彈跳造成的功能災難？</li>
+                    <li>[ ] <strong>系統化思維</strong>：理解實體限制必須經韌體邏輯補償？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：「工業級去彈跳演算法」 (Pro Debounce)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：高級韌體工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>實作去彈跳</strong>：利用 millis() 完全移除 delay()。</li>
+                    <li><strong>狀態切換邏輯</strong>：實作靈敏「模式切換器」。</li>
+                    <li><strong>整合測試</strong>：加入模擬耗時運算驗證獨立性。</li>
+                    <li><strong>最終 Commit</strong>：封裝去彈跳功能並 Push。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>演算法正確性</strong>：完全移除 delay() 且邏輯穩定？</li>
+                    <li>[ ] <strong>系統穩定性</strong>：單次按壓穩定觸發，無顫動或失效？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：將「機械彈跳」轉化為「非阻塞程式設計」契機。</p>
+            <ol class="space-y-4 text-slate-600 text-justify text-left">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：浮空與確定性</strong> - bit 必須有明確 0 或 1。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：缺陷補償</strong> - 程式相容不完美硬體。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：邁向 Non-blocking</strong> - 引入 millis() 代替 delay()。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800 text-justify">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm">
+.
+├── src/main.cpp      # (必改點) 提供計數範本讓學員修正
+└── README.md         # 描述去彈跳前後波形對照
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-justify">
+            <table class="w-full text-left border-collapse border border-slate-50">
+                <thead>
+                    <tr class="bg-slate-100 border border-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看「按鈕連發？解密機械彈跳」影片。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試學員能否區分上拉與下拉接法。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black text-justify text-left">領取作業 (Repo)，挑戰非阻塞去彈跳算法，控制模式切換。自定義計時閾值。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>除錯指導:</strong> 展示如何使用 Plotter 觀察鋸齒狀雜訊。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black text-justify">將去彈跳邏輯封裝並 Push。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評對「狀態穩定度」理解。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

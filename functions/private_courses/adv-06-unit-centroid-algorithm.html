@@ -302,6 +302,147 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">核心實驗室：視覺質心演算與實體連動</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：實作「質心追蹤器」函式 (Build Centroid Tracker)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：視覺導航工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>像素遍歷實作</strong>：在 <code>Tracker.js</code> 撰寫一個迴圈遍歷二值化後的 ImageData。當像素值為 0（黑色目標）時，累加 X, Y
+                        座標。</li>
+                    <li><strong>中心點計算</strong>：計算平均座標 $( \bar{x}, \bar{y} )$，並加入 <code>if (count > 0)</code> 邏輯防止除以零崩潰。
+                    </li>
+                    <li><strong>標註整合</strong>：調用 Canvas API 在畫面的質心座標繪製紅色準星，驗證視覺解析正確性。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>座標運算精準度</strong>：紅色準星是否能準確鎖定在單一色塊的幾何中心？</li>
+                    <li>[ ] <strong>程式穩健度</strong>：當影像中「完全沒有黑色像素」時，程式是否能優雅保持（不報錯、不報 NAN）？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：「質心穩定化」過濾器 (Centroid Stabilization Filter)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：訊號處理專家</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>面積門檻實作</strong>：設定 <code>MIN_PIXELS = 50</code>。若偵測到的目標像素數低於此值，則維持上一次的質心座標。</li>
+                    <li><strong>低通濾波演算法</strong>：實作 <code>current = (target * 0.7) + (prev * 0.3)</code>，實現加權移動平均。</li>
+                    <li><strong>效能對比紀錄</strong>：在 README 中記錄加入濾波器後，質心在物體靜止時的座標標準差 (Variance) 變化。</li>
+                    <li><strong>Push PR</strong>：提交具備抗噪能力的穩定質心算法。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>抗噪有效性</strong>：在環境光線不穩引起像素閃動時，準星是否依然能保持穩定不劇烈晃動？</li>
+                    <li>[ ] <strong>追蹤靈敏度</strong>：進行低通濾波後，準星對物體快速移動的跟隨延遲是否仍在可接受範圍內？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：質心誤差與轉向控制連動 (Centroid-to-Control Linkage)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：機器人系統整合師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>誤差映射實作</strong>：計算水平偏離值 $e = \bar{x} - 160$。將 $e \in [-160, 160]$ 映射至舵機角度 $A \in [60,
+                        120]$。</li>
+                    <li><strong>通訊整合</strong>：當 $e$ 發生變化時，透過封裝好的 BLE 介面發送 <code>{steer: A}</code> 到 ESP32 韌體。</li>
+                    <li><strong>端到端聯調</strong>：物理手動移動地面標誌組，驗證無人車車輪是否能隨著標誌位置自動左右跟隨。</li>
+                    <li><strong>Push Final</strong>：提交具備「視覺感知與物理執行聯動」的最終專案包。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>物理反應正確性</strong>：當質心位於畫面左側（Error 為負值）時，舵機轉向角度是否正確。</li>
+                    <li>[ ] <strong>系統集成度</strong>：是否成功打通了從影像二元化到物理底層控制的完整閉環 (Close-loop)？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8">
+            <p class="font-bold text-slate-700 mb-4">本單元教學重點：讓學生理解「影像處理」的終極目的不是看照片，而是提取「可用於控制的座標數據」。</p>
+            <ol class="space-y-4 text-slate-600">
+                <li><strong class="text-blue-600">重點 1：從像素到座標</strong> - 不要讓學生迷失在 `for` 迴圈中，要引導他們思考：當我們找到質心時，我們實質上掌握了物體在世界中的「地址」。</li>
+                <li><strong class="text-blue-600">重點 2：穩定性的價值</strong> - 多數學生會困惑「為什麼準星一直在抖」。這是引入數位濾波與雜訊抑制概念的絕佳契機。</li>
+                <li><strong class="text-blue-600">重點 3：誤差就是驅動力</strong> - 建立 Error 與 Control 的簡單映射關係，為下一個單元的 PID 控制理論鋪路。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-blue-400 font-bold mb-3">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── js/vision.js        # 包含二值化框架，待填寫質心計算邏輯
+├── js/car_link.js      # 包含 BLE 連線框架，待實作 Error 到轉向的映射
+└── README.md           # 實驗紀錄：需包含計算出的質心座標截圖
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5">手動計算 3x3 網格中幾個隨機點的平均座標，掌握公式原理。觀看「ROI 原理」短片。</td>
+                        <td class="px-6 py-5"><strong>Dashboard:</strong> 測試學員是否能理解當 $n=0$ 時公式為何會失敗。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30">課中實作</td>
+                        <td class="px-6 py-5">領取作業 (Repo)，在 Canvas 上實作動態準星。測試不同 ROI 範圍對計算結果的穩定性影響。</td>
+                        <td class="px-6 py-5"><strong>巡場師資:</strong> 協助學員除錯「掃描區塊與數值座標」的對應邏輯缺失。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課後精進</td>
+                        <td class="px-6 py-5">撰寫「濾波器對穩定性的提升」報告並 Push。閱讀 PR 回饋以優化控制邏輯。</td>
+                        <td class="px-6 py-5"><strong>Feedback PR:</strong> 點評對「誤差映射」的理解細緻度，表揚具備 ROI 防禦性檢查的代碼。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

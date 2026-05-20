@@ -349,6 +349,182 @@
     </script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2>控制板介面設計師</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title">任務 1：排出可操作的 3x3 控制板 (D-Pad Layout)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：UI/UX 設計師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4>🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>接受作業</strong>：從老師的 GitHub Classroom 建立專屬控制面板程式庫。</li>
+                    <li><strong>建立骨架</strong>：用 HTML 排出上、下、左、右與中央停止鍵，並替每個按鈕命名 ID。</li>
+                    <li><strong>完成版型</strong>：使用 CSS Grid 或等效方式排出穩定的 3x3 視覺矩陣。</li>
+                    <li><strong>同步雲端</strong>：確認桌機與手機畫面都能正常操作後，再 <code>commit</code> / <code>push</code>。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>版面清晰</strong>：方向鍵與停止鍵位置是否直覺、容易辨識？</li>
+                    <li>[ ] <strong>RWD 表現</strong>：在手機尺寸下，按鈕是否仍維持可用的觸控比例？</li>
+                    <li>[ ] <strong>結構命名</strong>：HTML ID / class 是否具語意，方便後續綁定事件？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title">任務 2：做出真的好按的操作手感 (Touch Feedback)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：互動體驗專家</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4>🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>放大熱區</strong>：調整 padding、gap 與尺寸，讓主要按鈕至少接近 44x44px 的可觸控面積。</li>
+                    <li><strong>加入反饋</strong>：用 <code>:hover</code>、<code>:active</code> 或等效樣式做出按壓感與視覺反應。</li>
+                    <li><strong>補上禁用態</strong>：設計斷線或不可操作時的 disabled 樣式，避免誤觸。</li>
+                    <li><strong>提交優化</strong>：將樣式調整與設計理由整理後推送到 GitHub。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>互動回饋</strong>：按下與放開時，是否有明確的視覺差異？</li>
+                    <li>[ ] <strong>誤觸控制</strong>：按鈕之間的距離與大小是否足夠避免錯按？</li>
+                    <li>[ ] <strong>狀態一致</strong>：disabled 狀態是否看得出來且真的不可點擊？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title">任務 3：做出具沉浸感的疊加介面 (Overlay Panel)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：前端介面工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4>🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>安排層級</strong>：將控制介面疊在背景層之上，處理好 <code>position</code> 與 <code>z-index</code>。</li>
+                    <li><strong>設計風格</strong>：加入半透明、陰影或模糊效果，讓控制板更像真實遙控器 HUD。</li>
+                    <li><strong>統一圖示</strong>：用 SVG 或一致的 icon 系統整理所有方向按鈕與中心鍵。</li>
+                    <li><strong>提交成品</strong>：完成視覺整合後，把最終畫面推送到 GitHub 供老師 review。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>圖層安排</strong>：介面是否浮在背景之上，同時保留主要資訊可讀性？</li>
+                    <li>[ ] <strong>視覺一致性</strong>：圖示、圓角、間距與字體風格是否整體一致？</li>
+                    <li>[ ] <strong>完成度</strong>：是否看得出這是一個能延伸成正式 FPV 遙控頁面的 UI 雛形？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2>UI 佈局與 CSS 控制面板 教學引導指南</h2>
+        <div class="classroom-guide">
+            <p><strong>第一步：準備範本倉庫 (Template Repo)</strong></p>
+            <ol>
+                <li>上傳基礎專案框架到 Repo 並勾選 <strong>"Template repository"</strong>。</li>
+            </ol>
+
+            <p style="margin-top: 1rem;"><strong>第二步：建立 Classroom 作業</strong></p>
+            <ol>
+                <li>建立作業並連結範本，建議開啟 <strong>Feedback Pull Requests</strong> 選項。</li>
+            </ol>
+
+            <p style="margin-top: 1rem;"><strong>第三步：學生端操作 (Flipped Workflow)</strong></p>
+            <ol>
+                <li>學生領取作業，實作 CSS Grid 網格佈局與互動反饋。</li>
+                <li>本地開發後 <strong>Push 代碼</strong>。</li>
+            </ol>
+
+            <p style="margin-top: 1rem;"><strong>第四步：教師回饋 (Review)</strong></p>
+            <ol>
+                <li>打開 Feedback PR，確認學生的 Grid 區域命名邏輯是否乾淨、語義化，且符合熱區優化原則。</li>
+            </ol>
+        </div>
+
+        <h2>在 GitHub Classroom 的實戰部署建議</h2>
+        <p>此單元引導學生使用 CSS Grid 構建強韌的遙控介面，並理解 UI/UX 的點擊熱區優化，建議範本倉庫設置如下：</p>
+
+        <h3>A. 範本倉庫 (Template Repo) 結構</h3>
+        <pre><code>.
+├── index.html       # 基礎 HTML 框架
+├── style.css        # (重點) 需實作 Grid 佈局的部分
+└── README.md        # UI/UX 設計規範與點擊熱區分析</code></pre>
+
+        <h3>B. 參考範例代碼 (Reference Example Code)</h3>
+        <p><strong>style.css (3x3 Grid 佈局)</strong></p>
+        <pre><code>.control-pad {
+  display: grid;
+  grid-template-areas:
+    ".  up  ."
+    "left stop right"
+    ". down .";
+  gap: 15px;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 100px);
+}
+
+#btn-up { grid-area: up; }
+/* 其他按鈕依此類推 */
+
+.control-btn:active {
+  transform: scale(0.95); /* 按壓視覺回饋 */
+  filter: brightness(0.8);
+}</code></pre>
+
+        <h3>C. 自動評分 (Autograding) 的設計</h3>
+        <ul>
+            <li><strong>樣式檢查：</strong> 使用自動化腳本檢查 <code>style.css</code> 是否包含 <code>grid-template-areas</code> 與
+                <code>:active</code> 偽類。</li>
+            <li><strong>佈局檢查：</strong> 驗證按鈕容器是否具有正確的 <code>grid</code> 或 <code>flex</code> 屬性。</li>
+        </ul>
+
+        <h2>翻轉教室的實施策略</h2>
+        <table border="1" style="width:100%; border-collapse: collapse; margin-top: 1rem;">
+            <thead>
+                <tr style="background-color: #f8fafc;">
+                    <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">階段</th>
+                    <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">學生行動 (Git Workflow)</th>
+                    <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">教師/平台角色</th>
+                </tr>
+            </thead>
+            <tbody style="color: #4b5563;">
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>課前 (預習)</strong></td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;">閱讀 Grid 佈局原理，嘗試在模擬器中體驗不同按鈕佈局。</td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;">
+                        <strong>Dashboard：</strong>檢查學生是否完成預習檢核與初步佈局嘗試。</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>課中 (實作)</strong></td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;">優先完成 3x3 網格佈局 (1-1)，再進行觸控熱區與動畫優化。</td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>現場指導：</strong>引導學生區分 Grid 與 Flexbox
+                        的使用場景與優劣。</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>課後 (精進)</strong></td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;">優化 UI 視覺細節，並提交最終 PR 說明設計思路。</td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>Feedback PR：</strong>審核 CSS
+                        程式碼的語義化程度與視覺反饋密度。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
 </body>
 
 </html>

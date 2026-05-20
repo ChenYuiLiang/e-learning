@@ -272,7 +272,145 @@
     </footer>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">影像實驗室：MJPEG vs H.264 編碼效能實地觀測</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：頻寬殺手 MJPEG 壓力測試 (Bandwidth Stress Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：傳輸效能測試員</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>參數巡迴</strong>：在網頁介面動態切換 Quality (10, 50, 90)。</li>
+                    <li><strong>數據對比</strong>：紀錄在特定 Wi-Fi 環境下能穩定維持的「最高 FPS」與「單幀大小」。</li>
+                    <li><strong>Push Final</strong>：提交包含「畫質與 FPS 非線性關係曲線」的實驗報告。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>拐點識別</strong>：能否準確找出當 FPS 開始驟降時的 Q 值臨界點？</li>
+                    <li>[ ] <strong>數據完整性</strong>：README 中是否記錄了三種不同複雜度場景（靜止 vs 劇動）的測試結果？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：時空旅人 H.264 延遲觀測 (Latency & Artifacts Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：影音協議工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>延遲量測</strong>：使用精密計時器對準鏡頭，計算「鏡頭捕捉」到「螢幕顯示」的 End-to-End Latency。</li>
+                    <li><strong>動態觀測</strong>：快速晃動相機，觀察 H.264 在 I-Frame 遺失時產生的「果凍效應」或馬賽克現象。</li>
+                    <li><strong>緩衝實驗</strong>：測試調整 Player Buffer 大小對延遲與播放平滑度的影響。</li>
+                    <li><strong>Push Final</strong>：提交具備「延遲成因分析」的 H.264 效能報告。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>成因分析</strong>：能否清晰區分「編碼延遲」與「緩衝延遲」的佔比差異？</li>
+                    <li>[ ] <strong>現象解釋</strong>：是否能透過 P-Frame 原理正確解釋為何晃動會加劇畫質崩潰？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：情境化編碼策略設計 (Adaptive Strategy Design)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：產品方案架構師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>邏輯開發</strong>：撰寫偽代碼：遙控模式 (High Response) 下切換至低延遲 MJPEG；錄影模式 (High Compression) 下切換至高品質
+                        H.264。</li>
+                    <li><strong>權衡辯證</strong>：在 README 闡述針對「即時遙控馬達」場景，為何選擇特定编解碼方案。</li>
+                    <li><strong>Push Final</strong>：交付最終具備「場景感知能力」的編碼器配置方案。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>邏輯合理性</strong>：設計說明是否合乎工程邏輯（例如：考慮 ESP32 的運算功耗）？</li>
+                    <li>[ ] <strong>防護設計</strong>：是否提到了網路抖動 (Jitter) 時的緩降 (Graceful Degradation) 措施？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：在「暴力傳輸」與「智慧演算法」之間做決策。讓學生掌握 H.264 與 MJPEG 在物理限制下的核心博弈。</p>
+            <ol class="space-y-4 text-slate-600">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：空間與時間的互換</strong> - 強調 MJPEG 只針對一張圖，而 H.264 針對「時間軸上的差異」。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：延遲的代際差</strong> - 實驗 2-2 是最有感的，讓學生看見演算法「預測」需要代價（延測）。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：場景驅動開發</strong> - 引導學生不只看技術參數，要從「使用者需求（遙控 vs 存擋）」出發做技術選型。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800 text-justify">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── src/codec_switch.cpp  # 核心：學員實作 MJPEG/H.264 切換邏輯
+├── tools/latency_calc.py # 工具：協助測算 End-to-End 延遲
+└── README.md             # 紀錄：編碼延遲與畫質殘影對比報告
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-justify">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看「H.264 I/P 幀動態演示」短片。理解運動補償 (Motion Vector) 概念。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試學員能否預判 H.264 在靜態畫面下的頻寬優勢。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black">領取作業 (Repo)，執行 2-1 壓力測試與 2-2 延遲觀測。優化解碼器緩衝區配置。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>技術教練:</strong> 現場拆解馬賽克殘影產生的數據丟包成因。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black">提交最終場景編碼方案。閱讀導師對「H.265 與 AV1」在物聯網邊緣端應用前景的補充。</td>
+                        <td class="px-6 py-5 text-left text-justify border-justify"><strong>Feedback PR:</strong> 點評對「編碼複雜度 vs 頻寬節省」的成本合算。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

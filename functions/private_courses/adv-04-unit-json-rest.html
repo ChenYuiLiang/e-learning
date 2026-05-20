@@ -245,7 +245,149 @@
     </footer>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">雲端數據實驗室：JSON 標準化與 RESTful API 實戰</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：標準化封包產生器 (Standardized Payload Generator)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：後端 API 開發者</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>數據建模</strong>：設計一個包含 <code>device_info</code>, <code>sensors</code>, <code>status</code>
+                        的巢狀 JSON 物件模板。</li>
+                    <li><strong>接口實作</strong>：在 ESP32 上實作 <code>GET /api/telemetry</code> 路由，將感測器數據動態序列化後回傳。</li>
+                    <li><strong>Push Final</strong>：提交具備「高層次結構清晰」且符合標準 Web 規範的數據源接口。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>語義化命名</strong>：JSON 中的 Key 是否具備高度可讀性？（例如 <code>temp_c</code> 而非 <code>t1</code>）
+                    </li>
+                    <li>[ ] <strong>層級合理性</strong>：物件嵌套是否逻辑一致？相關聯的數據是否被正確歸類在同一個 Parent 物件下？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：指令接收器 (POST Command Receiver)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：系統整合工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>路由配置</strong>：實作 <code>POST /api/control</code> 接口，接收來自網頁端的 JSON 格式操控指令。</li>
+                    <li><strong>解析與執行</strong>：使用 ArduinoJson 解析 <code>cmd</code> 與 <code>val</code>，並即時轉換為對應的硬體控制信號。
+                    </li>
+                    <li><strong>異常防禦</strong>：針對格式錯誤或內容損毀的 JSON Payload，實作 <code>400 Bad Request</code> 的錯誤攔截機制。</li>
+                    <li><strong>Push Final</strong>：提交具備「高度魯棒性」且具備錯誤處理回饋的指令接收模組。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>防崩潰校驗</strong>：在接收異常 JSON 時，系統是否能穩定返回錯誤碼而非導致硬體重新啟動？</li>
+                    <li>[ ] <strong>通訊對話感</strong>：Response 中是否包含了執行結果的狀態碼與具體的原因描述？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：API 效能與壓力測試 (Payload Benchmark)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：雲端效能優化工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>封包瘦身</strong>：對比「冗長語義」與「極致精簡」兩種不同 Key 長度的封包，測量其序列化耗時與體積差異。</li>
+                    <li><strong>高頻壓力測試</strong>：模擬每秒 10 次以上的並發請求，紀錄 ESP32 的 CPU 負載與 API 回應延遲變化。</li>
+                    <li><strong>優化報告</strong>：在 README 中提出在有限頻寬情境下，對 JSON 結構設計的折衷與優化建議。</li>
+                    <li><strong>Push Final</strong>：提交經過「量化分析」且兼顧性能與可維護性的 API 最終版本。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>數據權衡能力</strong>：報告中是否能清晰指出「Key 長度」對序列化速度的具體影響？</li>
+                    <li>[ ] <strong>架構思考度</strong>：是否考慮到了縮寫 Key 對後端資料庫索引與前端維護的易讀性損失？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：數據與接口的標準化。掌握 RESTful 設計美學與 HTTP 狀態碼的禮儀。</p>
+            <ol class="space-y-4 text-slate-600">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：資源導向路徑 (Resource-Oriented)</strong> - 強調路徑應代表「名詞」，而行為應代表「動詞」（GET/POST），打破以往用路徑寫邏輯的習慣。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：防禦性的反序列化</strong> - 透過 3-2 任務引入校驗機制，讓學生看見在開放式網路中，不信任任何外部輸入的重要性。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：邊緣運算的計算開銷</strong> - 透過壓力測試，讓學生實際體驗在 ESP32 這類微型裝置上，複雜的 JSON 處理對 CPU 與延遲的影響。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── src/server_routes.cpp  # 核心：待填寫 RESTful 路由分發邏輯
+├── src/json_parser.cpp    # 邏輯：實作安全的反序列化與欄位檢查
+├── web_test/index.html    # 測試：內建 fetch API 用於學員本機調試接口
+└── README.md              # 報告：記錄壓力測試條件與 Payload 優化成果
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5">觀看「HTTP 的四個動詞與溝通禮節」影片。理解 200 vs 404 vs 500 的物理意義。</td>
+                        <td class="px-6 py-5"><strong>Dashboard:</strong> 測試學員是否能理解為什麼感測器數據不適合用 POST 索取。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900">領取作業 (Repo)，挑戰在 API 路由中實作身份驗證（或簡易檢查碼）與數據截斷功能。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>技術教練:</strong> 現場示範 Chrome DevTools 抓包，分析 Response Header 中的 Content-Type 屬性。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課後精進</td>
+                        <td class="px-6 py-5">提交壓力測試與 Payload 報告。在 PR 討論中嘗試解決同源政策 (CORS) 帶來的跨域問題。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 評價對「數據冪等性」與「冗餘欄位精簡」設計的合理性與前瞻性。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

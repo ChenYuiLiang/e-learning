@@ -1482,6 +1482,7 @@ window.renderAssignmentsTable = window.renderAssignmentsTable || function(assign
  * Fetches README from GitHub and injects into all available placeholders.
  */
 async function vibeRefreshReadmeContent(filterUnitId) {
+    refreshDashboardExternalGuideLinks();
     const readmePlaceholders = [
         document.getElementById('github-readme-placeholder-main'),
         document.getElementById('github-readme-placeholder-settings'),
@@ -2147,6 +2148,43 @@ window.vibeInjectAdminTutorModeToggle = function() {
         }
     });
 };
+
+function resolveUnitGuideExternalUrl(guideType = 'assignment') {
+    const unitId = (filterUnitId || "").trim();
+    if (!unitId) return "";
+    const hash = guideType === 'tutor' ? 'tutor-guide' : 'assignment-guide';
+    const origin = (window.location && window.location.origin) ? window.location.origin : 'https://vibe-coding.tw';
+    return `${origin}/${unitId}#${hash}`;
+}
+
+function upsertHeaderExternalLink(headerEl, guideType) {
+    if (!headerEl) return;
+    const url = resolveUnitGuideExternalUrl(guideType);
+    if (!url) return;
+
+    const linkClass = guideType === 'tutor' ? 'external-link-tutor-guide' : 'external-link-assignment-guide';
+    let link = headerEl.querySelector(`.${linkClass}`);
+    if (!link) {
+        const slot = document.createElement('div');
+        slot.className = 'ml-auto';
+
+        link = document.createElement('a');
+        link.className = `${linkClass} inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 text-xs font-bold text-slate-600 hover:text-blue-600 hover:border-blue-300 transition-colors`;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.textContent = '外部檔案';
+
+        slot.appendChild(link);
+        headerEl.appendChild(slot);
+    }
+    link.href = url;
+}
+
+function refreshDashboardExternalGuideLinks() {
+    upsertHeaderExternalLink(document.getElementById('assignments-header'), 'assignment');
+    upsertHeaderExternalLink(document.getElementById('assignments-header-integrated'), 'assignment');
+    upsertHeaderExternalLink(document.getElementById('settings-header'), 'tutor');
+}
 
 window.handleAssignTutor = async function (studentUid, unitId, tutorEmail) {
     if (!studentUid || !unitId) {

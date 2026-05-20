@@ -40,6 +40,7 @@ It is the source of truth for:
 2. Assignment emails must prefer `unitId + tab=assignments` deep links to reduce navigation friction.
 3. Autograde writeback failures must notify admin with payload preview to speed incident triage.
 4. Notification send failures should not block business transaction completion (current behavior: best-effort send with error logging).
+5. Admin pending assignment reminder only lists `未指派老師的課程單元`（paid course units only），排除硬體項目與免費課程項目。
 
 ## 4. Deprecated / Legacy Notes
 1. `sendGradingNotification` currently exists as a legacy template from manual grading flow.

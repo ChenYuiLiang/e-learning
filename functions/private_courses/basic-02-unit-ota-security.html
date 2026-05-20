@@ -304,6 +304,138 @@
     </script>
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">安全 OTA 防禦實驗室：身分驗證、降級攔截與硬體綁定</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：「數位守門員」實作 OTA 密碼鎖 (Digital Gatekeeper: Password Protection)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：安全工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫教 Clone 到本地。</li>
+                    <li><strong>身份驗證實作</strong>：為 <code>/update</code> 路由增加 HTTP Basic Auth。</li>
+                    <li><strong>參數持久化</strong>：使用 <code>Preferences</code> 將帳密儲存於 NVS。</li>
+                    <li><strong>防禦演練</strong>：實作錯誤計數器，在 README 截圖。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>驗證嚴謹度</strong>：是否能攔截請求並彈出 Auth 視窗？</li>
+                    <li>[ ] <strong>持久化邏輯</strong>：斷電重啟後，自定義密碼是否有效？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：「防呆機制」標頭檢查與攔截 (Integrity Guard: Pre-check)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：韌體校驗官</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>版本標記</strong>：定義版本旗標。</li>
+                    <li><strong>解析實作</strong>：解析 BIN 檔前段獲取新版本。</li>
+                    <li><strong>攔截中止</strong>：若版本過舊立即調用 <code>Update.abort()</code>。</li>
+                    <li><strong>文檔敘述</strong>：闡述拒絕降級防禦漏洞的技術意義。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>預檢準確性</strong>：能否在寫入 Flash 前識別衝突並中止？</li>
+                    <li>[ ] <strong>用戶告知</strong>：介面能否顯示版本異常代碼？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：「硬體適配」晶片型號鎖定 (Hardware Affinity: Model Lock)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：系統整合專家</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>指紋識別</strong>：調用 <code>ESP.getChipModel()</code>。</li>
+                    <li><strong>校驗邏輯</strong>：若架構不符 (如 S3 vs C3) 立即攔截。</li>
+                    <li><strong>壓力測試</strong>：證明系統成功識別並拒絕錯誤型號燒錄。</li>
+                    <li><strong>最終提交</strong>：整併安全模塊並 Push Commit。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>硬體綁定能力</strong>：是否正確拒絕了非法架構的更新？</li>
+                    <li>[ ] <strong>安全意識</strong>：README 是否體現防範損毀的意識？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：建立「全棧安全」與「抗攻擊」工程能力。建立防禦直覺。</p>
+            <ol class="space-y-4 text-slate-600 text-justify">
+                <li><strong class="text-red-600 font-bold uppercase tracking-widest text-justify">重點 1：保護物理設施</strong> - 駭客接管 IoT 裝置的代價不只是資料遺失。</li>
+                <li><strong class="text-red-600 font-bold text-justify uppercase tracking-widest">重點 2：無感化驗證</strong> - 體驗產品化中的「個人化配置」概念。</li>
+                <li><strong class="text-red-600 font-bold text-justify uppercase tracking-tighter">重點 3：流程穩健性</strong> - 思考 CI/CD 中的「版本管理」與「硬體驗收」。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800 text-justify">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-red-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm">
+.
+├── src/main.cpp      # (練習點) 需補全 authenticate() 邏輯
+├── include/version.h # 版本號定義文件
+└── README.md         # 安全測試報告：包含密碼鎖截圖
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-justify">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看「IoT 攻防戰：WiFi 密碼保護不了 OTA？」影片。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試是否理解 HTTP Auth 與 NVS。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black text-justify">領取作業 (Repo)，挑戰開發具備密碼保護與驗證系統。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>資設助教:</strong> 演示嘗試「暴力破解」後行為分析。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify uppercase tracking-widest">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black">將邏輯模組化並 Push，提交 PR 討論升級可能性。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 評估對異常路徑 (Negative paths) 處理。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

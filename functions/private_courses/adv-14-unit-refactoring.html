@@ -353,6 +353,146 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none text-justify;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">重構實驗室：架構病態分析與精品組件設計</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：義大利麵代碼之大手術 (Legacy Decoupling Surgery Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：代碼重構專家</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>嗅覺掃描 (Smell Detection)</strong>：找出專案中「神之類別」或「魔法常數」，並將其標記為重構目標。</li>
+                    <li><strong>關注點分離 (SoC)</strong>：將原始單體 loop 拆解為 <code>Perception</code> 與 <code>Action</code>
+                        模組，確保邏輯流清晰且具備命名意義。</li>
+                    <li><strong>Push Final</strong>：提交具備「高度可讀性、職責單一」的重構後代碼與思路說明。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>命名精準度</strong>：變數與函式命名是否能「自我解釋 (Self-documenting)」，減少註解依賴？</li>
+                    <li>[ ] <strong>解耦成效</strong>：全域變數是否被有效限制？代碼的巢狀深度是否有顯著改善？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：軟體通訊層 OOP 封裝 (Communication Layer OOP Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：軟體架構組件開發者</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-tighter font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>介面定義</strong>：定義通訊模組 Class。封裝 Web Bluetooth API，對外僅暴露 <code>write(data)</code> 與
+                        <code>onMessage()</code>。</li>
+                    <li><strong>私有狀態保護</strong>：確保底層的特徵值 UUID 與連結 Buffer 隱藏在類別私有域中，防止外部非法篡改。</li>
+                    <li><strong>連線生命週期管理</strong>：在 Class 內部處理「重連指數退避 (Exponential Backoff)」邏輯，優化使用者控制體驗。</li>
+                    <li><strong>Push Final</strong>：推送具備「高穩定性、可重用性」的獨立通訊模組組件。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>封裝完整度</strong>：主邏輯檔案中是否完全不再直接呼叫瀏覽器原生 BLE API？</li>
+                    <li>[ ] <strong>API 簡潔性</strong>：設計的 Class 介面是否直觀易用，能否讓同學在 5 分鐘內學會調用？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：動態處理管線架構 (Dynamic Pipeline Framework Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：資深框架開發者</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>框架架構設計</strong>：實作一個 Pipeline 容器類別，具備線性執行各級插件 (Middleware) 的能力。</li>
+                    <li><strong>組件對接實施</strong>：撰寫「低通濾波插件」與「數值鉗位插件」，並證明在不重啟系統下可動態抽換順序。</li>
+                    <li><strong>擴展性驗證</strong>：撰寫一份 10 行以內的「新插件範本」，證明系統滿足「開閉原則 (OCP)」。</li>
+                    <li><strong>Push Final</strong>：提交具備「現代化軟體設計美感」的高階數據處理管線。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>架構優雅度</strong>：插件間的數據傳遞是否具備標準格式（Pipeline Contract）？</li>
+                    <li>[ ] <strong>OCP 達成率</strong>：當新增處理邏輯時，是否真正做到了「無須修改 Pipeline Host 代碼」？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none text-justify;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify text-left">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：引導學生從「程式員 (Coder)」轉型為「架構師 (Architect)」。將關注點從功能實現轉向維護性。</p>
+            <ol class="space-y-4 text-slate-600 text-justify">
+                <li><strong class="text-emerald-600 font-bold uppercase tracking-widest text-justify">重點 1：對抗認知負荷</strong> - 強調重構不是為了炫技，而是為了讓其他人能用更短的時間看懂代碼。</li>
+                <li><strong class="text-emerald-600 font-bold text-justify uppercase tracking-widest">重點 2：技術債的感知教育</strong> - 引導學員識別「代碼壞味道」。培養對魔術數字與重複邏輯的高敏感度。</li>
+                <li><strong class="text-emerald-600 font-bold text-justify uppercase tracking-tighter text-justify">重點 3：開閉原則 (OCP) 的力量</strong> - 讓學員理解為什麼現代工業級系統必須透過「插件化」來應對頻繁變動的需求。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-emerald-400 font-bold mb-3">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── src/legacy_monolith.js # 操作對象：一個充滿壞味道的單體大檔案
+├── src/modules/           # 目標：將解構後的組件封裝於此
+└── docs/Migration.md      # 重構日誌：記錄重構前後的循環複雜度變化
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-justify">
+            <table class="w-full text-left border-collapse border-justify">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify text-left">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看「Clean Code 與技術債管理」影片。閱讀關於 OOP 類別設計的基本合約模式。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試學員能否分析出一張 UML 圖中，模組間的依賴關係是否合理。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black text-justify">領取作業 (Repo)，執行代碼大解構。在 GitHub Issue 中扮演「甲方」與同學交換模組，測試介面是否易用。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>架構教官:</strong> 挑戰學員的封裝深度：如果現在 API 簽名改動，有多少模組會發生「連鎖反應」而需要修正？</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black text-justify text-justify">將封裝好的精品類別集推送至 GitHub。閱讀關於「組件化與現代 Web 開發生態」的進階導讀。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評對「關注點分離」的落實深度。表揚模組邊界劃分極其優雅且具備通用性的報告。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

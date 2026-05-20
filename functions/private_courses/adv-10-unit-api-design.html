@@ -288,6 +288,141 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">API 實驗室：從幾何公式到產業級封裝</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：Kinematics 類別設計 (Abstraction Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：軟體架構師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>成員保護</strong>：將輪距 $L$、輪徑等設定為 `private`，透過 `constructor` 初始化。</li>
+                    <li><strong>異常處理</strong>：在 API 內部偵測除以零（$R=0$）的非法運算，並自動映射到自轉模式。</li>
+                    <li><strong>README 紀錄</strong>：說明為何使用 `float` 而非 `int` 來建立運動學結構體。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>結構對稱性</strong>：API 是否正確區分了 $V_{left}$ 與 $V_{right}$ 的計算分支？</li>
+                    <li>[ ] <strong>封裝完整度</strong>：主程式 (`main.ino`) 是否完全沒有出現顯式的 PWM 操作？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：軌跡調用挑戰 (Traj Mapping Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：測試工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>指令鏈路設計</strong>：利用 <code>driveArc(R, V)</code> 指令，將一個圓弧軌跡拆解為兩個半圓組合。</li>
+                    <li><strong>累積誤差分析</strong>：在 README 錄製運行影片，觀察物理上的 8 字圓心是否逐漸偏移，並探討原因。</li>
+                    <li><strong>Push Final</strong>：提交具備高度可讀性的 API 調用語法範例。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>代碼簡潔度</strong>：描述 8 字動作的代碼是否控制在 10 行以內？</li>
+                    <li>[ ] <strong>行為一致性</strong>：API 是否能處理 $R$ 為負值（代表左轉）的判讀邏輯？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：目標轉向接口 (Angle Command Engine)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：韌體工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>時間換空間</strong>：實作 $\Delta t = \text{Target\_Angle} / \omega$ 的換算公式。</li>
+                    <li><strong>回報機制</strong>：讓 <code>turnAngle</code> 回傳一個狀態碼，標示任務已完成或正在執行中。</li>
+                    <li><strong>Push Final</strong>：提交具備「回饋意識」的高階擴充 API。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>邏輯嚴謹度</strong>：轉向角度與時間的線性關係推導是否正確？</li>
+                    <li>[ ] <strong>介面友善性</strong>：TurnAngle 的參數是否讓初學者也能一眼看懂（例如使用 Degree 而非 Radian）？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：讓學生掌握「資訊隱藏 (Information Hiding)」的軟體工程核心。從單純寫 Code 轉向「設計介面」。</p>
+            <ol class="space-y-4 text-slate-600 text-justify">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：封裝的心理邊界</strong> - 要求學生思考：如果我的馬達換了，API 使用者需要被通知嗎？答案應是否定的。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：防呆的必要性</strong> - 在 API 層級攔截除以零或溢位，比在全域攔截更容易除錯。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：介面的自癒性</strong> - 講解為什麼 `driveArc(30, 100)` 比 `setMotor(128, 64)` 更具「自述性 (Self-documenting)」。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── include/DriveSystem.h # 介面：定義 KinematicsResult 與 API 原型
+├── src/DriveSystem.cpp   # 實作：待學生寫入 ICC 到馬達轉速的映射
+└── tests/api.test.js     # 測試：驗證介面調用是否符合 16-bit 傳輸規範
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看「API 命名學」短片。理解 Private 與 Public 的存取控制。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試學員是否能區分「全域變數」與「類別屬性」的生命週期差異。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black">領取作業 (Repo)，封裝 Kinematics 並調試 8 字形軌跡。實作異常參數攔截器。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>技術教練:</strong> 指導如何使用「結構體回傳」而非複數全域變數來傳遞马達指令。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black text-justify font-black">提交具備「狀態回報」的最終版代碼。閱讀教師對「非阻塞式回調」的架構建議。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評對「硬體抽象化層 (HAL)」概念的實作深度。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

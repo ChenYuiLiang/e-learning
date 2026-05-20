@@ -324,6 +324,146 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">Robustness 實驗室：邊界防禦與異常恢復</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：非法數據壓力測試 (Input Clamping Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：安全性驗證工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>硬性邊界實作</strong>：在 <code>motor_write()</code> 前加入 <code>constrain(val, 0, 255)</code>。
+                    </li>
+                    <li><strong>異常解析攔截</strong>：實作 JSON 校驗，對於格式不完整或包含亂碼的數據包進行主動過濾。</li>
+                    <li><strong>Push Final</strong>：提交具備「數據洗滌能力」的強韌型核心邏輯。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>邊界嚴密性</strong>：嘗試從前端發送 \(-500\) 或 \(800\)，觀察韌體是否能穩健地將其修正為 \(0\) 與 \(255\)？</li>
+                    <li>[ ] <strong>抗死機能力</strong>：在高速發送隨機字符時，ESP32 韌體是否會發生 Kernel Panic 重啟？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：通訊心跳與失效保護 (Heartbeat Fail-safe Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：預警系統工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-tighter font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>計時閥門部署</strong>：實作全局變數 <code>lastMsgTime</code>。每次成功解析指令時重置該計時器。</li>
+                    <li><strong>超時跳閘邏輯</strong>：在主迴圈檢測 <code>millis() - lastMsgTime > 1200</code>，觸發
+                        <code>lockMotors()</code>。</li>
+                    <li><strong>復歸安全性驗證</strong>：實作「手動解除鎖定」邏輯，防止在連線剛恢復時因舊緩存指令導致馬達暴衝。</li>
+                    <li><strong>Push Final</strong>：提交具備「自動跳閘與重置保護」的安全專案。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>觸發準確度</strong>：模擬斷網後，馬達是否在約 1.2 秒（誤差 \(\pm 200ms\)）內停止轉動？</li>
+                    <li>[ ] <strong>代碼邏輯性</strong>：心跳檢測是否獨立於任務迴圈，不受其他耗時函數（如 Serial Print）干擾？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：診斷介面與延遲優化 (Diagnostic Dashboard Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：數據可視化專家</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：40 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>遙測封包設計</strong>：在回傳 JSON 中加入 <code>rssi</code> (訊號強度) 與 <code>error_code</code> 欄位。</li>
+                    <li><strong>界面預警實作</strong>：實現動態延遲波形圖，並在訊號低於 \(-80dBm\) 時彈出警告提示。</li>
+                    <li><strong>故障回溯報告</strong>：實作「異常紀錄區」，將斷斷續續的通訊事件記錄在 UI 下方，方便現場維護人員診斷。</li>
+                    <li><strong>Push Final</strong>：完成具備「自我診斷、外部感知」特質的最終整合專案。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>反饋及時性</strong>：當通訊發生異常時，UI 面板是否能在 1 秒內呈現出相應的視覺警告？</li>
+                    <li>[ ] <strong>代碼架構感</strong>：診斷邏輯是否與主控制邏輯解耦，易於未來擴展其他感測器診斷？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：從「功能優先」轉向「穩定優先」。引導學生理解在物聯網系統中，容錯 (Fault Tolerance) 比完美更重要。</p>
+            <ol class="space-y-4 text-slate-600 text-justify">
+                <li><strong class="text-blue-600 font-bold uppercase tracking-widest text-justify">重點 1：垃圾進，垃圾出 (GIGO)</strong> - 讓學生體會：如果對輸入不做「洗滌 (Sanitization)」，代碼隨時會從內部崩潰。</li>
+                <li><strong class="text-blue-600 font-bold text-justify uppercase tracking-widest">重點 2：心跳是系統的靈魂</strong> - 透過 Fail-safe 實驗，讓學生感受到軟體逻辑如何控制物理世界的「安全性邊界」。</li>
+                <li><strong class="text-blue-600 font-bold text-justify uppercase tracking-tighter">重點 3：工程式的信任感</strong> - 強調 UI 診斷不是裝飾，而是操作者對系統產生信心（或進行維修）的唯一窗口。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-blue-400 font-bold mb-3">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── src/main.ino           # 核心：學員需在迴圈中插入 Heartbeat Check
+├── src/utils/safety.h     # 工具：定義 Clamping 與安全復歸狀態機
+└── README.md              # 試煉紀錄：觀察「惡意數據」注入後的處理表現
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-justify">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看「特斯拉與軟體安全補丁」科普片。理解為什麼任何指令都必須有保護閥。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試學員能否分析出：在沒有 Fail-safe 的情況下，馬達全速運轉時發生斷網會發生什麼。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black text-justify">領取作業 (Repo)，挑戰「軟體防護盾」。開發心跳機制，並在實體演示中強行切換電量或網路來測試復歸能力。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>安全性教練:</strong> 指演學員如何利用 Serial Plotter 診斷延遲，並引導他們建構適配的診斷介面。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black text-justify border-justify">提交具備「工業級健壯性」的最終代碼版本。閱讀關於「Watchdog Timer (WDT)」硬體層級的補充資料。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評對「數據定標安全」與「異常日誌策略」的思考深度。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

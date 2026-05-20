@@ -284,6 +284,145 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">流控實驗室：前端事件優化與通訊效率</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：UI 指令節流實作 (UI Throttle Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：前端效能工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>速率監控器</strong>：在 <code>telemetry.js</code> 撰寫一個計數器，顯示每秒發送的網包數量。</li>
+                    <li><strong>節流邏輯</strong>：實作 <code>_.throttle</code> 原型，確保 Slider 移動時每 100ms 僅觸發一次 BLE 寫入。</li>
+                    <li><strong>量化報告</strong>：在 README 紀錄優化前後的「封包每秒 (PPS)」數據，並描述在硬體端觀察到的延遲變化。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>精準頻率控制</strong>：節流函式是否能穩定的將發送速率限制在預期頻率內？</li>
+                    <li>[ ] <strong>連續性測試</strong>：馬達的運作是否因為節流而產生明顯的「瞬停」感？應追求絲滑的控制流。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：低延遲防抖設計 (Smart Debounce Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：用戶體驗 (UX) 工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>死區過濾 (Deadzone)</strong>：撰寫過濾代碼，當數值在中心點範圍 $\pm 10\%$ 時強制視為 0。</li>
+                    <li><strong>變動門檻 (Threshold)</strong>：只有當移動幅度超過 5 個單位時才觸發事件發送。</li>
+                    <li><strong>優先響應設計</strong>：實作 <code>leading execution</code>，確保用戶按下按鈕的第一時間車子就動，而不是等防抖計時結束。</li>
+                    <li><strong>Push Final</strong>：提交具備「零死角操控」與「防手抖」功能的前端控制介面。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>響應即時性</strong>：學員是否正確理解了 Leading Edge 在實時控制中的關鍵作用？</li>
+                    <li>[ ] <strong>死區精度</strong>：死區邏輯是否成功消除了硬體在「靜止狀態」下的低頻抖動電流聲？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：系統端到端性能剖析 (E2E Profiling)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：系統可靠度工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>計時標記 (Performance Markers)</strong>：在代碼中加入 <code>performance.now()</code> 測量事件從點擊到傳核的耗時。
+                    </li>
+                    <li><strong>網路負載分析</strong>：使用 DevTools 觀察在「暴力連續發送」下，瀏覽器主執行緒的卡頓 (Long Task) 情況。</li>
+                    <li><strong>對抗測試</strong>：模擬不穩定的網路環境，分析流控對提高連線成功率的實質貢獻。</li>
+                    <li><strong>Push Final</strong>：完成一份專業的系統通訊性能診斷報告。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>剖析深度</strong>：能否利用開發者工具指出具體的 Scripting 延遲點？</li>
+                    <li>[ ] <strong>工程直覺</strong>：對「多即是少，少即是多」的流控哲學是否有深度的反思與實踐？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：讓學生建立「流量衛生」觀念。高頻數據不是免費的，它會換來難以覺察的緩衝延遲。</p>
+            <ol class="space-y-4 text-slate-600">
+                <li><strong class="text-purple-600">重點 1：封包也會排隊</strong> - 向學生展示「我在 12:00:01 秒鬆開搖桿，車子卻在 02 秒才停」的慘劇。這就是緩衝排隊的代價。</li>
+                <li><strong class="text-purple-600">重點 2：Leading vs Trailing</strong> - 在遊戲或機器人控制中，Leading（立即執行第一次）非常重要；而在搜尋框中，Trailing（靜止後執行最後一次）才重要。</li>
+                <li><strong class="text-purple-600">重點 3：變量過濾</strong> - 教導學員：只有「改變」才值得傳輸。如果數值沒變，就不要佔用通訊頻帶。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-purple-400 font-bold mb-3">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── js/flow_control.js  # 核心：待實作 throttle(fn, delay) 與 debounce
+├── tests/logic.test.js # 測試：傳入 Mock Time 以驗證執行次數是否受控
+└── report/             # 數據：提供優化前後的 Event Timeline 錄影範例
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5">觀看「為什麼網頁會卡頓」影片。理解 Event Loop 與通訊封包堆疊的關係。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試學員是否能預測在 60Hz 發送下，ESP32 接收波形的擁塞點。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify tracking-tighter font-black">領取作業 (Repo)，調教節流間隔。實施死區過濾邏輯，並提交通訊減壓前後的性能剖析 PR。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>技術教練:</strong> 指導如何使用 `requestAnimationFrame` 配合節流，達成最高效能的渲染控制。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black">提交針對「操作心理延遲」的實驗報告並 Push。閱讀教師對「資源意識」的評價。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評對「Deadzone」與「Leading Edge」應用的專業深度。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

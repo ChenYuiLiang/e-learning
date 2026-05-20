@@ -321,6 +321,139 @@
     </script>
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">硬體級定時中斷實驗室：Hardware Timer、ISR 禁忌與
+            Volatile 共享變數實戰</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：精確頻率：硬體定時器與閃燈 (Precision Timer Blink)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：系統開發者</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>初始化</strong>：使用 <code>timerBegin</code> 設置周期。</li>
+                    <li><strong>ISR 實作</strong>：回呼函式翻轉電位。</li>
+                    <li><strong>壓力測試</strong>：在 <code>loop()</code> 執行耗時無意義死迴圈觀察。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>頻率穩定</strong>：無視 loop 阻塞？</li>
+                    <li>[ ] <strong>ISR 代碼規範</strong>：杜絕違禁動作？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：轉速計實作：馬達 Encoder 採樣 (Tachometer & RPM)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：演算法工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>採樣策略</strong>：配置 100ms 中斷作為窗口。</li>
+                    <li><strong>變數宣告</strong>：使用 <code>volatile</code> 維護計數。</li>
+                    <li><strong>量化演算</strong>：根據增量數據反推 RPM。</li>
+                    <li><strong>原子操作</strong>：使用臨界區讀寫保護。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>數據映射準確</strong>：輸出呼應物理變動？</li>
+                    <li>[ ] <strong>變數宣告嚴謹</strong>：皆添加 <code>volatile</code>？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：安全保護：硬體級 Watchdog (Watchdog Guard)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：工業安全工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>監控邏輯</strong>：定時器中斷作為「監督者」。</li>
+                    <li><strong>心跳餵狗</strong>：控制指令解析瞬間重置計數。</li>
+                    <li><strong>緊急制動</strong>：計數歸零主動接管暫停馬達。</li>
+                    <li><strong>成果交付</strong>：推送具保護能力代碼。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>失效安全反應</strong>：掛起實驗中能在規定時間奪回？</li>
+                    <li>[ ] <strong>誤觸抑制</strong>：正常時維持靜默？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify text-left">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：掌握搶佔式多工與一緻性保護。</p>
+            <ol class="space-y-4 text-slate-600 text-justify text-left">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：中斷權限</strong> - 強行介入。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：volatile 意義</strong> - 引導宣告習慣。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：防禦性架構</strong> - 軟體崩潰時物理安全。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800 text-justify uppercase tracking-widest font-black border border-slate-700">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300 text-justify uppercase tracking-widest font-black text-left">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm text-justify uppercase tracking-widest font-black border border-slate-100">
+.
+├── src/timer_service.cpp# (必修) ISR 處理
+├── include/types.h      # 規範變數定義
+└── README.md            # 壓力實驗日誌
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify uppercase tracking-widest font-black">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-center text-justify font-black">
+            <table class="w-full text-left border-collapse border border-slate-100 text-justify font-black">
+                <thead>
+                    <tr class="bg-slate-100 border border-slate-100 text-justify font-black">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify font-black uppercase tracking-widest">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify font-black uppercase tracking-widest">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify font-black uppercase tracking-widest">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600 border border-slate-100 text-justify font-black">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看 ISR 全解析影片。</td>
+                        <td class="px-6 py-5 text-justify border border-slate-100"><strong>Dashboard:</strong> 測試識別違禁代碼。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify border border-slate-100 text-left">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black text-justify text-left">領取 Repo，開發測速儀。</td>
+                        <td class="px-6 py-5 text-left text-justify border border-slate-100 font-black"><strong>技術演示:</strong> 演示 Serial.print 重啟現象。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black">將安全 Watchdog 封裝提交。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 評價思維成熟度。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

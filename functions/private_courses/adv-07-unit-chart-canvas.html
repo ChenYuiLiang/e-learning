@@ -291,6 +291,145 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">遙測實驗室：即時資料結構與高頻渲染</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：滑動視窗 (Sliding Window) 實作</h3>
+            <div class="quest-meta">
+                <span>角色扮演：資料緩衝工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>隊列 (Queue) 邏輯實作</strong>：在 <code>DataStore.js</code> 中定義一個 Buffer 陣列。</li>
+                    <li><strong>原子性操作</strong>：確保每筆新數據進入時，同步執行 <code>push()</code> 與 <code>shift()</code>，並嚴格檢查
+                        <code>buffer.length</code> 是否恆定。</li>
+                    <li><strong>渲染更新</strong>：調用 <code>chart.update('none')</code> 並關閉動畫選項，在 README 中貼上平滑滾動的截圖。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>內存管理</strong>：資料陣列是否在長時間運行後依然保持在 50 個點內？</li>
+                    <li>[ ] <strong>視覺即時性</strong>：圖表移動是否具備「零延遲」的感覺？有無殘影或過渡動畫干擾？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：多軸同步監控儀 (Multi-axis PID Monitor)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：控制系統分析師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>多曲線配置</strong>：在 Chart.js 配置中新增兩個 DataSets，分別標註顏色與 Label。</li>
+                    <li><strong>座標對齊</strong>：設定 Y 軸範圍固定（如 0-255），確保兩組數據在同一比例尺下具備可比性。</li>
+                    <li><strong>聯通測試</strong>：手動擾動馬達，錄製影片上傳至 PR，展示實際速度如何緩步「追回」目標速度的過程。</li>
+                    <li><strong>Push Final</strong>：提交具備專業調教介面的監控面板。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>視覺辨識度</strong>：兩條曲線是否具備清晰的顏色對比？圖例 (Legend) 是否清楚？</li>
+                    <li>[ ] <strong>物理意義正確性</strong>：當馬達目標值改變時，圖表是否能即時反映出 Error 的收斂？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：原生 Canvas 高頻示波器 (Direct Canvas Rendering)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：高性能渲染專家</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>畫布重置邏輯</strong>：在每個框架開始時，正確執行 <code>clearRect()</code> 清空畫布。</li>
+                    <li><strong>路徑運算實作</strong>：利用網格映射公式：$y_{pixel} = height - (value / 255 * height)$，實作點對點的連線。</li>
+                    <li><strong>壓力測試紀錄</strong>：測試 100Hz 刷新頻率下瀏覽器的 CPU 佔用率，並記錄在 README 的 Performance Section。</li>
+                    <li><strong>Push Final</strong>：提交具備極致效能的裸機 (Bare-metal) 繪圖引擎。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>座標映射精確度</strong>：輸入 0 時，波形是否正確位於底部？輸入 255 時，是否對齊頂端？</li>
+                    <li>[ ] <strong>穩定性評估</strong>：高頻更新時，網頁是否會發生卡頓、閃爍或無響應狀況？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：讓學生掌握「即時系統」的數據流設計。這不只是繪圖，更是內存與效能管理的修煉。</p>
+            <ol class="space-y-4 text-slate-600">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：隊列思維</strong> - 學生常犯的錯誤是無限追加入數據導致崩潰。必須強制引導他們建立 Sliding Window。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：犧牲華麗換取真實</strong> - 在儀表板開發中，1ms 的動畫過渡可能導致你漏掉 10 筆關鍵數據。學會關閉動畫。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：底層渲染機制</strong> - 透過原生 Canvas 任務，讓他們理解圖表庫背後的像素座標變換原理。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── js/chart_app.js     # 集成：封裝 Chart.js 的即時更新元件
+├── js/oscilloscope.js # 原生：待實作 Canvas lineTo 邏輯
+└── data/mock_stream.js # 工具：提供每 20ms 自動產生隨機數的模擬器
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5">觀看「股票交易系統的數據流」短片。理解資料陣列在記憶體中的先進先出規則。</td>
+                        <td class="px-6 py-5"><strong>Dashboard:</strong> 追蹤學員是否能解釋 `shift()` 在這裡的作用。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900">領取作業 (Repo)，調教 Y 軸座標與顏色。完成雙軸同步監控並解決閃爍問題。</td>
+                        <td class="px-6 py-5"><strong>技術教練:</strong> 指導如何配置 Chart.js 的 `update('none')` 選項。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課後精進</td>
+                        <td class="px-6 py-5">上傳示波器壓力測試報告。閱讀導師對「渲染頻率 vs 系統穩定度」的深度評論。</td>
+                        <td class="px-6 py-5"><strong>Feedback PR:</strong> 點評對「高效能繪圖」的建模與實踐能力。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

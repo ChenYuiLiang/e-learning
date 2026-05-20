@@ -346,6 +346,144 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none text-justify;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">視覺實驗室：硬體加速傳輸與雙緩衝精品架構</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：LCD_CAM DMA 描述符鏈路配置 (DMA Descriptor Chain Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：底層驅動架構師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>DMA 控制器激活</strong>：初始化 ESP32-S3 的 GDMA 子系統。指定 Descriptors 負責邊緣對齊。</li>
+                    <li><strong>感測器同步診斷</strong>：監視 <code>VSYNC</code> 與 <code>HREF</code> 訊號。確認數據搬運完全繞過 CPU 控制。</li>
+                    <li><strong>Push Final</strong>：提交具備「零 CPU 介入」數據軌跡分析的開發日誌。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>硬體利用率</strong>：影像傳輸期間 CPU 負載是否顯著降低？（透過定時任務的穩定性判斷）。</li>
+                    <li>[ ] <strong>對齊嚴密性</strong>：PSRAM 中的像素緩衝區是否存在跨頁存取衝突導致的數據損毀？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：影像品質與頻寬權衡監測 (Quality vs Bandwidth Trade-off Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：通訊性能優化專家</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-tighter font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>JPEG 二進制嗅探</strong>：實作 Javascript 標頭解析。提取 QF (品質係數) 並建立性能映射表。</li>
+                    <li><strong>通訊帶寬壓壓測</strong>：每秒計算一次流進網頁數據量，實現 Mbps 即時動態計。</li>
+                    <li><strong>最優配置尋優</strong>：測試在 QF=30 到 QF=85 之間，系統識別率與控制延遲的黃金平衡點。</li>
+                    <li><strong>Push Final</strong>：推送具備數據驅動決策力的「影像性能白皮書」。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>分析視角深度</strong>：報告是否能分析出 Quality Factor 如何非線性地影響封包大小與延遲？</li>
+                    <li>[ ] <strong>監測準度</strong>：顯示的延遲與 FPS 是否具備 5ms 以內的測量精確度？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：全方位消滅撕裂之雙緩衝架構 (Tear-Free Double Buffering Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：資深影像算法工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>雙重 FrameBuffer 部署</strong>：修改固件配製 <code>fb_count = 2</code>。實作 Ping-Pong 指針輪替邏輯。</li>
+                    <li><strong>競爭條件消除</strong>：利用原子鎖 (Atomic) 確保 WiFi 正在發送的影幀絕不被 DMA 意外覆蓋。</li>
+                    <li><strong>高速運動壓力測試</strong>：在 180 度急轉彎場景下，驗證影像邊緣是否完全消除了「斷層感」。</li>
+                    <li><strong>Push Final</strong>：提交具備「極致流暢、無殘影」特質的最終影像驅動代碼。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>架構健壯性</strong>：雙緩衝切換邏輯是否能在長時間運行下維持幀序正確，無影影影框積補？</li>
+                    <li>[ ] <strong>效能提升顯著性</strong>：對比單緩衝模式，實測 FPS 是否有達成 20% 以上的增益？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none text-justify;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify text-left">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：掌握嵌入式 SoC 的硬體加速深度優化。讓學員利用 DMA 與雙緩衝區在資源受限定實現專業效能。</p>
+            <ol class="space-y-4 text-slate-600 text-justify text-left">
+                <li><strong class="text-cyan-600 font-bold uppercase tracking-widest text-justify">重點 1：釋放 CPU 的搬運哲學</strong> - DMA 不是讓 CPU 變快，而是讓它「不用再做苦力」。這是嵌入式系統開發的黃金準則。</li>
+                <li><strong class="text-cyan-600 font-bold text-justify uppercase tracking-widest">重點 2：記憶體架構的空間代價</strong> - 讓學員體認到 PSRAM 在處理大數據（影像）時的工程必要性與存取延遲權衡。</li>
+                <li><strong class="text-cyan-600 font-bold text-justify uppercase tracking-tighter text-justify">重點 3：消滅隨機的不安定感</strong> - 雙緩衝區與 V-Sync 觀念是為了消滅影像撕裂，這是高品質視覺產品與玩具的分水嶺。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-cyan-400 font-bold mb-3">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── src/driver_optimized.cpp # 操作對象：一個待優化、單緩衝的影像適配器
+├── public/debug_monitor/    # 工具：具備像素分析能力的 Web 監測端
+└── docs/Performance_Log.md  # 日誌模板：包含撕裂分析與 QF 延遲數據表
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-justify">
+            <table class="w-full text-left border-collapse border-justify">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify text-left text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看「DMA 搬運工：硬體層級的數據傳輸奧秘」影片。學習 JPEG 硬體加速器配置參數。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 提供案例分析：如果影像頻寬超過 WiFi 1/3，對控制指令會有什麼延遲影響？</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black text-justify">領取作業 (Repo)，執行「雙緩衝輪替」優化任務。在 GitHub Classroom 分享捕捉到的「撕裂影像」截圖與修復成果。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>影像教官:</strong> 協助學員解讀 PSRAM 存取衝突報錯。引導學員建立「性能基準 (Benchmark)」來量化優化成效。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black text-justify">提交具備數據支持的性能審計報告。閱讀關於「DMA 分散聚合模式 (Scatter-Gather)」的進階硬體導讀。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評對「競爭條件」的預防邏輯。表揚影像穩定、且能動態調整壓縮比以適應網絡抖動的「視覺轉家」。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

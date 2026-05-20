@@ -295,6 +295,138 @@
     </script>
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">ADC 解析度與量測實驗室：數位量尺、反轉映射與盲區補償實戰
+        </h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：「數位量尺」：電壓量測實驗 (Digital Ruler)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：測試工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>採樣量測</strong>：連接電位計，記錄 12-bit ADC 與三用電表讀值。</li>
+                    <li><strong>邊界分析</strong>：標註硬體非線性死區。</li>
+                    <li><strong>結果記錄</strong>：彙整對應表，說明讀值線性誤差。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>數據完整度</strong>：是否涵蓋全量程採樣？</li>
+                    <li>[ ] <strong>物理洞察力</strong>：能否描述極限電壓值附近的測量偏差？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：「自製感測器變量儀」 (Sensor Interactor)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：控制系統工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>映射開發</strong>：實作 <code>map()</code> 將 0-4095 映射到 0-255。</li>
+                    <li><strong>反轉邏輯</strong>：修改代碼，讓旋轉方向與亮度呈現反向。</li>
+                    <li><strong>雜訊抑制</strong>：實作平均算法，消除繪圖儀中的跳動。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>映射正確性</strong>：LED 亮度是否符合反向邏輯？</li>
+                    <li>[ ] <strong>濾波有效性</strong>：在 Serial Plotter 中跳動是否顯著減少？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：「精準轉向模擬器」 (Steering Simulator)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：運動控制專家</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>運動模型建立</strong>：對應到 -90° 至 +90° 轉向角。</li>
+                    <li><strong>盲區補償實作</strong>：在中心點附近設置 ±5 度死區。</li>
+                    <li><strong>速差計算</strong>：輸出左右馬達動態速差百分比。</li>
+                    <li><strong>最終提交</strong>：整併算法邏輯並 Push。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>算法邊界處理</strong>：死區補償是否過濾了中心點雜訊？</li>
+                    <li>[ ] <strong>系統策略</strong>：輪速計算是否符合差速轉向原則？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：處理實體感測雜訊與非線性。</p>
+            <ol class="space-y-4 text-slate-600 text-justify text-left">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：Bit 與解析度</strong> - 解析度權衡。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：資料濾波</strong> - 掌握基礎訊號處理。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：人機互動邏輯</strong> - 死區 (Dead-band) 用於 UX 思考。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800 text-justify">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm">
+.
+├── src/main.cpp      # (練習點) 提供 analogRead 框架，需製作 map 邏輯
+└── README.md         # 實驗日誌：描述數據抖動量與對應電壓
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-justify">
+            <table class="w-full text-left border-collapse border border-slate-50">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看影片掌握 0-4095 概念。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 確認理解 12-bit 解析度數學意義。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black text-justify">領取作業 (Repo)，挑戰平均濾波。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>數據指導:</strong> 使用 Plotter 比對濾波前後波形。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black text-justify">實作校準並 Push。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 評點「盲區補償」優化。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

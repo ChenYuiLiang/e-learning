@@ -305,6 +305,145 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">建模實驗室：從數據標記到自動化駕駛</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：自定義手勢建模 (Custom Gesture Training)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：AI 資料訓練師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>標記採集</strong>：定義「Background」、「Left」、「Right」、「Stop」四個類別。每個類別至少採集 100 個樣本。</li>
+                    <li><strong>模型優化</strong>：測試不同的紀元 (Epochs)。在 README 中截圖 Loss 曲線圖。</li>
+                    <li><strong>鏈接分發</strong>：導出 Teachable Machine 雲端模型連結，並寫入 README 備查。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>資料庫多樣性</strong>：是否有在採集時改變光線與手勢距離？背景是否包含可能干擾的靜止物體？</li>
+                    <li>[ ] <strong>過擬合檢查</strong>：手勢背景是否過於單一？（避免 AI 認背景不認手）。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：Web AI 驅動程式 (AI-BLE Component)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：視覺邏輯開發者</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>權重加載</strong>：實作 <code>tmImage.load()</code> 載入任務一導出的模型。</li>
+                    <li><strong>非同步預測</strong>：在 <code>js/ai_logic.js</code> 建立預測循環。設置 <code>Prediction Throttle</code>
+                        避免過度佔用 CPU。</li>
+                    <li><strong>信心閘門 (Confidence Gate)</strong>：實作一個邏輯，只有當平均置信度持盈 3 幀且大於 0.9 時才發送 BLE 封包。</li>
+                    <li><strong>Push Final</strong>：提交具備 AI 動態控制能力的前端遙控介面。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>執行效能</strong>：網頁預覽在加載模型後，FPS 是否依然流暢？是否有做適當的連發頻率限制？</li>
+                    <li>[ ] <strong>控制穩定性</strong>：指令發送是否具備「防閃爍 (Debounce)」保護，避免車體頻繁一頓一頓的動作？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：全系統負載測試 (System Stress Analysis)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：安全測試工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>主動干擾測試</strong>：請同學在鏡頭後晃動。觀察 AI 是否會產生誤觸發。</li>
+                    <li><strong>失效安全性 (Fail-safe)</strong>：實作當 <code>tm_result.length < 0.5</code> 時的主動停機。</li>
+                    <li><strong>延遲量化</strong>：紀錄從「手勢發生」到「車體連動」的體感總延遲時間。寫入報告分析延遲分佈。</li>
+                    <li><strong>Push Final</strong>：提交具備工業級安全考量的 AI 控制系統。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>安全意識</strong>：是否實作了針對「未知狀態」的主動防護措施？</li>
+                    <li>[ ] <strong>性能洞察力</strong>：報告中對「推論延遲」與「通訊延遲」是否有清晰的區分與紀錄？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：讓學生跨越「代碼控制」進入「模型驅動」。強調機器學習是基於機率的面試，而非基於邏輯的斷言。</p>
+            <ol class="space-y-4 text-slate-600">
+                <li><strong class="text-purple-600 font-bold uppercase tracking-tighter">重點 1：垃圾進，垃圾出 (GIGO)</strong> - 向學員證明採集資料時的一時偷懶，會換來實測時的無限痛苦。</li>
+                <li><strong class="text-purple-600 font-bold tracking-widest text-justify">重點 2：從雲端到瀏覽器</strong> - 解釋 tf.js 如何將原本巨大的深度學習模型序列化為網頁可解讀的權重文件。</li>
+                <li><strong class="text-purple-600 font-bold tracking-tighter text-justify">重點 3：信心控制論</strong> - 教導學員：好的工程師不只看類別，更看「機率」。99% 的信心值得信賴，51% 的信心必須停車。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-purple-400 font-bold mb-3">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── js/tm_loader.js     # 核心：待實作 model.load 與權重映射
+├── styles/overlay.css  # UI：提供置信度即時亮條 (Progress Bar)
+└── telemetry/recording # 紀錄：提供用於測量延遲的數據標記腳本
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify text-left">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">在 Teachable Machine 網站完成第一版「石頭剪刀布」測試。理解數據分類概念。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Dashboard:</strong> 測試學員是否能指出「如果想要模型在黑暗中也能辨識，該採集什麼數據？」。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify tracking-tighter font-black">領取作業 (Repo)，導入自產模型。實作 BLE 轉發與失效保護，提交通訊穩定性報告 PR。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>實踐教練:</strong> 排除跨網域 (CORS) 導致模型 JSON 加載失敗的常見網路問題。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black">提交針對「多重情境誤判」的分析報告並 Push。閱讀教師對「邊緣運算策略」的回饋。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評對「置信度閘門 (Confidence Gate)」設計的嚴謹度。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

@@ -249,6 +249,89 @@
     </footer>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">影像實驗室：JPEG 壓縮、品質權衡與動態優化</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：品質、大小與 FPS 關聯標定 (Quality Scaling Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：效能優化工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>測試計畫</strong>：在 Web 介面循環切換 Quality (10, 30, 60, 90)。</li>
+                    <li><strong>數據採集</strong>：紀錄各等級的「平均幀大小 (KB)」與「實際傳輸 FPS」。</li>
+                    <li><strong>Push Final</strong>：提交包含「品質-頻寬關聯曲線」的數據分析報告。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>拐點識別</strong>：能否指出 Q > 80 後檔案大小劇增 but 畫質提升不明顯的物理現象？</li>
+                    <li>[ ] <strong>數據完整性</strong>：README 中是否包含了所有測試點的量化對比？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：演算法抗噪測試 (Artifacts Sensitivity Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：AI 視覺工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>極限觀測</strong>：在 Quality 80 與 Quality 5 兩種極端下計算同一條循跡線的質心 x 座標。</li>
+                    <li><strong>噪聲記錄</strong>：觀察方塊效應 (Blocking Artifacts) 是否導致質心座標產生 Jitter (跳動)。</li>
+                    <li><strong>穩定性優化</strong>：嘗試在低品質下透過軟體濾波 (Blur) 減少假邊緣干擾。</li>
+                    <li><strong>Push Final</strong>：提交具備「抗噪韌性」的視覺分析模組。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>干擾分析</strong>：是否能說明「方塊邊緣」如何被誤判為物理特徵？</li>
+                    <li>[ ] <strong>實驗嚴謹度</strong>：是否上傳了不同品質下的質心跳動對比影片或數據？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：動態品質切換策略 (Adaptive Quality Algorithm)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：系統架構分析師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>邏輯開發</strong>：實作偵測邏輯：當車輛「靜止」時自動切換至 Q=80，當「加速」時降至 Q=20。</li>
+                    <li><strong>雙模驗證</strong>：在 README 展示在不同駕駛狀態下，系統如何自動平衡「細節」與「流暢度」。</li>
+                    <li><strong>Push Final</strong>：交付具備「感知自適應」能力的最終影像控制器。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>平滑過渡</strong>：品質切換瞬間，連線是否保持穩定（無斷開現象）？</li>
+                    <li>[ ] <strong>工程實用性</strong>：策略是否能有效在移動過程中顯著降低影像延遲？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
     <script>
         // Define Resources - Used by course-shared.js?v=2026.04.05.FINAL_V6
         window.RESOURCES = {
@@ -257,6 +340,60 @@
         };
     </script>
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：掌握「工程權衡 (Trade-off)」的靈魂。讓學生理解沒有完美的畫質，只有最適合場景的壓縮率。</p>
+            <ol class="space-y-4 text-slate-600">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：量化誤差</strong> - 透過方塊效應任務，讓學生看見數位化過程中的「資訊損失」如何演變成「控制噪聲」。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：資源敏感度</strong> - 加深對頻寬與延遲連鎖反應的理解。高品質影像 = 高延遲。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：自適應思維</strong> - 工業級產品會根據環境動態調整，引導學生寫出具備「情境感知」的代碼。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800 text-justify">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── firmware/        # 核心：帶有遠端修改 Q 值 API 的韌體
+├── analysis/        # 數據：學員需填寫的 CSV 效能對照表
+└── README.md        # 報告：記錄 Q 值對邊緣偵測演算法的干擾分析
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-justify">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                <tr>
+                    <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                    <td class="px-6 py-5 text-left text-justify">觀看「JPEG 視覺欺騙原理」短片。理解 DCT 如何捨棄人類看不見的高頻資訊。</td>
+                    <td class="px-6 py-5 text-left text-justify"><strong>Dashboard:</strong> 測試學員是否能預估 Quality=10 時的邊緣效應。</td>
+                </tr>
+                <tr>
+                    <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                    <td class="px-6 py-5 text-left text-justify">領取作業 (Repo)，執行 3-1 壓力測試與 3-2 抗噪實驗。找出特定頻寬下的最佳 Q 值。</td>
+                    <td class="px-6 py-5 text-left text-justify"><strong>技術教練:</strong> 強調 Q > 80 與 Q < 20 的物理特性與邊際效應。</td>
+                </tr>
+                <tr>
+                    <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                    <td class="px-6 py-5 text-left text-justify">提交具備「動態品質切換」邏輯的最終專案。閱讀導師對「VNN 卷積神經網絡」在壓縮影像上表現的補充。</td>
+                    <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評對「畫質 vs 延遲」權衡策略的深度。</td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+    </section>
 </body>
 
 </html>

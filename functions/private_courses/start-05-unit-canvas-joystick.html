@@ -448,6 +448,147 @@ function draw() {
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">Canvas 渲染實驗室</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title">任務 1：從 DOM 到 Canvas 的降維打擊 (View Transformation)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：高效能介面工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4>🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫。</li>
+                    <li><strong>座標變換</strong>：在 <code>mousemove</code> 中將螢幕座標轉換為畫布內部相對座標
+                        <code>(canvasX, canvasY)</code>。</li>
+                    <li><strong>像素繪製</strong>：使用 <code>arc()</code> 配合 <code>fill()</code> 實作一個隨滑鼠移動的小球，並確保背景能被正確
+                        <code>clearRect()</code>。</li>
+                    <li><strong>同步提交</strong>：撰寫 README 紀錄 Canvas 與 DOM 事件座標系的不同，並 <code>push</code> 成果。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>渲染循環</strong>：是否在繪製前正確執行 <code>clearRect</code>？有無殘影現象？</li>
+                    <li>[ ] <strong>座標精準度</strong>：小球中心點是否精確對準滑鼠游標？是否有偏移？</li>
+                    <li>[ ] <strong>性能意識</strong>：是否理解 <code>requestAnimationFrame</code> 與一般 <code>setInterval</code>
+                        的優劣？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title">任務 2：打造動態儀表板 (Visual Gauge)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：視覺化專家</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4>🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>設計邏輯</strong>：利用 <code>save()</code> 與 <code>restore()</code> 管理畫布狀態，模擬一個轉動的指針。</li>
+                    <li><strong>旋轉運算</strong>：使用 <code>rotate()</code> 指令，將數值映射至 0~180 度的弧度角度。</li>
+                    <li><strong>視覺強化</strong>：加入 <code>lineWidth</code> 與 <code>lineCap</code> 優化線條質感。</li>
+                    <li><strong>提交報告</strong>：將實作截圖與旋轉公式填入 README 後 <code>push</code>。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>座標系轉換</strong>：是否熟練使用 <code>translate()</code> 將原點移至儀表中心？</li>
+                    <li>[ ] <strong>狀態管理</strong>：<code>save/restore</code> 是否配對使用，避免污染後續繪圖？</li>
+                    <li>[ ] <strong>角度變換</strong>：度數轉弧度 (Math.PI / 180) 的計算是否正確？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title">任務 3：實作視覺回饋特效 (Visual Feedback)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：特效設計師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：40 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4>🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>定義狀態</strong>：模擬一個「警告狀態」，當變數為 true 時觸發。</li>
+                    <li><strong>實作動畫</strong>：利用透明度變化 (Alpha) 製作呼吸燈效果或紅色閃爍遮罩。</li>
+                    <li><strong>封裝功能</strong>：將特效封裝進 <code>renderLoop</code>，確保在高頻率更新下依然流暢。</li>
+                    <li><strong>版本提交</strong>：紀錄動畫實作的心得，推送到 GitHub。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>透明度控制</strong>：<code>globalAlpha</code> 或 <code>rgba()</code> 的應用是否平滑？</li>
+                    <li>[ ] <strong>繪圖邏輯</strong>：遮罩是否覆蓋全畫布？是否在最上層繪製？</li>
+                    <li>[ ] <strong>代碼結構</strong>：動畫變數（如 time 或 counter）是否妥善管理？</li>
+                </ul>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8">
+            <p class="font-bold text-slate-700 mb-4">本單元教學重點：從「靜態標記」轉向「動態渲染」的思維切換。</p>
+            <ol class="space-y-4 text-slate-600">
+                <li><strong class="text-indigo-600">第一步：範本設置</strong> - 準備好 <code>index.html</code> 中空的 <code><canvas></code> 標籤，並在 JS 範本中標註核心生命週期函數 (Setup, Loop)。</li>
+                <li><strong class="text-indigo-600">第二步：發布作業</strong> - 在 Classroom 啟用 <strong>Feedback PRs</strong>，這對於審視學生的渲染邏輯與繪圖效能建議非常有用。</li>
+                <li><strong class="text-indigo-600">第三步：學生端操作 (Flipped Workflow)</strong> - 指導學生理解為何 Canvas 需要 <code>clearRect</code>，否則會變成「小畫家」式的殘影效果。</li>
+                <li><strong class="text-indigo-600">第四步：代碼審閱</strong> - 重點檢查 <code>requestAnimationFrame</code> 是否正確遞迴，以及座標歸一化邏輯。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-indigo-400 font-bold mb-3">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm">
+.
+├── index.html        # 包含畫布元素與控制按鈕
+├── main.js           # 存放渲染循環與座標邏輯 (重點評分項)
+├── assets/           # 放置儀表板底座背景圖片
+└── README.md         # 紀錄座標變換公式與渲染效能觀察
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="p-4 border-b font-bold bg-slate-50/50">課前預習</td>
+                        <td class="p-4 border-b">觀看影片，理解 Canvas 座標系與 DOM 座標系的差異點。</td>
+                        <td class="p-4 border-b"><strong>Dashboard:</strong> 觀察學生是否理解 (0,0) 的位置。</td>
+                    </tr>
+                    <tr>
+                        <td class="p-4 border-b font-bold bg-slate-50/50">課中實作</td>
+                        <td class="p-4 border-b">領取作業 (Repo)，完成基礎小球跟隨任務 (Quest 1) 並 Push 代碼。</td>
+                        <td class="p-4 border-b"><strong>現場指導:</strong> 診斷為何畫布出現殘影 (忘了 clearRect)。</td>
+                    </tr>
+                    <tr>
+                        <td class="p-4 font-bold bg-slate-50/50">課後精進</td>
+                        <td class="p-4">挑戰儀表板與視覺特效 (Quest 2-3)，撰寫效能心得並提交最後 Commit。</td>
+                        <td class="p-4"><strong>Feedback PR:</strong> 點評渲染結構的優雅度與擴充性。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

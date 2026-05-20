@@ -584,7 +584,7 @@ async function sendAdminAssignmentReminder(adminEmail, pendingList) {
     const dashboardUrl = appUrl('/dashboard.html?tab=admin');
     const listHtml = pendingList.map(item => `
         <li style="margin-bottom: 10px;">
-            <strong>${item.email}</strong> 購買了: <em>${item.units.join(', ')}</em>
+            <strong>${item.email}</strong> 尚未指派老師單元: <em>${item.units.join(', ')}</em>
         </li>
     `).join('');
 
@@ -595,7 +595,7 @@ async function sendAdminAssignmentReminder(adminEmail, pendingList) {
         html: getEmailHtmlWrapper(
             '待處理的課程指派任務',
             `
-                <p>管理員您好，系統掃描到以下已付費學生尚未完成所有課程單元的老師指派，請撥冗處理：</p>
+                <p>管理員您好，系統掃描到以下已付費學生尚未完成老師指派的課程單元，請撥冗處理：</p>
                 <ul style="background-color: #f8fafc; padding: 25px; border-radius: 12px; list-style-type: none; border: 1px solid #e2e8f0; margin: 25px 0;">
                     ${listHtml}
                 </ul>

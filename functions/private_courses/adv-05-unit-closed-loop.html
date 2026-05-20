@@ -297,7 +297,146 @@
     </footer>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">視覺閉迴路實驗室：自動化跟隨與穩定性調校</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：視覺追蹤閉迴路整合實作 (Vision Feedback Integration)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：控制系統工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：75 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>閉環邏輯部署</strong>：將影像質心提取出的 $Error$ 為輸入，實作 P 控制器輸出轉向脈衝。</li>
+                    <li><strong>連線同步</strong>：確保 Web Bluetooth 的發送頻率與影像處理幀率 (FPS) 達成同步匹配，避免指令堆疊延遲。</li>
+                    <li><strong>Push Final</strong>：提交具備「自主追隨動態目標」能力的閉迴路控制系統。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>追蹤收斂度</strong>：物體緩慢移動時，系統是否能穩定將其維持在畫面中央（誤差趨於零）？</li>
+                    <li>[ ] <strong>指令原子性</strong>：發送的控制 Payload 是否簡潔且具備防止重複發送的防抖處理？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：階躍響應 (Step Response) 紀錄實驗</h3>
+            <div class="quest-meta">
+                <span>角色扮演：控制性能分析師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>注入擾動</strong>：在穩定狀態下，手動撥動目標物產生一個瞬間的「位置階躍（Step Check）」。</li>
+                    <li><strong>響應紀錄</strong>：觀察並口頭/書面描述系統找回設定點所需的「上升時間 (Rising Time)」與是否存在「過衝 (Overshoot)」。</li>
+                    <li><strong>參數對照</strong>：嘗試增加 $K_p$ 觀察震盪是否加劇，並將實驗觀察記錄於 README 的性能日誌中。</li>
+                    <li><strong>Push Final</strong>：提交包含「性能調校路徑」的實驗報告與代碼。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>震盪識別能力</strong>：學員是否能正確分辨「過阻尼」與「欠阻尼」在車輛追隨過程中的視覺特徵？</li>
+                    <li>[ ] <strong>調校邏輯性</strong>：記錄中的參數改動是否遵循「先靈敏後平穩」的歸類演繹邏輯？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：斷點與恢復：Failsafe 機制測試</h3>
+            <div class="quest-meta">
+                <span>角色扮演：系統可靠性架構師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>遮擋模擬</strong>：手動遮擋攝影機，觀察閉迴路在失去 Feedback 的瞬間，「執行器」的預設反應。</li>
+                    <li><strong>Failsafe 實作</strong>：開發「超時鎖定」邏輯，若連續 $N$ 幀未偵測到質心，自動發送 <code>{stop: true}</code>。</li>
+                    <li><strong>恢復測試</strong>：當目標重新出現時，系統應能立即在無需刷新的情況下重新啟動閉環控制。</li>
+                    <li><strong>Push Final</strong>：提交具備「環境異常容錯」能力的高安全性控制模組。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>失效模式處理</strong>：失去目標時車輛是否能立即停止，而非維持最後一個指令盲衝？</li>
+                    <li>[ ] <strong>重連無感度</strong>：目標恢復後的追蹤邏輯是否流暢，有無資料緩衝區殘留導致的「瞬移」錯覺？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：掌握「回饋」的力量。理解視覺誤差如何轉化為物理動作，並初步探索穩定性問題。</p>
+            <ol class="space-y-4 text-slate-600">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：控制鏈的完整性</strong> - 讓學生體會「數據不斷循環」的概念，只要其中一節（如藍牙斷線）斷掉，閉迴路就會失效。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：延遲是閉迴路的天敵</strong> - 現場降低瀏覽器 FPS 或提高影像解析度，讓學生親眼看見「反應過慢導致的劇烈蛇行」。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：Failsafe 的哲學</strong> - 強調「失去回饋時必須停止」是所有自動駕駛與機器人系統最基本的道德義務。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── js/control_engine.js  # 核心：待填寫帶有 Set-point 與 Error 的閉環邏輯
+├── js/failsafe_logic.js  # 挑戰：實作超時停止與物體丟失判定
+├── test/latency_sim.js   # 實驗：模擬不同 RTT 延遲下的系統穩定度
+└── README.md             # 指引：要求記錄 Kp 調校過程中的震盪波形描述
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5">觀看「冷氣機恆溫原理與閉迴路」比喻。線上填寫關於「誤差定義」的預習單。</td>
+                        <td class="px-6 py-5"><strong>Dashboard:</strong> 觀察學員是否能正確辨別一個系統是開迴路還是閉迴路。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900">領取作業 (Repo)，挑戰在「動態追蹤」下優化馬達反應頻率。測試 $K_p$ 參數極限。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>技術教練:</strong> 協助學員分析馬達為何在原地「快速左右抽動」，解釋死區 (Deadzone) 的必要性。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課後精進</td>
+                        <td class="px-6 py-5">提交包含 Failsafe 保護機制的代碼並 Push。撰寫關於「環境噪音對穩定性打擊」的總結。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評對「狀態復位」邏輯的精確度。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

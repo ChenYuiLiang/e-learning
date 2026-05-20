@@ -309,6 +309,143 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none text-justify;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">PID 控制實驗室：數學直覺與閉迴路調校</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：人肉 PID 模擬 (Human Control Simulation)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：模擬控制器</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>行為建模</strong>：手動模擬「只看距離 (P)」、「累積推力 (I)」與「預判減速 (D)」的決策過程。</li>
+                    <li><strong>數據對比</strong>：記錄不同策略下，到達目標的時間與穩定度差異。</li>
+                    <li><strong>Push Final</strong>：提交具備「物理直覺」的控制邏輯分析筆記。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>物理意涵理解</strong>：能否在 README 正確說明 P/I/D 各自在控制鏈中的角色？</li>
+                    <li>[ ] <strong>實驗嚴效性</strong>：記錄的數據是否能具體支撐「單純 P 會導致靜態誤差」的理論點？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：參數調校與收斂 (Optimal Tuning Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：控制演算法工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：75 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-tighter font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>公式實作</strong>：在代碼中完成離散 PID 核心算法。</li>
+                    <li><strong>階躍響應</strong>：設定目標突變，使用 Serial Plotter 觀測過衝與收斂時間。</li>
+                    <li><strong>參數迭代</strong>：嘗試尋找該硬體系統的「黃金比例參數組合」。</li>
+                    <li><strong>Push Final</strong>：提交具備「最佳化參數與平滑響應」的控制專案。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>響應品質</strong>：波形是否能在極短時間收斂？Overshoot 是否在 10% 內？</li>
+                    <li>[ ] <strong>代碼穩健性</strong>：是否處理了積分飽和 (Windup) 或微分跳火的極端情況？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：抗噪壓力測試 (Noise Resilience Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：信號處理專家</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>雜訊干擾</strong>：在輸入端注入模擬雜訊，觀察 D 項對高頻干擾的反應。</li>
+                    <li><strong>濾波重構</strong>：嘗試在計算微分前，對誤差值進行簡單的平均濾波。</li>
+                    <li><strong>性能評估</strong>：對比濾波前後，控制輸出的穩定度改善情況。</li>
+                    <li><strong>Push Final</strong>：提交具備「抗噪強韌性」的高級 PID 實作。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>雜訊分析力</strong>：能否說明 \(K_d\) 為何對高頻雜訊如此敏感？</li>
+                    <li>[ ] <strong>濾波實作正確性</strong>：所選用的濾波策略是否有效減少了輸出抖動且不引入過大延遲？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：將數學公式轉化為物理行為的「直覺」。讓學生理解「反饋」決定了系統的靈魂。</p>
+            <ol class="space-y-4 text-slate-600 text-justify">
+                <li><strong class="text-pink-600 font-bold uppercase tracking-widest">重點 1：體感大於計算</strong> - 透過人肉 PID，建立對「記恨 (I)」與「預判 (D)」的具體感官理解。</li>
+                <li><strong class="text-pink-600 font-bold text-justify uppercase tracking-widest">重點 2：波形是系統的體檢表</strong> - 指導學生學習判讀階躍響應圖中的病徵（如：震盪過劇、收斂太慢）。</li>
+                <li><strong class="text-pink-600 font-bold text-justify uppercase tracking-tighter">重點 3：平衡的藝術</strong> - 強調控制系統沒有「絕對」的最佳，只有針對特定目標（如：快或平穩）的取捨。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-pink-400 font-bold mb-3">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── src/pid_logic.ino     # 核心：學員需在此實作離散迴路
+├── lib/filter.h          # 工具：提供可選的平滑濾波介面
+└── README.md             # 報告：需包含 Kp/Ki/Kd 的調校歷程與截圖
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-justify">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看「PID 三兄弟的對話」短片。理解離散化積分概念。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試學員是否能區分「比例控制」與「開迴路控制」的本質差異。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black">領取作業 (Repo)，挑戰「參數最佳化平衡」。找出硬體響應極限並實作抗噪保護。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>技術教練:</strong> 協助演示如何透過微調 Kd 抑制高速下的機械抖動。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black text-justify">提交具備「預判阻尼」功能的最終版代碼。閱讀教師對「模糊 PID」等進階控制的科普擴展。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評對「系統阻尼感」與「數據穩定性」的平衡調配深度。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

@@ -332,6 +332,139 @@
     </script>
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">有限狀態機基礎實驗室：enum 狀態管理、子狀態轉移與安全救援實戰
+        </h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：基礎控制狀態機 (Core FSM Architecture)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：架構工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫。</li>
+                    <li><strong>定義</strong>：使用 <code>enum</code> 定義三模式。</li>
+                    <li><strong>核心實作</strong>：構建 <code>switch...case</code> 判定。</li>
+                    <li><strong>視覺反饋</strong>：根據狀態控制 RGB LED。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>命名規範</strong>：捨棄魔術數字，改採 <code>enum</code>？</li>
+                    <li>[ ] <strong>邏輯一致</strong>：硬體動作與燈號同步？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：避障邏輯狀態機 (Obstacle Logic Sub-FSM)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：演算法工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>細分</strong>：細化為 SEARCH 到 TURN。</li>
+                    <li><strong>非阻塞計時</strong>：利用 <code>millis()</code> 設定轉場。</li>
+                    <li><strong>攤平重構</strong>：移除嵌套 if-else。</li>
+                    <li><strong>閉環實測</strong>：驗證閃避動作閉環。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>計時精準</strong>：延遲準確執行且未對主循環造成阻塞？</li>
+                    <li>[ ] <strong>覆蓋率</strong>：考慮周全，不存在死鎖？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：異常救援模式：最高優先權 (Emergency Recovery & Failsafe)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：安全工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>救援接入</strong>：新增 <code>EMERGENCY_STOP</code>。</li>
+                    <li><strong>失效轉移</strong>：偵測異常立即強行鎖死。</li>
+                    <li><strong>解鎖設計</strong>：實作防誤觸解鎖。</li>
+                    <li><strong>報告提交</strong>：評估緊急狀態響應時間。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>搶佔時效</strong>：緊急觸發是否能瞬間（<20ms）接管？< /li>
+                    <li>[ ] <strong>安全嚴密</strong>：解鎖機制能否防止故障未排除時意外啟動？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify text-left">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：從功能導向進化至「狀態」導向建模。</p>
+            <ol class="space-y-4 text-slate-600 text-justify text-left">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：可視化</strong> - 繪製轉移圖。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：switch-case 優雅性</strong> - 解決麵條代碼。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：救援機制</strong> - 異常時進入穩定狀態。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800 text-justify uppercase tracking-widest font-black border border-slate-700">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300 text-justify uppercase tracking-widest font-black text-left">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm text-justify uppercase tracking-widest font-black border border-slate-100">
+.
+├── src/main.cpp       # (必修) 調度 switch-case 核心
+├── docs/state_map.md  # 邏輯圖
+└── README.md          # 報告：響應時耗分析
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify uppercase tracking-widest font-black">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-center text-justify font-black">
+            <table class="w-full text-left border-collapse border border-slate-100 text-justify font-black">
+                <thead>
+                    <tr class="bg-slate-100 border border-slate-100 text-justify font-black">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify font-black uppercase tracking-widest">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify font-black uppercase tracking-widest">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify font-black uppercase tracking-widest">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600 border border-slate-100 text-justify font-black">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看設計靈魂動畫並畫出販賣機邏輯。</td>
+                        <td class="px-6 py-5 text-justify border border-slate-100"><strong>Dashboard:</strong> 測試區分狀態與事件。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify border border-slate-100 text-left">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black text-justify text-left">領取 Repo，對應圖面邏輯至語法。</td>
+                        <td class="px-6 py-5 text-left text-justify border border-slate-100 font-black"><strong>巡場引導:</strong> 演示利用打印狀態標籤除錯。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black">實作記憶恢復擴充。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 評價狀態窮舉性。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

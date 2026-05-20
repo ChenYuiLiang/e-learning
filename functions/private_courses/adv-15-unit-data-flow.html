@@ -327,6 +327,146 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none text-justify;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">系統診斷實驗室：數據全鏈路追蹤與解析韌性</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：端到端數據流追蹤分析 (E2E Data Flow Trace Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：系統效能整合專家</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>全鏈路埋點實施</strong>：在 <code>dashboard.js</code> 發送前與 <code>vehicle_main.cpp</code>
+                        接收解析後各記錄一組基準時間。</li>
+                    <li><strong>映射精確度驗證</strong>：發送特定測試向量（如：0.500, -1.000），量測 ESP32 端產生的 PWM 數值是否嚴格對齊預期公式。</li>
+                    <li><strong>Push Final</strong>：提交包含「全鏈路耗時分析圖」與「數據映射誤差表」的完整實驗日誌。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>測量嚴謹度</strong>：分析報告中的耗時結構是否清晰？（區分出傳輸耗時與各端的處理耗時）。</li>
+                    <li>[ ] <strong>對齊完整性</strong>：映射公式是否考慮了浮點數轉整數時的捨入 (Rounding) 偏差問題？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：通訊頻寬與延遲極限壓測 (Throughput & Latency Stress Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：通訊性能工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-tighter font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>變壓測試場景建立</strong>：動態調整 <code>setInterval</code> 頻率，逐步降低延遲，記錄系統首個封包丟失的時間點。</li>
+                    <li><strong>頻率/丟包曲線繪製</strong>：收集不同控制指令頻率下的成功接收率數據。</li>
+                    <li><strong>系統 SLA 定義</strong>：基於數據定義你的系統「最優控制頻率」其當下之總延遲（End-to-End Latency）。</li>
+                    <li><strong>Push Final</strong>：推送具備「工業性能規格」價值的性能評測報告。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>性能洞察深度</strong>：能否指出系統主要的延時發生在哪個層級？（Radio 層、Serial 層或解析層）。</li>
+                    <li>[ ] <strong>建議科學性</strong>：給出的優化頻率參數是否能保證控制手感與連線穩定度的視覺平衡？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：髒數據注入與自動復位解析器 (Dirty Data Injection & Auto-Resettable Parser Lab)
+            </h3>
+            <div class="quest-meta">
+                <span>角色扮演：安全與韌性開發工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>混沌工程實踐</strong>：實做一段隨機產生損毀 JSON 封包的注入代碼。</li>
+                    <li><strong>固件解析器重構</strong>：重寫固件解析邏輯。實作「緩衝區同步點搜索」，確保在亂碼之後能立即找回下一組有效封包。</li>
+                    <li><strong>恢復時序測量</strong>：紀錄從注入亂碼到系統重新找回控制權的「平均復原時間」。</li>
+                    <li><strong>Push Final</strong>：提交具備「極高通訊容錯率」的加固版固件代碼與壓力測試結果。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>解析器健壯性</strong>：在連續注入非法封包時，ESP32 是否依然能維持主迴圈運行且不發生看門狗 (WDT) 重啟？</li>
+                    <li>[ ] <strong>系統自癒力</strong>：遇到損毀數據後，系統是否真正落實了「安靜丟棄、迅速同步」的原則？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none text-justify;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify text-left">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：透過「數據流」建立全棧 (Full-stack) 工程觀。讓學員學會像診斷醫師一樣看穿系統內部的每一毫秒數據脈動。</p>
+            <ol class="space-y-4 text-slate-600 text-justify text-left">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：端到端思維</strong> - 引導學員排除「只看固件/只看網頁」的片面視野，轉向關注整體「連結 (Link)」的健康度。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：量化與性能監控</strong> - 工程師不應說「好像慢了點」，要要求學員產出「平均延遲、RTT 值」等專業數值。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter text-justify">重點 3：通訊是不安全的設計預期</strong> - 讓學員建立「防禦性解析」習慣。通訊亂碼、截斷是現實世界的常態，系統必須具備自癒力。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── src/dashboard_tracer.js # 發送端高性能埋點測試機
+├── src/parser_surgery.cpp  # 診斷對象：一個脆弱、遇到亂碼會卡住的解析器
+└── docs/Link_Audit.md      # 實驗日誌模板：包含耗時分佈柱狀圖與韌性測試結論
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-justify">
+            <table class="w-full text-left border-collapse border-justify">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify text-left">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看「跨越邊界的數據：從 JS 類型到 C 語言類型映射」影片。預習 Serial 波特率與延時關係。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試學員能否分析為何高頻發送下，緩衝區溢位會導致指令大規模延遲跳躍。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black text-justify">領取作業 (Repo)，執行「極限頻寬測驗」與「數據損毀模擬」。在 Classroom 的 Issue 面板回報自己定位到的第一手瓶頸點。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>系統工程師:</strong> 指導學員解讀「延遲分佈散佈圖」。利用示波器揭示數據封包在無線頻譜中的真實撞擊與延遲感。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black text-justify text-justify">提交詳盡的端到端審計報告與加固後的固件代碼。更新 README 定義你的系統性能 SLA 承諾。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評對「數據完整性」的處理層次。表揚數據分析具備科學邏輯、且能提出具建設性優化方案的「全鏈路專家」。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

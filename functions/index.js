@@ -3193,6 +3193,7 @@ exports.ingestGithubAutograde = onRequest(async (req, res) => {
         const assignmentDocId = payload.assignmentDocId || payload.assignment?.docId || null;
         const userId = payload.userId || payload.assignment?.userId || null;
         const assignmentId = payload.assignmentId || payload.assignment?.assignmentId || null;
+        const unitIdFromPayload = payload.unitId || payload.assignment?.unitId || null;
         const repositoryFullName = payload.repository?.full_name || payload.repo || "";
         const scoreRaw = payload.score ?? payload.grade ?? payload.autoGrade?.score;
         const maxScoreRaw = payload.maxScore ?? payload.autoGrade?.maxScore ?? null;
@@ -3225,7 +3226,7 @@ exports.ingestGithubAutograde = onRequest(async (req, res) => {
         };
 
         if (!resolvedDocId) {
-            const inferredUnitId = payload.unitId || payload.assignment?.unitId || inferUnitIdFromRepo(repositoryFullName);
+            const inferredUnitId = unitIdFromPayload || inferUnitIdFromRepo(repositoryFullName);
             if (inferredUnitId) {
                 const unitCandidates = Array.from(new Set([
                     String(inferredUnitId || "").trim(),
@@ -3280,7 +3281,7 @@ exports.ingestGithubAutograde = onRequest(async (req, res) => {
                     );
                     return res.status(409).json({
                         success: false,
-                        error: "Ambiguous assignment mapping. Please provide assignmentDocId or userId + assignmentId.",
+                        error: "Ambiguous assignment mapping. Please provide assignmentDocId or userId + unitId.",
                         inferredUnitId,
                         candidateCount: candidates.length,
                     });
@@ -3296,7 +3297,7 @@ exports.ingestGithubAutograde = onRequest(async (req, res) => {
             }
             return res.status(400).json({
                 success: false,
-                error: "Missing assignment identifier. Provide assignmentDocId or userId + assignmentId."
+                error: "Missing assignment identifier. Provide assignmentDocId or userId + unitId."
             });
         }
         if (!Number.isFinite(score)) {
@@ -3629,7 +3630,19 @@ exports.remindAdminPendingAssignments = onSchedule({
 
     try {
         const lessons = await getLessons();
-        const physicalUnitIds = new Set(lessons.filter(l => l.isPhysical === true).map(l => l.id));
+        const unitToCourse = new Map();
+        lessons.forEach(course => {
+            const units = Array.isArray(course.courseUnits) ? course.courseUnits : [];
+            units.forEach(unitId => unitToCourse.set(String(unitId), course));
+        });
+
+        const unitRequiresTutorAssignment = (unitId) => {
+            if (!unitId) return false;
+            const course = unitToCourse.get(String(unitId));
+            if (!course) return false;
+            const price = Number(course.price || 0);
+            return price > 0 && course.isPhysical !== true;
+        };
 
         // 1. Get all successful orders
         const ordersSnapshot = await db.collection('orders').where('status', '==', 'SUCCESS').get();
@@ -3638,10 +3651,10 @@ exports.remindAdminPendingAssignments = onSchedule({
         ordersSnapshot.forEach(doc => {
             const data = doc.data();
             if (data.uid && data.items) {
-                Object.keys(data.items).forEach(unitId => {
-                    // [V14.15] Skip physical units for tutor assignment reminders
-                    if (physicalUnitIds.has(unitId)) return;
-
+                const purchasedUnits = collectPurchasedUnitIds(data.items, lessons);
+                purchasedUnits.forEach(unitId => {
+                    // Only keep paid, non-physical course units that need tutor assignment.
+                    if (!unitRequiresTutorAssignment(unitId)) return;
                     if (!pendingMap.has(data.uid)) pendingMap.set(data.uid, new Set());
                     pendingMap.get(data.uid).add(unitId);
                 });

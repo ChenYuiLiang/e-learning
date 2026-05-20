@@ -318,6 +318,136 @@ pChar->setValue("1.0.0");
     </script>
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">BLE 數據屬性與交互架構實驗室：配置、讀寫對比與推播優化實戰
+        </h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：「混合儀表板」：屬性交互實務 (Hybrid Dashboard)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：嵌入式 UI 工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-bold">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>混合配置</strong>：建立學號 (Read)、LED (Write) 與秒計數 (Notify)。</li>
+                    <li><strong>互動測試</strong>：控制開關，觀測秒計數自動跳動。</li>
+                    <li><strong>最終 Commit</strong>：整理對應表至 README。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>屬性精確</strong>：正確區分通訊權限？</li>
+                    <li>[ ] <strong>推播有效</strong>：Notify 主動發起而非手機輪詢？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：「延遲挑戰」：安全 vs. 快速寫入 (Latency Duel)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：分析師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>壓力測試</strong>：手機每秒送 50 筆座標。</li>
+                    <li><strong>模式組測</strong>：切換 WRITE 與 WRITE_NR 觀察延遲。</li>
+                    <li><strong>心得報告</strong>：說明 ACK 在高頻場景影響。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>數據對比</strong>：量化描述高頻下模式穩定度？</li>
+                    <li>[ ] <strong>決策力</strong>：理解控制場景選用 NR 合適性。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：「智慧推播」：條件式 Notify 優化 (Smart Notify)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：設計師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>閾值實作</strong>：變動超過 10% 才 notify。</li>
+                    <li><strong>封包監測</strong>：觀察靜置與搖動狀態頻率。</li>
+                    <li><strong>效益分析</strong>：推導省電、寬度占用貢獻。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>演算法正確</strong>：有效排除雜訊且不遺漏重大變動？</li>
+                    <li>[ ] <strong>優化意識</strong>：展現智慧節能通訊設計。</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：從「可通訊」到「高效通訊」的配置。</p>
+            <ol class="space-y-4 text-slate-600 text-justify text-left">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：適才適所</strong> - 根據類型選擇 Read 或 Notify。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：延遲權衡</strong> - 感受到 ACK 在高頻下的效能瓶頸。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：變動智慧</strong> - 只傳遞意義數據，達成節能。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800 text-justify">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify text-left uppercase tracking-widest">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm">
+.
+├── src/main.cpp      # (必修) 初始化框架
+└── README.md         # 效能報告：延遲表、電力估算
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-justify">
+            <table class="w-full text-left border-collapse border border-slate-100">
+                <thead>
+                    <tr class="bg-slate-100 border border-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">閱讀「BLE Properties 字典」。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 舉出 Read 與 Notify 應用。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black text-justify text-left">領取作業 (Repo)，挑戰 50Hz 壓力測試。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>技術協助:</strong> 配置 CCCDescriptor 指導。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black text-justify">套用「智慧推播」且提交 PR。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 審核閾值合理性。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

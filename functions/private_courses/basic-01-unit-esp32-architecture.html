@@ -271,6 +271,135 @@
     </script>
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">ESP32 SoC 生態實驗室：硬體連通性、偵探遊戲與熱傳導監測</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：硬體連通性與燒錄測試 (Hardware Connectivity & Flashing)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：韌體工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>環境建立</strong>：完成安裝並通過編譯。</li>
+                    <li><strong>物理閃爍</strong>：實作閃爍程式。修改 <code>delay()</code> 閃出「SOS」摩斯密碼。</li>
+                    <li><strong>驗證提交</strong>：在 README 貼上 SUCCESS 內容與閃爍照片。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>引腳配置正確性</strong>：是否能找出板載 LED 引腳？</li>
+                    <li>[ ] <strong>燒錄時機掌握</strong>：是否能在超時前操作 BOOT 鈕？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：串口通訊的偵探遊戲 (Serial Communication Detective)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：系統分析師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>系統 API 調用</strong>：引入 <code>esp_system.h</code> 獲取晶片核心數。</li>
+                    <li><strong>數位指紋提取</strong>：透過 <code>ESP.getEfuseMac()</code> 打印唯一 MAC。</li>
+                    <li><strong>觀察亂碼特徵</strong>：調低速率，截圖記錄並描述「失步」原因。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>數據完整性</strong>：README 是否包含核心數與 Flash 報表？</li>
+                    <li>[ ] <strong>同步理解</strong>：解釋速率不一為何導致無法閱讀亂碼？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：電源與發熱量監測 (Power & Thermal Monitoring)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：硬體測試專家</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>冷啟動日誌分析</strong>：監看 Bootloader 日誌識別 Flash Mode。</li>
+                    <li><strong>負載溫升感測</strong>：執行 WiFi 掃描。記錄運作前後溫差感受。</li>
+                    <li><strong>元件佈局圖解</strong>：上傳照片並標示 RESET/BOOT 物理位置。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>日誌解讀深度</strong>：能否從日誌識別啟動頻率訊息？</li>
+                    <li>[ ] <strong>供電安全意識</strong>：是否理解 Brownout Detector 觸發原因？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify text-left">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：建立抽象代碼與物理硬體間的感知。</p>
+            <ol class="space-y-4 text-slate-600 text-justify text-left">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：基礎燒錄</strong> - 確保學員解決驅動與 COM 埠問題。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：資源邊界探索</strong> - 理解每顆 SoC 核心可能大不相同。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：供電穩定性</strong> - 埋下未來除錯「穩定性」種子。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800 text-justify">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm">
+.
+├── src/main.cpp      # (核心) 需填寫 chip_info 與 SOS 邏輯
+├── include/soc_info.h# 資料結構定義
+└── README.md         # 繳交報告：SOS 與晶片照片
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-justify">
+            <table class="w-full text-left border-collapse border border-slate-100">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看影片，了解 3.3V 供電原則。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試是否理解「3.3V vs 5V」禁區。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black text-justify">領取作業 (Repo)，進行 SOS 摩斯密碼開發。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>技術導師:</strong> 協助演示如何捕捉開機微秒日誌。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black text-justify">撰寫「佈局分析」並 Push。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評對架構參數讀取。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

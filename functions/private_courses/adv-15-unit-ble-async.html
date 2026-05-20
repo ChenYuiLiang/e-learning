@@ -312,7 +312,146 @@
     </footer>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">非同步劇場：健壯的 Web Bluetooth 通訊鏈實戰</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：線性連線序列重構 (Async Pipeline Reconstruction Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：高效通訊開發者</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫并 Clone 到本地。</li>
+                    <li><strong>線性結構部署</strong>：將舊有的連線邏輯封裝進一個 <code>connectToCar()</code> 的 Async Function 中。</li>
+                    <li><strong>優雅異常捕獲</strong>：實作 <code>DOMException</code> 攔截，確保當使用者關閉裝置選取框時，系統能顯示「連線已取消」而非崩饋。</li>
+                    <li><strong>Push Final</strong>：提交具備「高度邏輯一致性」的非同步連線代碼。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>邏輯透明度</strong>：連線代碼是否已完全擺脫 <code>.then()</code> callback，呈現直覺的垂直讀取流？</li>
+                    <li>[ ] <strong>狀態穩定度</strong>：在多次反覆連線與取消操作下，各個特徵值物件是否能正確釋放或重新分配？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：自癒式自動重連 (Self-Healing Redundancy Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：系統可靠性架構師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>斷線截斷監聽</strong>：針對目標裝置掛載動態 <code>disconnected</code> 事件處理器。</li>
+                    <li><strong>重連冷卻實作</strong>：開發 Exponential Backoff 模組，分別在 1s, 2s, 4s 後觸發遞進式的重連嘗試。</li>
+                    <li><strong>權限持效驗證</strong>：確保重連過程利用已緩存的 Device Object，無需再次跳出選取 UI 即可找回 GATT 伺服器。</li>
+                    <li><strong>Push Final</strong>：推送具備「工業級抗干擾與自動復歸」能力的重連控制代碼。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>復歸成功率</strong>：手動斷開 ESP32 電源後恢復，系統是否能在設想的次數內自動找回數據流？</li>
+                    <li>[ ] <strong>UI 反饋力</strong>：重連過程中是否有清晰的進度視窗或 Loading 狀態告知使用者當前正在嘗試復歸？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：並行流控優化戰 (Duplex Stream Optimization Lab)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：全鏈路性能優化師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>競態模型檢視</strong>：分析在高頻寫入 <code>Throttle</code> 指令時，遙測數據接收是否產生排隊延遲（Queue Delay）。</li>
+                    <li><strong>異步併發重構</strong>：實作一個通訊調度器，確保 <code>Write</code> 指令與 <code>Notify</code>
+                        數據處理使用完全獨立的微任務隊列。</li>
+                    <li><strong>節流器部署</strong>：在指令入口加入 50ms 節流，保護低功耗藍牙 (BLE) 限額的傳輸窗口。</li>
+                    <li><strong>Push Final</strong>：提交具備「極致交互響應度」的最終版本通訊與控制代碼。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>通訊流暢度</strong>：在大規模控制輸入下，遙測儀表板是否依然能維持穩定的數據刷新速度？</li>
+                    <li>[ ] <strong>資源利用率</strong>：代碼中是否有效處理了非同步競爭風險，有無不必要的、重複的重連邏輯？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：掌握 JavaScript 異步模式在「實體硬體控制」場景中的深度適配與診斷。</p>
+            <ol class="space-y-4 text-slate-600">
+                <li><strong class="text-blue-600 font-bold uppercase tracking-widest">重點 1：Async 暫停不等於阻塞</strong> - 引導學員理解 await 會暫停函數內部的執行，但主線程依然能流暢處理 UI 動畫與遙測接收。</li>
+                <li><strong class="text-blue-600 font-bold uppercase tracking-widest">重點 2：斷線是常態設計</strong> - 強調穩定系統必須假設通訊隨時中斷，並在 Event 層面做好重連預備，而非依賴使用者刷新。</li>
+                <li><strong class="text-blue-600 font-bold uppercase tracking-widest">重點 3：流量與頻寬節制</strong> - 讓學員理解 BLE MTU 的物理限制，學習使用「節流 (Throttle)」而非「瘋狂寫入」，確保指令的即時性。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-blue-400 font-bold mb-3">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── src/ble_manager.js     # 操作對象：一個需要從 Callback 改為 Async 的核心組件
+├── src/lib/auto_heal.js   # 挑戰區：實作重排與指數退避算法
+└── docs/Stress_Test.md    # 效能報告：記錄重連成功時間與併發下的 RTT 變化
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5">觀看「從 Promise 鏈重構成 Async/Await」對比影片。學習 Web Bluetooth 斷線事件模型。</td>
+                        <td class="px-6 py-5"><strong>Dashboard:</strong> 測試學員能否分析一段代碼中為何 <code>.then()</code> 地獄會導致錯誤處理不全。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900">領取作業 (Repo)，挑戰實作「自動自癒重連」。手動關閉電源後重新回場，測試系統能否在無感狀態下續連。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>連線教官:</strong> 扮演「干擾源」，誘發表層連線失敗，引導學員除錯 Async 邏輯中的捕獲盲區。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課後精進</td>
+                        <td class="px-6 py-5">將高品質的 Async 通訊庫推送至 GitHub。閱讀關於「並行流與藍牙頻寬極限」的進階補充導讀。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評對「連線取消行為」處理的細膩度。表揚實作出高效「指數退避」重連機制且論證嚴密的報告。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

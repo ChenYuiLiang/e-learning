@@ -483,6 +483,155 @@
     </script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2>二進位資料調校師</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title">任務 1：封裝雙通道馬達指令 (Binary Encoder)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：通訊協定設計師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：35 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4>🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>接受作業</strong>：從 GitHub Classroom 建立專屬程式庫，確認範本已含 <code>parser.js</code> 或等效檔案。</li>
+                    <li><strong>撰寫封裝函式</strong>：建立將左右馬達速度寫入 <code>Uint8Array</code> 的函式，確保值限制在 0 到 255。</li>
+                    <li><strong>驗證輸出</strong>：在頁面或測試檔中印出 Hex 結果，確認索引順序與預期一致。</li>
+                    <li><strong>提交成果</strong>：將測試方式與封包格式說明寫入 README，再 <code>commit</code> / <code>push</code>。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>封包格式</strong>：左右通道位元組順序是否正確且穩定？</li>
+                    <li>[ ] <strong>範圍控制</strong>：是否有處理超出 1 Byte 範圍的輸入值？</li>
+                    <li>[ ] <strong>驗證紀錄</strong>：README 或測試輸出是否能證明封裝結果正確？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title">任務 2：還原感測器的 16-bit 數值 (Data Decoder)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：數據逆向工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4>🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>建立測試 Buffer</strong>：先準備一組 2-byte 範例資料，明確標出高位與低位。</li>
+                    <li><strong>使用 DataView 解碼</strong>：用 <code>getUint16()</code> 還原數值，並比較 Big-Endian 與 Little-Endian
+                        的差異。</li>
+                    <li><strong>寫下觀察</strong>：在註解或 README 說明為什麼同一組位元組在不同端序下會得到不同結果。</li>
+                    <li><strong>同步到雲端</strong>：提交解碼函式、測試案例與說明文件。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>端序理解</strong>：是否能正確說明並切換 Big-Endian / Little-Endian？</li>
+                    <li>[ ] <strong>API 使用</strong>：<code>DataView</code> 的 offset 與參數是否使用正確？</li>
+                    <li>[ ] <strong>測試品質</strong>：是否用具體例子驗證解碼結果，而不是只相信直覺？</li>
+                </ul>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2>GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide">
+            <p><strong>第一步：準備範本倉庫 (Template Repo)</strong></p>
+            <ol>
+                <li>上傳框架代碼（含 <code>parser.js</code> 註解框架）並勾選 <strong>"Template repository"</strong>。</li>
+            </ol>
+
+            <p style="margin-top: 1rem;"><strong>第二步：建立 Classroom 作業</strong></p>
+            <ol>
+                <li>建立作業並定義自動評分測項，確保學生產出的 Byte 格式完全正確。</li>
+            </ol>
+
+            <p style="margin-top: 1rem;"><strong>第三步：學生端操作 (Flipped Workflow)</strong></p>
+            <ol>
+                <li>學生領取作業，實作 <code>Uint8Array</code> 封裝與 <code>DataView</code> 解碼邏輯。</li>
+                <li>本地開發後 <strong>Push 代碼</strong>。</li>
+            </ol>
+
+            <p style="margin-top: 1rem;"><strong>第四步：教師回饋 (Review)</strong></p>
+            <ol>
+                <li>查看學生對 <strong>Endianness</strong> 參數、16-bit 合併邏輯與 <code>offset</code> 處理，針對代碼健壯性給予評價。</li>
+            </ol>
+        </div>
+
+        <h2>在 GitHub Classroom 的實戰部署建議</h2>
+        <p>此單元引導學生處理二進位底層數據，實作有效率的通訊協議，建議範本倉庫設置如下：</p>
+
+        <h3>A. 範本倉庫 (Template Repo) 結構</h3>
+        <pre><code>.
+├── index.html       # 包含數據輸入與 Hex 預覽介面
+├── parser.js        # (核心) 學生需在此實作 encode/decode 函式
+└── test/            # 預置的基礎單元測試（檢查 Buffer 長度與數值正確性）</code></pre>
+
+        <h3>B. 參考範例代碼 (Reference Example Code)</h3>
+        <p><strong>parser.js (數據封裝與解碼)</strong></p>
+        <pre><code>// 3-1: 馬達指令封裝 (Uint8Array)
+function encodeMotorSpeed(left, right) {
+  const buffer = new Uint8Array(2);
+  buffer[0] = Math.min(255, Math.max(0, left));
+  buffer[1] = Math.min(255, Math.max(0, right));
+  return buffer;
+}
+
+// 3-2: 感測器數據解碼 (DataView)
+function decodeSensorData(buffer) {
+  const view = new DataView(buffer);
+  // 使用 Big-Endian (預設) 或 Little-Endian
+  // return view.getUint16(0, false); 
+  return view.getUint16(0, true); 
+}</code></pre>
+
+        <h3>C. 自動評分 (Autograding) 的設計</h3>
+        <ul>
+            <li><strong>Buffer 長度檢查：</strong> 檢查 3-1 產出的 ArrayBuffer 長度是否精確為 2。</li>
+            <li><strong>數值測試：</strong> 傳入 <code>0x03E8</code> 緩衝區，檢查對應 Endianness 下的解碼結果是否符合預期。</li>
+        </ul>
+
+        <h2>翻轉教室的實施策略</h2>
+        <table border="1" style="width:100%; border-collapse: collapse; margin-top: 1rem;">
+            <thead>
+                <tr style="background-color: #f8fafc;">
+                    <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">階段</th>
+                    <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">學生行動 (Git Workflow)</th>
+                    <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">教師/平台角色</th>
+                </tr>
+            </thead>
+            <tbody style="color: #4b5563;">
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>課前 (預習)</strong></td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;">操作 Module 1 的對比實驗，理解「二進位封裝」對傳輸效率的影響。</td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;">
+                        <strong>Dashboard：</strong>確認學生已體驗過數據壓縮帶來的效率提升。
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>課中 (實作)</strong></td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;">領取 Classroom 作業，實作封裝與解碼邏輯並更新代碼。</td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>現場觀察：</strong>在大螢幕展示不同學生的 Hex 結果，討論
+                        Endianness 陷阱與 NVS 映射。</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>課後 (精進)</strong></td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;">完成 3-2 解碼挑戰，撰寫個人對二進位通訊優勢的總結並提交 PR。</td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>Feedback
+                            PR：</strong>核發最終評語，確認其具備處理二進位底層數據的能力。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
 </body>
 
 </html>

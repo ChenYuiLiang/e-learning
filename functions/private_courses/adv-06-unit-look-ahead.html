@@ -295,6 +295,145 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">實體實驗室：預覽控制系統調校</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：實作「多層次 ROI」檢測器 (Multi-level ROI Detector)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：自駕視覺工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>掃描線開發</strong>：在 <code>Tracker.js</code> 中定義三個掃描高度（如 Y=200, 150, 80）。</li>
+                    <li><strong>視覺化回饋</strong>：在 Canvas 渲染器中，用不同顏色畫出這三層的質心 Target 標註，觀測入彎時「遠處先偏、近處後偏」的物理特性。</li>
+                    <li><strong>數據擷取</strong>：紀錄一組入彎過程中的三點 X 座標變動，作為後續控制補償的依據。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>標註準確度</strong>：三層掃描點是否皆能正確對齊賽道中心線？</li>
+                    <li>[ ] <strong>渲染層次感</strong>：Canvas 上是否具備清晰的輔助虛線，輔助工程師除錯預覽行為？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：自適應預覽距離 (Adaptive Look-ahead)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：控制系統優化師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>適應性算法實作</strong>：撰寫 <code>getDynamicLookHeight(speed)</code> 函式。確保在 Speed 增加時，Y
+                        座標線性（或非線性）減小（影像座標系中減小代表往上看）。</li>
+                    <li><strong>穩定性測試</strong>：在直道測試高速行駛下，適應性預覽是否能平滑微小的像素震盪。</li>
+                    <li><strong>分析報告</strong>：在 README 中記錄對比「固定低位」、「固定高位」與「動態位」下的循跡震盪頻率分析。</li>
+                    <li><strong>Push PR</strong>：提交具備動態適應能力的導航引擎。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>控制流暢度</strong>：系統在大範圍提速時，轉向動作是否依然能維持柔和而不產生突發性抖動？</li>
+                    <li>[ ] <strong>邊界數值合理性</strong>：預覽高度是否設定在合理範圍（不至於看天空、也不至於只看車頭皮）？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：預覽點與 P-Control 整合除錯 (Look-ahead Integration)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：系統整合專家</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🛠️ 執行技術流程 (Git Workflow)
+                </h4>
+                <ol>
+                    <li><strong>Error 鏈路串接</strong>：將遠方預覽點的偏差 $E_{dist} = \bar{x}_{far} - 160$ 作為 P-Control 的主要輸入。</li>
+                    <li><strong>截彎取直修正</strong>：觀察車輛是否太早入彎。調整 $K_p$ 係數與「預覽寬度放大倍率」，直到循跡中心能完美貼合賽道弧度。</li>
+                    <li><strong>完整路徑錄影</strong>：錄製一段從直線平穩加速進入 90 度彎道並平穩出彎的完整過程，證明預覽控制的優越性。</li>
+                    <li><strong>Push Final</strong>：提交具備專業自駕感的最終代碼專案。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4 class="text-justify uppercase tracking-widest font-black text-justify">🎯 教師點評標準 (Tutor Benchmarks)
+                </h4>
+                <ul>
+                    <li>[ ] <strong>物理路徑優雅度</strong>：無人車過彎時的圓弧是否自然？是否具備「提早進彎、平順修正」的特徵？</li>
+                    <li>[ ] <strong>系统響應可靠性</strong>：控制指令發送頻率是否能穩定維持在 15Hz 以上？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8">
+            <p class="font-bold text-slate-700 mb-4">本單元教學重點：破解「循跡震盪」的魔咒。讓學生理解預測性控制 (Predictive Control) 的核心價值。</p>
+            <ol class="space-y-4 text-slate-600">
+                <li><strong class="text-emerald-600">重點 1：空間換時間</strong> - 預覽控制本質上是用「空間上的遠方數據」來換取「處理上的時間餘裕」。</li>
+                <li><strong class="text-emerald-600">重點 2：動態權衡力</strong> - 引導學員思考看太遠的副作用（截彎取直）與看太近的缺點（超調），培養工程權衡思維。</li>
+                <li><strong class="text-emerald-600">重點 3：視覺化除錯</strong> - 強調 Canvas 標註的重要性。看不見預覽點，就無法除錯導航行為。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-emerald-400 font-bold mb-3">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm border-justify">
+.
+├── js/vision_roi.js    # 多層次 ROI：待學員撰寫多高度質心邏輯
+├── js/pure_pursuit.js  # 導航：待學員實作 Error 映射與係數調校
+└── docs/TrackReport.md # 實驗日誌：需錄製近看 vs 遠看的循跡差別
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5">觀看「專業車手 vs 業餘車手視覺熱點圖」影片。思考為什麼車手入彎前視線就在彎心。</td>
+                        <td class="px-6 py-5"><strong>Dashboard:</strong> 測試學員是否能理解延遲對高速系統的致命性。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900">領取作業 (Repo)，在 Canvas 上繪製動態導航線。測試並修正截彎取直問題。</td>
+                        <td class="px-6 py-5"><strong>技術導航員:</strong> 巡場指導如何用滑桿動態調整掃描高度以尋找最優解。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課後精進</td>
+                        <td class="px-6 py-5">撰寫關於「視線距離與系統穩定度」的定量分析並 Push。</td>
+                        <td class="px-6 py-5"><strong>Feedback PR:</strong> 點評對「自適應預覽」公式設計的優雅度，表揚具備路徑可視化除錯能力的學員。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

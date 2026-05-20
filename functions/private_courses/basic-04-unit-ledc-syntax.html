@@ -342,6 +342,137 @@
     </script>
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">LEDC 核心語法與資源管理實驗室：頻道分配、動力 API
+            封裝與頻率掃描實戰</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：「頻道接力賽」：多路 PWM 資源管理 (Resource Audit)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：硬體資源管理員</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>資源配置</strong>：分配 Channel 0 給 LED，Channel 1 & 2 給馬達。</li>
+                    <li><strong>連動測試</strong>：修改頻率觀察連動干擾。</li>
+                    <li><strong>日誌彙整</strong>：建立資源映射表。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>硬體架構</strong>：理解 Timer 與 Channel 資源共享邏輯？</li>
+                    <li>[ ] <strong>配置獨立性</strong>：三路輸出穩定且無配置衝突？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：「百分比適配器」：自定義動力 API (API Builder)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：軟體架構實習生</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>API 抽象</strong>：撰寫 <code>setMotorSpeed(int percent)</code>。</li>
+                    <li><strong>位元映射</strong>：根據 Resolution 自動映射至 Duty。</li>
+                    <li><strong>魯棒性驗證</strong>：實作輸入值限制防止溢位。</li>
+                    <li><strong>最終提交</strong>：Push 模組。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>映射正確度</strong>：百分比控制是否線性驅動馬達？</li>
+                    <li>[ ] <strong>封裝品質</strong>：API 是否成功隱藏硬體位元細節？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：「諧振頻率掃描」：尋找馬達甜蜜點 (Resonance Seek)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：分析專家</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>自動掃描</strong>：頻率從 100Hz 掃描至 40kHz。</li>
+                    <li><strong>紀錄</strong>：標註噪訊頻段與「甜蜜點」。</li>
+                    <li><strong>建議</strong>：README 紀錄配置建議。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>實驗嚴謹性</strong>：數據是否包含噪訊感官對照？</li>
+                    <li>[ ] <strong>工程直覺</strong>：解釋高頻導致的開關損耗？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：透過 LEDC 進行「硬體資源管理」。</p>
+            <ol class="space-y-4 text-slate-600 text-justify text-left">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：資源樹狀關係</strong> - 建立資源有限性感知。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：變頻彈性</strong> - 強調 Runtime 修改頻率。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：百分比適配</strong> - 封裝技巧與邊界處理。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800 text-justify">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm">
+.
+├── src/main.cpp      # (必修) 實現 ledc 分配邏輯
+└── README.md         # 資源報告：記錄頻率掃描心得
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-justify">
+            <table class="w-full text-left border-collapse border border-slate-100">
+                <thead>
+                    <tr class="bg-slate-100 border border-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">了解「邏輯頻道」與「實體腳位」。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試是否分辨概念差異。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black text-justify text-left">領取作業 (Repo)，挑戰找出「最低雜音」工作頻率。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>技術協助:</strong> 指導計算 PWM 公式。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black text-justify">發起 PR，說明處理策略。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評 API 抽象層優雅程度。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

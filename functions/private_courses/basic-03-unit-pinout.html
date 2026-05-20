@@ -350,6 +350,138 @@
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">引腳地圖與硬體資源實驗室：IO 驗證、架構規劃與訊號處理</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：「數位探針」：驗證引腳限制 (Digital Probe)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：硬體測試工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>Input Only 實測</strong>：嘗試將 GPIO 34 設為 OUTPUT 並輸出高電位驗證失敗。</li>
+                    <li><strong>Strapping 重啟實驗</strong>：將 GPIO 12 接地後重啟，觀察 Flash 錯誤。</li>
+                    <li><strong>結果記錄</strong>：在 README 對比行為差異。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>功能辨識</strong>：正確識別 Input-only 引腳與通用 GPIO？</li>
+                    <li>[ ] <strong>原理理解</strong>：理解 Strapping 引腳在系統引導階段作用？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：「無人車引腳資源大規劃」 (Architecture: Pin Planning)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：系統架構師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>配置分析</strong>：針對馬達與感測器建立 Markdown 表格。</li>
+                    <li><strong>衝突解耦</strong>：避開 Wi-Fi 開啟時失效的 ADC2 區域。</li>
+                    <li><strong>代碼映射</strong>：在 <code>main.cpp</code> 建立 <code>#define</code>。</li>
+                    <li><strong>文檔提交</strong>：展現資源分配全局觀。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>分配邏輯</strong>：規劃是否區分通訊與驅動區？</li>
+                    <li>[ ] <strong>硬體適配性</strong>：是否避開敏感腳位？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：「類比掃描儀」：ADC 精度與底噪 (Signal: ADC Precision)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：訊號處理專家</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>雜訊採樣</strong>：觀察 12-bit 下懸空跳動。</li>
+                    <li><strong>濾波實作</strong>：撰寫「滑動平均」平滑數據。</li>
+                    <li><strong>效能分析</strong>：使用 Plotter 繪製濾波前後對比。</li>
+                    <li><strong>最終 Commit</strong>：整理演算法代碼並 Push 報告。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>數據處理技巧</strong>：平均濾波邏輯是否有效降低抖動？</li>
+                    <li>[ ] <strong>策略意識</strong>：理解採樣次數對反應時間影響？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：建立對「物理實體限制」的認識。</p>
+            <ol class="space-y-4 text-slate-600 text-justify text-left">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：認識硬體複用</strong> - 引腳複用性高但也伴隨配置複雜。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：規避硬體地雷</strong> - 體會接錯線就無法引導。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：數據物理性</strong> - 理解濾波必要性。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800 text-justify">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm">
+.
+├── src/main.cpp      # (重點) 補全濾波演算法
+├── include/pins.h    # 留空供學員規劃
+└── README.md         # 包含衝突實驗紀錄與波形截圖
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-justify">
+            <table class="w-full text-left border-collapse border border-slate-100">
+                <thead>
+                    <tr class="bg-slate-100 border border-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">了解 5V Vin 與 3.3V Out 陷阱。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 測試是否分辨電源腳位。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black text-justify">領取作業 (Repo)，自定義引腳圖。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>硬體顧問:</strong> 指導如何使用 Serial Plotter 觀察訊號。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black text-justify">交流配置最佳化。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評對引腳避讓策略。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

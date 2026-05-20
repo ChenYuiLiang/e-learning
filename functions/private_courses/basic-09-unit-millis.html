@@ -313,6 +313,139 @@
     </script>
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">millis() 非阻塞機制實驗室：擺脫
+            delay()、碼錶邏輯與合作式多工實戰</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：心跳與指令並行 (Heartbeat & Commands Parallel)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：系統優化師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>阻塞重構</strong>：原本使用 <code>delay</code> 控制重寫為基於 <code>millis()</code>。</li>
+                    <li><strong>響應驗證</strong>：閃爍中發送報文確保瞬間響應。</li>
+                    <li><strong>性能監測</strong>：顯示執行間隔。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>非阻塞完整</strong>：成功根除所有造成空轉的 <code>delay()</code>？</li>
+                    <li>[ ] <strong>異步互動</strong>：指令執行延遲穩定低於 10 毫秒？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：多重計時器管理 (Multi-Tasking Timers)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：多工系統工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>分時追蹤實作</strong>：配置獨立追蹤變量。</li>
+                    <li><strong>任務鎖定</strong>：實作 100ms 測距與 500ms 電路回傳。</li>
+                    <li><strong>溢位安全演算</strong>：正確處理溢位循環。</li>
+                    <li><strong>干擾度分析</strong>：觀察任務間週期抖動。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>計時獨立</strong>：不因負載增加而產生耦合偏移？</li>
+                    <li>[ ] <strong>結構清晰</strong>：清晰呈現合作式多工結構？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：反應速度壓力測試 (Response Speed & Safety)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：安全測試專家</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>對照組建置</strong>：撰寫 delay 與 millis 兩套邏輯。</li>
+                    <li><strong>碰撞位移量化</strong>：量化測試剎車距離差。</li>
+                    <li><strong>失效保護</strong>：1.5 秒未連線則停機。</li>
+                    <li><strong>最終提交</strong>：上傳報告與防護代碼。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>數據支持力</strong>：量化展示 non-blocking 安全貢獻？</li>
+                    <li>[ ] <strong>保護機敏性</strong>：能否可靠觸發 Safe-stop？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify text-left">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：掌握多工思維與分時調度。</p>
+            <ol class="space-y-4 text-slate-600 text-justify text-left">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：封印 delay()</strong> - 避免 CPU 盲聽。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest">重點 2：減法判定</strong> - 務必使用 <code>now - last</code>。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：優先級與時間片</strong> - 指令優先。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800 text-justify uppercase tracking-widest font-black border border-slate-700">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300 text-justify uppercase tracking-widest font-black text-left">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm text-justify uppercase tracking-widest font-black border border-slate-100">
+.
+├── src/main.cpp       # (必修) 重構成異步架構
+├── include/scheduler.h# 多重計時器管理
+└── README.md          # 實驗報告
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify uppercase tracking-widest font-black">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-center text-justify font-black">
+            <table class="w-full text-left border-collapse border border-slate-100 text-justify font-black">
+                <thead>
+                    <tr class="bg-slate-100 border border-slate-100 text-justify font-black">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify font-black uppercase tracking-widest">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify font-black uppercase tracking-widest">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify font-black uppercase tracking-widest">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600 border border-slate-100 text-justify font-black">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">觀看專業開發動畫。</td>
+                        <td class="px-6 py-5 text-justify border border-slate-100"><strong>Dashboard:</strong> 測試超時機制。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify border border-slate-100 text-left">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black text-justify text-left">領取 Repo，路測對比版本。</td>
+                        <td class="px-6 py-5 text-left text-justify border border-slate-100 font-black"><strong>助教引導:</strong> 配置多組 <code>previousMillis</code>。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black">將邏輯覆蓋至感測器。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 評價數據支撐感。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

@@ -318,6 +318,137 @@
     </script>
     <script src="/js/course-shared.js?v=2026.05.19.V20.ASSIGNMENT_CTA_BUTTON"></script>
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GATT 協議與階層架構實驗室：服務建模、雙向數據流與遙測實戰
+        </h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title text-justify">任務 1：「無人車通訊地圖」：GATT 服務建模 (GATT Modeling)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：系統架構師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫並 Clone 到本地。</li>
+                    <li><strong>架構編碼</strong>：實作動力與遙測獨立 Service (UUID)。</li>
+                    <li><strong>掛載特徵</strong>：UUID 使用 128-bit 隨機。</li>
+                    <li><strong>階層驗證</strong>：nRF Connect 確認樹狀圖。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>UUID 唯一</strong>：採用隨機 128-bit ID？</li>
+                    <li>[ ] <strong>建模合理</strong>：功能清晰解耦至不同服務？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 2：「雙向數據流」：字元與位元轉換 (Stream & Format)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：韌體開發員</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>指令解析</strong>：onWrite 偵測 "GO" 亮 LED。</li>
+                    <li><strong>狀態回饋</strong>：Read 時回傳累積秒數。</li>
+                    <li><strong>編解碼處理</strong>：控制數據類型轉換。</li>
+                    <li><strong>最終提交</strong>：雙向握手代碼 Push。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>控制穩健</strong>：成功觸發 LED 無遺落？</li>
+                    <li>[ ] <strong>格式對等</strong>：格式正確數值合理？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title text-justify">任務 3：「主動遙測器」：Descriptor 與 Notify 實作 (Active Telemetry)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：遙測工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4 class="text-justify uppercase tracking-widest font-black">🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>描述符注入</strong>：實作 BLE2902。</li>
+                    <li><strong>異步推送</strong>：500ms 定時 notify 虛擬值。</li>
+                    <li><strong>效能分析</strong>：分析推送對比請求優勢。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>機制配置</strong>：正確配置 Descriptor？</li>
+                    <li>[ ] <strong>通訊效率</strong>：展現連貫性？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4 text-justify">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 text-justify">
+            <p class="font-bold text-slate-700 mb-4 ">本單元教學重點：將硬體抽象化為「樹狀數據模型」。</p>
+            <ol class="space-y-4 text-slate-600 text-justify text-left">
+                <li><strong class="text-indigo-600 font-bold uppercase tracking-widest text-justify">重點 1：階層意識</strong> - 功能解耦。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-widest font-black text-justify text-left">重點 2：資料格式轉換</strong> - 韌體基本功。</li>
+                <li><strong class="text-indigo-600 font-bold text-justify uppercase tracking-tighter">重點 3：訂閱效能</strong> - Push 模式表現。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800 text-justify">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-indigo-400 font-bold mb-3 text-justify">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm">
+.
+├── src/main.cpp      # (必修) GATT 初始化框架
+└── README.md         # 規劃書：UUID 表、心得
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-justify">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-justify">
+            <table class="w-full text-left border-collapse border border-slate-100">
+                <thead>
+                    <tr class="bg-slate-100 border border-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700 text-justify">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600 border border-slate-100">
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50">課前預習</td>
+                        <td class="px-6 py-5 text-justify">了解「通訊地圖：GATT 階層」影片。</td>
+                        <td class="px-6 py-5 text-justify"><strong>Dashboard:</strong> 確保區分 Service。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold bg-blue-50/30 text-justify">課中實作</td>
+                        <td class="px-6 py-5 text-slate-900 text-justify uppercase tracking-tighter font-black text-justify text-left">領取作業 (Repo)，挑戰 Notify 顯示。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>巡迴除錯:</strong> 解釋 Descriptor 必要性。</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-5 font-bold text-slate-800 bg-slate-50/50 text-justify">課後精進</td>
+                        <td class="px-6 py-5 text-justify text-left text-justify font-black text-justify">修改數值並提交 PR。</td>
+                        <td class="px-6 py-5 text-left text-justify"><strong>Feedback PR:</strong> 點評 UUID 整潔度。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

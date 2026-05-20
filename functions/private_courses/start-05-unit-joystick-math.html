@@ -423,6 +423,143 @@
     </script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">搖桿數學實驗室</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title">任務 1：搖桿邊界鎖定 (Circular Clamping)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：物理模擬工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：60 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4>🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>建立程式庫</strong>：從 GitHub Classroom 連結建立個人作業程式庫。</li>
+                    <li><strong>距離運算</strong>：應用勾股定理 \(d = \sqrt{dx^2 + dy^2}\) 計算觸控點與中心的距離。</li>
+                    <li><strong>限位實作</strong>：當 \(d > R\) 時，利用比例關係 <code>ratio = R / d</code> 將搖桿頭鎖定在圓周邊界。</li>
+                    <li><strong>同步提交</strong>：撰寫 README 紀錄如何處理 <code>d = 0</code> 的例外狀況，並 <code>push</code> 成果。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>數學嚴謹度</strong>：是否正確處理了隱藏的「除以零」風險？</li>
+                    <li>[ ] <strong>手感順暢度</strong>：觸發限位時，搖桿頭是否會發生跳變或抖動？</li>
+                    <li>[ ] <strong>代碼結構</strong>：限位邏輯是否封裝成獨立的可重用函數？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title">任務 2：動態數據歸一化 (Normalization)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：系統架構師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4>🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>定義區間</strong>：將像素座標映射至 \([-100, 100]\) 或 \([0, 1]\) 的標準區間。</li>
+                    <li><strong>數據輸出</strong>：在網頁上即時顯示 <code>Power</code> (0-100%) 與 <code>Angle</code> (弧度/角度)。</li>
+                    <li><strong>精確度優化</strong>：使用 <code>Math.round</code> 處理輸出數值，確保數據穩定。</li>
+                    <li><strong>提交報告</strong>：將不同位置的數值截圖存入 README 後 <code>push</code>。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>歸一化公式</strong>：<code>Math.min(d/R, 1.0)</code> 的應用是否正確？</li>
+                    <li>[ ] <strong>象限處理</strong>：<code>Math.atan2</code> 產出的角度是否符合硬體預期 (0-360 或 -180~180)？</li>
+                    <li>[ ] <strong>UI 反饋</strong>：顯示的數值是否與視覺位置同步更新？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title">任務 3：搖桿自動回彈 (Auto-Centering)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：交互設計師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：30 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4>🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>事件監聽</strong>：捕捉 <code>touchend</code> 或 <code>mouseup</code> 事件。</li>
+                    <li><strong>狀態重置</strong>：當手指放開時，將所有位置數據歸零，並發送「停止」指令。</li>
+                    <li><strong>進階挑戰</strong>：實作帶有動畫過場的回彈效果，而非瞬間跳回中心。</li>
+                    <li><strong>版本提交</strong>：紀錄重置邏輯的心得，推送到 GitHub。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>安全性</strong>：放手後硬體是否確實接收到停止信號？有無「最後狀態殘留」？</li>
+                    <li>[ ] <strong>回彈性能</strong>：回彈過程有無卡頓或造成過度頻繁的 API 調用？</li>
+                    <li>[ ] <strong>例外處理</strong>：在拖曳中突然跳出網頁，回彈邏輯是否依然能正確執行？</li>
+                </ul>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2 class="text-3xl font-bold mb-8 text-slate-800 border-b pb-4">GitHub Classroom 詳細操作指南</h2>
+        <div class="classroom-guide bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8">
+            <p class="font-bold text-slate-700 mb-4">本單元教學重點：將抽象幾何公式轉化為具體的物理交互限制。</p>
+            <ol class="space-y-4 text-slate-600">
+                <li><strong class="text-indigo-600">第一步：範本設置</strong> - 提供基本的 <code>atan2</code> 與 <code>sqrt</code> 公式框架，建議在代碼中預先留好 <code>// FIXME</code> 位置。</li>
+                <li><strong class="text-indigo-600">第二步：發布作業</strong> - 啟用 Classroom 的自動評分，針對 \( (d > R) \) 的座標點進行數值斷言檢驗。</li>
+                <li><strong class="text-indigo-600">第三步：學生開發</strong> - 重點觀察學生是否能正確推導出 <code>(dx * R / d)</code> 的縮放倍率，而非手動拼湊數值。</li>
+                <li><strong class="text-indigo-600">第四步：代碼審閱</strong> - 檢查 <code>touchend</code> 時的資源清理邏輯，這是防止遙控車「暴走」的關鍵安全設計。</li>
+            </ol>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-slate-800">在 GitHub Classroom 的實戰部署建議</h2>
+        <div class="bg-slate-900 rounded-xl p-6 mb-8 text-slate-300">
+            <h3 class="text-indigo-400 font-bold mb-3">範本倉庫 (Template Repo) 結構建議</h3>
+            <pre class="bg-black/50 p-4 rounded-lg font-mono text-sm">
+.
+├── index.html        # 包含搖桿視覺 UI 與數據面板
+├── math-logic.js     # (核心) 實作幾何限位、回彈與歸一化
+└── README.md         # 記錄勾股定理與比例縮放的數學推導
+            </pre>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-slate-800">教學實施策略 (Flipped Workflow)</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-100">
+                        <th class="p-4 border-b font-bold text-slate-700">階段</th>
+                        <th class="p-4 border-b font-bold text-slate-700">學生行動 (Git Workflow)</th>
+                        <th class="p-4 border-b font-bold text-slate-700">教師/平台引導</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600">
+                    <tr>
+                        <td class="p-4 border-b font-bold bg-slate-50/50">課前預習</td>
+                        <td class="p-4 border-b">複習基礎三角形幾何，預演 \( (30,40,50) \) 的經典比例場景。</td>
+                        <td class="p-4 border-b"><strong>Dashboard:</strong> 觀察學生是否理解 \(\sqrt{a^2+b^2}\) 的由來。</td>
+                    </tr>
+                    <tr>
+                        <td class="p-4 border-b font-bold bg-slate-50/50">課中實作</td>
+                        <td class="p-4 border-b">領取作業 (Repo)，完成圓形限位 (Quest 1) 與數據顯示 (Quest 2) 並 Push。</td>
+                        <td class="p-4 border-b"><strong>現場排錯:</strong> 診斷「手柄瞬移」問題（通常是沒處理好中心偏移量）。</td>
+                    </tr>
+                    <tr>
+                        <td class="p-4 font-bold bg-slate-50/50">課後精進</td>
+                        <td class="p-4">挑戰平滑自動回彈 (Quest 3)，撰寫穩健性報告並提交最後 Commit。</td>
+                        <td class="p-4"><strong>Feedback PR:</strong> 點評幾何運算的優雅度與安全性（邊界狀況處理）。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 
 </html>

@@ -517,6 +517,185 @@ return JSON.stringify(complexData);</textarea>
     </script>
 
     <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+        <h2>JSON 封包設計師</h2>
+
+        <div class="assignment-quest">
+            <h3 class="quest-title">任務 1：把控制指令轉成標準 JSON (Serialize Command)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：物聯網開發者</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：40 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4>🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>接受作業</strong>：建立專屬 GitHub Classroom 程式庫，確認範本含有資料物件與輸出位置。</li>
+                    <li><strong>建立指令物件</strong>：定義包含方向、速度、時間戳等欄位的控制資料。</li>
+                    <li><strong>轉成 JSON</strong>：使用 <code>JSON.stringify()</code> 產生標準字串，並驗證輸出格式是否正確。</li>
+                    <li><strong>同步版本</strong>：將函式與測試結果寫進 README 後再 <code>commit</code> / <code>push</code>。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>格式正確</strong>：輸出的 JSON 是否符合標準語法，而不是手刻字串拼接？</li>
+                    <li>[ ] <strong>欄位完整</strong>：方向、速度與時間資訊是否清楚存在？</li>
+                    <li>[ ] <strong>序列化理解</strong>：是否知道哪些資料型別會在 stringify 時被忽略？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title">任務 2：幫封包瘦身以節省頻寬 (Compact Payload)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：韌體通訊工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：40 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4>🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>設計縮寫</strong>：把長欄位改成短鍵名，例如 <code>command → c</code>、<code>velocity → v</code>。</li>
+                    <li><strong>比較長度</strong>：量測精簡前後字節數，確認確實有顯著縮短。</li>
+                    <li><strong>維持可解碼性</strong>：確保 ESP32 或接收端仍能按約定讀回正確資料。</li>
+                    <li><strong>提交協議</strong>：把縮寫對照表與示例封包一起推送到 GitHub。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>瘦身效果</strong>：封包長度是否真的有縮短，而不是只換名稱？</li>
+                    <li>[ ] <strong>映射清楚</strong>：縮寫與原始欄位意義是否交代清楚？</li>
+                    <li>[ ] <strong>可維護性</strong>：協議精簡後，是否仍保有團隊可讀性？</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-quest" style="margin-top: 2rem;">
+            <h3 class="quest-title">任務 3：規劃可擴充的巢狀控制資料 (Nested State)</h3>
+            <div class="quest-meta">
+                <span>角色扮演：嵌入式系統架構師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：45 min</span>
+            </div>
+
+            <div class="quest-workflow">
+                <h4>🛠️ 執行技術流程 (Git Workflow)</h4>
+                <ol>
+                    <li><strong>拆分資料責任</strong>：將搖桿、按鈕、系統狀態等資訊整理成清楚的巢狀結構。</li>
+                    <li><strong>控制深度</strong>：避免過深巢狀，讓資料既清楚又容易在 MCU 端解析。</li>
+                    <li><strong>驗證案例</strong>：用不同操作組合測試資料輸出是否穩定且可預測。</li>
+                    <li><strong>提交方案</strong>：把資料 schema、測試案例與範例輸出一併提交。</li>
+                </ol>
+            </div>
+
+            <div class="tutor-benchmark">
+                <h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
+                <ul>
+                    <li>[ ] <strong>結構合理</strong>：資料分層是否容易在前後端與 ESP32 間對齊？</li>
+                    <li>[ ] <strong>擴充彈性</strong>：之後新增欄位時，是否不需要整體推翻原結構？</li>
+                    <li>[ ] <strong>測試完整</strong>：是否有實例證明多種控制狀態都能正確組合？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+        <h2>數據格式化與 JSON 協議 教學引導指南</h2>
+        <div class="classroom-guide">
+            <p><strong>第一步：準備範本倉庫 (Template Repo)</strong></p>
+            <ol>
+                <li>上傳基礎專案框架與 <code>protocol-helper.js</code> 註解框架，並勾選 <strong>"Template repository"</strong>。</li>
+            </ol>
+
+            <p style="margin-top: 1rem;"><strong>第二步：建立 Classroom 作業</strong></p>
+            <ol>
+                <li>建立作業並連結範本，啟用 <strong>"Enable feedback pull requests"</strong> 以便檢視協議設計。</li>
+            </ol>
+
+            <p style="margin-top: 1rem;"><strong>第三步：學生端操作 (Flipped Workflow)</strong></p>
+            <ol>
+                <li>學生領取作業，定義 JSON 協議邏輯並實作數據縮減（瘦身）策略。</li>
+                <li>本地開發後 <strong>Push 代碼</strong>。</li>
+            </ol>
+
+            <p style="margin-top: 1rem;"><strong>第四步：教師回饋 (Review)</strong></p>
+            <ol>
+                <li>進入 Feedback PR，針對學生縮寫 Key 的邏輯嚴謹度、巢狀結構的合理性給予評價。</li>
+            </ol>
+        </div>
+
+        <h2>在 GitHub Classroom 的實戰部署建議</h2>
+        <p>此單元引導學生設計基於 JSON 的通訊協議，並實作數據縮減優化，建議範本倉庫設置如下：</p>
+
+        <h3>A. 範本倉庫 (Template Repo) 結構</h3>
+        <pre><code>.
+├── index.html       # 基礎交互介面
+├── protocol-helper.js # (核心) 學生需在此實作 encode/decode 函式
+└── README.md        # 協議設計規範與數據縮減對照表</code></pre>
+
+        <h3>B. 參考範例代碼 (Reference Example Code)</h3>
+        <p><strong>protocol-helper.js (封裝與縮寫)</strong></p>
+        <pre><code>// 基礎封裝 (Task 1)
+function createPacket(btnId) {
+    const data = {
+        btn: btnId,
+        ts: Date.now()
+    };
+    return JSON.stringify(data);
+}
+
+// 封包瘦身 (Task 2)
+// 使用單字元 Key 可節省約 50% 頻寬
+function createOptimizedPacket(cmd, val) {
+    return JSON.stringify({ c: cmd, v: val });
+}
+
+// 巢狀結構 (Task 3)
+const joyData = {
+    joy: { x: 10, y: -5 },
+    btn: { a: 1 }
+};</code></pre>
+
+        <h3>C. 自動評分 (Autograding) 的設計</h3>
+        <ul>
+            <li><strong>字節檢查：</strong> 使用 Actions 檢查產生的 JSON 字串長度（優化挑戰要求 < 20 bytes）。</li>
+            <li><strong>語法檢查：</strong> 驗證學生產出的 JSON 是否包含正確的嵌套 Key (joy/btn)。</li>
+        </ul>
+
+        <h2>翻轉教室的實施策略</h2>
+        <table border="1" style="width:100%; border-collapse: collapse; margin-top: 1rem;">
+            <thead>
+                <tr style="background-color: #f8fafc;">
+                    <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">階段</th>
+                    <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">學生行動 (Git Workflow)</th>
+                    <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">教師/平台角色</th>
+                </tr>
+            </thead>
+            <tbody style="color: #4b5563;">
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>課前 (預習)</strong></td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;">操作本頁的互動編輯器，練習手寫符合 JSON 規範的物件。</td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>Dashboard：</strong>檢查學生預習紀錄與語法錯誤頻率。
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>課中 (實作)</strong></td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;">實作 <code>createPacket</code> 基礎與瘦身挑戰並更新代碼。
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>助教角色：</strong>引導學生理解 JSON 在 BLE MTU
+                        限制下的瓶頸。
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>課後 (精進)</strong></td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;">完成巢狀結構設計，將協議設計總結寫入 PR 並 Commit。</td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>Feedback PR：</strong>檢視通訊協議的擴展性與文檔完整度。
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
 </body>
 
 </html>
