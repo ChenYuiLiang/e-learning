@@ -80,13 +80,15 @@ graph TD
 - `docs/template-org-migration-runbook.md` (source/publish layer policy)
 - `docs/admin-invite-binding-tool.md` (admin invite-link binding lookup)
 
-## 7. Tutor Binding via Promotion Code (Updated 2026-05-18)
-- 綁定入口改為作業頁（Assignment modal），由學生輸入 Tutor 的 `Promotion code`。
+## 7. Tutor Binding via Promotion Code (Updated 2026-05-20)
+- 綁定入口為作業頁（Assignment modal），由學生確認或輸入 Tutor 的 `Promotion code`。
 - 購物車流程不再輸入推薦連結或 Promotion code。
-- 學生每次點擊作業都會先顯示綁定對話框，可在此更換 Tutor。
-- Promotion code 可留白（系統會使用預設導師 `rover.k.chen@gmail.com`）；若有輸入，必須是該單元合格導師 code 才可綁定成功。
-- 系統驗證流程：
+- **點擊觸發機制**：學生每次點擊作業，都會先彈出確認/綁定視窗（`assignment-link-modal`），以便隨時進行導師確認或異動。
+- **自動帶入代碼**：彈出視窗時，系統會自動透過 API 帶入該學生此單元目前已綁定的 `Promotion code`；如果尚未綁定，則欄位為空。
+- **留白與異動機制**：如果要異動，請輸入新導師的 Promotion code。若欄位留白並送出，系統會自動為學生指派預設導師 `rover.k.chen@gmail.com`。
+- **合格導師驗證**：若有輸入代碼，系統在儲存前會先驗證該 code 是否對應此單元的合格授權導師：
   - 依 `users.promotionCode` 找到 Tutor
   - 檢查 Tutor 在該單元 `tutorConfigs[unitId].authorized === true`
   - 檢查該單元已配置 `assignmentUrl/githubClassroomUrl`
-  - 通過後寫入 `users.unitAssignments` 與 `users.unitAssignmentMeta`
+  - 驗證通過後，寫入 `users.unitAssignments` 與 `users.unitAssignmentMeta` 並開啟作業；若未通過，則提示錯誤阻擋進入。
+
