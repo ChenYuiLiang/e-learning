@@ -1509,7 +1509,7 @@ async function vibeRefreshReadmeContent(filterUnitId) {
         p.classList.remove('hidden');
         p.innerHTML = `
             <div class="flex items-center gap-3 text-slate-400 italic">
-                <span class="animate-pulse">⏳</span> 正在抓取 GitHub 教學指引 (tutor_guide.md)...
+                <span class="animate-pulse">⏳</span> 正在抓取 GitHub 教學指引 (tutor-guide.md)...
             </div>
         `;
     });
@@ -1522,25 +1522,26 @@ async function vibeRefreshReadmeContent(filterUnitId) {
         const guideConfig = getCourseGuideConfig(currentCourseId);
         const guideData = robustExtractGuideSegments(guideConfig?.tutorGuide, guideConfig?.assignmentGuide);
         const embeddedAssignmentGuide = guideData?.assignmentGuides?.[filterUnitId] || "";
+        const embeddedTutorGuide = guideData?.segments?.[filterUnitId]
+            || guideData?.segments?.[filterUnitId.replace(/\.html$/, '')]
+            || "";
 
         for (const placeholder of readmePlaceholders) {
             const isSettingsTab = placeholder.id === 'github-readme-placeholder-settings';
             let markdownHtml = null;
 
             if (isSettingsTab) {
-                // [V17.0.5] SETTINGS TAB: Prioritized Fetching (Tutor Guide Focus)
-                const possibleFiles = ['tutor-guide.md', '.github/tutor_guide.md', 'tutor_guide.md', 'README.md'];
-                
-                for (const fileName of possibleFiles) {
-                    const fileUrl = `https://raw.githubusercontent.com/${GITHUB_ORG}/${repoName}/main/${fileName}`;
-                    console.log(`[V17.0.5] SettingsTab attempting: ${fileUrl}`);
-                    
-                    placeholder.innerHTML = `<div class="flex items-center gap-3 text-slate-400 italic"><span class="animate-pulse">⏳</span> 正在抓取導師指南 ${fileName}...</div>`;
+                // [V17.3] SETTINGS TAB: prefer backend-extracted tutor-guide, fallback to template repo tutor-guide.md
+                if (embeddedTutorGuide) {
+                    markdownHtml = embeddedTutorGuide;
+                    console.log(`[V17.3] SettingsTab using embedded tutor-guide for unit: ${filterUnitId}`);
+                } else {
+                    const fileUrl = `https://raw.githubusercontent.com/${GITHUB_ORG}/${repoName}/main/tutor-guide.md`;
+                    console.log(`[V17.3] SettingsTab fallback to GitHub tutor-guide: ${fileUrl}`);
+                    placeholder.innerHTML = `<div class="flex items-center gap-3 text-slate-400 italic"><span class="animate-pulse">⏳</span> 正在抓取導師指南 tutor-guide.md...</div>`;
                     const result = await loadMarkdown(fileUrl);
-                    
                     if (result && !result.includes('無法讀取')) {
                         markdownHtml = result;
-                        break;
                     }
                 }
             } else {
