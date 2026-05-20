@@ -71,9 +71,9 @@
 
 ---
 
-## 4. 資料模型（規劃）
+## 4. 資料模型（已上線）
 
-> 下列為 **規劃中欄位**，不代表現行 production 已全數上線。
+> 下列欄位與集合已在系統中正式部署與使用。
 
 ### 4.1 `assignments`（擴充）
 
@@ -97,6 +97,7 @@
 
 - `assignmentId`
 - `studentUid`
+- `studentEmail`
 - `triggerScore`
 - `threshold`
 - `status` (`open|in_progress|resolved`)

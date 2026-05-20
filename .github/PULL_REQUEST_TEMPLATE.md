@@ -5,7 +5,7 @@
 
 ## Unit Repo Changes
 - [ ] README updated (student-facing instructions)
-- [ ] tutor-guide updated (`tutor-guide.md` or `.github/tutor_guide.md`) if needed
+- [ ] tutor-guide updated (`tutor-guide.md` in root) if needed
 - [ ] tests/workflows/examples updated if needed
 - [ ] Submission requirements and acceptance criteria are aligned
 

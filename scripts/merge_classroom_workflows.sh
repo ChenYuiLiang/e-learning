@@ -32,10 +32,6 @@ on:
         required: false
         default: "100"
         type: string
-      assignment_doc_id:
-        description: "Optional Firestore assignment doc id (uid_assignmentId)"
-        required: false
-        type: string
       status_override:
         description: "Optional status override"
         required: false
@@ -162,10 +158,8 @@ PY
         id: payload
         shell: bash
         env:
-          INPUT_ASSIGNMENT_DOC_ID: ${{ github.event.inputs.assignment_doc_id }}
-          DEFAULT_ASSIGNMENT_DOC_ID: ${{ vars.VC_ASSIGNMENT_DOC_ID }}
           DEFAULT_USER_ID: ${{ vars.VC_USER_ID }}
-          DEFAULT_ASSIGNMENT_ID: ${{ vars.VC_ASSIGNMENT_ID }}
+          DEFAULT_UNIT_ID: ${{ vars.VC_UNIT_ID }}
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           WORKFLOW_NAME: ${{ github.workflow }}
@@ -174,9 +168,8 @@ PY
         run: |
           set -euo pipefail
 
-          ASSIGNMENT_DOC_ID="${INPUT_ASSIGNMENT_DOC_ID:-${DEFAULT_ASSIGNMENT_DOC_ID:-}}"
           USER_ID="${DEFAULT_USER_ID:-}"
-          ASSIGNMENT_ID="${DEFAULT_ASSIGNMENT_ID:-}"
+          UNIT_ID="${DEFAULT_UNIT_ID:-}"
           SCORE="${{ steps.grader.outputs.score }}"
           MAX_SCORE="${{ steps.grader.outputs.max_score }}"
           STATUS="${{ steps.grader.outputs.status }}"
@@ -184,14 +177,13 @@ PY
           if [ -z "$SCORE" ]; then
             echo "score missing"; exit 1
           fi
-          if [ -z "$ASSIGNMENT_DOC_ID" ] && { [ -z "$USER_ID" ] || [ -z "$ASSIGNMENT_ID" ]; }; then
-            echo "Either vars.VC_ASSIGNMENT_DOC_ID or vars.VC_USER_ID+VC_ASSIGNMENT_ID is required."; exit 1
+          if [ -z "$USER_ID" ] || [ -z "$UNIT_ID" ]; then
+            echo "Need vars.VC_USER_ID+VC_UNIT_ID."; exit 1
           fi
 
           PAYLOAD=$(jq -cn \
-            --arg assignmentDocId "$ASSIGNMENT_DOC_ID" \
             --arg userId "$USER_ID" \
-            --arg assignmentId "$ASSIGNMENT_ID" \
+            --arg unitId "$UNIT_ID" \
             --argjson score "$SCORE" \
             --argjson maxScore "$MAX_SCORE" \
             --arg status "$STATUS" \
@@ -201,9 +193,8 @@ PY
             --arg repo "$REPO" \
             --arg actor "$ACTOR" \
             '{
-              assignmentDocId: ($assignmentDocId | select(length > 0)),
               userId: ($userId | select(length > 0)),
-              assignmentId: ($assignmentId | select(length > 0)),
+              unitId: ($unitId | select(length > 0)),
               score: $score,
               maxScore: $maxScore,
               status: $status,

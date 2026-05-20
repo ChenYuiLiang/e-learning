@@ -746,6 +746,394 @@ function initFirebaseFeatures() {
             }
         };
 
+        // --- Student Interaction Hub MVP ---
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        const findCourseIdByUnit = async (fileName) => {
+            let globalLessonsData = window.globalLessonsData;
+            if (!globalLessonsData || globalLessonsData.length === 0) {
+                try {
+                    const getLessonsFunc = httpsCallable(functions, 'getLessonsMetadata');
+                    const result = await getLessonsFunc();
+                    if (result.data && result.data.lessons) {
+                        globalLessonsData = result.data.lessons;
+                        window.globalLessonsData = globalLessonsData;
+                    }
+                } catch (e) {
+                    console.error("Failed to load global lessons data:", e);
+                }
+            }
+            if (globalLessonsData) {
+                for (const course of globalLessonsData) {
+                    if (course.githubClassroomUrls && course.githubClassroomUrls[fileName]) {
+                        return course.courseId;
+                    }
+                }
+            }
+            // Fallback prefix check
+            if (fileName.startsWith('adv-')) return 'advanced';
+            if (fileName.startsWith('basic-')) return 'basic';
+            if (fileName.startsWith('start-') || fileName.match(/^[0-9]/)) return 'started';
+            return 'basic';
+        };
+
+        window.submitStudentBlockerAction = async function() {
+            const btn = document.getElementById('btn-submit-blocker');
+            const type = document.getElementById('blocker-type').value;
+            const note = document.getElementById('blocker-note').value;
+            if (!note) {
+                alert("請填寫卡點說明！");
+                return;
+            }
+            btn.disabled = true;
+            btn.innerText = "提交中...";
+
+            const pathParts = window.location.pathname.split('/');
+            const fileName = pathParts[pathParts.length - 1];
+            const unitId = fileName.replace('.html', '');
+
+            try {
+                const submitBlocker = httpsCallable(functions, 'submitStudentBlocker');
+                await submitBlocker({
+                    assignmentId: unitId,
+                    blockerType: type,
+                    blockerNote: note
+                });
+                alert("👍 卡點已回報，導師將會收到通知！");
+                location.reload();
+            } catch (e) {
+                console.error(e);
+                alert("提交失敗：" + e.message);
+                btn.disabled = false;
+                btn.innerText = "🚀 提交卡點";
+            }
+        };
+
+        window.resolveStudentBlockerAction = async function() {
+            if (!confirm("確定卡點已解決嗎？這會將狀態切回「進行中」。")) return;
+            const btn = document.getElementById('btn-resolve-blocker');
+            btn.disabled = true;
+            btn.innerText = "處理中...";
+
+            const pathParts = window.location.pathname.split('/');
+            const fileName = pathParts[pathParts.length - 1];
+            const unitId = fileName.replace('.html', '');
+
+            try {
+                const resolveBlocker = httpsCallable(functions, 'resolveStudentBlocker');
+                await resolveBlocker({
+                    assignmentId: unitId
+                });
+                alert("✅ 卡點已解決，祝您寫作業順利！");
+                location.reload();
+            } catch (e) {
+                console.error(e);
+                alert("操作失敗：" + e.message);
+                btn.disabled = false;
+                btn.innerText = "✅ 卡點已自行解決";
+            }
+        };
+
+        window.submitAttemptSummaryAction = async function() {
+            const btn = document.getElementById('btn-submit-attempt');
+            const summary = document.getElementById('attempt-summary').value;
+            if (!summary) {
+                alert("請填寫嘗試紀錄內容！");
+                return;
+            }
+            btn.disabled = true;
+            btn.innerText = "提交中...";
+
+            const pathParts = window.location.pathname.split('/');
+            const fileName = pathParts[pathParts.length - 1];
+            const unitId = fileName.replace('.html', '');
+
+            try {
+                const submitAttempt = httpsCallable(functions, 'submitAttemptSummary');
+                await submitAttempt({
+                    assignmentId: unitId,
+                    attemptSummary: summary
+                });
+                alert("📝 嘗試紀錄提交成功！");
+                location.reload();
+            } catch (e) {
+                console.error(e);
+                alert("提交失敗：" + e.message);
+                btn.disabled = false;
+                btn.innerText = "提交嘗試紀錄";
+            }
+        };
+
+        window.toggleBlockerForm = function() {
+            const form = document.getElementById('blocker-form-wrap');
+            if (form) {
+                form.classList.toggle('hidden');
+            }
+        };
+
+        async function renderStudentInteractionHub(user) {
+            const pathParts = window.location.pathname.split('/');
+            const fileName = pathParts[pathParts.length - 1];
+            const unitId = fileName.replace('.html', '');
+            
+            // Only render on unit HTML pages (skip generic index pages)
+            if (fileName === 'basic.html' || fileName === 'advanced.html' || fileName === 'prepare.html' || fileName === 'started.html' || fileName === 'index.html' || fileName === 'payment-return.html') {
+                return;
+            }
+
+            const courseId = await findCourseIdByUnit(fileName);
+
+            // Fetch assignment status
+            let accessResult = null;
+            try {
+                const resolveAccess = httpsCallable(functions, 'resolveAssignmentAccess');
+                const result = await resolveAccess({ courseId, unitId: fileName, assignmentId: unitId });
+                accessResult = result.data;
+            } catch (e) {
+                console.error("[StudentHub] Failed to fetch assignment details:", e);
+                return;
+            }
+
+            if (!accessResult || !accessResult.authorized) return;
+
+            const details = accessResult.assignmentDetails || {
+                learningState: 'in_progress',
+                latestBlocker: null,
+                hintLevelUsed: null,
+                nextAction: null,
+                attemptSummary: null,
+                grade: null,
+                tutorFeedback: null
+            };
+
+            const learningState = details.learningState;
+            
+            // Check where to render
+            const mainContainer = document.querySelector('main.container') || document.body;
+            let hubContainer = document.getElementById('student-interaction-hub');
+            if (!hubContainer) {
+                hubContainer = document.createElement('div');
+                hubContainer.id = 'student-interaction-hub';
+                hubContainer.className = 'bg-white rounded-3xl border border-slate-200 p-8 mt-12 mb-12 shadow-md max-w-4xl mx-auto';
+                mainContainer.appendChild(hubContainer);
+            }
+
+            // Render current progress bar
+            let steps = [
+                { id: 'in_progress', label: '進行中', color: 'blue' },
+                { id: 'blocked', label: '遭遇卡點', color: 'red' },
+                { id: 'coaching', label: '導師引導中', color: 'amber' },
+                { id: 'resolved', label: '已解決 / 評分', color: 'green' }
+            ];
+
+            let activeIndex = steps.findIndex(s => s.id === learningState);
+            if (activeIndex === -1) activeIndex = 0;
+
+            const progressHtml = steps.map((s, idx) => {
+                const isActive = idx === activeIndex;
+                const isPassed = idx < activeIndex;
+                
+                let circleColor = 'border-slate-300 text-slate-400 bg-white';
+                if (isActive) {
+                    if (s.id === 'blocked') circleColor = 'border-red-500 text-red-600 bg-red-50 ring-4 ring-red-100 animate-pulse';
+                    else if (s.id === 'coaching') circleColor = 'border-amber-500 text-amber-600 bg-amber-50 ring-4 ring-amber-100 animate-pulse';
+                    else if (s.id === 'resolved') circleColor = 'border-green-500 text-green-600 bg-green-50 ring-4 ring-green-100';
+                    else circleColor = 'border-blue-500 text-blue-600 bg-blue-50 ring-4 ring-blue-100';
+                } else if (isPassed) {
+                    circleColor = 'border-slate-500 bg-slate-600 text-white';
+                }
+
+                return `
+                    <div class="flex flex-col items-center flex-1 relative">
+                        <div class="w-10 h-10 rounded-full border-2 flex items-center justify-center font-bold text-sm z-10 transition-all ${circleColor}">
+                            ${isPassed ? '✓' : (idx + 1)}
+                        </div>
+                        <span class="text-xs font-semibold mt-2 ${isActive ? 'text-slate-800 font-bold scale-105' : 'text-slate-505'}">${s.label}</span>
+                    </div>
+                `;
+            }).join(`
+                <div class="flex-1 h-0.5 bg-slate-200 mt-5"></div>
+            `);
+
+            // Blocker Form / Status UI
+            let blockerSectionHtml = '';
+            if (learningState === 'blocked') {
+                const blocker = details.latestBlocker || {};
+                const blockerTypeMap = { concept: '觀念卡點', debug: '程式 Bug 卡點', environment: '環境卡點' };
+                blockerSectionHtml = `
+                    <div class="bg-red-50 border border-red-200 rounded-2xl p-6 mt-8">
+                        <div class="flex items-center gap-3 mb-3 text-red-700 font-bold">
+                            <span class="text-2xl">🚨</span>
+                            <span>已標記為卡點狀態，老師正在關注中</span>
+                        </div>
+                        <div class="text-sm text-slate-700 mb-4 bg-white p-4 rounded-xl border border-red-100">
+                            <strong>卡點類型：</strong> ${blockerTypeMap[blocker.type] || '一般卡點'}<br>
+                            <strong>卡點描述：</strong> ${escapeHtml(blocker.note || '無詳細描述')}
+                        </div>
+                        <button id="btn-resolve-blocker" onclick="resolveStudentBlockerAction()"
+                            class="py-2.5 px-6 bg-slate-800 text-white rounded-xl font-bold hover:bg-slate-700 transition shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2">
+                            <span>✅</span> 卡點已自行解決（回到進行中）
+                        </button>
+                    </div>
+                `;
+            } else if (learningState === 'coaching') {
+                // Showing Tutor Coaching notes
+                const hintLabels = ['無提示', 'L1 方向提示', 'L2 半步驟引導', 'L3 完整拆解'];
+                const hintBadgeColors = [
+                    'bg-slate-100 text-slate-600',
+                    'bg-blue-100 text-blue-800 border border-blue-200',
+                    'bg-amber-100 text-amber-800 border border-amber-200',
+                    'bg-red-100 text-red-800 border border-red-200'
+                ];
+                const hintLevel = details.hintLevelUsed !== null ? details.hintLevelUsed : 1;
+                const nextAction = details.nextAction || '請遵循導師的指導步驟繼續嘗試';
+                const advice = details.tutorFeedback || '導師尚未留下詳細指導內容';
+
+                blockerSectionHtml = `
+                    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-6 mt-8">
+                        <div class="flex items-center justify-between mb-4 border-b border-amber-200 pb-3">
+                            <div class="flex items-center gap-3 text-amber-800 font-bold">
+                                <span class="text-2xl">🧑‍🏫</span>
+                                <span>導師指導回饋</span>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-bold ${hintBadgeColors[hintLevel]}">
+                                ${hintLabels[hintLevel]}
+                            </span>
+                        </div>
+
+                        <div class="mb-4 bg-amber-500/10 p-4 rounded-xl border border-amber-200">
+                            <span class="text-xs text-amber-800 font-bold uppercase tracking-wider block mb-1">🎯 導師指派下一步目標</span>
+                            <div class="text-lg font-black text-slate-800 leading-relaxed">${escapeHtml(nextAction)}</div>
+                        </div>
+
+                        <div class="text-sm text-slate-700 bg-white p-5 rounded-xl border border-amber-100 whitespace-pre-wrap leading-relaxed">
+                            <strong class="text-slate-800 block mb-2">💡 導師回饋指引：</strong>
+                            ${escapeHtml(advice)}
+                        </div>
+
+                        <div class="flex gap-4 mt-6">
+                            <button id="btn-resolve-blocker" onclick="resolveStudentBlockerAction()"
+                                class="py-2.5 px-6 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2">
+                                <span>✅</span> 已完成導師指引（重設卡點）
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else if (learningState === 'resolved') {
+                blockerSectionHtml = `
+                    <div class="bg-green-50 border border-green-200 rounded-2xl p-6 mt-8 flex items-center gap-4">
+                        <span class="text-3xl">🎉</span>
+                        <div>
+                            <h4 class="font-bold text-green-800 mb-1">恭喜！此單元作業已成功解決或通過評分</h4>
+                            <p class="text-xs text-green-700">自動評分或導師檢查已達標。您可以繼續挑戰下一單元！</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // 'in_progress' or default
+                blockerSectionHtml = `
+                    <div class="mt-8 flex justify-center">
+                        <button onclick="toggleBlockerForm()"
+                            class="py-3 px-8 bg-red-500 text-white rounded-2xl font-bold hover:bg-red-600 transition shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2 transform hover:-translate-y-0.5">
+                            <span>⚠️</span> 我卡住了 (回報卡點)
+                        </button>
+                    </div>
+
+                    <div id="blocker-form-wrap" class="hidden bg-slate-50 border border-slate-200 rounded-2xl p-6 mt-6 transition-all duration-300">
+                        <h4 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <span>🛠️</span> 填寫卡點回報單
+                        </h4>
+                        
+                        <div class="mb-4">
+                            <label class="block text-xs font-bold text-slate-600 mb-2">卡點類型</label>
+                            <select id="blocker-type" class="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white font-medium text-sm">
+                                <option value="concept">觀念不懂 (Concept Block)</option>
+                                <option value="debug">程式有 Bug / 寫不出來 (Coding/Debugging Block)</option>
+                                <option value="environment">環境問題 / 無法編譯 (Environment/Toolchain Block)</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-5">
+                            <label class="block text-xs font-bold text-slate-600 mb-2">告訴老師你卡在哪裡？ (遇到的錯誤、做了什麼嘗試)</label>
+                            <textarea id="blocker-note" placeholder="例：我執行 npm install 出現 node-gyp 權限錯誤，嘗試用 sudo 也無法解決..."
+                                class="w-full border border-slate-300 p-4 rounded-xl h-28 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"></textarea>
+                        </div>
+
+                        <div class="flex justify-end gap-3">
+                            <button onclick="toggleBlockerForm()" class="px-5 py-2 text-slate-500 hover:bg-slate-200 rounded-xl font-bold text-sm transition">取消</button>
+                            <button id="btn-submit-blocker" onclick="submitStudentBlockerAction()"
+                                class="px-6 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition font-bold shadow-md text-sm flex items-center gap-2">
+                                <span>🚀</span> 提交卡點
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Attempt Logger (visible for in_progress / blocked / coaching states)
+            let attemptSectionHtml = '';
+            if (learningState !== 'resolved') {
+                const currentAttempt = details.attemptSummary || '';
+                attemptSectionHtml = `
+                    <div class="border-t border-slate-200 mt-8 pt-8">
+                        <h4 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
+                            <span>📝</span> 學生嘗試紀錄 (Attempt Log / Debug 回放)
+                        </h4>
+                        <p class="text-xs text-slate-500 mb-4">請簡短記錄：你「做了什麼、遇到什麼錯、打算怎麼改」。這能幫助導師更準確地下對提示。</p>
+                        
+                        <div class="flex flex-col gap-3">
+                            <textarea id="attempt-summary" placeholder="例：我修改了 main.cpp 中的 wifi 連線 SSID，重新編譯後 Serial Port 輸出重啟循環錯誤，現在正嘗試加上 delay..."
+                                class="w-full border border-slate-300 p-4 rounded-xl h-24 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm">${escapeHtml(currentAttempt)}</textarea>
+                            
+                            <div class="flex justify-end">
+                                <button id="btn-submit-attempt" onclick="submitAttemptSummaryAction()"
+                                    class="py-2.5 px-6 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition shadow-md hover:shadow-lg active:scale-95 text-sm flex items-center gap-2">
+                                    <span>📝</span> 提交嘗試紀錄
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Inject combined HTML
+            hubContainer.innerHTML = `
+                <div class="flex items-center gap-3 border-b border-slate-200 pb-4 mb-6">
+                    <span class="text-2xl">🤝</span>
+                    <div>
+                        <h3 class="text-xl font-extrabold text-slate-800 font-[Outfit]">師生互動與卡點支援中心</h3>
+                        <p class="text-xs text-slate-500">此單元的即時輔導狀態與下一步行動指引</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center mt-6 mb-6">
+                    ${progressHtml}
+                </div>
+
+                ${blockerSectionHtml}
+
+                ${attemptSectionHtml}
+            `;
+        }
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                renderStudentInteractionHub(user);
+            } else {
+                const hub = document.getElementById('student-interaction-hub');
+                if (hub) hub.remove();
+            }
+        });
+
         console.log("[Firebase] Initialized.");
     `;
 

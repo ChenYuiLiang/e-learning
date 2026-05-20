@@ -1678,6 +1678,7 @@ exports.resolveAssignmentAccess = onCall(async (request) => {
 
     // [V17.0.1] Personalized Repository Check: If student already started, prioritize their personal repo
     let personalRepoUrl = null;
+    let assignmentDetails = null;
     if (assignmentId) {
         try {
             const assignmentDoc = await db.collection('assignments').doc(`${auth.uid}_${assignmentId}`).get();
@@ -1689,6 +1690,15 @@ exports.resolveAssignmentAccess = onCall(async (request) => {
                     personalRepoUrl = existingUrl;
                     console.log(`[resolveAssignmentAccess] Found personal repo for student: ${personalRepoUrl}`);
                 }
+                assignmentDetails = {
+                    learningState: aData.learningState || 'in_progress',
+                    latestBlocker: aData.latestBlocker || null,
+                    hintLevelUsed: aData.hintLevelUsed !== undefined ? aData.hintLevelUsed : null,
+                    nextAction: aData.nextAction || null,
+                    attemptSummary: aData.attemptSummary || null,
+                    grade: aData.grade !== undefined ? aData.grade : null,
+                    tutorFeedback: aData.tutorFeedback || null
+                };
             }
         } catch (e) {
             console.warn("[resolveAssignmentAccess] Failed to lookup personal repo:", e.message);
@@ -1702,7 +1712,8 @@ exports.resolveAssignmentAccess = onCall(async (request) => {
         assignedTutorEmail: assignedTutorEmail || null,
         canonicalUnitId,
         courseId: effectiveCourseId,
-        requiresTutorAssignment
+        requiresTutorAssignment,
+        assignmentDetails
     };
 });
 
@@ -2934,6 +2945,36 @@ exports.getDashboardData = onCall(async (request) => {
             }
         });
 
+        // 3.5 Fetch Active Interventions for Tutor / Admin Dashboard
+        let interventions = [];
+        const isTutorOrAdmin = requesterRole === 'admin' || hasQualifiedTutorStatus(userData);
+        if (isTutorOrAdmin) {
+            try {
+                const intSnapshot = await db.collection('assignment_interventions')
+                    .get();
+
+                intSnapshot.forEach(doc => {
+                    const intData = doc.data();
+                    const studentUid = intData.studentUid;
+                    const studentInfo = usersMap[studentUid] || {};
+
+                    // In-memory filter for tutor owned / unassigned
+                    if (requesterRole !== 'admin' && intData.ownerTutorEmail && intData.ownerTutorEmail !== email) {
+                        return; // Owned by another tutor
+                    }
+
+                    interventions.push({
+                        id: doc.id,
+                        ...intData,
+                        studentEmail: studentInfo.email || data.userEmail || data.studentEmail || (studentUid ? `User: ${studentUid.slice(0,8)}` : 'Unknown Student')
+                    });
+                });
+            } catch (intErr) {
+                console.warn("[getDashboardData] Failed to fetch assignment_interventions:", intErr.message);
+            }
+        }
+        result.interventions = interventions;
+
         // Summary
         const registeredUserStats = result.students;
         const paidStudentStats = result.students.filter(s => s.accountStatus === 'paid' && (s.role === 'user' || !s.role));
@@ -3125,6 +3166,7 @@ exports.submitAssignment = onCall(async (request) => {
             currentStatus: finalStatus,
             assignmentType: assignmentType || "manual",
             assignedTutorEmail,
+            learningState: existingDoc.exists ? (existingDoc.data().learningState || 'in_progress') : 'in_progress',
             updatedAt: admin.firestore.FieldValue.serverTimestamp()
         };
 
@@ -3199,7 +3241,9 @@ exports.ingestGithubAutograde = onRequest(async (req, res) => {
         const maxScoreRaw = payload.maxScore ?? payload.autoGrade?.maxScore ?? null;
         const score = Number(scoreRaw);
         const maxScore = maxScoreRaw !== null && maxScoreRaw !== undefined ? Number(maxScoreRaw) : null;
-        let resolvedDocId = assignmentDocId || (userId && assignmentId ? `${userId}_${assignmentId}` : null);
+
+        const effectiveUnitId = (unitIdFromPayload || assignmentId || "").replace(/\.html$/, "");
+        let resolvedDocId = assignmentDocId || (userId && effectiveUnitId ? `${userId}_${effectiveUnitId}` : null);
 
         const inferUnitIdFromRepo = (repoFullName = "") => {
             const repoName = String(repoFullName || "").split("/").pop() || "";
@@ -3281,7 +3325,7 @@ exports.ingestGithubAutograde = onRequest(async (req, res) => {
                     );
                     return res.status(409).json({
                         success: false,
-                        error: "Ambiguous assignment mapping. Please provide assignmentDocId or userId + unitId.",
+                        error: "Ambiguous assignment mapping. Please provide userId + unitId.",
                         inferredUnitId,
                         candidateCount: candidates.length,
                     });
@@ -3297,7 +3341,7 @@ exports.ingestGithubAutograde = onRequest(async (req, res) => {
             }
             return res.status(400).json({
                 success: false,
-                error: "Missing assignment identifier. Provide assignmentDocId or userId + unitId."
+                error: "Missing assignment identifier. Provide userId + unitId."
             });
         }
         if (!Number.isFinite(score)) {
@@ -3321,6 +3365,62 @@ exports.ingestGithubAutograde = onRequest(async (req, res) => {
         }
 
         const now = admin.firestore.Timestamp.now();
+        const assignmentData = assignmentDoc.data() || {};
+        const studentUid = assignmentData.userId || userId || resolvedDocId.split('_')[0];
+        const assignmentIdVal = assignmentData.assignmentId || effectiveUnitId;
+        const ownerTutorEmail = assignmentData.assignedTutorEmail || "";
+
+        let learningStateUpdate = null;
+
+        if (score < 70) {
+            // Check if there is an active intervention (status in ['open', 'in_progress'])
+            const interventionsSnap = await db.collection('assignment_interventions')
+                .where('assignmentId', '==', assignmentIdVal)
+                .where('studentUid', '==', studentUid)
+                .where('status', 'in', ['open', 'in_progress'])
+                .limit(1)
+                .get();
+
+            if (interventionsSnap.empty) {
+                // Create a new intervention task
+                const newInterventionRef = db.collection('assignment_interventions').doc();
+                await newInterventionRef.set({
+                    assignmentId: assignmentIdVal,
+                    studentUid,
+                    triggerScore: score,
+                    threshold: 70,
+                    status: 'open',
+                    ownerTutorEmail,
+                    createdAt: now,
+                    updatedAt: now
+                });
+            }
+            learningStateUpdate = 'blocked';
+        } else {
+            // score >= 70: resolve any open/in_progress interventions
+            const interventionsSnap = await db.collection('assignment_interventions')
+                .where('assignmentId', '==', assignmentIdVal)
+                .where('studentUid', '==', studentUid)
+                .where('status', 'in', ['open', 'in_progress'])
+                .get();
+
+            if (!interventionsSnap.empty) {
+                const batch = db.batch();
+                interventionsSnap.forEach(doc => {
+                    batch.update(doc.ref, {
+                        status: 'resolved',
+                        resolvedAt: now,
+                        updatedAt: now
+                    });
+                });
+                await batch.commit();
+            }
+            // If currently blocked, update to resolved; otherwise preserve coaching/resolved
+            if (assignmentData.learningState === 'blocked') {
+                learningStateUpdate = 'resolved';
+            }
+        }
+
         const autoGrade = {
             score,
             maxScore: Number.isFinite(maxScore) ? maxScore : null,
@@ -3335,7 +3435,7 @@ exports.ingestGithubAutograde = onRequest(async (req, res) => {
             updatedAt: now
         };
 
-        await assignmentRef.set({
+        const updatePayload = {
             autoGrade,
             autoGradeRaw: {
                 score: scoreRaw,
@@ -3351,27 +3451,47 @@ exports.ingestGithubAutograde = onRequest(async (req, res) => {
                 action: "AUTO_GRADE",
                 content: `GitHub auto-grade: ${score}${Number.isFinite(maxScore) ? `/${maxScore}` : ""}`
             })
-        }, { merge: true });
+        };
 
-        // Backfill GitHub Actions variable so future runs can always include assignmentDocId.
+        if (learningStateUpdate) {
+            updatePayload.learningState = learningStateUpdate;
+        }
+
+        await assignmentRef.set(updatePayload, { merge: true });
+
+        // Backfill GitHub Actions variables so future runs can always include userId and unitId.
         // This makes auto-grade write-back deterministic even if repo mapping is incomplete.
         try {
             const repoFullName = autoGrade.repository || repositoryFullName || "";
             const parts = String(repoFullName).split("/");
             if (parts.length === 2) {
                 const [owner, repo] = parts;
-                const upsertRes = await upsertGithubActionsVariable({
-                    owner,
-                    repo,
-                    name: "VC_ASSIGNMENT_DOC_ID",
-                    value: resolvedDocId
-                });
-                if (!upsertRes.ok) {
-                    console.warn("[ingestGithubAutograde] Failed to upsert VC_ASSIGNMENT_DOC_ID:", {
-                        repoFullName,
-                        resolvedDocId,
-                        upsertRes
+                const assignmentData = assignmentDoc.data() || {};
+                const backfillUserId = assignmentData.userId || userId;
+                const backfillUnitId = (assignmentData.unitId || unitIdFromPayload || assignmentId || "").replace(/\.html$/, "");
+                
+                if (backfillUserId && backfillUnitId) {
+                    const upsertUserRes = await upsertGithubActionsVariable({
+                        owner,
+                        repo,
+                        name: "VC_USER_ID",
+                        value: String(backfillUserId)
                     });
+                    const upsertUnitRes = await upsertGithubActionsVariable({
+                        owner,
+                        repo,
+                        name: "VC_UNIT_ID",
+                        value: String(backfillUnitId)
+                    });
+                    if (!upsertUserRes.ok || !upsertUnitRes.ok) {
+                        console.warn("[ingestGithubAutograde] Failed to backfill variables:", {
+                            repoFullName,
+                            backfillUserId,
+                            backfillUnitId,
+                            upsertUserRes,
+                            upsertUnitRes
+                        });
+                    }
                 }
             }
         } catch (varErr) {
@@ -4269,5 +4389,251 @@ exports.bindTutorByPromotionCode = onCall(async (request) => {
         console.error('bindTutorByPromotionCode failed:', error);
         if (error instanceof HttpsError) throw error;
         throw new HttpsError('internal', error.message);
+    }
+});
+
+// === Tutor x Student Interaction MVP Functions ===
+
+// 1. Submit Blocker (Student)
+exports.submitStudentBlocker = onCall(async (request) => {
+    const { data, auth } = request;
+    if (!auth) {
+        throw new HttpsError('unauthenticated', '請先登入');
+    }
+
+    const { assignmentId, blockerType, blockerNote } = data;
+    if (!assignmentId || !blockerType || !blockerNote) {
+        throw new HttpsError('invalid-argument', '缺少必要參數');
+    }
+
+    const userId = auth.uid;
+    const db = admin.firestore();
+    const docId = `${userId}_${assignmentId.replace(/\.html$/, '')}`;
+    const docRef = db.collection('assignments').doc(docId);
+
+    try {
+        const doc = await docRef.get();
+        if (!doc.exists) {
+            throw new HttpsError('not-found', '找不到作業紀錄');
+        }
+
+        const now = admin.firestore.Timestamp.now();
+        const blockerEntry = {
+            type: blockerType,
+            note: blockerNote,
+            createdAt: now
+        };
+
+        const historyEntry = {
+            timestamp: new Date().toISOString(),
+            action: 'BLOCKER_REPORTED',
+            content: `Student reported blocker: [${blockerType}] ${blockerNote}`
+        };
+
+        await docRef.update({
+            learningState: 'blocked',
+            latestBlocker: blockerEntry,
+            updatedAt: now,
+            submissionHistory: admin.firestore.FieldValue.arrayUnion(historyEntry)
+        });
+
+        return { success: true, message: '已成功標記卡點' };
+    } catch (e) {
+        console.error("submitStudentBlocker Error:", e);
+        if (e instanceof HttpsError) throw e;
+        throw new HttpsError('internal', '操作失敗，請稍後再試');
+    }
+});
+
+// 2. Submit Attempt Summary (Student)
+exports.submitAttemptSummary = onCall(async (request) => {
+    const { data, auth } = request;
+    if (!auth) {
+        throw new HttpsError('unauthenticated', '請先登入');
+    }
+
+    const { assignmentId, attemptSummary } = data;
+    if (!assignmentId || !attemptSummary) {
+        throw new HttpsError('invalid-argument', '缺少必要參數');
+    }
+
+    const userId = auth.uid;
+    const db = admin.firestore();
+    const docId = `${userId}_${assignmentId.replace(/\.html$/, '')}`;
+    const docRef = db.collection('assignments').doc(docId);
+
+    try {
+        const doc = await docRef.get();
+        if (!doc.exists) {
+            throw new HttpsError('not-found', '找不到作業紀錄');
+        }
+
+        const now = admin.firestore.Timestamp.now();
+        const historyEntry = {
+            timestamp: new Date().toISOString(),
+            action: 'ATTEMPT_LOGGED',
+            content: `Student logged attempt: ${attemptSummary}`
+        };
+
+        await docRef.update({
+            attemptSummary: attemptSummary,
+            updatedAt: now,
+            submissionHistory: admin.firestore.FieldValue.arrayUnion(historyEntry)
+        });
+
+        return { success: true, message: '嘗試紀錄提交成功！' };
+    } catch (e) {
+        console.error("submitAttemptSummary Error:", e);
+        if (e instanceof HttpsError) throw e;
+        throw new HttpsError('internal', '操作失敗，請稍後再試');
+    }
+});
+
+// 3. Resolve Blocker (Student or Tutor)
+exports.resolveStudentBlocker = onCall(async (request) => {
+    const { data, auth } = request;
+    if (!auth) {
+        throw new HttpsError('unauthenticated', '請先登入');
+    }
+
+    const { assignmentId, studentUid } = data;
+    if (!assignmentId) {
+        throw new HttpsError('invalid-argument', '缺少必要參數');
+    }
+
+    const db = admin.firestore();
+    const targetUid = studentUid || auth.uid;
+    
+    if (studentUid && studentUid !== auth.uid) {
+        const requesterUid = auth.uid;
+        const reqUserSnap = await db.collection('users').doc(requesterUid).get();
+        const reqUserData = reqUserSnap.data() || {};
+        const isRequesterAdmin = reqUserData.role === 'admin';
+        
+        let isTutor = false;
+        if (reqUserData.role === 'tutor' || reqUserData.tutorConfigs) {
+            isTutor = true;
+        }
+        
+        if (!isRequesterAdmin && !isTutor) {
+            throw new HttpsError('permission-denied', '您沒有權限解決此學生的卡點。');
+        }
+    }
+
+    const docId = `${targetUid}_${assignmentId.replace(/\.html$/, '')}`;
+    const docRef = db.collection('assignments').doc(docId);
+
+    try {
+        const doc = await docRef.get();
+        if (!doc.exists) {
+            throw new HttpsError('not-found', '找不到作業紀錄');
+        }
+
+        const now = admin.firestore.Timestamp.now();
+        const historyEntry = {
+            timestamp: new Date().toISOString(),
+            action: 'BLOCKER_RESOLVED',
+            content: `Blocker marked as resolved by ${studentUid ? 'Tutor' : 'Student'}`
+        };
+
+        await docRef.update({
+            learningState: 'in_progress',
+            latestBlocker: null,
+            updatedAt: now,
+            submissionHistory: admin.firestore.FieldValue.arrayUnion(historyEntry)
+        });
+
+        return { success: true, message: '已成功解決卡點！' };
+    } catch (e) {
+        console.error("resolveStudentBlocker Error:", e);
+        if (e instanceof HttpsError) throw e;
+        throw new HttpsError('internal', '操作失敗，請稍後再試');
+    }
+});
+
+// 4. Submit Tutor Coaching Log (Tutor/Admin)
+exports.submitTutorCoachingLog = onCall(async (request) => {
+    const { data, auth } = request;
+    if (!auth) {
+        throw new HttpsError('unauthenticated', '請先登入');
+    }
+
+    const { assignmentId, studentUid, hintLevel, blockerType, coachNote, nextAction } = data;
+    if (!assignmentId || !studentUid || hintLevel === undefined || !coachNote) {
+        throw new HttpsError('invalid-argument', '缺少必要參數');
+    }
+
+    const tutorEmail = auth.token.email;
+    const db = admin.firestore();
+    const docId = `${studentUid}_${assignmentId.replace(/\.html$/, '')}`;
+    const docRef = db.collection('assignments').doc(docId);
+
+    try {
+        const doc = await docRef.get();
+        if (!doc.exists) {
+            throw new HttpsError('not-found', '找不到該學生的作業紀錄');
+        }
+
+        const assignmentData = doc.data() || {};
+        const reqUserSnap = await db.collection('users').doc(auth.uid).get();
+        const reqUserData = reqUserSnap.data() || {};
+        const isRequesterAdmin = reqUserData.role === 'admin';
+        const isAssignedTutor = assignmentData.assignedTutorEmail === tutorEmail;
+
+        if (!isRequesterAdmin && !isAssignedTutor) {
+            throw new HttpsError('permission-denied', '您並非指派給此學生的導師，無法提交指導紀錄。');
+        }
+
+        const now = admin.firestore.Timestamp.now();
+
+        // 1. Create a log in assignment_coaching_logs
+        const coachingLogRef = db.collection('assignment_coaching_logs').doc();
+        await coachingLogRef.set({
+            assignmentId,
+            studentUid,
+            tutorEmail,
+            hintLevel: Number(hintLevel),
+            blockerType: blockerType || 'concept',
+            coachNote: coachNote,
+            createdAt: now
+        });
+
+        // 2. Update the assignment doc
+        const historyEntry = {
+            timestamp: new Date().toISOString(),
+            action: 'TUTOR_COACHED',
+            content: `Tutor logged coaching note (Hint Level: L${hintLevel}). Next action: ${nextAction || 'None'}`
+        };
+
+        await docRef.update({
+            learningState: 'coaching',
+            hintLevelUsed: Number(hintLevel),
+            nextAction: nextAction || '',
+            updatedAt: now,
+            submissionHistory: admin.firestore.FieldValue.arrayUnion(historyEntry)
+        });
+
+        // 3. Update active interventions
+        const interventionsSnap = await db.collection('assignment_interventions')
+            .where('assignmentId', '==', assignmentId)
+            .where('studentUid', '==', studentUid)
+            .where('status', 'in', ['open', 'in_progress'])
+            .get();
+
+        const batch = db.batch();
+        interventionsSnap.forEach(interventionDoc => {
+            batch.update(interventionDoc.ref, {
+                status: 'in_progress',
+                ownerTutorEmail: tutorEmail,
+                updatedAt: now
+            });
+        });
+        await batch.commit();
+
+        return { success: true, message: '指導紀錄已提交' };
+    } catch (e) {
+        console.error("submitTutorCoachingLog Error:", e);
+        if (e instanceof HttpsError) throw e;
+        throw new HttpsError('internal', '操作失敗，請稍後再試');
     }
 });

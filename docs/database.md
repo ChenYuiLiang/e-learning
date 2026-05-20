@@ -203,10 +203,10 @@
 
 ---
 
-## 11. 規劃中互動欄位 (Planned)
-以下欄位屬於 Tutor x Student 互動層 MVP 的規劃，請以實際部署版本為準。
+## 11. 師生互動與卡點支援欄位 (Active)
+以下為 Tutor x Student 互動層 MVP 實際啟用之資料欄位。
 
-### `assignments` 擴充（規劃）
+### `assignments` 擴充欄位
 | 欄位名稱 | 類型 | 說明 |
 | :--- | :--- | :--- |
 | `learningState` | string | 學習狀態：`new`, `in_progress`, `blocked`, `coaching`, `resolved`。 |
@@ -215,7 +215,7 @@
 | `attemptSummary` | string | 學生嘗試摘要。 |
 | `nextAction` | string | Tutor 指定下一步。 |
 
-### `assignment_coaching_logs`（新集合，規劃）
+### `assignment_coaching_logs` 集合 (歷史指導紀錄)
 | 欄位名稱 | 類型 | 說明 |
 | :--- | :--- | :--- |
 | `assignmentId` | string | 關聯作業。 |
@@ -223,14 +223,15 @@
 | `tutorEmail` | string | 指導導師。 |
 | `hintLevel` | number | 提示層級（`1/2/3`）。 |
 | `blockerType` | string | 卡點類型（`concept/debug/environment`）。 |
-| `coachNote` | string | 三段式教學回饋。 |
+| `coachNote` | string | 結構化教學回饋。 |
 | `createdAt` | timestamp | 建立時間。 |
 
-### `assignment_interventions`（新集合，規劃）
+### `assignment_interventions` 集合 (系統自動監控警示)
 | 欄位名稱 | 類型 | 說明 |
 | :--- | :--- | :--- |
 | `assignmentId` | string | 關聯作業。 |
 | `studentUid` | string | 學生 UID。 |
+| `studentEmail` | string | 學生 Email。 |
 | `triggerScore` | number | 觸發介入時分數。 |
 | `threshold` | number | 觸發門檻。 |
 | `status` | string | `open`, `in_progress`, `resolved`。 |

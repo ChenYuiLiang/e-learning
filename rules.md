@@ -184,4 +184,13 @@
 - **目標**: 杜絕環境漂移 (Environment Drift)，確保開發代理人 (AI Agent) 隨時能在最新的生產環境基礎上進行下一次迭代。
 
 ---
-*最後更新日期: 2026-05-13 (V15.7 - Documentation Audit & Core Component Sync)*
+
+## 8. GitHub 儲存庫維護與 Actions 規範 (GitHub Repo Operations)
+
+### 8-A. 批次修改與 Actions 安全機制 (Batch Repo Updates & Actions Protection)
+- **核心規則**: 當 AI 代理人 (Agent) 批次修改 `vibe-coding-template` 或 `vibe-coding-classroom` 組織底下的 GitHub 儲存庫時，**必須在執行任何檔案修改/新增/刪除前，先將相關儲存庫的 GitHub Actions 權限設定為 Disabled**。
+- **恢復機制**: 修改全部完成後，**必須立刻將 Actions 權限重新啟動 (Enabled)**，以確保學生作業的自動評分機制正常運作。
+- **目的**: 避免因批量推送代碼或變更檔案，觸發大量不必要的 GitHub Actions 工作流，造成 API 請求浪湧與資源耗損。
+
+---
+*最後更新日期: 2026-05-20 (V18.0 - Tutor Guide Migration & GitHub Actions Rule)*

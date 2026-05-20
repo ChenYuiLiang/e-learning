@@ -4,7 +4,7 @@
 讓每個課程單元以「整個 repository」為協作對象，持續改善教學與評分品質。  
 協作範圍包含：
 - `README.md`（學生任務與提交規範）
-- `tutor-guide.md` / `.github/tutor_guide.md`（導師引導與介入策略）
+- `tutor-guide.md`（導師引導與介入策略）
 - `test/`、`.github/workflows/`、範例程式與附件模板（驗收與教學支援）
 
 系統對應：
@@ -75,7 +75,7 @@ flowchart TD
 flowchart LR
     A["Unit Repo 改動提案"] --> B{"改動類型"}
     B --> C["README.md<br/>學生任務與提交規範"]
-    B --> D["tutor-guide.md / .github/tutor_guide.md<br/>導師引導與介入策略"]
+    B --> D["tutor-guide.md<br/>導師引導與介入策略"]
     B --> E["tests/ + .github/workflows/<br/>驗收與自動評分一致性"]
     B --> F["系統層變更<br/>Firestore / Dashboard / Webhook / 權限"]
 

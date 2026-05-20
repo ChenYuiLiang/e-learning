@@ -845,6 +845,9 @@ function renderAdminDashboard(data, filterUnitId = null) {
     loadingState.classList.add('hidden');
     dashboardContent.classList.remove('hidden');
 
+    // [NEW] Render Tutor / Admin Intervention & Blocker alerts
+    renderTutorAlerts(data);
+
     // Tab Buttons
     const assignmentsTabBtn = document.getElementById('tab-btn-assignments');
     const adminTabBtn = document.getElementById('tab-btn-admin');
@@ -1405,9 +1408,12 @@ function isAssignmentGraded(assignment) {
 }
 
 function resolveAssignmentStatusLabel(status) {
-    if (status === 'started') return '進行中';
+    if (status === 'started' || status === 'in_progress') return '進行中';
     if (status === 'submitted') return '待評分';
     if (status === 'graded') return '已評分';
+    if (status === 'blocked') return '🔴 遭遇卡點';
+    if (status === 'coaching') return '🟡 導師引導中';
+    if (status === 'resolved') return '🟢 已解決';
     return status || 'new';
 }
 
@@ -1417,7 +1423,7 @@ window.renderAssignmentsTable = window.renderAssignmentsTable || function(assign
     
     // logic constants
     const showActionCol = false;
-    const clickAction = 'url';
+    const clickAction = canManageAssignments ? 'modal' : 'url';
 
     if (!assignments || assignments.length === 0) {
         const emptyMsg = `<tr><td colspan="${showActionCol ? 6 : 5}" class="text-center py-8 text-gray-400">尚無作業繳交紀錄</td></tr>`;
@@ -1434,13 +1440,14 @@ window.renderAssignmentsTable = window.renderAssignmentsTable || function(assign
             else submittedDate = new Date(ts).toLocaleString();
         }
 
-        const currentStatus = a.currentStatus || a.status || 'new';
+        const currentStatus = a.learningState || a.currentStatus || a.status || 'new';
         const normalizedStatus = isAssignmentGraded(a) ? 'graded' : currentStatus;
-        const badgeColor = normalizedStatus === 'submitted'
-            ? 'bg-yellow-100 text-yellow-800'
-            : (normalizedStatus === 'graded'
-                ? 'bg-green-100 text-green-800'
-                : (normalizedStatus === 'started' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100'));
+        let badgeColor = 'bg-gray-100 text-gray-800';
+        if (normalizedStatus === 'submitted') badgeColor = 'bg-yellow-100 text-yellow-800 border border-yellow-200';
+        else if (normalizedStatus === 'graded' || normalizedStatus === 'resolved') badgeColor = 'bg-green-100 text-green-800 border border-green-200';
+        else if (normalizedStatus === 'started' || normalizedStatus === 'in_progress') badgeColor = 'bg-blue-100 text-blue-800 border border-blue-200';
+        else if (normalizedStatus === 'blocked') badgeColor = 'bg-red-100 text-red-800 border border-red-200 animate-pulse';
+        else if (normalizedStatus === 'coaching') badgeColor = 'bg-amber-100 text-amber-800 border border-amber-200';
         const badge = `<span class="${badgeColor} px-2 py-0.5 rounded text-[10px] font-bold">${resolveAssignmentStatusLabel(normalizedStatus)}</span>`;
 
         // Determine Row Onclick logic
@@ -1517,7 +1524,7 @@ async function vibeRefreshReadmeContent(filterUnitId) {
 
             if (isSettingsTab) {
                 // [V17.0.5] SETTINGS TAB: Prioritized Fetching (Tutor Guide Focus)
-                const possibleFiles = ['.github/tutor_guide.md', 'tutor_guide.md', 'tutor-guide.md', 'README.md'];
+                const possibleFiles = ['tutor-guide.md', '.github/tutor_guide.md', 'tutor_guide.md', 'README.md'];
                 
                 for (const fileName of possibleFiles) {
                     const fileUrl = `https://raw.githubusercontent.com/${GITHUB_ORG}/${repoName}/main/${fileName}`;
@@ -1901,6 +1908,75 @@ window.renderAdminConsole = window.renderAdminConsole || function() {
         `;
     }
 
+    // Admin Coaching Metrics calculations
+    const rawInts = dashboardData?.interventions || [];
+    const totalInts = rawInts.length;
+    const resolvedInts = rawInts.filter(i => i.status === 'resolved').length;
+    const openInts = rawInts.filter(i => i.status === 'open' || i.status === 'in_progress').length;
+    const completionRate = totalInts > 0 ? ((resolvedInts / totalInts) * 100).toFixed(0) : 100;
+
+    const blockerCounts = { concept: 0, debug: 0, environment: 0, other: 0 };
+    (dashboardData?.assignments || []).forEach(a => {
+        if (a.learningState === 'blocked' && a.latestBlocker?.type) {
+            const t = a.latestBlocker.type;
+            if (blockerCounts[t] !== undefined) {
+                blockerCounts[t]++;
+            } else {
+                blockerCounts.other++;
+            }
+        }
+    });
+
+    const metricsHtml = `
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <!-- Intervention Completion Rate -->
+            <div class="bg-indigo-50 border border-indigo-100 rounded-3xl p-6 shadow-sm flex items-center justify-between">
+                <div>
+                    <h5 class="text-xs font-extrabold text-indigo-900/60 uppercase tracking-wider mb-2">自動介入處置率</h5>
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-3xl font-black text-indigo-950">${completionRate}%</span>
+                        <span class="text-xs text-indigo-700/70 font-semibold">(${resolvedInts}/${totalInts} 已解決)</span>
+                    </div>
+                </div>
+                <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-xl">🎯</div>
+            </div>
+
+            <!-- Active Interventions -->
+            <div class="bg-rose-50 border border-rose-100 rounded-3xl p-6 shadow-sm flex items-center justify-between">
+                <div>
+                    <h5 class="text-xs font-extrabold text-rose-900/60 uppercase tracking-wider mb-2">待處理自動監控</h5>
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-3xl font-black text-rose-950">${openInts}</span>
+                        <span class="text-xs text-rose-700/70 font-semibold">個未關閉警示</span>
+                    </div>
+                </div>
+                <div class="w-12 h-12 rounded-2xl bg-rose-500/10 flex items-center justify-center text-xl">🚨</div>
+            </div>
+
+            <!-- Blocker Distribution -->
+            <div class="bg-amber-50 border border-amber-100 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-2">
+                    <h5 class="text-xs font-extrabold text-amber-900/60 uppercase tracking-wider">即時學生卡點分布</h5>
+                    <div class="w-8 h-8 rounded-xl bg-amber-500/10 flex items-center justify-center text-sm">💡</div>
+                </div>
+                <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                    <div class="bg-white/80 rounded-xl p-2 border border-amber-100/50">
+                        <div class="text-[10px] text-amber-800 font-bold">觀念不懂</div>
+                        <div class="text-base font-black text-amber-950 mt-0.5">${blockerCounts.concept}</div>
+                    </div>
+                    <div class="bg-white/80 rounded-xl p-2 border border-amber-100/50">
+                        <div class="text-[10px] text-amber-800 font-bold">程式 Bug</div>
+                        <div class="text-base font-black text-amber-950 mt-0.5">${blockerCounts.debug}</div>
+                    </div>
+                    <div class="bg-white/80 rounded-xl p-2 border border-amber-100/50">
+                        <div class="text-[10px] text-amber-800 font-bold">環境問題</div>
+                        <div class="text-base font-black text-amber-950 mt-0.5">${blockerCounts.environment}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
     let html = `
         ${pendingHtml}
         <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
@@ -1911,6 +1987,7 @@ window.renderAdminConsole = window.renderAdminConsole || function() {
 
             <p id="admin-msg" class="text-sm font-bold text-orange-600 animate-pulse"></p>
         </div>
+        ${metricsHtml}
     `;
 
     try {
@@ -2152,9 +2229,12 @@ window.vibeInjectAdminTutorModeToggle = function() {
 function resolveUnitGuideExternalUrl(guideType = 'assignment') {
     const unitId = (filterUnitId || "").trim();
     if (!unitId) return "";
-    const hash = guideType === 'tutor' ? 'tutor-guide' : 'assignment-guide';
-    const origin = (window.location && window.location.origin) ? window.location.origin : 'https://vibe-coding.tw';
-    return `${origin}/${unitId}#${hash}`;
+    const repoName = unitId.replace(/\.html$/, '');
+    const org = 'vibe-coding-template';
+    if (guideType === 'tutor') {
+        return `https://github.com/${org}/${repoName}/blob/main/.github/tutor_guide.md`;
+    }
+    return `https://github.com/${org}/${repoName}/blob/main/README.md`;
 }
 
 function upsertHeaderExternalLink(headerEl, guideType) {
@@ -2355,6 +2435,49 @@ window.setupGradingFunctions = window.setupGradingFunctions || function() {
         }).join('');
 
         historyContainer.innerHTML = historyMap || '<p class="text-gray-400 text-center">No history</p>';
+
+        // Populate Blocker info
+        const blockerBox = document.getElementById('student-blocker-info-box');
+        const blockerBadge = document.getElementById('student-blocker-type-badge');
+        const blockerText = document.getElementById('student-blocker-note-text');
+        if (blockerBox && blockerBadge && blockerText) {
+            const hasBlocker = assignment.learningState === 'blocked' || assignment.learningState === 'coaching';
+            if (hasBlocker && assignment.latestBlocker) {
+                const typeMap = { concept: '觀念不懂', debug: '程式 Bug', environment: '環境問題' };
+                blockerBadge.innerText = typeMap[assignment.latestBlocker.type] || '一般卡點';
+                blockerText.innerText = assignment.latestBlocker.note || '無說明';
+                blockerBox.classList.remove('hidden');
+                
+                // Pre-fill blocker type helper dropdown
+                const coachBlockerType = document.getElementById('coach-blocker-type');
+                if (coachBlockerType && assignment.latestBlocker.type) {
+                    coachBlockerType.value = assignment.latestBlocker.type;
+                }
+            } else {
+                blockerBox.classList.add('hidden');
+            }
+        }
+
+        // Populate Attempt info
+        const attemptBox = document.getElementById('student-attempt-info-box');
+        const attemptText = document.getElementById('student-attempt-text');
+        if (attemptBox && attemptText) {
+            if (assignment.attemptSummary) {
+                attemptText.innerText = assignment.attemptSummary;
+                attemptBox.classList.remove('hidden');
+            } else {
+                attemptBox.classList.add('hidden');
+            }
+        }
+
+        // Populate Coaching Form Inputs
+        const coachHintLevel = document.getElementById('coach-hint-level');
+        const coachNextAction = document.getElementById('coach-next-action');
+        const coachAdviceNote = document.getElementById('coach-advice-note');
+        if (coachHintLevel) coachHintLevel.value = assignment.hintLevelUsed !== undefined && assignment.hintLevelUsed !== null ? assignment.hintLevelUsed : '1';
+        if (coachNextAction) coachNextAction.value = assignment.nextAction || '';
+        if (coachAdviceNote) coachAdviceNote.value = assignment.tutorFeedback || '';
+
         refreshTutorRecommendationUI(assignment);
 
         modal.classList.remove('hidden');
@@ -2412,6 +2535,53 @@ window.setupGradingFunctions = window.setupGradingFunctions || function() {
         } finally {
             submitBtn.disabled = false;
             submitBtn.textContent = '送出評分';
+        }
+    };
+
+    window.submitTutorCoachingLogAction = async function () {
+        const idInput = document.getElementById('grade-assignment-id');
+        const hintLevel = document.getElementById('coach-hint-level').value;
+        const blockerType = document.getElementById('coach-blocker-type').value;
+        const nextAction = document.getElementById('coach-next-action').value;
+        const advice = document.getElementById('coach-advice-note').value;
+        const submitBtn = document.getElementById('btn-submit-coaching');
+
+        if (!idInput || !submitBtn) {
+            alert('系統錯誤：找不到評分表單元素');
+            return;
+        }
+
+        const id = idInput.value;
+        if (!advice) {
+            alert('請輸入指導回饋指引！');
+            return;
+        }
+        if (!nextAction) {
+            alert('請指派下一步目標！');
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = '送出中...';
+
+        try {
+            const submitCoachingLog = httpsCallable(functions, 'submitTutorCoachingLog');
+            await submitCoachingLog({
+                assignmentId: id,
+                blockerType: blockerType,
+                hintLevel: parseInt(hintLevel),
+                tutorFeedback: advice,
+                nextAction: nextAction
+            });
+            alert('指導紀錄提交成功！');
+            closeGradingModal();
+            loadDashboard(); // Refresh list
+        } catch (e) {
+            console.error(e);
+            alert('提交指導紀錄失敗：' + e.message);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '送出指導紀錄 (切換為引導中)';
         }
     };
 
@@ -3423,4 +3593,123 @@ async function loadMarkdown(url) {
             <p class="opacity-75">${e.message}</p>
         </div>`;
     }
+}
+
+function renderTutorAlerts(data) {
+    const container = document.getElementById('tutor-alerts-container');
+    if (!container) return;
+
+    const interventions = (data.interventions || []).filter(i => i.status === 'open' || i.status === 'in_progress');
+    const assignments = data.assignments || [];
+    
+    // Find all assignments with learningState === 'blocked'
+    const blockedAssignments = assignments.filter(a => a.learningState === 'blocked');
+
+    if (interventions.length === 0 && blockedAssignments.length === 0) {
+        container.innerHTML = '';
+        container.classList.add('hidden');
+        return;
+    }
+
+    container.classList.remove('hidden');
+
+    let html = `
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <h3 class="text-sm font-extrabold text-slate-800 mb-4 flex items-center gap-2">
+                <span>🔔</span> 師生互動與即時卡點支援看板 (Intervention Dashboard)
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    `;
+
+    // Render Intervention Alerts (Left Column)
+    html += `
+        <div class="space-y-3">
+            <h4 class="text-xs font-bold text-red-600 uppercase tracking-wider flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                <span>系統自動監控警示 (Auto-Interventions)</span>
+            </h4>
+    `;
+
+    if (interventions.length === 0) {
+        html += `<p class="text-xs text-slate-400 italic bg-white border border-slate-100 p-4 rounded-xl">目前沒有自動監控警示紀錄</p>`;
+    } else {
+        html += interventions.map(item => {
+            const timeStr = item.createdAt ? new Date(item.createdAt.seconds * 1000).toLocaleString() : 'N/A';
+            return `
+                <div class="bg-red-55 border border-red-100 rounded-xl p-4 flex flex-col justify-between hover:shadow transition">
+                    <div>
+                        <div class="flex justify-between items-start gap-2 mb-1.5">
+                            <span class="text-xs font-black text-slate-800 truncate">${escapeHtml(item.studentEmail)}</span>
+                            <span class="text-[9px] text-slate-400 font-medium whitespace-nowrap">${timeStr}</span>
+                        </div>
+                        <div class="text-[10px] text-slate-500 capitalize mb-2">
+                            單元：${escapeHtml(item.unitId ? item.unitId.replace('.html', '').replace(/-/g, ' ') : 'N/A')}
+                        </div>
+                        <div class="text-xs text-red-700 bg-white/70 p-2.5 rounded-lg border border-red-50/50 mb-3">
+                            <strong>原因：</strong> ${escapeHtml(item.triggerReason || '評分低於門檻')}
+                        </div>
+                    </div>
+                    <div class="flex justify-end">
+                        <button onclick="window.openGradingModal('${item.studentUid}_${item.assignmentId.replace('.html','')}')"
+                            class="px-4 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold text-xs shadow transition active:scale-95">
+                            🧑‍💻 開始引導
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    html += `</div>`; // End of Left Column
+
+    // Render Student Blockers (Right Column)
+    html += `
+        <div class="space-y-3">
+            <h4 class="text-xs font-bold text-amber-600 uppercase tracking-wider flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+                <span>學生主動回報卡點 (Student Blockers)</span>
+            </h4>
+    `;
+
+    if (blockedAssignments.length === 0) {
+        html += `<p class="text-xs text-slate-400 italic bg-white border border-slate-100 p-4 rounded-xl">目前沒有學生回報卡點</p>`;
+    } else {
+        html += blockedAssignments.map(a => {
+            const timeStr = a.updatedAt ? new Date(a.updatedAt.seconds ? a.updatedAt.seconds * 1000 : a.updatedAt).toLocaleString() : 'N/A';
+            const blockerTypeMap = { concept: '觀念不懂', debug: '程式 Bug', environment: '環境問題' };
+            const typeLabel = blockerTypeMap[a.latestBlocker?.type] || '一般卡點';
+            return `
+                <div class="bg-amber-55 border border-amber-100 rounded-xl p-4 flex flex-col justify-between hover:shadow transition">
+                    <div>
+                        <div class="flex justify-between items-start gap-2 mb-1.5">
+                            <span class="text-xs font-black text-slate-800 truncate">${escapeHtml(a.studentEmail || a.userEmail)}</span>
+                            <span class="text-[9px] text-slate-400 font-medium whitespace-nowrap">${timeStr}</span>
+                        </div>
+                        <div class="text-[10px] text-slate-500 capitalize mb-1">
+                            單元：${escapeHtml(a.unitId ? a.unitId.replace('.html', '').replace(/-/g, ' ') : 'N/A')}
+                        </div>
+                        <div class="mb-2"><span class="px-2 py-0.5 rounded text-[9px] font-bold bg-amber-100 border border-amber-300 text-amber-800">${typeLabel}</span></div>
+                        <div class="text-xs text-slate-700 bg-white/70 p-2.5 rounded-lg border border-amber-50/50 mb-3 whitespace-pre-wrap truncate max-h-[80px]">
+                            ${escapeHtml(a.latestBlocker?.note || '無詳細說明')}
+                        </div>
+                    </div>
+                    <div class="flex justify-end">
+                        <button onclick="window.openGradingModal('${a.id}')"
+                            class="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-bold text-xs shadow transition active:scale-95">
+                            💡 給予指導
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    html += `</div>`; // End of Right Column
+
+    html += `
+            </div>
+        </div>
+    `;
+
+    container.innerHTML = html;
 }
