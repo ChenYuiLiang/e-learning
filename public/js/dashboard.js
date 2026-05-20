@@ -1517,6 +1517,11 @@ async function vibeRefreshReadmeContent(filterUnitId) {
     try {
         const repoName = filterUnitId.replace(/\.html$/, '');
         const GITHUB_ORG = 'vibe-coding-template';
+        const { filterCourseId } = getCurrentDashboardContext();
+        const currentCourseId = filterCourseId || findParentCourseIdByUnit(filterUnitId);
+        const guideConfig = getCourseGuideConfig(currentCourseId);
+        const guideData = robustExtractGuideSegments(guideConfig?.tutorGuide, guideConfig?.assignmentGuide);
+        const embeddedAssignmentGuide = guideData?.assignmentGuides?.[filterUnitId] || "";
 
         for (const placeholder of readmePlaceholders) {
             const isSettingsTab = placeholder.id === 'github-readme-placeholder-settings';
@@ -1539,12 +1544,17 @@ async function vibeRefreshReadmeContent(filterUnitId) {
                     }
                 }
             } else {
-                // [V17.0.5] ASSIGNMENT TAB: Directly use README.md
-                const readmeUrl = `https://raw.githubusercontent.com/${GITHUB_ORG}/${repoName}/main/README.md`;
-                console.log(`[V17.0.5] AssignmentTab attempting: ${readmeUrl}`);
-                
-                placeholder.innerHTML = `<div class="flex items-center gap-3 text-slate-400 italic"><span class="animate-pulse">⏳</span> 正在抓取任務說明 (README.md)...</div>`;
-                markdownHtml = await loadMarkdown(readmeUrl);
+                // [V17.1] ASSIGNMENT TAB: prefer assignment-guide from private_courses, fallback to README.md
+                if (embeddedAssignmentGuide) {
+                    markdownHtml = embeddedAssignmentGuide;
+                    console.log(`[V17.1] AssignmentTab using embedded assignment-guide for unit: ${filterUnitId}`);
+                } else {
+                    const readmeUrl = `https://raw.githubusercontent.com/${GITHUB_ORG}/${repoName}/main/README.md`;
+                    console.log(`[V17.1] AssignmentTab fallback to README: ${readmeUrl}`);
+                    
+                    placeholder.innerHTML = `<div class="flex items-center gap-3 text-slate-400 italic"><span class="animate-pulse">⏳</span> 正在抓取任務說明 (README.md)...</div>`;
+                    markdownHtml = await loadMarkdown(readmeUrl);
+                }
             }
 
             // Final Injection
@@ -1734,7 +1744,14 @@ window.switchTab = function (tabName) {
         }
         console.log("[DebugTab] tab assignments: Final count to render:", displayAssignments.length);
 
-        renderAssignments(displayAssignments, "", { showGuide: false });
+        let assignmentGuideContent = "";
+        if (filterUnitId) {
+            const currentCourseId = filterCourseId || findParentCourseIdByUnit(filterUnitId);
+            const guideConfig = getCourseGuideConfig(currentCourseId);
+            const guideData = robustExtractGuideSegments(guideConfig.tutorGuide, guideConfig.assignmentGuide);
+            assignmentGuideContent = guideData.assignmentGuides[filterUnitId] || "";
+        }
+        renderAssignments(displayAssignments, assignmentGuideContent, { showGuide: !!assignmentGuideContent });
     }
     if (tabName === 'admin') {
         renderAdminConsole();
@@ -2229,12 +2246,9 @@ window.vibeInjectAdminTutorModeToggle = function() {
 function resolveUnitGuideExternalUrl(guideType = 'assignment') {
     const unitId = (filterUnitId || "").trim();
     if (!unitId) return "";
-    const repoName = unitId.replace(/\.html$/, '');
-    const org = 'vibe-coding-template';
-    if (guideType === 'tutor') {
-        return `https://github.com/${org}/${repoName}/blob/main/.github/tutor_guide.md`;
-    }
-    return `https://github.com/${org}/${repoName}/blob/main/README.md`;
+    const hash = guideType === 'tutor' ? 'tutor-guide' : 'assignment-guide';
+    const origin = (window.location && window.location.origin) ? window.location.origin : 'https://vibe-coding.tw';
+    return `${origin}/${unitId}#${hash}`;
 }
 
 function upsertHeaderExternalLink(headerEl, guideType) {

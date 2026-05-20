@@ -922,8 +922,17 @@ async function initFirebaseFeatures() {
                 document.head.appendChild(style);
             }
             const removeDashboardFab = () => {
-                const fab = document.getElementById('dashboard-fab');
-                if (fab) fab.remove();
+                const removeFromDoc = (doc) => {
+                    if (!doc) return;
+                    const fab = doc.getElementById('dashboard-fab');
+                    if (fab) fab.remove();
+                };
+                removeFromDoc(document);
+                try {
+                    if (window.parent && window.parent !== window && window.parent.document) {
+                        removeFromDoc(window.parent.document);
+                    }
+                } catch (_) {}
             };
             removeDashboardFab();
             window.addEventListener('DOMContentLoaded', removeDashboardFab);
@@ -935,6 +944,14 @@ async function initFirebaseFeatures() {
                     removeDashboardFab();
                 });
                 observer.observe(document.body, { childList: true, subtree: true });
+                try {
+                    if (window.parent && window.parent !== window && window.parent.document && window.parent.document.body) {
+                        const parentObserver = new MutationObserver(() => {
+                            removeDashboardFab();
+                        });
+                        parentObserver.observe(window.parent.document.body, { childList: true, subtree: true });
+                    }
+                } catch (_) {}
                 window.__dashboardFabObserverInstalled = true;
             }
 
