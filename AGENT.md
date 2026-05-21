@@ -3,6 +3,8 @@
 本文件定義本專案中所有 AI 代理人與自動化流程必須遵守的專案級規則。
 所有 agent 在讀取、修改、部署或評估代碼前，必須先參考此文件。
 
+> **全域規則**：`~/.gemini/GEMINI.md` 定義了跨所有專案的通用規則（Conventional Commits、[skip ci] 規範、enrich_guides 協議等），本文件為專案專屬的補充規範，兩者並行適用。
+
 ---
 
 ## 1. 代理人使用規則
@@ -102,10 +104,19 @@
 
 ## 9. GitHub Repo 與 Actions 規則
 
-- 針對 `vibe-coding-template` 或 `vibe-coding-classroom` 下的儲存庫執行批次修改時，
-  - 變更前先暫時 disable GitHub Actions 權限。
-  - 變更後立即 restore Actions。
+- Push 到 **`vibe-coding-classroom/*`** 下的任何 repo 時：
+  - commit message **必須**包含 `[skip ci]`，避免觸發無學生提交檔案的 workflow。
+- Push 到 **`vibe-coding-template/*`** 下的任何 repo 時：
+  - commit message **必須**包含 `[skip ci]`，避免觸發 `classroom.yml` / `autograde-sync-vibe-coding.yml`。
 - 避免自動化推送觸發大量不必要的 workflow 執行。
+
+```
+# ✅ 正確
+git commit -m "docs: update README [skip ci]"
+
+# ❌ 錯誤 — 會觸發 Actions 並造成失敗
+git commit -m "docs: update README"
+```
 
 ---
 
