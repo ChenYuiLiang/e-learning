@@ -1,723 +1,327 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UI 佈局：HTML 按鈕與 CSS 控制面板 - Vibe Coding Learn</title>
+    <title>UI 佈局：HTML 按鈕與 CSS 控制面板 - Vibe Coding</title>
+    <link rel="stylesheet" href="/style.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
-    <style>
-        :root {
-            --ms-blue: #0078d4;
-            --ms-blue-dark: #005a9e;
-            --ms-blue-light: #deecf9;
-            --ms-green: #107c10;
-            --ms-red: #d13438;
-            --sidebar-w: 280px;
-        }
-        * { box-sizing: border-box; }
-        body { font-family: 'Inter','Segoe UI',sans-serif; background:#fff; color:#201f1e; margin:0; font-size:15px; line-height:1.6; }
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
-        /* NAV */
-        .ms-topnav { background:var(--ms-blue); height:48px; display:flex; align-items:center; padding:0 20px; gap:16px; position:sticky; top:0; z-index:100; box-shadow:0 1px 4px rgba(0,0,0,.2); }
-        .ms-topnav .brand { color:#fff; font-weight:600; font-size:15px; display:flex; align-items:center; gap:8px; text-decoration:none; }
-        .ms-topnav .divider { width:1px; height:20px; background:rgba(255,255,255,.3); }
-        .ms-topnav .nav-label { color:rgba(255,255,255,.9); font-size:14px; }
-
-        /* LAYOUT */
-        .ms-layout { display:flex; min-height:calc(100vh - 48px); }
-
-        /* SIDEBAR */
-        .ms-sidebar { width:var(--sidebar-w); flex-shrink:0; background:#faf9f8; border-right:1px solid #e1dfdd; display:flex; flex-direction:column; position:sticky; top:48px; height:calc(100vh - 48px); overflow-y:auto; }
-        .ms-sidebar-header { padding:16px 16px 12px; border-bottom:1px solid #e1dfdd; }
-        .ms-sidebar-header .module-label { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:#605e5c; font-weight:600; margin-bottom:4px; }
-        .ms-sidebar-header .module-title { font-size:13px; font-weight:600; color:#201f1e; line-height:1.4; }
-        .ms-sidebar-header .meta { font-size:12px; color:#605e5c; margin-top:6px; }
-        .ms-unit-list { padding:8px 0; }
-        .ms-unit-item { display:flex; align-items:flex-start; gap:10px; padding:8px 16px; cursor:pointer; border-left:3px solid transparent; transition:background .12s,border-color .12s; color:#201f1e; }
-        .ms-unit-item:hover { background:#edebe9; }
-        .ms-unit-item.active { border-left-color:var(--ms-blue); background:#deecf9; }
-        .ms-unit-item.active .unit-name { color:var(--ms-blue); font-weight:600; }
-        .unit-icon { width:20px; height:20px; border-radius:50%; border:2px solid #c8c6c4; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; font-size:10px; background:#fff; }
-        .unit-icon.done { background:var(--ms-green); border-color:var(--ms-green); color:#fff; }
-        .unit-icon.active-icon { border-color:var(--ms-blue); background:var(--ms-blue); color:#fff; }
-        .unit-meta { flex:1; min-width:0; }
-        .unit-name { font-size:13px; line-height:1.4; }
-        .unit-time { font-size:11px; color:#605e5c; margin-top:2px; }
-        .sidebar-progress { padding:12px 16px; border-top:1px solid #e1dfdd; margin-top:auto; }
-        .progress-bar-bg { background:#e1dfdd; border-radius:4px; height:6px; }
-        .progress-bar-fill { background:var(--ms-green); border-radius:4px; height:6px; transition:width .4s; }
-        .progress-text { font-size:12px; color:#605e5c; margin-top:6px; }
-
-        /* MAIN */
-        .ms-content { flex:1; min-width:0; }
-        .ms-breadcrumb { padding:10px 40px; font-size:12px; color:#605e5c; border-bottom:1px solid #e1dfdd; background:#fff; }
-        .ms-breadcrumb a { color:var(--ms-blue); text-decoration:none; }
-        .ms-breadcrumb a:hover { text-decoration:underline; }
-        .ms-breadcrumb span { margin:0 6px; }
-
-        /* PAGES */
-        .ms-unit-page { display:none; }
-        .ms-unit-page.visible { display:block; }
-        .unit-content { max-width:820px; padding:32px 40px 60px; margin:0 auto; }
-        .unit-status-bar { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; padding-bottom:20px; border-bottom:1px solid #e1dfdd; }
-        .unit-completed-badge { display:flex; align-items:center; gap:6px; background:#dff6dd; color:#107c10; font-size:12px; font-weight:600; padding:4px 10px; border-radius:2px; }
-        .unit-time-badge { display:flex; align-items:center; gap:5px; color:#605e5c; font-size:13px; }
-
-        /* TYPOGRAPHY */
-        .unit-content h1 { font-size:28px; font-weight:700; margin:0 0 20px; color:#201f1e; line-height:1.3; }
-        .unit-content h2 { font-size:20px; font-weight:600; margin:36px 0 12px; color:#201f1e; padding-top:8px; }
-        .unit-content h3 { font-size:16px; font-weight:600; margin:24px 0 8px; color:#201f1e; }
-        .unit-content p { margin:0 0 14px; }
-        .unit-content ul, .unit-content ol { margin:0 0 14px; padding-left:28px; }
-        .unit-content li { margin-bottom:6px; }
-        .unit-content strong { font-weight:600; }
-        .unit-content a { color:var(--ms-blue); text-decoration:none; }
-        .unit-content a:hover { text-decoration:underline; }
-        .unit-content code { background:#f3f2f1; border:1px solid #e1dfdd; border-radius:3px; padding:1px 6px; font-family:'Consolas','Courier New',monospace; font-size:13px; color:#a31515; }
-
-        /* CALLOUTS */
-        .ms-note,.ms-tip,.ms-warning,.ms-important { display:flex; gap:12px; padding:12px 16px; border-radius:4px; margin:20px 0; border-left:4px solid; font-size:14px; }
-        .ms-note { background:#deecf9; border-color:var(--ms-blue); }
-        .ms-note .note-icon { color:var(--ms-blue); font-size:16px; flex-shrink:0; margin-top:1px; }
-        .ms-tip { background:#dff6dd; border-color:var(--ms-green); }
-        .ms-tip .note-icon { color:var(--ms-green); font-size:16px; flex-shrink:0; margin-top:1px; }
-        .ms-warning { background:#fff4ce; border-color:#ffaa44; }
-        .ms-warning .note-icon { color:#ffaa44; font-size:16px; flex-shrink:0; margin-top:1px; }
-        .ms-important { background:#fde7e9; border-color:var(--ms-red); }
-        .ms-important .note-icon { color:var(--ms-red); font-size:16px; flex-shrink:0; margin-top:1px; }
-        .note-body strong { display:block; margin-bottom:4px; font-size:13px; text-transform:uppercase; letter-spacing:.04em; }
-
-        /* SCENARIO */
-        .ms-scenario { background:#f3f2f1; border-radius:4px; padding:20px 24px; margin:20px 0; font-style:italic; color:#323130; border-left:4px solid #c8c6c4; }
-        .ms-scenario-label { font-style:normal; font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:#605e5c; margin-bottom:8px; }
-
-        /* STEPS */
-        .ms-steps { margin:16px 0; }
-        .ms-step { display:flex; gap:16px; margin-bottom:20px; align-items:flex-start; }
-        .ms-step-num { width:28px; height:28px; border-radius:50%; background:var(--ms-blue); color:#fff; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-        .ms-step-body { flex:1; }
-        .ms-step-body h4 { font-size:14px; font-weight:600; margin:0 0 4px; }
-        .ms-step-body p { font-size:14px; margin:0; }
-
-        /* TABLE */
-        .ms-table { width:100%; border-collapse:collapse; margin:16px 0; font-size:14px; }
-        .ms-table th { background:#f3f2f1; font-weight:600; text-align:left; padding:10px 14px; border:1px solid #e1dfdd; color:#323130; }
-        .ms-table td { padding:9px 14px; border:1px solid #e1dfdd; vertical-align:top; }
-        .ms-table tr:nth-child(even) td { background:#faf9f8; }
-
-        /* CHECKLIST */
-        .ms-checklist { list-style:none; padding:0; margin:12px 0; }
-        .ms-checklist li { display:flex; align-items:flex-start; gap:10px; padding:6px 0; font-size:14px; }
-        .ms-checklist li .check-box { width:18px; height:18px; border:2px solid #8a8886; border-radius:2px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; cursor:pointer; transition:all .15s; }
-        .ms-checklist li .check-box.checked { background:var(--ms-blue); border-color:var(--ms-blue); color:#fff; }
-
-        /* CODE BLOCK */
-        .ms-code { background:#1e1e1e; border-radius:6px; padding:16px; margin:16px 0; font-family:'Consolas','Courier New',monospace; font-size:13px; line-height:1.7; overflow-x:auto; }
-        .ms-code .lang-label { font-size:11px; color:#858585; margin-bottom:8px; display:block; }
-        .ms-code .c-comment { color:#6a9955; }
-        .ms-code .c-str { color:#ce9178; }
-        .ms-code .c-kw { color:#569cd6; }
-        .ms-code .c-fn { color:#dcdcaa; }
-        .ms-code .c-white { color:#d4d4d4; }
-        .ms-code .c-teal { color:#4ec9b0; }
-        .ms-code .c-prompt { color:#608b4e; }
-
-        /* VIDEO */
-        .ms-video-embed { border-radius:4px; overflow:hidden; margin:20px 0; box-shadow:0 2px 8px rgba(0,0,0,.12); aspect-ratio:16/9; }
-        .ms-video-embed iframe { width:100%; height:100%; display:block; border:0; }
-
-        /* BUTTONS */
-        .ms-btn { background:var(--ms-blue); color:#fff; border:none; padding:7px 18px; font-size:14px; font-weight:600; border-radius:2px; cursor:pointer; transition:background .12s; font-family:inherit; }
-        .ms-btn:hover { background:var(--ms-blue-dark); }
-        .ms-btn-ghost { background:transparent; color:var(--ms-blue); border:1px solid var(--ms-blue); padding:6px 18px; font-size:14px; font-weight:600; border-radius:2px; cursor:pointer; transition:background .12s; font-family:inherit; }
-        .ms-btn-ghost:hover { background:var(--ms-blue-light); }
-
-        /* NAV BUTTONS */
-        .unit-nav { display:flex; justify-content:space-between; align-items:center; padding:24px 40px; border-top:1px solid #e1dfdd; max-width:820px; margin:0 auto; }
-        .nav-btn-prev, .nav-btn-next { display:flex; align-items:center; gap:8px; padding:8px 20px; font-size:14px; font-weight:600; border-radius:2px; cursor:pointer; border:1px solid; font-family:inherit; transition:background .12s; }
-        .nav-btn-next { background:var(--ms-blue); color:#fff; border-color:var(--ms-blue); }
-        .nav-btn-next:hover { background:var(--ms-blue-dark); border-color:var(--ms-blue-dark); }
-        .nav-btn-prev { background:#fff; color:var(--ms-blue); border-color:var(--ms-blue); }
-        .nav-btn-prev:hover { background:var(--ms-blue-light); }
-        .unit-page-indicator { font-size:13px; color:#605e5c; }
-
-        /* INDEX */
-        .module-meta-tags { display:flex; flex-wrap:wrap; gap:8px; margin:16px 0; }
-        .ms-tag { background:#f3f2f1; color:#323130; font-size:12px; padding:4px 10px; border-radius:12px; font-weight:500; }
-        .ms-tag.blue { background:#deecf9; color:var(--ms-blue-dark); }
-        .ms-tag.green { background:#dff6dd; color:#107c10; }
-        .unit-card-list { margin:20px 0; }
-        .unit-card { display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid #f3f2f1; cursor:pointer; }
-        .unit-card:last-child { border-bottom:none; }
-        .unit-card:hover .unit-card-name { color:var(--ms-blue); text-decoration:underline; }
-        .unit-card-num { width:32px; height:32px; border-radius:50%; background:#f3f2f1; color:#605e5c; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-        .unit-card.quiz .unit-card-num { background:#fff4ce; color:#8a6914; }
-        .unit-card.lab .unit-card-num { background:#eef6ff; color:var(--ms-blue-dark); }
-        .unit-card-info { flex:1; }
-        .unit-card-name { font-size:15px; font-weight:500; }
-        .unit-card-time { font-size:12px; color:#605e5c; margin-top:2px; }
-        .unit-card-arrow { color:#c8c6c4; font-size:14px; }
-
-        /* LAB CARD */
-        .ms-lab-card { background:linear-gradient(135deg,#eef6ff 0%,#f5f0ff 100%); border:1px solid #c7e0f4; border-radius:6px; padding:24px; margin:20px 0; }
-        .ms-lab-card h3 { margin:0 0 12px; color:var(--ms-blue-dark); }
-        .ms-lab-badge { display:inline-flex; align-items:center; gap:6px; background:var(--ms-blue); color:#fff; font-size:11px; font-weight:700; padding:3px 10px; border-radius:12px; text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px; }
-        .ms-lab-time { font-size:12px; color:#605e5c; margin-left:8px; }
-
-        /* QUIZ */
-        .quiz-question { margin-bottom:32px; }
-        .quiz-question p { font-size:15px; font-weight:500; margin-bottom:14px; }
-        .quiz-option { display:flex; align-items:flex-start; gap:10px; padding:10px 14px; border:1px solid #e1dfdd; border-radius:4px; margin-bottom:8px; cursor:pointer; transition:background .1s,border-color .1s; font-size:14px; }
-        .quiz-option:hover { background:#f3f2f1; border-color:#c8c6c4; }
-        .quiz-option input[type=radio] { margin-top:2px; accent-color:var(--ms-blue); flex-shrink:0; }
-        .quiz-option.correct { background:#dff6dd; border-color:var(--ms-green); }
-        .quiz-option.wrong { background:#fde7e9; border-color:var(--ms-red); }
-        .quiz-feedback { display:none; margin-top:8px; padding:10px 14px; border-radius:4px; font-size:13px; font-weight:500; }
-        .quiz-feedback.correct { background:#dff6dd; color:#107c10; display:block; }
-        .quiz-feedback.wrong { background:#fde7e9; color:#d13438; display:block; }
-
-        /* RESOURCE */
-        .ms-resource-link { display:flex; align-items:center; gap:10px; padding:12px 16px; border:1px solid #e1dfdd; border-radius:4px; margin-bottom:8px; text-decoration:none; color:#201f1e; font-size:14px; transition:background .1s; }
-        .ms-resource-link:hover { background:#f3f2f1; }
-        .ms-resource-link i { color:var(--ms-blue); font-size:18px; width:24px; text-align:center; flex-shrink:0; }
-
-        /* ACHIEVEMENT */
-        .ms-achievement { background:linear-gradient(135deg,#0078d4 0%,#005a9e 100%); color:#fff; border-radius:6px; padding:24px 28px; margin:24px 0; display:flex; align-items:center; gap:20px; }
-        .achievement-icon { font-size:48px; flex-shrink:0; }
-        .achievement-text h3 { margin:0 0 4px; font-size:18px; }
-        .achievement-text p { margin:0; font-size:14px; opacity:.9; }
-
-        /* WORKFLOW VISUAL */
-        .workflow-steps { display:flex; align-items:stretch; gap:0; margin:20px 0; overflow-x:auto; }
-        .workflow-step { flex:1; min-width:100px; display:flex; flex-direction:column; align-items:center; position:relative; }
-        .workflow-step:not(:last-child)::after { content:'›'; position:absolute; right:-10px; top:22px; font-size:22px; color:#c8c6c4; z-index:1; }
-        .ws-circle { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; margin-bottom:10px; flex-shrink:0; }
-        .ws-label { font-size:13px; font-weight:600; text-align:center; margin-bottom:4px; }
-        .ws-desc { font-size:11px; color:#605e5c; text-align:center; line-height:1.4; }
-
-        /* SKILL MATRIX */
-        .skill-row { display:flex; gap:12px; align-items:flex-start; padding:14px 0; border-bottom:1px solid #f3f2f1; }
-        .skill-row:last-child { border-bottom:none; }
-        .skill-badge { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700; padding:3px 10px; border-radius:12px; white-space:nowrap; flex-shrink:0; min-width:90px; justify-content:center; }
-        .skill-body { flex:1; }
-        .skill-body h4 { font-size:14px; font-weight:600; margin:0 0 3px; }
-        .skill-body p { font-size:13px; color:#605e5c; margin:0; }
-
-        /* TASK SECTION HEADER */
-        .task-section-header { display:flex; align-items:center; gap:10px; padding:10px 0 10px; margin-top:28px; border-bottom:2px solid #e1dfdd; margin-bottom:16px; }
-        .task-section-header .num { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#fff; flex-shrink:0; }
-        .task-section-header h3 { font-size:16px; font-weight:700; margin:0; }
-
-        @media (max-width:768px) {
-            .ms-sidebar { display:none; }
-            .unit-content { padding:20px 16px 40px; }
-            .unit-nav { padding:16px; }
-            .ms-breadcrumb { padding:8px 16px; }
-            .workflow-steps { flex-direction:column; }
-            .workflow-step::after { display:none; }
-        }
-    </style>
 </head>
-<body>
 
-<nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
-    <div class="divider"></div>
-    <span class="nav-label">入門課程單元</span>
-</nav>
+<body class="bg-gray-50 font-[Inter] text-gray-800">
 
-<div class="ms-layout">
-    <aside class="ms-sidebar">
-        <div class="ms-sidebar-header">
-            <div class="module-label">模組</div>
-            <div class="module-title">UI 佈局：HTML 按鈕與 CSS 控制面板</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 73 分鐘 · 4 個單元</div>
-        </div>
-        <nav class="ms-unit-list" id="sidebar-nav"></nav>
-        <div class="sidebar-progress">
-            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
-            <div class="progress-text" id="progress-text">0 / 4 已完成</div>
-        </div>
-    </aside>
+    <!-- Hero Section -->
+    <header
+        class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white pt-24 pb-32 overflow-hidden">
+        <div class="header-overlay absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-90"></div>
+        <div class="container mx-auto px-4 relative z-10 pt-20 pb-20 text-center text-white">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6 tracking-tight">
+                UI 佈局：HTML 按鈕與 CSS 控制面板
+            </h1>
+            <p class="text-xl text-blue-100 max-w-2xl mx-auto leading-relaxed mb-10">
+                掌握 HTML5 語義化佈局與 CSS 偽類狀態，打造如同原生 App 般順滑的網頁遙控器介面。
+            </p>
 
-    <main class="ms-content">
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">入門課程單元</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
-
-        
-        <!-- ══════════ PAGE 0: INDEX ══════════ -->
-        <div class="ms-unit-page visible" id="page-index">
-            <div class="unit-content">
-                <h1>UI 佈局：HTML 按鈕與 CSS 控制面板</h1>
-                <div class="module-meta-tags">
-                    <span class="ms-tag">模組</span>
-                    <span class="ms-tag">4 個單元</span>
-                    <span class="ms-tag green">入門</span>
-                    <span class="ms-tag blue">前端開發</span>
-                    <span class="ms-tag blue">物聯網</span>
-                </div>
-                <p>
-                    掌握 HTML5 語義化佈局與 CSS 偽類狀態，打造如同原生 App 般順滑的網頁遙控器介面。
-                </p>
-                <h2>學習目標</h2>
-                <ul>
-                    <li>目標：在 style.css 中實作一個 3x3 的控制網格。</li>
-<li>要求：
-
-使用 grid-template-areas 為按鈕命名（例如：up, left, stop, right, down）。
-確保在手機橫向與直向模式下，十字鍵的相對位置保持一致。
-避免使用大量的 margin 來微調位置，應依賴 Grid 系統。</li>
-<li>使用 grid-template-areas 為按鈕命名（例如：up, left, stop, right, down）。</li>
-<li>確保在手機橫向與直向模式下，十字鍵的相對位置保持一致。</li>
-<li>避免使用大量的 margin 來微調位置，應依賴 Grid 系統。</li>
-                </ul>
-                <h2>必要條件</h2>
-                <ul>
-                    <li>擁有基礎 HTML/CSS 與 JavaScript 知識</li>
-                    <li>準備好您的開發環境與設備</li>
-                </ul>
-                <h2>本模組單元</h2>
-                <div class="unit-card-list" id="index-unit-list"></div>
-                <div style="margin-top:32px;"><button class="ms-btn" onclick="goToUnit(1)">開始模組 &nbsp;›</button></div>
+            <div class="flex flex-wrap justify-center gap-4">
+                <button onclick="enterMediaMode('video', window.RESOURCES.video)"
+                    class="resource-btn bg-blue-500 hover:bg-blue-400 text-white px-6 py-3 rounded-full flex items-center gap-2 shadow-lg font-bold">
+                    <span>📺</span> 觀看教學影片
+                </button>
+                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
+                    class="resource-btn bg-white/10 hover:bg-white/20 border border-white/20 text-white px-6 py-3 rounded-full flex items-center gap-2 backdrop-blur-sm font-bold">
+                    <span>📄</span> 閱讀課程講義
+                </button>
             </div>
         </div>
-        
-        <!-- ══════════ PAGE 1: 感知實驗室 ══════════ -->
-        <div class="ms-unit-page" id="page-1">
-            <div class="unit-content">
-                <div class="unit-status-bar">
-                    <div class="unit-completed-badge" id="badge-1" style="display:none"><i class="fas fa-check"></i> 已完成</div>
-                    <div></div>
-                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
-                </div>
-                <h1>感知實驗室：按鈕的物理回饋</h1>
-                <div class="section-header-left border-l-4 border-blue-500 pl-6 mb-10">
-<span class="text-blue-600 font-bold tracking-wider uppercase text-sm">Module 1: Intuitive Lab</span>
+    </header>
 
-</div>
-<div class="grid md:grid-cols-2 gap-12 items-center">
-<div class="bg-white rounded-2xl p-8 shadow-xl border border-gray-100">
-<h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
-<span class="bg-blue-100 text-blue-600 w-10 h-10 rounded-full flex items-center justify-center text-lg">1</span>
+    <main class="container mx-auto max-w-6xl px-4 py-12">
+
+        <!-- Module 1: Intuitive Lab -->
+        <section class="content-block mb-24">
+            <div class="section-header-left border-l-4 border-blue-500 pl-6 mb-10">
+                <span class="text-blue-600 font-bold tracking-wider uppercase text-sm">Module 1: Intuitive Lab</span>
+                <h2 class="text-3xl font-bold text-gray-900 mt-2">感知實驗室：按鈕的物理回饋</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="bg-white rounded-2xl p-8 shadow-xl border border-gray-100">
+                    <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                        <span
+                            class="bg-blue-100 text-blue-600 w-10 h-10 rounded-full flex items-center justify-center text-lg">1</span>
                         狀態設計 (State Design)
                     </h3>
-<p class="text-gray-600 mb-6 leading-relaxed">
-                        一個好的按鈕不只是好看，還必須「好按」。透過 CSS 的 <code class="bg-gray-100 px-2 py-1 rounded text-blue-600 font-mono">:active</code>
+                    <p class="text-gray-600 mb-6 leading-relaxed">
+                        一個好的按鈕不只是好看，還必須「好按」。透過 CSS 的 <code
+                            class="bg-gray-100 px-2 py-1 rounded text-blue-600 font-mono">:active</code>
                         偽類，我們可以模擬真實物理按鈕被按下去的感覺。
                     </p>
-<div class="space-y-4">
-<div class="flex gap-4 items-center p-4 bg-gray-50 rounded-lg">
-<div class="text-2xl">🖱️</div>
-<div>
-<h4 class="font-bold text-gray-900">:hover (懸停)</h4>
-<p class="text-sm text-gray-600 mt-1">暗示它是可點擊的 (游標變化、微亮)。</p>
-</div>
-</div>
-<div class="flex gap-4 items-center p-4 bg-blue-50 rounded-lg border border-blue-100">
-<div class="text-2xl">👇</div>
-<div>
-<h4 class="font-bold text-blue-900">:active (按下)</h4>
-<p class="text-sm text-blue-800 mt-1">關鍵時刻！使用 <code>transform: scale(0.95)</code> 創造下沉感。
+
+                    <div class="space-y-4">
+                        <div class="flex gap-4 items-center p-4 bg-gray-50 rounded-lg">
+                            <div class="text-2xl">🖱️</div>
+                            <div>
+                                <h4 class="font-bold text-gray-900">:hover (懸停)</h4>
+                                <p class="text-sm text-gray-600 mt-1">暗示它是可點擊的 (游標變化、微亮)。</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 items-center p-4 bg-blue-50 rounded-lg border border-blue-100">
+                            <div class="text-2xl">👇</div>
+                            <div>
+                                <h4 class="font-bold text-blue-900">:active (按下)</h4>
+                                <p class="text-sm text-blue-800 mt-1">關鍵時刻！使用 <code>transform: scale(0.95)</code> 創造下沉感。
                                 </p>
-</div>
-</div>
-<div class="flex gap-4 items-center p-4 bg-gray-100 rounded-lg opacity-70">
-<div class="text-2xl">🚫</div>
-<div>
-<h4 class="font-bold text-gray-600">:disabled (禁用)</h4>
-<p class="text-sm text-gray-500 mt-1">斷連時防止誤觸，搭配 <code>pointer-events: none</code>。</p>
-</div>
-</div>
-</div>
-</div>
-<!-- Interactive Demo -->
-<div class="bg-gray-900 rounded-xl p-8 flex flex-col items-center justify-center shadow-2xl min-h-[400px]">
-<div class="mb-6 flex gap-4">
-<label class="flex items-center gap-2 text-white cursor-pointer container-checkbox">
-<input class="w-4 h-4 rounded text-blue-600 bg-gray-700 border-gray-600 focus:ring-blue-500 max-w-[20px]" id="disable-toggle" type="checkbox"/>
-<span class="text-sm font-mono text-gray-300">模擬斷線 (Disable)</span>
-</label>
-</div>
-<!-- D-Pad Demo -->
-<div class="d-pad-container relative w-48 h-48 bg-gray-800 rounded-full border-4 border-gray-700 shadow-inner flex items-center justify-center">
-<!-- Up -->
-<button class="demo-btn absolute top-2 w-12 h-12 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center text-white shadow-lg border-b-4 border-gray-900 active:border-b-0 active:translate-y-1 transition-all" id="btn-up">
-<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-<path d="M5 15l7-7 7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-</path>
-</svg>
-</button>
-<!-- Left -->
-<button class="demo-btn absolute left-2 w-12 h-12 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center text-white shadow-lg border-b-4 border-gray-900 active:border-b-0 active:translate-y-1 transition-all" id="btn-left">
-<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
-</svg>
-</button>
-<!-- Center (Stop) -->
-<button class="demo-btn w-14 h-14 bg-red-600 hover:bg-red-500 rounded-full flex items-center justify-center text-white shadow-lg border-b-4 border-red-800 active:border-b-0 active:translate-y-1 transition-all z-10" id="btn-stop">
-<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
-</svg>
-</button>
-<!-- Right -->
-<button class="demo-btn absolute right-2 w-12 h-12 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center text-white shadow-lg border-b-4 border-gray-900 active:border-b-0 active:translate-y-1 transition-all" id="btn-right">
-<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-</path>
-</svg>
-</button>
-<!-- Down -->
-<button class="demo-btn absolute bottom-2 w-12 h-12 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center text-white shadow-lg border-b-4 border-gray-900 active:border-b-0 active:translate-y-1 transition-all" id="btn-down">
-<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
-</svg>
-</button>
-</div>
-<p class="mt-8 text-gray-400 text-xs font-mono bg-gray-800 px-3 py-1 rounded">Try clicking the
-                        buttons!</p>
-</div>
-</div>
-            </div>
-            <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 4</span>
-                <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
-            </div>
-        </div>
-
-        <!-- ══════════ PAGE 2: 三大構建基石 ══════════ -->
-        <div class="ms-unit-page" id="page-2">
-            <div class="unit-content">
-                <div class="unit-status-bar">
-                    <div class="unit-completed-badge" id="badge-2" style="display:none"><i class="fas fa-check"></i> 已完成</div>
-                    <div></div>
-                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
-                </div>
-                <h1>三大構建基石</h1>
-                <div class="section-header-left border-l-4 border-indigo-500 pl-6 mb-10">
-<span class="text-indigo-600 font-bold tracking-wider uppercase text-sm">Module 2: Core
-                    Principles</span>
-
-</div>
-<div class="grid lg:grid-cols-3 gap-8">
-<!-- Principle 1 -->
-<div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-<div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-2xl mb-4">🏗️
+                            </div>
+                        </div>
+                        <div class="flex gap-4 items-center p-4 bg-gray-100 rounded-lg opacity-70">
+                            <div class="text-2xl">🚫</div>
+                            <div>
+                                <h4 class="font-bold text-gray-600">:disabled (禁用)</h4>
+                                <p class="text-sm text-gray-500 mt-1">斷連時防止誤觸，搭配 <code>pointer-events: none</code>。</p>
+                            </div>
+                        </div>
                     </div>
-<h3 class="text-xl font-bold text-gray-800 mb-3">1. 語義化佈局</h3>
-<p class="text-gray-600 mb-4 text-sm">HTML5 不只是為了顯示，更是為了「結構」。使用 <code>section</code> 區分功能區塊，用 ID (如
+                </div>
+
+                <!-- Interactive Demo -->
+                <div
+                    class="bg-gray-900 rounded-xl p-8 flex flex-col items-center justify-center shadow-2xl min-h-[400px]">
+                    <div class="mb-6 flex gap-4">
+                        <label class="flex items-center gap-2 text-white cursor-pointer container-checkbox">
+                            <input type="checkbox" id="disable-toggle"
+                                class="w-4 h-4 rounded text-blue-600 bg-gray-700 border-gray-600 focus:ring-blue-500 max-w-[20px]">
+                            <span class="text-sm font-mono text-gray-300">模擬斷線 (Disable)</span>
+                        </label>
+                    </div>
+
+                    <!-- D-Pad Demo -->
+                    <div
+                        class="d-pad-container relative w-48 h-48 bg-gray-800 rounded-full border-4 border-gray-700 shadow-inner flex items-center justify-center">
+                        <!-- Up -->
+                        <button id="btn-up"
+                            class="demo-btn absolute top-2 w-12 h-12 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center text-white shadow-lg border-b-4 border-gray-900 active:border-b-0 active:translate-y-1 transition-all">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7">
+                                </path>
+                            </svg>
+                        </button>
+                        <!-- Left -->
+                        <button id="btn-left"
+                            class="demo-btn absolute left-2 w-12 h-12 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center text-white shadow-lg border-b-4 border-gray-900 active:border-b-0 active:translate-y-1 transition-all">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <!-- Center (Stop) -->
+                        <button id="btn-stop"
+                            class="demo-btn w-14 h-14 bg-red-600 hover:bg-red-500 rounded-full flex items-center justify-center text-white shadow-lg border-b-4 border-red-800 active:border-b-0 active:translate-y-1 transition-all z-10">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                        <!-- Right -->
+                        <button id="btn-right"
+                            class="demo-btn absolute right-2 w-12 h-12 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center text-white shadow-lg border-b-4 border-gray-900 active:border-b-0 active:translate-y-1 transition-all">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
+                            </svg>
+                        </button>
+                        <!-- Down -->
+                        <button id="btn-down"
+                            class="demo-btn absolute bottom-2 w-12 h-12 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center text-white shadow-lg border-b-4 border-gray-900 active:border-b-0 active:translate-y-1 transition-all">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <p class="mt-8 text-gray-400 text-xs font-mono bg-gray-800 px-3 py-1 rounded">Try clicking the
+                        buttons!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Module 2: Core Principles -->
+        <section class="content-block mb-24">
+            <div class="section-header-left border-l-4 border-indigo-500 pl-6 mb-10">
+                <span class="text-indigo-600 font-bold tracking-wider uppercase text-sm">Module 2: Core
+                    Principles</span>
+                <h2 class="text-3xl font-bold text-gray-900 mt-2">三大構建基石</h2>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Principle 1 -->
+                <div
+                    class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-2xl mb-4">🏗️
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">1. 語義化佈局</h3>
+                    <p class="text-gray-600 mb-4 text-sm">HTML5 不只是為了顯示，更是為了「結構」。使用 <code>section</code> 區分功能區塊，用 ID (如
                         <code>#btn-up</code>) 給每個按鈕唯一的身份證。
                     </p>
-<div class="bg-gray-50 p-3 rounded-lg text-xs font-mono text-gray-600 border border-gray-200">
-                        &lt;div id="d-pad"&gt;<br/>
-                          &lt;button id="btn-up"&gt;...&lt;/button&gt;<br/>
+                    <div class="bg-gray-50 p-3 rounded-lg text-xs font-mono text-gray-600 border border-gray-200">
+                        &lt;div id="d-pad"&gt;<br>
+                        &nbsp;&nbsp;&lt;button id="btn-up"&gt;...&lt;/button&gt;<br>
                         &lt;/div&gt;
                     </div>
-</div>
-<!-- Principle 2 -->
-<div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-<div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center text-2xl mb-4">🎨
-                    </div>
-<h3 class="text-xl font-bold text-gray-800 mb-3">2. 偽類魔法</h3>
-<p class="text-gray-600 mb-4 text-sm">透過 CSS 偽類 (:pseudo-classes) 來處理互動狀態，無需寫 JavaScript
-                        就能實現基礎的按壓反饋和視覺提示。</p>
-<ul class="text-sm text-gray-500 space-y-2 bg-gray-50 p-4 rounded-lg">
-<li class="flex items-center gap-2"><span class="text-purple-500">✔</span> :hover (PC端提示)</li>
-<li class="flex items-center gap-2"><span class="text-purple-500">✔</span> :active (按壓特效)</li>
-<li class="flex items-center gap-2"><span class="text-purple-500">✔</span> :disabled (狀態鎖定)</li>
-</ul>
-</div>
-<!-- Principle 3 -->
-<div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-<div class="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center text-2xl mb-4">🖼️
-                    </div>
-<h3 class="text-xl font-bold text-gray-800 mb-3">3. 向量圖示 (SVG)</h3>
-<p class="text-gray-600 mb-4 text-sm">為什麼不用圖片？SVG 是數學描述的向量圖，放大不失真，且可以透過 CSS (fill/stroke) 隨意改色，非常適合
-                        RWD 介面。</p>
-<div class="bg-pink-50 p-3 rounded-lg text-xs text-pink-800 border border-pink-200">
-<strong>優勢：</strong><br/>檔案極小、載入快、樣式可控。
-                    </div>
-</div>
-</div>
-            </div>
-            <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 4</span>
-                <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
-            </div>
-        </div>
-
-        <!-- ══════════ PAGE 3: 實作挑戰 ══════════ -->
-        <div class="ms-unit-page" id="page-3">
-            <div class="unit-content">
-                <div class="unit-status-bar">
-                    <div class="unit-completed-badge" id="badge-3" style="display:none"><i class="fas fa-check"></i> 已完成</div>
-                    <div></div>
-                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 60 分鐘</div>
                 </div>
-                <h1>教室實戰：打造專業控制板</h1>
-                <div class="section-header-left border-l-4 border-teal-500 pl-6 mb-10">
-<span class="text-teal-600 font-bold tracking-wider uppercase text-sm">Module 3: Classroom
-                    Challenges</span>
 
-</div>
-<div class="grid md:grid-cols-3 gap-8">
-<!-- Task 1-1 -->
-<div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden group cursor-pointer relative ms-lab-card" onclick="openSubmissionModal('control-panel-task-1', '作業 1-1: Grid 佈局挑戰')">
-<div class="bg-gradient-to-r from-blue-500 to-blue-600 h-2"></div>
-<div class="p-6">
-<div class="flex justify-between items-start mb-4">
-<h3 class="font-bold text-xl text-gray-800 group-hover:text-blue-600 transition">作業 1-1</h3>
-<span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold">60 min</span>
-</div>
-<h4 class="font-bold text-gray-700 mb-2">Grid 佈局挑戰</h4>
-<p class="text-sm text-gray-500 mb-4">目標：利用 CSS Grid 實作經典 3x3 控制網格，確保手機旋轉時十字鍵不變形。</p>
-<div class="mt-4 pt-4 border-t border-gray-100">
-<h5 class="text-xs font-bold text-gray-400 uppercase mb-2">Key Property</h5>
-<code class="block bg-gray-50 text-gray-700 p-2 rounded text-xs font-mono border border-gray-200">
-                                grid-template-areas:<br/>
-                                ". up ."<br/>
-                                "left stop right"<br/>
+                <!-- Principle 2 -->
+                <div
+                    class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center text-2xl mb-4">🎨
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">2. 偽類魔法</h3>
+                    <p class="text-gray-600 mb-4 text-sm">透過 CSS 偽類 (:pseudo-classes) 來處理互動狀態，無需寫 JavaScript
+                        就能實現基礎的按壓反饋和視覺提示。</p>
+                    <ul class="text-sm text-gray-500 space-y-2 bg-gray-50 p-4 rounded-lg">
+                        <li class="flex items-center gap-2"><span class="text-purple-500">✔</span> :hover (PC端提示)</li>
+                        <li class="flex items-center gap-2"><span class="text-purple-500">✔</span> :active (按壓特效)</li>
+                        <li class="flex items-center gap-2"><span class="text-purple-500">✔</span> :disabled (狀態鎖定)</li>
+                    </ul>
+                </div>
+
+                <!-- Principle 3 -->
+                <div
+                    class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+                    <div class="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center text-2xl mb-4">🖼️
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">3. 向量圖示 (SVG)</h3>
+                    <p class="text-gray-600 mb-4 text-sm">為什麼不用圖片？SVG 是數學描述的向量圖，放大不失真，且可以透過 CSS (fill/stroke) 隨意改色，非常適合
+                        RWD 介面。</p>
+                    <div class="bg-pink-50 p-3 rounded-lg text-xs text-pink-800 border border-pink-200">
+                        <strong>優勢：</strong><br>檔案極小、載入快、樣式可控。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Module 3: Practical Challenge -->
+        <section class="content-block">
+            <div class="section-header-left border-l-4 border-teal-500 pl-6 mb-10">
+                <span class="text-teal-600 font-bold tracking-wider uppercase text-sm">Module 3: Classroom
+                    Challenges</span>
+                <h2 class="text-3xl font-bold text-gray-900 mt-2">教室實戰：打造專業控制板</h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Task 1-1 -->
+                <div onclick="openSubmissionModal('control-panel-task-1', '作業 1-1: Grid 佈局挑戰')"
+                    class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden group cursor-pointer relative">
+                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-2"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="font-bold text-xl text-gray-800 group-hover:text-blue-600 transition">作業 1-1</h3>
+                            <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold">60 min</span>
+                        </div>
+                        <h4 class="font-bold text-gray-700 mb-2">Grid 佈局挑戰</h4>
+                        <p class="text-sm text-gray-500 mb-4">目標：利用 CSS Grid 實作經典 3x3 控制網格，確保手機旋轉時十字鍵不變形。</p>
+
+                        <div class="mt-4 pt-4 border-t border-gray-100">
+                            <h5 class="text-xs font-bold text-gray-400 uppercase mb-2">Key Property</h5>
+                            <code
+                                class="block bg-gray-50 text-gray-700 p-2 rounded text-xs font-mono border border-gray-200">
+                                grid-template-areas:<br>
+                                ". up ."<br>
+                                "left stop right"<br>
                                 ". down ."
                             </code>
-</div>
-</div>
-<!-- Click Hint Overlay -->
-<div class="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-<span class="bg-white text-blue-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
+                        </div>
+                    </div>
+                    <!-- Click Hint Overlay -->
+                    <div
+                        class="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <span
+                            class="bg-white text-blue-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
                             📤 點擊繳交作業
                         </span>
-</div>
-</div>
-<!-- Task 1-2 -->
-<div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden group cursor-pointer relative ms-lab-card" onclick="openSubmissionModal('control-panel-task-2', '作業 1-2: 觸控區域優化')">
-<div class="bg-gradient-to-r from-teal-500 to-teal-600 h-2"></div>
-<div class="p-6">
-<div class="flex justify-between items-start mb-4">
-<h3 class="font-bold text-xl text-gray-800 group-hover:text-teal-600 transition">作業 1-2</h3>
-<span class="bg-teal-100 text-teal-700 text-xs px-2 py-1 rounded font-bold">45 min</span>
-</div>
-<h4 class="font-bold text-gray-700 mb-2">觸控區域優化</h4>
-<p class="text-sm text-gray-500 mb-4">目標：應用 Fitts's Law，調整按鈕的點擊熱區 (Touch Target)，確保至少 44x44px。
+                    </div>
+                </div>
+
+                <!-- Task 1-2 -->
+                <div onclick="openSubmissionModal('control-panel-task-2', '作業 1-2: 觸控區域優化')"
+                    class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden group cursor-pointer relative">
+                    <div class="bg-gradient-to-r from-teal-500 to-teal-600 h-2"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="font-bold text-xl text-gray-800 group-hover:text-teal-600 transition">作業 1-2</h3>
+                            <span class="bg-teal-100 text-teal-700 text-xs px-2 py-1 rounded font-bold">45 min</span>
+                        </div>
+                        <h4 class="font-bold text-gray-700 mb-2">觸控區域優化</h4>
+                        <p class="text-sm text-gray-500 mb-4">目標：應用 Fitts's Law，調整按鈕的點擊熱區 (Touch Target)，確保至少 44x44px。
                         </p>
-<div class="mt-4 pt-4 border-t border-gray-100">
-<h5 class="text-xs font-bold text-gray-400 uppercase mb-2">Challenge</h5>
-<p class="text-sm text-gray-600">
+
+                        <div class="mt-4 pt-4 border-t border-gray-100">
+                            <h5 class="text-xs font-bold text-gray-400 uppercase mb-2">Challenge</h5>
+                            <p class="text-sm text-gray-600">
                                 使用 padding 擴大感應區，但不改變視覺上的按鈕大小。
                             </p>
-</div>
-</div>
-<!-- Click Hint Overlay -->
-<div class="absolute inset-0 bg-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-<span class="bg-white text-teal-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
+                        </div>
+                    </div>
+                    <!-- Click Hint Overlay -->
+                    <div
+                        class="absolute inset-0 bg-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <span
+                            class="bg-white text-teal-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
                             📤 點擊繳交作業
                         </span>
-</div>
-</div>
-<!-- Task 1-3 -->
-<div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden group cursor-pointer relative ms-lab-card" onclick="openSubmissionModal('control-panel-task-3', '作業 1-3: 多層級 UI 疊加')">
-<div class="bg-gradient-to-r from-purple-500 to-purple-600 h-2"></div>
-<div class="p-6">
-<div class="flex justify-between items-start mb-4">
-<h3 class="font-bold text-xl text-gray-800 group-hover:text-purple-600 transition">作業 1-3
+                    </div>
+                </div>
+
+                <!-- Task 1-3 -->
+                <div onclick="openSubmissionModal('control-panel-task-3', '作業 1-3: 多層級 UI 疊加')"
+                    class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden group cursor-pointer relative">
+                    <div class="bg-gradient-to-r from-purple-500 to-purple-600 h-2"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="font-bold text-xl text-gray-800 group-hover:text-purple-600 transition">作業 1-3
                             </h3>
-<span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold">60
+                            <span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold">60
                                 min</span>
-</div>
-<h4 class="font-bold text-gray-700 mb-2">多層級 UI 疊加</h4>
-<p class="text-sm text-gray-500 mb-4">目標：打造沈浸式 FPV 介面。將半透明控制層透過 <code>z-index</code> 疊加在視訊畫面上。
+                        </div>
+                        <h4 class="font-bold text-gray-700 mb-2">多層級 UI 疊加</h4>
+                        <p class="text-sm text-gray-500 mb-4">目標：打造沈浸式 FPV 介面。將半透明控制層透過 <code>z-index</code> 疊加在視訊畫面上。
                         </p>
-<div class="mt-4 pt-4 border-t border-gray-100">
-<h5 class="text-xs font-bold text-gray-400 uppercase mb-2">Visual</h5>
-<p class="text-sm text-gray-600">
+
+                        <div class="mt-4 pt-4 border-t border-gray-100">
+                            <h5 class="text-xs font-bold text-gray-400 uppercase mb-2">Visual</h5>
+                            <p class="text-sm text-gray-600">
                                 按下按鈕時產生光暈效果，強化指令送出的視覺回饋。
                             </p>
-</div>
-</div>
-<!-- Click Hint Overlay -->
-<div class="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-<span class="bg-white text-purple-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
+                        </div>
+                    </div>
+                    <!-- Click Hint Overlay -->
+                    <div
+                        class="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <span
+                            class="bg-white text-purple-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
                             📤 點擊繳交作業
                         </span>
-</div>
-</div>
-</div>
-            </div>
-            <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 4</span>
-                <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
-            </div>
-        </div>
-
-        <!-- ══════════ PAGE 4: 摘要與資源 ══════════ -->
-        <div class="ms-unit-page" id="page-4">
-            <div class="unit-content">
-                <div class="unit-status-bar">
-                    <div class="unit-completed-badge" id="badge-4" style="display:none"><i class="fas fa-check"></i> 已完成</div>
-                    <div></div>
-                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
-                </div>
-                <h1>摘要與資源</h1>
-                <p>
-                    恭喜你完成了「<strong>UI 佈局：HTML 按鈕與 CSS 控制面板</strong>」單元！
-                    在這個單元中，你深入了解了其底層機制，完成了多個層層遞進的實作任務，
-                    並成功部署與調試了相關的前端和硬體系統。
-                </p>
-
-                <div class="ms-achievement">
-                    <div class="achievement-icon">🎓</div>
-                    <div class="achievement-text">
-                        <h3>恭喜！你已完成本模組</h3>
-                        <p>持續實踐與累積，這將使你的工程素養更上一層樓。</p>
                     </div>
                 </div>
-
-                <h2>完成本模組後，你能夠：</h2>
-                <ul>
-                    <li>理解並完成「<strong>作業 1-1: Grid 佈局挑戰</strong>」的實作與驗證。</li>
-<li>理解並完成「<strong>作業 1-2: 觸控區域優化</strong>」的實作與驗證。</li>
-<li>理解並完成「<strong>作業 1-3: 多層級 UI 疊加</strong>」的實作與驗證。</li>
-                </ul>
-
-                <h2>延伸學習與資源</h2>
-                
-                <a href="https://www.youtube.com/watch?v=npkVulZAkI8" target="_blank" class="ms-resource-link">
-                    <i class="fab fa-youtube" style="color:#ff0000;"></i>
-                    <div>
-                        <div style="font-weight:600;">課程教學影片</div>
-                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">YouTube — 觀看動態功能展示與程式講解</div>
-                    </div>
-                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
-                </a>
-        
-                <a href="https://docs.google.com/document/d/e/2PACX-1vQPo7mHN5wddfoXi1hNsYO4amKmJ1ci-10qdh5xEQraOeCttQPiMnTz3dqWSSMZ8WrHNh7uKv8XwPry/pub?embedded=true" target="_blank" class="ms-resource-link">
-                    <i class="fas fa-file-alt"></i>
-                    <div>
-                        <div style="font-weight:600;">課程完整講義</div>
-                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">Google Docs — 詳細背景知識、硬體接線與程式碼說明</div>
-                    </div>
-                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
-                </a>
-        
-                <a href="https://classroom.github.com" target="_blank" class="ms-resource-link">
-                    <i class="fab fa-github"></i>
-                    <div>
-                        <div style="font-weight:600;">GitHub Classroom 官方網站</div>
-                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">classroom.github.com — 管理作業與查看進度</div>
-                    </div>
-                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
-                </a>
-    
             </div>
-            <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(4); alert('🎉 恭喜完成「UI 佈局：HTML 按鈕與 CSS 控制面板」模組！')">完成模組</button>
-            </div>
-        </div>
+        </section>
 
     </main>
-</div>
 
-<script>
-</script>
+    <footer class="bg-gray-900 text-white py-12 border-t border-gray-800">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-500">© 2024 Vibe Coding. All rights reserved.</p>
+        </div>
+    </footer>
 
+    <!-- Media Overlay injected by course-shared.js?v=2026.04.05.FINAL_V6 -->
 
-<script>
-    const UNITS = [{'id': 0, 'label': '課程總覽', 'time': '', 'type': 'index'}, {'id': 1, 'label': '感知實驗室', 'time': '5 分鐘', 'type': 'unit'}, {'id': 2, 'label': '三大構建基石', 'time': '5 分鐘', 'type': 'unit'}, {'id': 3, 'label': '實作挑戰', 'time': '60 分鐘', 'type': 'lab'}, {'id': 4, 'label': '摘要與資源', 'time': '3 分鐘', 'type': 'unit'}];
-
-    let currentUnit = 0;
-    let doneSet = new Set();
-
-    function init() {
-        buildSidebar();
-        buildIndexUnitList();
-        goToUnit(0);
-    }
-
-    function buildSidebar() {
-        const nav = document.getElementById('sidebar-nav');
-        nav.innerHTML = UNITS.map(u => {
-            const badge = u.type==='lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
-                        : '';
-            return `<div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
-                <div class="unit-icon" id="icon-${u.id}">\${u.id===0?'<i class="fas fa-home" style="font-size:9px;"></i>':u.id}</div>
-                <div class="unit-meta">
-                    <div class="unit-name">\${u.label}\${badge}</div>
-                    \${u.time?`<div class="unit-time"><i class="far fa-clock"></i> \${u.time}</div>`:''}
-                </div>
-            </div>`;
-        }).join('');
-    }
-
-    function buildIndexUnitList() {
-        const el = document.getElementById('index-unit-list');
-        el.innerHTML = UNITS.filter(u=>u.id>0).map(u=>`
-            <div class="unit-card \${u.type}" onclick="goToUnit(\${u.id})">
-                <div class="unit-card-num">\${u.id}</div>
-                <div class="unit-card-info">
-                    <div class="unit-card-name">\${u.label}</div>
-                    <div class="unit-card-time"><i class="far fa-clock"></i> \${u.time}</div>
-                </div>
-                <div class="unit-card-arrow">›</div>
-            </div>`).join('');
-    }
-
-    function goToUnit(id) {
-        document.querySelectorAll('.ms-unit-page').forEach(p=>p.classList.remove('visible'));
-        const target = id===0 ? document.getElementById('page-index') : document.getElementById(`page-\${id}`);
-        if(target) target.classList.add('visible');
-
-        document.querySelectorAll('.ms-unit-item').forEach(el=>el.classList.remove('active'));
-        const navItem = document.getElementById(`nav-\${id}`);
-        if(navItem){ navItem.classList.add('active'); navItem.scrollIntoView({block:'nearest',behavior:'smooth'}); }
-
-        UNITS.forEach(u=>{
-            const icon = document.getElementById(`icon-\${u.id}`);
-            if(!icon) return;
-            if(doneSet.has(u.id)){ icon.className='unit-icon done'; icon.innerHTML='<i class="fas fa-check" style="font-size:9px;"></i>'; }
-            else if(u.id===id){ icon.className='unit-icon active-icon'; icon.innerHTML=u.id===0?'<i class="fas fa-home" style="font-size:9px;"></i>':u.id; }
-            else{ icon.className='unit-icon'; icon.innerHTML=u.id===0?'<i class="fas fa-home" style="font-size:9px;"></i>':u.id; }
-        });
-
-        const unit = UNITS.find(u=>u.id===id);
-        document.getElementById('bc-current').textContent = unit ? unit.label : '';
-        currentUnit = id;
-        updateProgress();
-        window.scrollTo({top:0,behavior:'smooth'});
-    }
-
-    function markDone(id) {
-        doneSet.add(id);
-        const badge = document.getElementById(`badge-\${id}`);
-        if(badge) badge.style.display='flex';
-        UNITS.forEach(u=>{ const icon=document.getElementById(`icon-\${u.id}`); if(icon&&doneSet.has(u.id)){ icon.className='unit-icon done'; icon.innerHTML='<i class="fas fa-check" style="font-size:9px;"></i>'; } });
-        updateProgress();
-    }
-
-    function updateProgress() {
-        const total = UNITS.length-1;
-        const done = doneSet.size;
-        document.getElementById('progress-fill').style.width = Math.round(done/total*100)+'%';
-        document.getElementById('progress-text').textContent = `\${done} / \${total} 已完成`;
-    }
-
-    function toggleCheck(el) {
-        el.classList.toggle('checked');
-        el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
-    }
-
-    init();
-</script>
-
-<script>
-    // --- Interactive Demo Logic ---
+    <script>
+        // --- Interactive Demo Logic ---
         const disableToggle = document.getElementById('disable-toggle');
         const demoBtns = document.querySelectorAll('.demo-btn');
 
@@ -739,15 +343,18 @@
             video: "https://www.youtube.com/embed/npkVulZAkI8",
             doc: "https://docs.google.com/document/d/e/2PACX-1vQPo7mHN5wddfoXi1hNsYO4amKmJ1ci-10qdh5xEQraOeCttQPiMnTz3dqWSSMZ8WrHNh7uKv8XwPry/pub?embedded=true"
         };
-</script>
-<script src="/js/course-shared.js?v=2026.05.22.V23.START_THEME"></script>
+    </script>
+    <script src="/js/course-shared.js?v=2026.05.21.V21.DISABLE_UNIFIED_SUPPORT_HUB"></script>
+    <script>
+    </script>
 
-<section id="assignment-guide" style="display: none;">
-<div class="markdown-heading"><h1 class="heading-element">UI 佈局 — HTML 按鈕與 CSS 控制面板</h1><a aria-label="Permalink: UI 佈局 — HTML 按鈕與 CSS 控制面板" class="anchor" href="#ui-佈局--html-按鈕與-css-控制面板" id="user-content-ui-佈局--html-按鈕與-css-控制面板"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+    <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+<div class="markdown-heading"><h1 class="heading-element">UI 佈局 — HTML 按鈕與 CSS 控制面板</h1><a id="user-content-ui-佈局--html-按鈕與-css-控制面板" class="anchor" aria-label="Permalink: UI 佈局 — HTML 按鈕與 CSS 控制面板" href="#ui-佈局--html-按鈕與-css-控制面板"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>歡迎來到本單元的作業！在這個練習中，你將挑戰將前端知識轉化為一個具備沉浸感的 <strong>FPV (First Person View) 無人機控制面板</strong>。</p>
 <p>這不僅僅是關於排版，更是關於 <strong>介面架構 (UI Architecture)</strong> 與 <strong>人因設計 (Ergonomic Design)</strong>。你將學習如何利用 CSS Grid 構建穩定的控制網格，透過偽類實作物理級的按壓回饋，並優化觸控操作體驗。</p>
-<hr/>
-<div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2><a aria-label="Permalink: 🎯 學習目標" class="anchor" href="#-學習目標" id="user-content--學習目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr>
+<div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2><a id="user-content--學習目標" class="anchor" aria-label="Permalink: 🎯 學習目標" href="#-學習目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ol>
 <li>
 <strong>CSS Grid 實戰</strong>：打造一個「旋轉不散架」的堅韌佈局，掌握語義化區塊命名。</li>
@@ -756,9 +363,9 @@
 <li>
 <strong>圖層管理</strong>：利用 <code>z-index</code> 與 <code>absolute</code> 定位，將 HUD 控制層完美疊加在影像背景上。</li>
 </ol>
-<hr/>
-<div class="markdown-heading"><h2 class="heading-element">🚀 任務說明</h2><a aria-label="Permalink: 🚀 任務說明" class="anchor" href="#-任務說明" id="user-content--任務說明"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h3 class="heading-element">任務 1：Grid 佈局挑戰 (D-Pad Layout Lab)</h3><a aria-label="Permalink: 任務 1：Grid 佈局挑戰 (D-Pad Layout Lab)" class="anchor" href="#任務-1grid-佈局挑戰-d-pad-layout-lab" id="user-content-任務-1grid-佈局挑戰-d-pad-layout-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr>
+<div class="markdown-heading"><h2 class="heading-element">🚀 任務說明</h2><a id="user-content--任務說明" class="anchor" aria-label="Permalink: 🚀 任務說明" href="#-任務說明"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 1：Grid 佈局挑戰 (D-Pad Layout Lab)</h3><a id="user-content-任務-1grid-佈局挑戰-d-pad-layout-lab" class="anchor" aria-label="Permalink: 任務 1：Grid 佈局挑戰 (D-Pad Layout Lab)" href="#任務-1grid-佈局挑戰-d-pad-layout-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：在 <code>style.css</code> 中實作一個 3x3 的控制網格。</li>
@@ -771,7 +378,7 @@
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">任務 2：觸控區域與物理回饋優化 (Touch Feedback Lab)</h3><a aria-label="Permalink: 任務 2：觸控區域與物理回饋優化 (Touch Feedback Lab)" class="anchor" href="#任務-2觸控區域與物理回饋優化-touch-feedback-lab" id="user-content-任務-2觸控區域與物理回饋優化-touch-feedback-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 2：觸控區域與物理回饋優化 (Touch Feedback Lab)</h3><a id="user-content-任務-2觸控區域與物理回饋優化-touch-feedback-lab" class="anchor" aria-label="Permalink: 任務 2：觸控區域與物理回饋優化 (Touch Feedback Lab)" href="#任務-2觸控區域與物理回饋優化-touch-feedback-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：提升操作的「手感」。</li>
@@ -787,7 +394,7 @@
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">任務 3：沉浸式 FPV 疊加面板 (FPV HUD Overlay Lab)</h3><a aria-label="Permalink: 任務 3：沉浸式 FPV 疊加面板 (FPV HUD Overlay Lab)" class="anchor" href="#任務-3沉浸式-fpv-疊加面板-fpv-hud-overlay-lab" id="user-content-任務-3沉浸式-fpv-疊加面板-fpv-hud-overlay-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 3：沉浸式 FPV 疊加面板 (FPV HUD Overlay Lab)</h3><a id="user-content-任務-3沉浸式-fpv-疊加面板-fpv-hud-overlay-lab" class="anchor" aria-label="Permalink: 任務 3：沉浸式 FPV 疊加面板 (FPV HUD Overlay Lab)" href="#任務-3沉浸式-fpv-疊加面板-fpv-hud-overlay-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：打造專業級的抬頭顯示器 (HUD)。</li>
@@ -803,18 +410,18 @@
 </ul>
 </li>
 </ul>
-<hr/>
-<div class="markdown-heading"><h2 class="heading-element">📁 程式庫結構</h2><a aria-label="Permalink: 📁 程式庫結構" class="anchor" href="#-程式庫結構" id="user-content--程式庫結構"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr>
+<div class="markdown-heading"><h2 class="heading-element">📁 程式庫結構</h2><a id="user-content--程式庫結構" class="anchor" aria-label="Permalink: 📁 程式庫結構" href="#-程式庫結構"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <pre lang="text"><code>.
 ├── index.html           # 結構：定義 3x3 控制網格與 FPV 影像掛載點
 ├── style.css            # 樣式：練習 Grid 佈局、Touch Feedback 與 Z-Index 管理
 ├── README.md            # 作業說明與個人紀錄
 └── assets/              # 資源：標準化向量控制圖示 (SVG)
 </code></pre>
-<hr/>
-<div class="markdown-heading"><h2 class="heading-element">📝 UI 設計與觸控分析錄 (學員回報區)</h2><a aria-label="Permalink: 📝 UI 設計與觸控分析錄 (學員回報區)" class="anchor" href="#-ui-設計與觸控分析錄-學員回報區" id="user-content--ui-設計與觸控分析錄-學員回報區"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr>
+<div class="markdown-heading"><h2 class="heading-element">📝 UI 設計與觸控分析錄 (學員回報區)</h2><a id="user-content--ui-設計與觸控分析錄-學員回報區" class="anchor" aria-label="Permalink: 📝 UI 設計與觸控分析錄 (學員回報區)" href="#-ui-設計與觸控分析錄-學員回報區"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p><em>請在完成作業後，編輯本 README 並填寫以下內容：</em></p>
-<div class="markdown-heading"><h3 class="heading-element">1. 響應式佈局驗證</h3><a aria-label="Permalink: 1. 響應式佈局驗證" class="anchor" href="#1-響應式佈局驗證" id="user-content-1-響應式佈局驗證"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">1. 響應式佈局驗證</h3><a id="user-content-1-響應式佈局驗證" class="anchor" aria-label="Permalink: 1. 響應式佈局驗證" href="#1-響應式佈局驗證"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>測試設備</strong>：<em>(例如：iPhone 13 / Chrome DevTools Mobile Mode)</em>
@@ -825,7 +432,7 @@
 <strong>分析</strong>：<em>(說明你選擇的 Gap 或 Margin 理由)</em>
 </li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">2. 觸控人因設計</h3><a aria-label="Permalink: 2. 觸控人因設計" class="anchor" href="#2-觸控人因設計" id="user-content-2-觸控人因設計"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">2. 觸控人因設計</h3><a id="user-content-2-觸控人因設計" class="anchor" aria-label="Permalink: 2. 觸控人因設計" href="#2-觸控人因設計"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>操作手感</strong>：<em>(說明你如何實作按壓回饋，如 scale, shadow 等)</em>
@@ -834,7 +441,7 @@
 <strong>防誤觸設計</strong>：<em>(說明你如何透過間距或佈局防止使用者誤觸)</em>
 </li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">3. FPV 視覺整合</h3><a aria-label="Permalink: 3. FPV 視覺整合" class="anchor" href="#3-fpv-視覺整合" id="user-content-3-fpv-視覺整合"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">3. FPV 視覺整合</h3><a id="user-content-3-fpv-視覺整合" class="anchor" aria-label="Permalink: 3. FPV 視覺整合" href="#3-fpv-視覺整合"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>圖層管理</strong>：<em>(簡單描述你的 z-index 邏輯)</em>
@@ -843,11 +450,14 @@
 <strong>美學選擇</strong>：<em>(說明你選擇的背景透明度或顏色風格)</em>
 </li>
 </ul>
-</section>
-<section id="tutor-guide" style="display: none;">
+
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
 <p>針對 <strong><code>start-03-unit-control-panel</code> (UI 佈局：HTML 按鈕與 CSS 控制面板)</strong> 單元，這是學員將所有前端知識轉化為「可操作產品」的關鍵里程碑。它要求學員具備 <strong>介面架構 (UI Architecture)</strong> 與 <strong>人因設計 (Ergonomic Design)</strong> 的意識，學習如何利用 CSS Grid 構建穩定的控制網格，透過偽類實作物理級的按壓回饋，並最終完成一個具備沉浸感的 FPV 疊加面板。</p>
 <p>以下是在 <strong>GitHub Classroom</strong> 部署其作業 (Assignments) 的具體建議：</p>
-<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repository) 配置建議</h3><a aria-label="Permalink: 1. 範本程式庫 (Template Repository) 配置建議" class="anchor" href="#1-範本程式庫-template-repository-配置建議" id="user-content-1-範本程式庫-template-repository-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repository) 配置建議</h3><a id="user-content-1-範本程式庫-template-repository-配置建議" class="anchor" aria-label="Permalink: 1. 範本程式庫 (Template Repository) 配置建議" href="#1-範本程式庫-template-repository-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>UI 佈局作業的核心在於「結構穩定性與互動細節」，範本應包含佈局框架與視覺資產，建議包含：</p>
 <ul>
 <li>
@@ -859,9 +469,9 @@
 <li>
 <strong>📂 <code>assets/</code></strong>：<strong>SVG 圖示庫</strong>。提供一套精美的向量箭頭圖示 (Up, Down, Left, Right, Stop)，確保學員能快速建立高品質的視覺反饋。</li>
 </ul>
-<hr/>
-<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a aria-label="Permalink: 2. 作業任務部署細節" class="anchor" href="#2-作業任務部署細節" id="user-content-2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h4 class="heading-element">任務 1：Grid 佈局挑戰 (D-Pad Layout Lab)</h4><a aria-label="Permalink: 任務 1：Grid 佈局挑戰 (D-Pad Layout Lab)" class="anchor" href="#任務-1grid-佈局挑戰-d-pad-layout-lab" id="user-content-任務-1grid-佈局挑戰-d-pad-layout-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr>
+<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a id="user-content-2-作業任務部署細節" class="anchor" aria-label="Permalink: 2. 作業任務部署細節" href="#2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 1：Grid 佈局挑戰 (D-Pad Layout Lab)</h4><a id="user-content-任務-1grid-佈局挑戰-d-pad-layout-lab" class="anchor" aria-label="Permalink: 任務 1：Grid 佈局挑戰 (D-Pad Layout Lab)" href="#任務-1grid-佈局挑戰-d-pad-layout-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：打造「旋轉不散架」的堅韌佈局。掌握 CSS Grid 的語義化區塊命名與非對稱網格。</li>
@@ -877,7 +487,7 @@
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 2：觸控區域與物理回饋優化 (Touch Feedback Lab)</h4><a aria-label="Permalink: 任務 2：觸控區域與物理回饋優化 (Touch Feedback Lab)" class="anchor" href="#任務-2觸控區域與物理回饋優化-touch-feedback-lab" id="user-content-任務-2觸控區域與物理回饋優化-touch-feedback-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 2：觸控區域與物理回饋優化 (Touch Feedback Lab)</h4><a id="user-content-任務-2觸控區域與物理回饋優化-touch-feedback-lab" class="anchor" aria-label="Permalink: 任務 2：觸控區域與物理回饋優化 (Touch Feedback Lab)" href="#任務-2觸控區域與物理回饋優化-touch-feedback-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：提升「操作手感」。應用 Fitts's Law 確保熱區足夠大，並透過動畫模擬按鈕被按下去的物理下沉感。</li>
@@ -893,7 +503,7 @@
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 3：沉浸式 FPV 疊加面板支援 (FPV HUD Overlay Lab)</h4><a aria-label="Permalink: 任務 3：沉浸式 FPV 疊加面板支援 (FPV HUD Overlay Lab)" class="anchor" href="#任務-3沉浸式-fpv-疊加面板支援-fpv-hud-overlay-lab" id="user-content-任務-3沉浸式-fpv-疊加面板支援-fpv-hud-overlay-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 3：沉浸式 FPV 疊加面板支援 (FPV HUD Overlay Lab)</h4><a id="user-content-任務-3沉浸式-fpv-疊加面板支援-fpv-hud-overlay-lab" class="anchor" aria-label="Permalink: 任務 3：沉浸式 FPV 疊加面板支援 (FPV HUD Overlay Lab)" href="#任務-3沉浸式-fpv-疊加面板支援-fpv-hud-overlay-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：掌握圖層管理與視覺整合。打造如同專業無人機遙控器的抬頭顯示器 (HUD) 介面。</li>
@@ -909,15 +519,15 @@
 </ul>
 </li>
 </ul>
-<hr/>
-<div class="markdown-heading"><h3 class="heading-element">3. 排版美學與交互精準點評標準 (Aesthetics &amp; Interaction Standards)</h3><a aria-label="Permalink: 3. 排版美學與交互精準點評標準 (Aesthetics &amp; Interaction Standards)" class="anchor" href="#3-排版美學與交互精準點評標準-aesthetics--interaction-standards" id="user-content-3-排版美學與交互精準點評標準-aesthetics--interaction-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr>
+<div class="markdown-heading"><h3 class="heading-element">3. 排版美學與交互精準點評標準 (Aesthetics &amp; Interaction Standards)</h3><a id="user-content-3-排版美學與交互精準點評標準-aesthetics--interaction-standards" class="anchor" aria-label="Permalink: 3. 排版美學與交互精準點評標準 (Aesthetics &amp; Interaction Standards)" href="#3-排版美學與交互精準點評標準-aesthetics--interaction-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>此單元的價值在於 <strong>「對介面幾何結構的掌控力與對使用者肌肉記憶的尊重力」</strong>：</p>
 <ul>
 <li>[ ] <strong>佈局邏輯純度</strong>：CSS 程式碼是否乾淨地使用了 Grid，而非依賴大量的 Margin 補針？</li>
 <li>[ ] <strong>觸控人因合規性</strong>：按鈕是否存在於拇指自然的掃描範圍內？點擊熱區是否符合移動端建議最小標準？</li>
 <li>[ ] <strong>視覺完整度</strong>：當按鈕被連續快速點擊時，動畫與狀態切換是否流暢、不產生閃爍或跳動？</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" class="anchor" href="#-推薦範本結構-github-classroom-template" id="user-content--推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a id="user-content--推薦範本結構-github-classroom-template" class="anchor" aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" href="#-推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <pre lang="text"><code>.
 ├── index.html           # 結構：定義 3x3 控制網格與 FPV 影像掛載點
 ├── style.css            # 樣式：練習 Grid 佈局、Touch Feedback 與 Z-Index 管理
@@ -926,7 +536,8 @@
 └── assets/icons/        # 資源：標準化向量控制圖示 (SVG)
 </code></pre>
 <p>透過這種部署方式，學生能體驗到 <strong>「好的前端介面師，不僅是會排版的人，而是能透視使用者的大拇指軌跡、能為每個像素注入物理生命力、並在複雜的影像疊加中，為使用者創造最絲滑也最直覺的操作儀表板大師」</strong>。掌握 UI 佈局與 CSS 控制面板技術後，學員將擁有了開發「專業級 FPV 駕駛介面、工業機械手操器、以及無人系統控制終端」最核心也最資長的前端開發實力！</p>
-</section>
 
+    </section>
 </body>
+
 </html>

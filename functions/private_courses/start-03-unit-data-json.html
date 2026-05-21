@@ -1,466 +1,236 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>數據格式化：從物件到 JSON | Vibe Coding - Vibe Coding Learn</title>
+    <title>數據格式化：從物件到 JSON | Vibe Coding</title>
+    <link rel="stylesheet" href="/style.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
-    <style>
-        :root {
-            --ms-blue: #0078d4;
-            --ms-blue-dark: #005a9e;
-            --ms-blue-light: #deecf9;
-            --ms-green: #107c10;
-            --ms-red: #d13438;
-            --sidebar-w: 280px;
-        }
-        * { box-sizing: border-box; }
-        body { font-family: 'Inter','Segoe UI',sans-serif; background:#fff; color:#201f1e; margin:0; font-size:15px; line-height:1.6; }
-
-        /* NAV */
-        .ms-topnav { background:var(--ms-blue); height:48px; display:flex; align-items:center; padding:0 20px; gap:16px; position:sticky; top:0; z-index:100; box-shadow:0 1px 4px rgba(0,0,0,.2); }
-        .ms-topnav .brand { color:#fff; font-weight:600; font-size:15px; display:flex; align-items:center; gap:8px; text-decoration:none; }
-        .ms-topnav .divider { width:1px; height:20px; background:rgba(255,255,255,.3); }
-        .ms-topnav .nav-label { color:rgba(255,255,255,.9); font-size:14px; }
-
-        /* LAYOUT */
-        .ms-layout { display:flex; min-height:calc(100vh - 48px); }
-
-        /* SIDEBAR */
-        .ms-sidebar { width:var(--sidebar-w); flex-shrink:0; background:#faf9f8; border-right:1px solid #e1dfdd; display:flex; flex-direction:column; position:sticky; top:48px; height:calc(100vh - 48px); overflow-y:auto; }
-        .ms-sidebar-header { padding:16px 16px 12px; border-bottom:1px solid #e1dfdd; }
-        .ms-sidebar-header .module-label { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:#605e5c; font-weight:600; margin-bottom:4px; }
-        .ms-sidebar-header .module-title { font-size:13px; font-weight:600; color:#201f1e; line-height:1.4; }
-        .ms-sidebar-header .meta { font-size:12px; color:#605e5c; margin-top:6px; }
-        .ms-unit-list { padding:8px 0; }
-        .ms-unit-item { display:flex; align-items:flex-start; gap:10px; padding:8px 16px; cursor:pointer; border-left:3px solid transparent; transition:background .12s,border-color .12s; color:#201f1e; }
-        .ms-unit-item:hover { background:#edebe9; }
-        .ms-unit-item.active { border-left-color:var(--ms-blue); background:#deecf9; }
-        .ms-unit-item.active .unit-name { color:var(--ms-blue); font-weight:600; }
-        .unit-icon { width:20px; height:20px; border-radius:50%; border:2px solid #c8c6c4; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; font-size:10px; background:#fff; }
-        .unit-icon.done { background:var(--ms-green); border-color:var(--ms-green); color:#fff; }
-        .unit-icon.active-icon { border-color:var(--ms-blue); background:var(--ms-blue); color:#fff; }
-        .unit-meta { flex:1; min-width:0; }
-        .unit-name { font-size:13px; line-height:1.4; }
-        .unit-time { font-size:11px; color:#605e5c; margin-top:2px; }
-        .sidebar-progress { padding:12px 16px; border-top:1px solid #e1dfdd; margin-top:auto; }
-        .progress-bar-bg { background:#e1dfdd; border-radius:4px; height:6px; }
-        .progress-bar-fill { background:var(--ms-green); border-radius:4px; height:6px; transition:width .4s; }
-        .progress-text { font-size:12px; color:#605e5c; margin-top:6px; }
-
-        /* MAIN */
-        .ms-content { flex:1; min-width:0; }
-        .ms-breadcrumb { padding:10px 40px; font-size:12px; color:#605e5c; border-bottom:1px solid #e1dfdd; background:#fff; }
-        .ms-breadcrumb a { color:var(--ms-blue); text-decoration:none; }
-        .ms-breadcrumb a:hover { text-decoration:underline; }
-        .ms-breadcrumb span { margin:0 6px; }
-
-        /* PAGES */
-        .ms-unit-page { display:none; }
-        .ms-unit-page.visible { display:block; }
-        .unit-content { max-width:820px; padding:32px 40px 60px; margin:0 auto; }
-        .unit-status-bar { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; padding-bottom:20px; border-bottom:1px solid #e1dfdd; }
-        .unit-completed-badge { display:flex; align-items:center; gap:6px; background:#dff6dd; color:#107c10; font-size:12px; font-weight:600; padding:4px 10px; border-radius:2px; }
-        .unit-time-badge { display:flex; align-items:center; gap:5px; color:#605e5c; font-size:13px; }
-
-        /* TYPOGRAPHY */
-        .unit-content h1 { font-size:28px; font-weight:700; margin:0 0 20px; color:#201f1e; line-height:1.3; }
-        .unit-content h2 { font-size:20px; font-weight:600; margin:36px 0 12px; color:#201f1e; padding-top:8px; }
-        .unit-content h3 { font-size:16px; font-weight:600; margin:24px 0 8px; color:#201f1e; }
-        .unit-content p { margin:0 0 14px; }
-        .unit-content ul, .unit-content ol { margin:0 0 14px; padding-left:28px; }
-        .unit-content li { margin-bottom:6px; }
-        .unit-content strong { font-weight:600; }
-        .unit-content a { color:var(--ms-blue); text-decoration:none; }
-        .unit-content a:hover { text-decoration:underline; }
-        .unit-content code { background:#f3f2f1; border:1px solid #e1dfdd; border-radius:3px; padding:1px 6px; font-family:'Consolas','Courier New',monospace; font-size:13px; color:#a31515; }
-
-        /* CALLOUTS */
-        .ms-note,.ms-tip,.ms-warning,.ms-important { display:flex; gap:12px; padding:12px 16px; border-radius:4px; margin:20px 0; border-left:4px solid; font-size:14px; }
-        .ms-note { background:#deecf9; border-color:var(--ms-blue); }
-        .ms-note .note-icon { color:var(--ms-blue); font-size:16px; flex-shrink:0; margin-top:1px; }
-        .ms-tip { background:#dff6dd; border-color:var(--ms-green); }
-        .ms-tip .note-icon { color:var(--ms-green); font-size:16px; flex-shrink:0; margin-top:1px; }
-        .ms-warning { background:#fff4ce; border-color:#ffaa44; }
-        .ms-warning .note-icon { color:#ffaa44; font-size:16px; flex-shrink:0; margin-top:1px; }
-        .ms-important { background:#fde7e9; border-color:var(--ms-red); }
-        .ms-important .note-icon { color:var(--ms-red); font-size:16px; flex-shrink:0; margin-top:1px; }
-        .note-body strong { display:block; margin-bottom:4px; font-size:13px; text-transform:uppercase; letter-spacing:.04em; }
-
-        /* SCENARIO */
-        .ms-scenario { background:#f3f2f1; border-radius:4px; padding:20px 24px; margin:20px 0; font-style:italic; color:#323130; border-left:4px solid #c8c6c4; }
-        .ms-scenario-label { font-style:normal; font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:#605e5c; margin-bottom:8px; }
-
-        /* STEPS */
-        .ms-steps { margin:16px 0; }
-        .ms-step { display:flex; gap:16px; margin-bottom:20px; align-items:flex-start; }
-        .ms-step-num { width:28px; height:28px; border-radius:50%; background:var(--ms-blue); color:#fff; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-        .ms-step-body { flex:1; }
-        .ms-step-body h4 { font-size:14px; font-weight:600; margin:0 0 4px; }
-        .ms-step-body p { font-size:14px; margin:0; }
-
-        /* TABLE */
-        .ms-table { width:100%; border-collapse:collapse; margin:16px 0; font-size:14px; }
-        .ms-table th { background:#f3f2f1; font-weight:600; text-align:left; padding:10px 14px; border:1px solid #e1dfdd; color:#323130; }
-        .ms-table td { padding:9px 14px; border:1px solid #e1dfdd; vertical-align:top; }
-        .ms-table tr:nth-child(even) td { background:#faf9f8; }
-
-        /* CHECKLIST */
-        .ms-checklist { list-style:none; padding:0; margin:12px 0; }
-        .ms-checklist li { display:flex; align-items:flex-start; gap:10px; padding:6px 0; font-size:14px; }
-        .ms-checklist li .check-box { width:18px; height:18px; border:2px solid #8a8886; border-radius:2px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; cursor:pointer; transition:all .15s; }
-        .ms-checklist li .check-box.checked { background:var(--ms-blue); border-color:var(--ms-blue); color:#fff; }
-
-        /* CODE BLOCK */
-        .ms-code { background:#1e1e1e; border-radius:6px; padding:16px; margin:16px 0; font-family:'Consolas','Courier New',monospace; font-size:13px; line-height:1.7; overflow-x:auto; }
-        .ms-code .lang-label { font-size:11px; color:#858585; margin-bottom:8px; display:block; }
-        .ms-code .c-comment { color:#6a9955; }
-        .ms-code .c-str { color:#ce9178; }
-        .ms-code .c-kw { color:#569cd6; }
-        .ms-code .c-fn { color:#dcdcaa; }
-        .ms-code .c-white { color:#d4d4d4; }
-        .ms-code .c-teal { color:#4ec9b0; }
-        .ms-code .c-prompt { color:#608b4e; }
-
-        /* VIDEO */
-        .ms-video-embed { border-radius:4px; overflow:hidden; margin:20px 0; box-shadow:0 2px 8px rgba(0,0,0,.12); aspect-ratio:16/9; }
-        .ms-video-embed iframe { width:100%; height:100%; display:block; border:0; }
-
-        /* BUTTONS */
-        .ms-btn { background:var(--ms-blue); color:#fff; border:none; padding:7px 18px; font-size:14px; font-weight:600; border-radius:2px; cursor:pointer; transition:background .12s; font-family:inherit; }
-        .ms-btn:hover { background:var(--ms-blue-dark); }
-        .ms-btn-ghost { background:transparent; color:var(--ms-blue); border:1px solid var(--ms-blue); padding:6px 18px; font-size:14px; font-weight:600; border-radius:2px; cursor:pointer; transition:background .12s; font-family:inherit; }
-        .ms-btn-ghost:hover { background:var(--ms-blue-light); }
-
-        /* NAV BUTTONS */
-        .unit-nav { display:flex; justify-content:space-between; align-items:center; padding:24px 40px; border-top:1px solid #e1dfdd; max-width:820px; margin:0 auto; }
-        .nav-btn-prev, .nav-btn-next { display:flex; align-items:center; gap:8px; padding:8px 20px; font-size:14px; font-weight:600; border-radius:2px; cursor:pointer; border:1px solid; font-family:inherit; transition:background .12s; }
-        .nav-btn-next { background:var(--ms-blue); color:#fff; border-color:var(--ms-blue); }
-        .nav-btn-next:hover { background:var(--ms-blue-dark); border-color:var(--ms-blue-dark); }
-        .nav-btn-prev { background:#fff; color:var(--ms-blue); border-color:var(--ms-blue); }
-        .nav-btn-prev:hover { background:var(--ms-blue-light); }
-        .unit-page-indicator { font-size:13px; color:#605e5c; }
-
-        /* INDEX */
-        .module-meta-tags { display:flex; flex-wrap:wrap; gap:8px; margin:16px 0; }
-        .ms-tag { background:#f3f2f1; color:#323130; font-size:12px; padding:4px 10px; border-radius:12px; font-weight:500; }
-        .ms-tag.blue { background:#deecf9; color:var(--ms-blue-dark); }
-        .ms-tag.green { background:#dff6dd; color:#107c10; }
-        .unit-card-list { margin:20px 0; }
-        .unit-card { display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid #f3f2f1; cursor:pointer; }
-        .unit-card:last-child { border-bottom:none; }
-        .unit-card:hover .unit-card-name { color:var(--ms-blue); text-decoration:underline; }
-        .unit-card-num { width:32px; height:32px; border-radius:50%; background:#f3f2f1; color:#605e5c; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-        .unit-card.quiz .unit-card-num { background:#fff4ce; color:#8a6914; }
-        .unit-card.lab .unit-card-num { background:#eef6ff; color:var(--ms-blue-dark); }
-        .unit-card-info { flex:1; }
-        .unit-card-name { font-size:15px; font-weight:500; }
-        .unit-card-time { font-size:12px; color:#605e5c; margin-top:2px; }
-        .unit-card-arrow { color:#c8c6c4; font-size:14px; }
-
-        /* LAB CARD */
-        .ms-lab-card { background:linear-gradient(135deg,#eef6ff 0%,#f5f0ff 100%); border:1px solid #c7e0f4; border-radius:6px; padding:24px; margin:20px 0; }
-        .ms-lab-card h3 { margin:0 0 12px; color:var(--ms-blue-dark); }
-        .ms-lab-badge { display:inline-flex; align-items:center; gap:6px; background:var(--ms-blue); color:#fff; font-size:11px; font-weight:700; padding:3px 10px; border-radius:12px; text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px; }
-        .ms-lab-time { font-size:12px; color:#605e5c; margin-left:8px; }
-
-        /* QUIZ */
-        .quiz-question { margin-bottom:32px; }
-        .quiz-question p { font-size:15px; font-weight:500; margin-bottom:14px; }
-        .quiz-option { display:flex; align-items:flex-start; gap:10px; padding:10px 14px; border:1px solid #e1dfdd; border-radius:4px; margin-bottom:8px; cursor:pointer; transition:background .1s,border-color .1s; font-size:14px; }
-        .quiz-option:hover { background:#f3f2f1; border-color:#c8c6c4; }
-        .quiz-option input[type=radio] { margin-top:2px; accent-color:var(--ms-blue); flex-shrink:0; }
-        .quiz-option.correct { background:#dff6dd; border-color:var(--ms-green); }
-        .quiz-option.wrong { background:#fde7e9; border-color:var(--ms-red); }
-        .quiz-feedback { display:none; margin-top:8px; padding:10px 14px; border-radius:4px; font-size:13px; font-weight:500; }
-        .quiz-feedback.correct { background:#dff6dd; color:#107c10; display:block; }
-        .quiz-feedback.wrong { background:#fde7e9; color:#d13438; display:block; }
-
-        /* RESOURCE */
-        .ms-resource-link { display:flex; align-items:center; gap:10px; padding:12px 16px; border:1px solid #e1dfdd; border-radius:4px; margin-bottom:8px; text-decoration:none; color:#201f1e; font-size:14px; transition:background .1s; }
-        .ms-resource-link:hover { background:#f3f2f1; }
-        .ms-resource-link i { color:var(--ms-blue); font-size:18px; width:24px; text-align:center; flex-shrink:0; }
-
-        /* ACHIEVEMENT */
-        .ms-achievement { background:linear-gradient(135deg,#0078d4 0%,#005a9e 100%); color:#fff; border-radius:6px; padding:24px 28px; margin:24px 0; display:flex; align-items:center; gap:20px; }
-        .achievement-icon { font-size:48px; flex-shrink:0; }
-        .achievement-text h3 { margin:0 0 4px; font-size:18px; }
-        .achievement-text p { margin:0; font-size:14px; opacity:.9; }
-
-        /* WORKFLOW VISUAL */
-        .workflow-steps { display:flex; align-items:stretch; gap:0; margin:20px 0; overflow-x:auto; }
-        .workflow-step { flex:1; min-width:100px; display:flex; flex-direction:column; align-items:center; position:relative; }
-        .workflow-step:not(:last-child)::after { content:'›'; position:absolute; right:-10px; top:22px; font-size:22px; color:#c8c6c4; z-index:1; }
-        .ws-circle { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; margin-bottom:10px; flex-shrink:0; }
-        .ws-label { font-size:13px; font-weight:600; text-align:center; margin-bottom:4px; }
-        .ws-desc { font-size:11px; color:#605e5c; text-align:center; line-height:1.4; }
-
-        /* SKILL MATRIX */
-        .skill-row { display:flex; gap:12px; align-items:flex-start; padding:14px 0; border-bottom:1px solid #f3f2f1; }
-        .skill-row:last-child { border-bottom:none; }
-        .skill-badge { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700; padding:3px 10px; border-radius:12px; white-space:nowrap; flex-shrink:0; min-width:90px; justify-content:center; }
-        .skill-body { flex:1; }
-        .skill-body h4 { font-size:14px; font-weight:600; margin:0 0 3px; }
-        .skill-body p { font-size:13px; color:#605e5c; margin:0; }
-
-        /* TASK SECTION HEADER */
-        .task-section-header { display:flex; align-items:center; gap:10px; padding:10px 0 10px; margin-top:28px; border-bottom:2px solid #e1dfdd; margin-bottom:16px; }
-        .task-section-header .num { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#fff; flex-shrink:0; }
-        .task-section-header h3 { font-size:16px; font-weight:700; margin:0; }
-
-        @media (max-width:768px) {
-            .ms-sidebar { display:none; }
-            .unit-content { padding:20px 16px 40px; }
-            .unit-nav { padding:16px; }
-            .ms-breadcrumb { padding:8px 16px; }
-            .workflow-steps { flex-direction:column; }
-            .workflow-step::after { display:none; }
-        }
-    </style>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
 </head>
-<body>
 
-<nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
-    <div class="divider"></div>
-    <span class="nav-label">入門課程單元</span>
-</nav>
+<body class="flex flex-col min-h-screen bg-slate-50 font-sans">
 
-<div class="ms-layout">
-    <aside class="ms-sidebar">
-        <div class="ms-sidebar-header">
-            <div class="module-label">模組</div>
-            <div class="module-title">數據格式化：從物件到 JSON | Vibe Coding</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 58 分鐘 · 4 個單元</div>
-        </div>
-        <nav class="ms-unit-list" id="sidebar-nav"></nav>
-        <div class="sidebar-progress">
-            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
-            <div class="progress-text" id="progress-text">0 / 4 已完成</div>
-        </div>
-    </aside>
+    <!-- Hero Section -->
+    <header
+        class="relative bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white pt-24 pb-32 overflow-hidden">
+        <div class="header-overlay absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-90"></div>
+        <div class="container mx-auto px-4 relative z-10 pt-20 pb-20 text-center text-white">
+            <div
+                class="badge-header bg-white/20 text-white border border-white/30 backdrop-blur-sm inline-block px-3 py-1 rounded-full text-xs font-bold mb-3 tracking-wide uppercase">
+                Learning 2
+            </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight leading-tight">
+                數據格式化：<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-200 to-purple-200">從物件到
+                    JSON</span>
+            </h1>
+            <p class="text-xl text-purple-100 max-w-2xl mx-auto leading-relaxed mb-10">
+                為什麼我們需要 JSON？學習如何將搖桿座標與按鈕狀態，轉換為 ESP32 能聽懂的通用語言。
+            </p>
 
-    <main class="ms-content">
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">入門課程單元</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
-
-        
-        <!-- ══════════ PAGE 0: INDEX ══════════ -->
-        <div class="ms-unit-page visible" id="page-index">
-            <div class="unit-content">
-                <h1>數據格式化：從物件到 JSON | Vibe Coding</h1>
-                <div class="module-meta-tags">
-                    <span class="ms-tag">模組</span>
-                    <span class="ms-tag">4 個單元</span>
-                    <span class="ms-tag green">入門</span>
-                    <span class="ms-tag blue">前端開發</span>
-                    <span class="ms-tag blue">物聯網</span>
-                </div>
-                <p>
-                    為什麼我們需要 JSON？學習如何將搖桿座標與按鈕狀態，轉換為 ESP32 能聽懂的通用語言。
-                </p>
-                <h2>學習目標</h2>
-                <ul>
-                    <li>說明與實作「<strong>基礎封裝</strong>」的實作與驗證。</li>
-<li>說明與實作「<strong>封包瘦身</strong>」的實作與驗證。</li>
-<li>說明與實作「<strong>狀態機組合</strong>」的實作與驗證。</li>
-                </ul>
-                <h2>必要條件</h2>
-                <ul>
-                    <li>擁有基礎 HTML/CSS 與 JavaScript 知識</li>
-                    <li>準備好您的開發環境與設備</li>
-                </ul>
-                <h2>本模組單元</h2>
-                <div class="unit-card-list" id="index-unit-list"></div>
-                <div style="margin-top:32px;"><button class="ms-btn" onclick="goToUnit(1)">開始模組 &nbsp;›</button></div>
+            <div class="flex flex-wrap justify-center gap-4">
+                <button onclick="enterMediaMode('video', window.RESOURCES.video)"
+                    class="resource-btn bg-pink-500 hover:bg-pink-400 text-white px-6 py-3 rounded-full flex items-center gap-2 shadow-lg font-bold transition">
+                    <span>📺</span> 觀看教學影片
+                </button>
+                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
+                    class="resource-btn bg-white/10 hover:bg-white/20 border border-white/20 text-white px-6 py-3 rounded-full flex items-center gap-2 backdrop-blur-sm font-bold transition">
+                    <span>📄</span> 閱讀課程講義
+                </button>
             </div>
         </div>
-        
-        <!-- ══════════ PAGE 1: 🧪
-                
-                1. 課前體驗 ══════════ -->
-        <div class="ms-unit-page" id="page-1">
-            <div class="unit-content">
-                <div class="unit-status-bar">
-                    <div class="unit-completed-badge" id="badge-1" style="display:none"><i class="fas fa-check"></i> 已完成</div>
-                    <div></div>
-                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+    </header>
+
+    <div class="container mx-auto px-4 py-8 flex-grow max-w-5xl">
+        <!-- Old Header Removed -->
+
+        <!-- 1. 直覺實驗室 -->
+        <div class="section-card bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 mb-8">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center text-xl">🧪
                 </div>
-                <h1>🧪
-                
-                1. 課前體驗：為什麼是 JSON？</h1>
-                <div class="grid md:grid-cols-2 gap-10">
-<div>
-<p class="text-slate-600 mb-4 leading-relaxed">
+                1. 課前體驗：為什麼是 JSON？
+            </h2>
+            <div class="grid md:grid-cols-2 gap-10">
+                <div>
+                    <p class="text-slate-600 mb-4 leading-relaxed">
                         想像你要傳送「向左轉，速度 100」給無人車。如果只是單純拼接字串，接收端會很難解析。
                         JSON 因應而生，它像是一個標準化的包裹，讓發送端 (Web) 與接收端 (ESP32) 都能精準理解。
                     </p>
-<div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-4">
-<h3 class="font-bold text-slate-700 mb-2 text-sm">⛔ 如果用字串拼接...</h3>
-<div class="font-mono text-sm text-slate-500 bg-white p-2 rounded border border-slate-200">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-4">
+                        <h3 class="font-bold text-slate-700 mb-2 text-sm">⛔ 如果用字串拼接...</h3>
+                        <div class="font-mono text-sm text-slate-500 bg-white p-2 rounded border border-slate-200">
                             "L-100-MOVE" <span class="text-red-400">← 順序錯了就完了！</span>
-</div>
-</div>
-<div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100">
-<h3 class="font-bold text-indigo-800 mb-2 text-sm">✅ 使用 JSON 標準格式</h3>
-<div class="font-mono text-sm text-indigo-600 bg-white p-2 rounded border border-indigo-100">
+                        </div>
+                    </div>
+                    <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100">
+                        <h3 class="font-bold text-indigo-800 mb-2 text-sm">✅ 使用 JSON 標準格式</h3>
+                        <div class="font-mono text-sm text-indigo-600 bg-white p-2 rounded border border-indigo-100">
                             {"dir": "L", "speed": 100} <span class="text-green-600 text-xs ml-2">← 清晰明確</span>
-</div>
-</div>
-</div>
-<!-- Interactive: JSON Handwriting -->
-<div class="bg-slate-800 rounded-xl p-5 text-white shadow-lg relative overflow-hidden">
-<div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">📝</div>
-<h3 class="font-bold text-emerald-400 mb-1 flex justify-between items-center">
-<span>線上任務：手寫 JSON</span>
-<span class="text-xs bg-emerald-900 text-emerald-300 px-2 py-1 rounded" id="lab-score">0/1</span>
-</h3>
-<p class="text-xs text-slate-400 mb-4">請觀察目標物件，手寫出正確的 JSON 字串 (注意雙引號！)</p>
-<div class="mb-3">
-<div class="text-xs text-slate-500 mb-1">目標物件 (Object):</div>
-<div class="font-mono text-sm text-yellow-300 bg-slate-900 p-2 rounded border border-slate-700">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive: JSON Handwriting -->
+                <div class="bg-slate-800 rounded-xl p-5 text-white shadow-lg relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">📝</div>
+                    <h3 class="font-bold text-emerald-400 mb-1 flex justify-between items-center">
+                        <span>線上任務：手寫 JSON</span>
+                        <span id="lab-score"
+                            class="text-xs bg-emerald-900 text-emerald-300 px-2 py-1 rounded">0/1</span>
+                    </h3>
+                    <p class="text-xs text-slate-400 mb-4">請觀察目標物件，手寫出正確的 JSON 字串 (注意雙引號！)</p>
+
+                    <div class="mb-3">
+                        <div class="text-xs text-slate-500 mb-1">目標物件 (Object):</div>
+                        <div class="font-mono text-sm text-yellow-300 bg-slate-900 p-2 rounded border border-slate-700">
                             { x: 50, y: -20, cmd: "LOCK" }
                         </div>
-</div>
-<div>
-<div class="text-xs text-slate-500 mb-1">你的 JSON (String):</div>
-<input class="w-full bg-slate-700 border border-slate-600 rounded p-2 text-sm font-mono text-white placeholder-slate-500 focus:outline-none focus:border-pink-500 transition" id="json-input" placeholder='{"x": 50...}' type="text"/>
-<div class="h-6 mt-1 text-xs font-bold transition-all duration-300" id="json-feedback"></div>
-</div>
-</div>
-</div>
-            </div>
-            <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 4</span>
-                <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
+                    </div>
+
+                    <div>
+                        <div class="text-xs text-slate-500 mb-1">你的 JSON (String):</div>
+                        <input type="text" id="json-input" placeholder='{"x": 50...}'
+                            class="w-full bg-slate-700 border border-slate-600 rounded p-2 text-sm font-mono text-white placeholder-slate-500 focus:outline-none focus:border-pink-500 transition">
+                        <div id="json-feedback" class="h-6 mt-1 text-xs font-bold transition-all duration-300"></div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 2: 🧠
-                
-                2. 核心原理 ══════════ -->
-        <div class="ms-unit-page" id="page-2">
-            <div class="unit-content">
-                <div class="unit-status-bar">
-                    <div class="unit-completed-badge" id="badge-2" style="display:none"><i class="fas fa-check"></i> 已完成</div>
-                    <div></div>
-                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+        <!-- 2. 核心原理 -->
+        <div class="section-card bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 mb-8">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl">🧠
                 </div>
-                <h1>🧠
-                
-                2. 核心原理：JSON.stringify 與 ESP32 解析</h1>
-                <div class="grid md:grid-cols-2 gap-8 mb-8">
-<!-- JS Side -->
-<div>
-<h3 class="text-lg font-bold text-slate-700 mb-3 border-l-4 border-yellow-400 pl-3">JavaScript 端：序列化
+                2. 核心原理：JSON.stringify 與 ESP32 解析
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                <!-- JS Side -->
+                <div>
+                    <h3 class="text-lg font-bold text-slate-700 mb-3 border-l-4 border-yellow-400 pl-3">JavaScript 端：序列化
                     </h3>
-<p class="text-slate-600 text-sm mb-4">
-<code class="bg-slate-100 px-1 rounded text-pink-600 font-mono">JSON.stringify()</code>
+                    <p class="text-slate-600 text-sm mb-4">
+                        <code class="bg-slate-100 px-1 rounded text-pink-600 font-mono">JSON.stringify()</code>
                         是我們最強大的助手。但要注意，它會<b>過濾</b>掉它不認識的東西！
                     </p>
-<div class="bg-slate-900 rounded-lg overflow-hidden text-sm font-mono leading-relaxed shadow-lg">
-<div class="bg-slate-800 px-4 py-2 text-slate-400 text-xs border-b border-slate-700 flex justify-between">
-<span>console.js</span>
-<span>🔴 Live Demo</span>
-</div>
-<div class="p-4">
-<div class="text-purple-400">const</div>
-<div class="text-blue-300 inline">data</div> = {<br/>
-                              speed: <span class="text-orange-400">100</span>,<br/>
-                              func: <span class="text-purple-400">() =&gt; {}</span>, <span class="text-slate-500">// 🙈 會消失</span><br/>
-                              val: <span class="text-purple-400">undefined</span> <span class="text-slate-500">// 🙈 會消失</span><br/>
-                            };<br/><br/>
-<div class="text-yellow-300">JSON.stringify(data)</div><br/>
-<span class="text-green-400">↳ "{"speed":100}"</span>
-</div>
-</div>
-</div>
-<!-- ESP32 Side -->
-<div>
-<h3 class="text-lg font-bold text-slate-700 mb-3 border-l-4 border-blue-400 pl-3">ESP32
+
+                    <div class="bg-slate-900 rounded-lg overflow-hidden text-sm font-mono leading-relaxed shadow-lg">
+                        <div
+                            class="bg-slate-800 px-4 py-2 text-slate-400 text-xs border-b border-slate-700 flex justify-between">
+                            <span>console.js</span>
+                            <span>🔴 Live Demo</span>
+                        </div>
+                        <div class="p-4">
+                            <div class="text-purple-400">const</div>
+                            <div class="text-blue-300 inline">data</div> = {<br>
+                            &nbsp;&nbsp;speed: <span class="text-orange-400">100</span>,<br>
+                            &nbsp;&nbsp;func: <span class="text-purple-400">() => {}</span>, <span
+                                class="text-slate-500">// 🙈 會消失</span><br>
+                            &nbsp;&nbsp;val: <span class="text-purple-400">undefined</span> <span
+                                class="text-slate-500">// 🙈 會消失</span><br>
+                            };<br><br>
+                            <div class="text-yellow-300">JSON.stringify(data)</div><br>
+                            <span class="text-green-400">↳ "{"speed":100}"</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ESP32 Side -->
+                <div>
+                    <h3 class="text-lg font-bold text-slate-700 mb-3 border-l-4 border-blue-400 pl-3">ESP32
                         端：ArduinoJson</h3>
-<p class="text-slate-600 text-sm mb-4">
-                        微控制器沒有無限的記憶體。使用 <code class="bg-slate-100 px-1 rounded text-blue-600 font-mono">StaticJsonDocument</code>
+                    <p class="text-slate-600 text-sm mb-4">
+                        微控制器沒有無限的記憶體。使用 <code
+                            class="bg-slate-100 px-1 rounded text-blue-600 font-mono">StaticJsonDocument</code>
                         來預先配置固定的記憶體空間，避免記憶體碎片化。
                     </p>
-<div class="bg-blue-50 rounded-xl p-4 border border-blue-100 relative">
-<div class="absolute -top-3 left-6 px-2 bg-blue-100 text-blue-700 text-xs font-bold rounded">C++
+
+                    <div class="bg-blue-50 rounded-xl p-4 border border-blue-100 relative">
+                        <div class="absolute -top-3 left-6 px-2 bg-blue-100 text-blue-700 text-xs font-bold rounded">C++
                             / Arduino</div>
-<div class="mt-2 space-y-3">
-<div class="flex items-center gap-2 text-sm text-slate-700">
-<span class="p-1.5 bg-white border border-slate-200 rounded font-mono text-xs shadow-sm">String
+                        <div class="mt-2 space-y-3">
+                            <div class="flex items-center gap-2 text-sm text-slate-700">
+                                <span
+                                    class="p-1.5 bg-white border border-slate-200 rounded font-mono text-xs shadow-sm">String
                                     input</span>
-<span class="text-slate-400">➔</span>
-<span class="font-mono text-xs text-orange-600">"{\"cmd\":\"move\"}"</span>
-</div>
-<div class="flex items-center gap-2 text-sm text-slate-700">
-<span class="p-1.5 bg-white border border-slate-200 rounded font-mono text-xs shadow-sm">Deserialization</span>
-<span class="text-slate-400">➔</span>
-<div class="bg-slate-800 text-white text-xs p-2 rounded font-mono w-full">
-                                    StaticJsonDocument&lt;200&gt; doc;<br/>
-                                    deserializeJson(doc, input);<br/>
-<span class="text-purple-300">const char*</span> cmd = doc["cmd"];
+                                <span class="text-slate-400">➔</span>
+                                <span class="font-mono text-xs text-orange-600">"{\"cmd\":\"move\"}"</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm text-slate-700">
+                                <span
+                                    class="p-1.5 bg-white border border-slate-200 rounded font-mono text-xs shadow-sm">Deserialization</span>
+                                <span class="text-slate-400">➔</span>
+                                <div class="bg-slate-800 text-white text-xs p-2 rounded font-mono w-full">
+                                    StaticJsonDocument&lt;200&gt; doc;<br>
+                                    deserializeJson(doc, input);<br>
+                                    <span class="text-purple-300">const char*</span> cmd = doc["cmd"];
                                 </div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="bg-yellow-50 p-4 rounded-xl border border-yellow-100">
-<h4 class="font-bold text-yellow-800 text-sm flex items-center gap-2 mb-2">
-<span>💡 key-Value 設計思維</span>
-</h4>
-<p class="text-slate-700 text-sm">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-yellow-50 p-4 rounded-xl border border-yellow-100">
+                <h4 class="font-bold text-yellow-800 text-sm flex items-center gap-2 mb-2">
+                    <span>💡 key-Value 設計思維</span>
+                </h4>
+                <p class="text-slate-700 text-sm">
                     為什麼不直接傳送 "前進"？因為中文編碼複雜且佔用頻寬。使用
-                    <code class="bg-white px-1 border rounded text-slate-600 font-mono">{"cmd": "move", "val": 255}</code>
+                    <code
+                        class="bg-white px-1 border rounded text-slate-600 font-mono">{"cmd": "move", "val": 255}</code>
                     能兼顧<b>人類可讀性</b>與<b>機器解析效率</b>。
                 </p>
-</div>
-            </div>
-            <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 4</span>
-                <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 3: 實作挑戰 ══════════ -->
-        <div class="ms-unit-page" id="page-3">
-            <div class="unit-content">
-                <div class="unit-status-bar">
-                    <div class="unit-completed-badge" id="badge-3" style="display:none"><i class="fas fa-check"></i> 已完成</div>
-                    <div></div>
-                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 45 分鐘</div>
-                </div>
-                <h1>🚀
-                3. 實戰挑戰：封包瘦身與動態組合</h1>
-                <div class="mb-6">
-<div class="flex gap-2 border-b border-slate-200" id="challenge-tabs">
-<button class="px-4 py-2 text-sm font-bold text-purple-600 border-b-2 border-purple-600 focus:outline-none" data-tab="c1">
+        <!-- 3. 實戰挑戰 -->
+        <div class="section-card bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+                <div
+                    class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl">
+                    🚀</div>
+                3. 實戰挑戰：封包瘦身與動態組合
+            </h2>
+
+            <div class="mb-6">
+                <div class="flex gap-2 border-b border-slate-200" id="challenge-tabs">
+                    <button
+                        class="px-4 py-2 text-sm font-bold text-purple-600 border-b-2 border-purple-600 focus:outline-none"
+                        data-tab="c1">
                         挑戰 1: 基礎封裝
                     </button>
-<button class="px-4 py-2 text-sm font-medium text-slate-500 hover:text-purple-600 focus:outline-none" data-tab="c2">
+                    <button
+                        class="px-4 py-2 text-sm font-medium text-slate-500 hover:text-purple-600 focus:outline-none"
+                        data-tab="c2">
                         挑戰 2: 封包瘦身
                     </button>
-<button class="px-4 py-2 text-sm font-medium text-slate-500 hover:text-purple-600 focus:outline-none" data-tab="c3">
+                    <button
+                        class="px-4 py-2 text-sm font-medium text-slate-500 hover:text-purple-600 focus:outline-none"
+                        data-tab="c3">
                         挑戰 3: 狀態機組合
                     </button>
-</div>
-</div>
- Challenge 1 
-<div class="challenge-content" id="content-c1">
-<p class="text-slate-600 mb-4 text-sm">
-<b>目標：</b> 撰寫一個函式 <code class="font-mono text-pink-600">createPacket(id)</code>，
+                </div>
+            </div>
+
+            <!-- Challenge 1 -->
+            <div id="content-c1" class="challenge-content">
+                <p class="text-slate-600 mb-4 text-sm">
+                    <b>目標：</b> 撰寫一個函式 <code class="font-mono text-pink-600">createPacket(id)</code>，
                     接收按鈕 ID，回傳一個包含 <code class="font-mono">timestamp</code> (當下時間戳記) 的 JSON 字串。
                 </p>
-<div class="bg-slate-900 rounded-lg p-4 font-mono text-sm shadow-inner relative group">
-<textarea class="w-full h-32 bg-transparent text-slate-300 focus:outline-none resize-none" id="code-c1" spellcheck="false">
+                <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm shadow-inner relative group">
+                    <textarea id="code-c1"
+                        class="w-full h-32 bg-transparent text-slate-300 focus:outline-none resize-none"
+                        spellcheck="false">
 function createPacket(btnId) {
     const data = {
         // 在此實作物件內容
@@ -468,196 +238,158 @@ function createPacket(btnId) {
     };
     return JSON.stringify(data);
 }</textarea>
-<button class="absolute bottom-4 right-4 bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded text-xs font-bold shadow transition" onclick="checkC1()">
+                    <button onclick="checkC1()"
+                        class="absolute bottom-4 right-4 bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded text-xs font-bold shadow transition">
                         提交執行 ▶
                     </button>
-</div>
-<div class="mt-2 text-sm font-mono h-6 transition-all transform" id="result-c1"></div>
-</div>
- Challenge 2 
-<div class="challenge-content hidden" id="content-c2">
-<p class="text-slate-600 mb-4 text-sm">
-<b>目標：</b> 原始封包太大了！請將 Key Name 簡化以減少字元數。<br/>
-<span class="text-xs text-slate-400">規則：command -&gt; c, velocity -&gt; v</span>
-</p>
-<div class="flex items-center gap-4 mb-4">
-<div class="flex-1 bg-red-50 p-3 rounded border border-red-100 opacity-60">
-<div class="text-xs text-red-500 font-bold mb-1">原始 (Original)</div>
-<div class="font-mono text-xs text-slate-600">{"command":"move_forward","velocity":255}</div>
-<div class="text-xs text-slate-400 mt-1">Length: 40</div>
-</div>
-<div class="text-slate-300">➡</div>
-<div class="flex-1 bg-green-50 p-3 rounded border border-green-100">
-<div class="text-xs text-green-600 font-bold mb-1">目標 (Optimized)</div>
-<div class="font-mono text-xs text-slate-600">{"c":"f","v":255}</div>
-<div class="text-xs text-slate-400 mt-1">Length: 15 (節省 ~60%!)</div>
-</div>
-</div>
-<div class="bg-slate-900 rounded-lg p-4 font-mono text-sm shadow-inner relative">
-<textarea class="w-full h-24 bg-transparent text-slate-300 focus:outline-none resize-none" id="code-c2" spellcheck="false">
+                </div>
+                <div id="result-c1" class="mt-2 text-sm font-mono h-6 transition-all transform"></div>
+            </div>
+
+            <!-- Challenge 2 -->
+            <div id="content-c2" class="challenge-content hidden">
+                <p class="text-slate-600 mb-4 text-sm">
+                    <b>目標：</b> 原始封包太大了！請將 Key Name 簡化以減少字元數。<br>
+                    <span class="text-xs text-slate-400">規則：command -> c, velocity -> v</span>
+                </p>
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="flex-1 bg-red-50 p-3 rounded border border-red-100 opacity-60">
+                        <div class="text-xs text-red-500 font-bold mb-1">原始 (Original)</div>
+                        <div class="font-mono text-xs text-slate-600">{"command":"move_forward","velocity":255}</div>
+                        <div class="text-xs text-slate-400 mt-1">Length: 40</div>
+                    </div>
+                    <div class="text-slate-300">➡</div>
+                    <div class="flex-1 bg-green-50 p-3 rounded border border-green-100">
+                        <div class="text-xs text-green-600 font-bold mb-1">目標 (Optimized)</div>
+                        <div class="font-mono text-xs text-slate-600">{"c":"f","v":255}</div>
+                        <div class="text-xs text-slate-400 mt-1">Length: 15 (節省 ~60%!)</div>
+                    </div>
+                </div>
+                <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm shadow-inner relative">
+                    <textarea id="code-c2"
+                        class="w-full h-24 bg-transparent text-slate-300 focus:outline-none resize-none"
+                        spellcheck="false">
 const packet = { 
     c: "f", 
     v: 255 
 };
 return JSON.stringify(packet);</textarea>
-<button class="absolute bottom-4 right-4 bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded text-xs font-bold shadow transition" onclick="checkC2()">
+                    <button onclick="checkC2()"
+                        class="absolute bottom-4 right-4 bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded text-xs font-bold shadow transition">
                         計算大小 ▶
                     </button>
-</div>
-<div class="mt-2 text-sm font-mono h-6 transition-all text-emerald-600 font-bold" id="result-c2"></div>
-</div>
- Challenge 3 
-<div class="challenge-content hidden" id="content-c3">
-<p class="text-slate-600 mb-4 text-sm">
-<b>目標：</b> 實作巢狀物件。同時包含搖桿座標 (joy) 與按鈕狀態 (btn)。
+                </div>
+                <div id="result-c2" class="mt-2 text-sm font-mono h-6 transition-all text-emerald-600 font-bold"></div>
+            </div>
+
+            <!-- Challenge 3 -->
+            <div id="content-c3" class="challenge-content hidden">
+                <p class="text-slate-600 mb-4 text-sm">
+                    <b>目標：</b> 實作巢狀物件。同時包含搖桿座標 (joy) 與按鈕狀態 (btn)。
                 </p>
-<div class="bg-slate-50 p-3 border border-slate-200 rounded text-xs font-mono text-slate-500 mb-3">
+                <div class="bg-slate-50 p-3 border border-slate-200 rounded text-xs font-mono text-slate-500 mb-3">
                     Ref format: {"joy":{"x":10,"y":-5},"btn":{"a":1}}
                 </div>
-<div class="bg-slate-900 rounded-lg p-4 font-mono text-sm shadow-inner relative">
-<textarea class="w-full h-32 bg-transparent text-slate-300 focus:outline-none resize-none" id="code-c3" spellcheck="false">
+                <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm shadow-inner relative">
+                    <textarea id="code-c3"
+                        class="w-full h-32 bg-transparent text-slate-300 focus:outline-none resize-none"
+                        spellcheck="false">
 const complexData = {
     // 實作 joy (x:10, y:-5) 和 btn (a:1)
     
 };
 return JSON.stringify(complexData);</textarea>
-<button class="absolute bottom-4 right-4 bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded text-xs font-bold shadow transition" onclick="checkC3()">
+                    <button onclick="checkC3()"
+                        class="absolute bottom-4 right-4 bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded text-xs font-bold shadow transition">
                         驗證結構 ▶
                     </button>
-</div>
-<div class="mt-2 text-sm font-mono h-6 transition-all text-emerald-600 font-bold" id="result-c3"></div>
-</div>
- Submission Section 
-<div class="mt-12 border-t border-slate-200 pt-8">
-<h3 class="text-xl font-bold text-slate-800 mb-6 text-center">📤 繳交挑戰成果</h3>
-<div class="grid md:grid-cols-3 gap-6">
-<!-- Task 1 -->
-<div class="bg-slate-50 rounded-xl border border-slate-200 p-5 cursor-pointer relative group hover:bg-white hover:shadow-lg transition-all ms-lab-card" onclick="openSubmissionModal('data-json-task-1', '挑戰 1: 基礎封裝')">
-<div class="flex items-center gap-3 mb-2">
-<div class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-sm">
+                </div>
+                <div id="result-c3" class="mt-2 text-sm font-mono h-6 transition-all text-emerald-600 font-bold"></div>
+            </div>
+            <!-- Submission Section -->
+            <div class="mt-12 border-t border-slate-200 pt-8">
+                <h3 class="text-xl font-bold text-slate-800 mb-6 text-center">📤 繳交挑戰成果</h3>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Task 1 -->
+                    <div onclick="openSubmissionModal('data-json-task-1', '挑戰 1: 基礎封裝')"
+                        class="bg-slate-50 rounded-xl border border-slate-200 p-5 cursor-pointer relative group hover:bg-white hover:shadow-lg transition-all">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div
+                                class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-sm">
                                 1</div>
-<h4 class="font-bold text-slate-700">基礎封裝</h4>
-</div>
-<p class="text-xs text-slate-500 mb-3">提交 createPacket 的程式碼或截圖。</p>
-<!-- Hover Overlay -->
-<div class="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-<span class="bg-white text-purple-600 px-3 py-1 rounded-full font-bold shadow text-xs">
+                            <h4 class="font-bold text-slate-700">基礎封裝</h4>
+                        </div>
+                        <p class="text-xs text-slate-500 mb-3">提交 createPacket 的程式碼或截圖。</p>
+                        <!-- Hover Overlay -->
+                        <div
+                            class="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                            <span class="bg-white text-purple-600 px-3 py-1 rounded-full font-bold shadow text-xs">
                                 點擊繳交
                             </span>
-</div>
-</div>
-<!-- Task 2 -->
-<div class="bg-slate-50 rounded-xl border border-slate-200 p-5 cursor-pointer relative group hover:bg-white hover:shadow-lg transition-all ms-lab-card" onclick="openSubmissionModal('data-json-task-2', '挑戰 2: 封包瘦身')">
-<div class="flex items-center gap-3 mb-2">
-<div class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-sm">
+                        </div>
+                    </div>
+
+                    <!-- Task 2 -->
+                    <div onclick="openSubmissionModal('data-json-task-2', '挑戰 2: 封包瘦身')"
+                        class="bg-slate-50 rounded-xl border border-slate-200 p-5 cursor-pointer relative group hover:bg-white hover:shadow-lg transition-all">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div
+                                class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-sm">
                                 2</div>
-<h4 class="font-bold text-slate-700">封包瘦身</h4>
-</div>
-<p class="text-xs text-slate-500 mb-3">提交優化後的 Key-Value 設計。</p>
-<!-- Hover Overlay -->
-<div class="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-<span class="bg-white text-purple-600 px-3 py-1 rounded-full font-bold shadow text-xs">
+                            <h4 class="font-bold text-slate-700">封包瘦身</h4>
+                        </div>
+                        <p class="text-xs text-slate-500 mb-3">提交優化後的 Key-Value 設計。</p>
+                        <!-- Hover Overlay -->
+                        <div
+                            class="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                            <span class="bg-white text-purple-600 px-3 py-1 rounded-full font-bold shadow text-xs">
                                 點擊繳交
                             </span>
-</div>
-</div>
-<!-- Task 3 -->
-<div class="bg-slate-50 rounded-xl border border-slate-200 p-5 cursor-pointer relative group hover:bg-white hover:shadow-lg transition-all ms-lab-card" onclick="openSubmissionModal('data-json-task-3', '挑戰 3: 狀態機組合')">
-<div class="flex items-center gap-3 mb-2">
-<div class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-sm">
+                        </div>
+                    </div>
+
+                    <!-- Task 3 -->
+                    <div onclick="openSubmissionModal('data-json-task-3', '挑戰 3: 狀態機組合')"
+                        class="bg-slate-50 rounded-xl border border-slate-200 p-5 cursor-pointer relative group hover:bg-white hover:shadow-lg transition-all">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div
+                                class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-sm">
                                 3</div>
-<h4 class="font-bold text-slate-700">狀態機組合</h4>
-</div>
-<p class="text-xs text-slate-500 mb-3">提交巢狀物件的結構設計。</p>
-<!-- Hover Overlay -->
-<div class="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-<span class="bg-white text-purple-600 px-3 py-1 rounded-full font-bold shadow text-xs">
+                            <h4 class="font-bold text-slate-700">狀態機組合</h4>
+                        </div>
+                        <p class="text-xs text-slate-500 mb-3">提交巢狀物件的結構設計。</p>
+                        <!-- Hover Overlay -->
+                        <div
+                            class="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                            <span class="bg-white text-purple-600 px-3 py-1 rounded-full font-bold shadow text-xs">
                                 點擊繳交
                             </span>
-</div>
-</div>
-</div>
-</div>
-            </div>
-            <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 4</span>
-                <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
-            </div>
-        </div>
-
-        <!-- ══════════ PAGE 4: 摘要與資源 ══════════ -->
-        <div class="ms-unit-page" id="page-4">
-            <div class="unit-content">
-                <div class="unit-status-bar">
-                    <div class="unit-completed-badge" id="badge-4" style="display:none"><i class="fas fa-check"></i> 已完成</div>
-                    <div></div>
-                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
-                </div>
-                <h1>摘要與資源</h1>
-                <p>
-                    恭喜你完成了「<strong>數據格式化：從物件到 JSON | Vibe Coding</strong>」單元！
-                    在這個單元中，你深入了解了其底層機制，完成了多個層層遞進的實作任務，
-                    並成功部署與調試了相關的前端和硬體系統。
-                </p>
-
-                <div class="ms-achievement">
-                    <div class="achievement-icon">🎓</div>
-                    <div class="achievement-text">
-                        <h3>恭喜！你已完成本模組</h3>
-                        <p>持續實踐與累積，這將使你的工程素養更上一層樓。</p>
+                        </div>
                     </div>
                 </div>
-
-                <h2>完成本模組後，你能夠：</h2>
-                <ul>
-                    <li>理解並完成「<strong>基礎封裝</strong>」的實作與驗證。</li>
-<li>理解並完成「<strong>封包瘦身</strong>」的實作與驗證。</li>
-<li>理解並完成「<strong>狀態機組合</strong>」的實作與驗證。</li>
-                </ul>
-
-                <h2>延伸學習與資源</h2>
-                
-                <a href="https://www.youtube.com/watch?v=KnuXXUo87f0" target="_blank" class="ms-resource-link">
-                    <i class="fab fa-youtube" style="color:#ff0000;"></i>
-                    <div>
-                        <div style="font-weight:600;">課程教學影片</div>
-                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">YouTube — 觀看動態功能展示與程式講解</div>
-                    </div>
-                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
-                </a>
-        
-                <a href="https://docs.google.com/document/d/e/2PACX-1vSVkD7iQ2vDjZNg6IzhSnvWfRBNC2T4brsYjTaQ42juKnTAuF4dsts06YoU7nW2Vc5M0BwczuQURKoG/pub?embedded=true" target="_blank" class="ms-resource-link">
-                    <i class="fas fa-file-alt"></i>
-                    <div>
-                        <div style="font-weight:600;">課程完整講義</div>
-                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">Google Docs — 詳細背景知識、硬體接線與程式碼說明</div>
-                    </div>
-                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
-                </a>
-        
-                <a href="https://classroom.github.com" target="_blank" class="ms-resource-link">
-                    <i class="fab fa-github"></i>
-                    <div>
-                        <div style="font-weight:600;">GitHub Classroom 官方網站</div>
-                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">classroom.github.com — 管理作業與查看進度</div>
-                    </div>
-                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
-                </a>
-    
-            </div>
-            <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(4); alert('🎉 恭喜完成「數據格式化：從物件到 JSON | Vibe Coding」模組！')">完成模組</button>
             </div>
         </div>
+    </div>
 
-    </main>
-</div>
+    <!-- Footer -->
+    <footer class="bg-slate-800 text-slate-400 py-8 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <div class="font-bold text-xl text-white mb-2">🚀 Vibe Coding</div>
+            <p class="text-sm">&copy; 2025 Vibe Coding. All rights reserved.</p>
+        </div>
+    </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
-<script>
+    <!-- Media Overlay injected by course-shared.js?v=2026.04.05.FINAL_V6 -->
+
+    <script>
+        // Define Resources
+        window.RESOURCES = {
+            video: "https://www.youtube.com/embed/KnuXXUo87f0",
+            doc: "https://docs.google.com/document/d/e/2PACX-1vSVkD7iQ2vDjZNg6IzhSnvWfRBNC2T4brsYjTaQ42juKnTAuF4dsts06YoU7nW2Vc5M0BwczuQURKoG/pub?embedded=true"
+        };
+    </script>
+    <script src="/js/course-shared.js?v=2026.05.21.V21.DISABLE_UNIFIED_SUPPORT_HUB"></script>
+    <script>
 
         // --- Lab 1: Interactive JSON Handwriting ---
         const jsonInput = document.getElementById('json-input');
@@ -784,116 +516,20 @@ return JSON.stringify(complexData);</textarea>
         }
     </script>
 
-
-<script>
-    const UNITS = [{'id': 0, 'label': '課程總覽', 'time': '', 'type': 'index'}, {'id': 1, 'label': '🧪\n                \n                1. 課前體驗', 'time': '5 分鐘', 'type': 'unit'}, {'id': 2, 'label': '🧠\n                \n                2. 核心原理', 'time': '5 分鐘', 'type': 'unit'}, {'id': 3, 'label': '實作挑戰', 'time': '45 分鐘', 'type': 'lab'}, {'id': 4, 'label': '摘要與資源', 'time': '3 分鐘', 'type': 'unit'}];
-
-    let currentUnit = 0;
-    let doneSet = new Set();
-
-    function init() {
-        buildSidebar();
-        buildIndexUnitList();
-        goToUnit(0);
-    }
-
-    function buildSidebar() {
-        const nav = document.getElementById('sidebar-nav');
-        nav.innerHTML = UNITS.map(u => {
-            const badge = u.type==='lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
-                        : '';
-            return `<div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
-                <div class="unit-icon" id="icon-${u.id}">\${u.id===0?'<i class="fas fa-home" style="font-size:9px;"></i>':u.id}</div>
-                <div class="unit-meta">
-                    <div class="unit-name">\${u.label}\${badge}</div>
-                    \${u.time?`<div class="unit-time"><i class="far fa-clock"></i> \${u.time}</div>`:''}
-                </div>
-            </div>`;
-        }).join('');
-    }
-
-    function buildIndexUnitList() {
-        const el = document.getElementById('index-unit-list');
-        el.innerHTML = UNITS.filter(u=>u.id>0).map(u=>`
-            <div class="unit-card \${u.type}" onclick="goToUnit(\${u.id})">
-                <div class="unit-card-num">\${u.id}</div>
-                <div class="unit-card-info">
-                    <div class="unit-card-name">\${u.label}</div>
-                    <div class="unit-card-time"><i class="far fa-clock"></i> \${u.time}</div>
-                </div>
-                <div class="unit-card-arrow">›</div>
-            </div>`).join('');
-    }
-
-    function goToUnit(id) {
-        document.querySelectorAll('.ms-unit-page').forEach(p=>p.classList.remove('visible'));
-        const target = id===0 ? document.getElementById('page-index') : document.getElementById(`page-\${id}`);
-        if(target) target.classList.add('visible');
-
-        document.querySelectorAll('.ms-unit-item').forEach(el=>el.classList.remove('active'));
-        const navItem = document.getElementById(`nav-\${id}`);
-        if(navItem){ navItem.classList.add('active'); navItem.scrollIntoView({block:'nearest',behavior:'smooth'}); }
-
-        UNITS.forEach(u=>{
-            const icon = document.getElementById(`icon-\${u.id}`);
-            if(!icon) return;
-            if(doneSet.has(u.id)){ icon.className='unit-icon done'; icon.innerHTML='<i class="fas fa-check" style="font-size:9px;"></i>'; }
-            else if(u.id===id){ icon.className='unit-icon active-icon'; icon.innerHTML=u.id===0?'<i class="fas fa-home" style="font-size:9px;"></i>':u.id; }
-            else{ icon.className='unit-icon'; icon.innerHTML=u.id===0?'<i class="fas fa-home" style="font-size:9px;"></i>':u.id; }
-        });
-
-        const unit = UNITS.find(u=>u.id===id);
-        document.getElementById('bc-current').textContent = unit ? unit.label : '';
-        currentUnit = id;
-        updateProgress();
-        window.scrollTo({top:0,behavior:'smooth'});
-    }
-
-    function markDone(id) {
-        doneSet.add(id);
-        const badge = document.getElementById(`badge-\${id}`);
-        if(badge) badge.style.display='flex';
-        UNITS.forEach(u=>{ const icon=document.getElementById(`icon-\${u.id}`); if(icon&&doneSet.has(u.id)){ icon.className='unit-icon done'; icon.innerHTML='<i class="fas fa-check" style="font-size:9px;"></i>'; } });
-        updateProgress();
-    }
-
-    function updateProgress() {
-        const total = UNITS.length-1;
-        const done = doneSet.size;
-        document.getElementById('progress-fill').style.width = Math.round(done/total*100)+'%';
-        document.getElementById('progress-text').textContent = `\${done} / \${total} 已完成`;
-    }
-
-    function toggleCheck(el) {
-        el.classList.toggle('checked');
-        el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
-    }
-
-    init();
-</script>
-
-<script>
-    // Define Resources
-        window.RESOURCES = {
-            video: "https://www.youtube.com/embed/KnuXXUo87f0",
-            doc: "https://docs.google.com/document/d/e/2PACX-1vSVkD7iQ2vDjZNg6IzhSnvWfRBNC2T4brsYjTaQ42juKnTAuF4dsts06YoU7nW2Vc5M0BwczuQURKoG/pub?embedded=true"
-        };
-</script>
-<script src="/js/course-shared.js?v=2026.05.22.V23.START_THEME"></script>
-
-<section id="assignment-guide" style="display: none;">
-<div class="markdown-heading"><h1 class="heading-element">start-03-unit-data-json (數據格式化：從物件到 JSON)</h1><a aria-label="Permalink: start-03-unit-data-json (數據格式化：從物件到 JSON)" class="anchor" href="#start-03-unit-data-json-數據格式化從物件到-json" id="user-content-start-03-unit-data-json-數據格式化從物件到-json"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h2 class="heading-element">🎯 作業目標</h2><a aria-label="Permalink: 🎯 作業目標" class="anchor" href="#-作業目標" id="user-content--作業目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+    <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+<div class="markdown-heading"><h1 class="heading-element">start-03-unit-data-json (數據格式化：從物件到 JSON)</h1><a id="user-content-start-03-unit-data-json-數據格式化從物件到-json" class="anchor" aria-label="Permalink: start-03-unit-data-json (數據格式化：從物件到 JSON)" href="#start-03-unit-data-json-數據格式化從物件到-json"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">🎯 作業目標</h2><a id="user-content--作業目標" class="anchor" aria-label="Permalink: 🎯 作業目標" href="#-作業目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>掌握 JSON 數據的序列化、通訊協定設計以及封包優化（瘦身）。在物聯網與前端開發中，「機機對話 (Machine-to-Machine)」的效率至關重要。本單元將帶領你學習如何設計專業的 JSON 通訊格式，並在有限的傳輸頻寬中極大化資訊含量。</p>
-<div class="markdown-heading"><h2 class="heading-element">🚀 如何開始</h2><a aria-label="Permalink: 🚀 如何開始" class="anchor" href="#-如何開始" id="user-content--如何開始"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">🚀 如何開始</h2><a id="user-content--如何開始" class="anchor" aria-label="Permalink: 🚀 如何開始" href="#-如何開始"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ol>
 <li>開啟 <code>index.html</code>：這是你的數據終端監控介面，預設包含一個「封包監視器」。</li>
 <li>編輯 <code>protocol-helper.js</code>：你將在此實作核心的數據封裝邏輯。</li>
 </ol>
-<hr/>
-<div class="markdown-heading"><h2 class="heading-element">📝 學生作業任務 (Student Assignment)</h2><a aria-label="Permalink: 📝 學生作業任務 (Student Assignment)" class="anchor" href="#-學生作業任務-student-assignment" id="user-content--學生作業任務-student-assignment"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr>
+<div class="markdown-heading"><h2 class="heading-element">📝 學生作業任務 (Student Assignment)</h2><a id="user-content--學生作業任務-student-assignment" class="anchor" aria-label="Permalink: 📝 學生作業任務 (Student Assignment)" href="#-學生作業任務-student-assignment"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>請依序完成以下任務，並在 <code>protocol-helper.js</code> 中實作對應函式：</p>
-<div class="markdown-heading"><h3 class="heading-element">1. 基礎序列化練習 (Basic Serialization)</h3><a aria-label="Permalink: 1. 基礎序列化練習 (Basic Serialization)" class="anchor" href="#1-基礎序列化練習-basic-serialization" id="user-content-1-基礎序列化練習-basic-serialization"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">1. 基礎序列化練習 (Basic Serialization)</h3><a id="user-content-1-基礎序列化練習-basic-serialization" class="anchor" aria-label="Permalink: 1. 基礎序列化練習 (Basic Serialization)" href="#1-基礎序列化練習-basic-serialization"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：將 JavaScript 物件轉化為標準 JSON 字串。掌握時間戳記 (Timestamp) 在控制封包中的角色。</li>
@@ -902,7 +538,7 @@ return JSON.stringify(complexData);</textarea>
 <li>
 <strong>重點</strong>：嚴禁使用字串拼接，必須使用 <code>JSON.stringify()</code>。</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">2. 封包瘦身挑戰 (Compact Payload)</h3><a aria-label="Permalink: 2. 封包瘦身挑戰 (Compact Payload)" class="anchor" href="#2-封包瘦身挑戰-compact-payload" id="user-content-2-封包瘦身挑戰-compact-payload"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">2. 封包瘦身挑戰 (Compact Payload)</h3><a id="user-content-2-封包瘦身挑戰-compact-payload" class="anchor" aria-label="Permalink: 2. 封包瘦身挑戰 (Compact Payload)" href="#2-封包瘦身挑戰-compact-payload"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：培養「頻寬意識」。理解通訊協定中的 Overhead，學習透過短 Key (Short Keys) 提升傳輸效率。</li>
@@ -911,15 +547,15 @@ return JSON.stringify(complexData);</textarea>
 <li>
 <strong>實驗</strong>：量測並紀錄優化前後的字串 Byte 數變化。</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">3. 巢狀結構設計 (Nested State Machine)</h3><a aria-label="Permalink: 3. 巢狀結構設計 (Nested State Machine)" class="anchor" href="#3-巢狀結構設計-nested-state-machine" id="user-content-3-巢狀結構設計-nested-state-machine"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">3. 巢狀結構設計 (Nested State Machine)</h3><a id="user-content-3-巢狀結構設計-nested-state-machine" class="anchor" aria-label="Permalink: 3. 巢狀結構設計 (Nested State Machine)" href="#3-巢狀結構設計-nested-state-machine"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：設計「有層次」的專業通訊。學習整合來自不同模組（搖桿 vs 按鈕）的狀態。</li>
 <li>
 <strong>要求</strong>：設計一個二層結構（如 <code>{"joy":{x,y}, "btn":{a,b}}</code>），方便後端或硬體（ESP32）分類提取。</li>
 </ul>
-<hr/>
-<div class="markdown-heading"><h2 class="heading-element">📖 通訊協議字典 (Protocol Dictionary)</h2><a aria-label="Permalink: 📖 通訊協議字典 (Protocol Dictionary)" class="anchor" href="#-通訊協議字典-protocol-dictionary" id="user-content--通訊協議字典-protocol-dictionary"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr>
+<div class="markdown-heading"><h2 class="heading-element">📖 通訊協議字典 (Protocol Dictionary)</h2><a id="user-content--通訊協議字典-protocol-dictionary" class="anchor" aria-label="Permalink: 📖 通訊協議字典 (Protocol Dictionary)" href="#-通訊協議字典-protocol-dictionary"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>請在此紀錄你設計的縮寫對應表，這對團隊開發與硬體解析非常重要：</p>
 <table>
 <thead>
@@ -952,8 +588,8 @@ return JSON.stringify(complexData);</textarea>
 </tr>
 </tbody>
 </table>
-<hr/>
-<div class="markdown-heading"><h2 class="heading-element">📊 瘦身成效報告 (Performance Report)</h2><a aria-label="Permalink: 📊 瘦身成效報告 (Performance Report)" class="anchor" href="#-瘦身成效報告-performance-report" id="user-content--瘦身成效報告-performance-report"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr>
+<div class="markdown-heading"><h2 class="heading-element">📊 瘦身成效報告 (Performance Report)</h2><a id="user-content--瘦身成效報告-performance-report" class="anchor" aria-label="Permalink: 📊 瘦身成效報告 (Performance Report)" href="#-瘦身成效報告-performance-report"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>請填寫以下表格，展示你的優化成果：</p>
 <table>
 <thead>
@@ -976,8 +612,8 @@ return JSON.stringify(complexData);</textarea>
 </tr>
 </tbody>
 </table>
-<hr/>
-<div class="markdown-heading"><h2 class="heading-element">📁 程式庫結構</h2><a aria-label="Permalink: 📁 程式庫結構" class="anchor" href="#-程式庫結構" id="user-content--程式庫結構"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr>
+<div class="markdown-heading"><h2 class="heading-element">📁 程式庫結構</h2><a id="user-content--程式庫結構" class="anchor" aria-label="Permalink: 📁 程式庫結構" href="#-程式庫結構"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <code>index.html</code>：數據監控與預覽面板。</li>
@@ -986,11 +622,14 @@ return JSON.stringify(complexData);</textarea>
 <li>
 <code>test/</code>：包含自動化語法與規格檢查腳本。</li>
 </ul>
-</section>
-<section id="tutor-guide" style="display: none;">
+
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
 <p>針對 <strong><code>start-03-unit-data-json</code> (數據格式化：從物件到 JSON)</strong> 單元，這是學員建立「機機對話 (Machine-to-Machine)」標準的關鍵課程。它要求學員具備 <strong>通訊協定設計 (Protocol Design)</strong> 的意識，學習如何利用 JSON 這一通用格式將前端的互動狀態（搖桿、按鈕）封裝成後端及硬體（ESP32）可解析的格式，並進階學習如何在有限頻寬下進行封包瘦身。</p>
 <p>以下是在 <strong>GitHub Classroom</strong> 部署其作業 (Assignments) 的具體建議：</p>
-<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repo) 配置建議</h3><a aria-label="Permalink: 1. 範本程式庫 (Template Repo) 配置建議" class="anchor" href="#1-範本程式庫-template-repo-配置建議" id="user-content-1-範本程式庫-template-repo-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repo) 配置建議</h3><a id="user-content-1-範本程式庫-template-repo-配置建議" class="anchor" aria-label="Permalink: 1. 範本程式庫 (Template Repo) 配置建議" href="#1-範本程式庫-template-repo-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>JSON 數據作業的核心在於「序列化正確性、層級設計與傳輸優化」，範本應包含連線協定框架與格式檢查，建議包含：</p>
 <ul>
 <li>
@@ -1002,9 +641,9 @@ return JSON.stringify(complexData);</textarea>
 <li>
 <strong>📂 <code>tests/</code></strong>：<strong>封包規格測試</strong>。使用 Actions 或小型腳本自動驗證 JSON 語法是否合法，以及欄位名稱是否符合「瘦身挑戰」的字節限制。</li>
 </ul>
-<hr/>
-<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a aria-label="Permalink: 2. 作業任務部署細節" class="anchor" href="#2-作業任務部署細節" id="user-content-2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h4 class="heading-element">任務 1：基礎指令序列化 (Serialize Command Lab)</h4><a aria-label="Permalink: 任務 1：基礎指令序列化 (Serialize Command Lab)" class="anchor" href="#任務-1基礎指令序列化-serialize-command-lab" id="user-content-任務-1基礎指令序列化-serialize-command-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr>
+<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a id="user-content-2-作業任務部署細節" class="anchor" aria-label="Permalink: 2. 作業任務部署細節" href="#2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 1：基礎指令序列化 (Serialize Command Lab)</h4><a id="user-content-任務-1基礎指令序列化-serialize-command-lab" class="anchor" aria-label="Permalink: 任務 1：基礎指令序列化 (Serialize Command Lab)" href="#任務-1基礎指令序列化-serialize-command-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：學會使用 <code>JSON.stringify()</code> 將 JavaScript 物件標準化。掌握時間戳記 (Timestamp) 在控制封包中的角色。</li>
@@ -1020,7 +659,7 @@ return JSON.stringify(complexData);</textarea>
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 2：封包瘦身優化 (Compact Payload Lab)</h4><a aria-label="Permalink: 任務 2：封包瘦身優化 (Compact Payload Lab)" class="anchor" href="#任務-2封包瘦身優化-compact-payload-lab" id="user-content-任務-2封包瘦身優化-compact-payload-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 2：封包瘦身優化 (Compact Payload Lab)</h4><a id="user-content-任務-2封包瘦身優化-compact-payload-lab" class="anchor" aria-label="Permalink: 任務 2：封包瘦身優化 (Compact Payload Lab)" href="#任務-2封包瘦身優化-compact-payload-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：培養「頻寬意識」。理解通訊協定中的 Overhead，學習透過短 Key (Short Keys) 在不丟失資訊的前提下極大化傳輸效率。</li>
@@ -1036,7 +675,7 @@ return JSON.stringify(complexData);</textarea>
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 3：擴充式巢狀結構設計 (Nested State Machine Lab)</h4><a aria-label="Permalink: 任務 3：擴充式巢狀結構設計 (Nested State Machine Lab)" class="anchor" href="#任務-3擴充式巢狀結構設計-nested-state-machine-lab" id="user-content-任務-3擴充式巢狀結構設計-nested-state-machine-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 3：擴充式巢狀結構設計 (Nested State Machine Lab)</h4><a id="user-content-任務-3擴充式巢狀結構設計-nested-state-machine-lab" class="anchor" aria-label="Permalink: 任務 3：擴充式巢狀結構設計 (Nested State Machine Lab)" href="#任務-3擴充式巢狀結構設計-nested-state-machine-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：設計「有層次」的專業通訊。學習如何在單一封包中同時處理來自不同模組（搖桿 vs 按鈕）的狀態。</li>
@@ -1052,15 +691,15 @@ return JSON.stringify(complexData);</textarea>
 </ul>
 </li>
 </ul>
-<hr/>
-<div class="markdown-heading"><h3 class="heading-element">3. 通訊標準化與傳輸效能點評標準 (Standardization &amp; Performance Standards)</h3><a aria-label="Permalink: 3. 通訊標準化與傳輸效能點評標準 (Standardization &amp; Performance Standards)" class="anchor" href="#3-通訊標準化與傳輸效能點評標準-standardization--performance-standards" id="user-content-3-通訊標準化與傳輸效能點評標準-standardization--performance-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr>
+<div class="markdown-heading"><h3 class="heading-element">3. 通訊標準化與傳輸效能點評標準 (Standardization &amp; Performance Standards)</h3><a id="user-content-3-通訊標準化與傳輸效能點評標準-standardization--performance-standards" class="anchor" aria-label="Permalink: 3. 通訊標準化與傳輸效能點評標準 (Standardization &amp; Performance Standards)" href="#3-通訊標準化與傳輸效能點評標準-standardization--performance-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>此單元的價值在於 <strong>「對數組語彙的規範力與對頻寬資源的精算力」</strong>：</p>
 <ul>
 <li>[ ] <strong>語法合規性</strong>：代碼是否正確調用了 JSON 原生 API，避免了不穩定的手動拼接？</li>
 <li>[ ] <strong>封包經濟性</strong>：是否具備「用最少位元傳遞最大資訊量」的設計意識？</li>
 <li>[ ] <strong>結構可擴充性</strong>：設計的巢狀 Schema 在未來新增感測器數據時，是否具備良好的相容性？</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" class="anchor" href="#-推薦範本結構-github-classroom-template" id="user-content--推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a id="user-content--推薦範本結構-github-classroom-template" class="anchor" aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" href="#-推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <pre lang="text"><code>.
 ├── index.html           # 結構：提供控制按鈕與 JSON 輸出預覽面板
 ├── protocol-helper.js   # 核心：練習 JSON 序列化、協定精簡與物件嵌套
@@ -1068,26 +707,26 @@ return JSON.stringify(complexData);</textarea>
 └── test/                # 測試：自動化 JSON 語法與字節長度檢查
 </code></pre>
 <p>透過這種部署方式，學生能體驗到 <strong>「好的全端工程師，不僅是會刻網頁的人，而是能透視通訊鏈路、能設計出兼顧機器效率與團隊可讀性的 JSON 語言、並在每一字節的精簡中，為硬體解析爭取寶貴資源的數據藝術家」</strong>。掌握數據格式化與 JSON 協議技術後，學員將擁有了開發「跨國物聯網集群、實時遙控賽道系統、以及複雜機器人網絡」最核心也最資深的架構開發實力！_</p>
-<hr/>
-<div class="markdown-heading"><h2 class="heading-element">📝 學生作業任務 (Student Assignment)</h2><a aria-label="Permalink: 📝 學生作業任務 (Student Assignment)" class="anchor" href="#-學生作業任務-student-assignment" id="user-content--學生作業任務-student-assignment"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr>
+<div class="markdown-heading"><h2 class="heading-element">📝 學生作業任務 (Student Assignment)</h2><a id="user-content--學生作業任務-student-assignment" class="anchor" aria-label="Permalink: 📝 學生作業任務 (Student Assignment)" href="#-學生作業任務-student-assignment"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>請依序完成以下任務，並在 <code>protocol-helper.js</code> 中實作對應函式。</p>
-<div class="markdown-heading"><h3 class="heading-element">1. 基礎序列化練習 (Basic Serialization)</h3><a aria-label="Permalink: 1. 基礎序列化練習 (Basic Serialization)" class="anchor" href="#1-基礎序列化練習-basic-serialization" id="user-content-1-基礎序列化練習-basic-serialization"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">1. 基礎序列化練習 (Basic Serialization)</h3><a id="user-content-1-基礎序列化練習-basic-serialization" class="anchor" aria-label="Permalink: 1. 基礎序列化練習 (Basic Serialization)" href="#1-基礎序列化練習-basic-serialization"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>目標：將物件轉化為標準 JSON 字串。</li>
 <li>要求：包含 <code>command</code> 與 <code>timestamp</code> 欄位。</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">2. 封包瘦身挑戰 (Compact Payload)</h3><a aria-label="Permalink: 2. 封包瘦身挑戰 (Compact Payload)" class="anchor" href="#2-封包瘦身挑戰-compact-payload" id="user-content-2-封包瘦身挑戰-compact-payload"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">2. 封包瘦身挑戰 (Compact Payload)</h3><a id="user-content-2-封包瘦身挑戰-compact-payload" class="anchor" aria-label="Permalink: 2. 封包瘦身挑戰 (Compact Payload)" href="#2-封包瘦身挑戰-compact-payload"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>目標：極大化傳輸效率。</li>
 <li>要求：將 Key 改為單字元，並觀察 Byte 數變化。</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">3. 巢狀結構設計 (Nested State Machine)</h3><a aria-label="Permalink: 3. 巢狀結構設計 (Nested State Machine)" class="anchor" href="#3-巢狀結構設計-nested-state-machine" id="user-content-3-巢狀結構設計-nested-state-machine"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">3. 巢狀結構設計 (Nested State Machine)</h3><a id="user-content-3-巢狀結構設計-nested-state-machine" class="anchor" aria-label="Permalink: 3. 巢狀結構設計 (Nested State Machine)" href="#3-巢狀結構設計-nested-state-machine"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>目標：整合多個裝置狀態。</li>
 <li>要求：設計一個包含 <code>joy</code> (搖桿) 與 <code>btn</code> (按鈕) 的二層結構。</li>
 </ul>
-<hr/>
-<div class="markdown-heading"><h2 class="heading-element">📖 通訊協議字典 (Protocol Dictionary)</h2><a aria-label="Permalink: 📖 通訊協議字典 (Protocol Dictionary)" class="anchor" href="#-通訊協議字典-protocol-dictionary" id="user-content--通訊協議字典-protocol-dictionary"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr>
+<div class="markdown-heading"><h2 class="heading-element">📖 通訊協議字典 (Protocol Dictionary)</h2><a id="user-content--通訊協議字典-protocol-dictionary" class="anchor" aria-label="Permalink: 📖 通訊協議字典 (Protocol Dictionary)" href="#-通訊協議字典-protocol-dictionary"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>請在此紀錄你設計的縮寫對應表：</p>
 <table>
 <thead>
@@ -1120,7 +759,7 @@ return JSON.stringify(complexData);</textarea>
 </tr>
 </tbody>
 </table>
-<div class="markdown-heading"><h2 class="heading-element">📊 瘦身成效報告 (Performance Report)</h2><a aria-label="Permalink: 📊 瘦身成效報告 (Performance Report)" class="anchor" href="#-瘦身成效報告-performance-report" id="user-content--瘦身成效報告-performance-report"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">📊 瘦身成效報告 (Performance Report)</h2><a id="user-content--瘦身成效報告-performance-report" class="anchor" aria-label="Permalink: 📊 瘦身成效報告 (Performance Report)" href="#-瘦身成效報告-performance-report"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <table>
 <thead>
 <tr>
@@ -1142,7 +781,8 @@ return JSON.stringify(complexData);</textarea>
 </tr>
 </tbody>
 </table>
-</section>
 
+    </section>
 </body>
+
 </html>
