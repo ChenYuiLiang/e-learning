@@ -246,6 +246,40 @@ function extractHiddenSectionContent(html, sectionId) {
     return "";
 }
 
+async function resolveAssignmentDocRefByUserAndUnit(db, userId, assignmentIdOrUnitId) {
+    const raw = String(assignmentIdOrUnitId || "").trim();
+    if (!raw) return null;
+
+    const normalized = raw.replace(/\.html$/i, '');
+    const exactDocId = `${userId}_${normalized}`;
+    const exactRef = db.collection('assignments').doc(exactDocId);
+    const exactDoc = await exactRef.get();
+    if (exactDoc.exists) return exactRef;
+
+    const unitCandidates = new Set([raw, normalized, `${normalized}.html`]);
+    const baseQuery = db.collection('assignments').where('userId', '==', userId);
+    const snapshot = await baseQuery.limit(200).get();
+    if (snapshot.empty) return null;
+
+    const matched = snapshot.docs.filter((d) => {
+        const row = d.data() || {};
+        const aid = String(row.assignmentId || '').trim();
+        const uid = String(row.unitId || '').trim();
+        const aidNorm = aid.replace(/\.html$/i, '');
+        const uidNorm = uid.replace(/\.html$/i, '');
+        return unitCandidates.has(aid) || unitCandidates.has(aidNorm) ||
+            unitCandidates.has(uid) || unitCandidates.has(uidNorm);
+    });
+
+    if (matched.length === 0) return null;
+    matched.sort((a, b) => {
+        const aTs = (a.data().updatedAt?.toMillis?.() || a.data().submittedAt?.toMillis?.() || 0);
+        const bTs = (b.data().updatedAt?.toMillis?.() || b.data().submittedAt?.toMillis?.() || 0);
+        return bTs - aTs;
+    });
+    return matched[0].ref;
+}
+
 // ==========================================
 // 1. 建立訂單 (initiatePayment)
 // ==========================================
@@ -4427,14 +4461,14 @@ exports.submitStudentBlocker = onCall(async (request) => {
 
     const userId = auth.uid;
     const db = admin.firestore();
-    const docId = `${userId}_${assignmentId.replace(/\.html$/, '')}`;
-    const docRef = db.collection('assignments').doc(docId);
 
     try {
-        const doc = await docRef.get();
-        if (!doc.exists) {
+        const docRef = await resolveAssignmentDocRefByUserAndUnit(db, userId, assignmentId);
+        if (!docRef) {
             throw new HttpsError('not-found', '找不到作業紀錄');
         }
+        const doc = await docRef.get();
+        if (!doc.exists) throw new HttpsError('not-found', '找不到作業紀錄');
 
         const now = admin.firestore.Timestamp.now();
         const blockerEntry = {
@@ -4478,14 +4512,14 @@ exports.submitAttemptSummary = onCall(async (request) => {
 
     const userId = auth.uid;
     const db = admin.firestore();
-    const docId = `${userId}_${assignmentId.replace(/\.html$/, '')}`;
-    const docRef = db.collection('assignments').doc(docId);
 
     try {
-        const doc = await docRef.get();
-        if (!doc.exists) {
+        const docRef = await resolveAssignmentDocRefByUserAndUnit(db, userId, assignmentId);
+        if (!docRef) {
             throw new HttpsError('not-found', '找不到作業紀錄');
         }
+        const doc = await docRef.get();
+        if (!doc.exists) throw new HttpsError('not-found', '找不到作業紀錄');
 
         const now = admin.firestore.Timestamp.now();
         const historyEntry = {
@@ -4539,14 +4573,13 @@ exports.resolveStudentBlocker = onCall(async (request) => {
         }
     }
 
-    const docId = `${targetUid}_${assignmentId.replace(/\.html$/, '')}`;
-    const docRef = db.collection('assignments').doc(docId);
-
     try {
-        const doc = await docRef.get();
-        if (!doc.exists) {
+        const docRef = await resolveAssignmentDocRefByUserAndUnit(db, targetUid, assignmentId);
+        if (!docRef) {
             throw new HttpsError('not-found', '找不到作業紀錄');
         }
+        const doc = await docRef.get();
+        if (!doc.exists) throw new HttpsError('not-found', '找不到作業紀錄');
 
         const now = admin.firestore.Timestamp.now();
         const historyEntry = {

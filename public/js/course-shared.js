@@ -786,9 +786,11 @@ async function initFirebaseFeatures() {
         window.submitStudentBlockerAction = async function() {
             const btn = document.getElementById('btn-submit-blocker');
             const type = document.getElementById('blocker-type').value;
-            const note = document.getElementById('blocker-note').value;
+            const shared = document.getElementById('hub-shared-note');
+            const legacy = document.getElementById('blocker-note');
+            const note = (shared?.value || legacy?.value || '').trim();
             if (!note) {
-                alert("請填寫卡點說明！");
+                alert("請先填寫卡點/嘗試說明，再提交卡點。");
                 return;
             }
             btn.disabled = true;
@@ -842,9 +844,11 @@ async function initFirebaseFeatures() {
 
         window.submitAttemptSummaryAction = async function() {
             const btn = document.getElementById('btn-submit-attempt');
-            const summary = document.getElementById('attempt-summary').value;
+            const shared = document.getElementById('hub-shared-note');
+            const legacy = document.getElementById('attempt-summary');
+            const summary = (shared?.value || legacy?.value || '').trim();
             if (!summary) {
-                alert("請填寫嘗試紀錄內容！");
+                alert("請先填寫卡點/嘗試說明，再提交紀錄。");
                 return;
             }
             btn.disabled = true;
@@ -1178,12 +1182,7 @@ async function initFirebaseFeatures() {
                                 <option value="environment">環境問題 / 無法編譯 (Environment/Toolchain Block)</option>
                             </select>
                         </div>
-
-                        <div class="mb-5">
-                            <label class="block text-xs font-bold text-slate-600 mb-2">告訴老師你卡在哪裡？ (遇到的錯誤、做了什麼嘗試)</label>
-                            <textarea id="blocker-note" placeholder="例：我執行 npm install 出現 node-gyp 權限錯誤，嘗試用 sudo 也無法解決..."
-                                class="w-full border border-slate-300 p-4 rounded-xl h-28 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"></textarea>
-                        </div>
+                        <p class="text-xs text-slate-500 mb-5">卡點內容請填在下方「學生互動紀錄」輸入框，這裡只需要選擇卡點類型。</p>
 
                         <div class="flex justify-end gap-3">
                             <button onclick="toggleBlockerForm()" class="px-5 py-2 text-slate-500 hover:bg-slate-200 rounded-xl font-bold text-sm transition">取消</button>
@@ -1203,12 +1202,12 @@ async function initFirebaseFeatures() {
                 attemptSectionHtml = `
                     <div class="border-t border-slate-200 mt-8 pt-8">
                         <h4 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
-                            <span>📝</span> 學生嘗試紀錄 (Attempt Log / Debug 回放)
+                            <span>📝</span> 學生互動紀錄（卡點 / 嘗試）
                         </h4>
-                        <p class="text-xs text-slate-500 mb-4">請簡短記錄：你「做了什麼、遇到什麼錯、打算怎麼改」。這能幫助導師更準確地下對提示。</p>
+                        <p class="text-xs text-slate-500 mb-4">同一個輸入框即可填寫近況。可先按「提交嘗試紀錄」，若需要導師介入再按「提交卡點」。</p>
                         
                         <div class="flex flex-col gap-3">
-                            <textarea id="attempt-summary" placeholder="例：我修改了 main.cpp 中的 wifi 連線 SSID，重新編譯後 Serial Port 輸出重啟循環錯誤，現在正嘗試加上 delay..."
+                            <textarea id="hub-shared-note" placeholder="例：我修改了 main.cpp 中的 wifi 連線 SSID，重新編譯後 Serial Port 輸出重啟循環錯誤，現在正嘗試加上 delay..."
                                 class="w-full border border-slate-300 p-4 rounded-xl h-24 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm">${escapeHtml(currentAttempt)}</textarea>
                             
                             <div class="flex justify-end">
