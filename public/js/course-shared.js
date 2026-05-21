@@ -1232,9 +1232,8 @@ async function initFirebaseFeatures() {
                             <p class="text-xs text-slate-500">此單元的即時輔導狀態與下一步行動指引</p>
                         </div>
                     </div>
-                    <button onclick="window.openDashboardModalFromHub()" class="flex items-center gap-1.5 px-4 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl text-xs font-bold transition shadow-sm active:scale-95 self-start sm:self-auto">
+                    <button onclick="window.openDashboardModalFromHub()" class="flex items-center justify-center w-10 h-10 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl text-lg transition shadow-sm active:scale-95 self-start sm:self-auto" title="完整學習儀表板">
                         <span>📊</span>
-                        <span>完整學習儀表板</span>
                     </button>
                 </div>
 
