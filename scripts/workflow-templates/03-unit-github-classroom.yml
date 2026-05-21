@@ -65,24 +65,59 @@ jobs:
             exit 0
           fi
 
+          # -------------------------------------------------------
+          # Task 3-1: 啟動 Codespaces 雲端環境 (30 pts)
+          #   submission/task-3-1.md must contain:
+          #     - A GitHub repo URL (https://github.com/...)
+          #     - At least 3 non-empty lines (screenshot description or notes)
+          # -------------------------------------------------------
           SCORE_VAL=0
-          if [ -f submission/classroom-entry.md ]; then
-            if grep -Eiq 'https://classroom\.github\.com/a/[A-Za-z0-9_-]+' submission/classroom-entry.md && \
-               grep -Eiq 'https://github\.com/.+/.+' submission/classroom-entry.md; then
-              SCORE_VAL=$((SCORE_VAL + 40))
+          if [ -f submission/task-3-1.md ]; then
+            HAS_REPO_URL=$(grep -Eic 'https://github\.com/.+/.+' submission/task-3-1.md || true)
+            NON_EMPTY=$(grep -cve '^\s*$' submission/task-3-1.md || true)
+            if [ "$HAS_REPO_URL" -ge 1 ] && [ "$NON_EMPTY" -ge 3 ]; then
+              SCORE_VAL=$((SCORE_VAL + 30))
             fi
           fi
-          if [ -f submission/repo-sync-plan.md ]; then
-            if grep -Fq '## Current Status' submission/repo-sync-plan.md && \
-               grep -Fq '## Sync Steps' submission/repo-sync-plan.md && \
-               grep -Fq '## Risks and Fallback' submission/repo-sync-plan.md; then
-              SCORE_VAL=$((SCORE_VAL + 35))
+
+          # -------------------------------------------------------
+          # Task 3-2: 原子化提交與自動評分 (40 pts)
+          #   submission/task-3-2.md must contain:
+          #     - A GitHub Actions run URL (https://github.com/.../actions/runs/...)
+          #     - The word "autograde" or "✅" indicating green result
+          #     - At least 2 distinct commit SHAs or "git log" lines
+          # -------------------------------------------------------
+          if [ -f submission/task-3-2.md ]; then
+            HAS_ACTIONS_URL=$(grep -Eic 'https://github\.com/.+/actions/runs/[0-9]+' submission/task-3-2.md || true)
+            HAS_GREEN=$(grep -Eic '✅|passed|success|green|autograde' submission/task-3-2.md || true)
+            HAS_COMMITS=$(grep -Eic '^[a-f0-9]{7,40} ' submission/task-3-2.md || true)
+            TASK32_SCORE=0
+            if [ "$HAS_ACTIONS_URL" -ge 1 ]; then
+              TASK32_SCORE=$((TASK32_SCORE + 20))
             fi
+            if [ "$HAS_GREEN" -ge 1 ]; then
+              TASK32_SCORE=$((TASK32_SCORE + 10))
+            fi
+            if [ "$HAS_COMMITS" -ge 2 ]; then
+              TASK32_SCORE=$((TASK32_SCORE + 10))
+            fi
+            SCORE_VAL=$((SCORE_VAL + TASK32_SCORE))
           fi
-          if [ -f submission/reflection.md ]; then
-            NON_EMPTY_LINES=$(grep -cve '^\s*$' submission/reflection.md || true)
-            if [ "$NON_EMPTY_LINES" -ge 5 ]; then
-              SCORE_VAL=$((SCORE_VAL + 25))
+
+          # -------------------------------------------------------
+          # Task 3-3: Feedback PR 與 Code Review (30 pts)
+          #   submission/task-3-3.md must contain:
+          #     - A GitHub PR comment permalink (https://github.com/.../pull/.../files#...)
+          #       OR a PR URL (https://github.com/.../pull/...)
+          #     - At least 5 non-empty lines (showing comment content description)
+          # -------------------------------------------------------
+          if [ -f submission/task-3-3.md ]; then
+            HAS_PR_URL=$(grep -Eic 'https://github\.com/.+/pull/[0-9]+' submission/task-3-3.md || true)
+            NON_EMPTY=$(grep -cve '^\s*$' submission/task-3-3.md || true)
+            if [ "$HAS_PR_URL" -ge 1 ] && [ "$NON_EMPTY" -ge 5 ]; then
+              SCORE_VAL=$((SCORE_VAL + 30))
+            elif [ "$HAS_PR_URL" -ge 1 ]; then
+              SCORE_VAL=$((SCORE_VAL + 15))
             fi
           fi
 
