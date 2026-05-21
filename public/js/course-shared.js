@@ -13,11 +13,31 @@ window.__courseSharedLoaded = true;
 // Initializer
 function init() {
     console.log("[CourseShared] Initializing...");
+    applyHideTabsPreference();
     injectMediaOverlay();
     initAnimations();
     enhanceAssignmentEntryButtons();
     initFirebaseFeatures(); // [NEW] Start Firebase (Tracking + Assignments)
     initGithubReadme(); // [V8.2] Fetch and render GitHub README if applicable
+}
+
+function applyHideTabsPreference() {
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const hideTabs = (params.get('hideTabs') || '').toLowerCase();
+        if (!(hideTabs === '1' || hideTabs === 'true')) return;
+
+        const tabs = document.getElementById('course-tabs-container');
+        if (!tabs) return;
+
+        tabs.style.setProperty('display', 'none', 'important');
+        const tabWrapper = tabs.closest('.relative.z-40') || tabs.parentElement?.parentElement;
+        if (tabWrapper) {
+            tabWrapper.style.setProperty('display', 'none', 'important');
+        }
+    } catch (e) {
+        console.warn('[CourseShared] applyHideTabsPreference failed:', e);
+    }
 }
 
 // Robust Initialization Logic
