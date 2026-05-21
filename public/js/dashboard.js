@@ -1612,6 +1612,33 @@ async function vibeRefreshReadmeContent(filterUnitId) {
     }
 }
 
+async function renderAssignmentsGuideMain(filterUnitId) {
+    const placeholder = document.getElementById('github-readme-placeholder-main');
+    if (!placeholder) return;
+    if (!filterUnitId) {
+        placeholder.classList.add('hidden');
+        return;
+    }
+
+    const embeddedAssignmentGuide = getEmbeddedGuideByUnit(filterUnitId, 'assignment');
+    if (embeddedAssignmentGuide) {
+        placeholder.innerHTML = embeddedAssignmentGuide;
+        placeholder.classList.remove('hidden');
+        return;
+    }
+
+    const repoName = filterUnitId.replace(/\.html$/, '');
+    const readmeUrl = `https://raw.githubusercontent.com/vibe-coding-template/${repoName}/main/README.md`;
+    placeholder.classList.remove('hidden');
+    placeholder.innerHTML = `<div class="flex items-center gap-3 text-slate-400 italic"><span class="animate-pulse">⏳</span> 正在抓取任務說明 (README.md)...</div>`;
+    const markdownHtml = await loadMarkdown(readmeUrl);
+    if (markdownHtml && !markdownHtml.includes('無法讀取')) {
+        placeholder.innerHTML = markdownHtml;
+    } else {
+        placeholder.innerHTML = `<div class="text-red-500 text-sm">⚠️ 無法載入 assignment-guide / README</div>`;
+    }
+}
+
 window.renderAssignments = renderAssignments;
 
 function renderChart(students) {
@@ -1781,6 +1808,7 @@ window.switchTab = function (tabName) {
             assignmentGuideContent = getEmbeddedGuideByUnit(filterUnitId, 'assignment');
         }
         renderAssignments(displayAssignments, assignmentGuideContent, { showGuide: !!assignmentGuideContent });
+        renderAssignmentsGuideMain(filterUnitId);
     }
     if (tabName === 'admin') {
         renderAdminConsole();
@@ -3315,9 +3343,8 @@ window.renderEarningsTab = window.renderEarningsTab || function(data) {
     const totalEarningsEl = document.getElementById('stat-total-earnings');
     const promoCodeEl = document.getElementById('display-promo-code');
     const tableBody = document.getElementById('earnings-table-body');
-    const inviteKitEl = document.getElementById('promo-invite-kit');
-
-    if (!totalEarningsEl || !promoCodeEl || !tableBody || !inviteKitEl) return;
+    const inviteKitEl = document.getElementById('promo-invite-kit-overview');
+    if (!totalEarningsEl || !promoCodeEl || !tableBody) return;
 
     // 1. Display Referral Link (Unit-Specific)
     const urlParams = new URLSearchParams(window.location.search);
@@ -3345,14 +3372,16 @@ window.renderEarningsTab = window.renderEarningsTab || function(data) {
         `;
     }
 
-    if (!inviteKit.ready) {
-        inviteKitEl.innerHTML = `
-            <div class="text-center py-10 text-gray-400">
-                ${escapeHtml(inviteKit.message)}
-            </div>
-        `;
-    } else {
-        inviteKitEl.innerHTML = `
+    if (inviteKitEl) {
+        inviteKitEl.classList.remove('hidden');
+        if (!inviteKit.ready) {
+            inviteKitEl.innerHTML = `
+                <div class="text-center py-10 text-gray-400">
+                    ${escapeHtml(inviteKit.message)}
+                </div>
+            `;
+        } else {
+            inviteKitEl.innerHTML = `
             <div class="space-y-6">
                 <!-- Header -->
                 <div class="border-b border-slate-100 pb-4">
@@ -3410,18 +3439,19 @@ window.renderEarningsTab = window.renderEarningsTab || function(data) {
             </div>
         `;
 
-        const copyLinkBtn = inviteKitEl.querySelector('.promo-copy-link');
-        const copyLetterBtn = inviteKitEl.querySelector('.promo-copy-letter');
-        const copyQrBtn = inviteKitEl.querySelector('.promo-copy-qr');
+            const copyLinkBtn = inviteKitEl.querySelector('.promo-copy-link');
+            const copyLetterBtn = inviteKitEl.querySelector('.promo-copy-letter');
+            const copyQrBtn = inviteKitEl.querySelector('.promo-copy-qr');
 
-        if (copyLinkBtn) {
-            copyLinkBtn.addEventListener('click', () => copyTextToClipboard(inviteKit.inviteUrl, '已複製專屬報名連結'));
-        }
-        if (copyLetterBtn) {
-            copyLetterBtn.addEventListener('click', () => copyTextToClipboard(inviteKit.letterText, '已複製通知書內容'));
-        }
-        if (copyQrBtn) {
-            copyQrBtn.addEventListener('click', () => copyTextToClipboard(inviteKit.qrUrl, '已複製 QR Code 圖片連結'));
+            if (copyLinkBtn) {
+                copyLinkBtn.addEventListener('click', () => copyTextToClipboard(inviteKit.inviteUrl, '已複製專屬報名連結'));
+            }
+            if (copyLetterBtn) {
+                copyLetterBtn.addEventListener('click', () => copyTextToClipboard(inviteKit.letterText, '已複製通知書內容'));
+            }
+            if (copyQrBtn) {
+                copyQrBtn.addEventListener('click', () => copyTextToClipboard(inviteKit.qrUrl, '已複製 QR Code 圖片連結'));
+            }
         }
     }
 
