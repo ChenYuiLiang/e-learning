@@ -1,400 +1,715 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>指令流邏輯：單次觸發與重複發送 - Vibe Coding</title>
-    <link rel="stylesheet" href="/style.css">
+    <title>指令流邏輯：單次觸發與重複發送 - Vibe Coding Learn</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <style>
+        :root {
+            --ms-blue: #0078d4;
+            --ms-blue-dark: #005a9e;
+            --ms-blue-light: #deecf9;
+            --ms-green: #107c10;
+            --ms-red: #d13438;
+            --sidebar-w: 280px;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter','Segoe UI',sans-serif; background:#fff; color:#201f1e; margin:0; font-size:15px; line-height:1.6; }
 
+        /* NAV */
+        .ms-topnav { background:var(--ms-blue); height:48px; display:flex; align-items:center; padding:0 20px; gap:16px; position:sticky; top:0; z-index:100; box-shadow:0 1px 4px rgba(0,0,0,.2); }
+        .ms-topnav .brand { color:#fff; font-weight:600; font-size:15px; display:flex; align-items:center; gap:8px; text-decoration:none; }
+        .ms-topnav .divider { width:1px; height:20px; background:rgba(255,255,255,.3); }
+        .ms-topnav .nav-label { color:rgba(255,255,255,.9); font-size:14px; }
+
+        /* LAYOUT */
+        .ms-layout { display:flex; min-height:calc(100vh - 48px); }
+
+        /* SIDEBAR */
+        .ms-sidebar { width:var(--sidebar-w); flex-shrink:0; background:#faf9f8; border-right:1px solid #e1dfdd; display:flex; flex-direction:column; position:sticky; top:48px; height:calc(100vh - 48px); overflow-y:auto; }
+        .ms-sidebar-header { padding:16px 16px 12px; border-bottom:1px solid #e1dfdd; }
+        .ms-sidebar-header .module-label { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:#605e5c; font-weight:600; margin-bottom:4px; }
+        .ms-sidebar-header .module-title { font-size:13px; font-weight:600; color:#201f1e; line-height:1.4; }
+        .ms-sidebar-header .meta { font-size:12px; color:#605e5c; margin-top:6px; }
+        .ms-unit-list { padding:8px 0; }
+        .ms-unit-item { display:flex; align-items:flex-start; gap:10px; padding:8px 16px; cursor:pointer; border-left:3px solid transparent; transition:background .12s,border-color .12s; color:#201f1e; }
+        .ms-unit-item:hover { background:#edebe9; }
+        .ms-unit-item.active { border-left-color:var(--ms-blue); background:#deecf9; }
+        .ms-unit-item.active .unit-name { color:var(--ms-blue); font-weight:600; }
+        .unit-icon { width:20px; height:20px; border-radius:50%; border:2px solid #c8c6c4; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; font-size:10px; background:#fff; }
+        .unit-icon.done { background:var(--ms-green); border-color:var(--ms-green); color:#fff; }
+        .unit-icon.active-icon { border-color:var(--ms-blue); background:var(--ms-blue); color:#fff; }
+        .unit-meta { flex:1; min-width:0; }
+        .unit-name { font-size:13px; line-height:1.4; }
+        .unit-time { font-size:11px; color:#605e5c; margin-top:2px; }
+        .sidebar-progress { padding:12px 16px; border-top:1px solid #e1dfdd; margin-top:auto; }
+        .progress-bar-bg { background:#e1dfdd; border-radius:4px; height:6px; }
+        .progress-bar-fill { background:var(--ms-green); border-radius:4px; height:6px; transition:width .4s; }
+        .progress-text { font-size:12px; color:#605e5c; margin-top:6px; }
+
+        /* MAIN */
+        .ms-content { flex:1; min-width:0; }
+        .ms-breadcrumb { padding:10px 40px; font-size:12px; color:#605e5c; border-bottom:1px solid #e1dfdd; background:#fff; }
+        .ms-breadcrumb a { color:var(--ms-blue); text-decoration:none; }
+        .ms-breadcrumb a:hover { text-decoration:underline; }
+        .ms-breadcrumb span { margin:0 6px; }
+
+        /* PAGES */
+        .ms-unit-page { display:none; }
+        .ms-unit-page.visible { display:block; }
+        .unit-content { max-width:820px; padding:32px 40px 60px; margin:0 auto; }
+        .unit-status-bar { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; padding-bottom:20px; border-bottom:1px solid #e1dfdd; }
+        .unit-completed-badge { display:flex; align-items:center; gap:6px; background:#dff6dd; color:#107c10; font-size:12px; font-weight:600; padding:4px 10px; border-radius:2px; }
+        .unit-time-badge { display:flex; align-items:center; gap:5px; color:#605e5c; font-size:13px; }
+
+        /* TYPOGRAPHY */
+        .unit-content h1 { font-size:28px; font-weight:700; margin:0 0 20px; color:#201f1e; line-height:1.3; }
+        .unit-content h2 { font-size:20px; font-weight:600; margin:36px 0 12px; color:#201f1e; padding-top:8px; }
+        .unit-content h3 { font-size:16px; font-weight:600; margin:24px 0 8px; color:#201f1e; }
+        .unit-content p { margin:0 0 14px; }
+        .unit-content ul, .unit-content ol { margin:0 0 14px; padding-left:28px; }
+        .unit-content li { margin-bottom:6px; }
+        .unit-content strong { font-weight:600; }
+        .unit-content a { color:var(--ms-blue); text-decoration:none; }
+        .unit-content a:hover { text-decoration:underline; }
+        .unit-content code { background:#f3f2f1; border:1px solid #e1dfdd; border-radius:3px; padding:1px 6px; font-family:'Consolas','Courier New',monospace; font-size:13px; color:#a31515; }
+
+        /* CALLOUTS */
+        .ms-note,.ms-tip,.ms-warning,.ms-important { display:flex; gap:12px; padding:12px 16px; border-radius:4px; margin:20px 0; border-left:4px solid; font-size:14px; }
+        .ms-note { background:#deecf9; border-color:var(--ms-blue); }
+        .ms-note .note-icon { color:var(--ms-blue); font-size:16px; flex-shrink:0; margin-top:1px; }
+        .ms-tip { background:#dff6dd; border-color:var(--ms-green); }
+        .ms-tip .note-icon { color:var(--ms-green); font-size:16px; flex-shrink:0; margin-top:1px; }
+        .ms-warning { background:#fff4ce; border-color:#ffaa44; }
+        .ms-warning .note-icon { color:#ffaa44; font-size:16px; flex-shrink:0; margin-top:1px; }
+        .ms-important { background:#fde7e9; border-color:var(--ms-red); }
+        .ms-important .note-icon { color:var(--ms-red); font-size:16px; flex-shrink:0; margin-top:1px; }
+        .note-body strong { display:block; margin-bottom:4px; font-size:13px; text-transform:uppercase; letter-spacing:.04em; }
+
+        /* SCENARIO */
+        .ms-scenario { background:#f3f2f1; border-radius:4px; padding:20px 24px; margin:20px 0; font-style:italic; color:#323130; border-left:4px solid #c8c6c4; }
+        .ms-scenario-label { font-style:normal; font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:#605e5c; margin-bottom:8px; }
+
+        /* STEPS */
+        .ms-steps { margin:16px 0; }
+        .ms-step { display:flex; gap:16px; margin-bottom:20px; align-items:flex-start; }
+        .ms-step-num { width:28px; height:28px; border-radius:50%; background:var(--ms-blue); color:#fff; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .ms-step-body { flex:1; }
+        .ms-step-body h4 { font-size:14px; font-weight:600; margin:0 0 4px; }
+        .ms-step-body p { font-size:14px; margin:0; }
+
+        /* TABLE */
+        .ms-table { width:100%; border-collapse:collapse; margin:16px 0; font-size:14px; }
+        .ms-table th { background:#f3f2f1; font-weight:600; text-align:left; padding:10px 14px; border:1px solid #e1dfdd; color:#323130; }
+        .ms-table td { padding:9px 14px; border:1px solid #e1dfdd; vertical-align:top; }
+        .ms-table tr:nth-child(even) td { background:#faf9f8; }
+
+        /* CHECKLIST */
+        .ms-checklist { list-style:none; padding:0; margin:12px 0; }
+        .ms-checklist li { display:flex; align-items:flex-start; gap:10px; padding:6px 0; font-size:14px; }
+        .ms-checklist li .check-box { width:18px; height:18px; border:2px solid #8a8886; border-radius:2px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; cursor:pointer; transition:all .15s; }
+        .ms-checklist li .check-box.checked { background:var(--ms-blue); border-color:var(--ms-blue); color:#fff; }
+
+        /* CODE BLOCK */
+        .ms-code { background:#1e1e1e; border-radius:6px; padding:16px; margin:16px 0; font-family:'Consolas','Courier New',monospace; font-size:13px; line-height:1.7; overflow-x:auto; }
+        .ms-code .lang-label { font-size:11px; color:#858585; margin-bottom:8px; display:block; }
+        .ms-code .c-comment { color:#6a9955; }
+        .ms-code .c-str { color:#ce9178; }
+        .ms-code .c-kw { color:#569cd6; }
+        .ms-code .c-fn { color:#dcdcaa; }
+        .ms-code .c-white { color:#d4d4d4; }
+        .ms-code .c-teal { color:#4ec9b0; }
+        .ms-code .c-prompt { color:#608b4e; }
+
+        /* VIDEO */
+        .ms-video-embed { border-radius:4px; overflow:hidden; margin:20px 0; box-shadow:0 2px 8px rgba(0,0,0,.12); aspect-ratio:16/9; }
+        .ms-video-embed iframe { width:100%; height:100%; display:block; border:0; }
+
+        /* BUTTONS */
+        .ms-btn { background:var(--ms-blue); color:#fff; border:none; padding:7px 18px; font-size:14px; font-weight:600; border-radius:2px; cursor:pointer; transition:background .12s; font-family:inherit; }
+        .ms-btn:hover { background:var(--ms-blue-dark); }
+        .ms-btn-ghost { background:transparent; color:var(--ms-blue); border:1px solid var(--ms-blue); padding:6px 18px; font-size:14px; font-weight:600; border-radius:2px; cursor:pointer; transition:background .12s; font-family:inherit; }
+        .ms-btn-ghost:hover { background:var(--ms-blue-light); }
+
+        /* NAV BUTTONS */
+        .unit-nav { display:flex; justify-content:space-between; align-items:center; padding:24px 40px; border-top:1px solid #e1dfdd; max-width:820px; margin:0 auto; }
+        .nav-btn-prev, .nav-btn-next { display:flex; align-items:center; gap:8px; padding:8px 20px; font-size:14px; font-weight:600; border-radius:2px; cursor:pointer; border:1px solid; font-family:inherit; transition:background .12s; }
+        .nav-btn-next { background:var(--ms-blue); color:#fff; border-color:var(--ms-blue); }
+        .nav-btn-next:hover { background:var(--ms-blue-dark); border-color:var(--ms-blue-dark); }
+        .nav-btn-prev { background:#fff; color:var(--ms-blue); border-color:var(--ms-blue); }
+        .nav-btn-prev:hover { background:var(--ms-blue-light); }
+        .unit-page-indicator { font-size:13px; color:#605e5c; }
+
+        /* INDEX */
+        .module-meta-tags { display:flex; flex-wrap:wrap; gap:8px; margin:16px 0; }
+        .ms-tag { background:#f3f2f1; color:#323130; font-size:12px; padding:4px 10px; border-radius:12px; font-weight:500; }
+        .ms-tag.blue { background:#deecf9; color:var(--ms-blue-dark); }
+        .ms-tag.green { background:#dff6dd; color:#107c10; }
+        .unit-card-list { margin:20px 0; }
+        .unit-card { display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid #f3f2f1; cursor:pointer; }
+        .unit-card:last-child { border-bottom:none; }
+        .unit-card:hover .unit-card-name { color:var(--ms-blue); text-decoration:underline; }
+        .unit-card-num { width:32px; height:32px; border-radius:50%; background:#f3f2f1; color:#605e5c; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .unit-card.quiz .unit-card-num { background:#fff4ce; color:#8a6914; }
+        .unit-card.lab .unit-card-num { background:#eef6ff; color:var(--ms-blue-dark); }
+        .unit-card-info { flex:1; }
+        .unit-card-name { font-size:15px; font-weight:500; }
+        .unit-card-time { font-size:12px; color:#605e5c; margin-top:2px; }
+        .unit-card-arrow { color:#c8c6c4; font-size:14px; }
+
+        /* LAB CARD */
+        .ms-lab-card { background:linear-gradient(135deg,#eef6ff 0%,#f5f0ff 100%); border:1px solid #c7e0f4; border-radius:6px; padding:24px; margin:20px 0; }
+        .ms-lab-card h3 { margin:0 0 12px; color:var(--ms-blue-dark); }
+        .ms-lab-badge { display:inline-flex; align-items:center; gap:6px; background:var(--ms-blue); color:#fff; font-size:11px; font-weight:700; padding:3px 10px; border-radius:12px; text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px; }
+        .ms-lab-time { font-size:12px; color:#605e5c; margin-left:8px; }
+
+        /* QUIZ */
+        .quiz-question { margin-bottom:32px; }
+        .quiz-question p { font-size:15px; font-weight:500; margin-bottom:14px; }
+        .quiz-option { display:flex; align-items:flex-start; gap:10px; padding:10px 14px; border:1px solid #e1dfdd; border-radius:4px; margin-bottom:8px; cursor:pointer; transition:background .1s,border-color .1s; font-size:14px; }
+        .quiz-option:hover { background:#f3f2f1; border-color:#c8c6c4; }
+        .quiz-option input[type=radio] { margin-top:2px; accent-color:var(--ms-blue); flex-shrink:0; }
+        .quiz-option.correct { background:#dff6dd; border-color:var(--ms-green); }
+        .quiz-option.wrong { background:#fde7e9; border-color:var(--ms-red); }
+        .quiz-feedback { display:none; margin-top:8px; padding:10px 14px; border-radius:4px; font-size:13px; font-weight:500; }
+        .quiz-feedback.correct { background:#dff6dd; color:#107c10; display:block; }
+        .quiz-feedback.wrong { background:#fde7e9; color:#d13438; display:block; }
+
+        /* RESOURCE */
+        .ms-resource-link { display:flex; align-items:center; gap:10px; padding:12px 16px; border:1px solid #e1dfdd; border-radius:4px; margin-bottom:8px; text-decoration:none; color:#201f1e; font-size:14px; transition:background .1s; }
+        .ms-resource-link:hover { background:#f3f2f1; }
+        .ms-resource-link i { color:var(--ms-blue); font-size:18px; width:24px; text-align:center; flex-shrink:0; }
+
+        /* ACHIEVEMENT */
+        .ms-achievement { background:linear-gradient(135deg,#0078d4 0%,#005a9e 100%); color:#fff; border-radius:6px; padding:24px 28px; margin:24px 0; display:flex; align-items:center; gap:20px; }
+        .achievement-icon { font-size:48px; flex-shrink:0; }
+        .achievement-text h3 { margin:0 0 4px; font-size:18px; }
+        .achievement-text p { margin:0; font-size:14px; opacity:.9; }
+
+        /* WORKFLOW VISUAL */
+        .workflow-steps { display:flex; align-items:stretch; gap:0; margin:20px 0; overflow-x:auto; }
+        .workflow-step { flex:1; min-width:100px; display:flex; flex-direction:column; align-items:center; position:relative; }
+        .workflow-step:not(:last-child)::after { content:'›'; position:absolute; right:-10px; top:22px; font-size:22px; color:#c8c6c4; z-index:1; }
+        .ws-circle { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; margin-bottom:10px; flex-shrink:0; }
+        .ws-label { font-size:13px; font-weight:600; text-align:center; margin-bottom:4px; }
+        .ws-desc { font-size:11px; color:#605e5c; text-align:center; line-height:1.4; }
+
+        /* SKILL MATRIX */
+        .skill-row { display:flex; gap:12px; align-items:flex-start; padding:14px 0; border-bottom:1px solid #f3f2f1; }
+        .skill-row:last-child { border-bottom:none; }
+        .skill-badge { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700; padding:3px 10px; border-radius:12px; white-space:nowrap; flex-shrink:0; min-width:90px; justify-content:center; }
+        .skill-body { flex:1; }
+        .skill-body h4 { font-size:14px; font-weight:600; margin:0 0 3px; }
+        .skill-body p { font-size:13px; color:#605e5c; margin:0; }
+
+        /* TASK SECTION HEADER */
+        .task-section-header { display:flex; align-items:center; gap:10px; padding:10px 0 10px; margin-top:28px; border-bottom:2px solid #e1dfdd; margin-bottom:16px; }
+        .task-section-header .num { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#fff; flex-shrink:0; }
+        .task-section-header h3 { font-size:16px; font-weight:700; margin:0; }
+
+        @media (max-width:768px) {
+            .ms-sidebar { display:none; }
+            .unit-content { padding:20px 16px 40px; }
+            .unit-nav { padding:16px; }
+            .ms-breadcrumb { padding:8px 16px; }
+            .workflow-steps { flex-direction:column; }
+            .workflow-step::after { display:none; }
+        }
+    </style>
 </head>
+<body>
 
-<body class="bg-gray-50 font-[Inter] text-gray-800">
+<nav class="ms-topnav">
+    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <div class="divider"></div>
+    <span class="nav-label">入門課程單元</span>
+</nav>
 
-    <!-- Hero Section -->
-    <header
-        class="relative bg-gradient-to-br from-slate-900 via-emerald-900 to-green-900 text-white pt-24 pb-32 overflow-hidden">
-        <div class="header-overlay absolute inset-0 bg-gradient-to-r from-emerald-600 to-green-600 opacity-90"></div>
-        <div class="container mx-auto px-4 relative z-10 pt-20 pb-20 text-center text-white">
-            <h1 class="text-4xl md:text-5xl font-bold mb-6 tracking-tight">
-                指令流邏輯：單次觸發與重複發送
-            </h1>
-            <p class="text-xl text-emerald-100 max-w-2xl mx-auto leading-relaxed mb-10">
-                從「點一下」到「按住不放」，深入解析 onclick 與 setInterval 的核心差異。打造絲滑流暢、零延遲的無人車操控體驗。
-            </p>
+<div class="ms-layout">
+    <aside class="ms-sidebar">
+        <div class="ms-sidebar-header">
+            <div class="module-label">模組</div>
+            <div class="module-title">指令流邏輯：單次觸發與重複發送</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 73 分鐘 · 4 個單元</div>
+        </div>
+        <nav class="ms-unit-list" id="sidebar-nav"></nav>
+        <div class="sidebar-progress">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+            <div class="progress-text" id="progress-text">0 / 4 已完成</div>
+        </div>
+    </aside>
 
-            <div class="flex flex-wrap justify-center gap-4">
-                <button onclick="enterMediaMode('video', window.RESOURCES.video)"
-                    class="resource-btn bg-emerald-500 hover:bg-emerald-400 text-white px-6 py-3 rounded-full flex items-center gap-2 shadow-lg font-bold">
-                    <span>📺</span> 觀看教學影片
-                </button>
-                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
-                    class="resource-btn bg-white/10 hover:bg-white/20 border border-white/20 text-white px-6 py-3 rounded-full flex items-center gap-2 backdrop-blur-sm font-bold">
-                    <span>📄</span> 閱讀課程講義
-                </button>
+    <main class="ms-content">
+        <div class="ms-breadcrumb">
+            <a href="#">Vibe Coding</a><span>›</span>
+            <a href="#">入門課程單元</a><span>›</span>
+            <span id="bc-current">課程總覽</span>
+        </div>
+
+        
+        <!-- ══════════ PAGE 0: INDEX ══════════ -->
+        <div class="ms-unit-page visible" id="page-index">
+            <div class="unit-content">
+                <h1>指令流邏輯：單次觸發與重複發送</h1>
+                <div class="module-meta-tags">
+                    <span class="ms-tag">模組</span>
+                    <span class="ms-tag">4 個單元</span>
+                    <span class="ms-tag green">入門</span>
+                    <span class="ms-tag blue">前端開發</span>
+                    <span class="ms-tag blue">物聯網</span>
+                </div>
+                <p>
+                    從「點一下」到「按住不放」，深入解析 onclick 與 setInterval 的核心差異。打造絲滑流暢、零延遲的無人車操控體驗。
+                </p>
+                <h2>學習目標</h2>
+                <ul>
+                    <li>掌握 setInterval 與 clearInterval 的生命週期管理。</li>
+<li>實作「狀態機」概念處理多按鍵同時輸入的衝突。</li>
+<li>建立安全防護意識，實作「死人開關 (Dead Man's Switch)」機制。</li>
+                </ul>
+                <h2>必要條件</h2>
+                <ul>
+                    <li>擁有基礎 HTML/CSS 與 JavaScript 知識</li>
+                    <li>準備好您的開發環境與設備</li>
+                </ul>
+                <h2>本模組單元</h2>
+                <div class="unit-card-list" id="index-unit-list"></div>
+                <div style="margin-top:32px;"><button class="ms-btn" onclick="goToUnit(1)">開始模組 &nbsp;›</button></div>
             </div>
         </div>
-    </header>
+        
+        <!-- ══════════ PAGE 1: 直覺實驗室 ══════════ -->
+        <div class="ms-unit-page" id="page-1">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-1" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+                <h1>直覺實驗室：點擊 vs. 狀態</h1>
+                <div class="section-header-left border-l-4 border-emerald-500 pl-6 mb-10">
+<span class="text-emerald-600 font-bold tracking-wider uppercase text-sm">Module 1: Intuitive Lab</span>
 
-    <main class="container mx-auto max-w-6xl px-4 py-12">
-
-        <!-- Module 1: Intuitive Lab -->
-        <section class="content-block mb-24">
-            <div class="section-header-left border-l-4 border-emerald-500 pl-6 mb-10">
-                <span class="text-emerald-600 font-bold tracking-wider uppercase text-sm">Module 1: Intuitive Lab</span>
-                <h2 class="text-3xl font-bold text-gray-900 mt-2">直覺實驗室：點擊 vs. 狀態</h2>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-12 items-start">
-                <div class="bg-white rounded-2xl p-8 shadow-xl border border-gray-100 h-full">
-                    <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
-                        <span
-                            class="bg-emerald-100 text-emerald-600 w-10 h-10 rounded-full flex items-center justify-center text-lg">1</span>
+</div>
+<div class="grid md:grid-cols-2 gap-12 items-start">
+<div class="bg-white rounded-2xl p-8 shadow-xl border border-gray-100 h-full">
+<h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+<span class="bg-emerald-100 text-emerald-600 w-10 h-10 rounded-full flex items-center justify-center text-lg">1</span>
                         事件觸發的本質
                     </h3>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
+<p class="text-gray-600 mb-6 leading-relaxed">
                         在網頁控制中，不同的功能需要不同的觸發邏輯。試想一下：如果是喇叭，你希望按一次響一次；但如果是油門，你希望按著不放車子就一直跑。
                     </p>
-
-                    <div class="space-y-4">
-                        <div class="flex gap-4 items-center p-4 bg-gray-50 rounded-lg">
-                            <div class="text-2xl">📸</div>
-                            <div>
-                                <h4 class="font-bold text-gray-900">單次觸發 (One-shot)</h4>
-                                <p class="text-sm text-gray-600 mt-1">適合：拍照、切換燈光、喇叭。<br>事件：<code
-                                        class="bg-gray-200 px-1 rounded">onclick</code></p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4 items-center p-4 bg-emerald-50 rounded-lg border border-emerald-100">
-                            <div class="text-2xl">🏎️</div>
-                            <div>
-                                <h4 class="font-bold text-emerald-900">持續狀態 (Continuous)</h4>
-                                <p class="text-sm text-emerald-800 mt-1">適合：前進、後退、轉向。<br>事件：<code
-                                        class="bg-emerald-200/50 px-1 rounded">mousedown</code> + <code
-                                        class="bg-emerald-200/50 px-1 rounded">mouseup</code></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 bg-yellow-50 p-4 rounded-lg border border-yellow-100">
-                        <p class="text-sm text-yellow-800 font-bold">思考任務：</p>
-                        <p class="text-sm text-yellow-700 mt-1">觀察你的手機遊戲，列出 3 種「點一下就好」的功能與 3 種「按著不放」的功能。</p>
-                    </div>
-                </div>
-
-                <!-- Interactive Demo -->
-                <div class="bg-gray-900 rounded-xl p-6 flex flex-col shadow-2xl min-h-[500px]">
-                    <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-4">
-                        <h4 class="text-white font-mono font-bold">Event Logger Visualization</h4>
-                        <span class="text-xs text-gray-400 font-mono">Status: Connected</span>
-                    </div>
-
-                    <div class="flex-grow flex flex-col gap-6">
-                        <!-- Buttons Area -->
-                        <div class="flex justify-center gap-6 py-4">
-                            <button id="btn-snapshot"
-                                class="group relative w-24 h-24 bg-gray-700 hover:bg-gray-600 active:bg-gray-500 rounded-xl flex flex-col items-center justify-center transition-all shadow-lg border-b-4 border-gray-900 active:border-b-0 active:translate-y-1">
-                                <span class="text-4xl mb-2 group-hover:scale-110 transition-transform">📸</span>
-                                <span class="text-xs text-white font-bold">Snapshot</span>
-                                <div
-                                    class="absolute -top-2 -right-2 bg-blue-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
+<div class="space-y-4">
+<div class="flex gap-4 items-center p-4 bg-gray-50 rounded-lg">
+<div class="text-2xl">📸</div>
+<div>
+<h4 class="font-bold text-gray-900">單次觸發 (One-shot)</h4>
+<p class="text-sm text-gray-600 mt-1">適合：拍照、切換燈光、喇叭。<br/>事件：<code class="bg-gray-200 px-1 rounded">onclick</code></p>
+</div>
+</div>
+<div class="flex gap-4 items-center p-4 bg-emerald-50 rounded-lg border border-emerald-100">
+<div class="text-2xl">🏎️</div>
+<div>
+<h4 class="font-bold text-emerald-900">持續狀態 (Continuous)</h4>
+<p class="text-sm text-emerald-800 mt-1">適合：前進、後退、轉向。<br/>事件：<code class="bg-emerald-200/50 px-1 rounded">mousedown</code> + <code class="bg-emerald-200/50 px-1 rounded">mouseup</code></p>
+</div>
+</div>
+</div>
+<div class="mt-6 bg-yellow-50 p-4 rounded-lg border border-yellow-100">
+<p class="text-sm text-yellow-800 font-bold">思考任務：</p>
+<p class="text-sm text-yellow-700 mt-1">觀察你的手機遊戲，列出 3 種「點一下就好」的功能與 3 種「按著不放」的功能。</p>
+</div>
+</div>
+<!-- Interactive Demo -->
+<div class="bg-gray-900 rounded-xl p-6 flex flex-col shadow-2xl min-h-[500px]">
+<div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-4">
+<h4 class="text-white font-mono font-bold">Event Logger Visualization</h4>
+<span class="text-xs text-gray-400 font-mono">Status: Connected</span>
+</div>
+<div class="flex-grow flex flex-col gap-6">
+<!-- Buttons Area -->
+<div class="flex justify-center gap-6 py-4">
+<button class="group relative w-24 h-24 bg-gray-700 hover:bg-gray-600 active:bg-gray-500 rounded-xl flex flex-col items-center justify-center transition-all shadow-lg border-b-4 border-gray-900 active:border-b-0 active:translate-y-1" id="btn-snapshot">
+<span class="text-4xl mb-2 group-hover:scale-110 transition-transform">📸</span>
+<span class="text-xs text-white font-bold">Snapshot</span>
+<div class="absolute -top-2 -right-2 bg-blue-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
                                     Click</div>
-                            </button>
-
-                            <button id="btn-drive"
-                                class="group relative w-24 h-24 bg-emerald-700 hover:bg-emerald-600 active:bg-emerald-500 rounded-xl flex flex-col items-center justify-center transition-all shadow-lg border-b-4 border-emerald-900 active:border-b-0 active:translate-y-1 select-none">
-                                <span class="text-4xl mb-2 group-active:animate-pulse">🏎️</span>
-                                <span class="text-xs text-white font-bold">Drive</span>
-                                <div
-                                    class="absolute -top-2 -right-2 bg-orange-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
+</button>
+<button class="group relative w-24 h-24 bg-emerald-700 hover:bg-emerald-600 active:bg-emerald-500 rounded-xl flex flex-col items-center justify-center transition-all shadow-lg border-b-4 border-emerald-900 active:border-b-0 active:translate-y-1 select-none" id="btn-drive">
+<span class="text-4xl mb-2 group-active:animate-pulse">🏎️</span>
+<span class="text-xs text-white font-bold">Drive</span>
+<div class="absolute -top-2 -right-2 bg-orange-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
                                     Hold</div>
-                            </button>
-                        </div>
+</button>
+</div>
+<!-- Log Display -->
+<div class="bg-black/50 rounded-lg p-4 font-mono text-sm h-64 overflow-y-auto border border-gray-700 shadow-inner custom-scrollbar" id="log-container">
+<div class="text-gray-500 italic text-center mt-20">請操作上方按鈕觀察事件流...</div>
+</div>
+</div>
+</div>
+</div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
+                <span class="unit-page-indicator">1 / 4</span>
+                <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
 
-                        <!-- Log Display -->
-                        <div id="log-container"
-                            class="bg-black/50 rounded-lg p-4 font-mono text-sm h-64 overflow-y-auto border border-gray-700 shadow-inner custom-scrollbar">
-                            <div class="text-gray-500 italic text-center mt-20">請操作上方按鈕觀察事件流...</div>
-                        </div>
-                    </div>
+        <!-- ══════════ PAGE 2: 核心技術 ══════════ -->
+        <div class="ms-unit-page" id="page-2">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-2" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
                 </div>
-            </div>
-        </section>
-
-        <!-- Module 2: Core Principles -->
-        <section class="content-block mb-24">
-            <div class="section-header-left border-l-4 border-indigo-500 pl-6 mb-10">
-                <span class="text-indigo-600 font-bold tracking-wider uppercase text-sm">Module 2: Core
+                <h1>核心技術：頻率與流量控制</h1>
+                <div class="section-header-left border-l-4 border-indigo-500 pl-6 mb-10">
+<span class="text-indigo-600 font-bold tracking-wider uppercase text-sm">Module 2: Core
                     Principles</span>
-                <h2 class="text-3xl font-bold text-gray-900 mt-2">核心技術：頻率與流量控制</h2>
-            </div>
 
-            <div class="grid lg:grid-cols-3 gap-8">
-                <!-- Principle 1 -->
-                <div
-                    class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-                    <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center text-2xl mb-4">🔁
+</div>
+<div class="grid lg:grid-cols-3 gap-8">
+<!-- Principle 1 -->
+<div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+<div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center text-2xl mb-4">🔁
                     </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-3">1. 非同步迴圈 (setInterval)</h3>
-                    <p class="text-gray-600 mb-4 text-sm">瀏覽器的事件 (如 scroll 或 drag) 觸發頻率極高。為了穩定控制，我們不直接使用事件驅動，而是開啟一個
+<h3 class="text-xl font-bold text-gray-800 mb-3">1. 非同步迴圈 (setInterval)</h3>
+<p class="text-gray-600 mb-4 text-sm">瀏覽器的事件 (如 scroll 或 drag) 觸發頻率極高。為了穩定控制，我們不直接使用事件驅動，而是開啟一個
                         <code class="bg-indigo-50 text-indigo-700 px-1 rounded">setInterval</code> 定時器。
                     </p>
-                    <div class="bg-gray-900 p-3 rounded-lg text-xs font-mono text-green-400 border border-gray-800">
-                        timer = setInterval(() => {<br>
-                        &nbsp;&nbsp;sendCmd('forward');<br>
+<div class="bg-gray-900 p-3 rounded-lg text-xs font-mono text-green-400 border border-gray-800">
+                        timer = setInterval(() =&gt; {<br/>
+                          sendCmd('forward');<br/>
                         }, 50); // 每 50ms 發送一次
                     </div>
-                </div>
-
-                <!-- Principle 2 -->
-                <div
-                    class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center text-2xl mb-4">🖐️
+</div>
+<!-- Principle 2 -->
+<div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+<div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center text-2xl mb-4">🖐️
                     </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-3">2. 防抖與節流</h3>
-                    <p class="text-gray-600 mb-4 text-sm">為什麼不能每 1ms 就傳一次？Wi-Fi 頻寬有限，過快的指令會導致 ESP32 處理不及而「當機」或延遲 (Lag)。
+<h3 class="text-xl font-bold text-gray-800 mb-3">2. 防抖與節流</h3>
+<p class="text-gray-600 mb-4 text-sm">為什麼不能每 1ms 就傳一次？Wi-Fi 頻寬有限，過快的指令會導致 ESP32 處理不及而「當機」或延遲 (Lag)。
                     </p>
-                    <div class="bg-red-50 p-3 rounded-lg text-xs text-red-800 border border-red-200">
-                        <strong>最佳實踐：</strong><br>控制頻率在 20Hz - 50Hz 之間 (即每 20ms-50ms 一次) 最為流暢且穩定。
+<div class="bg-red-50 p-3 rounded-lg text-xs text-red-800 border border-red-200">
+<strong>最佳實踐：</strong><br/>控制頻率在 20Hz - 50Hz 之間 (即每 20ms-50ms 一次) 最為流暢且穩定。
                     </div>
-                </div>
-
-                <!-- Principle 3 -->
-                <div
-                    class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-2xl mb-4">💓
+</div>
+<!-- Principle 3 -->
+<div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+<div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-2xl mb-4">💓
                     </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-3">3. 心跳機制</h3>
-                    <p class="text-gray-600 mb-4 text-sm">如果網路突然斷線，車子收不到「停止」指令怎麼辦？這就是「死人開關 (Dead Man's Switch)」的重要性。</p>
-                    <p class="text-xs text-gray-500">安全邏輯：若 ESP32 超過 500ms 未收到新指令，應自動切斷馬達電源。</p>
-                </div>
+<h3 class="text-xl font-bold text-gray-800 mb-3">3. 心跳機制</h3>
+<p class="text-gray-600 mb-4 text-sm">如果網路突然斷線，車子收不到「停止」指令怎麼辦？這就是「死人開關 (Dead Man's Switch)」的重要性。</p>
+<p class="text-xs text-gray-500">安全邏輯：若 ESP32 超過 500ms 未收到新指令，應自動切斷馬達電源。</p>
+</div>
+</div>
             </div>
-        </section>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">2 / 4</span>
+                <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
 
-        <!-- Module 3: Practical Challenge -->
-        <section class="content-block">
-            <div class="section-header-left border-l-4 border-orange-500 pl-6 mb-10">
-                <span class="text-orange-600 font-bold tracking-wider uppercase text-sm">Module 3: Classroom
+        <!-- ══════════ PAGE 3: 實作挑戰 ══════════ -->
+        <div class="ms-unit-page" id="page-3">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-3" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 60 分鐘</div>
+                </div>
+                <h1>教室實戰：極限測試</h1>
+                <div class="section-header-left border-l-4 border-orange-500 pl-6 mb-10">
+<span class="text-orange-600 font-bold tracking-wider uppercase text-sm">Module 3: Classroom
                     Challenges</span>
-                <h2 class="text-3xl font-bold text-gray-900 mt-2">教室實戰：極限測試</h2>
-            </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- Task 3-1 -->
-                <div onclick="openSubmissionModal('flow-logic-task-1', '作業 3-1: 指令連發實驗')"
-                    class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden group cursor-pointer relative">
-                    <div class="bg-gradient-to-r from-orange-500 to-red-500 h-2"></div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="font-bold text-xl text-gray-800 group-hover:text-orange-600 transition">作業 3-1
+</div>
+<div class="grid md:grid-cols-3 gap-8">
+<!-- Task 3-1 -->
+<div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden group cursor-pointer relative ms-lab-card" onclick="openSubmissionModal('flow-logic-task-1', '作業 3-1: 指令連發實驗')">
+<div class="bg-gradient-to-r from-orange-500 to-red-500 h-2"></div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-bold text-xl text-gray-800 group-hover:text-orange-600 transition">作業 3-1
                             </h3>
-                            <span class="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded font-bold">60
+<span class="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded font-bold">60
                                 min</span>
-                        </div>
-                        <h4 class="font-bold text-gray-700 mb-2">指令連發實驗</h4>
-                        <p class="text-sm text-gray-500 mb-4">目標：尋找傳輸頻率的「甜蜜點」。測試 10ms, 100ms, 500ms 的差異，找出反應最快且不卡頓的設置。
+</div>
+<h4 class="font-bold text-gray-700 mb-2">指令連發實驗</h4>
+<p class="text-sm text-gray-500 mb-4">目標：尋找傳輸頻率的「甜蜜點」。測試 10ms, 100ms, 500ms 的差異，找出反應最快且不卡頓的設置。
                         </p>
-
-                        <div class="mt-4 pt-4 border-t border-gray-100">
-                            <h5 class="text-xs font-bold text-gray-400 uppercase mb-2">Challenge</h5>
-                            <p class="text-sm text-gray-600">觀察網頁 Console 與 ESP32 序列埠，是否出現「緩衝區溢位」？</p>
-                        </div>
-                    </div>
-                    <!-- Click Hint Overlay -->
-                    <div
-                        class="absolute inset-0 bg-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span
-                            class="bg-white text-orange-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
+<div class="mt-4 pt-4 border-t border-gray-100">
+<h5 class="text-xs font-bold text-gray-400 uppercase mb-2">Challenge</h5>
+<p class="text-sm text-gray-600">觀察網頁 Console 與 ESP32 序列埠，是否出現「緩衝區溢位」？</p>
+</div>
+</div>
+<!-- Click Hint Overlay -->
+<div class="absolute inset-0 bg-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="bg-white text-orange-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
                             📤 點擊繳交作業
                         </span>
-                    </div>
-                </div>
-
-                <!-- Task 3-2 -->
-                <div onclick="openSubmissionModal('flow-logic-task-2', '作業 3-2: 狀態機衝突解決')"
-                    class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden group cursor-pointer relative">
-                    <div class="bg-gradient-to-r from-blue-500 to-indigo-500 h-2"></div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="font-bold text-xl text-gray-800 group-hover:text-blue-600 transition">作業 3-2</h3>
-                            <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold">60 min</span>
-                        </div>
-                        <h4 class="font-bold text-gray-700 mb-2">狀態機衝突解決</h4>
-                        <p class="text-sm text-gray-500 mb-4">目標：實作多按鍵邏輯。當同時按下「前」與「左」時，車子應執行「左前」移動，而非打架。</p>
-
-                        <div class="mt-4 pt-4 border-t border-gray-100">
-                            <h5 class="text-xs font-bold text-gray-400 uppercase mb-2">Concept</h5>
-                            <code
-                                class="text-xs font-mono bg-gray-50 p-1 rounded block text-gray-600">let state = { up: false, left: true ... }</code>
-                        </div>
-                    </div>
-                    <!-- Click Hint Overlay -->
-                    <div
-                        class="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span
-                            class="bg-white text-blue-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
+</div>
+</div>
+<!-- Task 3-2 -->
+<div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden group cursor-pointer relative ms-lab-card" onclick="openSubmissionModal('flow-logic-task-2', '作業 3-2: 狀態機衝突解決')">
+<div class="bg-gradient-to-r from-blue-500 to-indigo-500 h-2"></div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-bold text-xl text-gray-800 group-hover:text-blue-600 transition">作業 3-2</h3>
+<span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold">60 min</span>
+</div>
+<h4 class="font-bold text-gray-700 mb-2">狀態機衝突解決</h4>
+<p class="text-sm text-gray-500 mb-4">目標：實作多按鍵邏輯。當同時按下「前」與「左」時，車子應執行「左前」移動，而非打架。</p>
+<div class="mt-4 pt-4 border-t border-gray-100">
+<h5 class="text-xs font-bold text-gray-400 uppercase mb-2">Concept</h5>
+<code class="text-xs font-mono bg-gray-50 p-1 rounded block text-gray-600">let state = { up: false, left: true ... }</code>
+</div>
+</div>
+<!-- Click Hint Overlay -->
+<div class="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="bg-white text-blue-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
                             📤 點擊繳交作業
                         </span>
-                    </div>
-                </div>
-
-                <!-- Task 3-3 -->
-                <div onclick="openSubmissionModal('flow-logic-task-3', '作業 3-3: 斷訊安全機制')"
-                    class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden group cursor-pointer relative">
-                    <div class="bg-gradient-to-r from-gray-700 to-black h-2"></div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="font-bold text-xl text-gray-800 group-hover:text-gray-600 transition">作業 3-3</h3>
-                            <span class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded font-bold">45 min</span>
-                        </div>
-                        <h4 class="font-bold text-gray-700 mb-2">斷訊安全機制</h4>
-                        <p class="text-sm text-gray-500 mb-4">目標：模擬網路斷線（手機瀏覽器崩潰），確保車子在 500ms 後自動停機，防止失控衝撞。</p>
-
-                        <div class="mt-4 pt-4 border-t border-gray-100">
-                            <h5 class="text-xs font-bold text-gray-400 uppercase mb-2">Safety</h5>
-                            <p class="text-sm text-gray-600">Dead Man's Switch 實作。</p>
-                        </div>
-                    </div>
-                    <!-- Click Hint Overlay -->
-                    <div
-                        class="absolute inset-0 bg-gray-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span
-                            class="bg-white text-gray-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
+</div>
+</div>
+<!-- Task 3-3 -->
+<div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden group cursor-pointer relative ms-lab-card" onclick="openSubmissionModal('flow-logic-task-3', '作業 3-3: 斷訊安全機制')">
+<div class="bg-gradient-to-r from-gray-700 to-black h-2"></div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-bold text-xl text-gray-800 group-hover:text-gray-600 transition">作業 3-3</h3>
+<span class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded font-bold">45 min</span>
+</div>
+<h4 class="font-bold text-gray-700 mb-2">斷訊安全機制</h4>
+<p class="text-sm text-gray-500 mb-4">目標：模擬網路斷線（手機瀏覽器崩潰），確保車子在 500ms 後自動停機，防止失控衝撞。</p>
+<div class="mt-4 pt-4 border-t border-gray-100">
+<h5 class="text-xs font-bold text-gray-400 uppercase mb-2">Safety</h5>
+<p class="text-sm text-gray-600">Dead Man's Switch 實作。</p>
+</div>
+</div>
+<!-- Click Hint Overlay -->
+<div class="absolute inset-0 bg-gray-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="bg-white text-gray-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
                             📤 點擊繳交作業
                         </span>
-                    </div>
-                </div>
+</div>
+</div>
+</div>
             </div>
-        </section>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">3 / 4</span>
+                <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 4: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-4">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-4" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                </div>
+                <h1>摘要與資源</h1>
+                <p>
+                    恭喜你完成了「<strong>指令流邏輯：單次觸發與重複發送</strong>」單元！
+                    在這個單元中，你深入了解了其底層機制，完成了多個層層遞進的實作任務，
+                    並成功部署與調試了相關的前端和硬體系統。
+                </p>
+
+                <div class="ms-achievement">
+                    <div class="achievement-icon">🎓</div>
+                    <div class="achievement-text">
+                        <h3>恭喜！你已完成本模組</h3>
+                        <p>持續實踐與累積，這將使你的工程素養更上一層樓。</p>
+                    </div>
+                </div>
+
+                <h2>完成本模組後，你能夠：</h2>
+                <ul>
+                    <li>理解並完成「<strong>作業 3-1: 指令連發實驗</strong>」的實作與驗證。</li>
+<li>理解並完成「<strong>作業 3-2: 狀態機衝突解決</strong>」的實作與驗證。</li>
+<li>理解並完成「<strong>作業 3-3: 斷訊安全機制</strong>」的實作與驗證。</li>
+                </ul>
+
+                <h2>延伸學習與資源</h2>
+                
+                <a href="https://www.youtube.com/watch?v=LBsChfN0z5M" target="_blank" class="ms-resource-link">
+                    <i class="fab fa-youtube" style="color:#ff0000;"></i>
+                    <div>
+                        <div style="font-weight:600;">課程教學影片</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">YouTube — 觀看動態功能展示與程式講解</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+        
+                <a href="https://docs.google.com/document/d/e/2PACX-1vQ_etv7SYPEN2omorbgU2Vfae6BDOshRSnXSYueN08FCyiDScT2EWJ2Fs9dM3aFGEgH_rl-oHsSzcNv/pub?embedded=true" target="_blank" class="ms-resource-link">
+                    <i class="fas fa-file-alt"></i>
+                    <div>
+                        <div style="font-weight:600;">課程完整講義</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">Google Docs — 詳細背景知識、硬體接線與程式碼說明</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+        
+                <a href="https://classroom.github.com" target="_blank" class="ms-resource-link">
+                    <i class="fab fa-github"></i>
+                    <div>
+                        <div style="font-weight:600;">GitHub Classroom 官方網站</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">classroom.github.com — 管理作業與查看進度</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+    
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
+                <button class="ms-btn" onclick="markDone(4); alert('🎉 恭喜完成「指令流邏輯：單次觸發與重複發送」模組！')">完成模組</button>
+            </div>
+        </div>
 
     </main>
+</div>
 
-    <footer class="bg-gray-900 text-white py-12 border-t border-gray-800">
-        <div class="container mx-auto px-4 text-center">
-            <p class="text-gray-500">© 2024 Vibe Coding. All rights reserved.</p>
-        </div>
-    </footer>
 
-    <!-- Media Overlay injected by course-shared.js?v=2026.04.05.FINAL_V6 -->
 
-    <script>
-        // --- Interactive Demo Logic ---
-        const btnSnapshot = document.getElementById('btn-snapshot');
-        const btnDrive = document.getElementById('btn-drive');
-        const logContainer = document.getElementById('log-container');
-        let driveInterval = null;
-        let driveCount = 0;
+<script>
+    const UNITS = [{'id': 0, 'label': '課程總覽', 'time': '', 'type': 'index'}, {'id': 1, 'label': '直覺實驗室', 'time': '5 分鐘', 'type': 'unit'}, {'id': 2, 'label': '核心技術', 'time': '5 分鐘', 'type': 'unit'}, {'id': 3, 'label': '實作挑戰', 'time': '60 分鐘', 'type': 'lab'}, {'id': 4, 'label': '摘要與資源', 'time': '3 分鐘', 'type': 'unit'}];
 
-        function addLog(message, type = 'info') {
-            const el = document.createElement('div');
-            el.className = 'log-entry mb-1 ' + (type === 'cmd' ? 'text-green-400' : 'text-gray-300');
-            const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '.' + String(new Date().getMilliseconds()).padStart(3, '0');
-            el.innerHTML = `<span class="text-gray-600 text-xs mr-2">[${time}]</span>${message}`;
+    let currentUnit = 0;
+    let doneSet = new Set();
 
-            // Remove initial placeholder
-            if (logContainer.querySelector('.italic')) {
-                logContainer.innerHTML = '';
-            }
+    function init() {
+        buildSidebar();
+        buildIndexUnitList();
+        goToUnit(0);
+    }
 
-            logContainer.scrollTop = 0; // Prepend logic usually requires 0 scrollTop, but here we append
-            logContainer.appendChild(el);
-            logContainer.scrollTop = logContainer.scrollHeight;
+    function buildSidebar() {
+        const nav = document.getElementById('sidebar-nav');
+        nav.innerHTML = UNITS.map(u => {
+            const badge = u.type==='lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : '';
+            return `<div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
+                <div class="unit-icon" id="icon-${u.id}">\${u.id===0?'<i class="fas fa-home" style="font-size:9px;"></i>':u.id}</div>
+                <div class="unit-meta">
+                    <div class="unit-name">\${u.label}\${badge}</div>
+                    \${u.time?`<div class="unit-time"><i class="far fa-clock"></i> \${u.time}</div>`:''}
+                </div>
+            </div>`;
+        }).join('');
+    }
 
-            // Limit log entries
-            if (logContainer.children.length > 50) {
-                logContainer.removeChild(logContainer.firstChild);
-            }
-        }
+    function buildIndexUnitList() {
+        const el = document.getElementById('index-unit-list');
+        el.innerHTML = UNITS.filter(u=>u.id>0).map(u=>`
+            <div class="unit-card \${u.type}" onclick="goToUnit(\${u.id})">
+                <div class="unit-card-num">\${u.id}</div>
+                <div class="unit-card-info">
+                    <div class="unit-card-name">\${u.label}</div>
+                    <div class="unit-card-time"><i class="far fa-clock"></i> \${u.time}</div>
+                </div>
+                <div class="unit-card-arrow">›</div>
+            </div>`).join('');
+    }
 
-        // Snapshot Button - Single Click
-        btnSnapshot.addEventListener('click', () => {
-            addLog('📸 Event: onclick triggered', 'info');
-            addLog('📡 Sending: CMD_SNAPSHOT', 'cmd');
+    function goToUnit(id) {
+        document.querySelectorAll('.ms-unit-page').forEach(p=>p.classList.remove('visible'));
+        const target = id===0 ? document.getElementById('page-index') : document.getElementById(`page-\${id}`);
+        if(target) target.classList.add('visible');
+
+        document.querySelectorAll('.ms-unit-item').forEach(el=>el.classList.remove('active'));
+        const navItem = document.getElementById(`nav-\${id}`);
+        if(navItem){ navItem.classList.add('active'); navItem.scrollIntoView({block:'nearest',behavior:'smooth'}); }
+
+        UNITS.forEach(u=>{
+            const icon = document.getElementById(`icon-\${u.id}`);
+            if(!icon) return;
+            if(doneSet.has(u.id)){ icon.className='unit-icon done'; icon.innerHTML='<i class="fas fa-check" style="font-size:9px;"></i>'; }
+            else if(u.id===id){ icon.className='unit-icon active-icon'; icon.innerHTML=u.id===0?'<i class="fas fa-home" style="font-size:9px;"></i>':u.id; }
+            else{ icon.className='unit-icon'; icon.innerHTML=u.id===0?'<i class="fas fa-home" style="font-size:9px;"></i>':u.id; }
         });
 
-        // Drive Button - Press and Hold
-        function startDrive(e) {
-            e.preventDefault(); // Prevent text selection
-            if (driveInterval) return;
+        const unit = UNITS.find(u=>u.id===id);
+        document.getElementById('bc-current').textContent = unit ? unit.label : '';
+        currentUnit = id;
+        updateProgress();
+        window.scrollTo({top:0,behavior:'smooth'});
+    }
 
-            addLog('⬇️ Event: mousedown (Start)', 'info');
-            driveCount = 0;
+    function markDone(id) {
+        doneSet.add(id);
+        const badge = document.getElementById(`badge-\${id}`);
+        if(badge) badge.style.display='flex';
+        UNITS.forEach(u=>{ const icon=document.getElementById(`icon-\${u.id}`); if(icon&&doneSet.has(u.id)){ icon.className='unit-icon done'; icon.innerHTML='<i class="fas fa-check" style="font-size:9px;"></i>'; } });
+        updateProgress();
+    }
 
-            // Immediate dispatch
-            addLog(`📡 Sending: CMD_FORWARD_START`, 'cmd');
+    function updateProgress() {
+        const total = UNITS.length-1;
+        const done = doneSet.size;
+        document.getElementById('progress-fill').style.width = Math.round(done/total*100)+'%';
+        document.getElementById('progress-text').textContent = `\${done} / \${total} 已完成`;
+    }
 
-            // Start Interval
-            driveInterval = setInterval(() => {
-                driveCount++;
-                addLog(`📡 Sending: CMD_FORWARD_KEPT (${driveCount})`, 'cmd');
-            }, 100); // 100ms interval for demo
-        }
+    function toggleCheck(el) {
+        el.classList.toggle('checked');
+        el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
+    }
 
-        function stopDrive(e) {
-            if (!driveInterval) return;
+    init();
+</script>
 
-            clearInterval(driveInterval);
-            driveInterval = null;
-            addLog('⬆️ Event: mouseup (End)', 'info');
-            addLog('🛑 Sending: CMD_STOP', 'cmd');
-        }
-
-        // Mouse Events
-        btnDrive.addEventListener('mousedown', startDrive);
-        window.addEventListener('mouseup', stopDrive); // Bind to window to catch drag-out releases
-
-        // Touch Events (for mobile demo)
-        btnDrive.addEventListener('touchstart', (e) => { startDrive(e); });
-        window.addEventListener('touchend', stopDrive);
-
-        // --- Standard Media Overlay Logic ---
-        // Injected by course-shared.js?v=2026.04.05.FINAL_V6
-    </script>
-    <script>
-        // Define Resources
+<script>
+    // Define Resources
         window.RESOURCES = {
             video: "https://www.youtube.com/embed/LBsChfN0z5M",
             doc: "https://docs.google.com/document/d/e/2PACX-1vQ_etv7SYPEN2omorbgU2Vfae6BDOshRSnXSYueN08FCyiDScT2EWJ2Fs9dM3aFGEgH_rl-oHsSzcNv/pub?embedded=true"
         };
-    </script>
-    <script src="/js/course-shared.js?v=2026.05.21.V21.DISABLE_UNIFIED_SUPPORT_HUB"></script>
-    <!-- End Standard Media Overlay Logic -->
+</script>
+<script src="/js/course-shared.js?v=2026.05.21.V22.SUBMISSION_BTN"></script>
 
-    <!-- Assignment Guide (Hidden) -->
-    <section id="assignment-guide" style="display: none;">
-<div class="markdown-heading"><h1 class="heading-element">指令流邏輯 — 單次觸發與重複發送</h1><a id="user-content-指令流邏輯--單次觸發與重複發送" class="anchor" aria-label="Permalink: 指令流邏輯 — 單次觸發與重複發送" href="#指令流邏輯--單次觸發與重複發送"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<section id="assignment-guide" style="display: none;">
+<div class="markdown-heading"><h1 class="heading-element">指令流邏輯 — 單次觸發與重複發送</h1><a aria-label="Permalink: 指令流邏輯 — 單次觸發與重複發送" class="anchor" href="#指令流邏輯--單次觸發與重複發送" id="user-content-指令流邏輯--單次觸發與重複發送"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>歡迎來到 <strong>指令流邏輯 (Temporal Logic &amp; Safety)</strong> 單元！</p>
 <p>在這個單元中，你將學習如何將「單次的點擊指令」轉化為「連續的動態節奏」。這對於開發高頻控制系統（如賽道競技、機械臂控制或自動化終端）至關重要。你將掌握 <code>setInterval</code> 的精準管理、多按鍵狀態聚合，以及最重要的「失效安全 (Fail-safe)」機制。</p>
-<div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2><a id="user-content--學習目標" class="anchor" aria-label="Permalink: 🎯 學習目標" href="#-學習目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2><a aria-label="Permalink: 🎯 學習目標" class="anchor" href="#-學習目標" id="user-content--學習目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>掌握 <code>setInterval</code> 與 <code>clearInterval</code> 的生命週期管理。</li>
 <li>實作「狀態機」概念處理多按鍵同時輸入的衝突。</li>
 <li>建立安全防護意識，實作「死人開關 (Dead Man's Switch)」機制。</li>
 </ul>
-<hr>
-<div class="markdown-heading"><h2 class="heading-element">✍️ 作業任務 (Assignment Tasks)</h2><a id="user-content-️-作業任務-assignment-tasks" class="anchor" aria-label="Permalink: ✍️ 作業任務 (Assignment Tasks)" href="#️-作業任務-assignment-tasks"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h2 class="heading-element">✍️ 作業任務 (Assignment Tasks)</h2><a aria-label="Permalink: ✍️ 作業任務 (Assignment Tasks)" class="anchor" href="#️-作業任務-assignment-tasks" id="user-content-️-作業任務-assignment-tasks"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>請按照以下步驟在 <code>js/logic.js</code> 中完成開發：</p>
-<div class="markdown-heading"><h3 class="heading-element">1. 實作指令流控制</h3><a id="user-content-1-實作指令流控制" class="anchor" aria-label="Permalink: 1. 實作指令流控制" href="#1-實作指令流控制"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">1. 實作指令流控制</h3><a aria-label="Permalink: 1. 實作指令流控制" class="anchor" href="#1-實作指令流控制" id="user-content-1-實作指令流控制"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>完成 <code>startFlow</code> 與 <code>stopFlow</code> 函式。</li>
 <li>
 <strong>關鍵要點</strong>：確保在連點按鈕或快速按鍵時，不會產生定時器堆疊（Timer Leak）。在啟動新的定時器前，必須確保舊的已被清除。</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">2. 實作多鍵並發邏輯</h3><a id="user-content-2-實作多鍵並發邏輯" class="anchor" aria-label="Permalink: 2. 實作多鍵並發邏輯" href="#2-實作多鍵並發邏輯"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">2. 實作多鍵並發邏輯</h3><a aria-label="Permalink: 2. 實作多鍵並發邏輯" class="anchor" href="#2-實作多鍵並發邏輯" id="user-content-2-實作多鍵並發邏輯"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>使用 <code>keysActive</code> 物件記錄所有按鍵的狀態。</li>
 <li>確保當同時按下多個按鍵（例如：前進 + 右轉）時，日誌能正確顯示組合後的指令（如：<code>ArrowUp + ArrowRight</code>）。</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">3. 實作失效安全機制 (Dead Man's Switch)</h3><a id="user-content-3-實作失效安全機制-dead-mans-switch" class="anchor" aria-label="Permalink: 3. 實作失效安全機制 (Dead Man's Switch)" href="#3-實作失效安全機制-dead-mans-switch"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">3. 實作失效安全機制 (Dead Man's Switch)</h3><a aria-label="Permalink: 3. 實作失效安全機制 (Dead Man's Switch)" class="anchor" href="#3-實作失效安全機制-dead-mans-switch" id="user-content-3-實作失效安全機制-dead-mans-switch"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>監聽 <code>window.blur</code> (失去焦點) 或 <code>visibilitychange</code> (切換分頁) 事件。</li>
 <li>當使用者離開網頁視窗時，系統必須立即執行 <code>emergencyStop</code>，停止所有指令並送出 <code>STOP</code> 命令。</li>
 </ul>
-<hr>
-<div class="markdown-heading"><h2 class="heading-element">📊 系統穩定性分析錄 (Stability Analysis Log)</h2><a id="user-content--系統穩定性分析錄-stability-analysis-log" class="anchor" aria-label="Permalink: 📊 系統穩定性分析錄 (Stability Analysis Log)" href="#-系統穩定性分析錄-stability-analysis-log"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h2 class="heading-element">📊 系統穩定性分析錄 (Stability Analysis Log)</h2><a aria-label="Permalink: 📊 系統穩定性分析錄 (Stability Analysis Log)" class="anchor" href="#-系統穩定性分析錄-stability-analysis-log" id="user-content--系統穩定性分析錄-stability-analysis-log"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>在完成實作後，請調整不同的發送頻率 (Interval)，觀察日誌並填寫下表：</p>
 <table>
 <thead>
@@ -432,24 +747,21 @@
 </tr>
 </tbody>
 </table>
-<hr>
-<div class="markdown-heading"><h2 class="heading-element">✅ 安全機制測試報告</h2><a id="user-content--安全機制測試報告" class="anchor" aria-label="Permalink: ✅ 安全機制測試報告" href="#-安全機制測試報告"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h2 class="heading-element">✅ 安全機制測試報告</h2><a aria-label="Permalink: ✅ 安全機制測試報告" class="anchor" href="#-安全機制測試報告" id="user-content--安全機制測試報告"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>請在提交前確認以下項目：</p>
 <ul>
 <li>[ ] <strong>Mouse Leave</strong>: 當滑鼠滑出按鈕範圍時，指令是否正確停止？</li>
 <li>[ ] <strong>Window Blur</strong>: 當按下 <code>Alt+Tab</code> 或點擊視窗外時，是否觸發緊急停機？</li>
 <li>[ ] <strong>Timer Leak</strong>: 連續快速點擊按鈕，指令發送頻率是否依然穩定（無疊加現象）？</li>
 </ul>
-<hr>
+<hr/>
 <p><em>祝開發順利！讓機器人的節奏掌握在你手中。</em></p>
-
-    </section>
-
-    <!-- Tutor Guide (Hidden) -->
-    <section id="tutor-guide" style="display: none;">
+</section>
+<section id="tutor-guide" style="display: none;">
 <p>針對 <strong><code>start-03-unit-flow-logic</code> (指令流邏輯：單次觸發與重複發送)</strong> 單元，這是學員從「靜態指令」進化到「動態節奏」的進階課程。它要求學員具備 <strong>時序邏輯 (Temporal Logic)</strong> 與 <strong>失效安全 (Fail-safe)</strong> 的意識，學習如何利用 <code>setInterval</code> 構建穩定的控制循環，處理多按鍵衝突，並實作極其重要的「死人開關 (Dead Man's Switch)」安全機制。</p>
 <p>以下是在 <strong>GitHub Classroom</strong> 部署其作業 (Assignments) 的具體建議：</p>
-<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repo) 配置建議</h3><a id="user-content-1-範本程式庫-template-repo-配置建議" class="anchor" aria-label="Permalink: 1. 範本程式庫 (Template Repo) 配置建議" href="#1-範本程式庫-template-repo-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repo) 配置建議</h3><a aria-label="Permalink: 1. 範本程式庫 (Template Repo) 配置建議" class="anchor" href="#1-範本程式庫-template-repo-配置建議" id="user-content-1-範本程式庫-template-repo-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>控制流作業的核心在於「時序精準度、狀態一致性與安全防護」，範本應包含指令流偵錯工具與事件監控框架，建議包含：</p>
 <ul>
 <li>
@@ -461,9 +773,9 @@
 <li>
 <strong>📂 <code>tests/</code></strong>：<strong>邏輯邊界測試</strong>。使用 Actions 或腳本自動驗證：當視窗失去焦點 (Blur) 時，系統是否真的送出了 <code>STOP</code> 指令？</li>
 </ul>
-<hr>
-<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a id="user-content-2-作業任務部署細節" class="anchor" aria-label="Permalink: 2. 作業任務部署細節" href="#2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h4 class="heading-element">任務 1：指令發送「甜蜜點」實驗 (Interval Tuning Lab)</h4><a id="user-content-任務-1指令發送甜蜜點實驗-interval-tuning-lab" class="anchor" aria-label="Permalink: 任務 1：指令發送「甜蜜點」實驗 (Interval Tuning Lab)" href="#任務-1指令發送甜蜜點實驗-interval-tuning-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a aria-label="Permalink: 2. 作業任務部署細節" class="anchor" href="#2-作業任務部署細節" id="user-content-2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 1：指令發送「甜蜜點」實驗 (Interval Tuning Lab)</h4><a aria-label="Permalink: 任務 1：指令發送「甜蜜點」實驗 (Interval Tuning Lab)" class="anchor" href="#任務-1指令發送甜蜜點實驗-interval-tuning-lab" id="user-content-任務-1指令發送甜蜜點實驗-interval-tuning-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：尋找效率與穩定的平衡點。掌握非同步迴圈的正確生命週期管理（預防重複啟動定時器）。</li>
@@ -479,7 +791,7 @@
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 2：多按鍵同時輸入衝突解決 (Multi-Key Logic Lab)</h4><a id="user-content-任務-2多按鍵同時輸入衝突解決-multi-key-logic-lab" class="anchor" aria-label="Permalink: 任務 2：多按鍵同時輸入衝突解決 (Multi-Key Logic Lab)" href="#任務-2多按鍵同時輸入衝突解決-multi-key-logic-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 2：多按鍵同時輸入衝突解決 (Multi-Key Logic Lab)</h4><a aria-label="Permalink: 任務 2：多按鍵同時輸入衝突解決 (Multi-Key Logic Lab)" class="anchor" href="#任務-2多按鍵同時輸入衝突解決-multi-key-logic-lab" id="user-content-任務-2多按鍵同時輸入衝突解決-multi-key-logic-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：實作「平行指令處理」。確保當使用者同時按下「前進」與「左轉」時，系統能產生合併指令，而非讓機器人在兩者間跳動或鎖死。</li>
@@ -495,7 +807,7 @@
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 3：斷訊安全停機機制 (Dead Man's Switch Lab)</h4><a id="user-content-任務-3斷訊安全停機機制-dead-mans-switch-lab" class="anchor" aria-label="Permalink: 任務 3：斷訊安全停機機制 (Dead Man's Switch Lab)" href="#任務-3斷訊安全停機機制-dead-mans-switch-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 3：斷訊安全停機機制 (Dead Man's Switch Lab)</h4><a aria-label="Permalink: 任務 3：斷訊安全停機機制 (Dead Man's Switch Lab)" class="anchor" href="#任務-3斷訊安全停機機制-dead-mans-switch-lab" id="user-content-任務-3斷訊安全停機機制-dead-mans-switch-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：實作「失效安全」。確保在極端狀況下（網頁當機、切換分頁、用戶分心），機器人具備自動歸零、防衝撞的自我保護能力。</li>
@@ -511,15 +823,15 @@
 </ul>
 </li>
 </ul>
-<hr>
-<div class="markdown-heading"><h3 class="heading-element">3. 時序健壯性與安全意識點評標準 (Temporal Robustness &amp; Safety Standards)</h3><a id="user-content-3-時序健壯性與安全意識點評標準-temporal-robustness--safety-standards" class="anchor" aria-label="Permalink: 3. 時序健壯性與安全意識點評標準 (Temporal Robustness &amp; Safety Standards)" href="#3-時序健壯性與安全意識點評標準-temporal-robustness--safety-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h3 class="heading-element">3. 時序健壯性與安全意識點評標準 (Temporal Robustness &amp; Safety Standards)</h3><a aria-label="Permalink: 3. 時序健壯性與安全意識點評標準 (Temporal Robustness &amp; Safety Standards)" class="anchor" href="#3-時序健壯性與安全意識點評標準-temporal-robustness--safety-standards" id="user-content-3-時序健壯性與安全意識點評標準-temporal-robustness--safety-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>此單元的價值在於 <strong>「對非同步流程的絕對掌控力與對防護邏輯的工程嚴謹力」</strong>：</p>
 <ul>
 <li>[ ] <strong>資源釋放嚴謹度</strong>：定時器是否在所有預期路徑（放開按鍵、安全停機）中都被正確 <code>clearInterval</code>？</li>
 <li>[ ] <strong>狀態聚合準確性</strong>：多鍵並發時，生成的指令是否能精準反映最後一個綜合的操作意圖？</li>
 <li>[ ] <strong>安全防護覆蓋率</strong>：除了正常的 <code>mouseup</code>，是否考慮到了滑鼠滑出視窗、視窗失去焦點等異常邊界情境？</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a id="user-content--推薦範本結構-github-classroom-template" class="anchor" aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" href="#-推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" class="anchor" href="#-推薦範本結構-github-classroom-template" id="user-content--推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <pre lang="text"><code>.
 ├── index.html           # 結構：包含控制按鍵與實時指令日誌區域
 ├── js/logic.js          # 核心：練習 setInterval 管理、多鍵合成與 Fail-safe 監聽
@@ -527,8 +839,7 @@
 ├── test/                # 測試：自動化偵測定時器洩漏與 Blur 安全反應
 </code></pre>
 <p>透過這種部署方式，學生能體驗到 <strong>「好的全端工程師，不僅是會寫邏輯的人，而是能掌控代碼跳動的節奏、能預見系統可能的失控瞬間、並在每一毫秒的循環中，為真實世界的機器人築起一道安全防火牆的操作邏輯大師」</strong>。掌握指令流邏輯與安全機制技術後，學員將擁有了開發「高頻賽道競技系統、遠程作業機械臂、以及關鍵防護自動化終端」最核心也最資深的系統工程開發實力！</p>
+</section>
 
-    </section>
 </body>
-
 </html>

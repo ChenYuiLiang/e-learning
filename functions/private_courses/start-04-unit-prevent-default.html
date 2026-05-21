@@ -1,314 +1,697 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>防止瀏覽器預設行為：打造原生 App 體驗 - Vibe Coding</title>
-    <link rel="stylesheet" href="/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>防止瀏覽器預設行為：打造原生 App 體驗 - Vibe Coding Learn</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <style>
+        :root {
+            --ms-blue: #0078d4;
+            --ms-blue-dark: #005a9e;
+            --ms-blue-light: #deecf9;
+            --ms-green: #107c10;
+            --ms-red: #d13438;
+            --sidebar-w: 280px;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter','Segoe UI',sans-serif; background:#fff; color:#201f1e; margin:0; font-size:15px; line-height:1.6; }
 
+        /* NAV */
+        .ms-topnav { background:var(--ms-blue); height:48px; display:flex; align-items:center; padding:0 20px; gap:16px; position:sticky; top:0; z-index:100; box-shadow:0 1px 4px rgba(0,0,0,.2); }
+        .ms-topnav .brand { color:#fff; font-weight:600; font-size:15px; display:flex; align-items:center; gap:8px; text-decoration:none; }
+        .ms-topnav .divider { width:1px; height:20px; background:rgba(255,255,255,.3); }
+        .ms-topnav .nav-label { color:rgba(255,255,255,.9); font-size:14px; }
+
+        /* LAYOUT */
+        .ms-layout { display:flex; min-height:calc(100vh - 48px); }
+
+        /* SIDEBAR */
+        .ms-sidebar { width:var(--sidebar-w); flex-shrink:0; background:#faf9f8; border-right:1px solid #e1dfdd; display:flex; flex-direction:column; position:sticky; top:48px; height:calc(100vh - 48px); overflow-y:auto; }
+        .ms-sidebar-header { padding:16px 16px 12px; border-bottom:1px solid #e1dfdd; }
+        .ms-sidebar-header .module-label { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:#605e5c; font-weight:600; margin-bottom:4px; }
+        .ms-sidebar-header .module-title { font-size:13px; font-weight:600; color:#201f1e; line-height:1.4; }
+        .ms-sidebar-header .meta { font-size:12px; color:#605e5c; margin-top:6px; }
+        .ms-unit-list { padding:8px 0; }
+        .ms-unit-item { display:flex; align-items:flex-start; gap:10px; padding:8px 16px; cursor:pointer; border-left:3px solid transparent; transition:background .12s,border-color .12s; color:#201f1e; }
+        .ms-unit-item:hover { background:#edebe9; }
+        .ms-unit-item.active { border-left-color:var(--ms-blue); background:#deecf9; }
+        .ms-unit-item.active .unit-name { color:var(--ms-blue); font-weight:600; }
+        .unit-icon { width:20px; height:20px; border-radius:50%; border:2px solid #c8c6c4; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; font-size:10px; background:#fff; }
+        .unit-icon.done { background:var(--ms-green); border-color:var(--ms-green); color:#fff; }
+        .unit-icon.active-icon { border-color:var(--ms-blue); background:var(--ms-blue); color:#fff; }
+        .unit-meta { flex:1; min-width:0; }
+        .unit-name { font-size:13px; line-height:1.4; }
+        .unit-time { font-size:11px; color:#605e5c; margin-top:2px; }
+        .sidebar-progress { padding:12px 16px; border-top:1px solid #e1dfdd; margin-top:auto; }
+        .progress-bar-bg { background:#e1dfdd; border-radius:4px; height:6px; }
+        .progress-bar-fill { background:var(--ms-green); border-radius:4px; height:6px; transition:width .4s; }
+        .progress-text { font-size:12px; color:#605e5c; margin-top:6px; }
+
+        /* MAIN */
+        .ms-content { flex:1; min-width:0; }
+        .ms-breadcrumb { padding:10px 40px; font-size:12px; color:#605e5c; border-bottom:1px solid #e1dfdd; background:#fff; }
+        .ms-breadcrumb a { color:var(--ms-blue); text-decoration:none; }
+        .ms-breadcrumb a:hover { text-decoration:underline; }
+        .ms-breadcrumb span { margin:0 6px; }
+
+        /* PAGES */
+        .ms-unit-page { display:none; }
+        .ms-unit-page.visible { display:block; }
+        .unit-content { max-width:820px; padding:32px 40px 60px; margin:0 auto; }
+        .unit-status-bar { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; padding-bottom:20px; border-bottom:1px solid #e1dfdd; }
+        .unit-completed-badge { display:flex; align-items:center; gap:6px; background:#dff6dd; color:#107c10; font-size:12px; font-weight:600; padding:4px 10px; border-radius:2px; }
+        .unit-time-badge { display:flex; align-items:center; gap:5px; color:#605e5c; font-size:13px; }
+
+        /* TYPOGRAPHY */
+        .unit-content h1 { font-size:28px; font-weight:700; margin:0 0 20px; color:#201f1e; line-height:1.3; }
+        .unit-content h2 { font-size:20px; font-weight:600; margin:36px 0 12px; color:#201f1e; padding-top:8px; }
+        .unit-content h3 { font-size:16px; font-weight:600; margin:24px 0 8px; color:#201f1e; }
+        .unit-content p { margin:0 0 14px; }
+        .unit-content ul, .unit-content ol { margin:0 0 14px; padding-left:28px; }
+        .unit-content li { margin-bottom:6px; }
+        .unit-content strong { font-weight:600; }
+        .unit-content a { color:var(--ms-blue); text-decoration:none; }
+        .unit-content a:hover { text-decoration:underline; }
+        .unit-content code { background:#f3f2f1; border:1px solid #e1dfdd; border-radius:3px; padding:1px 6px; font-family:'Consolas','Courier New',monospace; font-size:13px; color:#a31515; }
+
+        /* CALLOUTS */
+        .ms-note,.ms-tip,.ms-warning,.ms-important { display:flex; gap:12px; padding:12px 16px; border-radius:4px; margin:20px 0; border-left:4px solid; font-size:14px; }
+        .ms-note { background:#deecf9; border-color:var(--ms-blue); }
+        .ms-note .note-icon { color:var(--ms-blue); font-size:16px; flex-shrink:0; margin-top:1px; }
+        .ms-tip { background:#dff6dd; border-color:var(--ms-green); }
+        .ms-tip .note-icon { color:var(--ms-green); font-size:16px; flex-shrink:0; margin-top:1px; }
+        .ms-warning { background:#fff4ce; border-color:#ffaa44; }
+        .ms-warning .note-icon { color:#ffaa44; font-size:16px; flex-shrink:0; margin-top:1px; }
+        .ms-important { background:#fde7e9; border-color:var(--ms-red); }
+        .ms-important .note-icon { color:var(--ms-red); font-size:16px; flex-shrink:0; margin-top:1px; }
+        .note-body strong { display:block; margin-bottom:4px; font-size:13px; text-transform:uppercase; letter-spacing:.04em; }
+
+        /* SCENARIO */
+        .ms-scenario { background:#f3f2f1; border-radius:4px; padding:20px 24px; margin:20px 0; font-style:italic; color:#323130; border-left:4px solid #c8c6c4; }
+        .ms-scenario-label { font-style:normal; font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:#605e5c; margin-bottom:8px; }
+
+        /* STEPS */
+        .ms-steps { margin:16px 0; }
+        .ms-step { display:flex; gap:16px; margin-bottom:20px; align-items:flex-start; }
+        .ms-step-num { width:28px; height:28px; border-radius:50%; background:var(--ms-blue); color:#fff; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .ms-step-body { flex:1; }
+        .ms-step-body h4 { font-size:14px; font-weight:600; margin:0 0 4px; }
+        .ms-step-body p { font-size:14px; margin:0; }
+
+        /* TABLE */
+        .ms-table { width:100%; border-collapse:collapse; margin:16px 0; font-size:14px; }
+        .ms-table th { background:#f3f2f1; font-weight:600; text-align:left; padding:10px 14px; border:1px solid #e1dfdd; color:#323130; }
+        .ms-table td { padding:9px 14px; border:1px solid #e1dfdd; vertical-align:top; }
+        .ms-table tr:nth-child(even) td { background:#faf9f8; }
+
+        /* CHECKLIST */
+        .ms-checklist { list-style:none; padding:0; margin:12px 0; }
+        .ms-checklist li { display:flex; align-items:flex-start; gap:10px; padding:6px 0; font-size:14px; }
+        .ms-checklist li .check-box { width:18px; height:18px; border:2px solid #8a8886; border-radius:2px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; cursor:pointer; transition:all .15s; }
+        .ms-checklist li .check-box.checked { background:var(--ms-blue); border-color:var(--ms-blue); color:#fff; }
+
+        /* CODE BLOCK */
+        .ms-code { background:#1e1e1e; border-radius:6px; padding:16px; margin:16px 0; font-family:'Consolas','Courier New',monospace; font-size:13px; line-height:1.7; overflow-x:auto; }
+        .ms-code .lang-label { font-size:11px; color:#858585; margin-bottom:8px; display:block; }
+        .ms-code .c-comment { color:#6a9955; }
+        .ms-code .c-str { color:#ce9178; }
+        .ms-code .c-kw { color:#569cd6; }
+        .ms-code .c-fn { color:#dcdcaa; }
+        .ms-code .c-white { color:#d4d4d4; }
+        .ms-code .c-teal { color:#4ec9b0; }
+        .ms-code .c-prompt { color:#608b4e; }
+
+        /* VIDEO */
+        .ms-video-embed { border-radius:4px; overflow:hidden; margin:20px 0; box-shadow:0 2px 8px rgba(0,0,0,.12); aspect-ratio:16/9; }
+        .ms-video-embed iframe { width:100%; height:100%; display:block; border:0; }
+
+        /* BUTTONS */
+        .ms-btn { background:var(--ms-blue); color:#fff; border:none; padding:7px 18px; font-size:14px; font-weight:600; border-radius:2px; cursor:pointer; transition:background .12s; font-family:inherit; }
+        .ms-btn:hover { background:var(--ms-blue-dark); }
+        .ms-btn-ghost { background:transparent; color:var(--ms-blue); border:1px solid var(--ms-blue); padding:6px 18px; font-size:14px; font-weight:600; border-radius:2px; cursor:pointer; transition:background .12s; font-family:inherit; }
+        .ms-btn-ghost:hover { background:var(--ms-blue-light); }
+
+        /* NAV BUTTONS */
+        .unit-nav { display:flex; justify-content:space-between; align-items:center; padding:24px 40px; border-top:1px solid #e1dfdd; max-width:820px; margin:0 auto; }
+        .nav-btn-prev, .nav-btn-next { display:flex; align-items:center; gap:8px; padding:8px 20px; font-size:14px; font-weight:600; border-radius:2px; cursor:pointer; border:1px solid; font-family:inherit; transition:background .12s; }
+        .nav-btn-next { background:var(--ms-blue); color:#fff; border-color:var(--ms-blue); }
+        .nav-btn-next:hover { background:var(--ms-blue-dark); border-color:var(--ms-blue-dark); }
+        .nav-btn-prev { background:#fff; color:var(--ms-blue); border-color:var(--ms-blue); }
+        .nav-btn-prev:hover { background:var(--ms-blue-light); }
+        .unit-page-indicator { font-size:13px; color:#605e5c; }
+
+        /* INDEX */
+        .module-meta-tags { display:flex; flex-wrap:wrap; gap:8px; margin:16px 0; }
+        .ms-tag { background:#f3f2f1; color:#323130; font-size:12px; padding:4px 10px; border-radius:12px; font-weight:500; }
+        .ms-tag.blue { background:#deecf9; color:var(--ms-blue-dark); }
+        .ms-tag.green { background:#dff6dd; color:#107c10; }
+        .unit-card-list { margin:20px 0; }
+        .unit-card { display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid #f3f2f1; cursor:pointer; }
+        .unit-card:last-child { border-bottom:none; }
+        .unit-card:hover .unit-card-name { color:var(--ms-blue); text-decoration:underline; }
+        .unit-card-num { width:32px; height:32px; border-radius:50%; background:#f3f2f1; color:#605e5c; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .unit-card.quiz .unit-card-num { background:#fff4ce; color:#8a6914; }
+        .unit-card.lab .unit-card-num { background:#eef6ff; color:var(--ms-blue-dark); }
+        .unit-card-info { flex:1; }
+        .unit-card-name { font-size:15px; font-weight:500; }
+        .unit-card-time { font-size:12px; color:#605e5c; margin-top:2px; }
+        .unit-card-arrow { color:#c8c6c4; font-size:14px; }
+
+        /* LAB CARD */
+        .ms-lab-card { background:linear-gradient(135deg,#eef6ff 0%,#f5f0ff 100%); border:1px solid #c7e0f4; border-radius:6px; padding:24px; margin:20px 0; }
+        .ms-lab-card h3 { margin:0 0 12px; color:var(--ms-blue-dark); }
+        .ms-lab-badge { display:inline-flex; align-items:center; gap:6px; background:var(--ms-blue); color:#fff; font-size:11px; font-weight:700; padding:3px 10px; border-radius:12px; text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px; }
+        .ms-lab-time { font-size:12px; color:#605e5c; margin-left:8px; }
+
+        /* QUIZ */
+        .quiz-question { margin-bottom:32px; }
+        .quiz-question p { font-size:15px; font-weight:500; margin-bottom:14px; }
+        .quiz-option { display:flex; align-items:flex-start; gap:10px; padding:10px 14px; border:1px solid #e1dfdd; border-radius:4px; margin-bottom:8px; cursor:pointer; transition:background .1s,border-color .1s; font-size:14px; }
+        .quiz-option:hover { background:#f3f2f1; border-color:#c8c6c4; }
+        .quiz-option input[type=radio] { margin-top:2px; accent-color:var(--ms-blue); flex-shrink:0; }
+        .quiz-option.correct { background:#dff6dd; border-color:var(--ms-green); }
+        .quiz-option.wrong { background:#fde7e9; border-color:var(--ms-red); }
+        .quiz-feedback { display:none; margin-top:8px; padding:10px 14px; border-radius:4px; font-size:13px; font-weight:500; }
+        .quiz-feedback.correct { background:#dff6dd; color:#107c10; display:block; }
+        .quiz-feedback.wrong { background:#fde7e9; color:#d13438; display:block; }
+
+        /* RESOURCE */
+        .ms-resource-link { display:flex; align-items:center; gap:10px; padding:12px 16px; border:1px solid #e1dfdd; border-radius:4px; margin-bottom:8px; text-decoration:none; color:#201f1e; font-size:14px; transition:background .1s; }
+        .ms-resource-link:hover { background:#f3f2f1; }
+        .ms-resource-link i { color:var(--ms-blue); font-size:18px; width:24px; text-align:center; flex-shrink:0; }
+
+        /* ACHIEVEMENT */
+        .ms-achievement { background:linear-gradient(135deg,#0078d4 0%,#005a9e 100%); color:#fff; border-radius:6px; padding:24px 28px; margin:24px 0; display:flex; align-items:center; gap:20px; }
+        .achievement-icon { font-size:48px; flex-shrink:0; }
+        .achievement-text h3 { margin:0 0 4px; font-size:18px; }
+        .achievement-text p { margin:0; font-size:14px; opacity:.9; }
+
+        /* WORKFLOW VISUAL */
+        .workflow-steps { display:flex; align-items:stretch; gap:0; margin:20px 0; overflow-x:auto; }
+        .workflow-step { flex:1; min-width:100px; display:flex; flex-direction:column; align-items:center; position:relative; }
+        .workflow-step:not(:last-child)::after { content:'›'; position:absolute; right:-10px; top:22px; font-size:22px; color:#c8c6c4; z-index:1; }
+        .ws-circle { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; margin-bottom:10px; flex-shrink:0; }
+        .ws-label { font-size:13px; font-weight:600; text-align:center; margin-bottom:4px; }
+        .ws-desc { font-size:11px; color:#605e5c; text-align:center; line-height:1.4; }
+
+        /* SKILL MATRIX */
+        .skill-row { display:flex; gap:12px; align-items:flex-start; padding:14px 0; border-bottom:1px solid #f3f2f1; }
+        .skill-row:last-child { border-bottom:none; }
+        .skill-badge { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700; padding:3px 10px; border-radius:12px; white-space:nowrap; flex-shrink:0; min-width:90px; justify-content:center; }
+        .skill-body { flex:1; }
+        .skill-body h4 { font-size:14px; font-weight:600; margin:0 0 3px; }
+        .skill-body p { font-size:13px; color:#605e5c; margin:0; }
+
+        /* TASK SECTION HEADER */
+        .task-section-header { display:flex; align-items:center; gap:10px; padding:10px 0 10px; margin-top:28px; border-bottom:2px solid #e1dfdd; margin-bottom:16px; }
+        .task-section-header .num { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#fff; flex-shrink:0; }
+        .task-section-header h3 { font-size:16px; font-weight:700; margin:0; }
+
+        @media (max-width:768px) {
+            .ms-sidebar { display:none; }
+            .unit-content { padding:20px 16px 40px; }
+            .unit-nav { padding:16px; }
+            .ms-breadcrumb { padding:8px 16px; }
+            .workflow-steps { flex-direction:column; }
+            .workflow-step::after { display:none; }
+        }
+    </style>
 </head>
+<body>
 
-<body class="bg-gray-50 font-[Inter] text-gray-800 overscroll-none">
+<nav class="ms-topnav">
+    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <div class="divider"></div>
+    <span class="nav-label">入門課程單元</span>
+</nav>
 
-    <!-- Hero Section -->
-    <header
-        class="relative bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 text-white pt-24 pb-44 overflow-hidden">
-        <div
-            class="header-overlay absolute inset-0 bg-gradient-to-r from-indigo-900/90 to-purple-800/90 mix-blend-multiply">
+<div class="ms-layout">
+    <aside class="ms-sidebar">
+        <div class="ms-sidebar-header">
+            <div class="module-label">模組</div>
+            <div class="module-title">防止瀏覽器預設行為：打造原生 App 體驗</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 73 分鐘 · 4 個單元</div>
+        </div>
+        <nav class="ms-unit-list" id="sidebar-nav"></nav>
+        <div class="sidebar-progress">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+            <div class="progress-text" id="progress-text">0 / 4 已完成</div>
+        </div>
+    </aside>
+
+    <main class="ms-content">
+        <div class="ms-breadcrumb">
+            <a href="#">Vibe Coding</a><span>›</span>
+            <a href="#">入門課程單元</a><span>›</span>
+            <span id="bc-current">課程總覽</span>
         </div>
 
-        <!-- Decorative background elements -->
-        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 opacity-20">
-            <div
-                class="absolute top-10 left-10 w-64 h-64 bg-indigo-500 rounded-full mix-blend-overlay filter blur-3xl animate-pulse">
-            </div>
-            <div class="absolute bottom-10 right-10 w-80 h-80 bg-pink-500 rounded-full mix-blend-overlay filter blur-3xl animate-pulse"
-                style="animation-delay: 2s"></div>
-        </div>
-
-        <div class="container mx-auto px-4 relative z-30 pt-10 pb-10 text-center text-white">
-            <div
-                class="badge-header inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/20 text-indigo-200 border border-indigo-400/30 backdrop-blur-sm mb-8 text-sm font-semibold tracking-wide uppercase">
-                <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
-                Web Remote Control Strategy
-            </div>
-            <h1 class="text-4xl md:text-6xl font-bold mb-6 tracking-tight leading-tight">
-                防止瀏覽器預設行為<br class="hidden md:block" />打造原生 App 體驗
-            </h1>
-            <p class="text-xl text-indigo-100 max-w-2xl mx-auto leading-relaxed mb-10">
-                消除捲動、縮放與長按選單，將網頁轉化為專業的「無人車遙控器」。掌握 event.preventDefault() 與 CSS 鎖定技術的最後一哩路。
-            </p>
-
-            <div class="flex flex-wrap justify-center gap-4">
-                <button onclick="enterMediaMode('video', window.RESOURCES.video)"
-                    class="resource-btn bg-indigo-500 hover:bg-indigo-400 text-white px-8 py-4 rounded-full flex items-center gap-3 shadow-lg shadow-indigo-500/30 font-bold transition-all">
-                    <span>📺</span> 觀看教學影片
-                </button>
-                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
-                    class="resource-btn bg-white/10 hover:bg-white/20 border border-white/20 text-white px-8 py-4 rounded-full flex items-center gap-3 backdrop-blur-sm font-bold transition-all">
-                    <span>📄</span> 閱讀課程講義
-                </button>
+        
+        <!-- ══════════ PAGE 0: INDEX ══════════ -->
+        <div class="ms-unit-page visible" id="page-index">
+            <div class="unit-content">
+                <h1>防止瀏覽器預設行為：打造原生 App 體驗</h1>
+                <div class="module-meta-tags">
+                    <span class="ms-tag">模組</span>
+                    <span class="ms-tag">4 個單元</span>
+                    <span class="ms-tag green">入門</span>
+                    <span class="ms-tag blue">前端開發</span>
+                    <span class="ms-tag blue">物聯網</span>
+                </div>
+                <p>
+                    消除捲動、縮放與長按選單，將網頁轉化為專業的「無人車遙控器」。掌握 event.preventDefault() 與 CSS 鎖定技術的最後一哩路。
+                </p>
+                <h2>學習目標</h2>
+                <ul>
+                    <li>說明與實作「<strong>作業 3-1: 全螢幕鎖定挑戰賽</strong>」的實作與驗證。</li>
+<li>說明與實作「<strong>作業 3-2: iOS vs. Android 兼容性</strong>」的實作與驗證。</li>
+<li>說明與實作「<strong>作業 3-3: 緊急操作壓力測試</strong>」的實作與驗證。</li>
+                </ul>
+                <h2>必要條件</h2>
+                <ul>
+                    <li>擁有基礎 HTML/CSS 與 JavaScript 知識</li>
+                    <li>準備好您的開發環境與設備</li>
+                </ul>
+                <h2>本模組單元</h2>
+                <div class="unit-card-list" id="index-unit-list"></div>
+                <div style="margin-top:32px;"><button class="ms-btn" onclick="goToUnit(1)">開始模組 &nbsp;›</button></div>
             </div>
         </div>
-    </header>
-
-    <main class="container mx-auto px-4 -mt-24 relative z-10 pb-20">
-
-        <!-- Module 1: event.preventDefault() -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden">
-                <div class="p-1 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
-                <div class="p-8 md:p-12">
-                    <div class="section-header-left border-l-4 border-indigo-500 pl-6 mb-12">
-                        <span class="text-indigo-600 font-bold tracking-wider uppercase text-sm">Module 1: JavaScript
+        
+        <!-- ══════════ PAGE 1: 掌控事件主導權 ══════════ -->
+        <div class="ms-unit-page" id="page-1">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-1" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+                <h1>掌控事件主導權</h1>
+                <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden">
+<div class="p-1 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
+<div class="p-8 md:p-12">
+<div class="section-header-left border-l-4 border-indigo-500 pl-6 mb-12">
+<span class="text-indigo-600 font-bold tracking-wider uppercase text-sm">Module 1: JavaScript
                             Control</span>
-                        <h2 class="text-4xl font-bold text-gray-900 mt-2">掌控事件主導權</h2>
-                    </div>
 
-                    <div class="grid md:grid-cols-2 gap-12 items-start">
-                        <div class="space-y-6">
-                            <h3 class="text-2xl font-bold text-gray-800">event.preventDefault()</h3>
-                            <p class="text-gray-600 leading-relaxed">
+</div>
+<div class="grid md:grid-cols-2 gap-12 items-start">
+<div class="space-y-6">
+<h3 class="text-2xl font-bold text-gray-800">event.preventDefault()</h3>
+<p class="text-gray-600 leading-relaxed">
                                 這是告訴瀏覽器：「這個動作由我的程式處理，你不需要執行預設反應」。在觸控操作中，這至關重要。
                             </p>
-
-                            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
-                                <h4 class="font-bold text-yellow-800 mb-2">Passive Event Listeners</h4>
-                                <p class="text-sm text-yellow-700">
+<div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+<h4 class="font-bold text-yellow-800 mb-2">Passive Event Listeners</h4>
+<p class="text-sm text-yellow-700">
                                     現代瀏覽器預設將 window, document, body 的 touch 事件視為 <code>passive: true</code>
                                     (被動)，這意味著你無法在其中呼叫 <code>preventDefault()</code> 來阻止捲動，除非你明確設定
                                     <code>{ passive: false }</code>。
                                 </p>
-                            </div>
-
-                            <button id="test-context-btn"
-                                class="w-full py-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl border border-gray-300 transition-colors font-bold relative overflow-hidden group">
-                                <span class="relative z-10">在此按鈕上按右鍵 / 長按</span>
-                                <div
-                                    class="absolute inset-0 bg-red-100 transform translate-y-full transition-transform duration-200 group-hover:translate-y-0 opacity-20">
-                                </div>
-                            </button>
-                            <div id="context-msg" class="text-center text-sm font-mono h-6 text-red-500 font-bold">
-                            </div>
-                        </div>
-
-                        <div class="bg-slate-900 rounded-xl p-6 shadow-xl border border-slate-800">
-                            <div
-                                class="flex justify-between mb-3 text-sm text-slate-400 font-bold uppercase tracking-wider">
-                                <span>JavaScript</span>
-                            </div>
-                            <pre
-                                class="font-mono text-sm leading-relaxed overflow-x-auto p-4 bg-slate-950 rounded-lg text-slate-300">
+</div>
+<button class="w-full py-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl border border-gray-300 transition-colors font-bold relative overflow-hidden group" id="test-context-btn">
+<span class="relative z-10">在此按鈕上按右鍵 / 長按</span>
+<div class="absolute inset-0 bg-red-100 transform translate-y-full transition-transform duration-200 group-hover:translate-y-0 opacity-20">
+</div>
+</button>
+<div class="text-center text-sm font-mono h-6 text-red-500 font-bold" id="context-msg">
+</div>
+</div>
+<div class="bg-slate-900 rounded-xl p-6 shadow-xl border border-slate-800">
+<div class="flex justify-between mb-3 text-sm text-slate-400 font-bold uppercase tracking-wider">
+<span>JavaScript</span>
+</div>
+<pre class="font-mono text-sm leading-relaxed overflow-x-auto p-4 bg-slate-950 rounded-lg text-slate-300">
 <span class="text-gray-500">// 阻止 Context Menu (右鍵選單)</span>
-element.addEventListener(<span class="text-green-400">'contextmenu'</span>, (e) => {
+element.addEventListener(<span class="text-green-400">'contextmenu'</span>, (e) =&gt; {
     e.<span class="text-yellow-300">preventDefault()</span>;
     console.log(<span class="text-cyan-300">'Right click blocked!'</span>);
 });
 
 <span class="text-gray-500">// 阻止全頁面捲動 (需設定 passive: false)</span>
-document.addEventListener(<span class="text-green-400">'touchmove'</span>, (e) => {
+document.addEventListener(<span class="text-green-400">'touchmove'</span>, (e) =&gt; {
     e.<span class="text-yellow-300">preventDefault()</span>;
 }, { <span class="text-purple-400">passive: false</span> });</pre>
-                        </div>
-                    </div>
-                </div>
+</div>
+</div>
+</div>
+</div>
             </div>
-        </section>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
+                <span class="unit-page-indicator">1 / 4</span>
+                <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
 
-        <!-- Module 2: CSS Static Locking -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden">
-                <div class="p-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
-                <div class="p-8 md:p-12">
-                    <div class="section-header-left border-l-4 border-purple-500 pl-6 mb-12">
-                        <span class="text-purple-600 font-bold tracking-wider uppercase text-sm">Module 2: CSS
+        <!-- ══════════ PAGE 2: CSS 靜態鎖定技術 ══════════ -->
+        <div class="ms-unit-page" id="page-2">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-2" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+                <h1>CSS 靜態鎖定技術</h1>
+                <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden">
+<div class="p-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
+<div class="p-8 md:p-12">
+<div class="section-header-left border-l-4 border-purple-500 pl-6 mb-12">
+<span class="text-purple-600 font-bold tracking-wider uppercase text-sm">Module 2: CSS
                             Lockdown</span>
-                        <h2 class="text-4xl font-bold text-gray-900 mt-2">CSS 靜態鎖定技術</h2>
-                    </div>
 
-                    <div class="grid md:grid-cols-2 gap-12">
-                        <div class="space-y-6">
-                            <p class="text-gray-600 leading-relaxed">
+</div>
+<div class="grid md:grid-cols-2 gap-12">
+<div class="space-y-6">
+<p class="text-gray-600 leading-relaxed">
                                 使用 CSS 屬性是最直接、效能最好的方式來告訴瀏覽器某些元素不應該被選取或觸發手勢。
                             </p>
-
-                            <div class="space-y-4">
-                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                                    <code class="text-purple-600 font-bold block mb-2">user-select: none;</code>
-                                    <p class="text-sm text-gray-600">防止使用者長按按鈕時，不小心選取到了按鈕上的文字或圖示。</p>
-                                </div>
-                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                                    <code class="text-purple-600 font-bold block mb-2">touch-action: none;</code>
-                                    <p class="text-sm text-gray-600">最強力的屬性。告訴瀏覽器此元素不處理任何預設手勢（如平移、縮放）。瀏覽器會直接將所有 touch
+<div class="space-y-4">
+<div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+<code class="text-purple-600 font-bold block mb-2">user-select: none;</code>
+<p class="text-sm text-gray-600">防止使用者長按按鈕時，不小心選取到了按鈕上的文字或圖示。</p>
+</div>
+<div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+<code class="text-purple-600 font-bold block mb-2">touch-action: none;</code>
+<p class="text-sm text-gray-600">最強力的屬性。告訴瀏覽器此元素不處理任何預設手勢（如平移、縮放）。瀏覽器會直接將所有 touch
                                         事件交給 JS 處理。</p>
-                                </div>
-                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                                    <code
-                                        class="text-purple-600 font-bold block mb-2">-webkit-touch-callout: none;</code>
-                                    <p class="text-sm text-gray-600">針對 iOS Safari，防止長按圖片或連結時跳出預覽或選單。</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div
-                            class="bg-gray-100 rounded-xl p-8 flex flex-col items-center justify-center gap-6 border-2 border-dashed border-gray-300">
-                            <div class="text-center w-full">
-                                <p class="mb-2 text-sm text-gray-500">一般按鈕 (長按會選取文字)</p>
-                                <button
-                                    class="bg-white text-gray-800 px-6 py-3 rounded shadow hover:shadow-md transition w-full">
+</div>
+<div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+<code class="text-purple-600 font-bold block mb-2">-webkit-touch-callout: none;</code>
+<p class="text-sm text-gray-600">針對 iOS Safari，防止長按圖片或連結時跳出預覽或選單。</p>
+</div>
+</div>
+</div>
+<div class="bg-gray-100 rounded-xl p-8 flex flex-col items-center justify-center gap-6 border-2 border-dashed border-gray-300">
+<div class="text-center w-full">
+<p class="mb-2 text-sm text-gray-500">一般按鈕 (長按會選取文字)</p>
+<button class="bg-white text-gray-800 px-6 py-3 rounded shadow hover:shadow-md transition w-full">
                                     Selectable Text
                                 </button>
-                            </div>
-
-                            <div class="text-center w-full">
-                                <p class="mb-2 text-sm text-purple-600 font-bold">鎖定按鈕 (無法選取)</p>
-                                <button
-                                    class="bg-purple-600 text-white px-6 py-3 rounded shadow-lg shadow-purple-200/50 hover:bg-purple-700 transition w-full no-select touch-none select-none">
+</div>
+<div class="text-center w-full">
+<p class="mb-2 text-sm text-purple-600 font-bold">鎖定按鈕 (無法選取)</p>
+<button class="bg-purple-600 text-white px-6 py-3 rounded shadow-lg shadow-purple-200/50 hover:bg-purple-700 transition w-full no-select touch-none select-none">
                                     Locked Button
                                 </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+</div>
+</div>
+</div>
+</div>
+</div>
             </div>
-        </section>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">2 / 4</span>
+                <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
 
-        <!-- Module 3: Viewport & Challenges -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden">
-                <div class="p-1 bg-gradient-to-r from-pink-500 to-rose-500"></div>
-                <div class="p-8 md:p-12">
-                    <div class="section-header-left border-l-4 border-pink-500 pl-6 mb-12">
-                        <span class="text-pink-600 font-bold tracking-wider uppercase text-sm">Module 3: Viewport &
+        <!-- ══════════ PAGE 3: 實作挑戰 ══════════ -->
+        <div class="ms-unit-page" id="page-3">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-3" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 60 分鐘</div>
+                </div>
+                <h1>視埠設定與實戰挑戰</h1>
+                <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden">
+<div class="p-1 bg-gradient-to-r from-pink-500 to-rose-500"></div>
+<div class="p-8 md:p-12">
+<div class="section-header-left border-l-4 border-pink-500 pl-6 mb-12">
+<span class="text-pink-600 font-bold tracking-wider uppercase text-sm">Module 3: Viewport &amp;
                             Challenges</span>
-                        <h2 class="text-4xl font-bold text-gray-900 mt-2">視埠設定與實戰挑戰</h2>
-                    </div>
 
-                    <div class="mb-12 bg-blue-50 border border-blue-100 p-6 rounded-xl">
-                        <h3 class="text-xl font-bold text-blue-800 mb-2">Viewport Meta Tag</h3>
-                        <pre
-                            class="bg-white p-3 rounded border border-blue-100 text-sm overflow-x-auto text-blue-600 code-block">
+</div>
+<div class="mb-12 bg-blue-50 border border-blue-100 p-6 rounded-xl">
+<h3 class="text-xl font-bold text-blue-800 mb-2">Viewport Meta Tag</h3>
+<pre class="bg-white p-3 rounded border border-blue-100 text-sm overflow-x-auto text-blue-600 code-block">
 &lt;meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"&gt;</pre>
-                        <p class="mt-3 text-sm text-blue-700">
+<p class="mt-3 text-sm text-blue-700">
                             雖然 <code>user-scalable=no</code> 在部分新版 iOS Safari 可能被忽略，但它仍然是標準做法。配合
                             <code>touch-action: none</code> 和 <code>preventDefault</code> 可以達到 100% 的鎖定效果。
                         </p>
-                    </div>
-
-                    <div class="grid md:grid-cols-3 gap-8">
-                        <!-- Task 3-1 -->
-                        <div onclick="openSubmissionModal('prevent-default-task-1', '作業 3-1: 全螢幕鎖定挑戰賽')"
-                            class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col h-full group cursor-pointer relative">
-                            <div class="bg-gradient-to-r from-indigo-500 to-blue-500 h-2"></div>
-                            <div class="p-6 flex-grow">
-                                <div class="flex justify-between items-start mb-4">
-                                    <h3 class="font-bold text-xl text-gray-800 group-hover:text-indigo-600 transition">
+</div>
+<div class="grid md:grid-cols-3 gap-8">
+<!-- Task 3-1 -->
+<div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col h-full group cursor-pointer relative ms-lab-card" onclick="openSubmissionModal('prevent-default-task-1', '作業 3-1: 全螢幕鎖定挑戰賽')">
+<div class="bg-gradient-to-r from-indigo-500 to-blue-500 h-2"></div>
+<div class="p-6 flex-grow">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-bold text-xl text-gray-800 group-hover:text-indigo-600 transition">
                                         作業 3-1</h3>
-                                    <span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded font-bold">45
+<span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded font-bold">45
                                         min</span>
-                                </div>
-                                <h4 class="font-bold text-gray-700 mb-3">全螢幕鎖定挑戰賽</h4>
-                                <p class="text-sm text-gray-600 mb-4 leading-relaxed">
+</div>
+<h4 class="font-bold text-gray-700 mb-3">全螢幕鎖定挑戰賽</h4>
+<p class="text-sm text-gray-600 mb-4 leading-relaxed">
                                     實作一個「全螢幕模式」按鈕。當啟用後，徹底封鎖所有背景捲動。
                                 </p>
-                                <div class="mt-auto pt-4 border-t border-gray-50">
-                                    <p class="text-xs text-gray-400 font-bold uppercase mb-1">Challenge</p>
-                                    <p class="text-sm text-gray-500">在 document 層級監聽 touchmove 並有條件地執行 preventDefault()。
+<div class="mt-auto pt-4 border-t border-gray-50">
+<p class="text-xs text-gray-400 font-bold uppercase mb-1">Challenge</p>
+<p class="text-sm text-gray-500">在 document 層級監聽 touchmove 並有條件地執行 preventDefault()。
                                     </p>
-                                </div>
-                            </div>
-                            <!-- Click Hint Overlay -->
-                            <div
-                                class="absolute inset-0 bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span
-                                    class="bg-white text-indigo-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
+</div>
+</div>
+<!-- Click Hint Overlay -->
+<div class="absolute inset-0 bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="bg-white text-indigo-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
                                     📤 點擊繳交作業
                                 </span>
-                            </div>
-                        </div>
-
-                        <!-- Task 3-2 -->
-                        <div onclick="openSubmissionModal('prevent-default-task-2', '作業 3-2: iOS vs. Android 兼容性')"
-                            class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col h-full group cursor-pointer relative">
-                            <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-2"></div>
-                            <div class="p-6 flex-grow">
-                                <div class="flex justify-between items-start mb-4">
-                                    <h3 class="font-bold text-xl text-gray-800 group-hover:text-purple-600 transition">
+</div>
+</div>
+<!-- Task 3-2 -->
+<div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col h-full group cursor-pointer relative ms-lab-card" onclick="openSubmissionModal('prevent-default-task-2', '作業 3-2: iOS vs. Android 兼容性')">
+<div class="bg-gradient-to-r from-purple-500 to-pink-500 h-2"></div>
+<div class="p-6 flex-grow">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-bold text-xl text-gray-800 group-hover:text-purple-600 transition">
                                         作業 3-2</h3>
-                                    <span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold">60
+<span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold">60
                                         min</span>
-                                </div>
-                                <h4 class="font-bold text-gray-700 mb-3">iOS vs. Android 兼容性</h4>
-                                <p class="text-sm text-gray-600 mb-4 leading-relaxed">
+</div>
+<h4 class="font-bold text-gray-700 mb-3">iOS vs. Android 兼容性</h4>
+<p class="text-sm text-gray-600 mb-4 leading-relaxed">
                                     解決 iOS 雙擊放大與 Android 長按選單的頑固問題。
                                 </p>
-                                <div class="mt-auto pt-4 border-t border-gray-50">
-                                    <p class="text-xs text-gray-400 font-bold uppercase mb-1">Key Tech</p>
-                                    <p class="text-sm text-gray-500">使用 <code>touch-action: manipulation</code> 優化點擊延遲。
+<div class="mt-auto pt-4 border-t border-gray-50">
+<p class="text-xs text-gray-400 font-bold uppercase mb-1">Key Tech</p>
+<p class="text-sm text-gray-500">使用 <code>touch-action: manipulation</code> 優化點擊延遲。
                                     </p>
-                                </div>
-                            </div>
-                            <!-- Click Hint Overlay -->
-                            <div
-                                class="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span
-                                    class="bg-white text-purple-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
+</div>
+</div>
+<!-- Click Hint Overlay -->
+<div class="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="bg-white text-purple-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
                                     📤 點擊繳交作業
                                 </span>
-                            </div>
-                        </div>
-
-                        <!-- Task 3-3 -->
-                        <div onclick="openSubmissionModal('prevent-default-task-3', '作業 3-3: 緊急操作壓力測試')"
-                            class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col h-full group cursor-pointer relative">
-                            <div class="bg-gradient-to-r from-pink-500 to-rose-500 h-2"></div>
-                            <div class="p-6 flex-grow">
-                                <div class="flex justify-between items-start mb-4">
-                                    <h3 class="font-bold text-xl text-gray-800 group-hover:text-pink-600 transition">作業
+</div>
+</div>
+<!-- Task 3-3 -->
+<div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col h-full group cursor-pointer relative ms-lab-card" onclick="openSubmissionModal('prevent-default-task-3', '作業 3-3: 緊急操作壓力測試')">
+<div class="bg-gradient-to-r from-pink-500 to-rose-500 h-2"></div>
+<div class="p-6 flex-grow">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-bold text-xl text-gray-800 group-hover:text-pink-600 transition">作業
                                         3-3</h3>
-                                    <span class="bg-pink-100 text-pink-700 text-xs px-2 py-1 rounded font-bold">45
+<span class="bg-pink-100 text-pink-700 text-xs px-2 py-1 rounded font-bold">45
                                         min</span>
-                                </div>
-                                <h4 class="font-bold text-gray-700 mb-3">緊急操作壓力測試</h4>
-                                <p class="text-sm text-gray-600 mb-4 leading-relaxed">
+</div>
+<h4 class="font-bold text-gray-700 mb-3">緊急操作壓力測試</h4>
+<p class="text-sm text-gray-600 mb-4 leading-relaxed">
                                     模擬「暴力操作」，快速、多指、亂序滑動，確保介面不位移。
                                 </p>
-                                <div class="mt-auto pt-4 border-t border-gray-50">
-                                    <p class="text-xs text-gray-400 font-bold uppercase mb-1">Solution</p>
-                                    <p class="text-sm text-gray-500">利用 <code>overscroll-behavior: contain</code>
+<div class="mt-auto pt-4 border-t border-gray-50">
+<p class="text-xs text-gray-400 font-bold uppercase mb-1">Solution</p>
+<p class="text-sm text-gray-500">利用 <code>overscroll-behavior: contain</code>
                                         防止橡皮筋效果。</p>
-                                </div>
-                            </div>
-                            <!-- Click Hint Overlay -->
-                            <div
-                                class="absolute inset-0 bg-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span
-                                    class="bg-white text-pink-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
+</div>
+</div>
+<!-- Click Hint Overlay -->
+<div class="absolute inset-0 bg-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="bg-white text-pink-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
                                     📤 點擊繳交作業
                                 </span>
-                            </div>
-                        </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">3 / 4</span>
+                <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 4: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-4">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-4" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                </div>
+                <h1>摘要與資源</h1>
+                <p>
+                    恭喜你完成了「<strong>防止瀏覽器預設行為：打造原生 App 體驗</strong>」單元！
+                    在這個單元中，你深入了解了其底層機制，完成了多個層層遞進的實作任務，
+                    並成功部署與調試了相關的前端和硬體系統。
+                </p>
+
+                <div class="ms-achievement">
+                    <div class="achievement-icon">🎓</div>
+                    <div class="achievement-text">
+                        <h3>恭喜！你已完成本模組</h3>
+                        <p>持續實踐與累積，這將使你的工程素養更上一層樓。</p>
                     </div>
                 </div>
+
+                <h2>完成本模組後，你能夠：</h2>
+                <ul>
+                    <li>理解並完成「<strong>作業 3-1: 全螢幕鎖定挑戰賽</strong>」的實作與驗證。</li>
+<li>理解並完成「<strong>作業 3-2: iOS vs. Android 兼容性</strong>」的實作與驗證。</li>
+<li>理解並完成「<strong>作業 3-3: 緊急操作壓力測試</strong>」的實作與驗證。</li>
+                </ul>
+
+                <h2>延伸學習與資源</h2>
+                
+                <a href="https://www.youtube.com/watch?v=wFAjCsrHwrI" target="_blank" class="ms-resource-link">
+                    <i class="fab fa-youtube" style="color:#ff0000;"></i>
+                    <div>
+                        <div style="font-weight:600;">課程教學影片</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">YouTube — 觀看動態功能展示與程式講解</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+        
+                <a href="https://docs.google.com/document/d/e/2PACX-1vTszRpt1IrV9Ns31US6SaE4ZM3zySh8iK2uX9c8BgDKl-C14qxUbCXwLCwOp8Kd3Scgba5vzKotFn0m/pub?embedded=true" target="_blank" class="ms-resource-link">
+                    <i class="fas fa-file-alt"></i>
+                    <div>
+                        <div style="font-weight:600;">課程完整講義</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">Google Docs — 詳細背景知識、硬體接線與程式碼說明</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+        
+                <a href="https://classroom.github.com" target="_blank" class="ms-resource-link">
+                    <i class="fab fa-github"></i>
+                    <div>
+                        <div style="font-weight:600;">GitHub Classroom 官方網站</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">classroom.github.com — 管理作業與查看進度</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+    
             </div>
-        </section>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
+                <button class="ms-btn" onclick="markDone(4); alert('🎉 恭喜完成「防止瀏覽器預設行為：打造原生 App 體驗」模組！')">完成模組</button>
+            </div>
+        </div>
 
     </main>
+</div>
 
-    <footer class="bg-gray-900 text-white py-12 border-t border-gray-800">
-        <div class="container mx-auto px-4 text-center">
-            <p class="text-gray-500">© 2024 Vibe Coding. All rights reserved.</p>
-        </div>
-    </footer>
+<script>
+</script>
 
-    <!-- Media Overlay injected by course-shared.js?v=2026.04.05.FINAL_V6 -->
 
-    <script>
-        // --- Context Menu Demo ---
+<script>
+    const UNITS = [{'id': 0, 'label': '課程總覽', 'time': '', 'type': 'index'}, {'id': 1, 'label': '掌控事件主導權', 'time': '5 分鐘', 'type': 'unit'}, {'id': 2, 'label': 'CSS 靜態鎖定技術', 'time': '5 分鐘', 'type': 'unit'}, {'id': 3, 'label': '實作挑戰', 'time': '60 分鐘', 'type': 'lab'}, {'id': 4, 'label': '摘要與資源', 'time': '3 分鐘', 'type': 'unit'}];
+
+    let currentUnit = 0;
+    let doneSet = new Set();
+
+    function init() {
+        buildSidebar();
+        buildIndexUnitList();
+        goToUnit(0);
+    }
+
+    function buildSidebar() {
+        const nav = document.getElementById('sidebar-nav');
+        nav.innerHTML = UNITS.map(u => {
+            const badge = u.type==='lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : '';
+            return `<div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
+                <div class="unit-icon" id="icon-${u.id}">\${u.id===0?'<i class="fas fa-home" style="font-size:9px;"></i>':u.id}</div>
+                <div class="unit-meta">
+                    <div class="unit-name">\${u.label}\${badge}</div>
+                    \${u.time?`<div class="unit-time"><i class="far fa-clock"></i> \${u.time}</div>`:''}
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function buildIndexUnitList() {
+        const el = document.getElementById('index-unit-list');
+        el.innerHTML = UNITS.filter(u=>u.id>0).map(u=>`
+            <div class="unit-card \${u.type}" onclick="goToUnit(\${u.id})">
+                <div class="unit-card-num">\${u.id}</div>
+                <div class="unit-card-info">
+                    <div class="unit-card-name">\${u.label}</div>
+                    <div class="unit-card-time"><i class="far fa-clock"></i> \${u.time}</div>
+                </div>
+                <div class="unit-card-arrow">›</div>
+            </div>`).join('');
+    }
+
+    function goToUnit(id) {
+        document.querySelectorAll('.ms-unit-page').forEach(p=>p.classList.remove('visible'));
+        const target = id===0 ? document.getElementById('page-index') : document.getElementById(`page-\${id}`);
+        if(target) target.classList.add('visible');
+
+        document.querySelectorAll('.ms-unit-item').forEach(el=>el.classList.remove('active'));
+        const navItem = document.getElementById(`nav-\${id}`);
+        if(navItem){ navItem.classList.add('active'); navItem.scrollIntoView({block:'nearest',behavior:'smooth'}); }
+
+        UNITS.forEach(u=>{
+            const icon = document.getElementById(`icon-\${u.id}`);
+            if(!icon) return;
+            if(doneSet.has(u.id)){ icon.className='unit-icon done'; icon.innerHTML='<i class="fas fa-check" style="font-size:9px;"></i>'; }
+            else if(u.id===id){ icon.className='unit-icon active-icon'; icon.innerHTML=u.id===0?'<i class="fas fa-home" style="font-size:9px;"></i>':u.id; }
+            else{ icon.className='unit-icon'; icon.innerHTML=u.id===0?'<i class="fas fa-home" style="font-size:9px;"></i>':u.id; }
+        });
+
+        const unit = UNITS.find(u=>u.id===id);
+        document.getElementById('bc-current').textContent = unit ? unit.label : '';
+        currentUnit = id;
+        updateProgress();
+        window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    function markDone(id) {
+        doneSet.add(id);
+        const badge = document.getElementById(`badge-\${id}`);
+        if(badge) badge.style.display='flex';
+        UNITS.forEach(u=>{ const icon=document.getElementById(`icon-\${u.id}`); if(icon&&doneSet.has(u.id)){ icon.className='unit-icon done'; icon.innerHTML='<i class="fas fa-check" style="font-size:9px;"></i>'; } });
+        updateProgress();
+    }
+
+    function updateProgress() {
+        const total = UNITS.length-1;
+        const done = doneSet.size;
+        document.getElementById('progress-fill').style.width = Math.round(done/total*100)+'%';
+        document.getElementById('progress-text').textContent = `\${done} / \${total} 已完成`;
+    }
+
+    function toggleCheck(el) {
+        el.classList.toggle('checked');
+        el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
+    }
+
+    init();
+</script>
+
+<script>
+    // --- Context Menu Demo ---
         const ctxBtn = document.getElementById('test-context-btn');
         const ctxMsg = document.getElementById('context-msg');
 
@@ -333,17 +716,14 @@ document.addEventListener(<span class="text-green-400">'touchmove'</span>, (e) =
             video: "https://www.youtube.com/embed/wFAjCsrHwrI",
             doc: "https://docs.google.com/document/d/e/2PACX-1vTszRpt1IrV9Ns31US6SaE4ZM3zySh8iK2uX9c8BgDKl-C14qxUbCXwLCwOp8Kd3Scgba5vzKotFn0m/pub?embedded=true"
         };
-    </script>
-    <script src="/js/course-shared.js?v=2026.05.21.V21.DISABLE_UNIFIED_SUPPORT_HUB"></script>
-    <script>
-    </script>
+</script>
+<script src="/js/course-shared.js?v=2026.05.21.V22.SUBMISSION_BTN"></script>
 
-    <!-- Assignment Guide (Hidden) -->
-    <section id="assignment-guide" style="display: none;">
-<div class="markdown-heading"><h1 class="heading-element">🚀 任務指南：防止瀏覽器預設行為 (Prevent Default)</h1><a id="user-content--任務指南防止瀏覽器預設行為-prevent-default" class="anchor" aria-label="Permalink: 🚀 任務指南：防止瀏覽器預設行為 (Prevent Default)" href="#-任務指南防止瀏覽器預設行為-prevent-default"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<section id="assignment-guide" style="display: none;">
+<div class="markdown-heading"><h1 class="heading-element">🚀 任務指南：防止瀏覽器預設行為 (Prevent Default)</h1><a aria-label="Permalink: 🚀 任務指南：防止瀏覽器預設行為 (Prevent Default)" class="anchor" href="#-任務指南防止瀏覽器預設行為-prevent-default" id="user-content--任務指南防止瀏覽器預設行為-prevent-default"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>本單元的目標是學習如何將網頁轉化為具有「原生 App」觸感的專業介面。透過處理瀏覽器的預設行為，你將能打造出穩定、流暢且不被打斷的使用者體驗。</p>
-<hr>
-<div class="markdown-heading"><h2 class="heading-element">🎯 任務目標</h2><a id="user-content--任務目標" class="anchor" aria-label="Permalink: 🎯 任務目標" href="#-任務目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h2 class="heading-element">🎯 任務目標</h2><a aria-label="Permalink: 🎯 任務目標" class="anchor" href="#-任務目標" id="user-content--任務目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ol>
 <li>
 <strong>鎖住全螢幕捲動</strong>：確保頁面在操作時不會意外滑動或產生橡皮筋回彈。</li>
@@ -352,9 +732,9 @@ document.addEventListener(<span class="text-green-400">'touchmove'</span>, (e) =
 <li>
 <strong>消除點擊延遲</strong>：提升按鈕的反應速度，達到即時的操作感。</li>
 </ol>
-<hr>
-<div class="markdown-heading"><h2 class="heading-element">🛠️ 實作任務清單</h2><a id="user-content-️-實作任務清單" class="anchor" aria-label="Permalink: 🛠️ 實作任務清單" href="#️-實作任務清單"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h3 class="heading-element">任務 1：鎖住全螢幕捲動 (Viewport Lockdown)</h3><a id="user-content-任務-1鎖住全螢幕捲動-viewport-lockdown" class="anchor" aria-label="Permalink: 任務 1：鎖住全螢幕捲動 (Viewport Lockdown)" href="#任務-1鎖住全螢幕捲動-viewport-lockdown"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h2 class="heading-element">🛠️ 實作任務清單</h2><a aria-label="Permalink: 🛠️ 實作任務清單" class="anchor" href="#️-實作任務清單" id="user-content-️-實作任務清單"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 1：鎖住全螢幕捲動 (Viewport Lockdown)</h3><a aria-label="Permalink: 任務 1：鎖住全螢幕捲動 (Viewport Lockdown)" class="anchor" href="#任務-1鎖住全螢幕捲動-viewport-lockdown" id="user-content-任務-1鎖住全螢幕捲動-viewport-lockdown"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>[ ] <strong>Viewport 設定</strong>：在 <code>index.html</code> 中修正 Viewport Meta 標籤，防止使用者縮放。</li>
 <li>[ ] <strong>JS 事件攔截</strong>：在 <code>js/ux.js</code> 中實作 <code>touchmove</code> 攔截。
@@ -365,7 +745,7 @@ document.addEventListener(<span class="text-green-400">'touchmove'</span>, (e) =
 </li>
 <li>[ ] <strong>CSS 強化</strong>：在 <code>style.css</code> 加入 <code>overscroll-behavior: none</code>。</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">任務 2：封印系統選單與選取 (Native Surface)</h3><a id="user-content-任務-2封印系統選單與選取-native-surface" class="anchor" aria-label="Permalink: 任務 2：封印系統選單與選取 (Native Surface)" href="#任務-2封印系統選單與選取-native-surface"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 2：封印系統選單與選取 (Native Surface)</h3><a aria-label="Permalink: 任務 2：封印系統選單與選取 (Native Surface)" class="anchor" href="#任務-2封印系統選單與選取-native-surface" id="user-content-任務-2封印系統選單與選取-native-surface"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>[ ] <strong>禁止選取</strong>：在 <code>style.css</code> 使用 <code>user-select: none</code>。</li>
 <li>[ ] <strong>封印長按選單</strong>：
@@ -375,12 +755,12 @@ document.addEventListener(<span class="text-green-400">'touchmove'</span>, (e) =
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">任務 3：消除點擊延遲 (Interaction Polish)</h3><a id="user-content-任務-3消除點擊延遲-interaction-polish" class="anchor" aria-label="Permalink: 任務 3：消除點擊延遲 (Interaction Polish)" href="#任務-3消除點擊延遲-interaction-polish"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 3：消除點擊延遲 (Interaction Polish)</h3><a aria-label="Permalink: 任務 3：消除點擊延遲 (Interaction Polish)" class="anchor" href="#任務-3消除點擊延遲-interaction-polish" id="user-content-任務-3消除點擊延遲-interaction-polish"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>[ ] <strong>點擊優化</strong>：為按鈕與搖桿加入 <code>touch-action: manipulation</code> 或 <code>none</code>。</li>
 </ul>
-<hr>
-<div class="markdown-heading"><h2 class="heading-element">📊 UX 審計與相容性報告 (請在完成後填寫)</h2><a id="user-content--ux-審計與相容性報告-請在完成後填寫" class="anchor" aria-label="Permalink: 📊 UX 審計與相容性報告 (請在完成後填寫)" href="#-ux-審計與相容性報告-請在完成後填寫"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h2 class="heading-element">📊 UX 審計與相容性報告 (請在完成後填寫)</h2><a aria-label="Permalink: 📊 UX 審計與相容性報告 (請在完成後填寫)" class="anchor" href="#-ux-審計與相容性報告-請在完成後填寫" id="user-content--ux-審計與相容性報告-請在完成後填寫"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <table>
 <thead>
 <tr>
@@ -417,8 +797,8 @@ document.addEventListener(<span class="text-green-400">'touchmove'</span>, (e) =
 </tr>
 </tbody>
 </table>
-<hr>
-<div class="markdown-heading"><h2 class="heading-element">📝 實作心得紀錄</h2><a id="user-content--實作心得紀錄" class="anchor" aria-label="Permalink: 📝 實作心得紀錄" href="#-實作心得紀錄"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h2 class="heading-element">📝 實作心得紀錄</h2><a aria-label="Permalink: 📝 實作心得紀錄" class="anchor" href="#-實作心得紀錄" id="user-content--實作心得紀錄"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <p><strong>遇到的挑戰</strong>：
@@ -433,19 +813,16 @@ document.addEventListener(<span class="text-green-400">'touchmove'</span>, (e) =
 (為什麼對於一個專業的 Web App 來說，封印這些預設行為是至關重要的？)</p>
 </li>
 </ul>
-<hr>
+<hr/>
 <blockquote>
 <p>[!TIP]
 完成後請記得 commit 並 push 你的程式碼到<strong>程式庫</strong>中！</p>
 </blockquote>
-
-    </section>
-
-    <!-- Tutor Guide (Hidden) -->
-    <section id="tutor-guide" style="display: none;">
+</section>
+<section id="tutor-guide" style="display: none;">
 <p>針對 <strong><code>start-04-unit-prevent-default</code> (防止瀏覽器預設行為：打造原生 App 體驗)</strong> 單元，這是學員將網頁轉化為「專用設備」的技術轉捩點。它要求學員具備 <strong>使用者經驗優化 (UX Optimization)</strong> 與 <strong>瀏覽器行為掌控 (Browser Constraint Mastery)</strong> 的意識，學習如何透過 <code>event.preventDefault()</code> 消除移動端的捲動、縮放與右鍵選單，並利用 CSS 鎖定技術讓 Web App 的穩定性達到原生 App 的等級。</p>
 <p>以下是在 <strong>GitHub Classroom</strong> 部署其作業 (Assignments) 的具體建議：</p>
-<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repo) 配置建議</h3><a id="user-content-1-範本程式庫-template-repo-配置建議" class="anchor" aria-label="Permalink: 1. 範本程式庫 (Template Repo) 配置建議" href="#1-範本程式庫-template-repo-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repo) 配置建議</h3><a aria-label="Permalink: 1. 範本程式庫 (Template Repo) 配置建議" class="anchor" href="#1-範本程式庫-template-repo-配置建議" id="user-content-1-範本程式庫-template-repo-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>防止預設行為作業的核心在於「穩定感與不被打斷的操作」，範本應包含一個「會亂動」的反面教材框架，建議包含：</p>
 <ul>
 <li>
@@ -457,9 +834,9 @@ document.addEventListener(<span class="text-green-400">'touchmove'</span>, (e) =
 <li>
 <strong>📂 <code>README.md</code></strong>：<strong>UX 審計與相容性報告</strong>。提供模板要求學員錄製或紀錄：在優化前，長按按鈕會發生什麼？優化後，快速雙擊是否還會放大頁面？</li>
 </ul>
-<hr>
-<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a id="user-content-2-作業任務部署細節" class="anchor" aria-label="Permalink: 2. 作業任務部署細節" href="#2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h4 class="heading-element">任務 1：鎖住全螢幕捲動與橡皮筋回彈 (Viewport Lockdown Lab)</h4><a id="user-content-任務-1鎖住全螢幕捲動與橡皮筋回彈-viewport-lockdown-lab" class="anchor" aria-label="Permalink: 任務 1：鎖住全螢幕捲動與橡皮筋回彈 (Viewport Lockdown Lab)" href="#任務-1鎖住全螢幕捲動與橡皮筋回彈-viewport-lockdown-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a aria-label="Permalink: 2. 作業任務部署細節" class="anchor" href="#2-作業任務部署細節" id="user-content-2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 1：鎖住全螢幕捲動與橡皮筋回彈 (Viewport Lockdown Lab)</h4><a aria-label="Permalink: 任務 1：鎖住全螢幕捲動與橡皮筋回彈 (Viewport Lockdown Lab)" class="anchor" href="#任務-1鎖住全螢幕捲動與橡皮筋回彈-viewport-lockdown-lab" id="user-content-任務-1鎖住全螢幕捲動與橡皮筋回彈-viewport-lockdown-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：打造「絕對靜止」的操作平面。掌握 <code>preventDefault()</code> 與 <code>{ passive: false }</code> 的底層配置邏輯。</li>
@@ -475,7 +852,7 @@ document.addEventListener(<span class="text-green-400">'touchmove'</span>, (e) =
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 2：打造像原生 App 的手勢鎖定區 (Native-Like Surface Lab)</h4><a id="user-content-任務-2打造像原生-app-的手勢鎖定區-native-like-surface-lab" class="anchor" aria-label="Permalink: 任務 2：打造像原生 App 的手勢鎖定區 (Native-Like Surface Lab)" href="#任務-2打造像原生-app-的手勢鎖定區-native-like-surface-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 2：打造像原生 App 的手勢鎖定區 (Native-Like Surface Lab)</h4><a aria-label="Permalink: 任務 2：打造像原生 App 的手勢鎖定區 (Native-Like Surface Lab)" class="anchor" href="#任務-2打造像原生-app-的手勢鎖定區-native-like-surface-lab" id="user-content-任務-2打造像原生-app-的手勢鎖定區-native-like-surface-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：封印所有系統干擾。學會處理 iOS 與 Android 在長按、選取與選單觸發上的差異。</li>
@@ -491,7 +868,7 @@ document.addEventListener(<span class="text-green-400">'touchmove'</span>, (e) =
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 3：緊急操作壓力測試 (Operational Stress Test Lab)</h4><a id="user-content-任務-3緊急操作壓力測試-operational-stress-test-lab" class="anchor" aria-label="Permalink: 任務 3：緊急操作壓力測試 (Operational Stress Test Lab)" href="#任務-3緊急操作壓力測試-operational-stress-test-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 3：緊急操作壓力測試 (Operational Stress Test Lab)</h4><a aria-label="Permalink: 任務 3：緊急操作壓力測試 (Operational Stress Test Lab)" class="anchor" href="#任務-3緊急操作壓力測試-operational-stress-test-lab" id="user-content-任務-3緊急操作壓力測試-operational-stress-test-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：驗證極端環境下的可靠性。確保在亂序、快速的多指操作下（模擬機器人驚險競速），介面不會位移或崩潰。</li>
@@ -507,15 +884,15 @@ document.addEventListener(<span class="text-green-400">'touchmove'</span>, (e) =
 </ul>
 </li>
 </ul>
-<hr>
-<div class="markdown-heading"><h3 class="heading-element">3. UX 專業度與跨平台相容點評標準 (UX Polish Standards)</h3><a id="user-content-3-ux-專業度與跨平台相容點評標準-ux-polish-standards" class="anchor" aria-label="Permalink: 3. UX 專業度與跨平台相容點評標準 (UX Polish Standards)" href="#3-ux-專業度與跨平台相容點評標準-ux-polish-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h3 class="heading-element">3. UX 專業度與跨平台相容點評標準 (UX Polish Standards)</h3><a aria-label="Permalink: 3. UX 專業度與跨平台相容點評標準 (UX Polish Standards)" class="anchor" href="#3-ux-專業度與跨平台相容點評標準-ux-polish-standards" id="user-content-3-ux-專業度與跨平台相容點評標準-ux-polish-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>此單元的價值在於 <strong>「對 Web 標籤感的剔除度與對原生觸感的還原度」</strong>：</p>
 <ul>
 <li>[ ] <strong>操作專注度</strong>：介面是否徹底封鎖了所有可能中斷使用者意圖的瀏覽器預設動作？</li>
 <li>[ ] <strong>參數精準度</strong>：JS 事件監聽器中是否有根據現代規範正確設定 <code>passive</code> 參數？</li>
 <li>[ ] <strong>美學穩定性</strong>：當系統彈出式選單被封印後，UI 是否因應手勢產生了對應的虛擬回饋補償？</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a id="user-content--推薦範本結構-github-classroom-template" class="anchor" aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" href="#-推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" class="anchor" href="#-推薦範本結構-github-classroom-template" id="user-content--推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <pre lang="text"><code>.
 ├── index.html           # 結構：提供 Viewport Meta 設定與遙控按鈕佈局塊
 ├── style.css            # 樣式：練習 touch-action、user-select 與 overscroll 管理
@@ -524,8 +901,7 @@ document.addEventListener(<span class="text-green-400">'touchmove'</span>, (e) =
 └── assets/test_guide.md # 參考：如何進行移動端壓力測試的標準流程
 </code></pre>
 <p>透過這種部署方式，學生能體驗到 <strong>「好的前端工程師，不僅是會寫代碼的人，而是能剔除瀏覽器的冗餘雜訊、能重新定義網頁與指尖的物理關係、並在每一行 preventDefault 中，為使用者創造最純粹、最像原生 App 的控制靈魂大師」</strong>。掌握防止預設行為技術後，學員將擁有了開發「專業級雲端遊戲控制器、精密醫療設備遠端介面、以及各類全螢幕互動看板」最核心也最資深的 UX 優化開發實力！</p>
+</section>
 
-    </section>
 </body>
-
 </html>
