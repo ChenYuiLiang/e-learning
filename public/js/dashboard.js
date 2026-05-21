@@ -3381,16 +3381,29 @@ window.renderEarningsTab = window.renderEarningsTab || function(data) {
         `;
     } else if (!data.myReferralLink) {
         promoCodeEl.innerHTML = `
-            <span class="text-orange-400 text-sm block font-bold">尚未配置作業連結</span>
-            <span class="text-[10px] text-gray-400">請聯繫管理員獲取該單元授權</span>
+            <div class="space-y-3">
+                <div>
+                    <div class="text-[10px] uppercase tracking-wider text-gray-400">Promotion Code</div>
+                    <div class="font-mono text-indigo-700 text-sm">${escapeHtml(data.myPromotionCode || '尚未生成')}</div>
+                </div>
+                <div>
+                    <div class="text-[10px] uppercase tracking-wider text-gray-400">GitHub Classroom Invite Link</div>
+                    <div class="text-orange-500 text-sm font-bold">尚未配置作業連結</div>
+                    <div class="text-[10px] text-gray-400">請聯繫管理員獲取該單元授權</div>
+                </div>
+            </div>
         `;
     } else {
         promoCodeEl.innerHTML = `
-            <div class="flex flex-col items-center">
-                <span class="text-xs font-mono text-indigo-700 break-all max-w-[200px] text-center">${escapeHtml(data.myPromotionCode || '尚未生成')}</span>
-                <span class="text-[10px] text-gray-400 mt-1 uppercase tracking-tighter">Promotion Code</span>
-                <span class="mt-3 text-xs font-mono text-blue-600 break-all max-w-[200px] text-center">${data.myReferralLink}</span>
-                <span class="text-[10px] text-gray-400 mt-1 uppercase tracking-tighter">此單元教學作業連結 / Unit Link</span>
+            <div class="space-y-3">
+                <div>
+                    <div class="text-[10px] uppercase tracking-wider text-gray-400">Promotion Code</div>
+                    <div class="font-mono text-indigo-700 text-sm break-all">${escapeHtml(data.myPromotionCode || '尚未生成')}</div>
+                </div>
+                <div>
+                    <div class="text-[10px] uppercase tracking-wider text-gray-400">GitHub Classroom Invite Link</div>
+                    <a href="${escapeHtml(data.myReferralLink)}" target="_blank" rel="noopener noreferrer" class="font-mono text-blue-600 text-xs break-all hover:underline">${escapeHtml(data.myReferralLink)}</a>
+                </div>
             </div>
         `;
     }
