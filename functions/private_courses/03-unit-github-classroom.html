@@ -1141,5 +1141,252 @@
         };
     </script>
     <script src="/js/course-shared.js?v=2026.05.21.V22.SUBMISSION_BTN"></script>
+
+
+    <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+<div class="markdown-heading"><h1 class="heading-element">03-unit-github-classroom：GitHub Classroom 實戰工作流</h1><a id="user-content-03-unit-github-classroomgithub-classroom-實戰工作流" class="anchor" aria-label="Permalink: 03-unit-github-classroom：GitHub Classroom 實戰工作流" href="#03-unit-github-classroomgithub-classroom-實戰工作流"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p>歡迎來到 GitHub Classroom 實戰單元！本作業旨在讓你親自動手體驗 GitHub Classroom 的核心機制，從啟動雲端 IDE、觸發自動評分，到在 Feedback Pull Request 中進行 Code Review，建立真實的 Vibe Coding 工作流直覺。</p>
+<div class="markdown-heading"><h2 class="heading-element">🚀 快速開始</h2><a id="user-content--快速開始" class="anchor" aria-label="Permalink: 🚀 快速開始" href="#-快速開始"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<ol>
+<li>
+<strong>接受作業邀請</strong>：點擊老師提供的 GitHub Classroom 邀請連結，系統會自動為你建立專屬 Repository。</li>
+<li>
+<strong>啟動 Codespaces</strong>：進入你的 Repo 頁面，點擊 <code>Code</code> → <code>Codespaces</code> → <code>Create codespace on main</code>，在瀏覽器中開啟雲端 IDE。</li>
+<li>
+<strong>確認環境</strong>：在 Codespaces Terminal 執行以下指令，確認 Node.js 環境正常：
+<div class="highlight highlight-source-shell"><pre>node --version
+npm install
+npm <span class="pl-c1">test</span></pre></div>
+<blockquote>
+<p>此時測試預期是「失敗」的（紅燈），這是正常現象。</p>
+</blockquote>
+</li>
+</ol>
+<hr>
+<div class="markdown-heading"><h2 class="heading-element">📋 任務說明</h2><a id="user-content--任務說明" class="anchor" aria-label="Permalink: 📋 任務說明" href="#-任務說明"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p>本作業共三個任務，請依序完成：</p>
+<div class="markdown-heading"><h3 class="heading-element">☁️ 任務 3-1：啟動 Codespaces 雲端環境（20 分鐘）</h3><a id="user-content-️-任務-3-1啟動-codespaces-雲端環境20-分鐘" class="anchor" aria-label="Permalink: ☁️ 任務 3-1：啟動 Codespaces 雲端環境（20 分鐘）" href="#️-任務-3-1啟動-codespaces-雲端環境20-分鐘"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p><strong>目標</strong>：體驗「一鍵啟動雲端開發環境」的 Vibe Coding 基礎設施。</p>
+<p><strong>步驟</strong>：</p>
+<ol>
+<li>點擊老師提供的 GitHub Classroom 邀請連結，建立你的專屬 Repository。</li>
+<li>進入 Repo，點擊 <code>Code</code> → <code>Codespaces</code> → <code>Create codespace on main</code>。</li>
+<li>等待 Codespace 初始化完成（約 1-2 分鐘）。</li>
+<li>在 Codespaces 的 Terminal 中執行 <code>node --version</code> 與 <code>npm install</code>，確認環境正常。</li>
+</ol>
+<p><strong>提交內容</strong>：</p>
+<ul>
+<li>你的 Codespace 畫面截圖（顯示 Repo 名稱與 Terminal 畫面）。</li>
+<li>你的 Repo 網址。</li>
+</ul>
+<hr>
+<div class="markdown-heading"><h3 class="heading-element">🚦 任務 3-2：原子化提交與自動評分（30 分鐘）</h3><a id="user-content--任務-3-2原子化提交與自動評分30-分鐘" class="anchor" aria-label="Permalink: 🚦 任務 3-2：原子化提交與自動評分（30 分鐘）" href="#-任務-3-2原子化提交與自動評分30-分鐘"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p><strong>目標</strong>：體驗「Push → 自動評分 → 紅燈 → 修正 → 綠燈」的完整 Autograding 循環。</p>
+<p><strong>步驟</strong>：</p>
+<ol>
+<li>在 Codespaces 中查看 <code>src/buggy_code.js</code>，找出並修正程式中的 Bug。</li>
+<li>使用<strong>原子化提交 (Atomic Commits)</strong>：每修正一個邏輯點，就執行一次獨立 commit：
+<div class="highlight highlight-source-shell"><pre>git add src/buggy_code.js
+git commit -m <span class="pl-s"><span class="pl-pds">"</span>fix: correct array sorting logic<span class="pl-pds">"</span></span>
+git push</pre></div>
+</li>
+<li>前往你的 Repo → <strong>Actions</strong> 分頁，觀察 Autograding 工作流的執行結果。</li>
+<li>重複「修正 → Push → 查看 Actions」流程，直到 Autograding 出現 ✅ 綠燈。</li>
+</ol>
+<p><strong>提交內容</strong>：</p>
+<ul>
+<li>GitHub Actions 頁面的截圖，顯示 Autograding 測試由 ❌ 轉為 ✅ 的過程。</li>
+<li>至少包含 <strong>2 個以上</strong>獨立 commit 的 Git 歷史截圖（<code>git log --oneline</code>）。</li>
+</ul>
+<hr>
+<div class="markdown-heading"><h3 class="heading-element">💬 任務 3-3：Feedback PR 與 Code Review（20 分鐘）</h3><a id="user-content--任務-3-3feedback-pr-與-code-review20-分鐘" class="anchor" aria-label="Permalink: 💬 任務 3-3：Feedback PR 與 Code Review（20 分鐘）" href="#-任務-3-3feedback-pr-與-code-review20-分鐘"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p><strong>目標</strong>：練習使用 GitHub 的 Pull Request 功能進行程式碼審查（Code Review）。</p>
+<p><strong>背景</strong>：GitHub Classroom 會在你的 Repo 中自動建立一個名為 <strong>Feedback</strong> 的 Pull Request，這是老師與你的程式碼對話的主要管道。</p>
+<p><strong>步驟</strong>：</p>
+<ol>
+<li>進入你的 Repo → <strong>Pull requests</strong> 分頁，找到 <strong>Feedback PR</strong>。</li>
+<li>切換到 <strong>Files changed</strong> 頁籤，瀏覽程式碼差異。</li>
+<li>對程式碼的<strong>至少一行</strong>進行 Inline Comment（點擊行號旁的 <code>+</code> 按鈕新增評論），說明：
+<ul>
+<li>這段程式碼的作用是什麼？</li>
+<li>你認為有沒有更好的寫法？</li>
+</ul>
+</li>
+<li>提交你的 Review（選擇 <code>Comment</code> 即可，不需要 Approve 或 Request changes）。</li>
+</ol>
+<p><strong>提交內容</strong>：</p>
+<ul>
+<li>你在 Feedback PR 中留下的 Inline Comment 連結（複製 Comment 的永久連結）。</li>
+</ul>
+<hr>
+<div class="markdown-heading"><h2 class="heading-element">📤 提交方式</h2><a id="user-content--提交方式" class="anchor" aria-label="Permalink: 📤 提交方式" href="#-提交方式"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p>完成以上三個任務後，在 Vibe Coding 平台的本作業頁面點擊「提交作業」，並填寫：</p>
+<ol>
+<li>你的 GitHub Repository 網址。</li>
+<li>三個任務的截圖或連結（依各任務要求）。</li>
+</ol>
+<hr>
+<div class="markdown-heading"><h2 class="heading-element">⚖️ 評核標準</h2><a id="user-content-️-評核標準" class="anchor" aria-label="Permalink: ⚖️ 評核標準" href="#️-評核標準"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<table>
+<thead>
+<tr>
+<th>任務</th>
+<th>評核項目</th>
+<th>配分</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3-1 啟動 Codespaces</td>
+<td>Codespace 截圖包含 Repo 名稱與正常 Terminal</td>
+<td>30 分</td>
+</tr>
+<tr>
+<td>3-2 Autograding</td>
+<td>Actions 歷史顯示 ❌→✅ 轉換過程；有 2+ 個 atomic commits</td>
+<td>40 分</td>
+</tr>
+<tr>
+<td>3-3 Code Review</td>
+<td>Feedback PR 中有至少一條有意義的 Inline Comment</td>
+<td>30 分</td>
+</tr>
+</tbody>
+</table>
+<p>祝你 Coding 愉快，體驗 GitHub Classroom 的完整工作流！🚀</p>
+    </section>
+
+
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+<div class="markdown-heading"><h1 class="heading-element">導師指南 (Tutor Guide) - 03-unit-github-classroom</h1><a id="user-content-導師指南-tutor-guide---03-unit-github-classroom" class="anchor" aria-label="Permalink: 導師指南 (Tutor Guide) - 03-unit-github-classroom" href="#導師指南-tutor-guide---03-unit-github-classroom"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">單元簡介</h2><a id="user-content-單元簡介" class="anchor" aria-label="Permalink: 單元簡介" href="#單元簡介"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p>本單元 <strong><code>03-unit-github-classroom</code>（GitHub Classroom 實戰工作流）</strong> 是課程中第一個讓學生「真正動手操作 GitHub Classroom 完整流程」的單元。透過三個由淺至深的任務，學生將建立「雲端 IDE → Commit → 自動評分 → Code Review」的核心工作習慣，為後續所有實作課程打下基礎。</p>
+<hr>
+<div class="markdown-heading"><h2 class="heading-element">作業總覽：三個核心任務</h2><a id="user-content-作業總覽三個核心任務" class="anchor" aria-label="Permalink: 作業總覽：三個核心任務" href="#作業總覽三個核心任務"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<table>
+<thead>
+<tr>
+<th>任務</th>
+<th>重點技能</th>
+<th>預計時間</th>
+<th>自動評分</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3-1 啟動 Codespaces</td>
+<td>雲端環境、Classroom 邀請流程</td>
+<td>20 分鐘</td>
+<td>無（人工審核截圖）</td>
+</tr>
+<tr>
+<td>3-2 原子化提交與自動評分</td>
+<td>Atomic Commits、GitHub Actions、Autograding</td>
+<td>30 分鐘</td>
+<td>有（<code>tests/lab.test.js</code>）</td>
+</tr>
+<tr>
+<td>3-3 Feedback PR 與 Code Review</td>
+<td>Pull Request、Inline Comment、程式審查</td>
+<td>20 分鐘</td>
+<td>無（人工審核 PR 連結）</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="markdown-heading"><h2 class="heading-element">導師評核重點與技巧</h2><a id="user-content-導師評核重點與技巧" class="anchor" aria-label="Permalink: 導師評核重點與技巧" href="#導師評核重點與技巧"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">☁️ 任務 3-1：啟動 Codespaces 雲端環境</h3><a id="user-content-️-任務-3-1啟動-codespaces-雲端環境" class="anchor" aria-label="Permalink: ☁️ 任務 3-1：啟動 Codespaces 雲端環境" href="#️-任務-3-1啟動-codespaces-雲端環境"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p><strong>常見卡點</strong>：</p>
+<ul>
+<li>學生點擊邀請連結後找不到「Create codespace」按鈕 → 確認學生已登入 GitHub 且接受組織邀請（前往 <a href="https://github.com/settings/organizations">GitHub Settings / Organizations</a> 接受）。</li>
+<li>Codespace 初始化失敗 → 建議直接重新建立（Delete → New），通常一次就成功。</li>
+</ul>
+<p><strong>評核標準</strong>：</p>
+<ul>
+<li>截圖需清楚顯示：① Repo 名稱（含學生 GitHub ID）② Codespaces Terminal 已成功載入（能看到提示符）。</li>
+<li>若截圖只有 Repo 首頁而無 Codespaces 畫面，請退回要求補充。</li>
+</ul>
+<p><strong>導師提示（L1-L3）</strong>：</p>
+<ul>
+<li>
+<strong>L1</strong>：「你在 Repo 頁面看到 Code 按鈕了嗎？點擊後有 Codespaces 的 Tab 嗎？」</li>
+<li>
+<strong>L2</strong>：「若找不到 Codespaces Tab，請確認你是否已接受組織邀請。可以到 GitHub 右上角的鈴鐺確認是否有待處理通知。」</li>
+<li>
+<strong>L3</strong>：「請前往 <a href="https://github.com/settings/organizations%EF%BC%8C%E7%A2%BA%E8%AA%8D">https://github.com/settings/organizations，確認</a> vibe-coding-classroom 組織邀請狀態。」</li>
+</ul>
+<hr>
+<div class="markdown-heading"><h3 class="heading-element">🚦 任務 3-2：原子化提交與自動評分</h3><a id="user-content--任務-3-2原子化提交與自動評分" class="anchor" aria-label="Permalink: 🚦 任務 3-2：原子化提交與自動評分" href="#-任務-3-2原子化提交與自動評分"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p><strong>部署說明</strong>：</p>
+<ul>
+<li>範本程式庫中的 <code>src/buggy_code.js</code> 包含 <strong>刻意設計的 Bug</strong>（例如：陣列排序邏輯錯誤、邊界條件錯誤）。</li>
+<li>
+<code>tests/lab.test.js</code> 預設會因 Bug 而<strong>失敗（紅燈）</strong>，學生必須修正後才能過關。</li>
+</ul>
+<p><strong>評核重點</strong>：</p>
+<ol>
+<li>
+<strong>Autograding 過程</strong>：Actions 歷史中<strong>必須有至少一次失敗記錄</strong>，才能證明學生真正理解了「紅燈→修正→綠燈」的循環。若第一次就成功，請詢問是否直接查看了答案。</li>
+<li>
+<strong>Atomic Commits</strong>：查看 Commit 歷史，確認有 2 個以上獨立 Commit，且每個 Commit 訊息有意義（如 <code>fix: correct boundary check</code>）。單一大型 commit 視為未達標。</li>
+<li>
+<strong>評分同步</strong>：Autograding 分數會自動回寫到 Vibe Coding Dashboard。</li>
+</ol>
+<p><strong>常見錯誤</strong>：</p>
+<ul>
+<li>學生直接 <code>git commit -m "fix all"</code> 把所有修改放在一個 Commit → 提示：「請把每個修正分成獨立的 Commit，想像每個 Commit 是一個思考步驟。」</li>
+<li>學生看不懂 Actions 的錯誤訊息 → 指引他在 Actions 頁面點開 Autograding Job，展開失敗的 Step，閱讀具體的測試錯誤。</li>
+</ul>
+<p><strong>導師提示（L1-L3）</strong>：</p>
+<ul>
+<li>
+<strong>L1</strong>：「你有看到 Actions 裡 Autograding 的結果嗎？點進去展開看看是哪個測試失敗了。」</li>
+<li>
+<strong>L2</strong>：「測試錯誤訊息顯示的是 <code>Expected: X, Received: Y</code>，表示你的函數回傳值不符合預期。請對照 <code>tests/lab.test.js</code> 的測試案例，逆推應該修改什麼。」</li>
+<li>
+<strong>L3</strong>：「在 <code>src/buggy_code.js</code> 第 12 行，<code>sort()</code> 預設會按字串排序而非數字。你需要傳入比較函數：<code>arr.sort((a, b) =&gt; a - b)</code>。」</li>
+</ul>
+<hr>
+<div class="markdown-heading"><h3 class="heading-element">💬 任務 3-3：Feedback PR 與 Code Review</h3><a id="user-content--任務-3-3feedback-pr-與-code-review" class="anchor" aria-label="Permalink: 💬 任務 3-3：Feedback PR 與 Code Review" href="#-任務-3-3feedback-pr-與-code-review"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p><strong>背景</strong>：</p>
+<ul>
+<li>GitHub Classroom 會在學生接受作業後自動建立 <strong>Feedback Pull Request</strong>（從 <code>feedback</code> 分支合入 <code>main</code>）。這個 PR 是導師與學生進行程式碼對話的主要管道。</li>
+</ul>
+<p><strong>評核重點</strong>：</p>
+<ol>
+<li>Comment 是否<strong>有實質內容</strong>（不是只寫「我看了」）：理想的評論應說明「這段程式碼做什麼」或「可以怎麼改進」。</li>
+<li>若學生沒有看到 Feedback PR → 引導他前往 Repo → Pull requests → 確認是否有 <code>Feedback</code> 標題的 PR。若無，可能是 Classroom 設定問題，請聯繫管理員。</li>
+</ol>
+<p><strong>導師後續動作</strong>：</p>
+<ul>
+<li>收到學生提交後，在 Feedback PR 中<strong>針對學生的最重要 Commit</strong>留下導師自己的 Review Comment，肯定做得好的地方，並對可以改進的地方提供具體建議（而非直接給答案）。</li>
+<li>對於 Commit 訊息品質差的學生（如 <code>fix bug</code>、<code>update</code>），在 PR Comment 中鼓勵他們參考 <a href="https://www.conventionalcommits.org/" rel="nofollow">Conventional Commits</a> 規範。</li>
+</ul>
+<p><strong>導師提示（L1-L3）</strong>：</p>
+<ul>
+<li>
+<strong>L1</strong>：「你有找到 Repo 裡的 Pull requests 分頁嗎？裡面應該有一個叫 Feedback 的 PR。」</li>
+<li>
+<strong>L2</strong>：「進入 Feedback PR 後，切到 Files changed 頁籤，把滑鼠移到任何一行程式碼上，會出現 <code>+</code> 按鈕，點它就能新增 Inline Comment。」</li>
+<li>
+<strong>L3</strong>：「你可以在 Comment 中寫：『這段 <code>sort((a, b) =&gt; a - b)</code> 的作用是強制讓陣列按數值大小排序，因為 JS 預設的 sort 是字串排序，對數字會產生錯誤結果。』這樣的說明就很有價值！」</li>
+</ul>
+<hr>
+<div class="markdown-heading"><h2 class="heading-element">整體評分建議</h2><a id="user-content-整體評分建議" class="anchor" aria-label="Permalink: 整體評分建議" href="#整體評分建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<ul>
+<li>
+<strong>3-1</strong>（30分）：截圖清楚 → 30分；截圖不夠清楚或缺少必要資訊 → 15-20分。</li>
+<li>
+<strong>3-2</strong>（40分）：Autograding ✅ 且有 2+ atomic commits → 40分；✅ 但只有 1 個 commit → 25分；❌ 仍未通過 → 引導修正後補交。</li>
+<li>
+<strong>3-3</strong>（30分）：有實質性 Inline Comment → 30分；Comment 過於敷衍（少於 10 字）→ 15分；無 Comment → 0分。</li>
+</ul>
+<div class="markdown-heading"><h2 class="heading-element">重要提醒</h2><a id="user-content-重要提醒" class="anchor" aria-label="Permalink: 重要提醒" href="#重要提醒"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p>本單元的核心不在於「程式寫得多難」，而在於讓學生<strong>建立 Git Workflow 的肌肉記憶</strong>。導師在評核時，應特別關注學生的 <strong>Commit 節奏與訊息品質</strong>，這是區分「有在認真實踐 Vibe Coding」與「只是交差了事」的關鍵指標。</p>
+    </section>
+
 </body>
 </html>

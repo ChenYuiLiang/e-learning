@@ -51,7 +51,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCO6Y6Pa7b7zbieJIErysaNF6-UqbT8KJw",
@@ -64,6 +64,22 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+
+        const AUTO_LOGIN_KEY = 'vc_auto_google_login_started_at';
+
+        function getReturnUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('returnUrl');
+        }
+
+        function redirectAfterLogin() {
+            const returnUrl = getReturnUrl();
+            if (returnUrl) {
+                window.location.replace(decodeURIComponent(returnUrl));
+            } else {
+                window.location.replace("index.html");
+            }
+        }
 
         async function handleGoogleAuth() {
             const btnText = document.getElementById('btn-text');
@@ -79,13 +95,7 @@
 
             try {
                 await signInWithPopup(auth, new GoogleAuthProvider());
-                const urlParams = new URLSearchParams(window.location.search);
-                const returnUrl = urlParams.get('returnUrl');
-                if (returnUrl) {
-                    window.location.replace(decodeURIComponent(returnUrl));
-                } else {
-                    window.location.replace("index.html");
-                }
+                redirectAfterLogin();
             } catch (error) {
                 console.error(error);
                 errorMsg.classList.remove('hidden');
@@ -97,18 +107,61 @@
             }
         }
 
-        document.getElementById('google-login-btn').addEventListener('click', handleGoogleAuth);
-
-        // If already logged in, redirect to home or returnUrl
-        onAuthStateChanged(auth, (user) => {
-            if (user && !document.getElementById('google-login-btn').disabled) {
-                console.log("[Login] Already logged in as", user.email);
-                const urlParams = new URLSearchParams(window.location.search);
-                const returnUrl = urlParams.get('returnUrl');
-                if (returnUrl) window.location.replace(decodeURIComponent(returnUrl));
-                else window.location.replace("index.html");
+        async function startGoogleRedirectLogin() {
+            const errorMsg = document.getElementById('error-msg');
+            const btnText = document.getElementById('btn-text');
+            const btnLoader = document.getElementById('btn-loader');
+            const submitBtn = document.getElementById('google-login-btn');
+            try {
+                sessionStorage.setItem(AUTO_LOGIN_KEY, String(Date.now()));
+                btnText.textContent = '正在前往 Google...';
+                btnLoader.style.display = 'block';
+                submitBtn.disabled = true;
+                await signInWithRedirect(auth, new GoogleAuthProvider());
+            } catch (error) {
+                console.error(error);
+                errorMsg.classList.remove('hidden');
+                errorMsg.innerText = "無法自動跳轉 Google，請點擊下方按鈕登入。";
+                btnText.textContent = '使用 Google 登入';
+                btnLoader.style.display = 'none';
+                submitBtn.disabled = false;
             }
-        });
+        }
+
+        async function bootstrapLogin() {
+            const errorMsg = document.getElementById('error-msg');
+            try {
+                await getRedirectResult(auth);
+            } catch (error) {
+                console.error(error);
+                errorMsg.classList.remove('hidden');
+                errorMsg.innerText = "Google 登入流程中斷，請再試一次。";
+            }
+
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    sessionStorage.removeItem(AUTO_LOGIN_KEY);
+                    redirectAfterLogin();
+                    return;
+                }
+
+                const lastStart = Number(sessionStorage.getItem(AUTO_LOGIN_KEY) || 0);
+                const withinCooldown = Date.now() - lastStart < 15000;
+                if (!withinCooldown) {
+                    await startGoogleRedirectLogin();
+                } else {
+                    const btnText = document.getElementById('btn-text');
+                    const btnLoader = document.getElementById('btn-loader');
+                    const submitBtn = document.getElementById('google-login-btn');
+                    btnText.textContent = '使用 Google 登入';
+                    btnLoader.style.display = 'none';
+                    submitBtn.disabled = false;
+                }
+            });
+        }
+
+        document.getElementById('google-login-btn').addEventListener('click', handleGoogleAuth);
+        bootstrapLogin();
     </script>
 </body>
 
