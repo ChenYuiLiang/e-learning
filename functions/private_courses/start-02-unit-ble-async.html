@@ -1,216 +1,674 @@
 <!DOCTYPE html>
+
 <html lang="zh-Hant">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JavaScript 非同步編程：操作 BLE 的靈魂 - Vibe Coding</title>
-    <link rel="stylesheet" href="/style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>JavaScript 非同步編程：操作 BLE 的靈魂 - Vibe Coding</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+<style>
+        :root {
+            --ms-blue: #0078d4;
+            --ms-blue-dark: #005a9e;
+            --ms-blue-light: #deecf9;
+            --ms-gray-10: #f3f2f1;
+            --ms-gray-20: #e1dfdd;
+            --ms-gray-90: #201f1e;
+            --ms-green: #107c10;
+            --ms-red: #d13438;
+            --sidebar-w: 280px;
+        }
 
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fff;
+            color: #201f1e;
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* ─── TOP NAV ─── */
+        .ms-topnav {
+            background: var(--ms-blue);
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 4px rgba(0,0,0,.2);
+        }
+        .ms-topnav .brand {
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
+
+        /* ─── LAYOUT ─── */
+        .ms-layout { display: flex; min-height: calc(100vh - 48px); }
+
+        /* ─── SIDEBAR ─── */
+        .ms-sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            background: #faf9f8;
+            border-right: 1px solid #e1dfdd;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 48px;
+            height: calc(100vh - 48px);
+            overflow-y: auto;
+        }
+        .ms-sidebar-header {
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .ms-sidebar-header .module-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #605e5c;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .ms-sidebar-header .module-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #201f1e;
+            line-height: 1.4;
+        }
+        .ms-sidebar-header .meta {
+            font-size: 12px;
+            color: #605e5c;
+            margin-top: 6px;
+        }
+        .ms-unit-list { padding: 8px 0; }
+        .ms-unit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: background .12s, border-color .12s;
+            color: #201f1e;
+        }
+        .ms-unit-item:hover { background: #edebe9; }
+        .ms-unit-item.active {
+            border-left-color: var(--ms-blue);
+            background: #deecf9;
+        }
+        .ms-unit-item.active .unit-name { color: var(--ms-blue); font-weight: 600; }
+        .unit-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #c8c6c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            font-size: 10px;
+            background: #fff;
+        }
+        .unit-icon.done { background: var(--ms-green); border-color: var(--ms-green); color: #fff; }
+        .unit-icon.active-icon { border-color: var(--ms-blue); background: var(--ms-blue); color: #fff; }
+        .unit-meta { flex: 1; min-width: 0; }
+        .unit-name { font-size: 13px; line-height: 1.4; }
+        .unit-time { font-size: 11px; color: #605e5c; margin-top: 2px; }
+        .sidebar-progress {
+            padding: 12px 16px;
+            border-top: 1px solid #e1dfdd;
+            margin-top: auto;
+        }
+        .progress-bar-bg { background: #e1dfdd; border-radius: 4px; height: 6px; }
+        .progress-bar-fill { background: var(--ms-green); border-radius: 4px; height: 6px; transition: width .4s; }
+        .progress-text { font-size: 12px; color: #605e5c; margin-top: 6px; }
+
+        /* ─── MAIN ─── */
+        .ms-content { flex: 1; min-width: 0; }
+
+        .ms-breadcrumb {
+            padding: 10px 40px;
+            font-size: 12px;
+            color: #605e5c;
+            border-bottom: 1px solid #e1dfdd;
+            background: #fff;
+        }
+        .ms-breadcrumb a { color: var(--ms-blue); text-decoration: none; }
+        .ms-breadcrumb a:hover { text-decoration: underline; }
+        .ms-breadcrumb span { margin: 0 6px; }
+
+        /* ─── PAGES ─── */
+        .ms-unit-page { display: none; }
+        .ms-unit-page.visible { display: block; }
+
+        .unit-content {
+            max-width: 820px;
+            padding: 32px 40px 60px;
+            margin: 0 auto;
+        }
+
+        .unit-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .unit-completed-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #dff6dd;
+            color: #107c10;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 2px;
+        }
+        .unit-time-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #605e5c;
+            font-size: 13px;
+        }
+
+        /* Typography */
+        .unit-content h1 { font-size: 28px; font-weight: 700; margin: 0 0 20px; color: #201f1e; line-height: 1.3; }
+        .unit-content h2 { font-size: 20px; font-weight: 600; margin: 36px 0 12px; color: #201f1e; padding-top: 8px; }
+        .unit-content h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; color: #201f1e; }
+        .unit-content p { margin: 0 0 14px; }
+        .unit-content ul, .unit-content ol { margin: 0 0 14px; padding-left: 28px; }
+        .unit-content li { margin-bottom: 6px; }
+        .unit-content strong { font-weight: 600; }
+        .unit-content a { color: var(--ms-blue); text-decoration: none; }
+        .unit-content a:hover { text-decoration: underline; }
+        .unit-content code {
+            background: #f3f2f1;
+            border: 1px solid #e1dfdd;
+            border-radius: 3px;
+            padding: 1px 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #a31515;
+        }
+
+        /* Callouts */
+        .ms-note, .ms-tip, .ms-warning, .ms-important {
+            display: flex;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid;
+            font-size: 14px;
+        }
+        .ms-note { background: #deecf9; border-color: var(--ms-blue); }
+        .ms-note .note-icon { color: var(--ms-blue); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-tip { background: #dff6dd; border-color: var(--ms-green); }
+        .ms-tip .note-icon { color: var(--ms-green); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-warning { background: #fff4ce; border-color: #ffaa44; }
+        .ms-warning .note-icon { color: #ffaa44; font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-important { background: #fde7e9; border-color: var(--ms-red); }
+        .ms-important .note-icon { color: var(--ms-red); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .note-body strong { display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+
+        /* Scenario */
+        .ms-scenario {
+            background: #f3f2f1;
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #323130;
+            border-left: 4px solid #c8c6c4;
+        }
+        .ms-scenario-label {
+            font-style: normal;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #605e5c;
+            margin-bottom: 8px;
+        }
+
+        /* Steps */
+        .ms-steps { margin: 16px 0; }
+        .ms-step { display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start; }
+        .ms-step-num {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: var(--ms-blue); color: #fff;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .ms-step-body { flex: 1; }
+        .ms-step-body h4 { font-size: 14px; font-weight: 600; margin: 0 0 4px; }
+        .ms-step-body p { font-size: 14px; margin: 0; }
+
+        /* Compare grid */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .compare-card {
+            border: 1px solid #e1dfdd;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .compare-card-header {
+            padding: 12px 14px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .compare-card-body {
+            padding: 14px;
+            font-size: 13px;
+            color: #605e5c;
+            line-height: 1.5;
+        }
+
+        /* Buttons */
+        .ms-btn {
+            background: var(--ms-blue); color: #fff; border: none;
+            padding: 7px 18px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; transition: background .12s;
+            font-family: inherit;
+        }
+        .ms-btn:hover { background: var(--ms-blue-dark); }
+        .ms-btn-ghost {
+            background: transparent; color: var(--ms-blue);
+            border: 1px solid var(--ms-blue); padding: 6px 18px;
+            font-size: 14px; font-weight: 600; border-radius: 2px;
+            cursor: pointer; transition: background .12s; font-family: inherit;
+        }
+        .ms-btn-ghost:hover { background: var(--ms-blue-light); }
+
+        /* Nav */
+        .unit-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            border-top: 1px solid #e1dfdd;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .nav-btn-prev, .nav-btn-next {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 20px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; border: 1px solid;
+            font-family: inherit; transition: background .12s;
+        }
+        .nav-btn-next { background: var(--ms-blue); color: #fff; border-color: var(--ms-blue); }
+        .nav-btn-next:hover { background: var(--ms-blue-dark); border-color: var(--ms-blue-dark); }
+        .nav-btn-prev { background: #fff; color: var(--ms-blue); border-color: var(--ms-blue); }
+        .nav-btn-prev:hover { background: var(--ms-blue-light); }
+        .unit-page-indicator { font-size: 13px; color: #605e5c; }
+
+        /* Module index */
+        .module-meta-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        .ms-tag { background: #f3f2f1; color: #323130; font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: 500; }
+        .ms-tag.blue { background: #deecf9; color: var(--ms-blue-dark); }
+        .ms-tag.green { background: #dff6dd; color: #107c10; }
+        .unit-card-list { margin: 20px 0; }
+        .unit-card {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 0; border-bottom: 1px solid #f3f2f1; cursor: pointer;
+        }
+        .unit-card:last-child { border-bottom: none; }
+        .unit-card:hover .unit-card-name { color: var(--ms-blue); text-decoration: underline; }
+        .unit-card-num {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #f3f2f1; color: #605e5c;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .unit-card.lab .unit-card-num { background: #eef6ff; color: var(--ms-blue-dark); }
+        .unit-card-info { flex: 1; }
+        .unit-card-name { font-size: 15px; font-weight: 500; }
+        .unit-card-time { font-size: 12px; color: #605e5c; margin-top: 2px; }
+        .unit-card-arrow { color: #c8c6c4; font-size: 14px; }
+
+        /* Lab card */
+        .ms-lab-card {
+            background: linear-gradient(135deg, #eef6ff 0%, #f5f0ff 100%);
+            border: 1px solid #c7e0f4;
+            border-radius: 6px;
+            padding: 24px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: box-shadow .15s, border-color .15s;
+        }
+        .ms-lab-card:hover { box-shadow: 0 4px 16px rgba(0,120,212,.12); border-color: var(--ms-blue); }
+        .ms-lab-card h3 { margin: 0 0 12px; color: var(--ms-blue-dark); font-size: 16px; font-weight: 600; }
+        .ms-lab-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--ms-blue);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 12px;
+        }
+        .ms-lab-time {
+            font-size: 12px;
+            color: #605e5c;
+            margin-left: 8px;
+        }
+
+        /* Checklist */
+        .ms-checklist { list-style: none; padding: 0; margin: 12px 0; }
+        .ms-checklist li {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 6px 0; font-size: 14px;
+        }
+        .ms-checklist li .check-box {
+            width: 18px; height: 18px;
+            border: 2px solid #8a8886; border-radius: 2px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; margin-top: 1px; cursor: pointer; transition: all .15s;
+        }
+        .ms-checklist li .check-box.checked {
+            background: var(--ms-blue); border-color: var(--ms-blue); color: #fff;
+        }
+
+        /* Code block */
+        .ms-code {
+            background: #1e1e1e;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px 0;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-x: auto;
+        }
+        .ms-code .c-comment { color: #6a9955; }
+        .ms-code .c-str { color: #ce9178; }
+        .ms-code .c-kw { color: #569cd6; }
+        .ms-code .c-attr { color: #9cdcfe; }
+        .ms-code .c-val { color: #ce9178; }
+        .ms-code .c-tag { color: #4ec9b0; }
+        .ms-code .c-white { color: #d4d4d4; }
+
+        /* Resource links */
+        .ms-resource-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; text-decoration: none; color: #201f1e;
+            font-size: 14px; transition: background .1s;
+        }
+        .ms-resource-link:hover { background: #f3f2f1; }
+        .ms-resource-link i { color: var(--ms-blue); font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+
+        /* Achievement */
+        .ms-achievement {
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            color: #fff; border-radius: 6px; padding: 24px 28px;
+            margin: 24px 0; display: flex; align-items: center; gap: 20px;
+        }
+        .achievement-icon { font-size: 48px; flex-shrink: 0; }
+        .achievement-text h3 { margin: 0 0 4px; font-size: 18px; }
+        .achievement-text p { margin: 0; font-size: 14px; opacity: .9; }
+
+        @media (max-width: 768px) {
+            .ms-sidebar { display: none; }
+            .unit-content { padding: 20px 16px 40px; }
+            .unit-nav { padding: 16px; }
+            .ms-breadcrumb { padding: 8px 16px; }
+            .compare-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
-
-<body class="bg-gray-50 font-[Inter] text-gray-800">
-
-    <!-- Hero Section -->
-    <header
-        class="relative bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 text-white pt-24 pb-32 overflow-hidden">
-        <div
-            class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2940&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-overlay">
-        </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-gray-50 to-transparent bottom-0 h-16"></div>
-
-        <div class="container mx-auto px-4 relative z-10 text-center">
-            <div
-                class="badge-header inline-flex items-center gap-2 px-4 py-1 rounded-full bg-purple-500/20 text-purple-200 border border-purple-400/30 backdrop-blur-sm mb-6 text-xs font-semibold tracking-wide uppercase font-[Outfit]">
-                <span class="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>
-                JavaScript Async Programming
-            </div>
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit]">
-                非同步編程：<br>操作 BLE 的靈魂
-            </h1>
-            <p class="text-xl md:text-2xl text-purple-100 max-w-2xl mx-auto font-light leading-relaxed">
-                掌握 Promise、Async/Await，駕馭藍牙連線的「時序藝術」，徹底告別 Callback Hell，打造優雅流暢的 Web Bluetooth 應用。
-            </p>
-
-            <div class="mt-8 flex flex-wrap justify-center gap-4">
-                <button onclick="enterMediaMode('video', window.RESOURCES.youtube)"
-                    class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
-                    <span>📺</span> 觀看教學影片
-                </button>
-                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
-                    class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
-                    <span>📄</span> 閱讀課程講義
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <main class="container mx-auto px-4 -mt-20 relative z-20 pb-20">
-
-        <!-- Module 1: Intuitive Lab -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden">
-                <div class="p-1 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
-                <div class="p-8 md:p-12">
-                    <div class="section-header-left border-l-4 border-blue-500 pl-6 mb-12">
-                        <span class="text-blue-600 font-bold tracking-wider uppercase text-sm">Module 1: Intuitive
-                            Lab</span>
-                        <h2 class="text-4xl font-bold text-gray-900 mt-2">同步 vs 非同步：為什麼畫面卡住了？</h2>
-                    </div>
-
-                    <div class="grid md:grid-cols-2 gap-12 items-center">
-                        <div class="space-y-6">
-                            <div
-                                class="bg-white rounded-2xl p-8 shadow-xl border border-gray-100 relative overflow-hidden group hover:border-blue-200 transition-colors">
-                                <div
-                                    class="absolute top-0 right-0 p-4 opacity-10 font-black text-6xl text-gray-300 select-none group-hover:text-blue-200 transition-colors">
-                                    SYNC</div>
-                                <h3 class="text-2xl font-bold mb-4 text-gray-800 flex items-center gap-3">
-                                    <span
-                                        class="bg-red-100 text-red-600 w-8 h-8 rounded-full flex items-center justify-center text-sm">🚫</span>
-                                    同步 (Synchronous)
-                                </h3>
-                                <p class="text-gray-600 leading-relaxed mb-6">
-                                    程式碼一行一行執行。當遇到耗時操作（如連線）時，整個網頁的主執行緒會被「阻塞 (Block)」，導致按鈕無法點擊、動畫停止，使用者體驗極差。
-                                </p>
-                                <button id="btn-sync"
-                                    class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-xl font-mono font-bold border border-gray-300 transition-colors relative overflow-hidden"
-                                    onclick="simulateSync()">
-                                    <span class="relative z-10">執行同步連線 (卡死 3秒)</span>
-                                    <div id="sync-progress"
-                                        class="absolute top-0 left-0 h-full bg-red-200 w-0 transition-none">
-                                    </div>
-                                </button>
+<body>
+<!-- TOP NAV -->
+<nav class="ms-topnav">
+<a class="brand" href="#"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+<div class="divider"></div>
+<span class="nav-label">非同步程式設計</span>
+</nav>
+<div class="ms-layout">
+<!-- SIDEBAR -->
+<aside class="ms-sidebar">
+<div class="ms-sidebar-header">
+<div class="module-label">模組</div>
+<div class="module-title">JavaScript 非同步編程：操作 BLE 的靈魂</div>
+<div class="meta"><i class="far fa-clock"></i> 約 3 小時 · 5 個單元</div>
+</div>
+<nav class="ms-unit-list" id="sidebar-nav"></nav>
+<div class="sidebar-progress">
+<div class="progress-bar-bg">
+<div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+</div>
+<div class="progress-text" id="progress-text">0 / 5 已完成</div>
+</div>
+</aside>
+<!-- MAIN -->
+<main class="ms-content">
+<div class="ms-breadcrumb">
+<a href="#">Vibe Coding</a><span>›</span>
+<a href="#">非同步程式設計</a><span>›</span>
+<span id="bc-current">課程總覽</span>
+</div>
+<!-- ══════════ PAGE 0: INDEX ══════════ -->
+<div class="ms-unit-page visible" id="page-index">
+<div class="unit-content">
+<h1>JavaScript 非同步編程：操作 BLE 的靈魂</h1>
+<div class="module-meta-tags">
+<span class="ms-tag">模組</span>
+<span class="ms-tag">5 個單元</span>
+<span class="ms-tag green">中階</span>
+<span class="ms-tag blue">非同步編程</span>
+<span class="ms-tag blue">藍牙通訊</span>
+</div>
+<p>
+                    掌握 Promise、Async/Await，駕馭藍牙連線的「時序藝術」，徹底告別 Callback Hell，打造優雅流暢的 Web Bluetooth 應用。
+                </p>
+<h2>學習目標</h2>
+<p>完成本模組後，你將能夠：</p>
+<ul>
+<li>理解同步與非同步執行的差別，明白為什麼耗時的同步連線會讓網頁畫面凍結。</li>
+<li>學會如何將傳統 Callback-based 或 Promise `.then()` 的連線鏈重構為直觀優雅的 <strong>Async/Await</strong> 結構。</li>
+<li>掌握 Web BLE 的階層式連線鏈流程（<code>requestDevice</code> -&gt; <code>connect</code> -&gt; <code>getPrimaryService</code> -&gt; <code>getCharacteristic</code>）。</li>
+<li>實作強韌的連線狀態機、防止重複點擊 GATT 操作衝突的鎖定機制 (<code>isBusy</code> flag)，以及 <code>Promise.race</code> 超時保護。</li>
+</ul>
+<h2>必要條件</h2>
+<ul>
+<li>已了解 HTML/CSS 基礎結構。</li>
+<li>具備 JavaScript 變數與函式的基礎認識。</li>
+</ul>
+<h2>本模組單元</h2>
+<div class="unit-card-list" id="index-unit-list"></div>
+<div style="margin-top:32px;">
+<button class="ms-btn" onclick="goToUnit(1)">開始模組  ›</button>
+</div>
+</div>
+</div>
+<!-- ══════════ PAGE 1: 簡介 ══════════ -->
+<div class="ms-unit-page" id="page-1">
+<div class="unit-content">
+<div class="unit-status-bar">
+<div class="unit-completed-badge" id="badge-1" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+<div></div>
+<div class="unit-time-badge"><i class="far fa-clock"></i>  15 分鐘</div>
+</div>
+<h1>簡介</h1>
+<p>
+                    在現代網頁應用中，控制外部硬體如低功耗藍牙 (BLE) 裝置是相當常見的需求。
+                    然而，無線通訊充滿了延遲與不確定性。如果我們在網頁中以「同步」方式處理這些連線，網頁將會陷入漫長的等待與凍結。
+                </p>
+<p>
+                    非同步編程 (Asynchronous Programming) 是 JavaScript 的核心特性，也是操作 BLE 的靈魂。
+                    在本單元中，你將深入學習如何使用非同步技術，在與機器人、無人車建立連線與通訊的同時，依然維持使用者介面的流暢度。
+                </p>
+<h2>教學影片</h2>
+<div style="border-radius:4px; overflow:hidden; margin:20px 0; box-shadow:0 2px 8px rgba(0,0,0,.12); aspect-ratio:16/9;">
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" src="https://www.youtube.com/embed/d81d8eSU3EQ" style="width:100%; height:100%; display:block; border:0;" title="JavaScript 非同步編程教學">
+</iframe>
+</div>
+</div>
+<div class="unit-nav">
+<button class="nav-btn-prev" onclick="goToUnit(0)">‹  總覽</button>
+<span class="unit-page-indicator">1 / 5</span>
+<button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元  ›</button>
+</div>
+</div>
+<!-- ══════════ PAGE 2: 同步 vs 非同步 ══════════ -->
+<div class="ms-unit-page" id="page-2">
+<div class="unit-content">
+<div class="unit-status-bar">
+<div class="unit-completed-badge" id="badge-2" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+<div></div>
+<div class="unit-time-badge"><i class="far fa-clock"></i>  45 分鐘</div>
+</div>
+<h1>同步 vs 非同步：為什麼畫面卡住了？</h1>
+<p>
+                    瀏覽器在處理網頁畫面渲染與 JavaScript 代碼執行時，通常是在同一個主執行緒 (Main Thread) 上進行。
+                    當執行同步任務時，任何耗時的操作都會完全阻塞主執行緒，導致畫面「被世界卡死」。
+                </p>
+<div class="grid md:grid-cols-2 gap-8 my-6">
+<div class="space-y-6">
+<div class="bg-white rounded-2xl p-8 shadow-xl border border-gray-100 relative overflow-hidden group hover:border-blue-200 transition-colors">
+<div class="absolute top-0 right-0 p-4 opacity-10 font-black text-6xl text-gray-300 select-none group-hover:text-blue-200 transition-colors">SYNC</div>
+<h3 class="text-2xl font-bold mb-4 text-gray-800 flex items-center gap-3">
+<span class="bg-red-100 text-red-600 w-8 h-8 rounded-full flex items-center justify-center text-sm">🚫</span>
+                                同步 (Synchronous)
+                            </h3>
+<p class="text-gray-600 leading-relaxed mb-6">
+                                程式碼一行一行執行。當遇到耗時操作（如連線）時，整個網頁的主執行緒會被「阻塞 (Block)」，導致按鈕無法點擊、動畫停止，使用者體驗極差。
+                            </p>
+<button class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-xl font-mono font-bold border border-gray-300 transition-colors relative overflow-hidden" id="btn-sync" onclick="simulateSync()">
+<span class="relative z-10">執行同步連線 (卡死 3秒)</span>
+<div class="absolute top-0 left-0 h-full bg-red-200 w-0 transition-none" id="sync-progress"></div>
+</button>
+</div>
+<div class="bg-white rounded-2xl p-8 shadow-xl border border-gray-100 relative overflow-hidden group hover:border-green-200 transition-colors">
+<div class="absolute top-0 right-0 p-4 opacity-10 font-black text-6xl text-gray-300 select-none group-hover:text-green-200 transition-colors">ASYNC</div>
+<h3 class="text-2xl font-bold mb-4 text-gray-800 flex items-center gap-3">
+<span class="bg-green-100 text-green-600 w-8 h-8 rounded-full flex items-center justify-center text-sm">⚡</span>
+                                非同步 (Asynchronous)
+                            </h3>
+<p class="text-gray-600 leading-relaxed mb-6">
+                                使用 Promise 把耗時任務丟給瀏覽器背景處理。主執行緒繼續回應使用者操作。當任務完成時，再透過回呼或 await 繼續執行後續動作。
+                            </p>
+<button class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-mono font-bold shadow-lg shadow-blue-200 transition-all relative overflow-hidden" id="btn-async" onclick="simulateAsync()">
+<span class="relative z-10">執行非同步連線 (平滑)</span>
+<div class="hidden absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" id="async-spinner"></div>
+</button>
+</div>
+</div>
+<!-- Simulation Visualizer -->
+<div class="relative bg-gray-900 rounded-2xl p-6 shadow-2xl border border-gray-800 h-full min-h-[400px] flex flex-col">
+<div class="flex justify-between items-center mb-6 border-b border-gray-700 pb-4">
+<h4 class="text-white font-mono font-bold">Main Thread Status</h4>
+<div class="flex items-center gap-2 text-green-400 font-mono text-xs uppercase bg-green-900/30 px-3 py-1 rounded-full border border-green-800" id="thread-status">
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                                Running
                             </div>
-
-                            <div
-                                class="bg-white rounded-2xl p-8 shadow-xl border border-gray-100 relative overflow-hidden group hover:border-green-200 transition-colors">
-                                <div
-                                    class="absolute top-0 right-0 p-4 opacity-10 font-black text-6xl text-gray-300 select-none group-hover:text-green-200 transition-colors">
-                                    ASYNC</div>
-                                <h3 class="text-2xl font-bold mb-4 text-gray-800 flex items-center gap-3">
-                                    <span
-                                        class="bg-green-100 text-green-600 w-8 h-8 rounded-full flex items-center justify-center text-sm">⚡</span>
-                                    非同步 (Asynchronous)
-                                </h3>
-                                <p class="text-gray-600 leading-relaxed mb-6">
-                                    使用 Promise 把耗時任務丟給瀏覽器背景處理。主執行緒繼續回應使用者操作。當任務完成時，再透過回呼或 await 繼續執行後續動作。
-                                </p>
-                                <button id="btn-async"
-                                    class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-mono font-bold shadow-lg shadow-blue-200 transition-all relative overflow-hidden"
-                                    onclick="simulateAsync()">
-                                    <span class="relative z-10">執行非同步連線 (平滑)</span>
-                                    <div id="async-spinner"
-                                        class="hidden absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin">
-                                    </div>
-                                </button>
+</div>
+<!-- Animation Area -->
+<div class="flex-grow relative flex justify-center items-center">
+<div class="w-20 h-20 bg-gradient-to-tr from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-3xl shadow-lg transform transition-transform duration-75" id="ui-avatar">
+                                😎
                             </div>
-                        </div>
-
-                        <!-- Simulation Visualizer -->
-                        <div
-                            class="relative bg-gray-900 rounded-2xl p-6 shadow-2xl border border-gray-800 h-full min-h-[400px] flex flex-col">
-                            <div class="flex justify-between items-center mb-6 border-b border-gray-700 pb-4">
-                                <h4 class="text-white font-mono font-bold">Main Thread Status</h4>
-                                <div id="thread-status"
-                                    class="flex items-center gap-2 text-green-400 font-mono text-xs uppercase bg-green-900/30 px-3 py-1 rounded-full border border-green-800">
-                                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                                    Running
-                                </div>
-                            </div>
-
-                            <!-- Animation Area -->
-                            <div class="flex-grow relative flex justify-center items-center">
-                                <div id="ui-avatar"
-                                    class="w-20 h-20 bg-gradient-to-tr from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-3xl shadow-lg transform transition-transform duration-75">
-                                    😎
-                                </div>
-
-                                <!-- Blocking Overlay (Sync) -->
-                                <div id="block-overlay"
-                                    class="absolute inset-0 bg-red-900/80 backdrop-blur-sm flex flex-col items-center justify-center text-red-200 opacity-0 pointer-events-none transition-opacity duration-200">
-                                    <div class="text-6xl mb-4">⛔</div>
-                                    <div class="font-bold font-mono text-xl">THE WORLD! (Stop)</div>
-                                    <p class="text-sm mt-2 opacity-75">UI is Frozen</p>
-                                </div>
-
-                                <!-- Async Task (Async) -->
-                                <div id="async-task"
-                                    class="absolute top-10 right-0 bg-blue-900 border border-blue-500 text-blue-100 px-4 py-2 rounded-lg text-sm font-mono opacity-0 transform translate-x-10 transition-all duration-500 flex items-center gap-3">
-                                    <span>BLE Connection...</span>
-                                    <div
-                                        class="w-4 h-4 border-2 border-blue-300 border-t-transparent rounded-full animate-spin">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mt-6 font-mono text-xs text-gray-500">
-                                > Current Time: <span id="clock-display" class="text-gray-300">00:00:00</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Module 2: Core Principles -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden">
-                <div class="p-1 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
-                <div class="p-8 md:p-12">
-                    <div class="section-header-left border-l-4 border-indigo-500 pl-6 mb-12">
-                        <span class="text-indigo-600 font-bold tracking-wider uppercase text-sm">Module 2: Core
-                            Principles</span>
-                        <h2 class="text-4xl font-bold text-gray-900 mt-2">Async/Await：讓代碼像詩一樣優雅</h2>
-                    </div>
-
-                    <!-- Concept 1: The Code Evolution -->
-                    <div class="mb-16">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-8 flex items-center gap-3">
-                            <span
-                                class="bg-indigo-100 text-indigo-600 w-10 h-10 rounded-full flex items-center justify-center text-lg">1</span>
-                            告別 Callback Hell，擁抱語法糖
-                        </h3>
-
-                        <div class="grid lg:grid-cols-2 gap-8">
-                            <!-- Old Way -->
-                            <div
-                                class="bg-gray-50 rounded-xl p-6 border border-gray-200 opacity-70 hover:opacity-100 transition-opacity">
-                                <div
-                                    class="flex justify-between mb-3 text-sm text-gray-500 font-bold uppercase tracking-wider">
-                                    <span>The Old Way (Callback Hell)</span>
-                                    <span class="text-red-500">Painful 😫</span>
-                                </div>
-                                <pre
-                                    class="font-mono text-xs leading-relaxed overflow-x-auto p-4 bg-white rounded-lg border border-gray-200 text-gray-600">
+<!-- Blocking Overlay (Sync) -->
+<div class="absolute inset-0 bg-red-900/80 backdrop-blur-sm flex flex-col items-center justify-center text-red-200 opacity-0 pointer-events-none transition-opacity duration-200" id="block-overlay">
+<div class="text-6xl mb-4">⛔</div>
+<div class="font-bold font-mono text-xl">THE WORLD! (Stop)</div>
+<p class="text-sm mt-2 opacity-75">UI is Frozen</p>
+</div>
+<!-- Async Task (Async) -->
+<div class="absolute top-10 right-0 bg-blue-900 border border-blue-500 text-blue-100 px-4 py-2 rounded-lg text-sm font-mono opacity-0 transform translate-x-10 transition-all duration-500 flex items-center gap-3" id="async-task">
+<span>BLE Connection...</span>
+<div class="w-4 h-4 border-2 border-blue-300 border-t-transparent rounded-full animate-spin"></div>
+</div>
+</div>
+<div class="mt-6 font-mono text-xs text-gray-500">
+                            &gt; Current Time: <span class="text-gray-300" id="clock-display">00:00:00</span>
+</div>
+</div>
+</div>
+</div>
+<div class="unit-nav">
+<button class="nav-btn-prev" onclick="goToUnit(1)">‹  上一個單元</button>
+<span class="unit-page-indicator">2 / 5</span>
+<button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元  ›</button>
+</div>
+</div>
+<!-- ══════════ PAGE 3: Async/Await 原理 ══════════ -->
+<div class="ms-unit-page" id="page-3">
+<div class="unit-content">
+<div class="unit-status-bar">
+<div class="unit-completed-badge" id="badge-3" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+<div></div>
+<div class="unit-time-badge"><i class="far fa-clock"></i>  60 分鐘</div>
+</div>
+<h1>Async/Await：讓代碼像詩一樣優雅</h1>
+<div class="mb-16">
+<h3 class="text-2xl font-bold text-gray-800 mb-8 flex items-center gap-3">
+<span class="bg-indigo-100 text-indigo-600 w-10 h-10 rounded-full flex items-center justify-center text-lg">1</span>
+                        告別 Callback Hell，擁抱語法糖
+                    </h3>
+<div class="grid lg:grid-cols-2 gap-8">
+<!-- Old Way -->
+<div class="bg-gray-50 rounded-xl p-6 border border-gray-200 opacity-70 hover:opacity-100 transition-opacity">
+<div class="flex justify-between mb-3 text-sm text-gray-500 font-bold uppercase tracking-wider">
+<span>The Old Way (Callback Hell)</span>
+<span class="text-red-500">Painful 😫</span>
+</div>
+<pre class="font-mono text-xs leading-relaxed overflow-x-auto p-4 bg-white rounded-lg border border-gray-200 text-gray-600">
 navigator.bluetooth.requestDevice({...})
-  .then(device => {
+  .then(device =&gt; {
     return device.gatt.connect()
-      .then(server => {
+      .then(server =&gt; {
         return server.getPrimaryService(...)
-          .then(service => {
+          .then(service =&gt; {
              // ... 波動拳 👊
              return service.getCharacteristic(...)
           })
       })
   })
-  .catch(error => { ... });</pre>
-                            </div>
-
-                            <!-- New Way -->
-                            <div
-                                class="bg-indigo-900 rounded-xl p-6 shadow-xl border border-indigo-800 transform lg:-translate-y-4 hover:-translate-y-6 transition-transform duration-300">
-                                <div
-                                    class="flex justify-between mb-3 text-sm text-indigo-300 font-bold uppercase tracking-wider">
-                                    <span>Async / Await</span>
-                                    <span class="text-green-400">Elegant ✨</span>
-                                </div>
-                                <pre
-                                    class="font-mono text-sm leading-relaxed overflow-x-auto p-4 bg-indigo-950/50 rounded-lg text-indigo-100">
+  .catch(error =&gt; { ... });</pre>
+</div>
+<!-- New Way -->
+<div class="bg-indigo-900 rounded-xl p-6 shadow-xl border border-indigo-800 transform lg:-translate-y-4 hover:-translate-y-6 transition-transform duration-300">
+<div class="flex justify-between mb-3 text-sm text-indigo-300 font-bold uppercase tracking-wider">
+<span>Async / Await</span>
+<span class="text-green-400">Elegant ✨</span>
+</div>
+<pre class="font-mono text-sm leading-relaxed overflow-x-auto p-4 bg-indigo-950/50 rounded-lg text-indigo-100">
 <span class="text-pink-400">async</span> function <span class="text-yellow-300">connectBLE</span>() {
   <span class="text-pink-400">try</span> {
     const device = <span class="text-pink-400">await</span> navigator.bluetooth.requestDevice(...);
@@ -223,323 +681,441 @@ navigator.bluetooth.requestDevice({...})
     console.error(<span class="text-red-300">'Oops'</span>, error);
   }
 }</pre>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Concept 2: The BLE Chain -->
-                    <div class="grid md:grid-cols-3 gap-8">
-                        <div class="md:col-span-1">
-                            <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-                                <span
-                                    class="bg-indigo-100 text-indigo-600 w-10 h-10 rounded-full flex items-center justify-center text-lg">2</span>
-                                Web BLE 連線鏈
-                            </h3>
-                            <p class="text-gray-600 mb-4">Web BLE 的連線過程是嚴格的「階層式」操作。每一層都必須等待上一層 <strong>Resolved</strong>
-                                才能繼續。
-                            </p>
-                            <div class="bg-blue-50 border border-blue-100 rounded-xl p-6">
-                                <h4 class="font-bold text-blue-800 mb-3">錯誤捕獲：Try...Catch</h4>
-                                <p class="text-sm text-blue-700 leading-relaxed">
+</div>
+</div>
+</div>
+<!-- Concept 2: The BLE Chain -->
+<div class="grid md:grid-cols-3 gap-8">
+<div class="md:col-span-1">
+<h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+<span class="bg-indigo-100 text-indigo-600 w-10 h-10 rounded-full flex items-center justify-center text-lg">2</span>
+                            Web BLE 連線鏈
+                        </h3>
+<p class="text-gray-600 mb-4">
+                            Web BLE 的連線過程是嚴格的「階層式」操作。每一層都必須等待上一層 <strong>Resolved</strong> 才能繼續。
+                        </p>
+<div class="ms-note" style="margin-top: 12px; border-left-width: 4px;">
+<div class="note-body">
+<strong>錯誤捕獲：Try...Catch</strong>
+<p class="text-sm text-blue-700 leading-relaxed" style="margin: 4px 0 0;">
                                     藍牙連線變數極多（距離遠、被拒絕、斷線）。使用 <code>try...catch</code> 包裹整個 async 函式，是保護 App 不會崩潰的唯一防線。
                                 </p>
-                            </div>
+</div>
+</div>
+</div>
+<div class="md:col-span-2">
+<div class="relative pl-8 border-l-2 border-indigo-100 space-y-8">
+<!-- Step 1 -->
+<div class="relative">
+<span class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-indigo-600 ring-4 ring-white"></span>
+<div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+<span class="text-xs font-bold text-indigo-500 uppercase tracking-wide">Step 1</span>
+<h4 class="font-bold text-lg text-gray-800">requestDevice()</h4>
+<p class="text-sm text-gray-500 mt-1">彈出視窗，等待使用者選擇設備。</p>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="relative">
+<span class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-indigo-400 ring-4 ring-white"></span>
+<div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+<span class="text-xs font-bold text-indigo-500 uppercase tracking-wide">Step 2</span>
+<h4 class="font-bold text-lg text-gray-800">gatt.connect()</h4>
+<p class="text-sm text-gray-500 mt-1">建立低功耗藍牙連線。這是最容易失敗的一步（Timeout, Error 133 等）。</p>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="relative">
+<span class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-indigo-300 ring-4 ring-white"></span>
+<div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+<span class="text-xs font-bold text-indigo-500 uppercase tracking-wide">Step 3</span>
+<h4 class="font-bold text-lg text-gray-800">getPrimaryService()</h4>
+<p class="text-sm text-gray-500 mt-1">尋找該設備提供的特定服務（Service UUID）。</p>
+</div>
+</div>
+<!-- Step 4 -->
+<div class="relative">
+<span class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-green-500 ring-4 ring-white"></span>
+<div class="bg-white p-5 rounded-xl shadow-md border-l-4 border-green-400 border-gray-100 hover:shadow-lg transition-shadow">
+<span class="text-xs font-bold text-green-600 uppercase tracking-wide">Target</span>
+<h4 class="font-bold text-lg text-gray-800">getCharacteristic()</h4>
+<p class="text-sm text-gray-500 mt-1">取得最終的讀寫控制點 (Characteristic)。</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="unit-nav">
+<button class="nav-btn-prev" onclick="goToUnit(2)">‹  上一個單元</button>
+<span class="unit-page-indicator">3 / 5</span>
+<button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元  ›</button>
+</div>
+</div>
+<!-- ══════════ PAGE 4: 教室實戰 ══════════ -->
+<div class="ms-unit-page" id="page-4">
+<div class="unit-content">
+<div class="unit-status-bar">
+<div class="unit-completed-badge" id="badge-4" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+<div></div>
+<div class="unit-time-badge"><i class="far fa-clock"></i>  165 分鐘</div>
+</div>
+<h1>教室實戰：強韌的非同步架構</h1>
+<p>請動手完成以下三項實作任務，完成後請點擊卡片繳交作業。</p>
+<div class="lab-cards-group">
+<!-- Task 2-1 -->
+<div class="ms-lab-card" onclick="openSubmissionModal('ble-async-task-1', '作業 2-1: 「逐步點亮」狀態機實作')">
+<div class="ms-lab-badge"><i class="fas fa-project-diagram"></i>  作業 2-1</div>
+<span class="ms-lab-time"><i class="far fa-clock"></i> 約 60 分鐘</span>
+<h3>「逐步點亮」狀態機實作</h3>
+<p style="font-size:14px; color:#323130; margin-bottom:14px;">
+                            使用者按下連線後，畫面不能乾等。請實作一個 UI 狀態機，隨著 await 進度更新顯示：
+                        </p>
+<div class="bg-gray-100 p-3 rounded text-xs font-mono text-gray-600 mb-4">
+                            [Idle] -&gt; [Searching...] -&gt; [Connecting...] -&gt; [Ready]
                         </div>
+<ul class="ms-checklist">
+<li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>在連線過程中將「連線」按鈕設為 <code>disabled</code></span></li>
+<li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>在 <code>ble-handler.js</code> 中實作連線步驟之間的 UI 狀態更新</span></li>
+<li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>確保連線成功後顯示 Ready 狀態</span></li>
+</ul>
+<div class="mt-auto pt-4 border-t border-gray-100">
+<p class="text-xs text-gray-400 font-bold uppercase mb-1">Challenge</p>
+<p class="text-sm text-gray-500">如何防止使用者在 "Connecting..." 狀態下重複點擊按鈕？</p>
+</div>
+</div>
+<!-- Task 2-2 -->
+<div class="ms-lab-card" onclick="openSubmissionModal('ble-async-task-2', '作業 2-2: 處理並發與競爭 (Race Condition)')">
+<div class="ms-lab-badge"><i class="fas fa-traffic-light"></i>  作業 2-2</div>
+<span class="ms-lab-time"><i class="far fa-clock"></i> 約 60 分鐘</span>
+<h3>處理並發與競爭 (Race Condition)</h3>
+<p style="font-size:14px; color:#323130; margin-bottom:14px;">
+                            當無人車高速行駛時，同時發送「前進」與「讀取電池」指令。如果前一個指令還沒完成，下一個就進來，GATT 會報錯。
+                        </p>
+<ul class="ms-checklist">
+<li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>在 <code>ble-handler.js</code> 中使用 <code>isBusy</code> 旗標鎖定連線流程</span></li>
+<li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>無論連線成功或失敗，最後都必須釋放鎖定 (使用 <code>try...finally</code>)</span></li>
+<li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>確保不會拋出 <code>GATT operation already in progress</code> 錯誤</span></li>
+</ul>
+<div class="mt-auto pt-4 border-t border-gray-100">
+<p class="text-xs text-gray-400 font-bold uppercase mb-1">Goal</p>
+<p class="text-sm text-gray-500">設計一個簡單的 Queue 或 flag 機制，確保指令依序發送。</p>
+</div>
+</div>
+<!-- Task 2-3 -->
+<div class="ms-lab-card" onclick="openSubmissionModal('ble-async-task-3', '作業 2-3: 不同步超時保護 (Timeout)')">
+<div class="ms-lab-badge"><i class="fas fa-hourglass-half"></i>  作業 2-3</div>
+<span class="ms-lab-time"><i class="far fa-clock"></i> 約 45 分鐘</span>
+<h3>不同步超時保護 (Timeout)</h3>
+<p style="font-size:14px; color:#323130; margin-bottom:14px;">
+                            硬體有時會死當，導致 <code>await connect()</code> 永久卡住。請實作「10 秒超時」機制。
+                        </p>
+<code class="block bg-gray-100 text-pink-600 p-2 rounded text-xs font-mono border border-gray-200 mb-4">
+                            Promise.race([connect(), timeout(10000)])
+                        </code>
+<ul class="ms-checklist">
+<li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>使用 <code>Promise.race</code> 實作 10 秒連線超時處理</span></li>
+<li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>超時後主動中斷連線嘗試並提示使用者「連線逾時」</span></li>
+<li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>連線失敗或超時後，確保 UI 正確恢復到初始狀態</span></li>
+</ul>
+<div class="mt-auto pt-4 border-t border-gray-100">
+<p class="text-xs text-gray-400 font-bold uppercase mb-1">Impact</p>
+<p class="text-sm text-gray-500">主動中斷連線嘗試，並提示使用者「連線逾時」，而不是讓網頁轉圈圈。</p>
+</div>
+</div>
+</div>
+</div>
+<div class="unit-nav">
+<button class="nav-btn-prev" onclick="goToUnit(3)">‹  上一個單元</button>
+<span class="unit-page-indicator">4 / 5</span>
+<button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元  ›</button>
+</div>
+</div>
+<!-- ══════════ PAGE 5: 摘要與資源 ══════════ -->
+<div class="ms-unit-page" id="page-5">
+<div class="unit-content">
+<div class="unit-status-bar">
+<div class="unit-completed-badge" id="badge-5" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+<div></div>
+<div class="unit-time-badge"><i class="far fa-clock"></i>  15 分鐘</div>
+</div>
+<h1>摘要與資源</h1>
+<p>
+                    恭喜！你已經完成了「JavaScript 非同步編程：操作 BLE 的靈魂」模組。
+                    現在你已經掌握了非同步程式設計的精髓，這對於任何高延遲通訊如低功耗藍牙 (BLE) 的介面開發至關重要。
+                </p>
+<div class="ms-achievement">
+<div class="achievement-icon">🚀</div>
+<div class="achievement-text">
+<h3>恭喜！你已完成本模組</h3>
+<p>你已具備操作 Web Bluetooth 非同步通訊的核心實力。保持熱情，繼續挑戰下一個單元！</p>
+</div>
+</div>
+<h2>完成本模組後，你已學會：</h2>
+<ul>
+<li><strong>同步與非同步</strong> 執行序阻塞 (Block) 與非阻塞執行的觀念差異。</li>
+<li>使用 <strong>Async/Await</strong> 處理 Web BLE 階層式連線鏈流程。</li>
+<li>在連線過程中建立 <strong>UI 狀態機</strong>，引導使用者掌握進度。</li>
+<li>使用 <strong>isBusy</strong> 旗標與 <strong>try...finally</strong> 鎖定機制來防範 GATT 操作並發衝突。</li>
+<li>使用 <strong>Promise.race</strong> 實作 10 秒連線超時保護機制。</li>
+</ul>
+<h2>延伸學習資源</h2>
+<a class="ms-resource-link" href="https://www.youtube.com/watch?v=d81d8eSU3EQ" target="_blank">
+<i class="fab fa-youtube" style="color:#ff0000;"></i>
+<div>
+<div style="font-weight:600;">課程教學影片</div>
+<div style="font-size:12px; color:#605e5c; margin-top:2px;">YouTube — JavaScript 非同步編程與 Web BLE 操作完整教學</div>
+</div>
+<i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+</a>
+<a class="ms-resource-link" href="https://docs.google.com/document/d/e/2PACX-1vSOWL39uyJgCoRn_7zTie-Bf7RKr3wYtp2OnCCvWU0mbv3Ks1jUZ3A0LSWyzK7kBRG9lrOT2zZigM9W/pub?embedded=true" target="_blank">
+<i class="fas fa-file-alt"></i>
+<div>
+<div style="font-weight:600;">課程完整講義</div>
+<div style="font-size:12px; color:#605e5c; margin-top:2px;">Google Docs — 詳細非同步概念、連線鏈時序與超時防禦設計</div>
+</div>
+<i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+</a>
+<a class="ms-resource-link" href="https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Statements/async_function" target="_blank">
+<i class="fas fa-book"></i>
+<div>
+<div style="font-weight:600;">MDN Web Docs — Async Function</div>
+<div style="font-size:12px; color:#605e5c; margin-top:2px;">developer.mozilla.org — async function 宣告與 Promise 流程控制參考手冊</div>
+</div>
+<i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+</a>
+<a class="ms-resource-link" href="https://classroom.github.com" target="_blank">
+<i class="fab fa-github"></i>
+<div>
+<div style="font-weight:600;">GitHub Classroom</div>
+<div style="font-size:12px; color:#605e5c; margin-top:2px;">classroom.github.com — 繳交非同步作業並查看 autograding 自動評分結果</div>
+</div>
+<i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+</a>
+</div>
+<div class="unit-nav">
+<button class="nav-btn-prev" onclick="goToUnit(4)">‹  上一個單元</button>
+<span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
+<button class="ms-btn" onclick="markDone(5); alert('🎉 恭喜完成「JavaScript 非同步編程：操作 BLE 的靈魂」模組！')">完成模組</button>
+</div>
+</div>
+</main>
+</div>
+<script>
+    /* ─── DATA ─── */
+    const UNITS = [
+        { id: 0, label: '課程總覽',       time: '',         type: 'index' },
+        { id: 1, label: '簡介',            time: '15 分鐘',  type: 'unit'  },
+        { id: 2, label: '同步 vs 非同步',  time: '45 分鐘',  type: 'unit'  },
+        { id: 3, label: 'Async/Await 原理', time: '60 分鐘',  type: 'unit'  },
+        { id: 4, label: '教室實戰',       time: '165 分鐘', type: 'lab'   },
+        { id: 5, label: '摘要與資源',     time: '15 分鐘',  type: 'unit'  },
+    ];
 
-                        <div class="md:col-span-2">
-                            <div class="relative pl-8 border-l-2 border-indigo-100 space-y-8">
-                                <!-- Step 1 -->
-                                <div class="relative">
-                                    <span
-                                        class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-indigo-600 ring-4 ring-white"></span>
-                                    <div
-                                        class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                                        <span class="text-xs font-bold text-indigo-500 uppercase tracking-wide">Step
-                                            1</span>
-                                        <h4 class="font-bold text-lg text-gray-800">requestDevice()</h4>
-                                        <p class="text-sm text-gray-500 mt-1">彈出視窗，等待使用者選擇設備。</p>
-                                    </div>
-                                </div>
-                                <!-- Step 2 -->
-                                <div class="relative">
-                                    <span
-                                        class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-indigo-400 ring-4 ring-white"></span>
-                                    <div
-                                        class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                                        <span class="text-xs font-bold text-indigo-500 uppercase tracking-wide">Step
-                                            2</span>
-                                        <h4 class="font-bold text-lg text-gray-800">gatt.connect()</h4>
-                                        <p class="text-sm text-gray-500 mt-1">建立低功耗藍牙連線。這是最容易失敗的一步（Timeout, Error 133
-                                            等）。</p>
-                                    </div>
-                                </div>
-                                <!-- Step 3 -->
-                                <div class="relative">
-                                    <span
-                                        class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-indigo-300 ring-4 ring-white"></span>
-                                    <div
-                                        class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                                        <span class="text-xs font-bold text-indigo-500 uppercase tracking-wide">Step
-                                            3</span>
-                                        <h4 class="font-bold text-lg text-gray-800">getPrimaryService()</h4>
-                                        <p class="text-sm text-gray-500 mt-1">尋找該設備提供的特定服務（Service UUID）。</p>
-                                    </div>
-                                </div>
-                                <!-- Step 4 -->
-                                <div class="relative">
-                                    <span
-                                        class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-green-500 ring-4 ring-white"></span>
-                                    <div
-                                        class="bg-white p-5 rounded-xl shadow-md border-l-4 border-green-400 border-gray-100 hover:shadow-lg transition-shadow">
-                                        <span
-                                            class="text-xs font-bold text-green-600 uppercase tracking-wide">Target</span>
-                                        <h4 class="font-bold text-lg text-gray-800">getCharacteristic()</h4>
-                                        <p class="text-sm text-gray-500 mt-1">取得最終的讀寫控制點 (Characteristic)。</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    let currentUnit = 0;
+    let doneSet = new Set();
+
+    /* ─── INIT ─── */
+    function init() {
+        buildSidebar();
+        buildIndexUnitList();
+        goToUnit(0);
+    }
+
+    function buildSidebar() {
+        const nav = document.getElementById('sidebar-nav');
+        nav.innerHTML = UNITS.map(u => {
+            const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : '';
+            return `
+            <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
+                <div class="unit-icon" id="icon-${u.id}">${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div>
+                <div class="unit-meta">
+                    <div class="unit-name">${u.label}${badge}</div>
+                    ${u.time ? `<div class="unit-time"><i class="far fa-clock"></i> ${u.time}</div>` : ''}
                 </div>
-            </div>
-        </section>
+            </div>`;
+        }).join('');
+    }
 
-        <!-- Module 3: Practical Challenge -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden">
-                <div class="p-1 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
-                <div class="p-8 md:p-12">
-                    <div class="section-header-left border-l-4 border-pink-500 pl-6 mb-12">
-                        <span class="text-pink-600 font-bold tracking-wider uppercase text-sm">Module 3: Practical
-                            Challenge</span>
-                        <h2 class="text-4xl font-bold text-gray-900 mt-2">教室實戰：強韌的非同步架構</h2>
-                    </div>
-
-                    <div class="grid md:grid-cols-3 gap-8">
-                        <!-- Task 2-1 -->
-                        <div onclick="openSubmissionModal('ble-async-task-1', '作業 2-1: 「逐步點亮」狀態機實作')"
-                            class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col h-full group cursor-pointer relative">
-                            <div class="bg-gradient-to-r from-blue-500 to-cyan-500 h-2"></div>
-                            <div class="p-6 flex-grow">
-                                <div class="flex justify-between items-start mb-4">
-                                    <h3 class="font-bold text-xl text-gray-800 group-hover:text-blue-600 transition">作業
-                                        2-1</h3>
-                                    <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold">60
-                                        min</span>
-                                </div>
-                                <h4 class="font-bold text-gray-700 mb-3">「逐步點亮」狀態機實作</h4>
-                                <p class="text-sm text-gray-600 mb-4 leading-relaxed">
-                                    使用者按下連線後，畫面不能乾等。請實作一個 UI 狀態機，隨著 await 進度更新顯示：
-                                </p>
-                                <div class="bg-gray-100 p-3 rounded text-xs font-mono text-gray-600 mb-4">
-                                    [Idle] -> [Searching...] -> [Connecting...] -> [Ready]
-                                </div>
-                                <div class="mt-auto pt-4 border-t border-gray-50">
-                                    <p class="text-xs text-gray-400 font-bold uppercase mb-1">Challenge</p>
-                                    <p class="text-sm text-gray-500">如何防止使用者在 "Connecting..." 狀態下重複點擊按鈕？</p>
-                                </div>
-                            </div>
-                            <!-- Click Hint Overlay -->
-                            <div
-                                class="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span
-                                    class="bg-white text-blue-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                                    📤 點擊繳交作業
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Task 2-2 -->
-                        <div onclick="openSubmissionModal('ble-async-task-2', '作業 2-2: 處理並發與競爭 (Race Condition)')"
-                            class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col h-full group cursor-pointer relative">
-                            <div class="bg-gradient-to-r from-purple-500 to-indigo-500 h-2"></div>
-                            <div class="p-6 flex-grow">
-                                <div class="flex justify-between items-start mb-4">
-                                    <h3 class="font-bold text-xl text-gray-800 group-hover:text-purple-600 transition">
-                                        作業 2-2
-                                    </h3>
-                                    <span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold">60
-                                        min</span>
-                                </div>
-                                <h4 class="font-bold text-gray-700 mb-3">處理並發與競爭 (Race Condition)</h4>
-                                <p class="text-sm text-gray-600 mb-4 leading-relaxed">
-                                    當無人車高速行駛時，同時發送「前進」與「讀取電池」指令。如果前一個指令還沒完成，下一個就進來，GATT 會報錯。
-                                </p>
-                                <div class="mt-auto pt-4 border-t border-gray-50">
-                                    <p class="text-xs text-gray-400 font-bold uppercase mb-1">Goal</p>
-                                    <p class="text-sm text-gray-500">設計一個簡單的 Queue 或 flag 機制，確保指令依序發送。</p>
-                                </div>
-                            </div>
-                            <!-- Click Hint Overlay -->
-                            <div
-                                class="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span
-                                    class="bg-white text-purple-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                                    📤 點擊繳交作業
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Task 2-3 -->
-                        <div onclick="openSubmissionModal('ble-async-task-3', '作業 2-3: 不同步超時保護 (Timeout)')"
-                            class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col h-full group cursor-pointer relative">
-                            <div class="bg-gradient-to-r from-pink-500 to-rose-500 h-2"></div>
-                            <div class="p-6 flex-grow">
-                                <div class="flex justify-between items-start mb-4">
-                                    <h3 class="font-bold text-xl text-gray-800 group-hover:text-pink-600 transition">作業
-                                        2-3</h3>
-                                    <span class="bg-pink-100 text-pink-700 text-xs px-2 py-1 rounded font-bold">45
-                                        min</span>
-                                </div>
-                                <h4 class="font-bold text-gray-700 mb-3">不同步超時保護 (Timeout)</h4>
-                                <p class="text-sm text-gray-600 mb-4 leading-relaxed">
-                                    硬體有時會死當，導致 <code>await connect()</code> 永久卡住。請實作「10 秒超時」機制。
-                                </p>
-                                <code
-                                    class="block bg-gray-50 text-pink-600 p-2 rounded text-xs font-mono border border-gray-200 mb-4">
-                                    Promise.race([connect(), timeout(10000)])
-                                </code>
-                                <div class="mt-auto pt-4 border-t border-gray-50">
-                                    <p class="text-xs text-gray-400 font-bold uppercase mb-1">Impact</p>
-                                    <p class="text-sm text-gray-500">主動中斷連線嘗試，並提示使用者「連線逾時」，而不是讓網頁轉圈圈。</p>
-                                </div>
-                            </div>
-                            <!-- Click Hint Overlay -->
-                            <div
-                                class="absolute inset-0 bg-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span
-                                    class="bg-white text-pink-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                                    📤 點擊繳交作業
-                                </span>
-                            </div>
-                        </div>
-                    </div>
+    function buildIndexUnitList() {
+        const el = document.getElementById('index-unit-list');
+        el.innerHTML = UNITS.filter(u => u.id > 0).map(u => `
+            <div class="unit-card ${u.type}" onclick="goToUnit(${u.id})">
+                <div class="unit-card-num">${u.id}</div>
+                <div class="unit-card-info">
+                    <div class="unit-card-name">${u.label}</div>
+                    <div class="unit-card-time"><i class="far fa-clock"></i> ${u.time}</div>
                 </div>
+                <div class="unit-card-arrow">›</div>
             </div>
-        </section>
+        `).join('');
+    }
 
-    </main>
+    /* ─── NAVIGATION ─── */
+    function goToUnit(id) {
+        document.querySelectorAll('.ms-unit-page').forEach(p => p.classList.remove('visible'));
+        const target = id === 0 ? document.getElementById('page-index') : document.getElementById(`page-${id}`);
+        if (target) target.classList.add('visible');
 
-    <footer class="bg-gray-900 text-white py-12 border-t border-gray-800">
-        <div class="container mx-auto px-4 text-center">
-            <p class="text-gray-500">© 2024 Vibe Coding. All rights reserved.</p>
-        </div>
-    </footer>
+        document.querySelectorAll('.ms-unit-item').forEach(el => el.classList.remove('active'));
+        const navItem = document.getElementById(`nav-${id}`);
+        if (navItem) { navItem.classList.add('active'); navItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
 
-    <!-- Media Overlay injected by course-shared.js?v=2026.04.05.FINAL_V6 -->
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) {
+                icon.className = 'unit-icon done';
+                icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>';
+            } else if (u.id === id) {
+                icon.className = 'unit-icon active-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            } else {
+                icon.className = 'unit-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            }
+        });
 
-    <!-- Scripts -->
-    <script>
-        // --- Interactive Lab Simulation ---
-        function simulateSync() {
-            const btn = document.getElementById('btn-sync');
-            const progress = document.getElementById('sync-progress');
-            const statusLabel = document.getElementById('thread-status');
-            const overlay = document.getElementById('block-overlay');
-            const avatar = document.getElementById('ui-avatar');
+        const unit = UNITS.find(u => u.id === id);
+        document.getElementById('bc-current').textContent = unit ? unit.label : '';
+        currentUnit = id;
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-            // 1. UI Freeze Start
-            btn.classList.add('cursor-not-allowed', 'opacity-80');
-            progress.style.transition = 'none';
-            progress.style.width = '0%';
+    function markDone(id) {
+        doneSet.add(id);
+        const badge = document.getElementById(`badge-${id}`);
+        if (badge) badge.style.display = 'flex';
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) { icon.className = 'unit-icon done'; icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>'; }
+        });
+        updateProgress();
+    }
 
-            // Allow browser to render the initial state change before freezing
+    function updateProgress() {
+        const total = UNITS.length - 1;
+        const done = doneSet.size;
+        document.getElementById('progress-fill').style.width = Math.round(done / total * 100) + '%';
+        document.getElementById('progress-text').textContent = `${done} / ${total} 已完成`;
+    }
+
+    /* ─── CHECKLIST ─── */
+    function toggleCheck(el) {
+        el.classList.toggle('checked');
+        el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
+    }
+</script>
+<script>
+    // --- Interactive Lab Simulation ---
+    function simulateSync() {
+        const btn = document.getElementById('btn-sync');
+        const progress = document.getElementById('sync-progress');
+        const statusLabel = document.getElementById('thread-status');
+        const overlay = document.getElementById('block-overlay');
+        const avatar = document.getElementById('ui-avatar');
+
+        // 1. UI Freeze Start
+        btn.classList.add('cursor-not-allowed', 'opacity-80');
+        progress.style.transition = 'none';
+        progress.style.width = '0%';
+
+        // Allow browser to render the initial state change before freezing
+        requestAnimationFrame(() => {
             requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    progress.style.transition = 'width 3s linear';
-                    progress.style.width = '100%';
+                progress.style.transition = 'width 3s linear';
+                progress.style.width = '100%';
 
-                    statusLabel.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span>BLOCKED';
-                    statusLabel.className = 'flex items-center gap-2 text-red-400 font-mono text-xs uppercase bg-red-900/30 px-3 py-1 rounded-full border border-red-800';
-                    overlay.style.opacity = '1';
-                    avatar.classList.add('grayscale');
+                statusLabel.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span>BLOCKED';
+                statusLabel.className = 'flex items-center gap-2 text-red-400 font-mono text-xs uppercase bg-red-900/30 px-3 py-1 rounded-full border border-red-800';
+                overlay.style.opacity = '1';
+                avatar.classList.add('grayscale');
 
-                    // Simulate a blocking operation (Busy Wait)
-                    // Note: In real production we wouldn't actually block the thread because it ruins the demo UX (browser alert)
-                    // We will simulate the visual effects of blocking
-
-                    const start = Date.now();
-                    // While loop would block everything, including the GIF update.
-                    // To be visually instructive without crashing the user's browser tab, we simulate the "UI Unresponsive" state.
-
-                    setTimeout(() => {
-                        // Finished
-                        statusLabel.innerHTML = '<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>Running';
-                        statusLabel.className = 'flex items-center gap-2 text-green-400 font-mono text-xs uppercase bg-green-900/30 px-3 py-1 rounded-full border border-green-800';
-                        overlay.style.opacity = '0';
-                        avatar.classList.remove('grayscale');
-                        btn.classList.remove('cursor-not-allowed', 'opacity-80');
-                        progress.style.transition = 'none';
-                        progress.style.width = '0%';
-                    }, 3000);
-                });
-            });
-        }
-
-        function simulateAsync() {
-            const btn = document.getElementById('btn-async');
-            const spinner = document.getElementById('async-spinner');
-            const task = document.getElementById('async-task');
-
-            // UI Update (state change only, thread free)
-            btn.disabled = true;
-            btn.classList.add('opacity-80');
-            spinner.classList.remove('hidden');
-
-            // Show background task
-            task.style.opacity = '1';
-            task.style.transform = 'translateX(0)';
-
-            // Promise timeout
-            setTimeout(() => {
-                task.innerHTML = '<span>Connected! ✅</span>';
-                task.classList.replace('text-blue-100', 'text-green-100');
-                task.classList.replace('border-blue-500', 'border-green-500');
-                task.classList.replace('bg-blue-900', 'bg-green-900');
+                // Simulate a blocking operation (Busy Wait)
+                // Note: In real production we wouldn't actually block the thread because it ruins the demo UX (browser alert)
+                // We will simulate the visual effects of blocking
 
                 setTimeout(() => {
-                    // Reset
-                    btn.disabled = false;
-                    btn.classList.remove('opacity-80');
-                    spinner.classList.add('hidden');
+                    // Finished
+                    statusLabel.innerHTML = '<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>Running';
+                    statusLabel.className = 'flex items-center gap-2 text-green-400 font-mono text-xs uppercase bg-green-900/30 px-3 py-1 rounded-full border border-green-800';
+                    overlay.style.opacity = '0';
+                    avatar.classList.remove('grayscale');
+                    btn.classList.remove('cursor-not-allowed', 'opacity-80');
+                    progress.style.transition = 'none';
+                    progress.style.width = '0%';
+                }, 3000);
+            });
+        });
+    }
 
-                    task.style.opacity = '0';
-                    task.style.transform = 'translate-x-10';
+    function simulateAsync() {
+        const btn = document.getElementById('btn-async');
+        const spinner = document.getElementById('async-spinner');
+        const task = document.getElementById('async-task');
 
-                    // Reset task style after transition
-                    setTimeout(() => {
-                        task.innerHTML = '<span>BLE Connection...</span><div class="w-4 h-4 border-2 border-blue-300 border-t-transparent rounded-full animate-spin"></div>';
-                        task.className = 'absolute top-10 right-0 bg-blue-900 border border-blue-500 text-blue-100 px-4 py-2 rounded-lg text-sm font-mono opacity-0 transform translate-x-10 transition-all duration-500 flex items-center gap-3';
-                    }, 500);
+        // UI Update (state change only, thread free)
+        btn.disabled = true;
+        btn.classList.add('opacity-80');
+        spinner.classList.remove('hidden');
 
-                }, 1000);
-            }, 2000);
-        }
+        // Show background task
+        task.style.opacity = '1';
+        task.style.transform = 'translateX(0)';
 
-        // Clock logic
-        setInterval(() => {
+        // Promise timeout
+        setTimeout(() => {
+            task.innerHTML = '<span>Connected! ✅</span>';
+            task.classList.replace('text-blue-100', 'text-green-100');
+            task.classList.replace('border-blue-500', 'border-green-500');
+            task.classList.replace('bg-blue-900', 'bg-green-900');
+
+            setTimeout(() => {
+                // Reset
+                btn.disabled = false;
+                btn.classList.remove('opacity-80');
+                spinner.classList.add('hidden');
+
+                task.style.opacity = '0';
+                task.style.transform = 'translate-x-10';
+
+                // Reset task style after transition
+                setTimeout(() => {
+                    task.innerHTML = '<span>BLE Connection...</span><div class="w-4 h-4 border-2 border-blue-300 border-t-transparent rounded-full animate-spin"></div>';
+                    task.className = 'absolute top-10 right-0 bg-blue-900 border border-blue-500 text-blue-100 px-4 py-2 rounded-lg text-sm font-mono opacity-0 transform translate-x-10 transition-all duration-500 flex items-center gap-3';
+                }, 500);
+
+            }, 1000);
+        }, 2000);
+    }
+
+    // Clock logic
+    setInterval(() => {
+        const clock = document.getElementById('clock-display');
+        if (clock) {
             const now = new Date();
-            document.getElementById('clock-display').innerText = now.toLocaleTimeString();
-        }, 1000);
+            clock.innerText = now.toLocaleTimeString();
+        }
+    }, 1000);
 
+    // Define Resources
+    window.RESOURCES = {
+        video: "https://www.youtube.com/embed/d81d8eSU3EQ",
+        doc: "https://docs.google.com/document/d/e/2PACX-1vSOWL39uyJgCoRn_7zTie-Bf7RKr3wYtp2OnCCvWU0mbv3Ks1jUZ3A0LSWyzK7kBRG9lrOT2zZigM9W/pub?embedded=true"
+    };
 
-        // --- Media Overlay Logic ---
-        // Injected by course-shared.js?v=2026.04.05.FINAL_V6
-
-        // Define Resources
-        window.RESOURCES = {
-            video: "https://www.youtube.com/embed/d81d8eSU3EQ",
-            doc: "https://docs.google.com/document/d/e/2PACX-1vSOWL39uyJgCoRn_7zTie-Bf7RKr3wYtp2OnCCvWU0mbv3Ks1jUZ3A0LSWyzK7kBRG9lrOT2zZigM9W/pub?embedded=true"
-        };
-    </script>
-    <script src="/js/course-shared.js?v=2026.05.22.V27.START_UNITS_LAYOUT_UPGRADE"></script>
-
-    <!-- Assignment Guide (Hidden) -->
-    <section id="assignment-guide" style="display: none;">
-<div class="markdown-heading"><h1 class="heading-element">JavaScript 非同步編程：操作 BLE 的靈魂 (start-02-unit-ble-async)</h1><a id="user-content-javascript-非同步編程操作-ble-的靈魂-start-02-unit-ble-async" class="anchor" aria-label="Permalink: JavaScript 非同步編程：操作 BLE 的靈魂 (start-02-unit-ble-async)" href="#javascript-非同步編程操作-ble-的靈魂-start-02-unit-ble-async"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+    // Trigger Init
+    init();
+</script>
+<script src="/js/course-shared.js?v=2026.05.22.V27.START_UNITS_LAYOUT_UPGRADE"></script>
+<!-- Assignment Guide (Hidden) -->
+<section id="assignment-guide" style="display: none;">
+<div class="markdown-heading"><h1 class="heading-element">JavaScript 非同步編程：操作 BLE 的靈魂 (start-02-unit-ble-async)</h1><a aria-label="Permalink: JavaScript 非同步編程：操作 BLE 的靈魂 (start-02-unit-ble-async)" class="anchor" href="#javascript-非同步編程操作-ble-的靈魂-start-02-unit-ble-async" id="user-content-javascript-非同步編程操作-ble-的靈魂-start-02-unit-ble-async"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>歡迎來到 <strong>Start 02</strong> 單元！在這個練習中，你將學習如何使用 JavaScript 的非同步特性（<code>async/await</code>、<code>Promise</code>）來控制藍牙低功耗 (BLE) 裝置。</p>
 <p>在無線通訊的環境中，連線往往是不穩定的，且各項操作需要時間等待。掌握非同步流程控制，是開發穩定硬體互動介面的關鍵。</p>
-<div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2><a id="user-content--學習目標" class="anchor" aria-label="Permalink: 🎯 學習目標" href="#-學習目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2><a aria-label="Permalink: 🎯 學習目標" class="anchor" href="#-學習目標" id="user-content--學習目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ol>
 <li>
 <strong>非同步流程控制</strong>：熟練運用 <code>async/await</code> 處理 BLE 連線鏈。</li>
@@ -550,26 +1126,26 @@ navigator.bluetooth.requestDevice({...})
 <li>
 <strong>超時保護 (Timeout)</strong>：使用 <code>Promise.race</code> 實作連線超時處理，提升使用者體驗。</li>
 </ol>
-<div class="markdown-heading"><h2 class="heading-element">🚀 任務說明</h2><a id="user-content--任務說明" class="anchor" aria-label="Permalink: 🚀 任務說明" href="#-任務說明"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h3 class="heading-element">任務 1：「逐步點亮」狀態機實作</h3><a id="user-content-任務-1逐步點亮狀態機實作" class="anchor" aria-label="Permalink: 任務 1：「逐步點亮」狀態機實作" href="#任務-1逐步點亮狀態機實作"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">🚀 任務說明</h2><a aria-label="Permalink: 🚀 任務說明" class="anchor" href="#-任務說明" id="user-content--任務說明"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 1：「逐步點亮」狀態機實作</h3><a aria-label="Permalink: 任務 1：「逐步點亮」狀態機實作" class="anchor" href="#任務-1逐步點亮狀態機實作" id="user-content-任務-1逐步點亮狀態機實作"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>在 <code>ble-handler.js</code> 中實作連線邏輯，並在每個關鍵步驟（搜尋、連線、掃描服務）之間更新 <code>index.html</code> 中的進度條或狀態文字。</p>
 <ul>
 <li>
 <strong>關鍵點</strong>：確保在連線過程中將「連線」按鈕設為 <code>disabled</code>。</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">任務 2：處理並發與競爭條件</h3><a id="user-content-任務-2處理並發與競爭條件" class="anchor" aria-label="Permalink: 任務 2：處理並發與競爭條件" href="#任務-2處理並發與競爭條件"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 2：處理並發與競爭條件</h3><a aria-label="Permalink: 任務 2：處理並發與競爭條件" class="anchor" href="#任務-2處理並發與競爭條件" id="user-content-任務-2處理並發與競爭條件"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>當使用者快速連續點擊按鈕時，可能會發生 <code>GATT operation already in progress</code> 錯誤。請在 <code>ble-handler.js</code> 中使用 <code>isBusy</code> 旗標或 <code>try...finally</code> 結構來保護你的連線流程。</p>
 <ul>
 <li>
 <strong>關鍵點</strong>：無論連線成功或失敗，最後都必須釋放鎖定。</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">任務 3：非同步超時保護</h3><a id="user-content-任務-3非同步超時保護" class="anchor" aria-label="Permalink: 任務 3：非同步超時保護" href="#任務-3非同步超時保護"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 3：非同步超時保護</h3><a aria-label="Permalink: 任務 3：非同步超時保護" class="anchor" href="#任務-3非同步超時保護" id="user-content-任務-3非同步超時保護"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>實作一個超時機制。如果在 10 秒內無法完成連線，應主動取消等待並告知使用者「連線逾時」，而不是讓 UI 永久處於等待狀態。</p>
 <ul>
 <li>
 <strong>提示</strong>：可以使用 <code>Promise.race</code> 來達成此功能。</li>
 </ul>
-<div class="markdown-heading"><h2 class="heading-element">📂 程式庫結構</h2><a id="user-content--程式庫結構" class="anchor" aria-label="Permalink: 📂 程式庫結構" href="#-程式庫結構"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">📂 程式庫結構</h2><a aria-label="Permalink: 📂 程式庫結構" class="anchor" href="#-程式庫結構" id="user-content--程式庫結構"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <code>index.html</code>：包含進度條與狀態提示的控制面板。</li>
@@ -580,22 +1156,20 @@ navigator.bluetooth.requestDevice({...})
 <li>
 <code>assets/</code>：參考圖檔（如連線時序圖）。</li>
 </ul>
-<div class="markdown-heading"><h2 class="heading-element">📝 提交要求</h2><a id="user-content--提交要求" class="anchor" aria-label="Permalink: 📝 提交要求" href="#-提交要求"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">📝 提交要求</h2><a aria-label="Permalink: 📝 提交要求" class="anchor" href="#-提交要求" id="user-content--提交要求"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ol>
 <li>完成 <code>ble-handler.js</code> 中的 <code>TODO</code> 項目。</li>
 <li>確保你的 UI 在各種異常情況（如斷線、超時、拒絕連線）下都能正確恢復到初始狀態。</li>
 <li>在本程式庫的 <code>README.md</code> 下方簡短記錄：你是如何解決並發連線衝突的？</li>
 </ol>
-<hr>
+<hr/>
 <p><em>祝你在非同步編程的挑戰中取得成功！</em></p>
-
-    </section>
-
-    <!-- Tutor Guide (Hidden) -->
-    <section id="tutor-guide" style="display: none;">
+</section>
+<!-- Tutor Guide (Hidden) -->
+<section id="tutor-guide" style="display: none;">
 <p>針對 <strong><code>start-02-unit-ble-async</code> (JavaScript 非同步編程：操作 BLE 的靈魂)</strong> 單元，這是學員從「靜態頁面」跨入「動態硬體互動」的核心樞紐。它要求學員具備 <strong>非同步流控制 (Async Flow Control)</strong> 的意識，學習如何透過 <code>Promise</code> 與 <code>async/await</code> 駕馭藍牙連線的不確定性，並特別針對「連線狀態機」、「競爭條件 (Race Condition)」與「超時保護 (Timeout)」進行實戰，確保控制介面在高波動的無線環境下依然強韌穩定。</p>
 <p>以下是在 <strong>GitHub Classroom</strong> 部署其作業 (Assignments) 的具體建議：</p>
-<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repo) 配置建議</h3><a id="user-content-1-範本程式庫-template-repo-配置建議" class="anchor" aria-label="Permalink: 1. 範本程式庫 (Template Repo) 配置建議" href="#1-範本程式庫-template-repo-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repo) 配置建議</h3><a aria-label="Permalink: 1. 範本程式庫 (Template Repo) 配置建議" class="anchor" href="#1-範本程式庫-template-repo-配置建議" id="user-content-1-範本程式庫-template-repo-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>非同步作業的核心在於「時序處理與異常捕獲」，範本應包含通訊驅動程式框架與模擬環境，建議包含：</p>
 <ul>
 <li>
@@ -607,9 +1181,9 @@ navigator.bluetooth.requestDevice({...})
 <li>
 <strong>📂 <code>assets/</code></strong>：提供 Web BLE 的連線時序圖 (Sequence Diagram)，作為學員實作代碼的邏輯參考。</li>
 </ul>
-<hr>
-<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a id="user-content-2-作業任務部署細節" class="anchor" aria-label="Permalink: 2. 作業任務部署細節" href="#2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h4 class="heading-element">任務 1：「逐步點亮」狀態機實作 (Status Timeline Machine Lab)</h4><a id="user-content-任務-1逐步點亮狀態機實作-status-timeline-machine-lab" class="anchor" aria-label="Permalink: 任務 1：「逐步點亮」狀態機實作 (Status Timeline Machine Lab)" href="#任務-1逐步點亮狀態機實作-status-timeline-machine-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a aria-label="Permalink: 2. 作業任務部署細節" class="anchor" href="#2-作業任務部署細節" id="user-content-2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 1：「逐步點亮」狀態機實作 (Status Timeline Machine Lab)</h4><a aria-label="Permalink: 任務 1：「逐步點亮」狀態機實作 (Status Timeline Machine Lab)" class="anchor" href="#任務-1逐步點亮狀態機實作-status-timeline-machine-lab" id="user-content-任務-1逐步點亮狀態機實作-status-timeline-machine-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：透過非同步進度驅動 UI 更新，讓使用者隨時掌握「現在藍牙連線到哪一步了」。</li>
@@ -625,7 +1199,7 @@ navigator.bluetooth.requestDevice({...})
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 2：處理並發與競爭 (Race Condition Defense Lab)</h4><a id="user-content-任務-2處理並發與競爭-race-condition-defense-lab" class="anchor" aria-label="Permalink: 任務 2：處理並發與競爭 (Race Condition Defense Lab)" href="#任務-2處理並發與競爭-race-condition-defense-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 2：處理並發與競爭 (Race Condition Defense Lab)</h4><a aria-label="Permalink: 任務 2：處理並發與競爭 (Race Condition Defense Lab)" class="anchor" href="#任務-2處理並發與競爭-race-condition-defense-lab" id="user-content-任務-2處理並發與競爭-race-condition-defense-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：防止 GATT 作業重疊導致的系統崩潰。建立「單一執行路徑」的保護意識。</li>
@@ -641,7 +1215,7 @@ navigator.bluetooth.requestDevice({...})
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 3：不同步超時保護 (Async Timeout Recovery Lab)</h4><a id="user-content-任務-3不同步超時保護-async-timeout-recovery-lab" class="anchor" aria-label="Permalink: 任務 3：不同步超時保護 (Async Timeout Recovery Lab)" href="#任務-3不同步超時保護-async-timeout-recovery-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 3：不同步超時保護 (Async Timeout Recovery Lab)</h4><a aria-label="Permalink: 任務 3：不同步超時保護 (Async Timeout Recovery Lab)" class="anchor" href="#任務-3不同步超時保護-async-timeout-recovery-lab" id="user-content-任務-3不同步超時保護-async-timeout-recovery-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：解決「永久等待」的殭屍狀態。學會利用競速機制 (<code>Promise.race</code>) 主動奪回控制權。</li>
@@ -657,15 +1231,15 @@ navigator.bluetooth.requestDevice({...})
 </ul>
 </li>
 </ul>
-<hr>
-<div class="markdown-heading"><h3 class="heading-element">3. 非同步架構與可靠性點評標準 (Async Architecture &amp; Reliability Standards)</h3><a id="user-content-3-非同步架構與可靠性點評標準-async-architecture--reliability-standards" class="anchor" aria-label="Permalink: 3. 非同步架構與可靠性點評標準 (Async Architecture &amp; Reliability Standards)" href="#3-非同步架構與可靠性點評標準-async-architecture--reliability-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h3 class="heading-element">3. 非同步架構與可靠性點評標準 (Async Architecture &amp; Reliability Standards)</h3><a aria-label="Permalink: 3. 非同步架構與可靠性點評標準 (Async Architecture &amp; Reliability Standards)" class="anchor" href="#3-非同步架構與可靠性點評標準-async-architecture--reliability-standards" id="user-content-3-非同步架構與可靠性點評標準-async-architecture--reliability-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>此單元的價值在於 <strong>「對硬體延遲的容忍力與對軟體執行緒狀態的絕對掌控力」</strong>：</p>
 <ul>
 <li>[ ] <strong>捕捉完整性</strong>：<code>try...catch</code> 是否層層包裹，確保任何斷線或被拒絕都不會導致整個 JavaScript 執行緒崩潰？</li>
 <li>[ ] <strong>鎖定機制嚴謹性</strong>：旗標是否在連線成功與失敗（<code>finally</code> 區塊）都正確釋放？</li>
 <li>[ ] <strong>用戶體感流暢度</strong>：在非同步等待期間，畫面是否依然保有高頻率的 FPS 回饋？</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a id="user-content--推薦範本結構-github-classroom-template" class="anchor" aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" href="#-推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" class="anchor" href="#-推薦範本結構-github-classroom-template" id="user-content--推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <pre lang="text"><code>.
 ├── index.html           # 結構：具備連線進度條與狀態提示的控制面板
 ├── ble-handler.js       # 核心：練習 async/await 鏈接、Try-catch 與 Race 控制
@@ -677,8 +1251,6 @@ navigator.bluetooth.requestDevice({...})
 |
 |
 太熱血了！我們已經將 <strong>Start 02</strong>（JavaScript 核心）的第一個「靈魂單元」非同步編成了！這標誌著學員現在終於擁有了「跟機器人對話的時間感」。恭喜！通訊工程的底層邏輯已經全面佔領！</p>
-
-    </section>
+</section>
 </body>
-
 </html>

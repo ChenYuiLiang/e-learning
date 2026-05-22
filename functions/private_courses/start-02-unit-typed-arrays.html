@@ -1,495 +1,1149 @@
 <!DOCTYPE html>
+
 <html lang="zh-Hant">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>數據解析與類型化陣列 (Typed Arrays) - Vibe Coding</title>
-    <link rel="stylesheet" href="/style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>數據解析與類型化陣列 (Typed Arrays) - Vibe Coding</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css" rel="stylesheet"/>
+<style>
+        :root {
+            --ms-blue: #0078d4;
+            --ms-blue-dark: #005a9e;
+            --ms-blue-light: #deecf9;
+            --ms-gray-10: #f3f2f1;
+            --ms-gray-20: #e1dfdd;
+            --ms-gray-90: #201f1e;
+            --ms-green: #107c10;
+            --ms-red: #d13438;
+            --sidebar-w: 280px;
+        }
 
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fff;
+            color: #201f1e;
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* ─── TOP NAV ─── */
+        .ms-topnav {
+            background: var(--ms-blue);
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 4px rgba(0,0,0,.2);
+        }
+        .ms-topnav .brand {
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
+
+        /* ─── LAYOUT ─── */
+        .ms-layout { display: flex; min-height: calc(100vh - 48px); }
+
+        /* ─── SIDEBAR ─── */
+        .ms-sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            background: #faf9f8;
+            border-right: 1px solid #e1dfdd;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 48px;
+            height: calc(100vh - 48px);
+            overflow-y: auto;
+        }
+        .ms-sidebar-header {
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .ms-sidebar-header .module-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #605e5c;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .ms-sidebar-header .module-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #201f1e;
+            line-height: 1.4;
+        }
+        .ms-sidebar-header .meta {
+            font-size: 12px;
+            color: #605e5c;
+            margin-top: 6px;
+        }
+        .ms-unit-list { padding: 8px 0; }
+        .ms-unit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: background .12s, border-color .12s;
+            color: #201f1e;
+        }
+        .ms-unit-item:hover { background: #edebe9; }
+        .ms-unit-item.active {
+            border-left-color: var(--ms-blue);
+            background: #deecf9;
+        }
+        .ms-unit-item.active .unit-name { color: var(--ms-blue); font-weight: 600; }
+        .unit-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #c8c6c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            font-size: 10px;
+            background: #fff;
+        }
+        .unit-icon.done { background: var(--ms-green); border-color: var(--ms-green); color: #fff; }
+        .unit-icon.active-icon { border-color: var(--ms-blue); background: var(--ms-blue); color: #fff; }
+        .unit-meta { flex: 1; min-width: 0; }
+        .unit-name { font-size: 13px; line-height: 1.4; }
+        .unit-time { font-size: 11px; color: #605e5c; margin-top: 2px; }
+        .sidebar-progress {
+            padding: 12px 16px;
+            border-top: 1px solid #e1dfdd;
+            margin-top: auto;
+        }
+        .progress-bar-bg { background: #e1dfdd; border-radius: 4px; height: 6px; }
+        .progress-bar-fill { background: var(--ms-green); border-radius: 4px; height: 6px; transition: width .4s; }
+        .progress-text { font-size: 12px; color: #605e5c; margin-top: 6px; }
+
+        /* ─── MAIN ─── */
+        .ms-content { flex: 1; min-width: 0; }
+
+        .ms-breadcrumb {
+            padding: 10px 40px;
+            font-size: 12px;
+            color: #605e5c;
+            border-bottom: 1px solid #e1dfdd;
+            background: #fff;
+        }
+        .ms-breadcrumb a { color: var(--ms-blue); text-decoration: none; }
+        .ms-breadcrumb a:hover { text-decoration: underline; }
+        .ms-breadcrumb span { margin: 0 6px; }
+
+        /* ─── PAGES ─── */
+        .ms-unit-page { display: none; }
+        .ms-unit-page.visible { display: block; }
+
+        .unit-content {
+            max-width: 820px;
+            padding: 32px 40px 60px;
+            margin: 0 auto;
+        }
+
+        .unit-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .unit-completed-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #dff6dd;
+            color: #107c10;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 2px;
+        }
+        .unit-time-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #605e5c;
+            font-size: 13px;
+        }
+
+        /* Typography */
+        .unit-content h1 { font-size: 28px; font-weight: 700; margin: 0 0 20px; color: #201f1e; line-height: 1.3; }
+        .unit-content h2 { font-size: 20px; font-weight: 600; margin: 36px 0 12px; color: #201f1e; padding-top: 8px; }
+        .unit-content h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; color: #201f1e; }
+        .unit-content p { margin: 0 0 14px; }
+        .unit-content ul, .unit-content ol { margin: 0 0 14px; padding-left: 28px; }
+        .unit-content li { margin-bottom: 6px; }
+        .unit-content strong { font-weight: 600; }
+        .unit-content a { color: var(--ms-blue); text-decoration: none; }
+        .unit-content a:hover { text-decoration: underline; }
+        .unit-content code {
+            background: #f3f2f1;
+            border: 1px solid #e1dfdd;
+            border-radius: 3px;
+            padding: 1px 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #a31515;
+        }
+
+        /* Callouts */
+        .ms-note, .ms-tip, .ms-warning, .ms-important {
+            display: flex;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid;
+            font-size: 14px;
+        }
+        .ms-note { background: #deecf9; border-color: var(--ms-blue); }
+        .ms-note .note-icon { color: var(--ms-blue); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-tip { background: #dff6dd; border-color: var(--ms-green); }
+        .ms-tip .note-icon { color: var(--ms-green); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-warning { background: #fff4ce; border-color: #ffaa44; }
+        .ms-warning .note-icon { color: #ffaa44; font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-important { background: #fde7e9; border-color: var(--ms-red); }
+        .ms-important .note-icon { color: var(--ms-red); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .note-body strong { display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+
+        /* Scenario */
+        .ms-scenario {
+            background: #f3f2f1;
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #323130;
+            border-left: 4px solid #c8c6c4;
+        }
+        .ms-scenario-label {
+            font-style: normal;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #605e5c;
+            margin-bottom: 8px;
+        }
+
+        /* Steps */
+        .ms-steps { margin: 16px 0; }
+        .ms-step { display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start; }
+        .ms-step-num {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: var(--ms-blue); color: #fff;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .ms-step-body { flex: 1; }
+        .ms-step-body h4 { font-size: 14px; font-weight: 600; margin: 0 0 4px; }
+        .ms-step-body p { font-size: 14px; margin: 0; }
+
+        /* Compare grid */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .compare-card {
+            border: 1px solid #e1dfdd;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .compare-card-header {
+            padding: 12px 14px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .compare-card-body {
+            padding: 14px;
+            font-size: 13px;
+            color: #605e5c;
+            line-height: 1.5;
+        }
+
+        /* Buttons */
+        .ms-btn {
+            background: var(--ms-blue); color: #fff; border: none;
+            padding: 7px 18px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; transition: background .12s;
+            font-family: inherit;
+        }
+        .ms-btn:hover { background: var(--ms-blue-dark); }
+        .ms-btn-ghost {
+            background: transparent; color: var(--ms-blue);
+            border: 1px solid var(--ms-blue); padding: 6px 18px;
+            font-size: 14px; font-weight: 600; border-radius: 2px;
+            cursor: pointer; transition: background .12s; font-family: inherit;
+        }
+        .ms-btn-ghost:hover { background: var(--ms-blue-light); }
+
+        /* Nav */
+        .unit-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            border-top: 1px solid #e1dfdd;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .nav-btn-prev, .nav-btn-next {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 20px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; border: 1px solid;
+            font-family: inherit; transition: background .12s;
+        }
+        .nav-btn-next { background: var(--ms-blue); color: #fff; border-color: var(--ms-blue); }
+        .nav-btn-next:hover { background: var(--ms-blue-dark); border-color: var(--ms-blue-dark); }
+        .nav-btn-prev { background: #fff; color: var(--ms-blue); border-color: var(--ms-blue); }
+        .nav-btn-prev:hover { background: var(--ms-blue-light); }
+        .unit-page-indicator { font-size: 13px; color: #605e5c; }
+
+        /* Module index */
+        .module-meta-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        .ms-tag { background: #f3f2f1; color: #323130; font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: 500; }
+        .ms-tag.blue { background: #deecf9; color: var(--ms-blue-dark); }
+        .ms-tag.green { background: #dff6dd; color: #107c10; }
+        .unit-card-list { margin: 20px 0; }
+        .unit-card {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 0; border-bottom: 1px solid #f3f2f1; cursor: pointer;
+        }
+        .unit-card:last-child { border-bottom: none; }
+        .unit-card:hover .unit-card-name { color: var(--ms-blue); text-decoration: underline; }
+        .unit-card-num {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #f3f2f1; color: #605e5c;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .unit-card.lab .unit-card-num { background: #eef6ff; color: var(--ms-blue-dark); }
+        .unit-card-info { flex: 1; }
+        .unit-card-name { font-size: 15px; font-weight: 500; }
+        .unit-card-time { font-size: 12px; color: #605e5c; margin-top: 2px; }
+        .unit-card-arrow { color: #c8c6c4; font-size: 14px; }
+
+        /* Lab card */
+        .ms-lab-card {
+            background: linear-gradient(135deg, #eef6ff 0%, #f5f0ff 100%);
+            border: 1px solid #c7e0f4;
+            border-radius: 6px;
+            padding: 24px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: box-shadow .15s, border-color .15s;
+        }
+        .ms-lab-card:hover { box-shadow: 0 4px 16px rgba(0,120,212,.12); border-color: var(--ms-blue); }
+        .ms-lab-card h3 { margin: 0 0 12px; color: var(--ms-blue-dark); font-size: 16px; font-weight: 600; }
+        .ms-lab-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--ms-blue);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 12px;
+        }
+        .ms-lab-time {
+            font-size: 12px;
+            color: #605e5c;
+            margin-left: 8px;
+        }
+
+        /* Checklist */
+        .ms-checklist { list-style: none; padding: 0; margin: 12px 0; }
+        .ms-checklist li {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 6px 0; font-size: 14px;
+        }
+        .ms-checklist li .check-box {
+            width: 18px; height: 18px;
+            border: 2px solid #8a8886; border-radius: 2px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; margin-top: 1px; cursor: pointer; transition: all .15s;
+        }
+        .ms-checklist li .check-box.checked {
+            background: var(--ms-blue); border-color: var(--ms-blue); color: #fff;
+        }
+
+        /* Code block */
+        .ms-code {
+            background: #1e1e1e;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px 0;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-x: auto;
+        }
+        .ms-code .c-comment { color: #6a9955; }
+        .ms-code .c-str { color: #ce9178; }
+        .ms-code .c-kw { color: #569cd6; }
+        .ms-code .c-attr { color: #9cdcfe; }
+        .ms-code .c-val { color: #ce9178; }
+        .ms-code .c-tag { color: #4ec9b0; }
+        .ms-code .c-white { color: #d4d4d4; }
+
+        /* Resource links */
+        .ms-resource-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; text-decoration: none; color: #201f1e;
+            font-size: 14px; transition: background .1s;
+        }
+        .ms-resource-link:hover { background: #f3f2f1; }
+        .ms-resource-link i { color: var(--ms-blue); font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+
+        /* Achievement */
+        .ms-achievement {
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            color: #fff; border-radius: 6px; padding: 24px 28px;
+            margin: 24px 0; display: flex; align-items: center; gap: 20px;
+        }
+        .achievement-icon { font-size: 48px; flex-shrink: 0; }
+        .achievement-text h3 { margin: 0 0 4px; font-size: 18px; }
+        .achievement-text p { margin: 0; font-size: 14px; opacity: .9; }
+
+        @media (max-width: 768px) {
+            .ms-sidebar { display: none; }
+            .unit-content { padding: 20px 16px 40px; }
+            .unit-nav { padding: 16px; }
+            .ms-breadcrumb { padding: 8px 16px; }
+            .compare-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
-
-<body class="bg-gray-50 font-[Inter] text-gray-800 flex flex-col min-h-screen">
-
-    <!-- Hero Section -->
-    <header
-        class="relative bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 text-white pt-24 pb-32 overflow-hidden">
-        <div
-            class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1551288049-bbbda536339a?q=80&w=2940&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-overlay">
-        </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-gray-50 to-transparent bottom-0 h-16"></div>
-
-        <div class="container mx-auto px-4 relative z-10 text-center">
-            <div
-                class="badge-header inline-block px-4 py-1 rounded-full bg-purple-500/20 text-purple-200 border border-purple-400/30 backdrop-blur-sm mb-6 text-xs font-semibold tracking-wide uppercase font-[Outfit]">
-                Study 3: Data Parsing & Typed Arrays
-            </div>
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit]">
-                數據解析與<br>類型化陣列
-            </h1>
-            <p class="text-xl md:text-2xl text-purple-100 max-w-2xl mx-auto font-light leading-relaxed">
-                解鎖二進位資料的奧秘，掌握 Uint8Array 與 DataView，讓你的藍牙傳輸效率提升 10 倍。
-            </p>
-
-            <div class="mt-8 flex flex-wrap justify-center gap-4">
-                <button onclick="enterMediaMode('video', window.RESOURCES.youtube)"
-                    class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
-                    <span>📺</span> 觀看教學影片
-                </button>
-                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
-                    class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
-                    <span>📄</span> 閱讀課程講義
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <main class="container mx-auto max-w-6xl px-4 py-12 flex-grow">
-
-        <!-- Module 1: Intuitive Lab -->
-        <section class="content-block mb-24">
-            <div class="section-header-left border-l-4 border-cyan-500 pl-6 mb-10">
-                <span class="text-cyan-600 font-bold tracking-wider uppercase text-sm">Module 1: Intuitive Lab</span>
-                <h2 class="text-3xl font-bold text-gray-900 mt-2">傳輸效率大對決：JSON vs Binary</h2>
-            </div>
-
-            <div class="bg-white rounded-2xl p-8 shadow-xl border border-gray-100">
-                <p class="mb-8 text-gray-600 text-lg">
+<body>
+<!-- TOP NAV -->
+<nav class="ms-topnav">
+<a class="brand" href="#"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+<div class="divider"></div>
+<span class="nav-label">數據解析與類型化陣列 (Typed Arrays)</span>
+</nav>
+<div class="ms-layout">
+<!-- SIDEBAR -->
+<aside class="ms-sidebar">
+<div class="ms-sidebar-header">
+<div class="module-label">模組</div>
+<div class="module-title">數據解析與類型化陣列</div>
+<div class="meta"><i class="far fa-clock"></i> 約 3.5 小時 · 5 個單元</div>
+</div>
+<nav class="ms-unit-list" id="sidebar-nav"></nav>
+<div class="sidebar-progress">
+<div class="progress-bar-bg">
+<div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+</div>
+<div class="progress-text" id="progress-text">0 / 5 已完成</div>
+</div>
+</aside>
+<!-- MAIN -->
+<main class="ms-content">
+<div class="ms-breadcrumb">
+<a href="#">Vibe Coding</a><span>›</span>
+<a href="#">數據解析</a><span>›</span>
+<span id="bc-current">課程總覽</span>
+</div>
+<!-- ══════════ PAGE 0: INDEX ══════════ -->
+<div class="ms-unit-page visible" id="page-index">
+<div class="unit-content">
+<h1>數據解析與類型化陣列 (Typed Arrays)</h1>
+<div class="module-meta-tags">
+<span class="ms-tag">模組</span>
+<span class="ms-tag">5 個單元</span>
+<span class="ms-tag green">中階</span>
+<span class="ms-tag blue">二進位數據</span>
+<span class="ms-tag blue">類型化陣列</span>
+</div>
+<p>
+                    解鎖二進位資料的奧秘，掌握 Uint8Array 與 DataView，讓你的藍牙傳輸效率提升 10 倍。
+                </p>
+<h2>學習目標</h2>
+<p>完成本模組後，你將能夠：</p>
+<ul>
+<li>理解二進位與標籤化 JSON 數據的傳輸開銷，掌握如何藉由 Binary payload 節省頻寬與能耗。</li>
+<li>理解 <code>ArrayBuffer</code> 與 <code>TypedArray</code>（類型化陣列）的關係，戴上合適的「眼鏡」解讀底層記憶體區塊。</li>
+<li>掌握「位元組順序 (Endianness)」的本質，明白 Big-Endian 與 Little-Endian 在跨平台通訊時的解析差異。</li>
+<li>在 <code>parser.js</code> 中實作雙通道馬達控制速度（<code>0-255</code>）的指令封裝與數值邊界鉗位 (Clamping) 處理。</li>
+<li>實作感測器 16-bit 無號整數資料的解析，正確處理二進位資料的還原與跨平台端序轉換。</li>
+</ul>
+<h2>必要條件</h2>
+<ul>
+<li>已了解 JavaScript 變數與控制流程的基礎知識。</li>
+<li>已完成 Web BLE 二進位通訊之概念準備。</li>
+</ul>
+<h2>本模組單元</h2>
+<div class="unit-card-list" id="index-unit-list"></div>
+<div style="margin-top:32px;">
+<button class="ms-btn" onclick="goToUnit(1)">開始模組  ›</button>
+</div>
+</div>
+</div>
+<!-- ══════════ PAGE 1: 簡介 ══════════ -->
+<div class="ms-unit-page" id="page-1">
+<div class="unit-content">
+<div class="unit-status-bar">
+<div class="unit-completed-badge" id="badge-1" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+<div></div>
+<div class="unit-time-badge"><i class="far fa-clock"></i>  15 分鐘</div>
+</div>
+<h1>簡介</h1>
+<p>
+                    在網頁前端開發中，我們已經習慣了使用 <code>JSON</code> 或 <code>String</code> 來傳遞數據。
+                    然而，在物聯網與低功耗藍牙 (Web BLE) 的世界中，傳輸頻寬與能耗限制是極為關鍵的硬體指標。傳送一段 <code>"{"speed":100}"</code> 的 JSON 字串需要消耗 13 個位元組 (Bytes)，但實際上 <code>100</code> 這個數字只需要 1 個位元組就能完美表達。
+                </p>
+<p>
+                    類型化陣列 (Typed Arrays) 是 JavaScript 用於在網頁中存取原始二進位資料的底層 API。
+                    在本單元中，你將學習如何利用 <code>ArrayBuffer</code>、<code>Uint8Array</code> 與 <code>DataView</code> 直接在記憶體層面操作 Byte，寫出與微控制器 (MCU/ESP32) 無縫對接的高效通訊代碼。
+                </p>
+<h2>教學影片</h2>
+<div style="border-radius:4px; overflow:hidden; margin:20px 0; box-shadow:0 2px 8px rgba(0,0,0,.12); aspect-ratio:16/9;">
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" src="https://www.youtube.com/embed/r1FOWU14hJo" style="width:100%; height:100%; display:block; border:0;" title="數據解析與類型化陣列教學">
+</iframe>
+</div>
+</div>
+<div class="unit-nav">
+<button class="nav-btn-prev" onclick="goToUnit(0)">‹  總覽</button>
+<span class="unit-page-indicator">1 / 5</span>
+<button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元  ›</button>
+</div>
+</div>
+<!-- ══════════ PAGE 2: 傳輸效率大對決 ══════════ -->
+<div class="ms-unit-page" id="page-2">
+<div class="unit-content">
+<div class="unit-status-bar">
+<div class="unit-completed-badge" id="badge-2" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+<div></div>
+<div class="unit-time-badge"><i class="far fa-clock"></i>  30 分鐘</div>
+</div>
+<h1>傳輸效率大對決：JSON vs Binary</h1>
+<p>
                     藍牙傳輸為了省電與效率，我們不希望傳送冗長的字串。試著輸入一個速度值，比較 JSON 字串與原始二進位碼 (Binary) 的大小差異。
                 </p>
-
-                <div class="grid md:grid-cols-2 gap-12">
-                    <!-- Control Panel -->
-                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
-                        <label class="block text-slate-700 font-bold mb-2">輸入馬達速度 (0 - 255)</label>
-                        <div class="flex gap-4 items-center mb-6">
-                            <input type="range" id="speed-slider" min="0" max="255" value="100"
-                                class="flex-grow h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-cyan-500">
-                            <span id="speed-value"
-                                class="font-mono text-xl font-bold text-cyan-600 w-12 text-center">100</span>
-                        </div>
-
-                        <div class="text-sm text-slate-500 bg-white p-4 rounded border border-slate-200">
-                            <h4 class="font-bold text-slate-700 mb-2">情境模擬</h4>
-                            <p>你正在開發遙控車，如果你每秒發送 100 次控制指令...</p>
-                        </div>
-                    </div>
-
-                    <!-- Comparison Display -->
-                    <div class="flex flex-col gap-6">
-                        <!-- JSON View -->
-                        <div class="relative group">
-                            <div
-                                class="absolute -top-3 left-4 bg-pink-500 text-white text-xs font-bold px-2 py-0.5 rounded shadow">
+<div class="grid md:grid-cols-2 gap-8 my-6">
+<!-- Control Panel -->
+<div class="bg-slate-50 p-6 rounded-xl border border-slate-200 flex flex-col justify-between">
+<div>
+<label class="block text-slate-700 font-bold mb-2 text-sm">輸入馬達速度 (0 - 255)</label>
+<div class="flex gap-4 items-center mb-6">
+<input class="flex-grow h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-cyan-500" id="speed-slider" max="255" min="0" type="range" value="100"/>
+<span class="font-mono text-xl font-bold text-cyan-600 w-12 text-center" id="speed-value">100</span>
+</div>
+</div>
+<div class="text-xs text-slate-500 bg-white p-4 rounded border border-slate-200">
+<h4 class="font-bold text-slate-700 mb-1.5">情境模擬</h4>
+<p class="leading-relaxed">你正在開發遙控車，如果你每秒發送 100 次控制指令...</p>
+</div>
+</div>
+<!-- Comparison Display -->
+<div class="flex flex-col gap-6">
+<!-- JSON View -->
+<div class="relative pt-3">
+<div class="absolute top-0 left-4 bg-pink-500 text-white text-xs font-bold px-2 py-0.5 rounded shadow z-10">
                                 字串 (JSON)</div>
-                            <div
-                                class="bg-slate-800 text-white p-4 rounded-lg font-mono text-lg shadow-md border-l-4 border-pink-500">
-                                <span class="text-pink-300">{</span><span class="text-green-300">"speed"</span><span
-                                    class="text-pink-300">:</span> <span id="json-val"
-                                    class="text-yellow-300">100</span><span class="text-pink-300">}</span>
+<div class="bg-slate-800 text-white p-4 rounded-lg font-mono text-base shadow-md border-l-4 border-pink-500">
+<span class="text-pink-300">{</span><span class="text-green-300">"speed"</span><span class="text-pink-300">:</span> <span class="text-yellow-300" id="json-val">100</span><span class="text-pink-300">}</span>
+</div>
+<div class="mt-1 text-right text-xs text-slate-500 font-bold">
+                                Size: <span class="text-pink-600 text-sm" id="json-size">13</span> bytes
                             </div>
-                            <div class="mt-2 text-right text-sm text-slate-500 font-bold">
-                                Size: <span id="json-size" class="text-pink-600 text-lg">13</span> bytes
-                            </div>
-                        </div>
-
-                        <!-- Binary View -->
-                        <div class="relative group">
-                            <div
-                                class="absolute -top-3 left-4 bg-cyan-500 text-white text-xs font-bold px-2 py-0.5 rounded shadow">
+</div>
+<!-- Binary View -->
+<div class="relative pt-3">
+<div class="absolute top-0 left-4 bg-cyan-500 text-white text-xs font-bold px-2 py-0.5 rounded shadow z-10">
                                 二進位 (Binary)</div>
-                            <div
-                                class="bg-slate-800 text-white p-4 rounded-lg font-mono text-lg shadow-md border-l-4 border-cyan-500 flex items-center gap-4">
-                                <div class="flex flex-col items-center">
-                                    <span class="text-xs text-slate-400 mb-1">Index 0</span>
-                                    <div id="bin-val"
-                                        class="w-12 h-12 bg-cyan-900 border border-cyan-500 rounded flex items-center justify-center text-cyan-300 font-bold shadow-[0_0_15px_rgba(6,182,212,0.5)]">
+<div class="bg-slate-800 text-white p-4 rounded-lg font-mono text-base shadow-md border-l-4 border-cyan-500 flex items-center gap-4">
+<div class="flex flex-col items-center">
+<span class="text-[10px] text-slate-400 mb-1">Index 0</span>
+<div class="w-12 h-12 bg-cyan-900 border border-cyan-500 rounded flex items-center justify-center text-cyan-300 font-bold shadow-[0_0_15px_rgba(6,182,212,0.5)] transition-all" id="bin-val">
                                         0x64
                                     </div>
-                                </div>
-                                <span class="text-slate-500 text-sm italic"><- 僅僅一個 Byte!</span>
+</div>
+<span class="text-slate-400 text-xs italic">&lt;- 僅僅一個 Byte!</span>
+</div>
+<div class="mt-1 text-right text-xs text-slate-500 font-bold">
+                                Size: <span class="text-cyan-600 text-sm">1</span> byte
                             </div>
-                            <div class="mt-2 text-right text-sm text-slate-500 font-bold">
-                                Size: <span class="text-cyan-600 text-lg">1</span> byte
+</div>
+</div>
+</div>
+</div>
+<div class="unit-nav">
+<button class="nav-btn-prev" onclick="goToUnit(1)">‹  上一個單元</button>
+<span class="unit-page-indicator">2 / 5</span>
+<button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元  ›</button>
+</div>
+</div>
+<!-- ══════════ PAGE 3: ArrayBuffer 與位元組順序 ══════════ -->
+<div class="ms-unit-page" id="page-3">
+<div class="unit-content">
+<div class="unit-status-bar">
+<div class="unit-completed-badge" id="badge-3" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+<div></div>
+<div class="unit-time-badge"><i class="far fa-clock"></i>  60 分鐘</div>
+</div>
+<h1>透視 ArrayBuffer 與位元組順序 (Endianness)</h1>
+<div class="grid lg:grid-cols-2 gap-8 my-6">
+<!-- Concept 1: The Glasses -->
+<div class="space-y-6">
+<h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+<span class="bg-indigo-100 p-2 rounded-lg text-indigo-600">👓</span> 類型化陣列是你的眼鏡
+                        </h3>
+<p class="text-gray-600 leading-relaxed text-sm">
+<b>ArrayBuffer</b> 是一塊原始的記憶體空間，裡面只有 0 和 1。我們無法直接操作它，必須戴上不同度數的「眼鏡」——也就是 <b>Typed Array</b> (如 Uint8Array, Int16Array) 才能解讀其中的意義。
+                        </p>
+<div class="bg-white p-5 rounded-xl shadow border border-gray-100">
+<div class="flex justify-between text-xs text-gray-500 mb-2 font-mono">
+<span>Memory (ArrayBuffer)</span>
+<span>0x00 - 0x03</span>
+</div>
+<!-- Visual Memory Block -->
+<div class="flex border-2 border-slate-300 rounded overflow-hidden mb-6">
+<div class="flex-1 h-12 bg-slate-200 border-r border-slate-300 flex items-center justify-center font-mono text-slate-400 text-xs" id="mem-0">11111111</div>
+<div class="flex-1 h-12 bg-slate-200 border-r border-slate-300 flex items-center justify-center font-mono text-slate-400 text-xs" id="mem-1">11111111</div>
+<div class="flex-1 h-12 bg-slate-200 border-r border-slate-300 flex items-center justify-center font-mono text-slate-400 text-xs" id="mem-2">00000000</div>
+<div class="flex-1 h-12 bg-slate-200 flex items-center justify-center font-mono text-slate-400 text-xs" id="mem-3">00000000</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 py-2 rounded border border-indigo-200 bg-indigo-50 text-indigo-700 font-bold hover:bg-indigo-100 transition text-sm" onclick="changeView('uint8')">Uint8Array</button>
+<button class="flex-1 py-2 rounded border border-purple-200 bg-purple-50 text-purple-700 font-bold hover:bg-purple-100 transition text-sm" onclick="changeView('int16')">Int16Array</button>
+</div>
+<div class="mt-4 p-3 bg-indigo-50 text-indigo-800 rounded font-mono text-xs leading-relaxed border border-indigo-200" id="view-explanation">
+                                Uint8Array: 每個格子被視為獨立的 1 Byte 整數 (0-255)。
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Module 2: Core Principles -->
-        <section class="content-block mb-24">
-            <div class="section-header-left border-l-4 border-indigo-500 pl-6 mb-10">
-                <span class="text-indigo-600 font-bold tracking-wider uppercase text-sm">Module 2: Core
-                    Principles</span>
-                <h2 class="text-3xl font-bold text-gray-900 mt-2">透視 ArrayBuffer 與位元組順序 (Endianness)</h2>
-            </div>
-
-            <div class="grid lg:grid-cols-2 gap-12">
-                <!-- Concept 1: The Glasses -->
-                <div class="space-y-6">
-                    <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                        <span class="bg-indigo-100 p-2 rounded-lg text-indigo-600">👓</span> 類型化陣列是你的眼鏡
-                    </h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        <b>ArrayBuffer</b> 是一塊原始的記憶體空間，裡面只有 0 和 1。我們無法直接操作它，必須戴上不同度數的「眼鏡」——也就是 <b>Typed Array</b> (如
-                        Uint8Array, Int16Array) 才能解讀其中的意義。
-                    </p>
-
-                    <div class="bg-white p-6 rounded-xl shadow border border-gray-100">
-                        <div class="flex justify-between text-sm text-gray-500 mb-2 font-mono">
-                            <span>Memory (ArrayBuffer)</span>
-                            <span>0x00 - 0x03</span>
-                        </div>
-                        <!-- Visual Memory Block -->
-                        <div class="flex border-2 border-slate-300 rounded overflow-hidden mb-6">
-                            <div class="flex-1 h-12 bg-slate-200 border-r border-slate-300 flex items-center justify-center font-mono text-slate-400"
-                                id="mem-0">11111111</div>
-                            <div class="flex-1 h-12 bg-slate-200 border-r border-slate-300 flex items-center justify-center font-mono text-slate-400"
-                                id="mem-1">11111111</div>
-                            <div class="flex-1 h-12 bg-slate-200 border-r border-slate-300 flex items-center justify-center font-mono text-slate-400"
-                                id="mem-2">00000000</div>
-                            <div class="flex-1 h-12 bg-slate-200 flex items-center justify-center font-mono text-slate-400"
-                                id="mem-3">00000000</div>
-                        </div>
-
-                        <div class="flex gap-2">
-                            <button onclick="changeView('uint8')"
-                                class="flex-1 py-2 rounded border border-indigo-200 bg-indigo-50 text-indigo-700 font-bold hover:bg-indigo-100 transition">Uint8Array</button>
-                            <button onclick="changeView('int16')"
-                                class="flex-1 py-2 rounded border border-purple-200 bg-purple-50 text-purple-700 font-bold hover:bg-purple-100 transition">Int16Array</button>
-                        </div>
-                        <div id="view-explanation"
-                            class="mt-4 p-3 bg-indigo-50 text-indigo-800 rounded font-mono text-sm">
-                            每個格子被視為獨立的數字 (0-255)。
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Concept 2: Endianness -->
-                <div class="space-y-6">
-                    <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                        <span class="bg-pink-100 p-2 rounded-lg text-pink-600">⇄</span> 位元組順序 (Endianness)
-                    </h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        當數字超過 8 bits (例如 1000 = 0x03E8) 時，它需要佔用兩個位置。先放高位 (0x03) 還是低位 (0xE8)？這就是 <b>Big-Endian</b> 與
-                        <b>Little-Endian</b> 的差異。
-                    </p>
-
-                    <div class="bg-slate-900 p-6 rounded-xl shadow-lg text-white font-mono relative overflow-hidden">
-                        <div class="absolute top-0 right-0 p-2 opacity-20 text-6xl font-bold">FE</div>
-
-                        <div class="mb-4">
-                            <span class="text-gray-400">數值：</span> <span
-                                class="text-yellow-400 text-xl font-bold">1000</span> <span
-                                class="text-gray-500">(0x03E8)</span>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4">
-                            <!-- Big Endian -->
-                            <div class="border border-slate-600 rounded p-3 bg-slate-800">
-                                <div class="text-xs text-gray-400 mb-2 text-center">Big-Endian (網路標準)</div>
-                                <div class="flex justify-center gap-1">
-                                    <div
-                                        class="w-10 h-10 border border-green-500 bg-green-900/40 flex items-center justify-center rounded">
-                                        03</div>
-                                    <div
-                                        class="w-10 h-10 border border-green-500 bg-green-900/40 flex items-center justify-center rounded">
-                                        E8</div>
-                                </div>
-                                <div class="text-center mt-2 text-xs text-green-400">符合人類閱讀順序</div>
+</div>
+</div>
+<!-- Concept 2: Endianness -->
+<div class="space-y-6">
+<h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+<span class="bg-pink-100 p-2 rounded-lg text-pink-600">⇄</span> 位元組順序 (Endianness)
+                        </h3>
+<p class="text-gray-600 leading-relaxed text-sm">
+                            當數字超過 8 bits (例如 1000 = 0x03E8) 時，它需要佔用兩個位置。先放高位 (0x03) 還是低位 (0xE8)？這就是 <b>Big-Endian</b> 與 <b>Little-Endian</b> 的差異。
+                        </p>
+<div class="bg-slate-900 p-5 rounded-xl shadow-lg text-white font-mono relative overflow-hidden text-xs">
+<div class="absolute top-0 right-0 p-2 opacity-10 text-5xl font-bold">FE</div>
+<div class="mb-4">
+<span class="text-gray-400">數值：</span> <span class="text-yellow-400 text-base font-bold">1000</span> <span class="text-gray-500">(0x03E8)</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<!-- Big Endian -->
+<div class="border border-slate-600 rounded p-3 bg-slate-800">
+<div class="text-[10px] text-gray-400 mb-2 text-center">Big-Endian (網路標準)</div>
+<div class="flex justify-center gap-1">
+<div class="w-10 h-10 border border-green-500 bg-green-900/40 flex items-center justify-center rounded text-sm font-bold">
+                                            03</div>
+<div class="w-10 h-10 border border-green-500 bg-green-900/40 flex items-center justify-center rounded text-sm font-bold">
+                                            E8</div>
+</div>
+<div class="text-center mt-2 text-[10px] text-green-400">符合人類閱讀順序</div>
+</div>
+<!-- Little Endian -->
+<div class="border border-slate-600 rounded p-3 bg-slate-800">
+<div class="text-[10px] text-gray-400 mb-2 text-center">Little-Endian (Intel/ARM)</div>
+<div class="flex justify-center gap-1">
+<div class="w-10 h-10 border border-red-500 bg-red-900/40 flex items-center justify-center rounded text-sm font-bold">
+                                            E8</div>
+<div class="w-10 h-10 border border-red-500 bg-red-900/40 flex items-center justify-center rounded text-sm font-bold">
+                                            03</div>
+</div>
+<div class="text-center mt-2 text-[10px] text-red-400">低位在前</div>
+</div>
+</div>
+<div class="mt-4 text-xs text-gray-300 bg-slate-800 p-2.5 rounded border-l-2 border-yellow-500 leading-relaxed">
+<strong>注意：</strong> DataView 預設是大端序，但 Web Assembly (WASM) 與多數微處理器是小端序。使用 <code>getUint16(0, true)</code> 中的 true 來開啟小端模式。
                             </div>
-
-                            <!-- Little Endian -->
-                            <div class="border border-slate-600 rounded p-3 bg-slate-800">
-                                <div class="text-xs text-gray-400 mb-2 text-center">Little-Endian (Intel/ARM)</div>
-                                <div class="flex justify-center gap-1">
-                                    <div
-                                        class="w-10 h-10 border border-red-500 bg-red-900/40 flex items-center justify-center rounded">
-                                        E8</div>
-                                    <div
-                                        class="w-10 h-10 border border-red-500 bg-red-900/40 flex items-center justify-center rounded">
-                                        03</div>
-                                </div>
-                                <div class="text-center mt-2 text-xs text-red-400">低位在前</div>
-                            </div>
-                        </div>
-
-                        <div class="mt-4 text-sm text-gray-300 bg-slate-800 p-2 rounded border-l-2 border-yellow-500">
-                            <strong>注意：</strong> DataView 預設是大端序，但 Web Assembly (WASM) 與多數微處理器是小端序。使用
-                            <code>getUint16(0, true)</code> 中的 true 來開啟小端模式。
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Module 3: Practical Challenge -->
-        <section class="content-block mb-12">
-            <div class="section-header-left border-l-4 border-emerald-500 pl-6 mb-10">
-                <span class="text-emerald-600 font-bold tracking-wider uppercase text-sm">Module 3: Practical
-                    Challenge</span>
-                <h2 class="text-3xl font-bold text-gray-900 mt-2">實戰：封裝與解碼</h2>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Task 1: Command Encoder -->
-                <div onclick="openSubmissionModal('typed-arrays-task-1', '作業 3-1: 馬達指令封裝')"
-                    class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden cursor-pointer relative group transition-all hover:shadow-2xl">
-                    <div class="bg-emerald-500 text-white px-6 py-4 flex justify-between items-center">
-                        <h3 class="font-bold text-lg">作業 3-1: 馬達指令封裝</h3>
-                        <span class="text-emerald-100 text-sm font-mono">Uint8Array(2)</span>
-                    </div>
-                    <div class="p-6">
-                        <div onclick="event.stopPropagation()" class="cursor-auto">
-                            <p class="text-gray-600 text-sm mb-6">
-                                請拖動滑桿控制左右輪速度，觀察數據如何被「打包」進 ArrayBuffer。最後產生出的 Hex Code 就是我們要透過 BLE 發送的 payload。
+</div>
+</div>
+</div>
+</div>
+<div class="unit-nav">
+<button class="nav-btn-prev" onclick="goToUnit(2)">‹  上一個單元</button>
+<span class="unit-page-indicator">3 / 5</span>
+<button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元  ›</button>
+</div>
+</div>
+<!-- ══════════ PAGE 4: 實戰封裝與解碼 ══════════ -->
+<div class="ms-unit-page" id="page-4">
+<div class="unit-content">
+<div class="unit-status-bar">
+<div class="unit-completed-badge" id="badge-4" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+<div></div>
+<div class="unit-time-badge"><i class="far fa-clock"></i>  165 分鐘</div>
+</div>
+<h1>實戰：封裝與解碼</h1>
+<p>請動手完成以下兩項實作任務，完成後請點擊卡片繳交作業。</p>
+<div class="lab-cards-group space-y-6">
+<!-- Task 3-1 -->
+<div class="ms-lab-card" onclick="openSubmissionModal('typed-arrays-task-1', '作業 3-1: 馬達指令封裝')">
+<div class="ms-lab-badge"><i class="fas fa-motorcycle"></i>  作業 3-1</div>
+<span class="ms-lab-time"><i class="far fa-clock"></i> 約 80 分鐘</span>
+<h3>雙通道馬達指令封裝</h3>
+<p style="font-size:14px; color:#323130; margin-bottom:14px;">
+                            請在 <code>parser.js</code> 建立函式，將左右輪的速度指令封裝為硬體可理解的 2-byte Payload，並掌握 Uint8 範圍限制與索引順序。
+                        </p>
+<div class="bg-white p-5 rounded-lg border border-gray-200 mb-4 cursor-auto" onclick="event.stopPropagation()">
+<p class="text-gray-500 text-xs mb-4">
+                                拖動滑桿調整左右輪速度，觀察數據如何被寫入二進位緩衝區，並即時產出 Hex Payload。
                             </p>
+<div class="space-y-4 mb-4 text-xs">
+<!-- Left Motor -->
+<div>
+<div class="flex justify-between mb-1">
+<span class="font-bold text-gray-600">Left Motor (Index 0)</span>
+<span class="font-bold text-emerald-600" id="left-val">0</span>
+</div>
+<input class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-emerald-500" id="left-slider" max="255" min="0" type="range" value="0"/>
+</div>
+<!-- Right Motor -->
+<div>
+<div class="flex justify-between mb-1">
+<span class="font-bold text-gray-600">Right Motor (Index 1)</span>
+<span class="font-bold text-emerald-600" id="right-val">0</span>
+</div>
+<input class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-emerald-500" id="right-slider" max="255" min="0" type="range" value="0"/>
+</div>
+</div>
+<div class="bg-gray-900 p-3 rounded-lg flex items-center justify-between">
+<span class="text-xs text-gray-400 font-mono">Payload Preview (Hex)</span>
+<div class="flex gap-1.5 font-mono text-sm text-white">
+<span class="px-2 py-0.5 bg-gray-800 rounded border border-gray-700 min-w-[2.2rem] text-center" id="hex-0">00</span>
+<span class="px-2 py-0.5 bg-gray-800 rounded border border-gray-700 min-w-[2.2rem] text-center" id="hex-1">00</span>
+</div>
+</div>
+</div>
+<ul class="ms-checklist">
+<li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>在 <code>parser.js</code> 中實作 <code>encodeMotorSpeed()</code> 函式</span></li>
+<li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>實作「鉗位 (Clamping)」保護邏輯，處理輸入負數或大於 255 的例外數值</span></li>
+<li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>在偵錯介面拖動滑桿，驗證輸出 Hex 是否符合預期</span></li>
+</ul>
+<div class="mt-auto pt-4 border-t border-gray-100/50">
+<p class="text-xs text-gray-400 font-bold uppercase mb-1">Challenge</p>
+<p class="text-sm text-gray-500">若輸入馬達速度為負數 (e.g. -50)，你的 Clamping 機制是否能將其正確鉗位為 0？</p>
+</div>
+</div>
+<!-- Task 3-2 -->
+<div class="ms-lab-card" onclick="openSubmissionModal('typed-arrays-task-2', '作業 3-2: 感測器數據解碼')">
+<div class="ms-lab-badge"><i class="fas fa-microchip"></i>  作業 3-2</div>
+<span class="ms-lab-time"><i class="far fa-clock"></i> 約 85 分鐘</span>
+<h3>還原感測器的 16-bit 數值</h3>
+<p style="font-size:14px; color:#323130; margin-bottom:14px;">
+                            請練習使用 <code>DataView</code> 解密跨平台通訊的端序陷阱，將一個 2-byte 的十六進位值還原成十進位整數。
+                        </p>
+<div class="bg-white p-5 rounded-lg border border-gray-200 mb-4 cursor-auto text-xs" onclick="event.stopPropagation()">
+<div class="flex gap-2 items-center mb-4 bg-purple-50 p-3 rounded border border-purple-100">
+<span class="font-bold text-purple-800">收到數據 (Hex):</span>
+<input class="font-mono text-center w-20 p-0.5 border border-purple-300 rounded focus:outline-none focus:border-purple-500 text-purple-700 font-bold uppercase" id="decoder-hex-input" type="text" value="03 E8"/>
+<button class="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded font-bold transition ml-auto" onclick="decodeHex()">
+                                    解碼
+                                </button>
+</div>
+<div class="flex justify-between items-center border border-gray-100 p-2.5 rounded bg-gray-50 mb-3">
+<span class="text-gray-600 font-bold">解碼結果 (Distance):</span>
+<span class="text-lg font-bold text-gray-800" id="decode-result">--</span>
+</div>
+</div>
+<ul class="ms-checklist">
+<li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>在 <code>parser.js</code> 中實作 <code>decodeSensorData()</code> 函式</span></li>
+<li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>利用 <code>DataView</code> 讀取 2-byte ArrayBuffer</span></li>
+<li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>驗證對於大端序與小端序的解析，排除跨平台相容性之位元順序問題</span></li>
+</ul>
+<div class="mt-auto pt-4 border-t border-gray-200/50">
+<p class="text-xs text-gray-400 font-bold uppercase mb-1">Impact</p>
+<p class="text-sm text-gray-500">大端序 0x03E8 代表 1000mm。如果在小端序解碼，會變成什麼？</p>
+</div>
+</div>
+</div>
+</div>
+<div class="unit-nav">
+<button class="nav-btn-prev" onclick="goToUnit(3)">‹  上一個單元</button>
+<span class="unit-page-indicator">4 / 5</span>
+<button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元  ›</button>
+</div>
+</div>
+<!-- ══════════ PAGE 5: 摘要與資源 ══════════ -->
+<div class="ms-unit-page" id="page-5">
+<div class="unit-content">
+<div class="unit-status-bar">
+<div class="unit-completed-badge" id="badge-5" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+<div></div>
+<div class="unit-time-badge"><i class="far fa-clock"></i>  15 分鐘</div>
+</div>
+<h1>摘要與資源</h1>
+<p>
+                    恭喜！你已經完成了「數據解析與類型化陣列」模組。
+                    我們成功地從「標籤化數據 (JSON)」邁向了「記憶體級操作 (Binary)」，這是一個極為重要的底層通訊與硬體整合的技術轉折點。
+                </p>
+<div class="ms-achievement">
+<div class="achievement-icon">🚀</div>
+<div class="achievement-text">
+<h3>恭喜！你已完成本模組</h3>
+<p>你已具備操作 ArrayBuffer、DataView 與處理跨平台端序的硬核實力。繼續保持，邁向更高境界！</p>
+</div>
+</div>
+<h2>完成本模組後，你已學會：</h2>
+<ul>
+<li>利用 <strong>ArrayBuffer</strong> 直接分配並操作原始記憶體空間。</li>
+<li>使用不同的 <strong>TypedArray 眼鏡</strong>（如 Uint8Array）解讀相同的記憶體二進位碼。</li>
+<li>了解 <strong>JSON vs Binary</strong> 傳輸效率，二進位能為藍牙傳輸省下 10 倍以上的封包空間。</li>
+<li>在 <code>DataView</code> 中靈活運用位元讀取，處理 <strong>位元組順序 (Endianness)</strong> 的跨硬體相容性。</li>
+<li>在 JavaScript 中實作 Clamping (鉗位) 來維護數值邊界安全性。</li>
+</ul>
+<h2>延伸學習資源</h2>
+<a class="ms-resource-link" href="https://www.youtube.com/watch?v=r1FOWU14hJo" target="_blank">
+<i class="fab fa-youtube" style="color:#ff0000;"></i>
+<div>
+<div style="font-weight:600;">課程教學影片</div>
+<div style="font-size:12px; color:#605e5c; margin-top:2px;">YouTube — 數據解析與類型化陣列完整實作教學</div>
+</div>
+<i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+</a>
+<a class="ms-resource-link" href="https://docs.google.com/document/d/e/2PACX-1vTYg0tCOtK-qq1aFtWtAQ0PXZYfsrYQHr9Yd_B2CO66rRoqrOywpL1ci-J1fW-uLPDIPA8ldlTJeAN8/pub?embedded=true" target="_blank">
+<i class="fas fa-file-alt"></i>
+<div>
+<div style="font-weight:600;">課程完整講義</div>
+<div style="font-size:12px; color:#605e5c; margin-top:2px;">Google Docs — 詳細 ArrayBuffer, Typed Arrays 與 Endianness 原理講義</div>
+</div>
+<i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+</a>
+<a class="ms-resource-link" href="https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Guide/Typed_arrays" target="_blank">
+<i class="fas fa-book"></i>
+<div>
+<div style="font-weight:600;">MDN Web Docs — 類型化陣列 (Typed Arrays)</div>
+<div style="font-size:12px; color:#605e5c; margin-top:2px;">developer.mozilla.org — JavaScript 類型化陣列與底層緩衝區指南</div>
+</div>
+<i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+</a>
+<a class="ms-resource-link" href="https://classroom.github.com" target="_blank">
+<i class="fab fa-github"></i>
+<div>
+<div style="font-weight:600;">GitHub Classroom</div>
+<div style="font-size:12px; color:#605e5c; margin-top:2px;">classroom.github.com — 繳交數據解析作業並查看自動評估單元測試結果</div>
+</div>
+<i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+</a>
+</div>
+<div class="unit-nav">
+<button class="nav-btn-prev" onclick="goToUnit(4)">‹  上一個單元</button>
+<span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
+<button class="ms-btn" onclick="markDone(5); alert('🎉 恭喜完成「數據解析與類型化陣列」模組！')">完成模組</button>
+</div>
+</div>
+<footer style="background:#faf9f8; border-top:1px solid #e1dfdd; padding:24px 40px; text-align:center; font-size:12px; color:#605e5c; margin-top:40px;">
+            © 2025 Vibe Coding. All rights reserved.
+        </footer>
+</main>
+</div>
+<script>
+    /* ─── DATA ─── */
+    const UNITS = [
+        { id: 0, label: '課程總覽',       time: '',         type: 'index' },
+        { id: 1, label: '簡介',            time: '15 分鐘',  type: 'unit'  },
+        { id: 2, label: '傳輸效率大對決',  time: '30 分鐘',  type: 'unit'  },
+        { id: 3, label: 'ArrayBuffer 與位元組順序', time: '60 分鐘',  type: 'unit'  },
+        { id: 4, label: '實戰封裝與解碼',   time: '165 分鐘', type: 'lab'   },
+        { id: 5, label: '摘要與資源',      time: '15 分鐘',  type: 'unit'  },
+    ];
 
-                            <div class="space-y-6 mb-6">
-                                <!-- Left Motor -->
-                                <div>
-                                    <div class="flex justify-between mb-1">
-                                        <label class="text-xs font-bold text-gray-500 uppercase">Left Motor</label>
-                                        <span id="left-val" class="text-xs font-bold text-emerald-600">0</span>
-                                    </div>
-                                    <input type="range" id="left-slider" min="0" max="255" value="0"
-                                        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-emerald-500">
-                                </div>
+    let currentUnit = 0;
+    let doneSet = new Set();
 
-                                <!-- Right Motor -->
-                                <div>
-                                    <div class="flex justify-between mb-1">
-                                        <label class="text-xs font-bold text-gray-500 uppercase">Right Motor</label>
-                                        <span id="right-val" class="text-xs font-bold text-emerald-600">0</span>
-                                    </div>
-                                    <input type="range" id="right-slider" min="0" max="255" value="0"
-                                        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-emerald-500">
-                                </div>
-                            </div>
+    /* ─── INIT ─── */
+    /**
+     * 初始化課程單元導覽、登錄 Highlight.js 並預設運行各項互動元件之初狀態
+     */
+    function init() {
+        buildSidebar();
+        buildIndexUnitList();
+        goToUnit(0);
 
-                            <!-- Result -->
-                            <div class="bg-gray-900 p-4 rounded-lg">
-                                <div class="text-xs text-gray-400 mb-2 font-mono">Payload Preview (Hex)</div>
-                                <div class="flex gap-2 font-mono text-2xl text-white justify-center">
-                                    <span id="hex-0"
-                                        class="p-2 bg-gray-800 rounded border border-gray-600 min-w-[3rem] text-center">00</span>
-                                    <span id="hex-1"
-                                        class="p-2 bg-gray-800 rounded border border-gray-600 min-w-[3rem] text-center">00</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Click Hint Overlay -->
-                    <div
-                        class="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                        <span
-                            class="bg-white text-emerald-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                            📤 點擊繳交作業
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Task 2: Sensor Decoder -->
-                <div onclick="openSubmissionModal('typed-arrays-task-2', '作業 3-2: 感測器數據解碼')"
-                    class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden cursor-pointer relative group transition-all hover:shadow-2xl">
-                    <div class="bg-purple-600 text-white px-6 py-4 flex justify-between items-center">
-                        <h3 class="font-bold text-lg">作業 3-2: 感測器數據解碼</h3>
-                        <span class="text-purple-100 text-sm font-mono">DataView</span>
-                    </div>
-                    <div class="p-6">
-                        <div onclick="event.stopPropagation()" class="cursor-auto">
-                            <p class="text-gray-600 text-sm mb-4">
-                                假設收到兩個位元組的距離數據，請練習使用 <code>DataView</code> 將其還原為整數。
-                            </p>
-
-                            <div
-                                class="flex gap-2 items-center mb-6 bg-purple-50 p-4 rounded-lg border border-purple-100">
-                                <span class="text-sm font-bold text-purple-800">收到數據 (Hex):</span>
-                                <div class="flex gap-2">
-                                    <input type="text" id="decoder-hex-input" value="03 E8"
-                                        class="font-mono text-center w-24 p-1 border border-purple-300 rounded focus:outline-none focus:border-purple-500 text-purple-700 font-bold uppercase">
-                                </div>
-                            </div>
-
-                            <div class="bg-gray-800 rounded-lg p-4 font-mono text-xs text-gray-300 relative mb-4">
-                                <div class="text-gray-500 mb-2">// JavaScript Code</div>
-                                <div>const buffer = ...; // from bluetooth</div>
-                                <div>const view = new DataView(buffer);</div>
-                                <div class="flex items-center gap-2 mt-2">
-                                    <span class="text-purple-400">const</span> distance =
-                                    <span class="text-yellow-300">view.getUint16(0);</span>
-                                </div>
-                            </div>
-
-                            <button onclick="decodeHex()"
-                                class="w-full py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-bold shadow transition mb-4">
-                                執行解碼
-                            </button>
-
-                            <div class="flex justify-between items-center border-t border-gray-100 pt-4">
-                                <span class="text-gray-600 font-bold">解碼結果 (mm):</span>
-                                <span id="decode-result" class="text-2xl font-bold text-gray-800">--</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Click Hint Overlay -->
-                    <div
-                        class="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                        <span
-                            class="bg-white text-purple-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                            📤 點擊繳交作業
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="bg-gray-900 text-white py-12 border-t border-gray-800">
-        <div class="container mx-auto px-4 text-center">
-            <p class="text-gray-500">© 2025 Vibe Coding. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <!-- Media Overlay injected by course-shared.js?v=2026.04.05.FINAL_V6 -->
-
-    <script>
-        // --- Lab Logic: Efficiency Showdown ---
-        const speedSlider = document.getElementById('speed-slider');
-        const speedValue = document.getElementById('speed-value');
-        const jsonVal = document.getElementById('json-val');
-        const jsonSize = document.getElementById('json-size');
-        const binVal = document.getElementById('bin-val');
-
-        function updateEfficiency() {
-            const val = parseInt(speedSlider.value);
-            speedValue.innerText = val;
-
-            // Update JSON
-            jsonVal.innerText = val;
-            const jsonStr = JSON.stringify({ speed: val }); // {"speed":100}
-            // In the display we added spaces for readability but let's count strict JSON
-            // {"speed":100} -> 13 chars
-            // {"speed":5} -> 11 chars
-            jsonSize.innerText = jsonStr.length;
-
-            // Update Binary
-            const hex = val.toString(16).toUpperCase().padStart(2, '0');
-            binVal.innerText = "0x" + hex;
-
-            // Visual feedback
-            binVal.classList.remove('shadow-[0_0_15px_rgba(6,182,212,0.5)]');
-            void binVal.offsetWidth; // trigger reflow
-            binVal.classList.add('shadow-[0_0_15px_rgba(6,182,212,0.5)]');
-        }
-
-        speedSlider.addEventListener('input', updateEfficiency);
-
-        // --- Core Principle Logic: Typed Array View ---
-        function changeView(type) {
-            const mem0 = document.getElementById('mem-0');
-            const mem1 = document.getElementById('mem-1');
-            const explanation = document.getElementById('view-explanation');
-
-            if (type === 'uint8') {
-                mem0.innerText = "255";
-                mem1.innerText = "255";
-                explanation.innerText = "Uint8Array: 每個格子被視為獨立的 1 Byte 整數 (0-255)。";
-                explanation.className = "mt-4 p-3 bg-indigo-50 text-indigo-800 rounded font-mono text-sm border border-indigo-200";
-            } else {
-                mem0.innerText = "-1";
-                mem1.innerText = "(高位)";
-                explanation.innerText = "Int16Array: 兩個格子合併成一個 2 Bytes 有號整數 (-32768 ~ 32767)。";
-                explanation.className = "mt-4 p-3 bg-purple-50 text-purple-800 rounded font-mono text-sm border border-purple-200";
-            }
-        }
-
-        // --- Challenge Logic: Motor Encoder ---
-        const leftSlider = document.getElementById('left-slider');
-        const rightSlider = document.getElementById('right-slider');
-        const leftValDisplay = document.getElementById('left-val');
-        const rightValDisplay = document.getElementById('right-val');
-        const hex0 = document.getElementById('hex-0');
-        const hex1 = document.getElementById('hex-1');
-
-        function updateMotorPacket() {
-            const left = parseInt(leftSlider.value);
-            const right = parseInt(rightSlider.value);
-
-            leftValDisplay.innerText = left;
-            rightValDisplay.innerText = right;
-
-            hex0.innerText = left.toString(16).toUpperCase().padStart(2, '0');
-            hex1.innerText = right.toString(16).toUpperCase().padStart(2, '0');
-        }
-
-        leftSlider.addEventListener('input', updateMotorPacket);
-        rightSlider.addEventListener('input', updateMotorPacket);
-
-        // --- Challenge Logic: Sensor Decoder ---
-        function decodeHex() {
-            const input = document.getElementById('decoder-hex-input').value.replace(/\s/g, '');
-            const resultDisplay = document.getElementById('decode-result');
-
-            try {
-                if (input.length !== 4) throw new Error("長度錯誤");
-
-                // Parse hex to Uint8Array first
-                const buffer = new Uint8Array(2);
-                buffer[0] = parseInt(input.substring(0, 2), 16);
-                buffer[1] = parseInt(input.substring(2, 4), 16);
-
-                if (isNaN(buffer[0]) || isNaN(buffer[1])) throw new Error("無效的 Hex");
-
-                const view = new DataView(buffer.buffer);
-                const value = view.getUint16(0); // Big Endian by default
-
-                resultDisplay.innerText = value;
-                resultDisplay.className = "text-2xl font-bold text-purple-600";
-
-            } catch (e) {
-                resultDisplay.innerText = "錯誤";
-                resultDisplay.className = "text-2xl font-bold text-red-500";
-            }
-        }
-
-        // --- Video/Doc Overlay Logic ---
-        // Injected by course-shared.js?v=2026.04.05.FINAL_V6
-
-        // Define Resources
-        window.RESOURCES = {
-            video: "https://www.youtube.com/embed/r1FOWU14hJo",
-            doc: "https://docs.google.com/document/d/e/2PACX-1vTYg0tCOtK-qq1aFtWtAQ0PXZYfsrYQHr9Yd_B2CO66rRoqrOywpL1ci-J1fW-uLPDIPA8ldlTJeAN8/pub?embedded=true"
-        };
-    </script>
-    <script src="/js/course-shared.js?v=2026.05.22.V27.START_UNITS_LAYOUT_UPGRADE"></script>
-    <script>
-
-        // Init
+        // 初始化互動實驗
         updateEfficiency();
         updateMotorPacket();
         changeView('uint8');
 
-    </script>
+        // 啟動程式碼高亮
+        if (window.hljs) {
+            hljs.highlightAll();
+        }
+    }
 
-    <!-- Assignment Guide (Hidden) -->
-    <section id="assignment-guide" style="display: none;">
-<div class="markdown-heading"><h1 class="heading-element">數據解析與類型化陣列 (Typed Arrays) 作業指南</h1><a id="user-content-數據解析與類型化陣列-typed-arrays-作業指南" class="anchor" aria-label="Permalink: 數據解析與類型化陣列 (Typed Arrays) 作業指南" href="#數據解析與類型化陣列-typed-arrays-作業指南"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+    /**
+     * 建立側邊欄單元選單
+     */
+    function buildSidebar() {
+        const nav = document.getElementById('sidebar-nav');
+        nav.innerHTML = UNITS.map(u => {
+            const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : '';
+            return `
+            <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
+                <div class="unit-icon" id="icon-${u.id}">${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div>
+                <div class="unit-meta">
+                    <div class="unit-name">${u.label}${badge}</div>
+                    ${u.time ? `<div class="unit-time"><i class="far fa-clock"></i> ${u.time}</div>` : ''}
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    /**
+     * 建立總覽頁的單元列表卡片
+     */
+    function buildIndexUnitList() {
+        const el = document.getElementById('index-unit-list');
+        el.innerHTML = UNITS.filter(u => u.id > 0).map(u => `
+            <div class="unit-card ${u.type}" onclick="goToUnit(${u.id})">
+                <div class="unit-card-num">${u.id}</div>
+                <div class="unit-card-info">
+                    <div class="unit-card-name">${u.label}</div>
+                    <div class="unit-card-time"><i class="far fa-clock"></i> ${u.time}</div>
+                </div>
+                <div class="unit-card-arrow">›</div>
+            </div>
+        `).join('');
+    }
+
+    /* ─── NAVIGATION ─── */
+    /**
+     * 切換顯示指定的課程頁面，並同步更新側邊欄狀態與麵包屑
+     * @param {number} id - 單元識別碼
+     */
+    function goToUnit(id) {
+        document.querySelectorAll('.ms-unit-page').forEach(p => p.classList.remove('visible'));
+        const target = id === 0 ? document.getElementById('page-index') : document.getElementById(`page-${id}`);
+        if (target) target.classList.add('visible');
+
+        document.querySelectorAll('.ms-unit-item').forEach(el => el.classList.remove('active'));
+        const navItem = document.getElementById(`nav-${id}`);
+        if (navItem) { navItem.classList.add('active'); navItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) {
+                icon.className = 'unit-icon done';
+                icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>';
+            } else if (u.id === id) {
+                icon.className = 'unit-icon active-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            } else {
+                icon.className = 'unit-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            }
+        });
+
+        const unit = UNITS.find(u => u.id === id);
+        document.getElementById('bc-current').textContent = unit ? unit.label : '';
+        currentUnit = id;
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /**
+     * 標記特定單元為已完成狀態
+     * @param {number} id - 單元識別碼
+     */
+    function markDone(id) {
+        doneSet.add(id);
+        const badge = document.getElementById(`badge-${id}`);
+        if (badge) badge.style.display = 'flex';
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) { icon.className = 'unit-icon done'; icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>'; }
+        });
+        updateProgress();
+    }
+
+    /**
+     * 重新計算並更新進度條與顯示文字
+     */
+    function updateProgress() {
+        const total = UNITS.length - 1;
+        const done = doneSet.size;
+        document.getElementById('progress-fill').style.width = Math.round(done / total * 100) + '%';
+        document.getElementById('progress-text').textContent = `${done} / ${total} 已完成`;
+    }
+
+    /* ─── CHECKLIST ─── */
+    /**
+     * 切換實戰檢查清單項目的核取狀態
+     * @param {HTMLElement} el - 核取方塊元素
+     */
+    function toggleCheck(el) {
+        el.classList.toggle('checked');
+        el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
+    }
+</script>
+<script>
+    // --- Lab Logic: Efficiency Showdown ---
+    const speedSlider = document.getElementById('speed-slider');
+    const speedValue = document.getElementById('speed-value');
+    const jsonVal = document.getElementById('json-val');
+    const jsonSize = document.getElementById('json-size');
+    const binVal = document.getElementById('bin-val');
+
+    /**
+     * 根據滑桿數據，計算並更新 JSON 字串大小與二進位 Hex 的字節差異顯示
+     */
+    function updateEfficiency() {
+        const val = parseInt(speedSlider.value);
+        speedValue.innerText = val;
+
+        // 更新 JSON 預覽與大小
+        jsonVal.innerText = val;
+        const jsonStr = JSON.stringify({ speed: val });
+        jsonSize.innerText = jsonStr.length;
+
+        // 更新 Binary 預覽
+        const hex = val.toString(16).toUpperCase().padStart(2, '0');
+        binVal.innerText = "0x" + hex;
+
+        // 增加發光視覺反饋
+        binVal.classList.remove('shadow-[0_0_15px_rgba(6,182,212,0.5)]');
+        void binVal.offsetWidth; // 觸發 reflow
+        binVal.classList.add('shadow-[0_0_15px_rgba(6,182,212,0.5)]');
+    }
+
+    speedSlider.addEventListener('input', updateEfficiency);
+
+    // --- Core Principle Logic: Typed Array View ---
+    /**
+     * 切換 ArrayBuffer 格子的解析視野 (Uint8 與 Int16)
+     * @param {string} type - 視野類型 ('uint8' 或 'int16')
+     */
+    function changeView(type) {
+        const mem0 = document.getElementById('mem-0');
+        const mem1 = document.getElementById('mem-1');
+        const explanation = document.getElementById('view-explanation');
+
+        if (type === 'uint8') {
+            mem0.innerText = "255";
+            mem1.innerText = "255";
+            explanation.innerText = "Uint8Array: 每個格子被視為獨立的 1 Byte 整數 (0-255)。";
+            explanation.className = "mt-4 p-3 bg-indigo-50 text-indigo-800 rounded font-mono text-xs border border-indigo-200 leading-relaxed";
+        } else {
+            mem0.innerText = "-1";
+            mem1.innerText = "(高位)";
+            explanation.innerText = "Int16Array: 兩個格子合併成一個 2 Bytes 有號整數 (-32768 ~ 32767)。";
+            explanation.className = "mt-4 p-3 bg-purple-50 text-purple-800 rounded font-mono text-xs border border-purple-200 leading-relaxed";
+        }
+    }
+
+    // --- Challenge Logic: Motor Encoder ---
+    const leftSlider = document.getElementById('left-slider');
+    const rightSlider = document.getElementById('right-slider');
+    const leftValDisplay = document.getElementById('left-val');
+    const rightValDisplay = document.getElementById('right-val');
+    const hex0 = document.getElementById('hex-0');
+    const hex1 = document.getElementById('hex-1');
+
+    /**
+     * 讀取左右馬達速度，打包寫入模擬 Hex 預覽區
+     */
+    function updateMotorPacket() {
+        const left = parseInt(leftSlider.value);
+        const right = parseInt(rightSlider.value);
+
+        leftValDisplay.innerText = left;
+        rightValDisplay.innerText = right;
+
+        hex0.innerText = left.toString(16).toUpperCase().padStart(2, '0');
+        hex1.innerText = right.toString(16).toUpperCase().padStart(2, '0');
+    }
+
+    leftSlider.addEventListener('input', updateMotorPacket);
+    rightSlider.addEventListener('input', updateMotorPacket);
+
+    // --- Challenge Logic: Sensor Decoder ---
+    /**
+     * 解碼十六進位字串為 16-bit 無號大端序整數，並呈現在介面上
+     */
+    function decodeHex() {
+        const input = document.getElementById('decoder-hex-input').value.replace(/\s/g, '');
+        const resultDisplay = document.getElementById('decode-result');
+
+        try {
+            if (input.length !== 4) throw new Error("長度錯誤");
+
+            // 先轉為 Uint8Array 位元組
+            const buffer = new Uint8Array(2);
+            buffer[0] = parseInt(input.substring(0, 2), 16);
+            buffer[1] = parseInt(input.substring(2, 4), 16);
+
+            if (isNaN(buffer[0]) || isNaN(buffer[1])) throw new Error("無效的 Hex");
+
+            const view = new DataView(buffer.buffer);
+            const value = view.getUint16(0); // DataView 預設使用大端序解析
+
+            resultDisplay.innerText = value + " mm";
+            resultDisplay.className = "text-lg font-bold text-purple-600";
+
+        } catch (e) {
+            resultDisplay.innerText = "錯誤";
+            resultDisplay.className = "text-lg font-bold text-red-500";
+        }
+    }
+
+    // Define Resources
+    window.RESOURCES = {
+        video: "https://www.youtube.com/embed/r1FOWU14hJo",
+        doc: "https://docs.google.com/document/d/e/2PACX-1vTYg0tCOtK-qq1aFtWtAQ0PXZYfsrYQHr9Yd_B2CO66rRoqrOywpL1ci-J1fW-uLPDIPA8ldlTJeAN8/pub?embedded=true"
+    };
+
+    // Trigger Init
+    init();
+</script>
+<script src="/js/course-shared.js?v=2026.05.22.V27.START_UNITS_LAYOUT_UPGRADE"></script>
+<!-- Assignment Guide (Hidden) -->
+<section id="assignment-guide" style="display: none;">
+<div class="markdown-heading"><h1 class="heading-element">數據解析與類型化陣列 (Typed Arrays) 作業指南</h1><a aria-label="Permalink: 數據解析與類型化陣列 (Typed Arrays) 作業指南" class="anchor" href="#數據解析與類型化陣列-typed-arrays-作業指南" id="user-content-數據解析與類型化陣列-typed-arrays-作業指南"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>歡迎來到 <strong><code>start-02-unit-typed-arrays</code></strong> 單元！</p>
 <p>在這個單元中，我們將從「標籤化數據 (JSON)」邁向「位元級操作 (Binary Data Manipulation)」，這是一個前端工程師邁向底層與硬體通訊的重要里程碑。你將學習如何利用 <code>ArrayBuffer</code> 與 <code>TypedArray</code> 進行記憶體級別的操作，並掌握「位元組順序 (Endianness)」這項跨平台通訊的必備知識。</p>
-<div class="markdown-heading"><h2 class="heading-element">🎯 作業目標</h2><a id="user-content--作業目標" class="anchor" aria-label="Permalink: 🎯 作業目標" href="#-作業目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">🎯 作業目標</h2><a aria-label="Permalink: 🎯 作業目標" class="anchor" href="#-作業目標" id="user-content--作業目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>本次作業包含兩個核心實驗，你需要完成通訊解析器框架的實作與邊界測試：</p>
-<div class="markdown-heading"><h3 class="heading-element">任務 1：雙通道馬達指令封裝 (Binary Encoder Lab)</h3><a id="user-content-任務-1雙通道馬達指令封裝-binary-encoder-lab" class="anchor" aria-label="Permalink: 任務 1：雙通道馬達指令封裝 (Binary Encoder Lab)" href="#任務-1雙通道馬達指令封裝-binary-encoder-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 1：雙通道馬達指令封裝 (Binary Encoder Lab)</h3><a aria-label="Permalink: 任務 1：雙通道馬達指令封裝 (Binary Encoder Lab)" class="anchor" href="#任務-1雙通道馬達指令封裝-binary-encoder-lab" id="user-content-任務-1雙通道馬達指令封裝-binary-encoder-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>將抽象的速度指令封裝為硬體可理解的 2-byte Payload，並掌握 <code>Uint8</code> 範圍限制與索引順序。</p>
 <ul>
 <li>
@@ -497,7 +1151,7 @@
 <li>
 <strong>數值範圍保護</strong>：實作「鉗位 (Clamping)」邏輯，處理輸入負數或大於 255 的例外狀況（如強制降為 0 或升為 255），確保系統安全。</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">任務 2：還原感測器的 16-bit 數值 (Data Decoder &amp; Endianness Lab)</h3><a id="user-content-任務-2還原感測器的-16-bit-數值-data-decoder--endianness-lab" class="anchor" aria-label="Permalink: 任務 2：還原感測器的 16-bit 數值 (Data Decoder &amp; Endianness Lab)" href="#任務-2還原感測器的-16-bit-數值-data-decoder--endianness-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 2：還原感測器的 16-bit 數值 (Data Decoder &amp; Endianness Lab)</h3><a aria-label="Permalink: 任務 2：還原感測器的 16-bit 數值 (Data Decoder &amp; Endianness Lab)" class="anchor" href="#任務-2還原感測器的-16-bit-數值-data-decoder--endianness-lab" id="user-content-任務-2還原感測器的-16-bit-數值-data-decoder--endianness-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>破解跨平台通訊的核心陷阱，學會利用 <code>DataView</code> 處理高低位元組並應對不同的端序 (Endianness)。</p>
 <ul>
 <li>
@@ -505,7 +1159,7 @@
 <li>
 <strong>端序切換練習</strong>：分別讀取大端序 (Big-Endian) 與小端序 (Little-Endian) 下的數值，並觀察結果的差異。</li>
 </ul>
-<div class="markdown-heading"><h2 class="heading-element">📁 專案檔案結構</h2><a id="user-content--專案檔案結構" class="anchor" aria-label="Permalink: 📁 專案檔案結構" href="#-專案檔案結構"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">📁 專案檔案結構</h2><a aria-label="Permalink: 📁 專案檔案結構" class="anchor" href="#-專案檔案結構" id="user-content--專案檔案結構"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong><code>index.html</code></strong>：數據視覺化偵錯介面。你可以在此調整滑桿，即時看到記憶體中的 Byte 變化。</li>
@@ -516,13 +1170,13 @@
 <li>
 <strong><code>assets/</code></strong>：參考資源。</li>
 </ul>
-<div class="markdown-heading"><h2 class="heading-element">📝 提交要求</h2><a id="user-content--提交要求" class="anchor" aria-label="Permalink: 📝 提交要求" href="#-提交要求"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">📝 提交要求</h2><a aria-label="Permalink: 📝 提交要求" class="anchor" href="#-提交要求" id="user-content--提交要求"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ol>
 <li>完成 <code>parser.js</code> 中所有 <code>// TODO</code> 的部分。</li>
 <li>確保所有的自動化測試都能通過。</li>
 <li>在下方定義你的通訊協定規範：</li>
 </ol>
-<div class="markdown-heading"><h3 class="heading-element">我的機器人通訊協定規範</h3><a id="user-content-我的機器人通訊協定規範" class="anchor" aria-label="Permalink: 我的機器人通訊協定規範" href="#我的機器人通訊協定規範"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">我的機器人通訊協定規範</h3><a aria-label="Permalink: 我的機器人通訊協定規範" class="anchor" href="#我的機器人通訊協定規範" id="user-content-我的機器人通訊協定規範"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>馬達指令</strong>：
@@ -538,16 +1192,14 @@
 </ul>
 </li>
 </ul>
-<hr>
+<hr/>
 <p>祝你在位元世界中探索愉快！完成本單元後，你將擁有了開發「高效能遙控駕駛倉、實時環境測繪系統、以及各類低延遲物聯網設備」的核心能力！</p>
-
-    </section>
-
-    <!-- Tutor Guide (Hidden) -->
-    <section id="tutor-guide" style="display: none;">
+</section>
+<!-- Tutor Guide (Hidden) -->
+<section id="tutor-guide" style="display: none;">
 <p>針對 <strong><code>start-02-unit-typed-arrays</code> (數據解析與類型化陣列 Typed Arrays)</strong> 單元，這是學員從「標籤化數據」邁向「位元級操作」的技術分水嶺。它要求學員具備 <strong>底層數據處理 (Binary Data Manipulation)</strong> 的意識，學習如何跳出 JSON 的舒適圈，利用 <code>ArrayBuffer</code> 與 <code>TypedArray</code> 進行記憶體級別的操作，並掌握「位元組順序 (Endianness)」這項跨平台通訊的必備知識。</p>
 <p>以下是在 <strong>GitHub Classroom</strong> 部署其作業 (Assignments) 的具體建議：</p>
-<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repo) 配置建議</h3><a id="user-content-1-範本程式庫-template-repo-配置建議" class="anchor" aria-label="Permalink: 1. 範本程式庫 (Template Repo) 配置建議" href="#1-範本程式庫-template-repo-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repo) 配置建議</h3><a aria-label="Permalink: 1. 範本程式庫 (Template Repo) 配置建議" class="anchor" href="#1-範本程式庫-template-repo-配置建議" id="user-content-1-範本程式庫-template-repo-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>二進位資料作業的核心在於「協定封裝與數據還原」，範本應包含通訊解析器框架與邊界測試，建議包含：</p>
 <ul>
 <li>
@@ -559,9 +1211,9 @@
 <li>
 <strong>📂 <code>test/</code></strong>：<strong>自動化單元測試</strong>。提供基礎測試腳本（如使用 Jest 或簡單 Assert），自動驗證學員產出的 Buffer 長度與內容是否符合規格。</li>
 </ul>
-<hr>
-<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a id="user-content-2-作業任務部署細節" class="anchor" aria-label="Permalink: 2. 作業任務部署細節" href="#2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h4 class="heading-element">任務 1：雙通道馬達指令封裝 (Binary Encoder Lab)</h4><a id="user-content-任務-1雙通道馬達指令封裝-binary-encoder-lab" class="anchor" aria-label="Permalink: 任務 1：雙通道馬達指令封裝 (Binary Encoder Lab)" href="#任務-1雙通道馬達指令封裝-binary-encoder-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a aria-label="Permalink: 2. 作業任務部署細節" class="anchor" href="#2-作業任務部署細節" id="user-content-2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 1：雙通道馬達指令封裝 (Binary Encoder Lab)</h4><a aria-label="Permalink: 任務 1：雙通道馬達指令封裝 (Binary Encoder Lab)" class="anchor" href="#任務-1雙通道馬達指令封裝-binary-encoder-lab" id="user-content-任務-1雙通道馬達指令封裝-binary-encoder-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：將抽象的速度指令封裝為硬體可理解的 2-byte Payload。掌握 Uint8 範圍限制與索引順序。</li>
@@ -577,7 +1229,7 @@
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 2：還原感測器的 16-bit 數值 (Data Decoder &amp; Endianness Lab)</h4><a id="user-content-任務-2還原感測器的-16-bit-數值-data-decoder--endianness-lab" class="anchor" aria-label="Permalink: 任務 2：還原感測器的 16-bit 數值 (Data Decoder &amp; Endianness Lab)" href="#任務-2還原感測器的-16-bit-數值-data-decoder--endianness-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 2：還原感測器的 16-bit 數值 (Data Decoder &amp; Endianness Lab)</h4><a aria-label="Permalink: 任務 2：還原感測器的 16-bit 數值 (Data Decoder &amp; Endianness Lab)" class="anchor" href="#任務-2還原感測器的-16-bit-數值-data-decoder--endianness-lab" id="user-content-任務-2還原感測器的-16-bit-數值-data-decoder--endianness-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：破解跨平台通訊的核心陷阱。學會利用 <code>DataView</code> 同時處理高低位元組並應對不同的端序 (Endianness)。</li>
@@ -593,15 +1245,15 @@
 </ul>
 </li>
 </ul>
-<hr>
-<div class="markdown-heading"><h3 class="heading-element">3. 位元組精準度與封包效率點評標準 (Binary Precision &amp; Efficiency Standards)</h3><a id="user-content-3-位元組精準度與封包效率點評標準-binary-precision--efficiency-standards" class="anchor" aria-label="Permalink: 3. 位元組精準度與封包效率點評標準 (Binary Precision &amp; Efficiency Standards)" href="#3-位元組精準度與封包效率點評標準-binary-precision--efficiency-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h3 class="heading-element">3. 位元組精準度與封包效率點評標準 (Binary Precision &amp; Efficiency Standards)</h3><a aria-label="Permalink: 3. 位元組精準度與封包效率點評標準 (Binary Precision &amp; Efficiency Standards)" class="anchor" href="#3-位元組精準度與封包效率點評標準-binary-precision--efficiency-standards" id="user-content-3-位元組精準度與封包效率點評標準-binary-precision--efficiency-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>此單元的價值在於 <strong>「對數值位元的極致簡潔與對底層兼容性的判斷力」</strong>：</p>
 <ul>
 <li>[ ] <strong>封包穩定性</strong>：產出的 ArrayBuffer 格式是否穩定，沒有出現不必要的動態長度變化？</li>
 <li>[ ] <strong>邊界安全性</strong>：面對異常的輸入數據，封裝器是否展現出預期的健壯性（Clamping 或是報錯提示）？</li>
 <li>[ ] <strong>端序邏輯清晰度</strong>：學員對於「高位在前」還是「低位在前」是否有明確的設計思維而非猜測？</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a id="user-content--推薦範本結構-github-classroom-template" class="anchor" aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" href="#-推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" class="anchor" href="#-推薦範本結構-github-classroom-template" id="user-content--推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <pre lang="text"><code>.
 ├── index.html           # 結構：提供交互滑桿與即時 Hex 偵錯預覽區
 ├── parser.js            # 核心：練習 Uint8Array 封裝、DataView 讀取與 Endianness 控制
@@ -613,8 +1265,6 @@
 |
 |
 太熱血了！我們已經將 <strong>Start 02</strong>（數據解析）的最硬核單元標準化完成了。這標誌著學員現在終於擁有了「將數字打包進記憶體」的能力。恭喜！從 Web 到硬體的最後一道數位牆已經被推倒！</p>
-
-    </section>
+</section>
 </body>
-
 </html>
