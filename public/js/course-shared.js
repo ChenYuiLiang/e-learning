@@ -1833,7 +1833,7 @@ function enhanceAssignmentEntryButtons() {
         const groupEl = card.parentElement;
         if (groupEl) {
             if (!groupMap.has(groupEl)) groupMap.set(groupEl, []);
-            groupMap.get(groupEl).push({ assignmentId, assignmentTitle });
+            groupMap.get(groupEl).push({ card, assignmentId, assignmentTitle });
         }
         card.dataset.assignmentEntryEnhanced = '1';
     });
@@ -1841,7 +1841,17 @@ function enhanceAssignmentEntryButtons() {
     groupMap.forEach((items, groupEl) => {
         if (!(groupEl instanceof HTMLElement)) return;
         if (!items || items.length === 0) return;
-        if (groupEl.nextElementSibling && groupEl.nextElementSibling.classList.contains('assignment-group-entry-wrap')) return;
+
+        // 取得該群組中最後一張卡片，用以精確定位按鈕
+        const lastCard = items[items.length - 1].card;
+
+        // 判斷是否需要直接將按鈕插入最後一張卡片之後
+        // 若父容器為主內容區域 (.unit-content 或 .ms-unit-page)，則按鈕不應放在容器外，而應作為 direct sibling 緊隨最後一張卡片
+        const isParentUnitContent = groupEl.classList.contains('unit-content') || groupEl.classList.contains('ms-unit-page');
+        const insertTarget = isParentUnitContent ? lastCard : groupEl;
+
+        // 避免重複生成按鈕
+        if (insertTarget.nextElementSibling && insertTarget.nextElementSibling.classList.contains('assignment-group-entry-wrap')) return;
 
         const wrap = document.createElement('div');
         wrap.className = 'assignment-group-entry-wrap mt-6';
@@ -1855,14 +1865,12 @@ function enhanceAssignmentEntryButtons() {
             e.stopPropagation();
             const primary = items[0];
             if (!primary) return;
-            const pathParts = window.location.pathname.split('/');
-            const fileName = pathParts[pathParts.length - 1];
-            const courseId = await findCourseIdByUnit(fileName);
-            openTutorBindingModal(courseId, fileName, primary.assignmentId, primary.assignmentTitle);
+            // 呼叫統一的 openSubmissionModal，此函數會自動判斷學員是否已綁定導師及授權狀態
+            openSubmissionModal(primary.assignmentId, primary.assignmentTitle);
         });
 
         wrap.appendChild(btn);
-        groupEl.insertAdjacentElement('afterend', wrap);
+        insertTarget.insertAdjacentElement('afterend', wrap);
     });
 }
 
