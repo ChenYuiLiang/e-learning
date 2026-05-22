@@ -619,6 +619,48 @@ async function sendAdminAssignmentReminder(adminEmail, pendingList) {
 }
 
 /**
+ * Send reminder email to student when paid units are still missing tutor binding.
+ */
+async function sendStudentPendingTutorAssignmentReminder(email, studentName, units = []) {
+    if (!email) return;
+    const dashboardUrl = appUrl('/dashboard.html?tab=assignments');
+    const listHtml = (units || []).map(unitId => `
+        <li style="margin-bottom: 8px;"><code>${unitId}</code></li>
+    `).join('');
+
+    const mailOptions = {
+        from: '"Vibe Coding System" <info@vibe-coding.tw>',
+        to: email,
+        subject: `[學習提醒] 單元還沒綁定導師`,
+        html: getEmailHtmlWrapper(
+            '單元還沒綁定導師',
+            `
+                <p>Hi ${studentName || '同學'}，</p>
+                <p>系統偵測到您已付費的部分課程單元，<strong>尚未完成導師綁定</strong>，因此目前無法正常啟動該單元作業流程。</p>
+                <ul style="background-color: #f8fafc; padding: 20px 24px; border-radius: 12px; border: 1px solid #e2e8f0; margin: 24px 0;">
+                    ${listHtml || '<li>（無單元清單）</li>'}
+                </ul>
+                ${renderNextSteps('請這樣處理：', [
+                    '進入 Dashboard 的 Assignments 分頁。',
+                    '點擊前往教室寫作業，輸入導師 Promotion Code 或導師 Email。',
+                    '完成綁定後即可正常作業與評分。'
+                ])}
+                <p style="margin-top: 30px;">
+                    <a href="${dashboardUrl}" style="display: inline-block; background-color: #2563eb; color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: bold;">前往綁定導師</a>
+                </p>
+            `,
+            'Vibe Coding 學習系統'
+        )
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+    } catch (error) {
+        console.error('Error sending student pending tutor reminder email:', error);
+    }
+}
+
+/**
  * Send a summary email to the admin about pending shipments.
  */
 async function sendAdminShipmentReminder(adminEmail, pendingList) {
@@ -882,6 +924,7 @@ module.exports = {
     sendStudentLinkedToTutorEmail,
     sendTutorLinkedToStudentEmail,
     sendAdminAssignmentReminder,
+    sendStudentPendingTutorAssignmentReminder,
     sendAdminShipmentReminder,
     sendAdminNewApplicationEmail,
     sendApplicationResultEmail,

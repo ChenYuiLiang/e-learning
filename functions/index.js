@@ -25,7 +25,7 @@ function unitIdsMatch(idA, idB) {
 const {
     sendWelcomeEmail, sendPaymentSuccessEmail, sendTrialExpiringEmail, sendCourseExpiringEmail,
     sendAssignmentNotification, sendTutorAuthorizationEmail, sendGradingNotification,
-    sendStudentLinkedToTutorEmail, sendTutorLinkedToStudentEmail, sendAdminAssignmentReminder,
+    sendStudentLinkedToTutorEmail, sendTutorLinkedToStudentEmail, sendAdminAssignmentReminder, sendStudentPendingTutorAssignmentReminder,
     sendAdminNewApplicationEmail, sendApplicationResultEmail,
     sendAutogradeResultToStudent, sendAutogradeResultToTutor, sendOrderShippedEmail,
     sendTutorRecommendationCandidateEmail, sendAutogradeFailureAlertEmail
@@ -3866,7 +3866,7 @@ exports.checkCourseExpiration = onSchedule({
 });
 
 // ==========================================
-// 8.6 管理員指派提醒 (remindAdminPendingAssignments)
+// 8.6 學生指派提醒 (remindAdminPendingAssignments - kept name for compatibility)
 // ==========================================
 // Run every day at 9:00 AM Asia/Taipei
 exports.remindAdminPendingAssignments = onSchedule({
@@ -3874,8 +3874,6 @@ exports.remindAdminPendingAssignments = onSchedule({
     timeZone: 'Asia/Taipei'
 }, async (event) => {
     const db = admin.firestore();
-    const adminEmail = process.env.ADMIN_EMAIL || process.env.MAIL_USER;
-    if (!adminEmail) return;
 
     try {
         const lessons = await getLessons();
@@ -3936,10 +3934,14 @@ exports.remindAdminPendingAssignments = onSchedule({
             });
         }
 
-        // 3. Send summary to admin if there are pending tasks
+        // 3. Notify students directly (do NOT notify admin).
         if (pendingAssignments.length > 0) {
-            console.log(`Found ${pendingAssignments.length} users with pending assignments. Notifying admin.`);
-            await sendAdminAssignmentReminder(adminEmail, pendingAssignments);
+            console.log(`Found ${pendingAssignments.length} users with pending assignments. Notifying students.`);
+            for (const item of pendingAssignments) {
+                if (!item?.email) continue;
+                const studentName = fallbackNameFromEmail(item.email, '同學');
+                await sendStudentPendingTutorAssignmentReminder(item.email, studentName, item.units || []);
+            }
         } else {
             console.log("No pending tutor assignments found.");
         }
