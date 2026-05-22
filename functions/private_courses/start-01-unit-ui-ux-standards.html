@@ -4,391 +4,970 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UI/UX 設計規範：從視覺到體驗 - Vibe Coding</title>
-    <link rel="stylesheet" href="/style.css">
+    <title>UI/UX 設計規範：從視覺到體驗 - Vibe Coding Learn</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Noto+Sans+TC:wght@400;500;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Noto+Sans+TC:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <style>
+        :root {
+            --ms-blue: #0078d4;
+            --ms-blue-dark: #005a9e;
+            --ms-blue-light: #deecf9;
+            --ms-gray-10: #f3f2f1;
+            --ms-gray-20: #e1dfdd;
+            --ms-gray-90: #201f1e;
+            --ms-green: #107c10;
+            --ms-red: #d13438;
+            --sidebar-w: 280px;
+        }
 
+        * { box-sizing: border-box; }
 
+        body {
+            font-family: 'Inter', 'Outfit', 'Noto Sans TC', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fff;
+            color: #201f1e;
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* ─── TOP NAV ─── */
+        .ms-topnav {
+            background: var(--ms-blue);
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 4px rgba(0,0,0,.2);
+        }
+        .ms-topnav .brand {
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
+
+        /* ─── LAYOUT ─── */
+        .ms-layout { display: flex; min-height: calc(100vh - 48px); }
+
+        /* ─── SIDEBAR ─── */
+        .ms-sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            background: #faf9f8;
+            border-right: 1px solid #e1dfdd;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 48px;
+            height: calc(100vh - 48px);
+            overflow-y: auto;
+        }
+        .ms-sidebar-header {
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .ms-sidebar-header .module-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #605e5c;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .ms-sidebar-header .module-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #201f1e;
+            line-height: 1.4;
+        }
+        .ms-sidebar-header .meta {
+            font-size: 12px;
+            color: #605e5c;
+            margin-top: 6px;
+        }
+        .ms-unit-list { padding: 8px 0; }
+        .ms-unit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: background .12s, border-color .12s;
+            color: #201f1e;
+        }
+        .ms-unit-item:hover { background: #edebe9; }
+        .ms-unit-item.active {
+            border-left-color: var(--ms-blue);
+            background: #deecf9;
+        }
+        .ms-unit-item.active .unit-name { color: var(--ms-blue); font-weight: 600; }
+        .unit-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #c8c6c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            font-size: 10px;
+            background: #fff;
+        }
+        .unit-icon.done { background: var(--ms-green); border-color: var(--ms-green); color: #fff; }
+        .unit-icon.active-icon { border-color: var(--ms-blue); background: var(--ms-blue); color: #fff; }
+        .unit-meta { flex: 1; min-width: 0; }
+        .unit-name { font-size: 13px; line-height: 1.4; }
+        .unit-time { font-size: 11px; color: #605e5c; margin-top: 2px; }
+        .sidebar-progress {
+            padding: 12px 16px;
+            border-top: 1px solid #e1dfdd;
+            margin-top: auto;
+        }
+        .progress-bar-bg { background: #e1dfdd; border-radius: 4px; height: 6px; }
+        .progress-bar-fill { background: var(--ms-green); border-radius: 4px; height: 6px; transition: width .4s; }
+        .progress-text { font-size: 12px; color: #605e5c; margin-top: 6px; }
+
+        /* ─── MAIN ─── */
+        .ms-content { flex: 1; min-width: 0; }
+
+        .ms-breadcrumb {
+            padding: 10px 40px;
+            font-size: 12px;
+            color: #605e5c;
+            border-bottom: 1px solid #e1dfdd;
+            background: #fff;
+        }
+        .ms-breadcrumb a { color: var(--ms-blue); text-decoration: none; }
+        .ms-breadcrumb a:hover { text-decoration: underline; }
+        .ms-breadcrumb span { margin: 0 6px; }
+
+        /* ─── PAGES ─── */
+        .ms-unit-page { display: none; }
+        .ms-unit-page.visible { display: block; }
+
+        .unit-content {
+            max-width: 820px;
+            padding: 32px 40px 60px;
+            margin: 0 auto;
+        }
+
+        .unit-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .unit-completed-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #dff6dd;
+            color: #107c10;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 2px;
+        }
+        .unit-time-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #605e5c;
+            font-size: 13px;
+        }
+
+        /* Typography */
+        .unit-content h1 { font-size: 28px; font-weight: 700; margin: 0 0 20px; color: #201f1e; line-height: 1.3; }
+        .unit-content h2 { font-size: 20px; font-weight: 600; margin: 36px 0 12px; color: #201f1e; padding-top: 8px; }
+        .unit-content h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; color: #201f1e; }
+        .unit-content p { margin: 0 0 14px; }
+        .unit-content ul, .unit-content ol { margin: 0 0 14px; padding-left: 28px; }
+        .unit-content li { margin-bottom: 6px; }
+        .unit-content strong { font-weight: 600; }
+        .unit-content a { color: var(--ms-blue); text-decoration: none; }
+        .unit-content a:hover { text-decoration: underline; }
+        .unit-content code {
+            background: #f3f2f1;
+            border: 1px solid #e1dfdd;
+            border-radius: 3px;
+            padding: 1px 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #a31515;
+        }
+
+        /* Callouts */
+        .ms-note, .ms-tip, .ms-warning, .ms-important {
+            display: flex;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid;
+            font-size: 14px;
+        }
+        .ms-note { background: #deecf9; border-color: var(--ms-blue); }
+        .ms-note .note-icon { color: var(--ms-blue); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-tip { background: #dff6dd; border-color: var(--ms-green); }
+        .ms-tip .note-icon { color: var(--ms-green); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-warning { background: #fff4ce; border-color: #ffaa44; }
+        .ms-warning .note-icon { color: #ffaa44; font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-important { background: #fde7e9; border-color: var(--ms-red); }
+        .ms-important .note-icon { color: var(--ms-red); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .note-body strong { display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+
+        /* Scenario */
+        .ms-scenario {
+            background: #f3f2f1;
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #323130;
+            border-left: 4px solid #c8c6c4;
+        }
+        .ms-scenario-label {
+            font-style: normal;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #605e5c;
+            margin-bottom: 8px;
+        }
+
+        /* Compare grid */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .compare-card {
+            border: 1px solid #e1dfdd;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #fff;
+        }
+        .compare-card-header {
+            padding: 12px 14px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .compare-card-body {
+            padding: 14px;
+            font-size: 13px;
+            color: #605e5c;
+            line-height: 1.5;
+        }
+
+        /* Code block */
+        .ms-code {
+            background: #1e1e1e;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px 0;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-x: auto;
+            color: #d4d4d4;
+        }
+        .ms-code .c-comment { color: #6a9955; }
+        .ms-code .c-str { color: #ce9178; }
+        .ms-code .c-kw { color: #569cd6; }
+        .ms-code .c-tag { color: #4ec9b0; }
+
+        /* Buttons */
+        .ms-btn {
+            background: var(--ms-blue); color: #fff; border: none;
+            padding: 7px 18px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; transition: background .12s;
+            font-family: inherit;
+        }
+        .ms-btn:hover { background: var(--ms-blue-dark); }
+        .ms-btn-ghost {
+            background: transparent; color: var(--ms-blue);
+            border: 1px solid var(--ms-blue); padding: 6px 18px;
+            font-size: 14px; font-weight: 600; border-radius: 2px;
+            cursor: pointer; transition: background .12s; font-family: inherit;
+        }
+        .ms-btn-ghost:hover { background: var(--ms-blue-light); }
+
+        /* Nav */
+        .unit-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 0 0;
+            border-top: 1px solid #e1dfdd;
+            margin-top: 40px;
+        }
+        .nav-btn-prev, .nav-btn-next {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 20px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; border: 1px solid;
+            font-family: inherit; transition: background .12s;
+        }
+        .nav-btn-next { background: var(--ms-blue); color: #fff; border-color: var(--ms-blue); }
+        .nav-btn-next:hover { background: var(--ms-blue-dark); border-color: var(--ms-blue-dark); }
+        .nav-btn-prev { background: #fff; color: var(--ms-blue); border-color: var(--ms-blue); }
+        .nav-btn-prev:hover { background: var(--ms-blue-light); }
+        .unit-page-indicator { font-size: 13px; color: #605e5c; }
+
+        /* Module index */
+        .module-meta-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        .ms-tag { background: #f3f2f1; color: #323130; font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: 500; }
+        .ms-tag.blue { background: #deecf9; color: var(--ms-blue-dark); }
+        .ms-tag.green { background: #dff6dd; color: #107c10; }
+        .unit-card-list { margin: 20px 0; }
+        .unit-card {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 0; border-bottom: 1px solid #f3f2f1; cursor: pointer;
+        }
+        .unit-card:last-child { border-bottom: none; }
+        .unit-card:hover .unit-card-name { color: var(--ms-blue); text-decoration: underline; }
+        .unit-card-num {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #f3f2f1; color: #605e5c;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .unit-card.lab .unit-card-num { background: #eef6ff; color: var(--ms-blue-dark); }
+        .unit-card.quiz .unit-card-num { background: #fff4ce; color: #8a6914; }
+        .unit-card-info { flex: 1; }
+        .unit-card-name { font-size: 15px; font-weight: 500; }
+        .unit-card-time { font-size: 12px; color: #605e5c; margin-top: 2px; }
+        .unit-card-arrow { color: #c8c6c4; font-size: 14px; }
+
+        /* Resource links */
+        .ms-resource-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; text-decoration: none; color: #201f1e;
+            font-size: 14px; transition: background .1s;
+        }
+        .ms-resource-link:hover { background: #f3f2f1; }
+        .ms-resource-link i { color: var(--ms-blue); font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+
+        /* Achievement */
+        .ms-achievement {
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            color: #fff; border-radius: 6px; padding: 24px 28px;
+            margin: 24px 0; display: flex; align-items: center; gap: 20px;
+        }
+        .achievement-icon { font-size: 48px; flex-shrink: 0; }
+        .achievement-text h3 { margin: 0 0 4px; font-size: 18px; font-weight: 600; color: #fff; }
+        .achievement-text p { margin: 0; font-size: 14px; opacity: .9; }
+
+        @media (max-width: 768px) {
+            .ms-sidebar { display: none; }
+            .unit-content { padding: 20px 16px 40px; }
+            .unit-nav { padding: 16px 0 0; }
+            .ms-breadcrumb { padding: 8px 16px; }
+            .compare-grid { grid-template-columns: 1fr !important; }
+        }
+    </style>
 </head>
 
-<body class="bg-gray-50 flex flex-col min-h-screen">
+<body>
 
-    <!-- Hero Section -->
-    <header
-        class="relative bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 text-white pt-24 pb-32 overflow-hidden">
-        <div
-            class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=2940&auto=format&fit=crop')] opacity-10 bg-cover bg-center mix-blend-overlay">
+<!-- TOP NAV -->
+<nav class="ms-topnav">
+    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <div class="divider"></div>
+    <span class="nav-label">前端基礎與規範課程</span>
+</nav>
+
+<div class="ms-layout">
+    <!-- SIDEBAR -->
+    <aside class="ms-sidebar">
+        <div class="ms-sidebar-header">
+            <div class="module-label">單元 01</div>
+            <div class="module-title">UI/UX 設計規範：從視覺到體驗</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 3 小時 · 6 個單元</div>
         </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-gray-50 to-transparent bottom-0 h-16"></div>
 
-        <div class="container mx-auto px-4 relative z-10 text-center">
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit]">
-                UI/UX 設計規範：<br>從視覺到體驗
-            </h1>
-            <p class="text-xl md:text-2xl text-purple-100 max-w-2xl mx-auto font-light leading-relaxed">
-                不只是好看，更要好用。學習如何利用「翻轉教室」的概念，設計出直覺、高效且符合人體工學的 FPV 遙控介面。
-            </p>
+        <nav class="ms-unit-list" id="sidebar-nav"></nav>
 
-            <div class="mt-8 flex flex-wrap justify-center gap-4">
-                <button onclick="enterMediaMode('video', window.RESOURCES.youtube)"
-                    class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
-                    <span>📺</span> 觀看教學影片
-                </button>
-                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
-                    class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
-                    <span>📄</span> 閱讀課程講義
-                </button>
+        <div class="sidebar-progress">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
+            </div>
+            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="ms-content">
+        <!-- BREADCRUMBS -->
+        <div class="ms-breadcrumb">
+            <a href="#">課程首頁</a>
+            <span>/</span>
+            <a href="#">UI/UX 設計規範</a>
+            <span>/</span>
+            <span id="bc-current" style="color: #201f1e;">課程總覽</span>
+        </div>
+
+        <!-- Page 0: Index -->
+        <div class="ms-unit-page visible" id="page-index">
+            <div class="unit-content">
+                <h1>UI/UX 設計規範：從視覺到體驗</h1>
+                <p>不只是好看，更要好用。學習如何利用人機介面的概念，設計出直覺、高效且符合人體工學的 FPV 遙控介面。</p>
+
+                <div class="module-meta-tags">
+                    <span class="ms-tag blue">UI/UX 規範</span>
+                    <span class="ms-tag blue">拇指熱區</span>
+                    <span class="ms-tag blue">人體工學</span>
+                    <span class="ms-tag green">回饋設計 Loop</span>
+                </div>
+
+                <h2>先修知識</h2>
+                <ul>
+                    <li><strong>HTML5 基礎</strong>：了解網頁結構與行動端 Viewport。</li>
+                    <li><strong>CSS Flexbox 排版</strong>：熟悉網頁元件的對齊與佈局。</li>
+                </ul>
+
+                <h2>單元大綱</h2>
+                <div class="unit-card-list" id="index-unit-list">
+                    <!-- Dynamic List -->
+                </div>
             </div>
         </div>
-    </header>
 
-    <main class="container mx-auto px-4 max-w-6xl flex-grow pb-20 -mt-20 relative z-20">
+        <!-- Page 1: Introduction -->
+        <div class="ms-unit-page" id="page-1">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-1" style="display:none;"><i class="fas fa-check"></i> 已完成</div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i> 預估時間：3 分鐘</div>
+                </div>
+                
+                <h1>UI/UX 規範簡介</h1>
+                <div class="ms-scenario">
+                    <div class="ms-scenario-label">設計思考</div>
+                    好的 UI 設計師，不僅是會選顏色的人，而是能透視使用者的拇指軌跡、能為高速變化的數據分優先順序、並在系統報錯時透過螢幕閃爍為使用者爭取最後幾秒安全反應時間的人機界面大師。
+                </div>
 
-        <!-- Module 1: Thumb Zone & Ergonomics -->
-        <section class="mb-20">
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-                <div class="h-1 bg-gradient-to-r from-teal-500 to-emerald-400"></div>
-                <div class="p-8 md:p-12">
-                    <div class="flex flex-col md:flex-row gap-12">
-                        <!-- Concept -->
-                        <div class="flex-1 space-y-6">
-                            <div class="border-l-4 border-teal-500 pl-6">
-                                <span class="text-teal-600 font-bold tracking-wider uppercase text-sm">Module 1: Thumb
-                                    Zone</span>
-                                <h2 class="text-3xl font-bold text-gray-900 mt-2">拇指操作區與人體工學</h2>
-                            </div>
+                <p>在本單元中，我們將學習如何將體驗設計應用在 FPV 遙控介面中。下面是本單元的影音教學，請先觀看影片以獲得基礎概念：</p>
 
-                            <p class="text-gray-600 leading-relaxed">
-                                在設計手機遙控介面時，**Thumb Zone（拇指熱區）**
-                                是最關鍵的概念。了解雙手持握時，拇指能輕鬆觸及的範圍，決定了核心按鈕的佈局。
-                            </p>
+                <!-- Video Frame -->
+                <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:6px; margin:24px 0; border:1px solid #e1dfdd; background:#f3f2f1;">
+                    <iframe src="https://www.youtube.com/embed/VeOwKnWLCN8" style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
 
-                            <div class="bg-teal-50 p-6 rounded-xl border border-teal-100">
-                                <h3 class="font-bold text-teal-800 mb-3 flex items-center gap-2">
-                                    <span class="text-lg">💡</span> 關鍵思考
-                                </h3>
-                                <ul class="space-y-3 text-sm font-mono text-gray-700">
-                                    <li class="flex items-start gap-3">
-                                        <span class="mt-1 text-teal-500">➜</span>
-                                        <span>為什麼「緊急停止」必須放在兩側下方最容易按到的地方？</span>
-                                    </li>
-                                    <li class="flex items-start gap-3">
-                                        <span class="mt-1 text-teal-500">➜</span>
-                                        <span>為什麼「設定選單」通常放在螢幕中央或上方較難觸及的區域？</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <!-- Interactive Phone Mockup -->
-                        <div
-                            class="flex-1 flex flex-col items-center justify-center bg-slate-50 rounded-2xl p-8 border border-slate-100">
-                            <div
-                                class="phone-mockup relative bg-white border-4 border-gray-200 rounded-[2rem] shadow-xl overflow-hidden w-[280px] h-[400px] flex items-center justify-center">
-                                <div class="absolute inset-x-0 bottom-0 h-full w-full opacity-50">
-                                    <div class="thumb-zone zone-hard absolute inset-0 bg-red-100/30"></div>
-                                    <div
-                                        class="thumb-zone zone-ok absolute bottom-0 left-0 right-0 h-2/3 bg-yellow-100/30 rounded-t-full transform scale-125">
-                                    </div>
-                                    <div
-                                        class="thumb-zone zone-easy absolute bottom-0 left-0 right-0 h-1/2 bg-green-100/30 rounded-t-full transform scale-90">
-                                    </div>
-                                </div>
-
-                                <!-- Buttons placed in zones -->
-                                <div class="absolute bottom-8 left-6 right-6 flex justify-between z-10">
-                                    <button
-                                        class="w-14 h-14 rounded-full bg-[#E76F51] shadow-lg text-white font-bold text-[10px] flex items-center justify-center transition hover:scale-110 active:scale-95 animate-pulse ring-2 ring-white/50">STOP</button>
-                                    <button
-                                        class="w-14 h-14 rounded-full bg-[#2A9D8F] shadow-lg text-white font-bold text-[10px] flex items-center justify-center transition hover:scale-110 active:scale-95 ring-2 ring-white/50">GO</button>
-                                </div>
-
-                                <div class="absolute top-12 right-6 z-10">
-                                    <button
-                                        class="w-8 h-8 rounded bg-gray-400/80 shadow text-white flex items-center justify-center text-[10px] backdrop-blur-sm">≡</button>
-                                </div>
-
-                                <div class="z-20 text-center pointer-events-none space-y-8 mt-[-40px]">
-                                    <span
-                                        class="text-[10px] font-bold text-red-400 bg-white/90 px-2 py-1 rounded shadow-sm">Hard</span>
-                                    <span
-                                        class="text-[10px] font-bold text-yellow-500 bg-white/90 px-2 py-1 rounded shadow-sm">Stretch</span>
-                                    <span
-                                        class="text-[10px] font-bold text-green-600 bg-white/90 px-2 py-1 rounded shadow-sm">Natural</span>
-                                </div>
-                            </div>
-                            <p class="text-center text-xs text-gray-500 mt-6 font-mono">Interactive: Try clicking the
-                                buttons</p>
-                        </div>
-                    </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;課程總覽</button>
+                    <button class="ms-btn" onclick="markDone(1); goToUnit(2)">標記已完成並繼續 &nbsp;›</button>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <hr class="border-gray-200 my-16">
-
-        <!-- Module 2: Visual Hierarchy -->
-        <section class="mb-20">
-            <div class="flex items-center gap-3 mb-8 justify-center">
-                <span
-                    class="bg-[#E76F51] text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl">2</span>
-                <h2 class="text-3xl font-bold text-gray-800">視覺階層與認知負荷</h2>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-8 mb-12">
-                <!-- Concept Card 1 -->
-                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition border-t-4 border-[#E76F51]">
-                    <div
-                        class="h-12 w-12 bg-red-100 rounded-lg flex items-center justify-center text-red-600 mb-4 text-2xl">
-                        ⚠️</div>
-                    <h3 class="font-bold text-xl mb-3">色彩編碼</h3>
-                    <p class="text-gray-600 text-sm mb-4">顏色傳遞訊息，不需文字。紅色與黃色能瞬間抓住注意力，綠色則給人安全感。</p>
-                    <div class="flex gap-2">
-                        <span class="w-6 h-6 rounded-full bg-red-500 shadow-sm" title="Stop/Danger"></span>
-                        <span class="w-6 h-6 rounded-full bg-yellow-400 shadow-sm" title="Warning"></span>
-                        <span class="w-6 h-6 rounded-full bg-green-500 shadow-sm" title="Connect/Go"></span>
-                    </div>
+        <!-- Page 2: Thumb Zone & Ergonomics -->
+        <div class="ms-unit-page" id="page-2">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-2" style="display:none;"><i class="fas fa-check"></i> 已完成</div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i> 預估時間：10 分鐘</div>
                 </div>
 
-                <!-- Concept Card 2 -->
-                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition border-t-4 border-[#2A9D8F]">
-                    <div
-                        class="h-12 w-12 bg-teal-100 rounded-lg flex items-center justify-center text-teal-600 mb-4 text-2xl">
-                        📏</div>
-                    <h3 class="font-bold text-xl mb-3">大小差異</h3>
-                    <p class="text-gray-600 text-sm mb-4">最重要的功能應該最大。根據 Fitts's Law，目標越大、距離越近，操作所需時間越短。</p>
-                    <div class="flex items-center gap-4 mt-2">
-                        <div class="w-8 h-8 rounded bg-gray-300"></div>
-                        <div
-                            class="w-16 h-16 rounded-full bg-[#1D3557] shadow-md flex items-center justify-center text-white text-xs">
-                            Primary</div>
-                    </div>
-                </div>
-
-                <!-- Concept Card 3 -->
-                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition border-t-4 border-[#457B9D]">
-                    <div
-                        class="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 mb-4 text-2xl">
-                        🧠</div>
-                    <h3 class="font-bold text-xl mb-3">資訊降噪</h3>
-                    <p class="text-gray-600 text-sm">FPV 競速時，駕駛者沒有時間閱讀。只顯示當下必要的數據，隱藏次要資訊，降低認知負荷。</p>
-                </div>
-            </div>
-
-            <div class="bg-[#1D3557] rounded-2xl p-8 text-white text-center">
-                <h3 class="text-2xl font-bold mb-4">🎯 學習目標</h3>
-                <p class="opacity-90 max-w-2xl mx-auto">
-                    預習如何減少操作者的認知負擔，讓使用者在高速飛行時不需要「思考」按鈕在哪裡，而是憑「直覺」操作。
+                <h1>拇指操作區與人體工學</h1>
+                <p>
+                    在設計手機遙控介面時，<strong>Thumb Zone（拇指熱區）</strong>
+                    是最關鍵的概念。了解雙手持握時，拇指能輕鬆觸及的範圍，決定了核心按鈕的佈局。
                 </p>
-            </div>
-        </section>
 
-        <hr class="border-gray-200 my-16">
+                <div class="ms-tip">
+                    <div class="note-icon">💡</div>
+                    <div class="note-body">
+                        <strong>關鍵思考</strong>
+                        <ul>
+                            <li>為什麼「緊急停止」必須放在兩側下方最容易按到的地方？</li>
+                            <li>為什麼「設定選單」通常放在螢幕中央或上方較難觸及的區域？</li>
+                        </ul>
+                    </div>
+                </div>
 
-        <!-- Module 3: Feedback Loops -->
-        <section class="mb-20 grid md:grid-cols-2 gap-12">
-            <div class="order-2 md:order-1 bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
-                <h3 class="text-xl font-bold mb-6 text-gray-800 text-center">按鈕狀態實驗室</h3>
-                <div class="space-y-8">
-                    <!-- Default/Hover/Active Demo -->
-                    <div class="flex flex-col items-center gap-4">
-                        <span class="text-sm font-bold text-gray-400 uppercase tracking-widest">Normal State</span>
-                        <div class="flex gap-6">
-                            <button id="btn-demo-1"
-                                class="demo-btn px-6 py-3 bg-[#E76F51] text-white rounded-lg font-bold shadow-md hover:bg-[#d65f41] hover:shadow-lg focus:ring-4 focus:ring-[#E76F51]/30">
-                                自訂按鈕
-                            </button>
-                            <button class="px-6 py-3 bg-gray-200 text-gray-400 rounded-lg font-bold cursor-not-allowed">
-                                禁用 (Disabled)
-                            </button>
+                <h3 style="margin-top: 24px;">互動體驗：拇指熱區模擬</h3>
+                <p>在下方的手機模擬器中，展示了三種不同的拇指操作熱區（Natural 自然區、Stretch 伸展區、Hard 困難區）。點擊下方按鈕可觀察其回饋：</p>
+
+                <!-- Interactive Phone Mockup Container -->
+                <div class="flex flex-col items-center justify-center bg-slate-50 rounded-2xl p-8 border border-slate-100 my-6">
+                    <div class="phone-mockup relative bg-white border-4 border-gray-200 rounded-[2rem] shadow-xl overflow-hidden w-[280px] h-[400px] flex items-center justify-center">
+                        <div class="absolute inset-x-0 bottom-0 h-full w-full opacity-50 pointer-events-none">
+                            <div class="thumb-zone zone-hard absolute inset-0 bg-red-100/30"></div>
+                            <div class="thumb-zone zone-ok absolute bottom-0 left-0 right-0 h-2/3 bg-yellow-100/30 rounded-t-full transform scale-125"></div>
+                            <div class="thumb-zone zone-easy absolute bottom-0 left-0 right-0 h-1/2 bg-green-100/30 rounded-t-full transform scale-90"></div>
                         </div>
-                        <p class="text-xs text-gray-500 mt-2">試著 Hover 與點擊左側按鈕，觀察顏色與陰影變化。</p>
-                    </div>
 
-                    <div class="w-full h-px bg-gray-100"></div>
+                        <!-- Buttons placed in zones -->
+                        <div class="absolute bottom-8 left-6 right-6 flex justify-between z-10">
+                            <button onclick="alert('點擊了 Natural 區域的 STOP 按鈕！緊急煞車！')"
+                                class="w-14 h-14 rounded-full bg-[#E76F51] shadow-lg text-white font-bold text-[10px] flex items-center justify-center transition hover:scale-110 active:scale-95 animate-pulse ring-2 ring-white/50">STOP</button>
+                            <button onclick="alert('點擊了 Natural 區域的 GO 按鈕！出發！')"
+                                class="w-14 h-14 rounded-full bg-[#2A9D8F] shadow-lg text-white font-bold text-[10px] flex items-center justify-center transition hover:scale-110 active:scale-95 ring-2 ring-white/50">GO</button>
+                        </div>
 
-                    <!-- Feedback Message Demo -->
-                    <div class="text-center">
-                        <span class="text-sm font-bold text-gray-400 uppercase tracking-widest block mb-4">System
-                            Feedback</span>
-                        <button onclick="showToast()"
-                            class="px-8 py-3 border-2 border-[#457B9D] text-[#457B9D] rounded-full font-bold hover:bg-[#457B9D] hover:text-white transition">
-                            模擬連線成功
-                        </button>
-                        <div id="toast-container" class="mt-6 min-h-[40px]"></div>
+                        <div class="absolute top-12 right-6 z-10">
+                            <button onclick="alert('點擊了 Hard 區域的選單按鈕！')"
+                                class="w-8 h-8 rounded bg-gray-400/80 shadow text-white flex items-center justify-center text-[10px] backdrop-blur-sm">≡</button>
+                        </div>
+
+                        <div class="z-20 text-center pointer-events-none space-y-8 mt-[-40px]">
+                            <span class="text-[10px] font-bold text-red-400 bg-white/90 px-2 py-1 rounded shadow-sm">Hard (困難)</span>
+                            <span class="text-[10px] font-bold text-yellow-500 bg-white/90 px-2 py-1 rounded shadow-sm">Stretch (伸展)</span>
+                            <span class="text-[10px] font-bold text-green-600 bg-white/90 px-2 py-1 rounded shadow-sm">Natural (自然)</span>
+                        </div>
                     </div>
+                    <p class="text-center text-xs text-gray-500 mt-4 font-mono">Interactive: Try clicking the buttons inside mockup</p>
+                </div>
+
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
+                    <button class="ms-btn" onclick="markDone(2); goToUnit(3)">標記已完成並繼續 &nbsp;›</button>
                 </div>
             </div>
+        </div>
 
-            <div class="order-1 md:order-2 space-y-6">
-                <div class="flex items-center gap-3 mb-2">
-                    <span
-                        class="bg-[#F4A261] text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl">3</span>
-                    <h2 class="text-3xl font-bold text-gray-800">回饋設計 Loop</h2>
+        <!-- Page 3: Visual Hierarchy -->
+        <div class="ms-unit-page" id="page-3">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-3" style="display:none;"><i class="fas fa-check"></i> 已完成</div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i> 預估時間：8 分鐘</div>
                 </div>
-                <p class="text-lg text-gray-600 leading-relaxed">
+
+                <h1>視覺階層與認知負荷</h1>
+                <p>
+                    FPV 競速與實機操控時，駕駛者沒有時間閱讀。只顯示當下必要的數據，隱藏次要資訊，降低認知負荷。最重要的功能應該最大。根據 Fitts's Law，目標越大、距離越近，操作所需時間越短。
+                </p>
+
+                <!-- Concept cards -->
+                <div class="grid md:grid-cols-3 gap-4 my-6">
+                    <!-- Concept Card 1 -->
+                    <div class="compare-card" style="border-top: 4px solid #E76F51;">
+                        <div class="compare-card-header">
+                            <span class="text-xl">⚠️</span> 色彩編碼
+                        </div>
+                        <div class="compare-card-body">
+                            <p class="mb-3">顏色傳遞訊息，不需文字。紅色與黃色能瞬間抓住注意力，綠色則給人安全感。</p>
+                            <div class="flex gap-2">
+                                <span class="w-6 h-6 rounded-full bg-red-500 shadow-sm" title="Stop/Danger"></span>
+                                <span class="w-6 h-6 rounded-full bg-yellow-400 shadow-sm" title="Warning"></span>
+                                <span class="w-6 h-6 rounded-full bg-green-500 shadow-sm" title="Connect/Go"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Concept Card 2 -->
+                    <div class="compare-card" style="border-top: 4px solid #2A9D8F;">
+                        <div class="compare-card-header">
+                            <span class="text-xl">📏</span> 大小差異
+                        </div>
+                        <div class="compare-card-body">
+                            <p class="mb-3">最重要的功能應該最大。根據 Fitts's Law，目標越大、距離越近，操作所需時間越短。</p>
+                            <div class="flex items-center gap-4">
+                                <div class="w-8 h-8 rounded bg-gray-300"></div>
+                                <div class="w-12 h-12 rounded-full bg-[#1D3557] shadow-md flex items-center justify-center text-white text-[10px]">
+                                    Primary
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Concept Card 3 -->
+                    <div class="compare-card" style="border-top: 4px solid #457B9D;">
+                        <div class="compare-card-header">
+                            <span class="text-xl">🧠</span> 資訊降噪
+                        </div>
+                        <div class="compare-card-body">
+                            <p>FPV 競速時，駕駛者沒有時間閱讀。只顯示當下必要的數據，隱藏次要資訊，降低認知負荷。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-achievement" style="margin-top: 24px; background: linear-gradient(135deg, #1D3557 0%, #457B9D 100%); border: none;">
+                    <div class="achievement-icon">🎯</div>
+                    <div class="achievement-text">
+                        <h3>學習目標</h3>
+                        <p>預習如何減少操作者的認知負擔，讓使用者在高速飛行時不需要「思考」按鈕在哪裡，而是憑「直覺」操作。</p>
+                    </div>
+                </div>
+
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
+                    <button class="ms-btn" onclick="markDone(3); goToUnit(4)">標記已完成並繼續 &nbsp;›</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 4: Button States & Feedback Loop -->
+        <div class="ms-unit-page" id="page-4">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-4" style="display:none;"><i class="fas fa-check"></i> 已完成</div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i> 預估時間：8 分鐘</div>
+                </div>
+
+                <h1>回饋設計 Loop 與按鈕狀態</h1>
+                <p>
                     操作不只是單向的「輸入」。系統如何回應使用者的操作，決定了體驗的流暢度。
                 </p>
-                <div class="space-y-4">
-                    <div class="flex gap-4">
-                        <div
-                            class="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 flex-shrink-0 text-xl">
-                            👀</div>
+
+                <div class="grid md:grid-cols-2 gap-8 my-6">
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between">
                         <div>
-                            <h4 class="font-bold text-gray-800">視覺回饋</h4>
-                            <p class="text-sm text-gray-600">按下按鈕時的顏色變化、壓下效果，讓使用者確認「我有按到」。</p>
+                            <h3 class="text-center font-bold text-gray-800 mb-4">按鈕狀態實驗室</h3>
+                            <div class="flex flex-col items-center gap-4">
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Normal State</span>
+                                <div class="flex gap-4">
+                                    <button id="btn-demo-1"
+                                        class="px-6 py-3 bg-[#E76F51] text-white rounded-lg font-bold shadow-md hover:bg-[#d65f41] hover:shadow-lg focus:ring-4 focus:ring-[#E76F51]/30 transition">
+                                        自訂按鈕
+                                    </button>
+                                    <button class="px-6 py-3 bg-gray-200 text-gray-400 rounded-lg font-bold cursor-not-allowed" disabled>
+                                        禁用 (Disabled)
+                                    </button>
+                                </div>
+                                <p class="text-xs text-gray-500 text-center">試著 Hover 與點擊左側按鈕，觀察顏色與陰影變化。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="w-full h-px bg-gray-100 my-6"></div>
+
+                        <div class="text-center">
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-4">System Feedback</span>
+                            <button onclick="showToast()"
+                                class="px-6 py-2 border-2 border-[#457B9D] text-[#457B9D] rounded-full font-bold hover:bg-[#457B9D] hover:text-white transition">
+                                模擬連線成功
+                            </button>
+                            <div id="toast-container" class="mt-4 min-h-[40px] flex justify-center items-center"></div>
                         </div>
                     </div>
-                    <div class="flex gap-4">
-                        <div
-                            class="w-12 h-12 rounded-lg bg-purple-50 flex items-center justify-center text-purple-500 flex-shrink-0 text-xl">
-                            📳</div>
-                        <div>
-                            <h4 class="font-bold text-gray-800">觸覺回饋 (Haptics)</h4>
-                            <p class="text-sm text-gray-600">手機震動是最直接的確認。在無法看螢幕的盲操情境下尤為重要。</p>
+
+                    <div class="space-y-6">
+                        <h3>回饋的三個維度</h3>
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 flex-shrink-0 text-xl">
+                                👀
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">視覺回饋 (Visual)</h4>
+                                <p class="text-sm text-gray-600">按下按鈕時的顏色變化、壓下效果，讓使用者確認「我有按到」。</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-purple-50 flex items-center justify-center text-purple-500 flex-shrink-0 text-xl">
+                                📳
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">觸覺回饋 (Haptics)</h4>
+                                <p class="text-sm text-gray-600">手機震動是最直接的確認。在無法看螢幕的盲操情境下尤為重要。</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- Assignments Section -->
-        <section class="bg-[#1D3557] rounded-[40px] p-8 md:p-16 text-white overflow-hidden relative">
-            <div
-                class="absolute top-0 right-0 w-64 h-64 bg-[#E76F51] rounded-full blur-[100px] opacity-20 transform translate-x-1/2 -translate-y-1/2">
-            </div>
-
-            <h2 class="text-3xl font-bold mb-8 text-center text-white relative z-10">實作任務 Challenge</h2>
-
-            <!-- Git Base Station Metaphor -->
-            <div
-                class="bg-white/5 backdrop-blur-md rounded-2xl p-6 mb-12 text-orange-100 font-mono text-sm border border-white/10 max-w-3xl mx-auto">
-                <div class="flex items-center gap-3 mb-4">
-                    <span class="text-2xl">🛰️</span>
-                    <h3 class="text-white font-bold text-lg">同步進度：優化體驗回報</h3>
-                </div>
-                <p class="mb-4 opacity-70">最後階段！將你的 UI/UX 優化方案同步至專屬 Branch，並在 PR 中留下你的設計思考。</p>
-                <div class="flex items-center gap-2 bg-black/20 p-2 rounded text-orange-200">
-                    <code>git push origin feature/ux-optimization</code>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
+                    <button class="ms-btn" onclick="markDone(4); goToUnit(5)">標記已完成並繼續 &nbsp;›</button>
                 </div>
             </div>
+        </div>
 
-            <div class="grid md:grid-cols-3 gap-8 relative z-10">
-                <!-- Task 1 -->
-                <div onclick="openSubmissionModal('ui-ux-task-1', '作業 3-1: 「盲操」佈局挑戰')"
-                    class="bg-white/10 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/20 transition group cursor-pointer relative">
-                    <div class="bg-[#E76F51] w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 3-1</div>
-                    <h3 class="text-xl font-bold mb-3">「盲操」佈局挑戰</h3>
-                    <p class="text-sm opacity-80 mb-6 min-h-[80px]">將設計好的 UI 部署到手機，請同學嘗試在不看螢幕的情況下進行操作。測試按鈕是否夠大？間距是否足夠？
-                    </p>
-                    <div class="border-t border-white/10 pt-4 mt-auto">
-                        <div class="flex items-center gap-2 text-sm font-bold text-[#F4A261] w-full">
+        <!-- Page 5: Assignments -->
+        <div class="ms-unit-page" id="page-5">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-5" style="display:none;"><i class="fas fa-check"></i> 已完成</div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i> 預估時間：135 分鐘</div>
+                </div>
+
+                <h1>實作任務 Challenge</h1>
+                <p>請將你的 FPV 遙控介面進行優化，滿足以下三項設計規範，並將程式碼提交上傳。</p>
+
+                <!-- Git command block -->
+                <div class="ms-code" style="margin: 20px 0;">
+                    <div class="c-comment">// 同步進度：將你的 UI/UX 優化方案同步至專屬 Branch，並在 PR 中留下你的設計思考</div>
+                    <div><span class="c-kw">git</span> checkout -b feature/ux-optimization</div>
+                    <div><span class="c-kw">git</span> add .</div>
+                    <div><span class="c-kw">git</span> commit -m <span class="c-str">"feat: optimize control layout for thumb zone"</span></div>
+                    <div><span class="c-kw">git</span> push origin feature/ux-optimization</div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6 my-6">
+                    <!-- Task 1 -->
+                    <div onclick="openSubmissionModal('ui-ux-task-1', '作業 3-1: 「盲操」佈局挑戰')"
+                        class="border border-gray-200 bg-white rounded-xl p-6 hover:shadow-lg transition cursor-pointer relative group flex flex-col justify-between">
+                        <div>
+                            <div class="bg-[#E76F51] text-white w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 3-1</div>
+                            <h3 class="text-lg font-bold mb-2">「盲操」佈局挑戰</h3>
+                            <p class="text-xs text-gray-600 mb-4">將設計好的 UI 部署到手機，請同學嘗試在不看螢幕的情況下進行操作。測試按鈕是否夠大？間距是否足夠？</p>
+                        </div>
+                        <div class="border-t border-gray-100 pt-3 flex items-center justify-between text-xs text-[#E76F51] font-bold">
                             <span>⏱ 45 min</span>
                         </div>
+                        <!-- Click Hint Overlay -->
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                            <span class="bg-[#E76F51] text-white text-xs px-4 py-2 rounded-full font-bold shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                                📤 點擊繳交作業
+                            </span>
+                        </div>
                     </div>
-                    <!-- Click Hint Overlay -->
-                    <div
-                        class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
-                        <span
-                            class="bg-[#E76F51] text-white px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                            📤 點擊繳交作業
-                        </span>
-                    </div>
-                </div>
 
-                <!-- Task 2 -->
-                <div onclick="openSubmissionModal('ui-ux-task-2', '作業 3-2: FPV HUD 抬頭顯示器')"
-                    class="bg-white/10 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/20 transition group cursor-pointer relative">
-                    <div class="bg-[#2A9D8F] w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 3-2</div>
-                    <h3 class="text-xl font-bold mb-3">FPV HUD 抬頭顯示器</h3>
-                    <p class="text-sm opacity-80 mb-6 min-h-[80px]">將電池電量、連線延遲 (Ping)、車速等數據疊加在即時影像上。確保 UI 半透明且不遮擋中央視線。
-                    </p>
-                    <div class="border-t border-white/10 pt-4 mt-auto">
-                        <div class="flex items-center gap-2 text-sm font-bold text-[#2A9D8F] w-full">
+                    <!-- Task 2 -->
+                    <div onclick="openSubmissionModal('ui-ux-task-2', '作業 3-2: FPV HUD 抬頭顯示器')"
+                        class="border border-gray-200 bg-white rounded-xl p-6 hover:shadow-lg transition cursor-pointer relative group flex flex-col justify-between">
+                        <div>
+                            <div class="bg-[#2A9D8F] text-white w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 3-2</div>
+                            <h3 class="text-lg font-bold mb-2">FPV HUD 抬頭顯示器</h3>
+                            <p class="text-xs text-gray-600 mb-4">將電池電量、連線延遲 (Ping)、車速等數據疊加在即時影像上。確保 UI 半透明且不遮擋中央視線。</p>
+                        </div>
+                        <div class="border-t border-gray-100 pt-3 flex items-center justify-between text-xs text-[#2A9D8F] font-bold">
                             <span>⏱ 60 min</span>
                         </div>
-                    </div>
-                    <!-- Click Hint Overlay -->
-                    <div
-                        class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
-                        <span
-                            class="bg-[#2A9D8F] text-white px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                            📤 點擊繳交作業
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Task 3 -->
-                <div onclick="openSubmissionModal('ui-ux-task-3', '作業 3-3: 異常狀態 UX 處理')"
-                    class="bg-white/10 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/20 transition group cursor-pointer relative">
-                    <div class="bg-[#457B9D] w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 3-3</div>
-                    <h3 class="text-xl font-bold mb-3">異常狀態 UX 處理</h3>
-                    <p class="text-sm opacity-80 mb-6 min-h-[80px]">設計斷線或低電量時的警告機制。當 Wi-Fi 訊號微弱時，如何透過閃爍動畫提醒使用者？</p>
-                    <div class="border-t border-white/10 pt-4 mt-auto">
-                        <div class="flex items-center gap-2 text-sm font-bold text-[#A8DADC] w-full">
-                            <span>⏱ 30 min</span>
+                        <!-- Click Hint Overlay -->
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                            <span class="bg-[#2A9D8F] text-white text-xs px-4 py-2 rounded-full font-bold shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                                📤 點擊繳交作業
+                            </span>
                         </div>
                     </div>
-                    <!-- Click Hint Overlay -->
-                    <div
-                        class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
-                        <span
-                            class="bg-[#457B9D] text-white px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                            📤 點擊繳交作業
-                        </span>
+
+                    <!-- Task 3 -->
+                    <div onclick="openSubmissionModal('ui-ux-task-3', '作業 3-3: 異常狀態 UX 處理')"
+                        class="border border-gray-200 bg-white rounded-xl p-6 hover:shadow-lg transition cursor-pointer relative group flex flex-col justify-between">
+                        <div>
+                            <div class="bg-[#457B9D] text-white w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 3-3</div>
+                            <h3 class="text-lg font-bold mb-2">異常狀態 UX 處理</h3>
+                            <p class="text-xs text-gray-600 mb-4">設計斷線或低電量時的警告機制。當 Wi-Fi 訊號微弱時，如何透過閃爍動畫提醒使用者？</p>
+                        </div>
+                        <div class="border-t border-gray-100 pt-3 flex items-center justify-between text-xs text-[#457B9D] font-bold">
+                            <span>⏱ 30 min</span>
+                        </div>
+                        <!-- Click Hint Overlay -->
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                            <span class="bg-[#457B9D] text-white text-xs px-4 py-2 rounded-full font-bold shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                                📤 點擊繳交作業
+                            </span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="mt-12 text-center">
-                <a href="#"
-                    class="inline-flex items-center justify-center gap-2 bg-white text-[#1D3557] px-8 py-3 rounded-full font-bold hover:bg-gray-100 transition shadow-lg">
-                    <span>📄</span> 下載設計草圖模板 (PDF)
-                </a>
-            </div>
-        </section>
+                <div class="mt-8 text-center">
+                    <a href="#" class="inline-flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 px-6 py-3 rounded-full font-bold text-sm transition shadow-sm border border-slate-200">
+                        <span>📄</span> 下載設計草圖模板 (PDF)
+                    </a>
+                </div>
 
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                    <button class="ms-btn" onclick="markDone(5); goToUnit(6)">標記已完成並繼續 &nbsp;›</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 6: Summary & Resources -->
+        <div class="ms-unit-page" id="page-6">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-6" style="display:none;"><i class="fas fa-check"></i> 已完成</div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i> 預估時間：3 分鐘</div>
+                </div>
+
+                <h1>單元摘要與參考資源</h1>
+                <p>恭喜你完成本單元！讓我們快速複習一下 UI/UX 的核心概念，並提供一些有用的資源連結：</p>
+
+                <h3>💡 核心摘要</h3>
+                <ul>
+                    <li><strong>拇指熱區 (Thumb Zone)</strong>：行動端介面佈局的核心。核心控制（STOP、方向鍵）應置於底部易觸及之處，輔助控制（選單、設定）則可置於上方。</li>
+                    <li><strong>視覺階層</strong>：運用色彩（紅/黃/綠）、大小、對比來拉開功能的重要性。降低資訊噪音，確保駕駛者專注。</li>
+                    <li><strong>反饋迴圈 (Feedback Loop)</strong>：每次操作皆需要視覺、觸覺（震動）的反饋。異常狀態下需設計顯著的多重警示（閃爍動畫、高對比文字）。</li>
+                </ul>
+
+                <h3>🔗 參考資源</h3>
+                <div style="margin: 20px 0;">
+                    <a href="https://docs.google.com/document/d/e/2PACX-1vQbhALfnxDYjHlpWoJ2uqgEVA6vh-USrIWShsry4C9nigfsWQuX4kAW4SyNMDqE5s7JG0f5_OKlALeA/pub" target="_blank" class="ms-resource-link">
+                        <i class="far fa-file-alt"></i>
+                        <div>
+                            <div style="font-weight:600;">UI/UX 設計規範課程講義</div>
+                            <div style="font-size:12px; color:#605e5c; margin-top:2px;">詳細閱讀完整的 UI/UX 理論與人機介面實務技巧。</div>
+                        </div>
+                        <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                    </a>
+
+                    <a href="https://classroom.github.com" target="_blank" class="ms-resource-link">
+                        <i class="fab fa-github"></i>
+                        <div>
+                            <div style="font-weight:600;">GitHub Classroom</div>
+                            <div style="font-size:12px; color:#605e5c; margin-top:2px;">管理你的作業提交與自動評分結果。</div>
+                        </div>
+                        <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                    </a>
+                </div>
+
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                    <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
+                    <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「UI/UX 設計規範：從視覺到體驗」模組！')">完成模組</button>
+                </div>
+            </div>
+        </div>
     </main>
+</div>
 
-    <footer class="bg-[#1D3557] text-white py-8 text-center border-t border-white/10">
-        <p class="opacity-60 text-sm">© 2026 Vibe Coding. All rights reserved.</p>
-    </footer>
+<script>
+    /* ─── DATA ─── */
+    const UNITS = [
+        { id: 0, label: '課程總覽',       time: '',         type: 'index' },
+        { id: 1, label: '簡介',            time: '3 分鐘',  type: 'unit'  },
+        { id: 2, label: '拇指操作區與人體工學', time: '10 分鐘', type: 'unit' },
+        { id: 3, label: '視覺階層與認知負荷', time: '8 分鐘',  type: 'unit'  },
+        { id: 4, label: '按鈕狀態與反饋實驗室', time: '8 分鐘',  type: 'unit'  },
+        { id: 5, label: '實戰挑戰',       time: '135 分鐘', type: 'lab'   },
+        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+    ];
 
-    <script>
-        function showToast() {
-            const container = document.getElementById('toast-container');
-            // Clear previous toast
-            container.innerHTML = '';
+    let currentUnit = 0;
+    let doneSet = new Set();
 
-            // Create new toast
-            const toast = document.createElement('div');
-            toast.className = 'inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-lg font-bold shadow-sm animate-bounce';
-            toast.innerHTML = '<span>✅</span> 連線成功！ (Connection Established)';
+    /* ─── INIT ─── */
+    function init() {
+        buildSidebar();
+        buildIndexUnitList();
+        goToUnit(0);
+    }
 
-            container.appendChild(toast);
+    function buildSidebar() {
+        const nav = document.getElementById('sidebar-nav');
+        nav.innerHTML = UNITS.map(u => {
+            const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : '';
+            return `
+            <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
+                <div class="unit-icon" id="icon-${u.id}">${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div>
+                <div class="unit-meta">
+                    <div class="unit-name">${u.label}${badge}</div>
+                    ${u.time ? `<div class="unit-time"><i class="far fa-clock"></i> ${u.time}</div>` : ''}
+                </div>
+            </div>`;
+        }).join('');
+    }
 
-            // Remove after 2 seconds
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
-        }
-    </script>
-    <!-- Media Overlay injected by course-shared.js?v=2026.04.05.FINAL_V6 -->
+    function buildIndexUnitList() {
+        const el = document.getElementById('index-unit-list');
+        el.innerHTML = UNITS.filter(u => u.id > 0).map(u => `
+            <div class="unit-card ${u.type}" onclick="goToUnit(${u.id})">
+                <div class="unit-card-num">${u.id}</div>
+                <div class="unit-card-info">
+                    <div class="unit-card-name">${u.label}</div>
+                    <div class="unit-card-time"><i class="far fa-clock"></i> ${u.time}</div>
+                </div>
+                <div class="unit-card-arrow">›</div>
+            </div>
+        `).join('');
+    }
 
-    <script>
-        // Define Resources
-        window.RESOURCES = {
-            video: "https://www.youtube.com/embed/VeOwKnWLCN8?autoplay=1",
-            doc: "https://docs.google.com/document/d/e/2PACX-1vQbhALfnxDYjHlpWoJ2uqgEVA6vh-USrIWShsry4C9nigfsWQuX4kAW4SyNMDqE5s7JG0f5_OKlALeA/pub?embedded=true"
-        };
-    </script>
-    <script src="/js/course-shared.js?v=2026.05.22.V27.START_UNITS_LAYOUT_UPGRADE"></script>
+    /* ─── NAVIGATION ─── */
+    function goToUnit(id) {
+        document.querySelectorAll('.ms-unit-page').forEach(p => p.classList.remove('visible'));
+        const target = id === 0 ? document.getElementById('page-index') : document.getElementById(`page-${id}`);
+        if (target) target.classList.add('visible');
 
-    <!-- Assignment Guide (Hidden) -->
-    <section id="assignment-guide" style="display: none;">
+        document.querySelectorAll('.ms-unit-item').forEach(el => el.classList.remove('active'));
+        const navItem = document.getElementById(`nav-${id}`);
+        if (navItem) { navItem.classList.add('active'); navItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) {
+                icon.className = 'unit-icon done';
+                icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>';
+            } else if (u.id === id) {
+                icon.className = 'unit-icon active-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            } else {
+                icon.className = 'unit-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            }
+        });
+
+        const unit = UNITS.find(u => u.id === id);
+        document.getElementById('bc-current').textContent = unit ? unit.label : '';
+        currentUnit = id;
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function markDone(id) {
+        doneSet.add(id);
+        const badge = document.getElementById(`badge-${id}`);
+        if (badge) badge.style.display = 'flex';
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) { icon.className = 'unit-icon done'; icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>'; }
+        });
+        updateProgress();
+    }
+
+    function updateProgress() {
+        const total = UNITS.length - 1;
+        const done = doneSet.size;
+        document.getElementById('progress-fill').style.width = Math.round(done / total * 100) + '%';
+        document.getElementById('progress-text').textContent = `${done} / ${total} 已完成`;
+    }
+
+    /* ─── TOAST LOOP ─── */
+    function showToast() {
+        const container = document.getElementById('toast-container');
+        container.innerHTML = '';
+
+        const toast = document.createElement('div');
+        toast.className = 'inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-lg font-bold shadow-sm animate-bounce';
+        toast.innerHTML = '<span>✅</span> 連線成功！ (Connection Established)';
+
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+
+    /* ─── START ─── */
+    init();
+</script>
+
+<!-- Define Resources -->
+<script>
+    window.RESOURCES = {
+        video: "https://www.youtube.com/embed/VeOwKnWLCN8?autoplay=1",
+        doc: "https://docs.google.com/document/d/e/2PACX-1vQbhALfnxDYjHlpWoJ2uqgEVA6vh-USrIWShsry4C9nigfsWQuX4kAW4SyNMDqE5s7JG0f5_OKlALeA/pub?embedded=true"
+    };
+</script>
+<script src="/js/course-shared.js?v=2026.05.22.V27.START_UNITS_LAYOUT_UPGRADE"></script>
+
+<!-- Assignment Guide (Hidden) -->
+<section id="assignment-guide" style="display: none;">
 <div class="markdown-heading"><h1 class="heading-element">任務挑戰：UX 研究報告 (Assignment Tasks)</h1><a id="user-content-任務挑戰ux-研究報告-assignment-tasks" class="anchor" aria-label="Permalink: 任務挑戰：UX 研究報告 (Assignment Tasks)" href="#任務挑戰ux-研究報告-assignment-tasks"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>請在完成程式碼實作後，填寫以下報告。</p>
 <div class="markdown-heading"><h2 class="heading-element">1. 「盲操挑戰」紀錄表 (Blind Operation Challenge)</h2><a id="user-content-1-盲操挑戰紀錄表-blind-operation-challenge" class="anchor" aria-label="Permalink: 1. 「盲操挑戰」紀錄表 (Blind Operation Challenge)" href="#1-盲操挑戰紀錄表-blind-operation-challenge"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
