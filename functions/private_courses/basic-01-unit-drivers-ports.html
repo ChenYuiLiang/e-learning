@@ -4,269 +4,1035 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>驅動程式與通訊埠原理 - Vibe Coding</title>
+    <title>驅動程式與通訊埠原理 - Vibe Coding Learn</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <style>
+        :root {
+            --ms-blue: #0078d4;
+            --ms-blue-dark: #005a9e;
+            --ms-blue-light: #deecf9;
+            --ms-gray-10: #f3f2f1;
+            --ms-gray-20: #e1dfdd;
+            --ms-gray-90: #201f1e;
+            --ms-green: #107c10;
+            --ms-red: #d13438;
+            --sidebar-w: 280px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fff;
+            color: #201f1e;
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* ─── TOP NAV ─── */
+        .ms-topnav {
+            background: var(--ms-blue);
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 4px rgba(0,0,0,.2);
+        }
+        .ms-topnav .brand {
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
+
+        /* ─── LAYOUT ─── */
+        .ms-layout { display: flex; min-height: calc(100vh - 48px); }
+
+        /* ─── SIDEBAR ─── */
+        .ms-sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            background: #faf9f8;
+            border-right: 1px solid #e1dfdd;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 48px;
+            height: calc(100vh - 48px);
+            overflow-y: auto;
+        }
+        .ms-sidebar-header {
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .ms-sidebar-header .module-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #605e5c;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .ms-sidebar-header .module-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #201f1e;
+            line-height: 1.4;
+        }
+        .ms-sidebar-header .meta {
+            font-size: 12px;
+            color: #605e5c;
+            margin-top: 6px;
+        }
+        .ms-unit-list { padding: 8px 0; }
+        .ms-unit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: background .12s, border-color .12s;
+            color: #201f1e;
+        }
+        .ms-unit-item:hover { background: #edebe9; }
+        .ms-unit-item.active {
+            border-left-color: var(--ms-blue);
+            background: #deecf9;
+        }
+        .ms-unit-item.active .unit-name { color: var(--ms-blue); font-weight: 600; }
+        .unit-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #c8c6c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            font-size: 10px;
+            background: #fff;
+        }
+        .unit-icon.done { background: var(--ms-green); border-color: var(--ms-green); color: #fff; }
+        .unit-icon.active-icon { border-color: var(--ms-blue); background: var(--ms-blue); color: #fff; }
+        .unit-meta { flex: 1; min-width: 0; }
+        .unit-name { font-size: 13px; line-height: 1.4; }
+        .unit-time { font-size: 11px; color: #605e5c; margin-top: 2px; }
+        .sidebar-progress {
+            padding: 12px 16px;
+            border-top: 1px solid #e1dfdd;
+            margin-top: auto;
+        }
+        .progress-bar-bg { background: #e1dfdd; border-radius: 4px; height: 6px; }
+        .progress-bar-fill { background: var(--ms-green); border-radius: 4px; height: 6px; transition: width .4s; }
+        .progress-text { font-size: 12px; color: #605e5c; margin-top: 6px; }
+
+        /* ─── MAIN ─── */
+        .ms-content { flex: 1; min-width: 0; }
+
+        .ms-breadcrumb {
+            padding: 10px 40px;
+            font-size: 12px;
+            color: #605e5c;
+            border-bottom: 1px solid #e1dfdd;
+            background: #fff;
+        }
+        .ms-breadcrumb a { color: var(--ms-blue); text-decoration: none; }
+        .ms-breadcrumb a:hover { text-decoration: underline; }
+        .ms-breadcrumb span { margin: 0 6px; }
+
+        /* ─── PAGES ─── */
+        .ms-unit-page { display: none; }
+        .ms-unit-page.visible { display: block; }
+
+        .unit-content {
+            max-width: 820px;
+            padding: 32px 40px 60px;
+            margin: 0 auto;
+        }
+
+        .unit-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .unit-completed-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #dff6dd;
+            color: #107c10;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 2px;
+        }
+        .unit-time-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #605e5c;
+            font-size: 13px;
+        }
+
+        /* Typography */
+        .unit-content h1 { font-size: 28px; font-weight: 700; margin: 0 0 20px; color: #201f1e; line-height: 1.3; }
+        .unit-content h2 { font-size: 20px; font-weight: 600; margin: 36px 0 12px; color: #201f1e; padding-top: 8px; }
+        .unit-content h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; color: #201f1e; }
+        .unit-content p { margin: 0 0 14px; }
+        .unit-content ul, .unit-content ol { margin: 0 0 14px; padding-left: 28px; }
+        .unit-content li { margin-bottom: 6px; }
+        .unit-content strong { font-weight: 600; }
+        .unit-content a { color: var(--ms-blue); text-decoration: none; }
+        .unit-content a:hover { text-decoration: underline; }
+        .unit-content code {
+            background: #f3f2f1;
+            border: 1px solid #e1dfdd;
+            border-radius: 3px;
+            padding: 1px 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #a31515;
+        }
+
+        /* Callouts */
+        .ms-note, .ms-tip, .ms-warning, .ms-important {
+            display: flex;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid;
+            font-size: 14px;
+        }
+        .ms-note { background: #deecf9; border-color: var(--ms-blue); }
+        .ms-note .note-icon { color: var(--ms-blue); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-tip { background: #dff6dd; border-color: var(--ms-green); }
+        .ms-tip .note-icon { color: var(--ms-green); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-warning { background: #fff4ce; border-color: #ffaa44; }
+        .ms-warning .note-icon { color: #ffaa44; font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-important { background: #fde7e9; border-color: var(--ms-red); }
+        .ms-important .note-icon { color: var(--ms-red); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .note-body strong { display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+
+        /* Scenario */
+        .ms-scenario {
+            background: #f3f2f1;
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #323130;
+            border-left: 4px solid #c8c6c4;
+        }
+        .ms-scenario-label {
+            font-style: normal;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #605e5c;
+            margin-bottom: 8px;
+        }
+
+        /* Steps */
+        .ms-steps { margin: 16px 0; }
+        .ms-step { display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start; }
+        .ms-step-num {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: var(--ms-blue); color: #fff;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .ms-step-body { flex: 1; }
+        .ms-step-body h4 { font-size: 14px; font-weight: 600; margin: 0 0 4px; }
+        .ms-step-body p { font-size: 14px; margin: 0; }
+
+        /* Table */
+        .ms-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+        .ms-table th {
+            background: #f3f2f1; font-weight: 600; text-align: left;
+            padding: 10px 14px; border: 1px solid #e1dfdd; color: #323130;
+        }
+        .ms-table td { padding: 9px 14px; border: 1px solid #e1dfdd; vertical-align: top; }
+        .ms-table tr:nth-child(even) td { background: #faf9f8; }
+        .ms-table .check { color: var(--ms-green); font-size: 16px; }
+        .ms-table .cross { color: #8a8886; font-size: 16px; }
+
+        /* Checklist */
+        .ms-checklist { list-style: none; padding: 0; margin: 12px 0; }
+        .ms-checklist li {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 6px 0; font-size: 14px;
+        }
+        .ms-checklist li .check-box {
+            width: 18px; height: 18px;
+            border: 2px solid #8a8886; border-radius: 2px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; margin-top: 1px; cursor: pointer; transition: all .15s;
+        }
+        .ms-checklist li .check-box.checked {
+            background: var(--ms-blue); border-color: var(--ms-blue); color: #fff;
+        }
+
+        /* Code block */
+        .ms-code {
+            background: #1e1e1e;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px 0;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-x: auto;
+        }
+        .ms-code .c-comment { color: #6a9955; }
+        .ms-code .c-str { color: #ce9178; }
+        .ms-code .c-kw { color: #569cd6; }
+        .ms-code .c-attr { color: #9cdcfe; }
+        .ms-code .c-val { color: #ce9178; }
+        .ms-code .c-tag { color: #4ec9b0; }
+        .ms-code .c-white { color: #d4d4d4; }
+
+        /* Lab card */
+        .ms-lab-card {
+            background: linear-gradient(135deg, #eef6ff 0%, #f5f0ff 100%);
+            border: 1px solid #c7e0f4;
+            border-radius: 6px;
+            padding: 24px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: box-shadow .15s, border-color .15s;
+        }
+        .ms-lab-card:hover { box-shadow: 0 4px 16px rgba(0,120,212,.12); border-color: var(--ms-blue); }
+        .ms-lab-card h3 { margin: 0 0 12px; color: var(--ms-blue-dark); font-size: 16px; font-weight: 600; }
+        .ms-lab-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--ms-blue);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 12px;
+        }
+        .ms-lab-time {
+            font-size: 12px;
+            color: #605e5c;
+            margin-left: 8px;
+        }
+
+        /* Compare grid */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .compare-card {
+            border: 1px solid #e1dfdd;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .compare-card-header {
+            padding: 12px 14px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .compare-card-body {
+            padding: 14px;
+            font-size: 13px;
+            color: #605e5c;
+            line-height: 1.5;
+        }
+
+        /* Buttons */
+        .ms-btn {
+            background: var(--ms-blue); color: #fff; border: none;
+            padding: 7px 18px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; transition: background .12s;
+            font-family: inherit;
+        }
+        .ms-btn:hover { background: var(--ms-blue-dark); }
+        .ms-btn-ghost {
+            background: transparent; color: var(--ms-blue);
+            border: 1px solid var(--ms-blue); padding: 6px 18px;
+            font-size: 14px; font-weight: 600; border-radius: 2px;
+            cursor: pointer; transition: background .12s; font-family: inherit;
+        }
+        .ms-btn-ghost:hover { background: var(--ms-blue-light); }
+
+        /* Nav */
+        .unit-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            border-top: 1px solid #e1dfdd;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .nav-btn-prev, .nav-btn-next {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 20px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; border: 1px solid;
+            font-family: inherit; transition: background .12s;
+        }
+        .nav-btn-next { background: var(--ms-blue); color: #fff; border-color: var(--ms-blue); }
+        .nav-btn-next:hover { background: var(--ms-blue-dark); border-color: var(--ms-blue-dark); }
+        .nav-btn-prev { background: #fff; color: var(--ms-blue); border-color: var(--ms-blue); }
+        .nav-btn-prev:hover { background: var(--ms-blue-light); }
+        .unit-page-indicator { font-size: 13px; color: #605e5c; }
+
+        /* Module index */
+        .module-meta-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        .ms-tag { background: #f3f2f1; color: #323130; font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: 500; }
+        .ms-tag.blue { background: #deecf9; color: var(--ms-blue-dark); }
+        .ms-tag.green { background: #dff6dd; color: #107c10; }
+        .unit-card-list { margin: 20px 0; }
+        .unit-card {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 0; border-bottom: 1px solid #f3f2f1; cursor: pointer;
+        }
+        .unit-card:last-child { border-bottom: none; }
+        .unit-card:hover .unit-card-name { color: var(--ms-blue); text-decoration: underline; }
+        .unit-card-num {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #f3f2f1; color: #605e5c;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .unit-card.lab .unit-card-num { background: #eef6ff; color: var(--ms-blue-dark); }
+        .unit-card.quiz .unit-card-num { background: #fff4ce; color: #8a6914; }
+        .unit-card-info { flex: 1; }
+        .unit-card-name { font-size: 15px; font-weight: 500; }
+        .unit-card-time { font-size: 12px; color: #605e5c; margin-top: 2px; }
+        .unit-card-arrow { color: #c8c6c4; font-size: 14px; }
+
+        /* Resource links */
+        .ms-resource-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; text-decoration: none; color: #201f1e;
+            font-size: 14px; transition: background .1s;
+        }
+        .ms-resource-link:hover { background: #f3f2f1; }
+        .ms-resource-link i { color: var(--ms-blue); font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+
+        /* Achievement */
+        .ms-achievement {
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            color: #fff; border-radius: 6px; padding: 24px 28px;
+            margin: 24px 0; display: flex; align-items: center; gap: 20px;
+        }
+        .achievement-icon { font-size: 48px; flex-shrink: 0; }
+        .achievement-text h3 { margin: 0 0 4px; font-size: 18px; }
+        .achievement-text p { margin: 0; font-size: 14px; opacity: .9; }
+
+        @media (max-width: 768px) {
+            .ms-sidebar { display: none; }
+            .unit-content { padding: 20px 16px 40px; }
+            .unit-nav { padding: 16px; }
+            .ms-breadcrumb { padding: 8px 16px; }
+            .compare-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 
-<body class="bg-gray-50 flex flex-col min-h-screen text-gray-800 font-[Inter]">
+<body>
 
-    <!-- Hero Section -->
-    <header
-        class="relative bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 text-white pt-24 pb-32 overflow-hidden">
-        <div
-            class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2940&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-overlay">
+<!-- TOP NAV -->
+<nav class="ms-topnav">
+    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <div class="divider"></div>
+    <span class="nav-label">基礎 1 - 硬體連線</span>
+</nav>
+
+<div class="ms-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="ms-sidebar">
+        <div class="ms-sidebar-header">
+            <div class="module-label">模組</div>
+            <div class="module-title">驅動程式與通訊埠原理</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 6 個單元</div>
         </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-gray-50 to-transparent bottom-0 h-16"></div>
-
-        <div class="container mx-auto px-4 relative z-10 text-center">
-            <span
-                class="inline-block py-1 px-3 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-sm font-semibold mb-6 tracking-wide uppercase">
-                基礎 1 - 硬體連線
-            </span>
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit]">
-                驅動程式與通訊埠原理
-            </h1>
-            <p class="text-xl md:text-2xl text-purple-100 max-w-2xl mx-auto font-light leading-relaxed">
-                打通橋樑：理解 USB-to-UART、COM Port 與 Baud Rate。建立穩定的硬體開發基石。
-            </p>
-
-            <div class="mt-8 flex flex-wrap justify-center gap-4">
-                <button onclick="enterMediaMode('video', window.RESOURCES.youtube)"
-                    class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
-                    <span>📺</span> 觀看教學影片
-                </button>
-                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
-                    class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
-                    <span>📄</span> 閱讀課程講義
-                </button>
+        <nav class="ms-unit-list" id="sidebar-nav"></nav>
+        <div class="sidebar-progress">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
+            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
         </div>
-    </header>
+    </aside>
 
-    <!-- Main Content -->
-    <main class="container mx-auto px-4 -mt-20 relative z-20 pb-20">
+    <!-- MAIN -->
+    <main class="ms-content">
 
-        <!-- Module 1: USB-to-UART -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-                <div class="p-1 bg-gradient-to-r from-blue-500 to-cyan-400"></div>
-                <div class="p-8 md:p-12">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                        <span class="text-4xl">🔌</span> 1. 數位翻譯官：USB-to-UART 橋接晶片
-                    </h2>
-                    <div class="space-y-8 text-gray-600 text-lg">
-                        <div class="bg-blue-50 rounded-xl p-6 border border-blue-100 shadow-sm">
-                            <h3 class="text-xl font-bold text-blue-800 mb-3 underline decoration-blue-200">通訊協定的衝突</h3>
-                            <p class="leading-relaxed text-justify">
-                                電腦說的是 <strong>USB 語言</strong>（高速）；而 ESP32 說的是 <strong>UART 語言</strong>（序列）。兩者直接對話是無法溝通的。
-                            </p>
-                            <div
-                                class="mt-6 flex items-center justify-center gap-4 text-sm font-mono text-blue-900 bg-white/50 p-4 rounded-lg border border-blue-100 italic">
-                                💻 USB <span class="text-blue-300">↔️</span> <span
-                                    class="bg-white px-3 py-1 rounded shadow-sm border border-blue-200 font-bold text-justify">橋接晶片</span>
-                                <span class="text-blue-300">↔️</span> 🤖 UART
-                            </div>
-                        </div>
+        <div class="ms-breadcrumb">
+            <a href="#">Vibe Coding</a><span>›</span>
+            <a href="#">基礎 1 - 硬體連線</a><span>›</span>
+            <span id="bc-current">課程總覽</span>
+        </div>
 
-                        <div class="grid md:grid-cols-2 gap-8">
-                            <div class="p-6 bg-slate-50 rounded-xl border border-slate-200 transition hover:shadow-md">
-                                <h3 class="text-lg font-bold text-slate-800 mb-3 text-justify">橋接晶片的角色</h3>
-                                <p class="text-gray-600 text-sm leading-relaxed text-justify">
-                                    常見型號如 CP2102, CH340。負責將 USB 包還原為序列信號。
-                                </p>
-                            </div>
-                            <div class="p-6 bg-slate-50 rounded-xl border border-slate-200 transition hover:shadow-md">
-                                <h3 class="text-lg font-bold text-slate-800 mb-3 text-justify">驅動程式的本質</h3>
-                                <p class="text-gray-600 text-sm leading-relaxed text-justify">
-                                    給作業系統看的「說明書」。不安裝，系統就不知道如何操作橋接晶片。
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+        <!-- ══════════ PAGE 0: INDEX ══════════ -->
+        <div class="ms-unit-page visible" id="page-index">
+            <div class="unit-content">
+                <h1>驅動程式與通訊埠原理</h1>
+                <div class="module-meta-tags">
+                    <span class="ms-tag">模組</span>
+                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag green">基礎 1</span>
+                    <span class="ms-tag blue">硬體連線</span>
+                    <span class="ms-tag blue">物聯網</span>
+                </div>
+
+                <p>打通橋樑：理解 USB-to-UART、COM Port 與 Baud Rate。建立穩定的硬體開發基石。</p>
+
+                <h2>學習目標</h2>
+                <p>完成本模組後，你將能夠：</p>
+                <ul>
+                    <li>理解並掌握 <strong>USB-to-UART 橋接晶片</strong> 的核心觀念與操作實務。</li>
+                    <li>學會 <strong>通訊埠 (COM Port)</strong> 的關鍵原理，並能將其應用於開發。</li>
+                    <li>掌握 <strong>波特率 (Baud Rate)</strong> 的調校技巧與穩定性測試。</li>
+                    <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
+                </ul>
+
+                <h2>必要條件</h2>
+                <ul>
+                    <li>準備好 ESP32 開發板與 Micro USB / USB-C 數據線</li>
+                    <li>電腦已配置 VS Code 與 PlatformIO 開發環境</li>
+                    <li>擁有 GitHub 帳號，能夠接受 GitHub Classroom 邀請</li>
+                </ul>
+
+                <h2>本模組單元</h2>
+                <div class="unit-card-list" id="index-unit-list"></div>
+                <div style="margin-top:32px;">
+                    <button class="ms-btn" onclick="goToUnit(1)">開始模組 &nbsp;›</button>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- Module 2: COM Port -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-                <div class="p-1 bg-gradient-to-r from-purple-500 to-pink-400"></div>
-                <div class="p-8 md:p-12">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                        <span class="text-4xl text-justify">🚪</span> 2. 什麼是通訊埠 (COM Port)？
-                    </h2>
-                    <div class="flex flex-col md:flex-row gap-8 items-center">
-                        <div class="flex-1 space-y-6">
-                            <div class="bg-purple-50 p-6 rounded-xl border border-purple-100 shadow-sm">
-                                <h4 class="font-bold text-purple-800 mb-2">邏輯抽象化</h4>
-                                <p class="text-gray-600 leading-relaxed text-base text-justify">
-                                    安裝後，系統會將晶片「虛擬化」為一個 COM 埠。這就像為裝置開了一個專屬的「門牌號碼」。
-                                </p>
-                            </div>
-                            <div class="bg-amber-50 border-l-4 border-amber-400 p-6 rounded-r-xl">
-                                <h4 class="font-bold text-amber-800 mb-1 flex items-center gap-2"><span>⚠️</span> 唯一性與衝突
-                                </h4>
-                                <p class="text-amber-700 text-sm leading-relaxed text-left text-justify">
-                                    編號衝突或找不到門牌是失敗最常見原因。
-                                </p>
-                            </div>
-                        </div>
-                        <div class="w-full md:w-1/3 text-justify">
-                            <div
-                                class="bg-slate-900 text-green-400 font-mono p-6 rounded-2xl shadow-2xl text-xs md:text-sm leading-relaxed border border-slate-700">
-                                <span class="text-gray-500">// Terminal Check</span><br>
-                                &gt; ls /dev/tty.*<br>
-                                <span class="text-gray-600">/dev/tty.Bluetooth-In</span><br>
-                                <span class="text-yellow-400 font-bold">/dev/tty.usbserial-0001</span><br>
-                                <span class="text-gray-600">/dev/tty.wlan-debug</span>
-                            </div>
-                        </div>
-                    </div>
+        <!-- ══════════ PAGE 1: 簡介 ══════════ -->
+        <div class="ms-unit-page" id="page-1">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-1" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                </div>
+
+                <h1>簡介</h1>
+
+                <p>
+                    歡迎來到本模組！本單元的核心主題是 <strong>驅動程式與通訊埠原理</strong>。
+                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
+                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                </p>
+
+                <div class="ms-scenario">
+                    <div class="ms-scenario-label">學習指引</div>
+                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
+                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                </div>
+
+                <h2>教學影片</h2>
+                <div style="border-radius:4px; overflow:hidden; margin:20px 0; box-shadow:0 2px 8px rgba(0,0,0,.12); aspect-ratio:16/9;">
+                    <iframe src="https://www.youtube.com/embed/_kXXn3cQ4Kc"
+                        title="驅動程式與通訊埠原理 教學影片" allowfullscreen
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        style="width:100%; height:100%; display:block; border:0;">
+                    </iframe>
                 </div>
             </div>
-        </section>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
+                <span class="unit-page-indicator">1 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
 
-        <!-- Module 3: Baud Rate -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-                <div class="p-1 bg-gradient-to-r from-green-500 to-teal-400"></div>
-                <div class="p-8 md:p-12">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                        <span class="text-4xl">⏱️</span> 3. 序列通訊的核心參數：Baud Rate
-                    </h2>
-                    <div class="grid md:grid-cols-2 gap-12">
-                        <div class="space-y-6 text-gray-600 text-lg">
-                            <p class="text-justify"><strong>波特率 (Baud Rate)：</strong>定義每秒傳輸 bit。雙方必須遵守的「溝通語速」。</p>
-                            <div class="grid grid-cols-1 gap-4">
-                                <div
-                                    class="flex items-center gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200 shadow-sm text-justify">
-                                    <span class="text-slate-400 font-mono font-bold w-16">9600</span>
-                                    <span class="text-sm">傳統速率。</span>
-                                </div>
-                                <div
-                                    class="flex items-center gap-4 bg-emerald-50 p-4 rounded-lg border border-emerald-200 shadow-sm text-justify">
-                                    <span class="text-emerald-600 font-mono font-bold w-16">115200</span>
-                                    <span class="text-sm text-emerald-800 font-medium text-justify">ESP32 標準速率。</span>
-                                </div>
-                                <div
-                                    class="flex items-center gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200 shadow-sm text-justify">
-                                    <span class="text-slate-400 font-mono font-bold w-16 text-justify">921600</span>
-                                    <span class="text-sm">極速燒錄。</span>
-                                </div>
-                            </div>
-                        </div>
+        <!-- ══════════ PAGE 2: 單元 1 ══════════ -->
+        <div class="ms-unit-page" id="page-2">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-2" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
+                </div>
+
+                <h1>🔌 1. 數位翻譯官：USB-to-UART 橋接晶片</h1>
+                
+                <div class="space-y-8 text-gray-600 text-lg">
+                    <div class="bg-blue-50 rounded-xl p-6 border border-blue-100 shadow-sm">
+                        <h3 class="text-xl font-bold text-blue-800 mb-3 underline decoration-blue-200" style="border-bottom:none; margin:0 0 12px; padding:0;">通訊協定的衝突</h3>
+                        <p class="leading-relaxed text-justify">
+                            電腦說的是 <strong>USB 語言</strong>（高速）；而 ESP32 說的是 <strong>UART 語言</strong>（序列）。兩者直接對話是無法溝通的。
+                        </p>
                         <div
-                            class="bg-red-50 rounded-2xl p-8 border border-red-100 shadow-inner flex flex-col justify-center text-center">
-                            <h3 class="text-xl font-bold text-red-800 mb-4">🚫 為何看見亂碼？</h3>
-                            <p class="text-red-700 text-base leading-relaxed mb-6 italic text-justify">
-                                「語速不一，數據就會在解碼時崩潰，形成亂碼。」
+                            class="mt-6 flex items-center justify-center gap-4 text-sm font-mono text-blue-900 bg-white/50 p-4 rounded-lg border border-blue-100 italic">
+                            💻 USB <span class="text-blue-300">↔️</span> <span
+                                class="bg-white px-3 py-1 rounded shadow-sm border border-blue-200 font-bold text-justify">橋接晶片</span>
+                            <span class="text-blue-300">↔️</span> 🤖 UART
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="p-6 bg-slate-50 rounded-xl border border-slate-200 transition hover:shadow-md">
+                            <h3 class="text-lg font-bold text-slate-800 mb-3 text-justify" style="border-bottom:none; margin:0 0 12px; padding:0;">橋接晶片的角色</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed text-justify">
+                                常見型號如 CP2102, CH340。負責將 USB 包還原為序列信號。
                             </p>
-                            <div
-                                class="text-3xl bg-white/50 p-4 rounded-xl border border-red-200 font-mono text-red-400 select-none">
-                                ▒▓▒░▒▓▒░
+                        </div>
+                        <div class="p-6 bg-slate-50 rounded-xl border border-slate-200 transition hover:shadow-md">
+                            <h3 class="text-lg font-bold text-slate-800 mb-3 text-justify" style="border-bottom:none; margin:0 0 12px; padding:0;">驅動程式的本質</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed text-justify">
+                                給作業系統看的「說明書」。不安裝，系統就不知道如何操作橋接晶片。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">2 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 3: 單元 2 ══════════ -->
+        <div class="ms-unit-page" id="page-3">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-3" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
+                </div>
+
+                <h1>🚪 2. 什麼是通訊埠 (COM Port)？</h1>
+                
+                <div class="flex flex-col md:flex-row gap-8 items-center">
+                    <div class="flex-1 space-y-6">
+                        <div class="bg-purple-50 p-6 rounded-xl border border-purple-100 shadow-sm">
+                            <h4 class="font-bold text-purple-800 mb-2">邏輯抽象化</h4>
+                            <p class="text-gray-600 leading-relaxed text-base text-justify">
+                                安裝後，系統會將晶片「虛擬化」為一個 COM 埠。這終端就像為裝置開了一個專屬的「門牌號碼」。
+                            </p>
+                        </div>
+                        <div class="bg-amber-50 border-l-4 border-amber-400 p-6 rounded-r-xl">
+                            <h4 class="font-bold text-amber-800 mb-1 flex items-center gap-2"><span>⚠️</span> 唯一性與衝突</h4>
+                            <p class="text-amber-700 text-sm leading-relaxed text-left text-justify">
+                                編號衝突或找不到門牌是失敗最常見原因。
+                            </p>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-1/3 text-justify">
+                        <div class="bg-slate-900 text-green-400 font-mono p-6 rounded-2xl shadow-2xl text-xs md:text-sm leading-relaxed border border-slate-700">
+                            <span class="text-gray-500">// Terminal Check</span><br>
+                            &gt; ls /dev/tty.*<br>
+                            <span class="text-gray-600">/dev/tty.Bluetooth-In</span><br>
+                            <span class="text-yellow-400 font-bold">/dev/tty.usbserial-0001</span><br>
+                            <span class="text-gray-600">/dev/tty.wlan-debug</span>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">3 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 4: 單元 3 ══════════ -->
+        <div class="ms-unit-page" id="page-4">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-4" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
+                </div>
+
+                <h1>⏱️ 3. 序列通訊的核心參數：Baud Rate</h1>
+                
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div class="space-y-6 text-gray-600 text-lg">
+                        <p class="text-justify"><strong>波特率 (Baud Rate)：</strong>定義每秒傳輸 bit。雙方必須遵守的「溝通語速」。</p>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200 shadow-sm text-justify">
+                                <span class="text-slate-400 font-mono font-bold w-16">9600</span>
+                                <span class="text-sm">傳統速率。</span>
+                            </div>
+                            <div class="flex items-center gap-4 bg-emerald-50 p-4 rounded-lg border border-emerald-200 shadow-sm text-justify">
+                                <span class="text-emerald-600 font-mono font-bold w-16">115200</span>
+                                <span class="text-sm text-emerald-800 font-medium text-justify">ESP32 標準速率。</span>
+                            </div>
+                            <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200 shadow-sm text-justify">
+                                <span class="text-slate-400 font-mono font-bold w-16 text-justify">921600</span>
+                                <span class="text-sm">極速燒錄。</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-red-50 rounded-2xl p-8 border border-red-100 shadow-inner flex flex-col justify-center text-center">
+                        <h3 class="text-xl font-bold text-red-800 mb-4" style="border-bottom:none; margin:0 0 12px; padding:0;">🚫 為何看見亂碼？</h3>
+                        <p class="text-red-700 text-base leading-relaxed mb-6 italic text-justify">
+                            「語速不一，數據就會在解碼時崩潰，形成亂碼。」
+                        </p>
+                        <div class="text-3xl bg-white/50 p-4 rounded-xl border border-red-200 font-mono text-red-400 select-none">
+                            ▒▓▒░▒▓▒░
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">4 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 5: 實作挑戰 ══════════ -->
+        <div class="ms-unit-page" id="page-5">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-5" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 150 分鐘</div>
+                </div>
+
+                <h1>實戰任務：通訊鏈路診斷</h1>
+
+                <p>
+                    請動手完成以下三項實作任務，確保開發工具與硬體端能完美對話。
+                    每項任務完成後，請點擊卡片繳交作業。
+                </p>
+
+                <div class="lab-cards-group">
+                    <!-- Task 1-1 -->
+                    <div class="ms-lab-card" onclick="openSubmissionModal('basic-01-driver-1', '【作業 1-1】驅動與硬體偵錯')">
+                        <div class="ms-lab-badge"><i class="fas fa-plug"></i>&nbsp; 作業 1-1</div>
+                        <span class="ms-lab-time"><i class="far fa-clock"></i> 約 45 分鐘</span>
+                        <h3>環境通聯與偵錯</h3>
+                        <p style="font-size:14px; color:#323130; margin-bottom:14px;">
+                            目標：連接開發板，識別其 USB 轉序列晶片與通訊埠 (COM Port)，並記錄於診斷文件中。
+                        </p>
+                        <ul class="ms-checklist">
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>將開發板透過 USB 數據線連接至電腦</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>在裝置管理員 (Windows) 或終端機 (Mac: <code>ls /dev/tty.*</code>) 找到埠號</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>識別並確認橋接晶片型號 (例如 CP2102 或 CH340)</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>在 <code>docs/Diagnostic.md</code> 報告中記錄埠號與晶片型號</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>截圖埠號偵測畫面，存為 <code>assets/port_detected.png</code></span></li>
+                        </ul>
+                        <div class="ms-note" style="margin-top:12px;">
+                            <i class="fas fa-info-circle note-icon"></i>
+                            <div class="note-body">
+                                <strong>繳交與驗證說明</strong>
+                                確認學員能區分 <code>localhost</code> 與埠號的不同，並確保在 <code>docs/Diagnostic.md</code> 中確實記錄埠號。完成後請點擊此卡片繳交。
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task 1-2 -->
+                    <div class="ms-lab-card" onclick="openSubmissionModal('basic-01-driver-2', '【作業 1-2】Baud Rate 匹配實驗')">
+                        <div class="ms-lab-badge"><i class="fas fa-tachometer-alt"></i>&nbsp; 作業 1-2</div>
+                        <span class="ms-lab-time"><i class="far fa-clock"></i> 約 45 分鐘</span>
+                        <h3>亂碼解密與速率同步實驗</h3>
+                        <p style="font-size:14px; color:#323130; margin-bottom:14px;">
+                            目標：體驗並解決序列通訊中常見的波特率 (Baud Rate) 不匹配導致的亂碼問題。
+                        </p>
+                        <ul class="ms-checklist">
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>使用 PlatformIO 開啟專案並燒錄測試程式</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>開啟序列監視器 (Serial Monitor)，觀察並記錄預設 9600 產生的亂碼</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>開啟 <code>platformio.ini</code>，尋找並修正 <code>monitor_speed = 115200</code></span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>重新啟動序列監視器，驗證輸出文字清晰正常，不再是亂碼</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>截圖正常接收資料的監視器畫面，存為 <code>assets/serial_ok.png</code></span></li>
+                        </ul>
+                        <div class="ms-tip" style="margin-top:12px;">
+                            <i class="fas fa-lightbulb note-icon"></i>
+                            <div class="note-body">
+                                <strong>波特率知識點</strong>
+                                ESP32 的標準通訊語速是 115200 bps。如果電腦的接收語速不同步，解碼數據就會崩潰並產生亂碼 <code>▒▓▒░</code>。
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task 1-3 -->
+                    <div class="ms-lab-card" onclick="openSubmissionModal('basic-01-driver-3', '【作業 1-3】Loopback 自我對話測試')">
+                        <div class="ms-lab-badge"><i class="fas fa-sync-alt"></i>&nbsp; 作業 1-3</div>
+                        <span class="ms-lab-time"><i class="far fa-clock"></i> 約 60 分鐘</span>
+                        <h3>Loopback 自我對話測試</h3>
+                        <p style="font-size:14px; color:#323130; margin-bottom:14px;">
+                            目標：使用杜邦線短路 TX 與 RX 引腳進行硬體環回測試，診斷通訊晶片收發功能是否正常。
+                        </p>
+                        <ul class="ms-checklist">
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>使用杜邦線將板子上的 <code>TX</code> 與 <code>RX</code> 引腳直接短接/短路</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>開啟序列監視器，在傳輸發送欄輸入任意英文字串</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>發送訊息，確認監視器螢幕上即時顯示相同的「回音」字串</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>在 <code>docs/Diagnostic.md</code> 中記錄你的測試結果與故障診斷結論</span></li>
+                        </ul>
+                        <div class="ms-warning" style="margin-top:12px;">
+                            <i class="fas fa-exclamation-triangle note-icon"></i>
+                            <div class="note-body">
+                                <strong>硬體環回測試原理</strong>
+                                當 TX 直接連 RX 時，晶片自己發出的電訊號會立刻被自己接收回來。如果沒有回音，代表晶片或接線有故障，是序列排除問題的終極利器！
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-
-        <!-- Homework Section -->
-        <section class="module-section">
-            <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-[Outfit]">實戰任務：通訊鏈路診斷</h2>
-            <p class="text-center text-gray-500 mb-12">確保開發工具與硬體端完美對話。</p>
-
-            <div class="grid md:grid-cols-3 gap-6">
-                <!-- Task 1-1 -->
-                <div onclick="openSubmissionModal('basic-01-driver-1', '【作業 1-1】驅動與硬體偵錯')"
-                    class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col group cursor-pointer relative hover:shadow-2xl transition-all hover:-translate-y-2">
-                    <div class="bg-blue-500 h-2"></div>
-                    <div class="p-8 flex-grow">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="text-4xl text-blue-500 group-hover:scale-110 transition-transform">🔌</span>
-                            <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold uppercase">45
-                                min</span>
-                        </div>
-                        <h3
-                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-blue-600 transition text-justify">
-                            【作業 1-1】</h3>
-                        <h4 class="font-medium text-gray-500 mb-4">「環境通聯與偵錯」</h4>
-                        <p class="text-sm text-gray-600 leading-relaxed text-justify">
-                            辨識 COM 埠。貼上偵測圖，標記橋接晶片型號。
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Task 1-2 -->
-                <div onclick="openSubmissionModal('basic-01-driver-2', '【作業 1-2】Baud Rate 匹配實驗')"
-                    class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col group cursor-pointer relative hover:shadow-2xl transition-all hover:-translate-y-2">
-                    <div class="bg-green-500 h-2"></div>
-                    <div class="p-8 flex-grow">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="text-4xl text-emerald-500 group-hover:rotate-12 transition-transform">⏱️</span>
-                            <span
-                                class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-bold uppercase text-justify">45
-                                min</span>
-                        </div>
-                        <h3
-                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-green-600 transition text-justify">
-                            【作業 1-2】</h3>
-                        <h4 class="font-medium text-gray-500 mb-4">「亂碼解密實驗」</h4>
-                        <p class="text-sm text-gray-600 leading-relaxed text-justify">
-                            設置錯誤速率，記錄現象。理解速率同步重要性。
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Task 1-3 -->
-                <div onclick="openSubmissionModal('basic-01-driver-3', '【作業 1-3】Loopback 自我對話測試')"
-                    class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col group cursor-pointer relative hover:shadow-2xl transition-all hover:-translate-y-2">
-                    <div class="bg-purple-500 h-2"></div>
-                    <div class="p-8 flex-grow">
-                        <div class="flex justify-between items-start mb-4">
-                            <span
-                                class="text-4xl text-purple-500 group-hover:rotate-180 transition-all duration-700">🔄</span>
-                            <span
-                                class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold uppercase text-justify">60
-                                min</span>
-                        </div>
-                        <h3
-                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-purple-600 transition text-justify">
-                            【作業 1-3】</h3>
-                        <h4 class="font-medium text-gray-500 mb-4">「硬體環回測試」</h4>
-                        <p class="text-sm text-gray-600 leading-relaxed text-justify text-left">
-                            短路 TX/RX，測試回音。學會判斷硬體是否損壞。
-                        </p>
-                    </div>
-                </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">5 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
-        </section>
+        </div>
+
+        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-6">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                </div>
+
+                <h1>單元摘要與參考資源</h1>
+
+                <p>
+                    恭喜！你已經完成了「<strong>驅動程式與通訊埠原理</strong>」模組。
+                    透過本單元的學習與實作，你已經掌握了關鍵的核心技術，為全棧物聯網開發奠定了深厚的底層基石。
+                </p>
+
+                <div class="ms-achievement">
+                    <div class="achievement-icon">🚀</div>
+                    <div class="achievement-text">
+                        <h3>恭喜！你已完成本模組</h3>
+                        <p>你已具備開發與調校本單元核心功能的專業實力。持續累積，前進下一個挑戰！</p>
+                    </div>
+                </div>
+
+                <h2>完成本模組後，你已學會：</h2>
+                <ul>
+                    <li><strong>USB-to-UART 橋接晶片</strong> 的基本架構與實作技能。</li>
+                    <li><strong>通訊埠 (COM Port)</strong> 的調試方法與資料傳輸細節。</li>
+                    <li><strong>波特率 (Baud Rate)</strong> 的優化指標與生產環境安全機制。</li>
+                    <li>在實戰挑戰中，透過 Git 與 GitHub Classroom 提交完整的硬體與報告成果。</li>
+                </ul>
+
+                <h2>延伸學習資源</h2>
+
+                <a href="https://www.youtube.com/embed/_kXXn3cQ4Kc" target="_blank" class="ms-resource-link">
+                    <i class="fab fa-youtube" style="color:#ff0000;"></i>
+                    <div>
+                        <div style="font-weight:600;">課程教學影片</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">YouTube — 本單元核心觀念與實作示範影片</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+
+                <a href="https://docs.google.com/document/d/e/2PACX-1vS_-5BVlzkphyBEsUJBE_OB831OTqHm7czgpwLElHWLpqyrKkLsq9n885BnDiYxsCLPA378xSfnFywP/pub?embedded=true" target="_blank" class="ms-resource-link">
+                    <i class="fas fa-file-alt"></i>
+                    <div>
+                        <div style="font-weight:600;">課程完整講義</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">Google Docs — 詳細實驗步驟、技術文件與程式碼指南</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+
+                <a href="https://classroom.github.com" target="_blank" class="ms-resource-link">
+                    <i class="fab fa-github"></i>
+                    <div>
+                        <div style="font-weight:600;">GitHub Classroom</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">classroom.github.com — 管理你的作業提交與自動評分結果</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
+                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「驅動程式與通訊埠原理」模組！')">完成模組</button>
+            </div>
+        </div>
 
     </main>
+</div>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 py-12 border-t border-gray-700">
-        <div class="container mx-auto px-4 text-center">
-            <p class="text-gray-500 text-sm mb-4 text-center">&copy; 2026 Vibe Coding. All rights reserved.</p>
-            <div class="flex flex-col md:flex-row justify-center items-center gap-6 text-sm text-gray-400">
-                <span>課程單元 基礎 1-3</span>
+<script>
+    /* ─── DATA ─── */
+    const UNITS = [
+        { id: 0, label: '課程總覽',       time: '',         type: 'index' },
+        { id: 1, label: '簡介',            time: '3 分鐘',  type: 'unit'  },
+        { id: 2, label: 'USB-to-UART',   time: '10 分鐘', type: 'unit' },
+        { id: 3, label: 'COM Port',      time: '10 分鐘', type: 'unit' },
+        { id: 4, label: 'Baud Rate',     time: '10 分鐘', type: 'unit' },
+        { id: 5, label: '實戰挑戰',       time: '150 分鐘', type: 'lab'   },
+        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+    ];
+
+    let currentUnit = 0;
+    let doneSet = new Set();
+
+    /* ─── INIT ─── */
+    /**
+     * 初始化課程播放器，載入側邊欄與課程首頁。
+     */
+    function init() {
+        buildSidebar();
+        buildIndexUnitList();
+        goToUnit(0);
+    }
+
+    /**
+     * 動態建構側邊欄單元選單。
+     */
+    function buildSidebar() {
+        const nav = document.getElementById('sidebar-nav');
+        nav.innerHTML = UNITS.map(u => {
+            const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : '';
+            return `
+            <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
+                <div class="unit-icon" id="icon-${u.id}">${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div>
+                <div class="unit-meta">
+                    <div class="unit-name">${u.label}${badge}</div>
+                    ${u.time ? `<div class="unit-time"><i class="far fa-clock"></i> ${u.time}</div>` : ''}
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    /**
+     * 動態建構首頁單元卡片列表。
+     */
+    function buildIndexUnitList() {
+        const el = document.getElementById('index-unit-list');
+        el.innerHTML = UNITS.filter(u => u.id > 0).map(u => `
+            <div class="unit-card ${u.type}" onclick="goToUnit(${u.id})">
+                <div class="unit-card-num">${u.id}</div>
+                <div class="unit-card-info">
+                    <div class="unit-card-name">${u.label}</div>
+                    <div class="unit-card-time"><i class="far fa-clock"></i> ${u.time}</div>
+                </div>
+                <div class="unit-card-arrow">›</div>
             </div>
-        </div>
-    </footer>
+        `).join('');
+    }
 
-    <script>
-        // Define Resources
-        window.RESOURCES = {
-            video: "https://www.youtube.com/embed/_kXXn3cQ4Kc",
-            doc: "https://docs.google.com/document/d/e/2PACX-1vS_-5BVlzkphyBEsUJBE_OB831OTqHm7czgpwLElHWLpqyrKkLsq9n885BnDiYxsCLPA378xSfnFywP/pub?embedded=true"
-        };
-    </script>
-    <script src="/js/course-shared.js?v=2026.05.21.V21.DISABLE_UNIFIED_SUPPORT_HUB"></script>
-    <!-- Assignment Guide (Hidden) -->
-    <section id="assignment-guide" style="display: none;">
+    /* ─── NAVIGATION ─── */
+    /**
+     * 切換至指定單元頁面。
+     * @param {number} id - 單元識別碼
+     */
+    function goToUnit(id) {
+        document.querySelectorAll('.ms-unit-page').forEach(p => p.classList.remove('visible'));
+        const target = id === 0 ? document.getElementById('page-index') : document.getElementById(`page-${id}`);
+        if (target) target.classList.add('visible');
+
+        document.querySelectorAll('.ms-unit-item').forEach(el => el.classList.remove('active'));
+        const navItem = document.getElementById(`nav-${id}`);
+        if (navItem) { navItem.classList.add('active'); navItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) {
+                icon.className = 'unit-icon done';
+                icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>';
+            } else if (u.id === id) {
+                icon.className = 'unit-icon active-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            } else {
+                icon.className = 'unit-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            }
+        });
+
+        const unit = UNITS.find(u => u.id === id);
+        document.getElementById('bc-current').textContent = unit ? unit.label : '';
+        currentUnit = id;
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /**
+     * 標記特定單元為已完成。
+     * @param {number} id - 單元識別碼
+     */
+    function markDone(id) {
+        doneSet.add(id);
+        const badge = document.getElementById(`badge-${id}`);
+        if (badge) badge.style.display = 'flex';
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) { icon.className = 'unit-icon done'; icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>'; }
+        });
+        updateProgress();
+    }
+
+    /**
+     * 計算並更新課程進度與進度條。
+     */
+    function updateProgress() {
+        const total = UNITS.length - 1;
+        const done = doneSet.size;
+        document.getElementById('progress-fill').style.width = Math.round(done / total * 100) + '%';
+        document.getElementById('progress-text').textContent = `${done} / ${total} 已完成`;
+    }
+
+    /* ─── CHECKLIST ─── */
+    /**
+     * 切換核取方塊的狀態。
+     * @param {HTMLElement} el - 核取方塊元素
+     */
+    function toggleCheck(el) {
+        el.classList.toggle('checked');
+        el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
+    }
+
+    /* ─── START ─── */
+    init();
+</script>
+
+<!-- Define Resources -->
+<script>
+    window.RESOURCES = {
+        video: "https://www.youtube.com/embed/_kXXn3cQ4Kc",
+        doc: "https://docs.google.com/document/d/e/2PACX-1vS_-5BVlzkphyBEsUJBE_OB831OTqHm7czgpwLElHWLpqyrKkLsq9n885BnDiYxsCLPA378xSfnFywP/pub?embedded=true"
+    };
+</script>
+<script src="/js/course-shared.js?v=2026.05.22.V27.START_UNITS_LAYOUT_UPGRADE"></script>
+
+<!-- Assignment Guide (Hidden) -->
+<section id="assignment-guide" style="display: none;">
 <div class="markdown-heading"><h1 class="heading-element">作業：Drivers &amp; Ports (驅動程式與通訊埠)</h1><a id="user-content-作業drivers--ports-驅動程式與通訊埠" class="anchor" aria-label="Permalink: 作業：Drivers &amp; Ports (驅動程式與通訊埠)" href="#作業drivers--ports-驅動程式與通訊埠"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>歡迎來到硬體開發的第一個單元！本作業旨在幫助你掌握開發環境與硬體之間的通訊基礎。</p>
 <div class="markdown-heading"><h2 class="heading-element">📝 作業說明</h2><a id="user-content--作業說明" class="anchor" aria-label="Permalink: 📝 作業說明" href="#-作業說明"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
@@ -319,10 +1085,10 @@
 <p>祝你在硬體開發的旅程中跨出成功的第一步！如有任何問題，請隨時向導師尋求協助。</p>
 </blockquote>
 
-    </section>
+</section>
 
-    <!-- Tutor Guide (Hidden) -->
-    <section id="tutor-guide" style="display: none;">
+<!-- Tutor Guide (Hidden) -->
+<section id="tutor-guide" style="display: none;">
 <div class="markdown-heading"><h1 class="heading-element">Unit: Drivers &amp; Ports (驅動程式與通訊埠)</h1><a id="user-content-unit-drivers--ports-驅動程式與通訊埠" class="anchor" aria-label="Permalink: Unit: Drivers &amp; Ports (驅動程式與通訊埠)" href="#unit-drivers--ports-驅動程式與通訊埠"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>這是硬體開發的第一站：<strong>連線穩定度測試</strong>。在這個單元中，你將學會如何識別硬體埠號、處理波特率 (Baud Rate) 不匹配導致的亂碼，以及使用 Loopback 測試來排除硬體故障。</p>
 <div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2><a id="user-content--學習目標" class="anchor" aria-label="Permalink: 🎯 學習目標" href="#-學習目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
@@ -371,7 +1137,7 @@
 </li>
 <li>
 <strong>驗證</strong>：在 <code>docs/Diagnostic.md</code> 中記錄測試結果與結論。</li>
-</ul>
+</ol>
 <div class="markdown-heading"><h2 class="heading-element">📁 專案結構</h2><a id="user-content--專案結構" class="anchor" aria-label="Permalink: 📁 專案結構" href="#-專案結構"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <pre lang="text"><code>.
 ├── platformio.ini       # 核心：請在此修正速率設定 (115200)
@@ -386,7 +1152,7 @@
 好的工程師，是能透過隔離測試看清資料在透明管道中流動的人。</p>
 </blockquote>
 
-    </section>
-</body>
+</section>
 
+</body>
 </html>
