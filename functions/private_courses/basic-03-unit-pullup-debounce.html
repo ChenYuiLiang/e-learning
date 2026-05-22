@@ -4,11 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>數位控制：上拉電阻與按鈕抖動 - Vibe Coding</title>
+    <title>數位控制：上拉電阻與按鈕抖動 - Vibe Coding Learn</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     <style>
         @keyframes wave {
             0% {
@@ -28,346 +27,1013 @@
             animation: wave 2s ease-in-out infinite;
         }
     </style>
+    <style>
+        
+        :root {
+            --ms-blue: #0078d4;
+            --ms-blue-dark: #005a9e;
+            --ms-blue-light: #deecf9;
+            --ms-gray-10: #f3f2f1;
+            --ms-gray-20: #e1dfdd;
+            --ms-gray-90: #201f1e;
+            --ms-green: #107c10;
+            --ms-red: #d13438;
+            --sidebar-w: 280px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fff;
+            color: #201f1e;
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* ─── TOP NAV ─── */
+        .ms-topnav {
+            background: var(--ms-blue);
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 4px rgba(0,0,0,.2);
+        }
+        .ms-topnav .brand {
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
+
+        /* ─── LAYOUT ─── */
+        .ms-layout { display: flex; min-height: calc(100vh - 48px); }
+
+        /* ─── SIDEBAR ─── */
+        .ms-sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            background: #faf9f8;
+            border-right: 1px solid #e1dfdd;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 48px;
+            height: calc(100vh - 48px);
+            overflow-y: auto;
+        }
+        .ms-sidebar-header {
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .ms-sidebar-header .module-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #605e5c;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .ms-sidebar-header .module-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #201f1e;
+            line-height: 1.4;
+        }
+        .ms-sidebar-header .meta {
+            font-size: 12px;
+            color: #605e5c;
+            margin-top: 6px;
+        }
+        .ms-unit-list { padding: 8px 0; }
+        .ms-unit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: background .12s, border-color .12s;
+            color: #201f1e;
+        }
+        .ms-unit-item:hover { background: #edebe9; }
+        .ms-unit-item.active {
+            border-left-color: var(--ms-blue);
+            background: #deecf9;
+        }
+        .ms-unit-item.active .unit-name { color: var(--ms-blue); font-weight: 600; }
+        .unit-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #c8c6c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            font-size: 10px;
+            background: #fff;
+        }
+        .unit-icon.done { background: var(--ms-green); border-color: var(--ms-green); color: #fff; }
+        .unit-icon.active-icon { border-color: var(--ms-blue); background: var(--ms-blue); color: #fff; }
+        .unit-meta { flex: 1; min-width: 0; }
+        .unit-name { font-size: 13px; line-height: 1.4; }
+        .unit-time { font-size: 11px; color: #605e5c; margin-top: 2px; }
+        .sidebar-progress {
+            padding: 12px 16px;
+            border-top: 1px solid #e1dfdd;
+            margin-top: auto;
+        }
+        .progress-bar-bg { background: #e1dfdd; border-radius: 4px; height: 6px; }
+        .progress-bar-fill { background: var(--ms-green); border-radius: 4px; height: 6px; transition: width .4s; }
+        .progress-text { font-size: 12px; color: #605e5c; margin-top: 6px; }
+
+        /* ─── MAIN ─── */
+        .ms-content { flex: 1; min-width: 0; }
+
+        .ms-breadcrumb {
+            padding: 10px 40px;
+            font-size: 12px;
+            color: #605e5c;
+            border-bottom: 1px solid #e1dfdd;
+            background: #fff;
+        }
+        .ms-breadcrumb a { color: var(--ms-blue); text-decoration: none; }
+        .ms-breadcrumb a:hover { text-decoration: underline; }
+        .ms-breadcrumb span { margin: 0 6px; }
+
+        /* ─── PAGES ─── */
+        .ms-unit-page { display: none; }
+        .ms-unit-page.visible { display: block; }
+
+        .unit-content {
+            max-width: 820px;
+            padding: 32px 40px 60px;
+            margin: 0 auto;
+        }
+
+        .unit-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .unit-completed-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #dff6dd;
+            color: #107c10;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 2px;
+        }
+        .unit-time-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #605e5c;
+            font-size: 13px;
+        }
+
+        /* Typography */
+        .unit-content h1 { font-size: 28px; font-weight: 700; margin: 0 0 20px; color: #201f1e; line-height: 1.3; }
+        .unit-content h2 { font-size: 20px; font-weight: 600; margin: 36px 0 12px; color: #201f1e; padding-top: 8px; }
+        .unit-content h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; color: #201f1e; }
+        .unit-content p { margin: 0 0 14px; }
+        .unit-content ul, .unit-content ol { margin: 0 0 14px; padding-left: 28px; }
+        .unit-content li { margin-bottom: 6px; }
+        .unit-content strong { font-weight: 600; }
+        .unit-content a { color: var(--ms-blue); text-decoration: none; }
+        .unit-content a:hover { text-decoration: underline; }
+        .unit-content code {
+            background: #f3f2f1;
+            border: 1px solid #e1dfdd;
+            border-radius: 3px;
+            padding: 1px 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #a31515;
+        }
+
+        /* Callouts */
+        .ms-note, .ms-tip, .ms-warning, .ms-important {
+            display: flex;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid;
+            font-size: 14px;
+        }
+        .ms-note { background: #deecf9; border-color: var(--ms-blue); }
+        .ms-note .note-icon { color: var(--ms-blue); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-tip { background: #dff6dd; border-color: var(--ms-green); }
+        .ms-tip .note-icon { color: var(--ms-green); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-warning { background: #fff4ce; border-color: #ffaa44; }
+        .ms-warning .note-icon { color: #ffaa44; font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-important { background: #fde7e9; border-color: var(--ms-red); }
+        .ms-important .note-icon { color: var(--ms-red); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .note-body strong { display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+
+        /* Scenario */
+        .ms-scenario {
+            background: #f3f2f1;
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #323130;
+            border-left: 4px solid #c8c6c4;
+        }
+        .ms-scenario-label {
+            font-style: normal;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #605e5c;
+            margin-bottom: 8px;
+        }
+
+        /* Steps */
+        .ms-steps { margin: 16px 0; }
+        .ms-step { display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start; }
+        .ms-step-num {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: var(--ms-blue); color: #fff;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .ms-step-body { flex: 1; }
+        .ms-step-body h4 { font-size: 14px; font-weight: 600; margin: 0 0 4px; }
+        .ms-step-body p { font-size: 14px; margin: 0; }
+
+        /* Table */
+        .ms-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+        .ms-table th {
+            background: #f3f2f1; font-weight: 600; text-align: left;
+            padding: 10px 14px; border: 1px solid #e1dfdd; color: #323130;
+        }
+        .ms-table td { padding: 9px 14px; border: 1px solid #e1dfdd; vertical-align: top; }
+        .ms-table tr:nth-child(even) td { background: #faf9f8; }
+        .ms-table .check { color: var(--ms-green); font-size: 16px; }
+        .ms-table .cross { color: #8a8886; font-size: 16px; }
+
+        /* Checklist */
+        .ms-checklist { list-style: none; padding: 0; margin: 12px 0; }
+        .ms-checklist li {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 6px 0; font-size: 14px;
+        }
+        .ms-checklist li .check-box {
+            width: 18px; height: 18px;
+            border: 2px solid #8a8886; border-radius: 2px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; margin-top: 1px; cursor: pointer; transition: all .15s;
+        }
+        .ms-checklist li .check-box.checked {
+            background: var(--ms-blue); border-color: var(--ms-blue); color: #fff;
+        }
+
+        /* Code block */
+        .ms-code {
+            background: #1e1e1e;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px 0;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-x: auto;
+        }
+        .ms-code .c-comment { color: #6a9955; }
+        .ms-code .c-str { color: #ce9178; }
+        .ms-code .c-kw { color: #569cd6; }
+        .ms-code .c-attr { color: #9cdcfe; }
+        .ms-code .c-val { color: #ce9178; }
+        .ms-code .c-tag { color: #4ec9b0; }
+        .ms-code .c-white { color: #d4d4d4; }
+
+        /* Lab card */
+        .ms-lab-card {
+            background: linear-gradient(135deg, #eef6ff 0%, #f5f0ff 100%);
+            border: 1px solid #c7e0f4;
+            border-radius: 6px;
+            padding: 24px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: box-shadow .15s, border-color .15s;
+        }
+        .ms-lab-card:hover { box-shadow: 0 4px 16px rgba(0,120,212,.12); border-color: var(--ms-blue); }
+        .ms-lab-card h3 { margin: 0 0 12px; color: var(--ms-blue-dark); font-size: 16px; font-weight: 600; }
+        .ms-lab-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--ms-blue);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 12px;
+        }
+        .ms-lab-time {
+            font-size: 12px;
+            color: #605e5c;
+            margin-left: 8px;
+        }
+
+        /* Compare grid */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .compare-card {
+            border: 1px solid #e1dfdd;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .compare-card-header {
+            padding: 12px 14px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .compare-card-body {
+            padding: 14px;
+            font-size: 13px;
+            color: #605e5c;
+            line-height: 1.5;
+        }
+
+        /* Buttons */
+        .ms-btn {
+            background: var(--ms-blue); color: #fff; border: none;
+            padding: 7px 18px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; transition: background .12s;
+            font-family: inherit;
+        }
+        .ms-btn:hover { background: var(--ms-blue-dark); }
+        .ms-btn-ghost {
+            background: transparent; color: var(--ms-blue);
+            border: 1px solid var(--ms-blue); padding: 6px 18px;
+            font-size: 14px; font-weight: 600; border-radius: 2px;
+            cursor: pointer; transition: background .12s; font-family: inherit;
+        }
+        .ms-btn-ghost:hover { background: var(--ms-blue-light); }
+
+        /* Nav */
+        .unit-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            border-top: 1px solid #e1dfdd;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .nav-btn-prev, .nav-btn-next {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 20px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; border: 1px solid;
+            font-family: inherit; transition: background .12s;
+        }
+        .nav-btn-next { background: var(--ms-blue); color: #fff; border-color: var(--ms-blue); }
+        .nav-btn-next:hover { background: var(--ms-blue-dark); border-color: var(--ms-blue-dark); }
+        .nav-btn-prev { background: #fff; color: var(--ms-blue); border-color: var(--ms-blue); }
+        .nav-btn-prev:hover { background: var(--ms-blue-light); }
+        .unit-page-indicator { font-size: 13px; color: #605e5c; }
+
+        /* Module index */
+        .module-meta-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        .ms-tag { background: #f3f2f1; color: #323130; font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: 500; }
+        .ms-tag.blue { background: #deecf9; color: var(--ms-blue-dark); }
+        .ms-tag.green { background: #dff6dd; color: #107c10; }
+        .unit-card-list { margin: 20px 0; }
+        .unit-card {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 0; border-bottom: 1px solid #f3f2f1; cursor: pointer;
+        }
+        .unit-card:last-child { border-bottom: none; }
+        .unit-card:hover .unit-card-name { color: var(--ms-blue); text-decoration: underline; }
+        .unit-card-num {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #f3f2f1; color: #605e5c;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .unit-card.lab .unit-card-num { background: #eef6ff; color: var(--ms-blue-dark); }
+        .unit-card.quiz .unit-card-num { background: #fff4ce; color: #8a6914; }
+        .unit-card-info { flex: 1; }
+        .unit-card-name { font-size: 15px; font-weight: 500; }
+        .unit-card-time { font-size: 12px; color: #605e5c; margin-top: 2px; }
+        .unit-card-arrow { color: #c8c6c4; font-size: 14px; }
+
+        /* Resource links */
+        .ms-resource-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; text-decoration: none; color: #201f1e;
+            font-size: 14px; transition: background .1s;
+        }
+        .ms-resource-link:hover { background: #f3f2f1; }
+        .ms-resource-link i { color: var(--ms-blue); font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+
+        /* Achievement */
+        .ms-achievement {
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            color: #fff; border-radius: 6px; padding: 24px 28px;
+            margin: 24px 0; display: flex; align-items: center; gap: 20px;
+        }
+        .achievement-icon { font-size: 48px; flex-shrink: 0; }
+        .achievement-text h3 { margin: 0 0 4px; font-size: 18px; }
+        .achievement-text p { margin: 0; font-size: 14px; opacity: .9; }
+
+        @media (max-width: 768px) {
+            .ms-sidebar { display: none; }
+            .unit-content { padding: 20px 16px 40px; }
+            .unit-nav { padding: 16px; }
+            .ms-breadcrumb { padding: 8px 16px; }
+            .compare-grid { grid-template-columns: 1fr; }
+        }
+
+    </style>
 </head>
 
-<body class="bg-gray-50 flex flex-col min-h-screen text-gray-800 font-[Inter]">
+<body>
 
-    <!-- Hero Section -->
-    <header
-        class="relative bg-gradient-to-br from-indigo-900 via-slate-900 to-emerald-900 text-white pt-24 pb-32 overflow-hidden">
-        <div
-            class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-20 mix-blend-overlay">
+<!-- TOP NAV -->
+<nav class="ms-topnav">
+    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <div class="divider"></div>
+    <span class="nav-label">基礎 3 - 訊號穩定性</span>
+</nav>
+
+<div class="ms-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="ms-sidebar">
+        <div class="ms-sidebar-header">
+            <div class="module-label">模組</div>
+            <div class="module-title">數位控制：上拉電阻與按鈕抖動</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 171 分鐘 · 6 個單元</div>
         </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-gray-50 to-transparent bottom-0 h-16"></div>
+        <nav class="ms-unit-list" id="sidebar-nav"></nav>
+        <div class="sidebar-progress">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+            </div>
+            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+        </div>
+    </aside>
 
-        <div class="container mx-auto px-4 relative z-10 text-center">
-            <span
-                class="inline-block py-1 px-3 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-sm font-semibold mb-6 tracking-wide uppercase">
-                基礎 3 - 訊號穩定性
-            </span>
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit]">
-                數位控制：<br><span class="text-emerald-400">上拉與按鈕抖動</span>
-            </h1>
-            <p class="text-xl md:text-2xl text-emerald-100 max-w-2xl mx-auto font-light leading-relaxed">
-                馴服不穩定的物理訊號。從浮空狀態到毫秒級彈跳，讓程式穩如泰山。
-            </p>
+    <!-- MAIN -->
+    <main class="ms-content">
 
-            <div class="mt-8 flex flex-wrap justify-center gap-4">
-                <button onclick="enterMediaMode('video', window.RESOURCES.youtube)"
-                    class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
-                    <span>📺</span> 觀看教學影片
-                </button>
-                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
-                    class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
-                    <span>📄</span> 閱讀課程講義
-                </button>
+        <div class="ms-breadcrumb">
+            <a href="#">Vibe Coding</a><span>›</span>
+            <a href="#">基礎 3</a><span>›</span>
+            <span id="bc-current">課程總覽</span>
+        </div>
+
+        <!-- ══════════ PAGE 0: INDEX ══════════ -->
+        <div class="ms-unit-page visible" id="page-index">
+            <div class="unit-content">
+                <h1>數位控制：上拉電阻與按鈕抖動</h1>
+                <div class="module-meta-tags">
+                    <span class="ms-tag">模組</span>
+                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag green">基礎 3</span>
+                    <span class="ms-tag blue">硬體開發</span>
+                    <span class="ms-tag blue">物聯網</span>
+                </div>
+
+                <p>馴服不穩定的物理訊號。從浮空狀態到毫秒級彈跳，讓程式穩如泰山。</p>
+
+                <h2>學習目標</h2>
+                <p>完成本模組後，你將能夠：</p>
+                <ul>
+                    <li>理解並掌握 <strong>📡 1. 消失的邏輯：為什麼需要上拉電阻？</strong> 的核心觀念與操作實務。</li>
+                    <li>學會 <strong>📉 2. 物理現實：機械彈跳 (Debounce)</strong> 的關鍵原理，並能將其應用於開發。</li>
+                    <li>掌握 <strong>️ 3. 軟體去抖：時間過濾術</strong> 的調校技巧與穩定性測試。</li>
+                    <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
+                </ul>
+
+                <h2>必要條件</h2>
+                <ul>
+                    <li>準備好 ESP32 開發板與 Micro USB / USB-C 數據線</li>
+                    <li>電腦已配置 VS Code 與 PlatformIO 開發環境</li>
+                    <li>擁有 GitHub 帳號，能夠接受 GitHub Classroom 邀請</li>
+                </ul>
+
+                <h2>本模組單元</h2>
+                <div class="unit-card-list" id="index-unit-list"></div>
+                <div style="margin-top:32px;">
+                    <button class="ms-btn" onclick="goToUnit(1)">開始模組 &nbsp;›</button>
+                </div>
             </div>
         </div>
-    </header>
 
-    <!-- Main Content -->
-    <main class="container mx-auto px-4 -mt-20 relative z-20 pb-20">
+        <!-- ══════════ PAGE 1: 簡介 ══════════ -->
+        <div class="ms-unit-page" id="page-1">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-1" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                </div>
 
-        <!-- Module 1: Floating State -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
-                <div class="p-1 bg-gradient-to-r from-emerald-500 to-teal-500"></div>
-                <div class="p-8 md:p-14">
-                    <div class="flex flex-col md:flex-row gap-16">
-                        <div class="flex-1">
-                            <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                                <span class="text-4xl text-emerald-500 text-justify">📡</span> 1. 消失的邏輯：為什麼需要上拉電阻？
-                            </h2>
-                            <p class="text-gray-500 mb-10 text-lg font-light leading-relaxed text-justify">
+                <h1>簡介</h1>
+
+                <p>
+                    歡迎來到本模組！本單元的核心主題是 <strong>數位控制：上拉電阻與按鈕抖動</strong>。
+                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
+                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                </p>
+
+                <div class="ms-scenario">
+                    <div class="ms-scenario-label">學習指引</div>
+                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
+                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                </div>
+
+                <h2>教學影片</h2>
+                <div style="border-radius:4px; overflow:hidden; margin:20px 0; box-shadow:0 2px 8px rgba(0,0,0,.12); aspect-ratio:16/9;">
+                    <iframe src="https://www.youtube.com/embed/7NlIariry8U"
+                        title="數位控制：上拉電阻與按鈕抖動 教學影片" allowfullscreen
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        style="width:100%; height:100%; display:block; border:0;">
+                    </iframe>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
+                <span class="unit-page-indicator">1 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 2: 單元 1 ══════════ -->
+        <div class="ms-unit-page" id="page-2">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-2" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
+                </div>
+
+                <h1>📡 1. 消失的邏輯：為什麼需要上拉電阻？</h1>
+                
+                <p class="text-gray-500 mb-10 text-lg font-light leading-relaxed text-justify">
                                 在電子世界中，「沒有接線」不代表讀值是「零」。
-                            </p>
-
-                            <div class="space-y-6">
-                                <div
-                                    class="bg-gray-50 p-6 rounded-2xl border-l-[6px] border-amber-400 group hover:shadow-md transition text-justify">
-                                    <h3 class="font-bold text-gray-800 mb-2 text-justify uppercase tracking-widest">浮空狀態
+                            </p><div class="space-y-6">
+<div class="bg-gray-50 p-6 rounded-2xl border-l-[6px] border-amber-400 group hover:shadow-md transition text-justify">
+<h3 class="font-bold text-gray-800 mb-2 text-justify uppercase tracking-widest">浮空狀態
                                         (Floating)</h3>
-                                    <p class="text-sm text-gray-600 leading-relaxed font-light text-justify">
+<p class="text-sm text-gray-600 leading-relaxed font-light text-justify">
                                         未與確定的電壓相連時，像天線一樣吸收雜訊。讀值在 0 與 1 間瘋狂跳動。
                                     </p>
-                                </div>
-
-                                <div
-                                    class="bg-emerald-50 p-6 rounded-2xl border-l-[6px] border-emerald-500 group hover:shadow-md transition text-justify">
-                                    <h3 class="font-bold text-emerald-800 mb-2 text-justify uppercase tracking-tighter">
+</div>
+<div class="bg-emerald-50 p-6 rounded-2xl border-l-[6px] border-emerald-500 group hover:shadow-md transition text-justify">
+<h3 class="font-bold text-emerald-800 mb-2 text-justify uppercase tracking-tighter">
                                         解決方案：INPUT_PULLUP</h3>
-                                    <p class="text-sm text-gray-600 leading-relaxed font-light text-justify">
+<p class="text-sm text-gray-600 leading-relaxed font-light text-justify">
                                         透過內部上拉電阻穩定拉至 3.3V (HIGH)。按下按鈕才拉至接地 (LOW)。
                                     </p>
-                                    <div
-                                        class="mt-4 p-3 bg-white/50 rounded-lg font-mono text-xs text-emerald-700 text-justify">
+<div class="mt-4 p-3 bg-white/50 rounded-lg font-mono text-xs text-emerald-700 text-justify">
                                         pinMode(PIN, INPUT_PULLUP);
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="md:w-80">
-                            <div
-                                class="p-8 rounded-3xl shadow-2xl border border-slate-700 text-slate-300 relative overflow-hidden group bg-slate-900 text-justify">
-                                <div
-                                    class="absolute -right-4 -bottom-4 w-20 h-20 bg-emerald-500/10 rounded-full group-hover:scale-150 transition-transform duration-700">
-                                </div>
-                                <h4
-                                    class="text-emerald-400 font-bold mb-6 flex items-center gap-2 uppercase tracking-widest text-xs text-justify">
-                                    <span>🧠</span> Logic Snapshot
-                                </h4>
-                                <ul class="space-y-5 text-xs text-justify">
-                                    <li class="flex items-start gap-3">
-                                        <span class="text-emerald-500 font-bold text-sm">✓</span>
-                                        <span>未按下：讀取值為 <span class="text-white font-bold">HIGH (1)</span></span>
-                                    </li>
-                                    <li class="flex items-start gap-3">
-                                        <span class="text-emerald-500 font-bold text-sm">✓</span>
-                                        <span>按下：讀取值為 <span class="text-white font-bold">LOW (0)</span></span>
-                                    </li>
-                                    <li class="pt-4 border-t border-slate-700/50 text-emerald-400 italic text-justify">
-                                        💡 這就是「負邏輯」配置。
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+</div>
+</div>
+                
             </div>
-        </section>
-
-        <!-- Module 2: Bouncing -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
-                <div class="p-1 bg-gradient-to-r from-amber-500 to-orange-500"></div>
-                <div class="p-8 md:p-14">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center gap-3">
-                        <span class="text-4xl text-amber-500 text-justify">📉</span> 2. 物理現實：機械彈跳 (Debounce)
-                    </h2>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-                        <div class="space-y-6">
-                            <p class="text-gray-600 text-lg leading-relaxed font-light text-justify">
-                                按鍵接觸一瞬間並非完美「0 到 1」，而是快速開合。
-                            </p>
-
-                            <div
-                                class="bg-slate-900 p-8 rounded-3xl text-emerald-400 font-mono text-sm relative overflow-hidden group border border-slate-700 shadow-inner text-justify">
-                                <div
-                                    class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-emerald-500 to-transparent">
-                                </div>
-                                <h4 class="text-slate-500 uppercase tracking-widest text-[10px] mb-6 text-justify">
-                                    Oscilloscope View</h4>
-                                <p class="leading-relaxed text-justify">
-                                    <span class="text-slate-600">// 可能讀到：</span><br>
-                                    11111<span class="text-red-500">01011001</span>00000000<br>
-                                    <span class="text-slate-500">^ 此抖動區間會被誤判。</span>
-                                </p>
-                            </div>
-                        </div>
-
-                        <div
-                            class="bg-amber-50 p-10 rounded-3xl border border-amber-100 flex flex-col justify-center shadow-sm text-justify">
-                            <h4
-                                class="text-amber-800 font-bold mb-6 flex items-center gap-2 text-justify uppercase tracking-widest">
-                                <span class="text-2xl text-justify">🔍</span> 誰也會抖動？
-                            </h4>
-                            <p class="text-gray-600 text-sm leading-relaxed mb-8 text-justify">
-                                所有「機械接觸點」都需要進行去抖處理。
-                            </p>
-                            <div class="grid grid-cols-2 gap-4 text-justify">
-                                <div
-                                    class="bg-white p-4 rounded-xl shadow-sm text-center text-xs font-bold text-amber-900 border border-amber-200 text-justify">
-                                    極限開關</div>
-                                <div
-                                    class="bg-white p-4 rounded-xl shadow-sm text-center text-xs font-bold text-amber-900 border border-amber-200 text-justify uppercase tracking-widest">
-                                    磁簧開關</div>
-                                <div
-                                    class="bg-white p-4 rounded-xl shadow-sm text-center text-xs font-bold text-amber-900 border border-amber-200 text-justify">
-                                    繼電器回傳</div>
-                                <div
-                                    class="bg-white p-4 rounded-xl shadow-sm text-center text-xs font-bold text-amber-900 border border-amber-200 text-justify uppercase tracking-tighter">
-                                    彈簧傾斜儀</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Module 3: Software Solutions -->
-        <section class="module-section mb-16">
-            <div class="bg-slate-900 rounded-3xl shadow-2xl overflow-hidden text-white border border-slate-700">
-                <div class="p-8 md:p-14">
-                    <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-                        <div class="lg:w-1/2 space-y-8 text-justify">
-                            <h2 class="text-3xl font-bold mb-4 flex items-center gap-3 text-justify">
-                                <span
-                                    class="p-1 bg-blue-500/20 rounded-lg text-blue-400 text-2xl text-justify">⏱️</span>
-                                3. 軟體去抖：時間過濾術
-                            </h2>
-                            <p class="text-slate-400 font-light leading-relaxed text-justify">
-                                透過演算法來「等待穩定」。
-                            </p>
-
-                            <div class="space-y-4 text-justify">
-                                <div
-                                    class="flex items-center gap-6 p-4 bg-white/5 rounded-2xl border border-white/10 group hover:border-blue-500/50 transition text-justify">
-                                    <div
-                                        class="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center font-bold text-lg shrink-0 text-justify">
-                                        1</div>
-                                    <p class="text-xs text-slate-300 text-justify uppercase tracking-widest">Edge
-                                        Catching：偵測電位改變瞬間。</p>
-                                </div>
-                                <div
-                                    class="flex items-center gap-6 p-4 bg-white/5 rounded-2xl border border-white/10 group hover:border-blue-500/50 transition text-justify">
-                                    <div
-                                        class="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center font-bold text-lg shrink-0 text-justify">
-                                        2</div>
-                                    <p class="text-xs text-slate-300 text-justify uppercase tracking-tighter">Wait
-                                        Epoch：忽略 20~50 ms 波動。</p>
-                                </div>
-                                <div
-                                    class="flex items-center gap-6 p-4 bg-white/5 rounded-2xl border border-white/10 group hover:border-blue-500/50 transition">
-                                    <div
-                                        class="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center font-bold text-lg shrink-0 text-justify">
-                                        3</div>
-                                    <p class="text-xs text-slate-300 text-justify">Double Confirm：再次確認狀態穩定才判定有效。</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="lg:w-1/2 text-justify">
-                            <div
-                                class="bg-slate-800/80 p-10 rounded-3xl border border-slate-700 relative overflow-hidden group text-justify">
-                                <div
-                                    class="absolute -right-4 top-4 p-2 bg-emerald-500/10 text-emerald-400 rounded-lg text-[10px] font-bold uppercase tracking-widest origin-right transition group-hover:bg-emerald-500 group-hover:text-white">
-                                    Non-Blocking Only</div>
-                                <h4 class="font-bold text-blue-300 mb-6 text-lg text-justify uppercase tracking-widest">
-                                    為什麼不建議用 delay()？</h4>
-                                <div class="space-y-6 text-justify">
-                                    <p class="text-sm text-slate-400 leading-relaxed font-light italic text-justify">
-                                        系統必須偵測指令且控制馬達。任何阻塞 (blocking) 都會造成車輛反應遲鈍。
-                                    </p>
-                                    <div class="p-6 bg-black/30 rounded-2xl border border-slate-600/50 text-justify">
-                                        <div class="flex items-center gap-3 mb-4 text-justify">
-                                            <span
-                                                class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse text-justify"></span>
-                                            <span class="text-xs font-bold text-slate-500 tracking-wider">最佳實踐</span>
-                                        </div>
-                                        <p class="text-xs text-emerald-400 font-mono text-justify">
-                                            使用 millis() 建立非阻塞(Non-blocking)計時狀態機是所有韌體的必修課。
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Homework Section -->
-        <section class="module-section">
-            <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-[Outfit]">實作任務：精準訊號處理</h2>
-            <p class="text-center text-gray-500 mb-12">體會硬體混亂干擾。實作穩健邏輯。</p>
-
-            <div class="grid md:grid-cols-3 gap-6 text-justify">
-                <!-- Task 2-1 -->
-                <div onclick="openSubmissionModal('basic-03-deb-1', '【作業 2-1】天線實驗：體會浮空狀態 (Floating)')"
-                    class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col group cursor-pointer relative hover:shadow-2xl transition-all hover:-translate-y-2">
-                    <div class="bg-emerald-500 h-2"></div>
-                    <div class="p-8 flex-grow">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="text-4xl text-emerald-500 floating-anim text-justify">📶</span>
-                            <span
-                                class="bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded font-bold uppercase text-justify">30
-                                min</span>
-                        </div>
-                        <h3
-                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-emerald-600 transition text-justify">
-                            【作業 2-1】</h3>
-                        <h4 class="font-medium text-gray-500 mb-4 uppercase tracking-widest text-justify">「環境雜訊捕捉器」</h4>
-                        <p class="text-sm text-gray-600 leading-relaxed text-left text-justify">
-                            觀察手部靠近時跳動。開啟上拉電阻後觀察波形回歸穩定。
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Task 2-2 -->
-                <div onclick="openSubmissionModal('basic-03-deb-2', '【作業 2-2】計數器挑戰：捕捉按鈕彈跳 (Bouncing)')"
-                    class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col group cursor-pointer relative hover:shadow-2xl transition-all hover:-translate-y-2">
-                    <div class="bg-amber-500 h-2"></div>
-                    <div class="p-8 flex-grow">
-                        <div class="flex justify-between items-start mb-4">
-                            <span
-                                class="text-4xl text-amber-500 group-hover:rotate-12 transition-transform text-justify">🔢</span>
-                            <span
-                                class="bg-amber-100 text-amber-700 text-xs px-2 py-1 rounded font-bold uppercase text-justify">45
-                                min</span>
-                        </div>
-                        <h3
-                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-amber-600 transition text-justify">
-                            【作業 2-2】</h3>
-                        <h4 class="font-medium text-gray-500 mb-4 uppercase tracking-tighter text-justify">「機械彈跳量化實驗」
-                        </h4>
-                        <p class="text-sm text-gray-600 leading-relaxed text-justify">
-                            實作按鈕計數器。紀錄按一下卻跳出「連發」的倍數。
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Task 2-3 -->
-                <div onclick="openSubmissionModal('basic-03-deb-3', '【作業 2-3】工業級去彈跳演算法 (Pro Debounce)')"
-                    class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col group cursor-pointer relative hover:shadow-2xl transition-all hover:-translate-y-2">
-                    <div class="bg-blue-600 h-2"></div>
-                    <div class="p-8 flex-grow">
-                        <div class="flex justify-between items-start mb-4">
-                            <span
-                                class="text-4xl text-blue-600 group-hover:rotate-180 transition-all duration-700 text-justify">🛠️</span>
-                            <span
-                                class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold uppercase text-justify">60
-                                min</span>
-                        </div>
-                        <h3
-                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-blue-600 transition text-justify text-left">
-                            【作業 2-3】</h3>
-                        <h4 class="font-medium text-gray-500 mb-4 text-justify">「非阻塞狀態切換」</h4>
-                        <p class="text-sm text-gray-600 leading-relaxed text-justify">
-                            使用 millis() 取代延遲。確保模式切換穩如泰山。
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-gray-800 py-12 border-t border-gray-700">
-        <div class="container mx-auto px-4 text-center">
-            <p class="text-gray-500 text-sm mb-4 text-center">&copy; 2026 Vibe Coding. All rights reserved.</p>
-            <div class="flex flex-col md:flex-row justify-center items-center gap-6 text-sm text-gray-400">
-                <span>課程單元 基礎 3 - 訊號穩定性</span>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">2 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
-    </footer>
 
-    <script>
-        // Define Resources
-        window.RESOURCES = {
-            video: "https://www.youtube.com/embed/7NlIariry8U",
-            doc: "https://docs.google.com/document/d/e/2PACX-1vQDc8JarSZ2An4FbqR5pjdXgu4f8mJ2HH5jhdMRslcgwdxFYBTS8ClsVBTfwrWlbncFj9Gcp5an6H6B/pub?embedded=true"
-        };
-    </script>
-    <script src="/js/course-shared.js?v=2026.05.21.V21.DISABLE_UNIFIED_SUPPORT_HUB"></script>
-    <!-- Assignment Guide (Hidden) -->
-    <section id="assignment-guide" style="display: none;">
-<div class="markdown-heading"><h1 class="heading-element">數位控制：上拉電阻與按鈕去彈跳 (Digital Control: Pull-up Resistors &amp; Button Debouncing)</h1><a id="user-content-數位控制上拉電阻與按鈕去彈跳-digital-control-pull-up-resistors--button-debouncing" class="anchor" aria-label="Permalink: 數位控制：上拉電阻與按鈕去彈跳 (Digital Control: Pull-up Resistors &amp; Button Debouncing)" href="#數位控制上拉電阻與按鈕去彈跳-digital-control-pull-up-resistors--button-debouncing"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h2 class="heading-element">課程目標</h2><a id="user-content-課程目標" class="anchor" aria-label="Permalink: 課程目標" href="#課程目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+        <!-- ══════════ PAGE 3: 單元 2 ══════════ -->
+        <div class="ms-unit-page" id="page-3">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-3" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
+                </div>
+
+                <h1>📉 2. 物理現實：機械彈跳 (Debounce)</h1>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+<div class="space-y-6">
+<p class="text-gray-600 text-lg leading-relaxed font-light text-justify">
+                                按鍵接觸一瞬間並非完美「0 到 1」，而是快速開合。
+                            </p>
+<div class="bg-slate-900 p-8 rounded-3xl text-emerald-400 font-mono text-sm relative overflow-hidden group border border-slate-700 shadow-inner text-justify">
+<div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-emerald-500 to-transparent">
+</div>
+<h4 class="text-slate-500 uppercase tracking-widest text-[10px] mb-6 text-justify">
+                                    Oscilloscope View</h4>
+<p class="leading-relaxed text-justify">
+<span class="text-slate-600">// 可能讀到：</span><br/>
+                                    11111<span class="text-red-500">01011001</span>00000000<br/>
+<span class="text-slate-500">^ 此抖動區間會被誤判。</span>
+</p>
+</div>
+</div>
+<div class="bg-amber-50 p-10 rounded-3xl border border-amber-100 flex flex-col justify-center shadow-sm text-justify">
+<h4 class="text-amber-800 font-bold mb-6 flex items-center gap-2 text-justify uppercase tracking-widest">
+<span class="text-2xl text-justify">🔍</span> 誰也會抖動？
+                            </h4>
+<p class="text-gray-600 text-sm leading-relaxed mb-8 text-justify">
+                                所有「機械接觸點」都需要進行去抖處理。
+                            </p>
+<div class="grid grid-cols-2 gap-4 text-justify">
+<div class="bg-white p-4 rounded-xl shadow-sm text-center text-xs font-bold text-amber-900 border border-amber-200 text-justify">
+                                    極限開關</div>
+<div class="bg-white p-4 rounded-xl shadow-sm text-center text-xs font-bold text-amber-900 border border-amber-200 text-justify uppercase tracking-widest">
+                                    磁簧開關</div>
+<div class="bg-white p-4 rounded-xl shadow-sm text-center text-xs font-bold text-amber-900 border border-amber-200 text-justify">
+                                    繼電器回傳</div>
+<div class="bg-white p-4 rounded-xl shadow-sm text-center text-xs font-bold text-amber-900 border border-amber-200 text-justify uppercase tracking-tighter">
+                                    彈簧傾斜儀</div>
+</div>
+</div>
+</div>
+                
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">3 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 4: 單元 3 ══════════ -->
+        <div class="ms-unit-page" id="page-4">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-4" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
+                </div>
+
+                <h1>⏱️ 3. 軟體去抖：時間過濾術</h1>
+                
+                <p class="text-slate-400 font-light leading-relaxed text-justify">
+                                透過演算法來「等待穩定」。
+                            </p><div class="space-y-4 text-justify">
+<div class="flex items-center gap-6 p-4 bg-white/5 rounded-2xl border border-white/10 group hover:border-blue-500/50 transition text-justify">
+<div class="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center font-bold text-lg shrink-0 text-justify">
+                                        1</div>
+<p class="text-xs text-slate-300 text-justify uppercase tracking-widest">Edge
+                                        Catching：偵測電位改變瞬間。</p>
+</div>
+<div class="flex items-center gap-6 p-4 bg-white/5 rounded-2xl border border-white/10 group hover:border-blue-500/50 transition text-justify">
+<div class="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center font-bold text-lg shrink-0 text-justify">
+                                        2</div>
+<p class="text-xs text-slate-300 text-justify uppercase tracking-tighter">Wait
+                                        Epoch：忽略 20~50 ms 波動。</p>
+</div>
+<div class="flex items-center gap-6 p-4 bg-white/5 rounded-2xl border border-white/10 group hover:border-blue-500/50 transition">
+<div class="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center font-bold text-lg shrink-0 text-justify">
+                                        3</div>
+<p class="text-xs text-slate-300 text-justify">Double Confirm：再次確認狀態穩定才判定有效。</p>
+</div>
+</div>
+                
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">4 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 5: 實作挑戰 ══════════ -->
+        <div class="ms-unit-page" id="page-5">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-5" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 135 分鐘</div>
+                </div>
+
+                <h1>實戰任務挑戰</h1>
+
+                <p>
+                    請動手完成以下三項實作任務，這是驗證本單元學習成果的核心挑戰。
+                    完成後請將程式碼與報告提交至 GitHub Classroom。
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-6 my-6">
+                    <!-- Task 1 -->
+                    <div onclick="openSubmissionModal('basic-03-deb-1', '【作業 2-1】天線實驗：體會浮空狀態 (Floating)')"
+                        class="border border-gray-200 bg-white rounded-xl p-6 hover:shadow-lg transition cursor-pointer relative group flex flex-col justify-between">
+                        <div>
+                            <div class="bg-[#E76F51] text-white w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 2-1</div>
+                            <h3 class="text-lg font-bold mb-2">環境雜訊捕捉器</h3>
+                            <p class="text-xs text-gray-600 mb-4">觀察手部靠近時跳動。開啟上拉電阻後觀察波形回歸穩定。</p>
+                        </div>
+                        <div class="border-t border-gray-100 pt-3 flex items-center justify-between text-xs text-[#E76F51] font-bold">
+                            <span>⏱ 📶 30 min 【作業 2-1】 「環境雜訊捕捉器」 觀察手部靠近時跳動。開啟上拉電阻後觀察波形回歸穩定。</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                            <span class="bg-[#E76F51] text-white text-xs px-4 py-2 rounded-full font-bold shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                                📤 點擊繳交作業
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Task 2 -->
+                    <div onclick="openSubmissionModal('basic-03-deb-2', '【作業 2-2】計數器挑戰：捕捉按鈕彈跳 (Bouncing)')"
+                        class="border border-gray-200 bg-white rounded-xl p-6 hover:shadow-lg transition cursor-pointer relative group flex flex-col justify-between">
+                        <div>
+                            <div class="bg-[#2A9D8F] text-white w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 2-2</div>
+                            <h3 class="text-lg font-bold mb-2">機械彈跳量化實驗</h3>
+                            <p class="text-xs text-gray-600 mb-4">實作按鈕計數器。紀錄按一下卻跳出「連發」的倍數。</p>
+                        </div>
+                        <div class="border-t border-gray-100 pt-3 flex items-center justify-between text-xs text-[#2A9D8F] font-bold">
+                            <span>⏱ 🔢 45 min 【作業 2-2】 「機械彈跳量化實驗」 實作按鈕計數器。紀錄按一下卻跳出「連發」的倍數。</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                            <span class="bg-[#2A9D8F] text-white text-xs px-4 py-2 rounded-full font-bold shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                                📤 點擊繳交作業
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Task 3 -->
+                    <div onclick="openSubmissionModal('basic-03-deb-3', '【作業 2-3】工業級去彈跳演算法 (Pro Debounce)')"
+                        class="border border-gray-200 bg-white rounded-xl p-6 hover:shadow-lg transition cursor-pointer relative group flex flex-col justify-between">
+                        <div>
+                            <div class="bg-[#457B9D] text-white w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 2-3</div>
+                            <h3 class="text-lg font-bold mb-2">非阻塞狀態切換</h3>
+                            <p class="text-xs text-gray-600 mb-4">使用 millis() 取代延遲。確保模式切換穩如泰山。</p>
+                        </div>
+                        <div class="border-t border-gray-100 pt-3 flex items-center justify-between text-xs text-[#457B9D] font-bold">
+                            <span>⏱ 🛠️ 60 min 【作業 2-3】 「非阻塞狀態切換」 使用 millis() 取代延遲。確保模式切換穩如泰山。</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                            <span class="bg-[#457B9D] text-white text-xs px-4 py-2 rounded-full font-bold shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                                📤 點擊繳交作業
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">5 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-6">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                </div>
+
+                <h1>單元摘要與參考資源</h1>
+
+                <p>
+                    恭喜！你已經完成了「<strong>數位控制：上拉電阻與按鈕抖動</strong>」模組。
+                    透過本單元的學習與實作，你已經掌握了關鍵的核心技術，為全棧物聯網開發奠定了深厚的底層基石。
+                </p>
+
+                <div class="ms-achievement">
+                    <div class="achievement-icon">🚀</div>
+                    <div class="achievement-text">
+                        <h3>恭喜！你已完成本模組</h3>
+                        <p>你已具備開發與調校本單元核心功能的專業實力。持續累積，前進下一個挑戰！</p>
+                    </div>
+                </div>
+
+                <h2>完成本模組後，你已學會：</h2>
+                <ul>
+                    <li><strong>📡 1. 消失的邏輯：為什麼需要上拉電阻？</strong> 的基本架構與實作技能。</li>
+                    <li><strong>📉 2. 物理現實：機械彈跳 (Debounce)</strong> 的調試方法與資料傳輸細節。</li>
+                    <li><strong>️ 3. 軟體去抖：時間過濾術</strong> 的優化指標與生產環境安全機制。</li>
+                    <li>在實戰挑戰中，透過 Git 與 GitHub Classroom 提交完整的硬體與報告成果。</li>
+                </ul>
+
+                <h2>延伸學習資源</h2>
+
+                <a href="https://www.youtube.com/embed/7NlIariry8U" target="_blank" class="ms-resource-link">
+                    <i class="fab fa-youtube" style="color:#ff0000;"></i>
+                    <div>
+                        <div style="font-weight:600;">課程教學影片</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">YouTube — 本單元核心觀念與實作示範影片</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+
+                <a href="https://docs.google.com/document/d/e/2PACX-1vQDc8JarSZ2An4FbqR5pjdXgu4f8mJ2HH5jhdMRslcgwdxFYBTS8ClsVBTfwrWlbncFj9Gcp5an6H6B/pub?embedded=true" target="_blank" class="ms-resource-link">
+                    <i class="fas fa-file-alt"></i>
+                    <div>
+                        <div style="font-weight:600;">課程完整講義</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">Google Docs — 詳細實驗步驟、技術文件與程式碼指南</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+
+                <a href="https://classroom.github.com" target="_blank" class="ms-resource-link">
+                    <i class="fab fa-github"></i>
+                    <div>
+                        <div style="font-weight:600;">GitHub Classroom</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">classroom.github.com — 管理你的作業提交與自動評分結果</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
+                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「數位控制：上拉電阻與按鈕抖動」模組！')">完成模組</button>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script>
+    /* ─── DATA ─── */
+    const UNITS = [
+        { id: 0, label: '課程總覽',       time: '',         type: 'index' },
+        { id: 1, label: '簡介',            time: '3 分鐘',  type: 'unit'  },
+        { id: 2, label: '📡 1. 消失的邏輯：為什麼需要上拉電阻？', time: '10 分鐘', type: 'unit' },
+        { id: 3, label: '📉 2. 物理現實：機械彈跳 (Debounce)', time: '10 分鐘', type: 'unit' },
+        { id: 4, label: '️ 3. 軟體去抖：時間過濾術', time: '10 分鐘', type: 'unit' },
+        { id: 5, label: '實戰挑戰',       time: '135 分鐘', type: 'lab'   },
+        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+    ];
+
+    let currentUnit = 0;
+    let doneSet = new Set();
+
+    /* ─── INIT ─── */
+    function init() {
+        buildSidebar();
+        buildIndexUnitList();
+        goToUnit(0);
+    }
+
+    /**
+     * 動態建構側邊欄單元選單。
+     */
+    function buildSidebar() {
+        const nav = document.getElementById('sidebar-nav');
+        nav.innerHTML = UNITS.map(u => {
+            const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : '';
+            return `
+            <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
+                <div class="unit-icon" id="icon-${u.id}">${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div>
+                <div class="unit-meta">
+                    <div class="unit-name">${u.label}${badge}</div>
+                    ${u.time ? `<div class="unit-time"><i class="far fa-clock"></i> ${u.time}</div>` : ''}
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    /**
+     * 動態建構首頁單元卡片列表。
+     */
+    function buildIndexUnitList() {
+        const el = document.getElementById('index-unit-list');
+        el.innerHTML = UNITS.filter(u => u.id > 0).map(u => `
+            <div class="unit-card ${u.type}" onclick="goToUnit(${u.id})">
+                <div class="unit-card-num">${u.id}</div>
+                <div class="unit-card-info">
+                    <div class="unit-card-name">${u.label}</div>
+                    <div class="unit-card-time"><i class="far fa-clock"></i> ${u.time}</div>
+                </div>
+                <div class="unit-card-arrow">›</div>
+            </div>
+        `).join('');
+    }
+
+    /* ─── NAVIGATION ─── */
+    /**
+     * 切換至指定單元頁面。
+     * @param {number} id - 單元識別碼
+     */
+    function goToUnit(id) {
+        document.querySelectorAll('.ms-unit-page').forEach(p => p.classList.remove('visible'));
+        const target = id === 0 ? document.getElementById('page-index') : document.getElementById(`page-${id}`);
+        if (target) target.classList.add('visible');
+
+        document.querySelectorAll('.ms-unit-item').forEach(el => el.classList.remove('active'));
+        const navItem = document.getElementById(`nav-${id}`);
+        if (navItem) { navItem.classList.add('active'); navItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) {
+                icon.className = 'unit-icon done';
+                icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>';
+            } else if (u.id === id) {
+                icon.className = 'unit-icon active-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            } else {
+                icon.className = 'unit-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            }
+        });
+
+        const unit = UNITS.find(u => u.id === id);
+        document.getElementById('bc-current').textContent = unit ? unit.label : '';
+        currentUnit = id;
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /**
+     * 標記特定單元為已完成。
+     * @param {number} id - 單元識別碼
+     */
+    function markDone(id) {
+        doneSet.add(id);
+        const badge = document.getElementById(`badge-${id}`);
+        if (badge) badge.style.display = 'flex';
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) { icon.className = 'unit-icon done'; icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>'; }
+        });
+        updateProgress();
+    }
+
+    /**
+     * 計算並更新課程進度與進度條。
+     */
+    function updateProgress() {
+        const total = UNITS.length - 1;
+        const done = doneSet.size;
+        document.getElementById('progress-fill').style.width = Math.round(done / total * 100) + '%';
+        document.getElementById('progress-text').textContent = `${done} / ${total} 已完成`;
+    }
+
+    /* ─── CHECKLIST ─── */
+    /**
+     * 切換核取方塊的狀態。
+     * @param {HTMLElement} el - 核取方塊元素
+     */
+    function toggleCheck(el) {
+        el.classList.toggle('checked');
+        el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
+    }
+
+    /* ─── START ─── */
+    init();
+</script>
+
+<!-- Define Resources -->
+<script>
+    window.RESOURCES = {
+        video: "https://www.youtube.com/embed/7NlIariry8U",
+        doc: "https://docs.google.com/document/d/e/2PACX-1vQDc8JarSZ2An4FbqR5pjdXgu4f8mJ2HH5jhdMRslcgwdxFYBTS8ClsVBTfwrWlbncFj9Gcp5an6H6B/pub?embedded=true"
+    };
+</script>
+<script src="/js/course-shared.js?v=2026.05.22.V27.START_UNITS_LAYOUT_UPGRADE"></script>
+
+<!-- Assignment Guide (Hidden) -->
+<section id="assignment-guide" style="display: none;">
+<div class="markdown-heading"><h1 class="heading-element">數位控制：上拉電阻與按鈕去彈跳 (Digital Control: Pull-up Resistors &amp; Button Debouncing)</h1><a aria-label="Permalink: 數位控制：上拉電阻與按鈕去彈跳 (Digital Control: Pull-up Resistors &amp; Button Debouncing)" class="anchor" href="#數位控制上拉電阻與按鈕去彈跳-digital-control-pull-up-resistors--button-debouncing" id="user-content-數位控制上拉電阻與按鈕去彈跳-digital-control-pull-up-resistors--button-debouncing"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">課程目標</h2><a aria-label="Permalink: 課程目標" class="anchor" href="#課程目標" id="user-content-課程目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>在電子電路中，機械開關（如按鈕）並非完美的。當你按下或放開按鈕時，接觸點會在毫秒等級的時間內發生多次微小的彈跳（Bouncing），這會導致微控制器誤以為你快速按下了多次按鈕。本單元將帶領你透過軟體演算法「馴服」這些彈跳，並學習專業韌體開發必備的 <strong>非阻塞（Non-blocking）</strong> 程式設計技巧。</p>
-<div class="markdown-heading"><h3 class="heading-element">核心技能</h3><a id="user-content-核心技能" class="anchor" aria-label="Permalink: 核心技能" href="#核心技能"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">核心技能</h3><a aria-label="Permalink: 核心技能" class="anchor" href="#核心技能" id="user-content-核心技能"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>理解浮空狀態 (Floating State)</strong>：學習為何數位輸入需要上拉或下拉電阻來確保邏輯確定性。</li>
@@ -376,9 +1042,9 @@
 <li>
 <strong>非阻塞計時 (Non-blocking Timing)</strong>：掌握 <code>millis()</code> 取代 <code>delay()</code>，讓程式在等待的同時仍能執行其他任務。</li>
 </ul>
-<hr>
-<div class="markdown-heading"><h2 class="heading-element">任務說明</h2><a id="user-content-任務說明" class="anchor" aria-label="Permalink: 任務說明" href="#任務說明"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h3 class="heading-element">任務 1：天線實驗 - 體會浮空狀態 (Floating State Lab)</h3><a id="user-content-任務-1天線實驗---體會浮空狀態-floating-state-lab" class="anchor" aria-label="Permalink: 任務 1：天線實驗 - 體會浮空狀態 (Floating State Lab)" href="#任務-1天線實驗---體會浮空狀態-floating-state-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h2 class="heading-element">任務說明</h2><a aria-label="Permalink: 任務說明" class="anchor" href="#任務說明" id="user-content-任務說明"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 1：天線實驗 - 體會浮空狀態 (Floating State Lab)</h3><a aria-label="Permalink: 任務 1：天線實驗 - 體會浮空狀態 (Floating State Lab)" class="anchor" href="#任務-1天線實驗---體會浮空狀態-floating-state-lab" id="user-content-任務-1天線實驗---體會浮空狀態-floating-state-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ol>
 <li>將 Arduino 的一個數位引腳（預設為 <code>BUTTON_PIN</code>）設定為 <code>INPUT</code> 模式，且不連接任何電子零件（懸空）。</li>
 <li>開啟 <strong>Serial Plotter</strong>，觀察當你的手靠近或觸摸引腳時，波形如何像天線一樣吸收雜訊並產生亂跳。</li>
@@ -387,7 +1053,7 @@
 <li>
 <strong>紀錄</strong>：在 <code>docs/Oscilloscope.md</code> 中描述「浮空引腳」的行為及其對數位系統的危害。</li>
 </ol>
-<div class="markdown-heading"><h3 class="heading-element">任務 2：計數器挑戰 - 量化機械彈跳 (Bouncing Capture Lab)</h3><a id="user-content-任務-2計數器挑戰---量化機械彈跳-bouncing-capture-lab" class="anchor" aria-label="Permalink: 任務 2：計數器挑戰 - 量化機械彈跳 (Bouncing Capture Lab)" href="#任務-2計數器挑戰---量化機械彈跳-bouncing-capture-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 2：計數器挑戰 - 量化機械彈跳 (Bouncing Capture Lab)</h3><a aria-label="Permalink: 任務 2：計數器挑戰 - 量化機械彈跳 (Bouncing Capture Lab)" class="anchor" href="#任務-2計數器挑戰---量化機械彈跳-bouncing-capture-lab" id="user-content-任務-2計數器挑戰---量化機械彈跳-bouncing-capture-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ol>
 <li>實作一個基礎計數器：每偵測到按鈕按下（LOW），<code>pressCount</code> 加 1。</li>
 <li>
@@ -397,7 +1063,7 @@
 <li>
 <strong>報告</strong>：將實驗數據填入 <code>docs/Oscilloscope.md</code> 的表格中。</li>
 </ol>
-<div class="markdown-heading"><h3 class="heading-element">任務 3：專業級去彈跳演算法 (Pro Debounce &amp; Millis Lab)</h3><a id="user-content-任務-3專業級去彈跳演算法-pro-debounce--millis-lab" class="anchor" aria-label="Permalink: 任務 3：專業級去彈跳演算法 (Pro Debounce &amp; Millis Lab)" href="#任務-3專業級去彈跳演算法-pro-debounce--millis-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 3：專業級去彈跳演算法 (Pro Debounce &amp; Millis Lab)</h3><a aria-label="Permalink: 任務 3：專業級去彈跳演算法 (Pro Debounce &amp; Millis Lab)" class="anchor" href="#任務-3專業級去彈跳演算法-pro-debounce--millis-lab" id="user-content-任務-3專業級去彈跳演算法-pro-debounce--millis-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ol>
 <li>
 <strong>實作目標</strong>：使用 <code>millis()</code> 實作狀態機去彈跳邏輯。</li>
@@ -415,8 +1081,8 @@
 </ul>
 </li>
 </ol>
-<hr>
-<div class="markdown-heading"><h2 class="heading-element">檔案結構</h2><a id="user-content-檔案結構" class="anchor" aria-label="Permalink: 檔案結構" href="#檔案結構"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h2 class="heading-element">檔案結構</h2><a aria-label="Permalink: 檔案結構" class="anchor" href="#檔案結構" id="user-content-檔案結構"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <code>src/main.cpp</code>：你的程式實作核心。</li>
@@ -425,20 +1091,19 @@
 <li>
 <code>docs/Oscilloscope.md</code>：物理實驗報告，需填寫你的觀察結果。</li>
 </ul>
-<div class="markdown-heading"><h2 class="heading-element">提交規範</h2><a id="user-content-提交規範" class="anchor" aria-label="Permalink: 提交規範" href="#提交規範"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">提交規範</h2><a aria-label="Permalink: 提交規範" class="anchor" href="#提交規範" id="user-content-提交規範"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ol>
 <li>確保程式碼通過編譯，且邏輯符合「非阻塞」原則。</li>
 <li>完成 <code>docs/Oscilloscope.md</code> 中的所有實驗紀錄。</li>
 <li>將所有變更 push 回 GitHub 程式庫。</li>
 </ol>
+</section>
 
-    </section>
-
-    <!-- Tutor Guide (Hidden) -->
-    <section id="tutor-guide" style="display: none;">
+<!-- Tutor Guide (Hidden) -->
+<section id="tutor-guide" style="display: none;">
 <p>針對 <strong><code>basic-03-unit-pullup-debounce</code> (數位控制：上拉電阻與按鈕抖動)</strong> 單元，這是學員從「玩具程式」轉向「專業韌體」的必經之路。它要求學員具備 <strong>非阻塞計時 (Non-blocking Timing)</strong> 的思維，學習如何透過軟體演算法（如 <code>millis()</code>）補償硬體物理缺陷（如機械彈跳），並理解數位邏輯中 <strong>「確定性 (Determinism)」</strong> 的重要性。</p>
 <p>以下是在 <strong>GitHub Classroom</strong> 部署其作業 (Assignments) 的具體建議：</p>
-<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 配置建議</h3><a id="user-content-1-範本程式庫-配置建議" class="anchor" aria-label="Permalink: 1. 範本程式庫 配置建議" href="#1-範本程式庫-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 配置建議</h3><a aria-label="Permalink: 1. 範本程式庫 配置建議" class="anchor" href="#1-範本程式庫-配置建議" id="user-content-1-範本程式庫-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>去彈跳作業的核心在於「時間過濾」與「狀態跟蹤」，範本應包含實驗性的檢測代碼，建議包含：</p>
 <ul>
 <li>
@@ -450,9 +1115,9 @@
 <li>
 <strong>📂 <code>docs/TIMING_DIAGRAM.md</code></strong>：時序邏輯區。學員需在此說明為何使用 <code>millis()</code> 而非 <code>delay()</code>，並畫出一個簡單的狀態切換流程圖。</li>
 </ul>
-<hr>
-<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a id="user-content-2-作業任務部署細節" class="anchor" aria-label="Permalink: 2. 作業任務部署細節" href="#2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h4 class="heading-element">任務 1：「天線實驗」體會浮空狀態 (Floating State Lab)</h4><a id="user-content-任務-1天線實驗體會浮空狀態-floating-state-lab" class="anchor" aria-label="Permalink: 任務 1：「天線實驗」體會浮空狀態 (Floating State Lab)" href="#任務-1天線實驗體會浮空狀態-floating-state-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a aria-label="Permalink: 2. 作業任務部署細節" class="anchor" href="#2-作業任務部署細節" id="user-content-2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 1：「天線實驗」體會浮空狀態 (Floating State Lab)</h4><a aria-label="Permalink: 任務 1：「天線實驗」體會浮空狀態 (Floating State Lab)" class="anchor" href="#任務-1天線實驗體會浮空狀態-floating-state-lab" id="user-content-任務-1天線實驗體會浮空狀態-floating-state-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：親眼見證數位引腳在「未定義電位」時的混亂，建立必備的上拉/下拉直覺。</li>
@@ -468,7 +1133,7 @@
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 2：「計數器挑戰」量化機械彈跳 (Bouncing Capture Lab)</h4><a id="user-content-任務-2計數器挑戰量化機械彈跳-bouncing-capture-lab" class="anchor" aria-label="Permalink: 任務 2：「計數器挑戰」量化機械彈跳 (Bouncing Capture Lab)" href="#任務-2計數器挑戰量化機械彈跳-bouncing-capture-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 2：「計數器挑戰」量化機械彈跳 (Bouncing Capture Lab)</h4><a aria-label="Permalink: 任務 2：「計數器挑戰」量化機械彈跳 (Bouncing Capture Lab)" class="anchor" href="#任務-2計數器挑戰量化機械彈跳-bouncing-capture-lab" id="user-content-任務-2計數器挑戰量化機械彈跳-bouncing-capture-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：透過代碼量化肉眼看不見的毫秒級開合，理解硬體不完美的代價。</li>
@@ -484,7 +1149,7 @@
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 3：「工業級去彈跳」非阻塞演算法 (Pro Debounce &amp; Millis Lab)</h4><a id="user-content-任務-3工業級去彈跳非阻塞演算法-pro-debounce--millis-lab" class="anchor" aria-label="Permalink: 任務 3：「工業級去彈跳」非阻塞演算法 (Pro Debounce &amp; Millis Lab)" href="#任務-3工業級去彈跳非阻塞演算法-pro-debounce--millis-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 3：「工業級去彈跳」非阻塞演算法 (Pro Debounce &amp; Millis Lab)</h4><a aria-label="Permalink: 任務 3：「工業級去彈跳」非阻塞演算法 (Pro Debounce &amp; Millis Lab)" class="anchor" href="#任務-3工業級去彈跳非阻塞演算法-pro-debounce--millis-lab" id="user-content-任務-3工業級去彈跳非阻塞演算法-pro-debounce--millis-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：掌握 <code>millis()</code> 非阻塞控制，這是開發複雜系統（如一邊跑馬達、一邊偵測按鈕）的基石。</li>
@@ -500,15 +1165,15 @@
 </ul>
 </li>
 </ul>
-<hr>
-<div class="markdown-heading"><h3 class="heading-element">3. 韌體穩定性專家導師點評標準 (Firmware Robustness &amp; Timing Standards)</h3><a id="user-content-3-韌體穩定性專家導師點評標準-firmware-robustness--timing-standards" class="anchor" aria-label="Permalink: 3. 韌體穩定性專家導師點評標準 (Firmware Robustness &amp; Timing Standards)" href="#3-韌體穩定性專家導師點評標準-firmware-robustness--timing-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h3 class="heading-element">3. 韌體穩定性專家導師點評標準 (Firmware Robustness &amp; Timing Standards)</h3><a aria-label="Permalink: 3. 韌體穩定性專家導師點評標準 (Firmware Robustness &amp; Timing Standards)" class="anchor" href="#3-韌體穩定性專家導師點評標準-firmware-robustness--timing-standards" id="user-content-3-韌體穩定性專家導師點評標準-firmware-robustness--timing-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>此單元的價值在於 <strong>「對時間維度的精確掌控與非阻塞程式設計的運用」</strong>：</p>
 <ul>
 <li>[ ] <strong>時間管理正確性</strong>：是否完全移除了 <code>delay()</code>？改用 <code>millis()</code> 進行無感去抖？</li>
 <li>[ ] <strong>狀態邏輯嚴密性</strong>：是否正確處理了「前次狀態」與「當前狀態」的比對？</li>
 <li>[ ] <strong>物理解釋力</strong>：README 是否準確描述了負邏輯 (Active Low) 的工作原理？</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a id="user-content--推薦範本結構-github-classroom-template" class="anchor" aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" href="#-推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" class="anchor" href="#-推薦範本結構-github-classroom-template" id="user-content--推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <pre lang="text"><code>.
 ├── src/main.cpp         # 核心：基於 millis() 的非阻塞去彈跳狀態機
 ├── include/debouncer.h  # 封裝：定義去彈跳的時間常數與引腳定義
@@ -520,8 +1185,7 @@
 |
 |
 太精采了！我們已經將 <strong>基礎 03</strong>（訊號穩定性）系列中關於 ADC、引腳規劃與去彈跳的 Classroom 部署定義全部完成了。這標誌著學員已經具備處理「不完美現實信號」的成熟工程能力。恭喜！基礎系列的課程定義已經非常強大！</p>
+</section>
 
-    </section>
 </body>
-
 </html>

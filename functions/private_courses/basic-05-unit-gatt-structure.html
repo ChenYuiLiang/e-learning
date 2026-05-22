@@ -4,324 +4,1016 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLE 核心架構：GATT 協議與階層 - Vibe Coding</title>
+    <title>BLE 核心架構：GATT 協議與階層 - Vibe Coding Learn</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    
+    <style>
+        
+        :root {
+            --ms-blue: #0078d4;
+            --ms-blue-dark: #005a9e;
+            --ms-blue-light: #deecf9;
+            --ms-gray-10: #f3f2f1;
+            --ms-gray-20: #e1dfdd;
+            --ms-gray-90: #201f1e;
+            --ms-green: #107c10;
+            --ms-red: #d13438;
+            --sidebar-w: 280px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fff;
+            color: #201f1e;
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* ─── TOP NAV ─── */
+        .ms-topnav {
+            background: var(--ms-blue);
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 4px rgba(0,0,0,.2);
+        }
+        .ms-topnav .brand {
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
+
+        /* ─── LAYOUT ─── */
+        .ms-layout { display: flex; min-height: calc(100vh - 48px); }
+
+        /* ─── SIDEBAR ─── */
+        .ms-sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            background: #faf9f8;
+            border-right: 1px solid #e1dfdd;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 48px;
+            height: calc(100vh - 48px);
+            overflow-y: auto;
+        }
+        .ms-sidebar-header {
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .ms-sidebar-header .module-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #605e5c;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .ms-sidebar-header .module-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #201f1e;
+            line-height: 1.4;
+        }
+        .ms-sidebar-header .meta {
+            font-size: 12px;
+            color: #605e5c;
+            margin-top: 6px;
+        }
+        .ms-unit-list { padding: 8px 0; }
+        .ms-unit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: background .12s, border-color .12s;
+            color: #201f1e;
+        }
+        .ms-unit-item:hover { background: #edebe9; }
+        .ms-unit-item.active {
+            border-left-color: var(--ms-blue);
+            background: #deecf9;
+        }
+        .ms-unit-item.active .unit-name { color: var(--ms-blue); font-weight: 600; }
+        .unit-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #c8c6c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            font-size: 10px;
+            background: #fff;
+        }
+        .unit-icon.done { background: var(--ms-green); border-color: var(--ms-green); color: #fff; }
+        .unit-icon.active-icon { border-color: var(--ms-blue); background: var(--ms-blue); color: #fff; }
+        .unit-meta { flex: 1; min-width: 0; }
+        .unit-name { font-size: 13px; line-height: 1.4; }
+        .unit-time { font-size: 11px; color: #605e5c; margin-top: 2px; }
+        .sidebar-progress {
+            padding: 12px 16px;
+            border-top: 1px solid #e1dfdd;
+            margin-top: auto;
+        }
+        .progress-bar-bg { background: #e1dfdd; border-radius: 4px; height: 6px; }
+        .progress-bar-fill { background: var(--ms-green); border-radius: 4px; height: 6px; transition: width .4s; }
+        .progress-text { font-size: 12px; color: #605e5c; margin-top: 6px; }
+
+        /* ─── MAIN ─── */
+        .ms-content { flex: 1; min-width: 0; }
+
+        .ms-breadcrumb {
+            padding: 10px 40px;
+            font-size: 12px;
+            color: #605e5c;
+            border-bottom: 1px solid #e1dfdd;
+            background: #fff;
+        }
+        .ms-breadcrumb a { color: var(--ms-blue); text-decoration: none; }
+        .ms-breadcrumb a:hover { text-decoration: underline; }
+        .ms-breadcrumb span { margin: 0 6px; }
+
+        /* ─── PAGES ─── */
+        .ms-unit-page { display: none; }
+        .ms-unit-page.visible { display: block; }
+
+        .unit-content {
+            max-width: 820px;
+            padding: 32px 40px 60px;
+            margin: 0 auto;
+        }
+
+        .unit-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .unit-completed-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #dff6dd;
+            color: #107c10;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 2px;
+        }
+        .unit-time-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #605e5c;
+            font-size: 13px;
+        }
+
+        /* Typography */
+        .unit-content h1 { font-size: 28px; font-weight: 700; margin: 0 0 20px; color: #201f1e; line-height: 1.3; }
+        .unit-content h2 { font-size: 20px; font-weight: 600; margin: 36px 0 12px; color: #201f1e; padding-top: 8px; }
+        .unit-content h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; color: #201f1e; }
+        .unit-content p { margin: 0 0 14px; }
+        .unit-content ul, .unit-content ol { margin: 0 0 14px; padding-left: 28px; }
+        .unit-content li { margin-bottom: 6px; }
+        .unit-content strong { font-weight: 600; }
+        .unit-content a { color: var(--ms-blue); text-decoration: none; }
+        .unit-content a:hover { text-decoration: underline; }
+        .unit-content code {
+            background: #f3f2f1;
+            border: 1px solid #e1dfdd;
+            border-radius: 3px;
+            padding: 1px 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #a31515;
+        }
+
+        /* Callouts */
+        .ms-note, .ms-tip, .ms-warning, .ms-important {
+            display: flex;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid;
+            font-size: 14px;
+        }
+        .ms-note { background: #deecf9; border-color: var(--ms-blue); }
+        .ms-note .note-icon { color: var(--ms-blue); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-tip { background: #dff6dd; border-color: var(--ms-green); }
+        .ms-tip .note-icon { color: var(--ms-green); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-warning { background: #fff4ce; border-color: #ffaa44; }
+        .ms-warning .note-icon { color: #ffaa44; font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-important { background: #fde7e9; border-color: var(--ms-red); }
+        .ms-important .note-icon { color: var(--ms-red); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .note-body strong { display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+
+        /* Scenario */
+        .ms-scenario {
+            background: #f3f2f1;
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #323130;
+            border-left: 4px solid #c8c6c4;
+        }
+        .ms-scenario-label {
+            font-style: normal;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #605e5c;
+            margin-bottom: 8px;
+        }
+
+        /* Steps */
+        .ms-steps { margin: 16px 0; }
+        .ms-step { display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start; }
+        .ms-step-num {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: var(--ms-blue); color: #fff;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .ms-step-body { flex: 1; }
+        .ms-step-body h4 { font-size: 14px; font-weight: 600; margin: 0 0 4px; }
+        .ms-step-body p { font-size: 14px; margin: 0; }
+
+        /* Table */
+        .ms-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+        .ms-table th {
+            background: #f3f2f1; font-weight: 600; text-align: left;
+            padding: 10px 14px; border: 1px solid #e1dfdd; color: #323130;
+        }
+        .ms-table td { padding: 9px 14px; border: 1px solid #e1dfdd; vertical-align: top; }
+        .ms-table tr:nth-child(even) td { background: #faf9f8; }
+        .ms-table .check { color: var(--ms-green); font-size: 16px; }
+        .ms-table .cross { color: #8a8886; font-size: 16px; }
+
+        /* Checklist */
+        .ms-checklist { list-style: none; padding: 0; margin: 12px 0; }
+        .ms-checklist li {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 6px 0; font-size: 14px;
+        }
+        .ms-checklist li .check-box {
+            width: 18px; height: 18px;
+            border: 2px solid #8a8886; border-radius: 2px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; margin-top: 1px; cursor: pointer; transition: all .15s;
+        }
+        .ms-checklist li .check-box.checked {
+            background: var(--ms-blue); border-color: var(--ms-blue); color: #fff;
+        }
+
+        /* Code block */
+        .ms-code {
+            background: #1e1e1e;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px 0;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-x: auto;
+        }
+        .ms-code .c-comment { color: #6a9955; }
+        .ms-code .c-str { color: #ce9178; }
+        .ms-code .c-kw { color: #569cd6; }
+        .ms-code .c-attr { color: #9cdcfe; }
+        .ms-code .c-val { color: #ce9178; }
+        .ms-code .c-tag { color: #4ec9b0; }
+        .ms-code .c-white { color: #d4d4d4; }
+
+        /* Lab card */
+        .ms-lab-card {
+            background: linear-gradient(135deg, #eef6ff 0%, #f5f0ff 100%);
+            border: 1px solid #c7e0f4;
+            border-radius: 6px;
+            padding: 24px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: box-shadow .15s, border-color .15s;
+        }
+        .ms-lab-card:hover { box-shadow: 0 4px 16px rgba(0,120,212,.12); border-color: var(--ms-blue); }
+        .ms-lab-card h3 { margin: 0 0 12px; color: var(--ms-blue-dark); font-size: 16px; font-weight: 600; }
+        .ms-lab-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--ms-blue);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 12px;
+        }
+        .ms-lab-time {
+            font-size: 12px;
+            color: #605e5c;
+            margin-left: 8px;
+        }
+
+        /* Compare grid */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .compare-card {
+            border: 1px solid #e1dfdd;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .compare-card-header {
+            padding: 12px 14px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .compare-card-body {
+            padding: 14px;
+            font-size: 13px;
+            color: #605e5c;
+            line-height: 1.5;
+        }
+
+        /* Buttons */
+        .ms-btn {
+            background: var(--ms-blue); color: #fff; border: none;
+            padding: 7px 18px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; transition: background .12s;
+            font-family: inherit;
+        }
+        .ms-btn:hover { background: var(--ms-blue-dark); }
+        .ms-btn-ghost {
+            background: transparent; color: var(--ms-blue);
+            border: 1px solid var(--ms-blue); padding: 6px 18px;
+            font-size: 14px; font-weight: 600; border-radius: 2px;
+            cursor: pointer; transition: background .12s; font-family: inherit;
+        }
+        .ms-btn-ghost:hover { background: var(--ms-blue-light); }
+
+        /* Nav */
+        .unit-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            border-top: 1px solid #e1dfdd;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .nav-btn-prev, .nav-btn-next {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 20px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; border: 1px solid;
+            font-family: inherit; transition: background .12s;
+        }
+        .nav-btn-next { background: var(--ms-blue); color: #fff; border-color: var(--ms-blue); }
+        .nav-btn-next:hover { background: var(--ms-blue-dark); border-color: var(--ms-blue-dark); }
+        .nav-btn-prev { background: #fff; color: var(--ms-blue); border-color: var(--ms-blue); }
+        .nav-btn-prev:hover { background: var(--ms-blue-light); }
+        .unit-page-indicator { font-size: 13px; color: #605e5c; }
+
+        /* Module index */
+        .module-meta-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        .ms-tag { background: #f3f2f1; color: #323130; font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: 500; }
+        .ms-tag.blue { background: #deecf9; color: var(--ms-blue-dark); }
+        .ms-tag.green { background: #dff6dd; color: #107c10; }
+        .unit-card-list { margin: 20px 0; }
+        .unit-card {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 0; border-bottom: 1px solid #f3f2f1; cursor: pointer;
+        }
+        .unit-card:last-child { border-bottom: none; }
+        .unit-card:hover .unit-card-name { color: var(--ms-blue); text-decoration: underline; }
+        .unit-card-num {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #f3f2f1; color: #605e5c;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .unit-card.lab .unit-card-num { background: #eef6ff; color: var(--ms-blue-dark); }
+        .unit-card.quiz .unit-card-num { background: #fff4ce; color: #8a6914; }
+        .unit-card-info { flex: 1; }
+        .unit-card-name { font-size: 15px; font-weight: 500; }
+        .unit-card-time { font-size: 12px; color: #605e5c; margin-top: 2px; }
+        .unit-card-arrow { color: #c8c6c4; font-size: 14px; }
+
+        /* Resource links */
+        .ms-resource-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; text-decoration: none; color: #201f1e;
+            font-size: 14px; transition: background .1s;
+        }
+        .ms-resource-link:hover { background: #f3f2f1; }
+        .ms-resource-link i { color: var(--ms-blue); font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+
+        /* Achievement */
+        .ms-achievement {
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            color: #fff; border-radius: 6px; padding: 24px 28px;
+            margin: 24px 0; display: flex; align-items: center; gap: 20px;
+        }
+        .achievement-icon { font-size: 48px; flex-shrink: 0; }
+        .achievement-text h3 { margin: 0 0 4px; font-size: 18px; }
+        .achievement-text p { margin: 0; font-size: 14px; opacity: .9; }
+
+        @media (max-width: 768px) {
+            .ms-sidebar { display: none; }
+            .unit-content { padding: 20px 16px 40px; }
+            .unit-nav { padding: 16px; }
+            .ms-breadcrumb { padding: 8px 16px; }
+            .compare-grid { grid-template-columns: 1fr; }
+        }
+
+    </style>
 </head>
 
-<body class="bg-gray-50 flex flex-col min-h-screen text-gray-800 font-[Inter]">
+<body>
 
-    <!-- Hero Section -->
-    <header
-        class="relative bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 text-white pt-24 pb-32 overflow-hidden">
-        <div
-            class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-20 mix-blend-overlay">
+<!-- TOP NAV -->
+<nav class="ms-topnav">
+    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <div class="divider"></div>
+    <span class="nav-label">基礎 5 - BLE 核心架構</span>
+</nav>
+
+<div class="ms-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="ms-sidebar">
+        <div class="ms-sidebar-header">
+            <div class="module-label">模組</div>
+            <div class="module-title">BLE 核心架構：GATT 協議與階層</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 6 個單元</div>
         </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-gray-50 to-transparent bottom-0 h-16"></div>
+        <nav class="ms-unit-list" id="sidebar-nav"></nav>
+        <div class="sidebar-progress">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+            </div>
+            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+        </div>
+    </aside>
 
-        <div class="container mx-auto px-4 relative z-10 text-center">
-            <span
-                class="inline-block py-1 px-3 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-sm font-semibold mb-6 tracking-wide uppercase">
-                基礎 5 - BLE 核心架構
-            </span>
-            <h1
-                class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit] uppercase tracking-tighter">
-                揭開藍牙通訊的面紗：<br><span class="text-blue-400">GATT 協議與數據交換</span>
-            </h1>
-            <p class="text-xl md:text-2xl text-blue-100 max-w-2xl mx-auto font-light leading-relaxed">
-                掌握 BLE 通訊階層。設計邏輯嚴密、分類清晰且高效的通訊協議模型。
-            </p>
+    <!-- MAIN -->
+    <main class="ms-content">
 
-            <div class="mt-8 flex flex-wrap justify-center gap-4">
-                <button onclick="enterMediaMode('video', window.RESOURCES.youtube)"
-                    class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
-                    <span>📺</span> 觀看教學影片
-                </button>
-                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
-                    class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
-                    <span>📄</span> 閱讀課程講義
-                </button>
+        <div class="ms-breadcrumb">
+            <a href="#">Vibe Coding</a><span>›</span>
+            <a href="#">基礎 5</a><span>›</span>
+            <span id="bc-current">課程總覽</span>
+        </div>
+
+        <!-- ══════════ PAGE 0: INDEX ══════════ -->
+        <div class="ms-unit-page visible" id="page-index">
+            <div class="unit-content">
+                <h1>BLE 核心架構：GATT 協議與階層</h1>
+                <div class="module-meta-tags">
+                    <span class="ms-tag">模組</span>
+                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag green">基礎 5</span>
+                    <span class="ms-tag blue">硬體開發</span>
+                    <span class="ms-tag blue">物聯網</span>
+                </div>
+
+                <p>掌握 BLE 通訊階層。設計邏輯嚴密、分類清晰且高效的通訊協議模型。</p>
+
+                <h2>學習目標</h2>
+                <p>完成本模組後，你將能夠：</p>
+                <ul>
+                    <li>理解並掌握 <strong>🏛️ 1. 藍牙的階層美學：GATT 結構</strong> 的核心觀念與操作實務。</li>
+                    <li>學會 <strong>🆔 2. 身份識別：UUID 規格</strong> 的關鍵原理，並能將其應用於開發。</li>
+                    <li>掌握 <strong>🔄 3. 數據交換流派</strong> 的調校技巧與穩定性測試。</li>
+                    <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
+                </ul>
+
+                <h2>必要條件</h2>
+                <ul>
+                    <li>準備好 ESP32 開發板與 Micro USB / USB-C 數據線</li>
+                    <li>電腦已配置 VS Code 與 PlatformIO 開發環境</li>
+                    <li>擁有 GitHub 帳號，能夠接受 GitHub Classroom 邀請</li>
+                </ul>
+
+                <h2>本模組單元</h2>
+                <div class="unit-card-list" id="index-unit-list"></div>
+                <div style="margin-top:32px;">
+                    <button class="ms-btn" onclick="goToUnit(1)">開始模組 &nbsp;›</button>
+                </div>
             </div>
         </div>
-    </header>
 
-    <!-- Main Content -->
-    <main class="container mx-auto px-4 -mt-20 relative z-20 pb-20">
+        <!-- ══════════ PAGE 1: 簡介 ══════════ -->
+        <div class="ms-unit-page" id="page-1">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-1" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                </div>
 
-        <!-- Module 1: GATT Structure -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
-                <div class="p-1 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
-                <div class="p-8 md:p-14">
-                    <div class="flex flex-col md:flex-row gap-16">
-                        <div class="flex-1">
-                            <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                                <span class="text-4xl text-blue-500 text-justify">🏛️</span> 1. 藍牙的階層美學：GATT 結構
-                            </h2>
-                            <div class="space-y-6 text-gray-600 text-justify">
-                                <p class="text-lg leading-relaxed font-light text-justify">
+                <h1>簡介</h1>
+
+                <p>
+                    歡迎來到本模組！本單元的核心主題是 <strong>BLE 核心架構：GATT 協議與階層</strong>。
+                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
+                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                </p>
+
+                <div class="ms-scenario">
+                    <div class="ms-scenario-label">學習指引</div>
+                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
+                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                </div>
+
+                <h2>教學影片</h2>
+                <div style="border-radius:4px; overflow:hidden; margin:20px 0; box-shadow:0 2px 8px rgba(0,0,0,.12); aspect-ratio:16/9;">
+                    <iframe src="https://www.youtube.com/embed/tHAeaVPGxXE"
+                        title="BLE 核心架構：GATT 協議與階層 教學影片" allowfullscreen
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        style="width:100%; height:100%; display:block; border:0;">
+                    </iframe>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
+                <span class="unit-page-indicator">1 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 2: 單元 1 ══════════ -->
+        <div class="ms-unit-page" id="page-2">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-2" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
+                </div>
+
+                <h1>🏛️ 1. 藍牙的階層美學：GATT 結構</h1>
+                
+                <div class="space-y-6 text-gray-600 text-justify">
+<p class="text-lg leading-relaxed font-light text-justify">
                                     GATT 定義數據交換。像個嚴密的圖書館：
                                 </p>
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-justify">
-                                    <div
-                                        class="p-6 rounded-2xl border border-blue-100 shadow-sm group hover:bg-blue-600 transition duration-300 bg-blue-50 text-justify">
-                                        <h4
-                                            class="font-bold text-blue-800 group-hover:text-white mb-2 flex items-center gap-2 text-sm uppercase text-justify">
-                                            <span>📦</span> Profile
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-justify">
+<div class="p-6 rounded-2xl border border-blue-100 shadow-sm group hover:bg-blue-600 transition duration-300 bg-blue-50 text-justify">
+<h4 class="font-bold text-blue-800 group-hover:text-white mb-2 flex items-center gap-2 text-sm uppercase text-justify">
+<span>📦</span> Profile
                                         </h4>
-                                        <p
-                                            class="text-[11px] text-slate-500 group-hover:text-blue-100 font-light leading-relaxed text-justify">
+<p class="text-[11px] text-slate-500 group-hover:text-blue-100 font-light leading-relaxed text-justify">
                                             角色完整定義。如：「無人車」。</p>
-                                    </div>
-                                    <div
-                                        class="p-6 rounded-2xl border border-indigo-100 shadow-sm group hover:bg-indigo-600 transition duration-300 bg-indigo-50 text-justify">
-                                        <h4
-                                            class="font-bold text-indigo-800 group-hover:text-white mb-2 flex items-center gap-2 text-sm uppercase text-justify">
-                                            <span>📂</span> Service
+</div>
+<div class="p-6 rounded-2xl border border-indigo-100 shadow-sm group hover:bg-indigo-600 transition duration-300 bg-indigo-50 text-justify">
+<h4 class="font-bold text-indigo-800 group-hover:text-white mb-2 flex items-center gap-2 text-sm uppercase text-justify">
+<span>📂</span> Service
                                         </h4>
-                                        <p
-                                            class="text-[11px] text-slate-500 group-hover:text-indigo-100 font-light leading-relaxed text-justify">
+<p class="text-[11px] text-slate-500 group-hover:text-indigo-100 font-light leading-relaxed text-justify">
                                             功能邏輯分類。如：「動力」、「傳感」。</p>
-                                    </div>
-                                    <div
-                                        class="p-6 rounded-2xl border border-purple-100 shadow-sm group hover:bg-purple-600 transition duration-300 bg-purple-50 text-justify">
-                                        <h4
-                                            class="font-bold text-purple-800 group-hover:text-white mb-2 flex items-center gap-2 text-sm uppercase text-justify">
-                                            <span>📄</span> Char
+</div>
+<div class="p-6 rounded-2xl border border-purple-100 shadow-sm group hover:bg-purple-600 transition duration-300 bg-purple-50 text-justify">
+<h4 class="font-bold text-purple-800 group-hover:text-white mb-2 flex items-center gap-2 text-sm uppercase text-justify">
+<span>📄</span> Char
                                         </h4>
-                                        <p
-                                            class="text-[11px] text-slate-500 group-hover:text-purple-100 font-light leading-relaxed text-justify">
+<p class="text-[11px] text-slate-500 group-hover:text-purple-100 font-light leading-relaxed text-justify">
                                             數據節點。如：「轉速」、「電量」。</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="md:w-80">
-                            <div
-                                class="p-8 rounded-3xl shadow-2xl border border-slate-700 text-slate-300 relative overflow-hidden group bg-slate-900 text-justify">
-                                <div
-                                    class="absolute -right-4 -bottom-4 w-20 h-20 bg-blue-500/10 rounded-full group-hover:scale-150 transition-transform duration-700">
-                                </div>
-                                <h4
-                                    class="text-blue-400 font-bold mb-4 uppercase tracking-widest text-[10px] text-justify">
-                                    <span>🧠</span> Coding Tip
-                                </h4>
-                                <p class="text-[11px] font-light leading-relaxed text-justify">
-                                    將感測與指令分開放在不同 Service，簡化 App 邏輯。
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+</div>
+</div>
+</div>
+                
             </div>
-        </section>
-
-        <!-- Module 2: UUID -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
-                <div class="p-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
-                <div class="p-8 md:p-14">
-                    <div class="flex flex-col md:flex-row gap-16 items-center">
-                        <div class="flex-1 space-y-8 text-justify">
-                            <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center gap-3 text-justify">
-                                <span class="text-4xl text-purple-500 text-justify">🆔</span> 2. 身份識別：UUID 規格
-                            </h2>
-                            <div class="space-y-6 text-gray-600 text-justify uppercase tracking-widest">
-                                <p class="text-lg leading-relaxed font-light text-justify">為了確界不衝突，必須擁有專屬 128-bit 生存碼。
-                                </p>
-                                <div
-                                    class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-justify uppercase tracking-tighter">
-                                    <div
-                                        class="p-6 rounded-2xl border-l-[6px] border-purple-500 shadow-sm bg-slate-50 text-justify">
-                                        <h4 class="font-bold text-purple-900 mb-2 text-xs uppercase text-justify">16-bit
-                                            Standard</h4>
-                                        <p class="text-[11px] text-slate-500 text-justify uppercase tracking-widest">
-                                            藍牙聯盟預定義功能。如心跳 (0x180D)。</p>
-                                    </div>
-                                    <div
-                                        class="p-6 rounded-2xl border-l-[6px] border-pink-500 shadow-sm bg-slate-50 text-justify">
-                                        <h4 class="font-bold text-pink-900 mb-2 text-xs uppercase text-justify">128-bit
-                                            Custom</h4>
-                                        <p class="text-[11px] text-slate-500 text-justify">開發者生成。如自製無人車服務。</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="md:w-80">
-                            <div
-                                class="p-10 rounded-3xl border-2 border-dashed border-purple-200 text-center shadow-sm bg-white text-justify">
-                                <div class="text-5xl mb-6 text-justify">🛠️</div>
-                                <h4 class="font-bold text-purple-800 mb-4 text-sm text-justify">自定義 UUID</h4>
-                                <code
-                                    class="text-[10px] bg-slate-900 text-pink-400 p-3 rounded-lg block font-mono text-justify uppercase tracking-widest">
-                                    4fafc201-1fb5-459e-8fcc-c5c9c331914b
-                                </code>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Module 3: Exchange Methods -->
-        <section class="module-section mb-16">
-            <div
-                class="glass-card rounded-3xl shadow-2xl overflow-hidden text-white border border-slate-700 bg-slate-900">
-                <div class="p-8 md:p-14">
-                    <h2
-                        class="text-3xl font-bold mb-8 flex items-center gap-3 text-emerald-400 text-justify uppercase tracking-widest">
-                        <span class="p-2 bg-emerald-500/20 rounded-lg text-emerald-400 text-2xl text-justify">🔄</span>
-                        3. 數據交換流派
-                    </h2>
-                    <div
-                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-justify uppercase tracking-widest">
-                        <div
-                            class="p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-emerald-500 transition text-justify">
-                            <span class="text-2xl mb-4 block text-justify uppercase tracking-tighter">📥</span>
-                            <h4 class="font-bold text-sm mb-2 text-justify">Read</h4>
-                            <p
-                                class="text-[10px] text-slate-500 leading-relaxed text-justify uppercase tracking-widest">
-                                手機發問。適合穩定數值。</p>
-                        </div>
-                        <div
-                            class="p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-emerald-500 transition text-justify">
-                            <span class="text-2xl mb-4 block text-justify">📤</span>
-                            <h4 class="font-bold text-sm mb-2 text-justify">Write</h4>
-                            <p class="text-[10px] text-slate-500 leading-relaxed text-justify font-black">手機下令。用於馬達控制。
-                            </p>
-                        </div>
-                        <div
-                            class="p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-emerald-500 transition text-justify">
-                            <span class="text-2xl mb-4 block text-justify">🔔</span>
-                            <h4 class="font-bold text-sm mb-2 text-justify">Notify</h4>
-                            <p class="text-[10px] text-slate-500 leading-relaxed text-left text-justify">設備推播。即時遙測方式。
-                            </p>
-                        </div>
-                        <div
-                            class="p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-emerald-500 transition text-justify">
-                            <span class="text-2xl mb-4 block text-justify">✅</span>
-                            <h4 class="font-bold text-sm mb-2 text-justify">Indicate</h4>
-                            <p
-                                class="text-[10px] text-slate-500 leading-relaxed text-justify uppercase tracking-widest">
-                                附確認通知。安全但慢。</p>
-                        </div>
-                    </div>
-                    <div
-                        class="mt-12 p-8 rounded-3xl border border-emerald-500/20 text-center bg-emerald-600/10 text-justify">
-                        <h4 class="text-emerald-400 font-bold mb-4 text-xs uppercase tracking-widest text-justify">實習挑戰
-                        </h4>
-                        <p
-                            class="text-sm font-light leading-relaxed text-slate-400 italic text-justify uppercase tracking-tight">
-                            「實作『緊急斷電鈕』。哪種交換方式最安全且快速？」
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Homework Section -->
-        <section class="module-section">
-            <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-[Outfit]">核心任務：打造 BLE 伺服器</h2>
-            <p class="text-center text-gray-500 mb-12">定義 Service。實現可靠通訊鏈。</p>
-
-            <div class="grid md:grid-cols-3 gap-6 text-justify">
-                <!-- Task 5-1 -->
-                <div onclick="openSubmissionModal('basic-05-ble-gatt-1', '【作業 5-1】通訊地圖：GATT 服務建模 (GATT Modeling)')"
-                    class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col group cursor-pointer relative hover:shadow-2xl transition-all hover:-translate-y-2">
-                    <div class="bg-blue-500 h-2"></div>
-                    <div class="p-8 flex-grow">
-                        <div class="flex justify-between items-start mb-4">
-                            <span
-                                class="text-4xl text-blue-500 group-hover:scale-110 transition-transform text-justify">🏛️</span>
-                            <span
-                                class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold uppercase text-justify">60
-                                min</span>
-                        </div>
-                        <h3
-                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-blue-600 transition text-justify uppercase tracking-widest">
-                            【作業 5-1】</h3>
-                        <h4 class="font-medium text-gray-500 mb-4 text-justify">「多 Service 模型」</h4>
-                        <p class="text-sm text-gray-600 leading-relaxed text-justify">
-                            實作動力與遙測獨立 Service。廣播與掃描驗證階層。
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Task 5-2 -->
-                <div onclick="openSubmissionModal('basic-05-ble-gatt-2', '【作業 5-2】數據流：字元與位元轉換 (Stream & Format)')"
-                    class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col group cursor-pointer relative hover:shadow-2xl transition-all hover:-translate-y-2">
-                    <div class="bg-purple-500 h-2"></div>
-                    <div class="p-8 flex-grow">
-                        <div class="flex justify-between items-start mb-4">
-                            <span
-                                class="text-4xl text-purple-500 group-hover:rotate-12 transition-transform text-justify">💬</span>
-                            <span
-                                class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold uppercase text-justify">45
-                                min</span>
-                        </div>
-                        <h3
-                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-purple-600 transition text-justify">
-                            【作業 5-2】</h3>
-                        <h4 class="font-medium text-gray-500 mb-4 text-justify uppercase tracking-tighter">「指令解析與回傳」
-                        </h4>
-                        <p class="text-sm text-gray-600 leading-relaxed text-justify">
-                            解析 GO/STOP。建立字串與 Byte 間穩健編碼。
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Task 5-3 -->
-                <div onclick="openSubmissionModal('basic-05-ble-gatt-3', '【作業 5-3】主動遙測：Notify 與描述符實作 (Active Telemetry)')"
-                    class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col group cursor-pointer relative hover:shadow-2xl transition-all hover:-translate-y-2">
-                    <div class="bg-emerald-500 h-2 shadow-2xl"></div>
-                    <div class="p-8 flex-grow">
-                        <div class="flex justify-between items-start mb-4">
-                            <span
-                                class="text-4xl text-emerald-500 group-hover:translate-x-1 transition-transform text-justify">🚨</span>
-                            <span
-                                class="bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded font-bold uppercase text-justify">45
-                                min</span>
-                        </div>
-                        <h3
-                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-emerald-600 transition text-justify text-left">
-                            【作業 5-3】</h3>
-                        <h4 class="font-medium text-gray-500 mb-4 text-justify">「高頻自動推播」</h4>
-                        <p class="text-sm text-gray-600 leading-relaxed text-justify">
-                            配置 BLE2902 開啟 Notify。500ms 主動更新感測值對比 Read。
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-gray-800 py-12 border-t border-gray-700">
-        <div class="container mx-auto px-4 text-center">
-            <p class="text-gray-500 text-sm mb-4 text-center">&copy; 2026 Vibe Coding. All rights reserved.</p>
-            <div class="flex flex-col md:flex-row justify-center items-center gap-6 text-sm text-gray-400">
-                <span>課程單元 基礎 5 - BLE 核心架構</span>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">2 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
-    </footer>
 
-    <script>
-        // Define Resources
-        window.RESOURCES = {
-            video: "https://www.youtube.com/embed/tHAeaVPGxXE",
-            doc: "https://docs.google.com/document/d/e/2PACX-1vTjl_Yfcyz9WctAshISVtfLAZu2lSADFFdii_wId9TA3Ey0ifqjdrIbR1fOBGiM18jCkbjkJlThyjJo/pub?embedded=true"
-        };
-    </script>
-    <script src="/js/course-shared.js?v=2026.05.21.V21.DISABLE_UNIFIED_SUPPORT_HUB"></script>
-    <!-- Assignment Guide (Hidden) -->
-    <section id="assignment-guide" style="display: none;">
-<div class="markdown-heading"><h1 class="heading-element">BLE 核心架構：GATT 協議與階層 (basic-05-unit-gatt-structure)</h1><a id="user-content-ble-核心架構gatt-協議與階層-basic-05-unit-gatt-structure" class="anchor" aria-label="Permalink: BLE 核心架構：GATT 協議與階層 (basic-05-unit-gatt-structure)" href="#ble-核心架構gatt-協議與階層-basic-05-unit-gatt-structure"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+        <!-- ══════════ PAGE 3: 單元 2 ══════════ -->
+        <div class="ms-unit-page" id="page-3">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-3" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
+                </div>
+
+                <h1>🆔 2. 身份識別：UUID 規格</h1>
+                
+                <div class="space-y-6 text-gray-600 text-justify uppercase tracking-widest">
+<p class="text-lg leading-relaxed font-light text-justify">為了確界不衝突，必須擁有專屬 128-bit 生存碼。
+                                </p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-justify uppercase tracking-tighter">
+<div class="p-6 rounded-2xl border-l-[6px] border-purple-500 shadow-sm bg-slate-50 text-justify">
+<h4 class="font-bold text-purple-900 mb-2 text-xs uppercase text-justify">16-bit
+                                            Standard</h4>
+<p class="text-[11px] text-slate-500 text-justify uppercase tracking-widest">
+                                            藍牙聯盟預定義功能。如心跳 (0x180D)。</p>
+</div>
+<div class="p-6 rounded-2xl border-l-[6px] border-pink-500 shadow-sm bg-slate-50 text-justify">
+<h4 class="font-bold text-pink-900 mb-2 text-xs uppercase text-justify">128-bit
+                                            Custom</h4>
+<p class="text-[11px] text-slate-500 text-justify">開發者生成。如自製無人車服務。</p>
+</div>
+</div>
+</div>
+                
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">3 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 4: 單元 3 ══════════ -->
+        <div class="ms-unit-page" id="page-4">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-4" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
+                </div>
+
+                <h1>🔄 3. 數據交換流派</h1>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-justify uppercase tracking-widest">
+<div class="p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-emerald-500 transition text-justify">
+<span class="text-2xl mb-4 block text-justify uppercase tracking-tighter">📥</span>
+<h4 class="font-bold text-sm mb-2 text-justify">Read</h4>
+<p class="text-[10px] text-slate-500 leading-relaxed text-justify uppercase tracking-widest">
+                                手機發問。適合穩定數值。</p>
+</div>
+<div class="p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-emerald-500 transition text-justify">
+<span class="text-2xl mb-4 block text-justify">📤</span>
+<h4 class="font-bold text-sm mb-2 text-justify">Write</h4>
+<p class="text-[10px] text-slate-500 leading-relaxed text-justify font-black">手機下令。用於馬達控制。
+                            </p>
+</div>
+<div class="p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-emerald-500 transition text-justify">
+<span class="text-2xl mb-4 block text-justify">🔔</span>
+<h4 class="font-bold text-sm mb-2 text-justify">Notify</h4>
+<p class="text-[10px] text-slate-500 leading-relaxed text-left text-justify">設備推播。即時遙測方式。
+                            </p>
+</div>
+<div class="p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-emerald-500 transition text-justify">
+<span class="text-2xl mb-4 block text-justify">✅</span>
+<h4 class="font-bold text-sm mb-2 text-justify">Indicate</h4>
+<p class="text-[10px] text-slate-500 leading-relaxed text-justify uppercase tracking-widest">
+                                附確認通知。安全但慢。</p>
+</div>
+</div><div class="mt-12 p-8 rounded-3xl border border-emerald-500/20 text-center bg-emerald-600/10 text-justify">
+<h4 class="text-emerald-400 font-bold mb-4 text-xs uppercase tracking-widest text-justify">實習挑戰
+                        </h4>
+<p class="text-sm font-light leading-relaxed text-slate-400 italic text-justify uppercase tracking-tight">
+                            「實作『緊急斷電鈕』。哪種交換方式最安全且快速？」
+                        </p>
+</div>
+                
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">4 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 5: 實作挑戰 ══════════ -->
+        <div class="ms-unit-page" id="page-5">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-5" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 150 分鐘</div>
+                </div>
+
+                <h1>實戰任務挑戰</h1>
+
+                <p>
+                    請動手完成以下三項實作任務，這是驗證本單元學習成果的核心挑戰。
+                    完成後請將程式碼與報告提交至 GitHub Classroom。
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-6 my-6">
+                    <!-- Task 1 -->
+                    <div onclick="openSubmissionModal('basic-05-ble-gatt-1', '【作業 5-1】通訊地圖：GATT 服務建模 (GATT Modeling)')"
+                        class="border border-gray-200 bg-white rounded-xl p-6 hover:shadow-lg transition cursor-pointer relative group flex flex-col justify-between">
+                        <div>
+                            <div class="bg-[#E76F51] text-white w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 5-1</div>
+                            <h3 class="text-lg font-bold mb-2">多 Service 模型</h3>
+                            <p class="text-xs text-gray-600 mb-4">實作動力與遙測獨立 Service。廣播與掃描驗證階層。</p>
+                        </div>
+                        <div class="border-t border-gray-100 pt-3 flex items-center justify-between text-xs text-[#E76F51] font-bold">
+                            <span>⏱ 🏛️ 60 min 【作業 5-1】 「多 Service 模型」 實作動力與遙測獨立 Service。廣播與掃描驗證階層。</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                            <span class="bg-[#E76F51] text-white text-xs px-4 py-2 rounded-full font-bold shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                                📤 點擊繳交作業
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Task 2 -->
+                    <div onclick="openSubmissionModal('basic-05-ble-gatt-2', '【作業 5-2】數據流：字元與位元轉換 (Stream & Format)')"
+                        class="border border-gray-200 bg-white rounded-xl p-6 hover:shadow-lg transition cursor-pointer relative group flex flex-col justify-between">
+                        <div>
+                            <div class="bg-[#2A9D8F] text-white w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 5-2</div>
+                            <h3 class="text-lg font-bold mb-2">指令解析與回傳</h3>
+                            <p class="text-xs text-gray-600 mb-4">解析 GO/STOP。建立字串與 Byte 間穩健編碼。</p>
+                        </div>
+                        <div class="border-t border-gray-100 pt-3 flex items-center justify-between text-xs text-[#2A9D8F] font-bold">
+                            <span>⏱ 💬 45 min 【作業 5-2】 「指令解析與回傳」 解析 GO/STOP。建立字串與 Byte 間穩健編碼。</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                            <span class="bg-[#2A9D8F] text-white text-xs px-4 py-2 rounded-full font-bold shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                                📤 點擊繳交作業
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Task 3 -->
+                    <div onclick="openSubmissionModal('basic-05-ble-gatt-3', '【作業 5-3】主動遙測：Notify 與描述符實作 (Active Telemetry)')"
+                        class="border border-gray-200 bg-white rounded-xl p-6 hover:shadow-lg transition cursor-pointer relative group flex flex-col justify-between">
+                        <div>
+                            <div class="bg-[#457B9D] text-white w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 5-3</div>
+                            <h3 class="text-lg font-bold mb-2">高頻自動推播</h3>
+                            <p class="text-xs text-gray-600 mb-4">配置 BLE2902 開啟 Notify。500ms 主動更新感測值對比 Read。</p>
+                        </div>
+                        <div class="border-t border-gray-100 pt-3 flex items-center justify-between text-xs text-[#457B9D] font-bold">
+                            <span>⏱ 🚨 45 min 【作業 5-3】 「高頻自動推播」 配置 BLE2902 開啟 Notify。500ms 主動更新感測值對比 Read。</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                            <span class="bg-[#457B9D] text-white text-xs px-4 py-2 rounded-full font-bold shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                                📤 點擊繳交作業
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">5 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-6">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                </div>
+
+                <h1>單元摘要與參考資源</h1>
+
+                <p>
+                    恭喜！你已經完成了「<strong>BLE 核心架構：GATT 協議與階層</strong>」模組。
+                    透過本單元的學習與實作，你已經掌握了關鍵的核心技術，為全棧物聯網開發奠定了深厚的底層基石。
+                </p>
+
+                <div class="ms-achievement">
+                    <div class="achievement-icon">🚀</div>
+                    <div class="achievement-text">
+                        <h3>恭喜！你已完成本模組</h3>
+                        <p>你已具備開發與調校本單元核心功能的專業實力。持續累積，前進下一個挑戰！</p>
+                    </div>
+                </div>
+
+                <h2>完成本模組後，你已學會：</h2>
+                <ul>
+                    <li><strong>🏛️ 1. 藍牙的階層美學：GATT 結構</strong> 的基本架構與實作技能。</li>
+                    <li><strong>🆔 2. 身份識別：UUID 規格</strong> 的調試方法與資料傳輸細節。</li>
+                    <li><strong>🔄 3. 數據交換流派</strong> 的優化指標與生產環境安全機制。</li>
+                    <li>在實戰挑戰中，透過 Git 與 GitHub Classroom 提交完整的硬體與報告成果。</li>
+                </ul>
+
+                <h2>延伸學習資源</h2>
+
+                <a href="https://www.youtube.com/embed/tHAeaVPGxXE" target="_blank" class="ms-resource-link">
+                    <i class="fab fa-youtube" style="color:#ff0000;"></i>
+                    <div>
+                        <div style="font-weight:600;">課程教學影片</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">YouTube — 本單元核心觀念與實作示範影片</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+
+                <a href="https://docs.google.com/document/d/e/2PACX-1vTjl_Yfcyz9WctAshISVtfLAZu2lSADFFdii_wId9TA3Ey0ifqjdrIbR1fOBGiM18jCkbjkJlThyjJo/pub?embedded=true" target="_blank" class="ms-resource-link">
+                    <i class="fas fa-file-alt"></i>
+                    <div>
+                        <div style="font-weight:600;">課程完整講義</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">Google Docs — 詳細實驗步驟、技術文件與程式碼指南</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+
+                <a href="https://classroom.github.com" target="_blank" class="ms-resource-link">
+                    <i class="fab fa-github"></i>
+                    <div>
+                        <div style="font-weight:600;">GitHub Classroom</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">classroom.github.com — 管理你的作業提交與自動評分結果</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
+                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「BLE 核心架構：GATT 協議與階層」模組！')">完成模組</button>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script>
+    /* ─── DATA ─── */
+    const UNITS = [
+        { id: 0, label: '課程總覽',       time: '',         type: 'index' },
+        { id: 1, label: '簡介',            time: '3 分鐘',  type: 'unit'  },
+        { id: 2, label: '🏛️ 1. 藍牙的階層美學：GATT 結構', time: '10 分鐘', type: 'unit' },
+        { id: 3, label: '🆔 2. 身份識別：UUID 規格', time: '10 分鐘', type: 'unit' },
+        { id: 4, label: '🔄 3. 數據交換流派', time: '10 分鐘', type: 'unit' },
+        { id: 5, label: '實戰挑戰',       time: '150 分鐘', type: 'lab'   },
+        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+    ];
+
+    let currentUnit = 0;
+    let doneSet = new Set();
+
+    /* ─── INIT ─── */
+    function init() {
+        buildSidebar();
+        buildIndexUnitList();
+        goToUnit(0);
+    }
+
+    /**
+     * 動態建構側邊欄單元選單。
+     */
+    function buildSidebar() {
+        const nav = document.getElementById('sidebar-nav');
+        nav.innerHTML = UNITS.map(u => {
+            const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : '';
+            return `
+            <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
+                <div class="unit-icon" id="icon-${u.id}">${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div>
+                <div class="unit-meta">
+                    <div class="unit-name">${u.label}${badge}</div>
+                    ${u.time ? `<div class="unit-time"><i class="far fa-clock"></i> ${u.time}</div>` : ''}
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    /**
+     * 動態建構首頁單元卡片列表。
+     */
+    function buildIndexUnitList() {
+        const el = document.getElementById('index-unit-list');
+        el.innerHTML = UNITS.filter(u => u.id > 0).map(u => `
+            <div class="unit-card ${u.type}" onclick="goToUnit(${u.id})">
+                <div class="unit-card-num">${u.id}</div>
+                <div class="unit-card-info">
+                    <div class="unit-card-name">${u.label}</div>
+                    <div class="unit-card-time"><i class="far fa-clock"></i> ${u.time}</div>
+                </div>
+                <div class="unit-card-arrow">›</div>
+            </div>
+        `).join('');
+    }
+
+    /* ─── NAVIGATION ─── */
+    /**
+     * 切換至指定單元頁面。
+     * @param {number} id - 單元識別碼
+     */
+    function goToUnit(id) {
+        document.querySelectorAll('.ms-unit-page').forEach(p => p.classList.remove('visible'));
+        const target = id === 0 ? document.getElementById('page-index') : document.getElementById(`page-${id}`);
+        if (target) target.classList.add('visible');
+
+        document.querySelectorAll('.ms-unit-item').forEach(el => el.classList.remove('active'));
+        const navItem = document.getElementById(`nav-${id}`);
+        if (navItem) { navItem.classList.add('active'); navItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) {
+                icon.className = 'unit-icon done';
+                icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>';
+            } else if (u.id === id) {
+                icon.className = 'unit-icon active-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            } else {
+                icon.className = 'unit-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            }
+        });
+
+        const unit = UNITS.find(u => u.id === id);
+        document.getElementById('bc-current').textContent = unit ? unit.label : '';
+        currentUnit = id;
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /**
+     * 標記特定單元為已完成。
+     * @param {number} id - 單元識別碼
+     */
+    function markDone(id) {
+        doneSet.add(id);
+        const badge = document.getElementById(`badge-${id}`);
+        if (badge) badge.style.display = 'flex';
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) { icon.className = 'unit-icon done'; icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>'; }
+        });
+        updateProgress();
+    }
+
+    /**
+     * 計算並更新課程進度與進度條。
+     */
+    function updateProgress() {
+        const total = UNITS.length - 1;
+        const done = doneSet.size;
+        document.getElementById('progress-fill').style.width = Math.round(done / total * 100) + '%';
+        document.getElementById('progress-text').textContent = `${done} / ${total} 已完成`;
+    }
+
+    /* ─── CHECKLIST ─── */
+    /**
+     * 切換核取方塊的狀態。
+     * @param {HTMLElement} el - 核取方塊元素
+     */
+    function toggleCheck(el) {
+        el.classList.toggle('checked');
+        el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
+    }
+
+    /* ─── START ─── */
+    init();
+</script>
+
+<!-- Define Resources -->
+<script>
+    window.RESOURCES = {
+        video: "https://www.youtube.com/embed/tHAeaVPGxXE",
+        doc: "https://docs.google.com/document/d/e/2PACX-1vTjl_Yfcyz9WctAshISVtfLAZu2lSADFFdii_wId9TA3Ey0ifqjdrIbR1fOBGiM18jCkbjkJlThyjJo/pub?embedded=true"
+    };
+</script>
+<script src="/js/course-shared.js?v=2026.05.22.V27.START_UNITS_LAYOUT_UPGRADE"></script>
+
+<!-- Assignment Guide (Hidden) -->
+<section id="assignment-guide" style="display: none;">
+<div class="markdown-heading"><h1 class="heading-element">BLE 核心架構：GATT 協議與階層 (basic-05-unit-gatt-structure)</h1><a aria-label="Permalink: BLE 核心架構：GATT 協議與階層 (basic-05-unit-gatt-structure)" class="anchor" href="#ble-核心架構gatt-協議與階層-basic-05-unit-gatt-structure" id="user-content-ble-核心架構gatt-協議與階層-basic-05-unit-gatt-structure"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>歡迎來到 BLE GATT 架構實作單元！在本課程中，你將從單一功能開發進化為<strong>通訊系統架構師</strong>。你將學習如何將複雜的硬體功能（動力、感測、資訊）邏輯性地解耦，建立層級分明的 <strong>GATT 服務樹</strong>。</p>
-<div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2><a id="user-content--學習目標" class="anchor" aria-label="Permalink: 🎯 學習目標" href="#-學習目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2><a aria-label="Permalink: 🎯 學習目標" class="anchor" href="#-學習目標" id="user-content--學習目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ol>
 <li>
 <strong>GATT 建模</strong>：學會設計 Service 與 Characteristic 的階層關係。</li>
@@ -332,9 +1024,9 @@
 <li>
 <strong>主動推播</strong>：配置 <code>BLE2902</code> 描述符並實作 <code>Notify</code> 通訊機制。</li>
 </ol>
-<hr>
-<div class="markdown-heading"><h2 class="heading-element">🚀 任務說明</h2><a id="user-content--任務說明" class="anchor" aria-label="Permalink: 🚀 任務說明" href="#-任務說明"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h3 class="heading-element">任務 1：「無人車通訊地圖」GATT 服務建模</h3><a id="user-content-任務-1無人車通訊地圖gatt-服務建模" class="anchor" aria-label="Permalink: 任務 1：「無人車通訊地圖」GATT 服務建模" href="#任務-1無人車通訊地圖gatt-服務建模"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h2 class="heading-element">🚀 任務說明</h2><a aria-label="Permalink: 🚀 任務說明" class="anchor" href="#-任務說明" id="user-content--任務說明"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 1：「無人車通訊地圖」GATT 服務建模</h3><a aria-label="Permalink: 任務 1：「無人車通訊地圖」GATT 服務建模" class="anchor" href="#任務-1無人車通訊地圖gatt-服務建模" id="user-content-任務-1無人車通訊地圖gatt-服務建模"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：建立兩個獨立的 Service 以實現功能解耦。
@@ -348,7 +1040,7 @@
 <li>
 <strong>要求</strong>：為每個 Service 與 Characteristic 生成唯一的 128-bit UUID。</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">任務 2：「雙向數據流」指令與狀態轉換</h3><a id="user-content-任務-2雙向數據流指令與狀態轉換" class="anchor" aria-label="Permalink: 任務 2：「雙向數據流」指令與狀態轉換" href="#任務-2雙向數據流指令與狀態轉換"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 2：「雙向數據流」指令與狀態轉換</h3><a aria-label="Permalink: 任務 2：「雙向數據流」指令與狀態轉換" class="anchor" href="#任務-2雙向數據流指令與狀態轉換" id="user-content-任務-2雙向數據流指令與狀態轉換"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：實現韌體與手機端的雙向數據交換。</li>
@@ -360,7 +1052,7 @@
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">任務 3：「主動遙測器」Notify 實作</h3><a id="user-content-任務-3主動遙測器notify-實作" class="anchor" aria-label="Permalink: 任務 3：「主動遙測器」Notify 實作" href="#任務-3主動遙測器notify-實作"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 3：「主動遙測器」Notify 實作</h3><a aria-label="Permalink: 任務 3：「主動遙測器」Notify 實作" class="anchor" href="#任務-3主動遙測器notify-實作" id="user-content-任務-3主動遙測器notify-實作"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：掌握 BLE 的「非同步推播」機制。</li>
@@ -372,8 +1064,8 @@
 </ul>
 </li>
 </ul>
-<hr>
-<div class="markdown-heading"><h2 class="heading-element">📂 程式庫結構</h2><a id="user-content--程式庫結構" class="anchor" aria-label="Permalink: 📂 程式庫結構" href="#-程式庫結構"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h2 class="heading-element">📂 程式庫結構</h2><a aria-label="Permalink: 📂 程式庫結構" class="anchor" href="#-程式庫結構" id="user-content--程式庫結構"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <code>src/main.cpp</code>：BLE Server 核心邏輯與服務樹實作。</li>
@@ -382,8 +1074,8 @@
 <li>
 <code>docs/GATT_Map.md</code>：在此紀錄你的 GATT 樹狀架構規劃。</li>
 </ul>
-<hr>
-<div class="markdown-heading"><h2 class="heading-element">📝 繳交規範</h2><a id="user-content--繳交規範" class="anchor" aria-label="Permalink: 📝 繳交規範" href="#-繳交規範"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h2 class="heading-element">📝 繳交規範</h2><a aria-label="Permalink: 📝 繳交規範" class="anchor" href="#-繳交規範" id="user-content--繳交規範"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ol>
 <li>
 <strong>完成代碼</strong>：確保代碼能通過編譯並在 ESP32 上正確運行。</li>
@@ -392,18 +1084,17 @@
 <li>
 <strong>Push 更新</strong>：完成後將代碼 Push 回 GitHub 程式庫以完成作業。</li>
 </ol>
-<hr>
+<hr/>
 <blockquote>
 <p><strong>提示</strong>：一名專業的藍牙開發者，不僅是傳輸數據，更是能為複雜系統建立優美邏輯模型的規畫師。加油！</p>
 </blockquote>
+</section>
 
-    </section>
-
-    <!-- Tutor Guide (Hidden) -->
-    <section id="tutor-guide" style="display: none;">
+<!-- Tutor Guide (Hidden) -->
+<section id="tutor-guide" style="display: none;">
 <p>針對 <strong><code>basic-05-unit-gatt-structure</code> (BLE 核心架構：GATT 協議與階層)</strong> 單元，這是學員從「實作單一功能」轉向「通訊系統建模」的架構化課程。它要求學員具備 <strong>物件導向設計 (Object-Oriented Design)</strong> 的思維，學習如何將無人車的各項硬體功能（動力、感測、資訊）邏輯性地解耦為層級分明的 <strong>GATT 服務樹</strong>，並掌握與數據交換息息相關的 <strong>描述符 (Descriptor)</strong> 配置。</p>
 <p>以下是在 <strong>GitHub Classroom</strong> 部署其作業 (Assignments) 的具體建議：</p>
-<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repo) 配置建議</h3><a id="user-content-1-範本程式庫-template-repo-配置建議" class="anchor" aria-label="Permalink: 1. 範本程式庫 (Template Repo) 配置建議" href="#1-範本程式庫-template-repo-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repo) 配置建議</h3><a aria-label="Permalink: 1. 範本程式庫 (Template Repo) 配置建議" class="anchor" href="#1-範本程式庫-template-repo-配置建議" id="user-content-1-範本程式庫-template-repo-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>GATT 架構作業的核心在於「建模能力」與「通訊握手」，範本應包含完整的框架結構，建議包含：</p>
 <ul>
 <li>
@@ -415,9 +1106,9 @@
 <li>
 <strong>📂 <code>docs/DATA_FORMAT.md</code></strong>：<strong>資料格式定義文件</strong>。要求學員說明 "GO"、"STOP" 指令在 Byte Level 是如何被編碼與解析的。</li>
 </ul>
-<hr>
-<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a id="user-content-2-作業任務部署細節" class="anchor" aria-label="Permalink: 2. 作業任務部署細節" href="#2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h4 class="heading-element">任務 1：「無人車通訊地圖」GATT 服務建模 (GATT Modeling Lab)</h4><a id="user-content-任務-1無人車通訊地圖gatt-服務建模-gatt-modeling-lab" class="anchor" aria-label="Permalink: 任務 1：「無人車通訊地圖」GATT 服務建模 (GATT Modeling Lab)" href="#任務-1無人車通訊地圖gatt-服務建模-gatt-modeling-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a aria-label="Permalink: 2. 作業任務部署細節" class="anchor" href="#2-作業任務部署細節" id="user-content-2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 1：「無人車通訊地圖」GATT 服務建模 (GATT Modeling Lab)</h4><a aria-label="Permalink: 任務 1：「無人車通訊地圖」GATT 服務建模 (GATT Modeling Lab)" class="anchor" href="#任務-1無人車通訊地圖gatt-服務建模-gatt-modeling-lab" id="user-content-任務-1無人車通訊地圖gatt-服務建模-gatt-modeling-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：學會將複雜系統功能進行邏輯分類，掌握 128-bit 隨機 UUID 的動態生成與配置。</li>
@@ -433,7 +1124,7 @@
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 2：「雙向數據流」字元與位元轉換 (Stream &amp; Format Lab)</h4><a id="user-content-任務-2雙向數據流字元與位元轉換-stream--format-lab" class="anchor" aria-label="Permalink: 任務 2：「雙向數據流」字元與位元轉換 (Stream &amp; Format Lab)" href="#任務-2雙向數據流字元與位元轉換-stream--format-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 2：「雙向數據流」字元與位元轉換 (Stream &amp; Format Lab)</h4><a aria-label="Permalink: 任務 2：「雙向數據流」字元與位元轉換 (Stream &amp; Format Lab)" class="anchor" href="#任務-2雙向數據流字元與位元轉換-stream--format-lab" id="user-content-任務-2雙向數據流字元與位元轉換-stream--format-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：掌握異步指令的解析技巧（從 Byte Array 到 String/Integer），實現韌體層級的雙向握手。</li>
@@ -451,7 +1142,7 @@
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 3：「主動遙測器」Descriptor 與 Notify 實作 (Active Telemetry Lab)</h4><a id="user-content-任務-3主動遙測器descriptor-與-notify-實作-active-telemetry-lab" class="anchor" aria-label="Permalink: 任務 3：「主動遙測器」Descriptor 與 Notify 實作 (Active Telemetry Lab)" href="#任務-3主動遙測器descriptor-與-notify-實作-active-telemetry-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 3：「主動遙測器」Descriptor 與 Notify 實作 (Active Telemetry Lab)</h4><a aria-label="Permalink: 任務 3：「主動遙測器」Descriptor 與 Notify 實作 (Active Telemetry Lab)" class="anchor" href="#任務-3主動遙測器descriptor-與-notify-實作-active-telemetry-lab" id="user-content-任務-3主動遙測器descriptor-與-notify-實作-active-telemetry-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：掌握 BLE 特有的「推播 (Push)」機制，學習配置 <code>BLE2902</code> 描述符，這是專業藍牙開發的標配。</li>
@@ -469,15 +1160,15 @@
 </ul>
 </li>
 </ul>
-<hr>
-<div class="markdown-heading"><h3 class="heading-element">3. 通訊建模與階層規劃點評標準 (Architecture &amp; Protocol Standards)</h3><a id="user-content-3-通訊建模與階層規劃點評標準-architecture--protocol-standards" class="anchor" aria-label="Permalink: 3. 通訊建模與階層規劃點評標準 (Architecture &amp; Protocol Standards)" href="#3-通訊建模與階層規劃點評標準-architecture--protocol-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h3 class="heading-element">3. 通訊建模與階層規劃點評標準 (Architecture &amp; Protocol Standards)</h3><a aria-label="Permalink: 3. 通訊建模與階層規劃點評標準 (Architecture &amp; Protocol Standards)" class="anchor" href="#3-通訊建模與階層規劃點評標準-architecture--protocol-standards" id="user-content-3-通訊建模與階層規劃點評標準-architecture--protocol-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>此單元的價值在於 <strong>「對通訊系統的階層化思維與對工業標準（如 2902）的遵循」</strong>：</p>
 <ul>
 <li>[ ] <strong>GATT 建模完整性</strong>：服務與特徵值的分類是否符合邏輯上的功能解耦？</li>
 <li>[ ] <strong>2902 描述符配置</strong>：是否正確配置了描述符以支持 Notify 權限？（這是最常見的失敗點，需重點確認）。</li>
 <li>[ ] <strong>編解碼穩健性</strong>：讀寫過程中的資料類型轉換（<code>getValue()</code>, <code>setValue()</code>）是否處理得當？</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a id="user-content--推薦範本結構-github-classroom-template" class="anchor" aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" href="#-推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" class="anchor" href="#-推薦範本結構-github-classroom-template" id="user-content--推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <pre lang="text"><code>.
 ├── src/main.cpp         # 核心：建立 BLE Server 樹狀架構與 Notify 推送流
 ├── include/uuid_defs.h  # 配置：所有服務與特徵值的 128-bit UUID 清單
@@ -489,8 +1180,7 @@
 |
 |
 太熱血了！我們已經將 <strong>基礎 05</strong>（藍牙通訊）系列中關於廣播、屬性與階層架構的 Classroom 部署定義全部完成了。這標誌著學員已經正式從「開發者」進化為了「通訊系統架構師」。恭喜！藍牙課程板塊的教學拼圖已經大功告成！</p>
+</section>
 
-    </section>
 </body>
-
 </html>

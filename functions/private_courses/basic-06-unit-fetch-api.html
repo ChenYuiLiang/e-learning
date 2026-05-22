@@ -4,176 +4,682 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JavaScript 非同步編程：Fetch API 基礎 - Vibe Coding</title>
+    <title>JavaScript 非同步編程：Fetch API 基礎 - Vibe Coding Learn</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    
+    <style>
+        
+        :root {
+            --ms-blue: #0078d4;
+            --ms-blue-dark: #005a9e;
+            --ms-blue-light: #deecf9;
+            --ms-gray-10: #f3f2f1;
+            --ms-gray-20: #e1dfdd;
+            --ms-gray-90: #201f1e;
+            --ms-green: #107c10;
+            --ms-red: #d13438;
+            --sidebar-w: 280px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fff;
+            color: #201f1e;
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* ─── TOP NAV ─── */
+        .ms-topnav {
+            background: var(--ms-blue);
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 4px rgba(0,0,0,.2);
+        }
+        .ms-topnav .brand {
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
+
+        /* ─── LAYOUT ─── */
+        .ms-layout { display: flex; min-height: calc(100vh - 48px); }
+
+        /* ─── SIDEBAR ─── */
+        .ms-sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            background: #faf9f8;
+            border-right: 1px solid #e1dfdd;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 48px;
+            height: calc(100vh - 48px);
+            overflow-y: auto;
+        }
+        .ms-sidebar-header {
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .ms-sidebar-header .module-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #605e5c;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .ms-sidebar-header .module-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #201f1e;
+            line-height: 1.4;
+        }
+        .ms-sidebar-header .meta {
+            font-size: 12px;
+            color: #605e5c;
+            margin-top: 6px;
+        }
+        .ms-unit-list { padding: 8px 0; }
+        .ms-unit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: background .12s, border-color .12s;
+            color: #201f1e;
+        }
+        .ms-unit-item:hover { background: #edebe9; }
+        .ms-unit-item.active {
+            border-left-color: var(--ms-blue);
+            background: #deecf9;
+        }
+        .ms-unit-item.active .unit-name { color: var(--ms-blue); font-weight: 600; }
+        .unit-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #c8c6c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            font-size: 10px;
+            background: #fff;
+        }
+        .unit-icon.done { background: var(--ms-green); border-color: var(--ms-green); color: #fff; }
+        .unit-icon.active-icon { border-color: var(--ms-blue); background: var(--ms-blue); color: #fff; }
+        .unit-meta { flex: 1; min-width: 0; }
+        .unit-name { font-size: 13px; line-height: 1.4; }
+        .unit-time { font-size: 11px; color: #605e5c; margin-top: 2px; }
+        .sidebar-progress {
+            padding: 12px 16px;
+            border-top: 1px solid #e1dfdd;
+            margin-top: auto;
+        }
+        .progress-bar-bg { background: #e1dfdd; border-radius: 4px; height: 6px; }
+        .progress-bar-fill { background: var(--ms-green); border-radius: 4px; height: 6px; transition: width .4s; }
+        .progress-text { font-size: 12px; color: #605e5c; margin-top: 6px; }
+
+        /* ─── MAIN ─── */
+        .ms-content { flex: 1; min-width: 0; }
+
+        .ms-breadcrumb {
+            padding: 10px 40px;
+            font-size: 12px;
+            color: #605e5c;
+            border-bottom: 1px solid #e1dfdd;
+            background: #fff;
+        }
+        .ms-breadcrumb a { color: var(--ms-blue); text-decoration: none; }
+        .ms-breadcrumb a:hover { text-decoration: underline; }
+        .ms-breadcrumb span { margin: 0 6px; }
+
+        /* ─── PAGES ─── */
+        .ms-unit-page { display: none; }
+        .ms-unit-page.visible { display: block; }
+
+        .unit-content {
+            max-width: 820px;
+            padding: 32px 40px 60px;
+            margin: 0 auto;
+        }
+
+        .unit-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .unit-completed-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #dff6dd;
+            color: #107c10;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 2px;
+        }
+        .unit-time-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #605e5c;
+            font-size: 13px;
+        }
+
+        /* Typography */
+        .unit-content h1 { font-size: 28px; font-weight: 700; margin: 0 0 20px; color: #201f1e; line-height: 1.3; }
+        .unit-content h2 { font-size: 20px; font-weight: 600; margin: 36px 0 12px; color: #201f1e; padding-top: 8px; }
+        .unit-content h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; color: #201f1e; }
+        .unit-content p { margin: 0 0 14px; }
+        .unit-content ul, .unit-content ol { margin: 0 0 14px; padding-left: 28px; }
+        .unit-content li { margin-bottom: 6px; }
+        .unit-content strong { font-weight: 600; }
+        .unit-content a { color: var(--ms-blue); text-decoration: none; }
+        .unit-content a:hover { text-decoration: underline; }
+        .unit-content code {
+            background: #f3f2f1;
+            border: 1px solid #e1dfdd;
+            border-radius: 3px;
+            padding: 1px 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #a31515;
+        }
+
+        /* Callouts */
+        .ms-note, .ms-tip, .ms-warning, .ms-important {
+            display: flex;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid;
+            font-size: 14px;
+        }
+        .ms-note { background: #deecf9; border-color: var(--ms-blue); }
+        .ms-note .note-icon { color: var(--ms-blue); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-tip { background: #dff6dd; border-color: var(--ms-green); }
+        .ms-tip .note-icon { color: var(--ms-green); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-warning { background: #fff4ce; border-color: #ffaa44; }
+        .ms-warning .note-icon { color: #ffaa44; font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-important { background: #fde7e9; border-color: var(--ms-red); }
+        .ms-important .note-icon { color: var(--ms-red); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .note-body strong { display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+
+        /* Scenario */
+        .ms-scenario {
+            background: #f3f2f1;
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #323130;
+            border-left: 4px solid #c8c6c4;
+        }
+        .ms-scenario-label {
+            font-style: normal;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #605e5c;
+            margin-bottom: 8px;
+        }
+
+        /* Steps */
+        .ms-steps { margin: 16px 0; }
+        .ms-step { display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start; }
+        .ms-step-num {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: var(--ms-blue); color: #fff;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .ms-step-body { flex: 1; }
+        .ms-step-body h4 { font-size: 14px; font-weight: 600; margin: 0 0 4px; }
+        .ms-step-body p { font-size: 14px; margin: 0; }
+
+        /* Table */
+        .ms-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+        .ms-table th {
+            background: #f3f2f1; font-weight: 600; text-align: left;
+            padding: 10px 14px; border: 1px solid #e1dfdd; color: #323130;
+        }
+        .ms-table td { padding: 9px 14px; border: 1px solid #e1dfdd; vertical-align: top; }
+        .ms-table tr:nth-child(even) td { background: #faf9f8; }
+        .ms-table .check { color: var(--ms-green); font-size: 16px; }
+        .ms-table .cross { color: #8a8886; font-size: 16px; }
+
+        /* Checklist */
+        .ms-checklist { list-style: none; padding: 0; margin: 12px 0; }
+        .ms-checklist li {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 6px 0; font-size: 14px;
+        }
+        .ms-checklist li .check-box {
+            width: 18px; height: 18px;
+            border: 2px solid #8a8886; border-radius: 2px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; margin-top: 1px; cursor: pointer; transition: all .15s;
+        }
+        .ms-checklist li .check-box.checked {
+            background: var(--ms-blue); border-color: var(--ms-blue); color: #fff;
+        }
+
+        /* Code block */
+        .ms-code {
+            background: #1e1e1e;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px 0;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-x: auto;
+        }
+        .ms-code .c-comment { color: #6a9955; }
+        .ms-code .c-str { color: #ce9178; }
+        .ms-code .c-kw { color: #569cd6; }
+        .ms-code .c-attr { color: #9cdcfe; }
+        .ms-code .c-val { color: #ce9178; }
+        .ms-code .c-tag { color: #4ec9b0; }
+        .ms-code .c-white { color: #d4d4d4; }
+
+        /* Lab card */
+        .ms-lab-card {
+            background: linear-gradient(135deg, #eef6ff 0%, #f5f0ff 100%);
+            border: 1px solid #c7e0f4;
+            border-radius: 6px;
+            padding: 24px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: box-shadow .15s, border-color .15s;
+        }
+        .ms-lab-card:hover { box-shadow: 0 4px 16px rgba(0,120,212,.12); border-color: var(--ms-blue); }
+        .ms-lab-card h3 { margin: 0 0 12px; color: var(--ms-blue-dark); font-size: 16px; font-weight: 600; }
+        .ms-lab-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--ms-blue);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 12px;
+        }
+        .ms-lab-time {
+            font-size: 12px;
+            color: #605e5c;
+            margin-left: 8px;
+        }
+
+        /* Compare grid */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .compare-card {
+            border: 1px solid #e1dfdd;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .compare-card-header {
+            padding: 12px 14px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .compare-card-body {
+            padding: 14px;
+            font-size: 13px;
+            color: #605e5c;
+            line-height: 1.5;
+        }
+
+        /* Buttons */
+        .ms-btn {
+            background: var(--ms-blue); color: #fff; border: none;
+            padding: 7px 18px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; transition: background .12s;
+            font-family: inherit;
+        }
+        .ms-btn:hover { background: var(--ms-blue-dark); }
+        .ms-btn-ghost {
+            background: transparent; color: var(--ms-blue);
+            border: 1px solid var(--ms-blue); padding: 6px 18px;
+            font-size: 14px; font-weight: 600; border-radius: 2px;
+            cursor: pointer; transition: background .12s; font-family: inherit;
+        }
+        .ms-btn-ghost:hover { background: var(--ms-blue-light); }
+
+        /* Nav */
+        .unit-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            border-top: 1px solid #e1dfdd;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .nav-btn-prev, .nav-btn-next {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 20px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; border: 1px solid;
+            font-family: inherit; transition: background .12s;
+        }
+        .nav-btn-next { background: var(--ms-blue); color: #fff; border-color: var(--ms-blue); }
+        .nav-btn-next:hover { background: var(--ms-blue-dark); border-color: var(--ms-blue-dark); }
+        .nav-btn-prev { background: #fff; color: var(--ms-blue); border-color: var(--ms-blue); }
+        .nav-btn-prev:hover { background: var(--ms-blue-light); }
+        .unit-page-indicator { font-size: 13px; color: #605e5c; }
+
+        /* Module index */
+        .module-meta-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        .ms-tag { background: #f3f2f1; color: #323130; font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: 500; }
+        .ms-tag.blue { background: #deecf9; color: var(--ms-blue-dark); }
+        .ms-tag.green { background: #dff6dd; color: #107c10; }
+        .unit-card-list { margin: 20px 0; }
+        .unit-card {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 0; border-bottom: 1px solid #f3f2f1; cursor: pointer;
+        }
+        .unit-card:last-child { border-bottom: none; }
+        .unit-card:hover .unit-card-name { color: var(--ms-blue); text-decoration: underline; }
+        .unit-card-num {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #f3f2f1; color: #605e5c;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .unit-card.lab .unit-card-num { background: #eef6ff; color: var(--ms-blue-dark); }
+        .unit-card.quiz .unit-card-num { background: #fff4ce; color: #8a6914; }
+        .unit-card-info { flex: 1; }
+        .unit-card-name { font-size: 15px; font-weight: 500; }
+        .unit-card-time { font-size: 12px; color: #605e5c; margin-top: 2px; }
+        .unit-card-arrow { color: #c8c6c4; font-size: 14px; }
+
+        /* Resource links */
+        .ms-resource-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; text-decoration: none; color: #201f1e;
+            font-size: 14px; transition: background .1s;
+        }
+        .ms-resource-link:hover { background: #f3f2f1; }
+        .ms-resource-link i { color: var(--ms-blue); font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+
+        /* Achievement */
+        .ms-achievement {
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            color: #fff; border-radius: 6px; padding: 24px 28px;
+            margin: 24px 0; display: flex; align-items: center; gap: 20px;
+        }
+        .achievement-icon { font-size: 48px; flex-shrink: 0; }
+        .achievement-text h3 { margin: 0 0 4px; font-size: 18px; }
+        .achievement-text p { margin: 0; font-size: 14px; opacity: .9; }
+
+        @media (max-width: 768px) {
+            .ms-sidebar { display: none; }
+            .unit-content { padding: 20px 16px 40px; }
+            .unit-nav { padding: 16px; }
+            .ms-breadcrumb { padding: 8px 16px; }
+            .compare-grid { grid-template-columns: 1fr; }
+        }
+
+    </style>
 </head>
 
-<body class="bg-gray-50 flex flex-col min-h-screen text-gray-800 font-[Inter]">
+<body>
 
-    <!-- Hero Section -->
-    <header
-        class="relative bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 text-white pt-24 pb-32 overflow-hidden">
-        <div
-            class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1516116216624-53e697fedbea?q=80&w=2128&auto=format&fit=crop')] bg-cover bg-center opacity-20 mix-blend-overlay">
+<!-- TOP NAV -->
+<nav class="ms-topnav">
+    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <div class="divider"></div>
+    <span class="nav-label">基礎 6 - 非同步編程</span>
+</nav>
+
+<div class="ms-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="ms-sidebar">
+        <div class="ms-sidebar-header">
+            <div class="module-label">模組</div>
+            <div class="module-title">JavaScript 非同步編程：Fetch API 基礎</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 6 個單元</div>
         </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-gray-50 to-transparent bottom-0 h-16"></div>
-
-        <div class="container mx-auto px-4 relative z-10 text-center">
-            <span
-                class="inline-block py-1 px-3 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-sm font-semibold mb-6 tracking-wide uppercase">
-                基礎 6 - 非同步編程
-            </span>
-            <h1
-                class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit] uppercase tracking-tighter">
-                從等待到非同步：<br><span class="text-blue-400">Fetch API 與流暢體驗</span>
-            </h1>
-            <p class="text-xl md:text-2xl text-blue-100 max-w-2xl mx-auto font-light leading-relaxed">
-                學習背景請求。讓網頁不重新整理，優雅對話。
-            </p>
-
-            <div class="mt-8 flex flex-wrap justify-center gap-4">
-                <button onclick="enterMediaMode('video', window.RESOURCES.youtube)"
-                    class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
-                    <span>📺</span> 觀看教學影片
-                </button>
-                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
-                    class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
-                    <span>📄</span> 閱讀課程講義
-                </button>
+        <nav class="ms-unit-list" id="sidebar-nav"></nav>
+        <div class="sidebar-progress">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
+            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
         </div>
-    </header>
+    </aside>
 
-    <!-- Main Content -->
-    <main class="container mx-auto px-4 -mt-20 relative z-20 pb-20">
+    <!-- MAIN -->
+    <main class="ms-content">
 
-        <!-- Module 1: Evolution -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
-                <div class="p-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
-                <div class="p-8 md:p-14">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center gap-3 text-justify">
-                        <span class="text-4xl text-blue-500 text-justify">⏳</span> 1. Fetch 的進化
-                    </h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-                        <div class="space-y-6 text-justify">
-                            <p
-                                class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tight">
-                                基於 Promise，通訊變得直覺簡潔。
-                            </p>
-                            <div
-                                class="p-8 rounded-3xl border border-blue-100 shadow-sm bg-blue-50 text-justify uppercase tracking-widest font-black leading-relaxed">
-                                <h4
-                                    class="font-bold text-blue-800 mb-4 text-xs uppercase tracking-widest italic text-justify font-black">
-                                    Why Fetch?</h4>
-                                <ul
-                                    class="space-y-3 text-slate-600 font-light leading-relaxed text-[11px] text-justify uppercase tracking-tighter">
-                                    <li class="flex items-center gap-2 text-justify"><span
-                                            class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span><strong
-                                            class="text-blue-900 text-justify">Promise 驅動</strong>：告別回呼地獄。</li>
-                                    <li class="flex items-center gap-2 text-justify"><span
-                                            class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span><strong
-                                            class="text-blue-900 text-justify">語義化介面</strong>：函式名稱即是動作。</li>
-                                    <li class="flex items-center gap-2 text-justify"><span
-                                            class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span><strong
-                                            class="text-blue-900 font-black text-justify">原生支援</strong>：無需外部套件。</li>
-                                </ul>
-                            </div>
-                        </div>
+        <div class="ms-breadcrumb">
+            <a href="#">Vibe Coding</a><span>›</span>
+            <a href="#">基礎 6</a><span>›</span>
+            <span id="bc-current">課程總覽</span>
+        </div>
 
-                        <div
-                            class="p-8 rounded-3xl shadow-2xl border border-slate-700 text-blue-300 bg-slate-900 text-justify uppercase tracking-widest font-black">
-                            <h4
-                                class="font-bold text-slate-500 mb-6 uppercase tracking-widest text-[10px] text-justify">
-                                Promise Lifecycle</h4>
-                            <div class="space-y-6 text-justify uppercase tracking-widest leading-relaxed">
-                                <div class="flex items-center gap-4 group text-justify">
-                                    <span
-                                        class="w-24 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded font-bold text-amber-500 text-center uppercase text-[10px] text-justify">Pending</span>
-                                    <p
-                                        class="text-slate-500 group-hover:text-slate-300 transition text-[11px] text-justify uppercase tracking-widest font-black">
-                                        請求發送中（等待）。</p>
-                                </div>
-                                <div
-                                    class="flex items-center gap-4 group text-emerald-400 text-justify border border-slate-700">
-                                    <span
-                                        class="w-24 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded font-bold text-center uppercase text-[10px] text-justify">Fulfilled</span>
-                                    <p
-                                        class="text-slate-500 group-hover:text-emerald-300 transition text-[11px] text-justify uppercase tracking-widest">
-                                        獲取數據。</p>
-                                </div>
-                                <div
-                                    class="flex items-center gap-4 group text-red-400 text-justify border border-slate-700">
-                                    <span
-                                        class="w-24 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded font-bold text-center uppercase text-[10px] text-justify">Rejected</span>
-                                    <p
-                                        class="text-slate-500 group-hover:text-red-300 transition text-[11px] text-justify">
-                                        失敗（斷網）。</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <!-- ══════════ PAGE 0: INDEX ══════════ -->
+        <div class="ms-unit-page visible" id="page-index">
+            <div class="unit-content">
+                <h1>JavaScript 非同步編程：Fetch API 基礎</h1>
+                <div class="module-meta-tags">
+                    <span class="ms-tag">模組</span>
+                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag green">基礎 6</span>
+                    <span class="ms-tag blue">硬體開發</span>
+                    <span class="ms-tag blue">物聯網</span>
+                </div>
+
+                <p>學習背景請求。讓網頁不重新整理，優雅對話。</p>
+
+                <h2>學習目標</h2>
+                <p>完成本模組後，你將能夠：</p>
+                <ul>
+                    <li>理解並掌握 <strong>Fetch 的進化</strong> 的核心觀念與操作實務。</li>
+                    <li>學會 <strong>Async / Await：優雅</strong> 的關鍵原理，並能將其應用於開發。</li>
+                    <li>掌握 <strong>🛡️ 3. 攔截與逾時</strong> 的調校技巧與穩定性測試。</li>
+                    <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
+                </ul>
+
+                <h2>必要條件</h2>
+                <ul>
+                    <li>準備好 ESP32 開發板與 Micro USB / USB-C 數據線</li>
+                    <li>電腦已配置 VS Code 與 PlatformIO 開發環境</li>
+                    <li>擁有 GitHub 帳號，能夠接受 GitHub Classroom 邀請</li>
+                </ul>
+
+                <h2>本模組單元</h2>
+                <div class="unit-card-list" id="index-unit-list"></div>
+                <div style="margin-top:32px;">
+                    <button class="ms-btn" onclick="goToUnit(1)">開始模組 &nbsp;›</button>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- Module 2: Async Syntax -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
-                <div class="p-1 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
-                <div class="p-8 md:p-14">
-                    <h2
-                        class="text-3xl font-bold text-gray-900 mb-8 flex items-center gap-3 text-justify uppercase tracking-widest font-black">
-                        <span class="text-4xl text-indigo-500 text-justify">✨</span> 2. Async / Await：優雅
-                    </h2>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify uppercase tracking-widest">
-                        <div class="space-y-8 text-justify font-black">
-                            <p
-                                class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tighter">
+        <!-- ══════════ PAGE 1: 簡介 ══════════ -->
+        <div class="ms-unit-page" id="page-1">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-1" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                </div>
+
+                <h1>簡介</h1>
+
+                <p>
+                    歡迎來到本模組！本單元的核心主題是 <strong>JavaScript 非同步編程：Fetch API 基礎</strong>。
+                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
+                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                </p>
+
+                <div class="ms-scenario">
+                    <div class="ms-scenario-label">學習指引</div>
+                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
+                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                </div>
+
+                <h2>教學影片</h2>
+                <div style="border-radius:4px; overflow:hidden; margin:20px 0; box-shadow:0 2px 8px rgba(0,0,0,.12); aspect-ratio:16/9;">
+                    <iframe src="https://www.youtube.com/embed/aYT6WydbZ60"
+                        title="JavaScript 非同步編程：Fetch API 基礎 教學影片" allowfullscreen
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        style="width:100%; height:100%; display:block; border:0;">
+                    </iframe>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
+                <span class="unit-page-indicator">1 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 2: 單元 1 ══════════ -->
+        <div class="ms-unit-page" id="page-2">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-2" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
+                </div>
+
+                <h1>⏳ 1. Fetch 的進化</h1>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
+<div class="space-y-6 text-justify">
+<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tight">
+                                基於 Promise，通訊變得直覺簡潔。
+                            </p>
+<div class="p-8 rounded-3xl border border-blue-100 shadow-sm bg-blue-50 text-justify uppercase tracking-widest font-black leading-relaxed">
+<h4 class="font-bold text-blue-800 mb-4 text-xs uppercase tracking-widest italic text-justify font-black">
+                                    Why Fetch?</h4>
+<ul class="space-y-3 text-slate-600 font-light leading-relaxed text-[11px] text-justify uppercase tracking-tighter">
+<li class="flex items-center gap-2 text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span><strong class="text-blue-900 text-justify">Promise 驅動</strong>：告別回呼地獄。</li>
+<li class="flex items-center gap-2 text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span><strong class="text-blue-900 text-justify">語義化介面</strong>：函式名稱即是動作。</li>
+<li class="flex items-center gap-2 text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span><strong class="text-blue-900 font-black text-justify">原生支援</strong>：無需外部套件。</li>
+</ul>
+</div>
+</div>
+<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 text-blue-300 bg-slate-900 text-justify uppercase tracking-widest font-black">
+<h4 class="font-bold text-slate-500 mb-6 uppercase tracking-widest text-[10px] text-justify">
+                                Promise Lifecycle</h4>
+<div class="space-y-6 text-justify uppercase tracking-widest leading-relaxed">
+<div class="flex items-center gap-4 group text-justify">
+<span class="w-24 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded font-bold text-amber-500 text-center uppercase text-[10px] text-justify">Pending</span>
+<p class="text-slate-500 group-hover:text-slate-300 transition text-[11px] text-justify uppercase tracking-widest font-black">
+                                        請求發送中（等待）。</p>
+</div>
+<div class="flex items-center gap-4 group text-emerald-400 text-justify border border-slate-700">
+<span class="w-24 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded font-bold text-center uppercase text-[10px] text-justify">Fulfilled</span>
+<p class="text-slate-500 group-hover:text-emerald-300 transition text-[11px] text-justify uppercase tracking-widest">
+                                        獲取數據。</p>
+</div>
+<div class="flex items-center gap-4 group text-red-400 text-justify border border-slate-700">
+<span class="w-24 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded font-bold text-center uppercase text-[10px] text-justify">Rejected</span>
+<p class="text-slate-500 group-hover:text-red-300 transition text-[11px] text-justify">
+                                        失敗（斷網）。</p>
+</div>
+</div>
+</div>
+</div>
+                
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">2 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 3: 單元 2 ══════════ -->
+        <div class="ms-unit-page" id="page-3">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-3" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
+                </div>
+
+                <h1>✨ 2. Async / Await：優雅</h1>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify uppercase tracking-widest">
+<div class="space-y-8 text-justify font-black">
+<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tighter">
                                 非同步變同步順暢。
                             </p>
-                            <div class="grid grid-cols-2 gap-4 text-justify font-black border border-slate-100">
-                                <div
-                                    class="p-5 rounded-2xl border border-indigo-100 bg-indigo-50 text-justify uppercase tracking-widest">
-                                    <h5
-                                        class="text-[10px] font-bold text-indigo-400 mb-2 uppercase tracking-widest italic text-justify font-black">
+<div class="grid grid-cols-2 gap-4 text-justify font-black border border-slate-100">
+<div class="p-5 rounded-2xl border border-indigo-100 bg-indigo-50 text-justify uppercase tracking-widest">
+<h5 class="text-[10px] font-bold text-indigo-400 mb-2 uppercase tracking-widest italic text-justify font-black">
                                         Step 01</h5>
-                                    <p class="text-xs font-bold text-indigo-900 mb-1 text-justify font-black">等待 Header
+<p class="text-xs font-bold text-indigo-900 mb-1 text-justify font-black">等待 Header
                                     </p>
-                                    <p
-                                        class="text-[10px] text-slate-500 font-light leading-relaxed text-justify uppercase tracking-widest font-black">
+<p class="text-[10px] text-slate-500 font-light leading-relaxed text-justify uppercase tracking-widest font-black">
                                         回傳狀態碼。</p>
-                                </div>
-                                <div
-                                    class="p-5 rounded-2xl border border-purple-100 bg-purple-50 text-justify uppercase tracking-tighter">
-                                    <h5
-                                        class="text-[10px] font-bold text-purple-400 mb-2 uppercase tracking-widest italic text-justify">
+</div>
+<div class="p-5 rounded-2xl border border-purple-100 bg-purple-50 text-justify uppercase tracking-tighter">
+<h5 class="text-[10px] font-bold text-purple-400 mb-2 uppercase tracking-widest italic text-justify">
                                         Step 02</h5>
-                                    <p
-                                        class="text-xs font-bold text-purple-900 mb-1 text-justify uppercase tracking-widest font-black">
+<p class="text-xs font-bold text-purple-900 mb-1 text-justify uppercase tracking-widest font-black">
                                         解析 Body</p>
-                                    <p
-                                        class="text-[10px] text-slate-500 font-light leading-relaxed text-justify uppercase tracking-widest font-black">
+<p class="text-[10px] text-slate-500 font-light leading-relaxed text-justify uppercase tracking-widest font-black">
                                         轉為 JSON。</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div
-                            class="p-8 rounded-3xl shadow-2xl border border-slate-700 bg-slate-900 text-justify uppercase tracking-widest font-black">
-                            <div class="flex items-center gap-3 mb-6 text-justify font-black">
-                                <span class="w-3 h-3 bg-red-400 rounded-full text-justify font-black"></span>
-                                <span class="w-3 h-3 bg-amber-400 rounded-full text-justify font-black"></span>
-                                <span class="w-3 h-3 bg-emerald-400 rounded-full text-justify font-black"></span>
-                                <span
-                                    class="ml-auto text-slate-500 font-mono tracking-widest text-justify uppercase tracking-widest font-black text-[10px]">CLEAN
+</div>
+</div>
+</div>
+<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 bg-slate-900 text-justify uppercase tracking-widest font-black">
+<div class="flex items-center gap-3 mb-6 text-justify font-black">
+<span class="w-3 h-3 bg-red-400 rounded-full text-justify font-black"></span>
+<span class="w-3 h-3 bg-amber-400 rounded-full text-justify font-black"></span>
+<span class="w-3 h-3 bg-emerald-400 rounded-full text-justify font-black"></span>
+<span class="ml-auto text-slate-500 font-mono tracking-widest text-justify uppercase tracking-widest font-black text-[10px]">CLEAN
                                     CODE</span>
-                            </div>
-                            <pre
-                                class="leading-relaxed overflow-x-auto text-indigo-300 font-mono text-justify uppercase tracking-widest font-black text-[11px] border border-slate-700">
+</div>
+<pre class="leading-relaxed overflow-x-auto text-indigo-300 font-mono text-justify uppercase tracking-widest font-black text-[11px] border border-slate-700">
 <span class="text-purple-400 text-justify font-black">async</span> <span class="text-blue-500 text-justify font-black">function</span> <span class="text-emerald-400 text-justify font-black">load</span>() {
   <span class="text-slate-500 text-justify font-black">// 1. 送出請求</span>
   <span class="text-purple-400 text-justify font-black">const</span> res = <span class="text-purple-400 text-justify font-black">await</span> <span class="text-blue-400 text-justify font-black">fetch</span>(url);
@@ -181,184 +687,370 @@
   <span class="text-slate-500 text-justify font-black">// 2. 解析 JSON</span>
   <span class="text-purple-400 text-justify font-black">const</span> data = <span class="text-purple-400 text-justify font-black">await</span> res.<span class="text-blue-400 text-justify font-black">json</span>();
 }</pre>
-                        </div>
-                    </div>
-                </div>
+</div>
+</div>
+                
             </div>
-        </section>
-
-        <!-- Module 3: Robustness -->
-        <section class="module-section mb-16">
-            <div
-                class="glass-card rounded-3xl shadow-xl overflow-hidden text-white border border-slate-700 bg-slate-900">
-                <div class="p-8 md:p-14">
-                    <h2
-                        class="text-3xl font-bold mb-8 flex items-center gap-3 text-emerald-400 text-justify uppercase tracking-widest font-black">
-                        <span
-                            class="p-2 bg-emerald-500/20 rounded-lg text-emerald-400 text-2xl text-justify font-black border border-slate-800">🛡️</span>
-                        3. 攔截與逾時
-                    </h2>
-                    <div class="flex flex-col lg:flex-row gap-16 items-center text-justify uppercase tracking-widest">
-                        <div class="flex-1 space-y-6 text-justify font-black">
-                            <p
-                                class="text-slate-400 font-light leading-relaxed text-lg text-justify font-black uppercase tracking-tighter">
-                                優先處理「異常」。
-                            </p>
-                            <div
-                                class="p-8 rounded-3xl border border-emerald-500/20 shadow-inner bg-emerald-500/10 text-justify uppercase tracking-widest font-black text-left">
-                                <h4
-                                    class="font-bold text-emerald-400 mb-4 text-xs uppercase tracking-widest text-justify font-black">
-                                    容錯策略</h4>
-                                <ul
-                                    class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify uppercase tracking-widest font-black">
-                                    <li class="flex items-start gap-2 text-justify font-black"><span
-                                            class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1 text-justify font-black"></span>
-                                        <div><strong class="text-white text-justify font-black">res.ok 檢查</strong>：攔截
-                                            404/500。</div>
-                                    </li>
-                                    <li class="flex items-start gap-2 text-justify font-black"><span
-                                            class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1 text-justify"></span>
-                                        <div><strong class="text-white text-justify">try/catch</strong>：處理斷網失敗。</div>
-                                    </li>
-                                    <li class="flex items-start gap-2 text-justify font-black"><span
-                                            class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1 text-justify"></span>
-                                        <div><strong
-                                                class="text-white font-black text-justify uppercase tracking-widest">AbortController</strong>：逾時保護。
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div
-                            class="lg:w-80 p-10 rounded-3xl border border-emerald-500/20 text-center relative overflow-hidden group bg-emerald-600/10 text-justify font-black">
-                            <div
-                                class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify font-black">
-                            </div>
-                            <h4
-                                class="text-emerald-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-justify font-black uppercase tracking-widest">
-                                Network Sentry</h4>
-                            <p
-                                class="text-slate-500 leading-relaxed font-light mb-8 italic text-[11px] text-justify uppercase tracking-widest font-black border border-slate-700">
-                                "不處理 Timeout，網頁按鈕會空轉。"
-                            </p>
-                            <div
-                                class="inline-block px-8 py-3 bg-emerald-500 text-white rounded-xl font-bold text-[10px] shadow-lg text-justify uppercase tracking-widest font-black">
-                                controller.abort();</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Homework Section -->
-        <section class="module-section">
-            <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-[Outfit]">核心任務：打造強韌 Web 客戶端</h2>
-            <p class="text-center text-gray-500 mb-12">打造通訊模組實測。</p>
-
-            <div class="grid md:grid-cols-3 gap-6 text-justify uppercase tracking-widest font-black text-left">
-                <!-- Task 6-1 -->
-                <div onclick="openSubmissionModal('basic-06-fetch-1', '【作業 6-1】動態資料看板：JSON 獲取與渲染 (Dynamic Dashboard)')"
-                    class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col group cursor-pointer relative hover:shadow-2xl transition-all hover:-translate-y-2 text-justify uppercase tracking-widest font-black text-left border border-slate-100">
-                    <div class="bg-blue-500 h-2"></div>
-                    <div class="p-8 flex-grow">
-                        <div class="flex justify-between items-start mb-4 text-justify font-black text-left">
-                            <span
-                                class="text-4xl text-blue-500 group-hover:scale-110 transition-transform text-justify font-black">📄</span>
-                            <span
-                                class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold uppercase text-justify font-black text-[10px]">45
-                                min</span>
-                        </div>
-                        <h3
-                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-blue-600 transition text-justify uppercase tracking-widest font-black text-left">
-                            【作業 6-1】</h3>
-                        <h4
-                            class="font-medium text-gray-500 mb-4 text-justify uppercase tracking-widest font-black leading-relaxed">
-                            「資料渲染」</h4>
-                        <p
-                            class="text-sm text-gray-600 leading-relaxed text-justify uppercase tracking-widest font-black text-left italic uppercase tracking-tighter">
-                            獲取清單。實作渲染且加入 Loading。
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Task 6-2 -->
-                <div onclick="openSubmissionModal('basic-06-fetch-2', '【作業 6-2】留言板實作：POST 請求提交 (Bulletin Board)')"
-                    class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col group cursor-pointer relative hover:shadow-2xl transition-all hover:-translate-y-2 text-justify uppercase tracking-tighter text-left font-black border border-slate-100">
-                    <div class="bg-indigo-500 h-2"></div>
-                    <div class="p-8 flex-grow">
-                        <div class="flex justify-between items-start mb-4 text-justify font-black text-left">
-                            <span
-                                class="text-4xl text-indigo-500 group-hover:rotate-12 transition-transform text-justify font-black">📮</span>
-                            <span
-                                class="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded font-bold uppercase text-justify font-black">60
-                                min</span>
-                        </div>
-                        <h3
-                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-indigo-600 transition text-justify uppercase tracking-widest font-black text-left">
-                            【作業 6-2】</h3>
-                        <h4
-                            class="font-medium text-gray-500 mb-4 text-left text-justify font-black uppercase tracking-widest leading-relaxed">
-                            「提交模型」</h4>
-                        <p
-                            class="text-sm text-gray-600 leading-relaxed text-justify uppercase tracking-widest font-black text-left italic">
-                            實作 POST 提交 JSON。配置 Headers 並清空。
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Task 6-3 -->
-                <div onclick="openSubmissionModal('basic-06-fetch-3', '【作業 6-3】強韌通訊官：斷網與逾時保護 (Robust Fetch)')"
-                    class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col group cursor-pointer relative hover:shadow-2xl transition-all hover:-translate-y-2 text-justify font-black border border-slate-100 text-left">
-                    <div class="bg-purple-500 h-2"></div>
-                    <div class="p-8 flex-grow">
-                        <div class="flex justify-between items-start mb-4 text-justify font-black text-left">
-                            <span
-                                class="text-4xl text-purple-500 group-hover:translate-x-1 transition-transform text-justify font-black">🛡️</span>
-                            <span
-                                class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold uppercase text-justify font-black">45
-                                min</span>
-                        </div>
-                        <h3
-                            class="font-bold text-xl text-gray-800 mb-2 group-hover:text-purple-600 transition text-justify uppercase tracking-widest font-black text-left">
-                            【作業 6-3】</h3>
-                        <h4
-                            class="font-medium text-gray-500 mb-4 text-justify font-black uppercase tracking-widest leading-relaxed">
-                            「逾時保護」</h4>
-                        <p
-                            class="text-sm text-gray-600 leading-relaxed text-left text-justify uppercase tracking-widest font-black italic">
-                            配置 AbortController。處理 catch 並提供提示。
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-gray-800 py-12 border-t border-gray-700 text-center">
-        <div class="container mx-auto px-4 text-center text-center">
-            <p class="text-gray-500 text-sm mb-4 text-center">&copy; 2026 Vibe Coding. All rights reserved.</p>
-            <div
-                class="flex flex-col md:flex-row justify-center items-center gap-6 text-sm text-gray-400 text-center uppercase tracking-widest font-black border border-slate-700">
-                <span>課程單元 基礎 6 - JS 非同步通訊</span>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">3 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
-    </footer>
 
-    <script>
-        // Define Resources
-        window.RESOURCES = {
-            video: "https://www.youtube.com/embed/aYT6WydbZ60",
-            doc: "https://docs.google.com/document/d/e/2PACX-1vT1pzKosU71-034WsjB99JcP0rYgzZOJxuxk3ktik5k10iNoURTjJbqptFx_4Sb5lKLMIy-ifwCDnpI/pub?embedded=true"
-        };
-    </script>
-    <script src="/js/course-shared.js?v=2026.05.21.V21.DISABLE_UNIFIED_SUPPORT_HUB"></script>
-    <!-- Assignment Guide (Hidden) -->
-    <section id="assignment-guide" style="display: none;">
-<div class="markdown-heading"><h1 class="heading-element">Fetch API Mastery: 非同步編程與強韌通訊實戰</h1><a id="user-content-fetch-api-mastery-非同步編程與強韌通訊實戰" class="anchor" aria-label="Permalink: Fetch API Mastery: 非同步編程與強韌通訊實戰" href="#fetch-api-mastery-非同步編程與強韌通訊實戰"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+        <!-- ══════════ PAGE 4: 單元 3 ══════════ -->
+        <div class="ms-unit-page" id="page-4">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-4" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
+                </div>
+
+                <h1>🛡️ 3. 攔截與逾時</h1>
+                
+                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify uppercase tracking-widest">
+<div class="flex-1 space-y-6 text-justify font-black">
+<p class="text-slate-400 font-light leading-relaxed text-lg text-justify font-black uppercase tracking-tighter">
+                                優先處理「異常」。
+                            </p>
+<div class="p-8 rounded-3xl border border-emerald-500/20 shadow-inner bg-emerald-500/10 text-justify uppercase tracking-widest font-black text-left">
+<h4 class="font-bold text-emerald-400 mb-4 text-xs uppercase tracking-widest text-justify font-black">
+                                    容錯策略</h4>
+<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify uppercase tracking-widest font-black">
+<li class="flex items-start gap-2 text-justify font-black"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1 text-justify font-black"></span>
+<div><strong class="text-white text-justify font-black">res.ok 檢查</strong>：攔截
+                                            404/500。</div>
+</li>
+<li class="flex items-start gap-2 text-justify font-black"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1 text-justify"></span>
+<div><strong class="text-white text-justify">try/catch</strong>：處理斷網失敗。</div>
+</li>
+<li class="flex items-start gap-2 text-justify font-black"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1 text-justify"></span>
+<div><strong class="text-white font-black text-justify uppercase tracking-widest">AbortController</strong>：逾時保護。
+                                        </div>
+</li>
+</ul>
+</div>
+</div>
+<div class="lg:w-80 p-10 rounded-3xl border border-emerald-500/20 text-center relative overflow-hidden group bg-emerald-600/10 text-justify font-black">
+<div class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify font-black">
+</div>
+<h4 class="text-emerald-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-justify font-black uppercase tracking-widest">
+                                Network Sentry</h4>
+<p class="text-slate-500 leading-relaxed font-light mb-8 italic text-[11px] text-justify uppercase tracking-widest font-black border border-slate-700">
+                                "不處理 Timeout，網頁按鈕會空轉。"
+                            </p>
+<div class="inline-block px-8 py-3 bg-emerald-500 text-white rounded-xl font-bold text-[10px] shadow-lg text-justify uppercase tracking-widest font-black">
+                                controller.abort();</div>
+</div>
+</div>
+                
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">4 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 5: 實作挑戰 ══════════ -->
+        <div class="ms-unit-page" id="page-5">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-5" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 150 分鐘</div>
+                </div>
+
+                <h1>實戰任務挑戰</h1>
+
+                <p>
+                    請動手完成以下三項實作任務，這是驗證本單元學習成果的核心挑戰。
+                    完成後請將程式碼與報告提交至 GitHub Classroom。
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-6 my-6">
+                    <!-- Task 1 -->
+                    <div onclick="openSubmissionModal('basic-06-fetch-1', '【作業 6-1】動態資料看板：JSON 獲取與渲染 (Dynamic Dashboard)')"
+                        class="border border-gray-200 bg-white rounded-xl p-6 hover:shadow-lg transition cursor-pointer relative group flex flex-col justify-between">
+                        <div>
+                            <div class="bg-[#E76F51] text-white w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 6-1</div>
+                            <h3 class="text-lg font-bold mb-2">資料渲染</h3>
+                            <p class="text-xs text-gray-600 mb-4">獲取清單。實作渲染且加入 Loading。</p>
+                        </div>
+                        <div class="border-t border-gray-100 pt-3 flex items-center justify-between text-xs text-[#E76F51] font-bold">
+                            <span>⏱ 📄 45 min 【作業 6-1】 「資料渲染」 獲取清單。實作渲染且加入 Loading。</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                            <span class="bg-[#E76F51] text-white text-xs px-4 py-2 rounded-full font-bold shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                                📤 點擊繳交作業
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Task 2 -->
+                    <div onclick="openSubmissionModal('basic-06-fetch-2', '【作業 6-2】留言板實作：POST 請求提交 (Bulletin Board)')"
+                        class="border border-gray-200 bg-white rounded-xl p-6 hover:shadow-lg transition cursor-pointer relative group flex flex-col justify-between">
+                        <div>
+                            <div class="bg-[#2A9D8F] text-white w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 6-2</div>
+                            <h3 class="text-lg font-bold mb-2">提交模型</h3>
+                            <p class="text-xs text-gray-600 mb-4">實作 POST 提交 JSON。配置 Headers 並清空。</p>
+                        </div>
+                        <div class="border-t border-gray-100 pt-3 flex items-center justify-between text-xs text-[#2A9D8F] font-bold">
+                            <span>⏱ 📮 60 min 【作業 6-2】 「提交模型」 實作 POST 提交 JSON。配置 Headers 並清空。</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                            <span class="bg-[#2A9D8F] text-white text-xs px-4 py-2 rounded-full font-bold shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                                📤 點擊繳交作業
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Task 3 -->
+                    <div onclick="openSubmissionModal('basic-06-fetch-3', '【作業 6-3】強韌通訊官：斷網與逾時保護 (Robust Fetch)')"
+                        class="border border-gray-200 bg-white rounded-xl p-6 hover:shadow-lg transition cursor-pointer relative group flex flex-col justify-between">
+                        <div>
+                            <div class="bg-[#457B9D] text-white w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 6-3</div>
+                            <h3 class="text-lg font-bold mb-2">逾時保護</h3>
+                            <p class="text-xs text-gray-600 mb-4">配置 AbortController。處理 catch 並提供提示。</p>
+                        </div>
+                        <div class="border-t border-gray-100 pt-3 flex items-center justify-between text-xs text-[#457B9D] font-bold">
+                            <span>⏱ 🛡️ 45 min 【作業 6-3】 「逾時保護」 配置 AbortController。處理 catch 並提供提示。</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                            <span class="bg-[#457B9D] text-white text-xs px-4 py-2 rounded-full font-bold shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                                📤 點擊繳交作業
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">5 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-6">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                </div>
+
+                <h1>單元摘要與參考資源</h1>
+
+                <p>
+                    恭喜！你已經完成了「<strong>JavaScript 非同步編程：Fetch API 基礎</strong>」模組。
+                    透過本單元的學習與實作，你已經掌握了關鍵的核心技術，為全棧物聯網開發奠定了深厚的底層基石。
+                </p>
+
+                <div class="ms-achievement">
+                    <div class="achievement-icon">🚀</div>
+                    <div class="achievement-text">
+                        <h3>恭喜！你已完成本模組</h3>
+                        <p>你已具備開發與調校本單元核心功能的專業實力。持續累積，前進下一個挑戰！</p>
+                    </div>
+                </div>
+
+                <h2>完成本模組後，你已學會：</h2>
+                <ul>
+                    <li><strong>Fetch 的進化</strong> 的基本架構與實作技能。</li>
+                    <li><strong>Async / Await：優雅</strong> 的調試方法與資料傳輸細節。</li>
+                    <li><strong>🛡️ 3. 攔截與逾時</strong> 的優化指標與生產環境安全機制。</li>
+                    <li>在實戰挑戰中，透過 Git 與 GitHub Classroom 提交完整的硬體與報告成果。</li>
+                </ul>
+
+                <h2>延伸學習資源</h2>
+
+                <a href="https://www.youtube.com/embed/aYT6WydbZ60" target="_blank" class="ms-resource-link">
+                    <i class="fab fa-youtube" style="color:#ff0000;"></i>
+                    <div>
+                        <div style="font-weight:600;">課程教學影片</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">YouTube — 本單元核心觀念與實作示範影片</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+
+                <a href="https://docs.google.com/document/d/e/2PACX-1vT1pzKosU71-034WsjB99JcP0rYgzZOJxuxk3ktik5k10iNoURTjJbqptFx_4Sb5lKLMIy-ifwCDnpI/pub?embedded=true" target="_blank" class="ms-resource-link">
+                    <i class="fas fa-file-alt"></i>
+                    <div>
+                        <div style="font-weight:600;">課程完整講義</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">Google Docs — 詳細實驗步驟、技術文件與程式碼指南</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+
+                <a href="https://classroom.github.com" target="_blank" class="ms-resource-link">
+                    <i class="fab fa-github"></i>
+                    <div>
+                        <div style="font-weight:600;">GitHub Classroom</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">classroom.github.com — 管理你的作業提交與自動評分結果</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
+                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「JavaScript 非同步編程：Fetch API 基礎」模組！')">完成模組</button>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script>
+    /* ─── DATA ─── */
+    const UNITS = [
+        { id: 0, label: '課程總覽',       time: '',         type: 'index' },
+        { id: 1, label: '簡介',            time: '3 分鐘',  type: 'unit'  },
+        { id: 2, label: 'Fetch 的進化', time: '10 分鐘', type: 'unit' },
+        { id: 3, label: 'Async / Await：優雅', time: '10 分鐘', type: 'unit' },
+        { id: 4, label: '🛡️ 3. 攔截與逾時', time: '10 分鐘', type: 'unit' },
+        { id: 5, label: '實戰挑戰',       time: '150 分鐘', type: 'lab'   },
+        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+    ];
+
+    let currentUnit = 0;
+    let doneSet = new Set();
+
+    /* ─── INIT ─── */
+    function init() {
+        buildSidebar();
+        buildIndexUnitList();
+        goToUnit(0);
+    }
+
+    /**
+     * 動態建構側邊欄單元選單。
+     */
+    function buildSidebar() {
+        const nav = document.getElementById('sidebar-nav');
+        nav.innerHTML = UNITS.map(u => {
+            const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : '';
+            return `
+            <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
+                <div class="unit-icon" id="icon-${u.id}">${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div>
+                <div class="unit-meta">
+                    <div class="unit-name">${u.label}${badge}</div>
+                    ${u.time ? `<div class="unit-time"><i class="far fa-clock"></i> ${u.time}</div>` : ''}
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    /**
+     * 動態建構首頁單元卡片列表。
+     */
+    function buildIndexUnitList() {
+        const el = document.getElementById('index-unit-list');
+        el.innerHTML = UNITS.filter(u => u.id > 0).map(u => `
+            <div class="unit-card ${u.type}" onclick="goToUnit(${u.id})">
+                <div class="unit-card-num">${u.id}</div>
+                <div class="unit-card-info">
+                    <div class="unit-card-name">${u.label}</div>
+                    <div class="unit-card-time"><i class="far fa-clock"></i> ${u.time}</div>
+                </div>
+                <div class="unit-card-arrow">›</div>
+            </div>
+        `).join('');
+    }
+
+    /* ─── NAVIGATION ─── */
+    /**
+     * 切換至指定單元頁面。
+     * @param {number} id - 單元識別碼
+     */
+    function goToUnit(id) {
+        document.querySelectorAll('.ms-unit-page').forEach(p => p.classList.remove('visible'));
+        const target = id === 0 ? document.getElementById('page-index') : document.getElementById(`page-${id}`);
+        if (target) target.classList.add('visible');
+
+        document.querySelectorAll('.ms-unit-item').forEach(el => el.classList.remove('active'));
+        const navItem = document.getElementById(`nav-${id}`);
+        if (navItem) { navItem.classList.add('active'); navItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) {
+                icon.className = 'unit-icon done';
+                icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>';
+            } else if (u.id === id) {
+                icon.className = 'unit-icon active-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            } else {
+                icon.className = 'unit-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            }
+        });
+
+        const unit = UNITS.find(u => u.id === id);
+        document.getElementById('bc-current').textContent = unit ? unit.label : '';
+        currentUnit = id;
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /**
+     * 標記特定單元為已完成。
+     * @param {number} id - 單元識別碼
+     */
+    function markDone(id) {
+        doneSet.add(id);
+        const badge = document.getElementById(`badge-${id}`);
+        if (badge) badge.style.display = 'flex';
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) { icon.className = 'unit-icon done'; icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>'; }
+        });
+        updateProgress();
+    }
+
+    /**
+     * 計算並更新課程進度與進度條。
+     */
+    function updateProgress() {
+        const total = UNITS.length - 1;
+        const done = doneSet.size;
+        document.getElementById('progress-fill').style.width = Math.round(done / total * 100) + '%';
+        document.getElementById('progress-text').textContent = `${done} / ${total} 已完成`;
+    }
+
+    /* ─── CHECKLIST ─── */
+    /**
+     * 切換核取方塊的狀態。
+     * @param {HTMLElement} el - 核取方塊元素
+     */
+    function toggleCheck(el) {
+        el.classList.toggle('checked');
+        el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
+    }
+
+    /* ─── START ─── */
+    init();
+</script>
+
+<!-- Define Resources -->
+<script>
+    window.RESOURCES = {
+        video: "https://www.youtube.com/embed/aYT6WydbZ60",
+        doc: "https://docs.google.com/document/d/e/2PACX-1vT1pzKosU71-034WsjB99JcP0rYgzZOJxuxk3ktik5k10iNoURTjJbqptFx_4Sb5lKLMIy-ifwCDnpI/pub?embedded=true"
+    };
+</script>
+<script src="/js/course-shared.js?v=2026.05.22.V27.START_UNITS_LAYOUT_UPGRADE"></script>
+
+<!-- Assignment Guide (Hidden) -->
+<section id="assignment-guide" style="display: none;">
+<div class="markdown-heading"><h1 class="heading-element">Fetch API Mastery: 非同步編程與強韌通訊實戰</h1><a aria-label="Permalink: Fetch API Mastery: 非同步編程與強韌通訊實戰" class="anchor" href="#fetch-api-mastery-非同步編程與強韌通訊實戰" id="user-content-fetch-api-mastery-非同步編程與強韌通訊實戰"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>歡迎來到 <strong><code>basic-06-unit-fetch-api</code></strong> 單元！在本練習中，你將學習如何使用 JavaScript 的 <code>fetch()</code> API 來與網路服務進行溝通。這不僅僅是抓取資料，更重要的是學習如何建立一個 <strong>「永不卡死、處處有反饋」</strong> 的專業 Web 應用。</p>
-<div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2><a id="user-content--學習目標" class="anchor" aria-label="Permalink: 🎯 學習目標" href="#-學習目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2><a aria-label="Permalink: 🎯 學習目標" class="anchor" href="#-學習目標" id="user-content--學習目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>掌握 <code>fetch()</code> 的基本用法 (GET, POST)。</li>
 <li>理解 <code>async/await</code> 非同步處理流程。</li>
@@ -366,9 +1058,9 @@
 <li>
 <strong>核心挑戰</strong>：建立具備「容錯能力 (Resilience)」的通訊模組（處理 404 錯誤、網路逾時與斷網）。</li>
 </ul>
-<hr>
-<div class="markdown-heading"><h2 class="heading-element">🚀 任務說明</h2><a id="user-content--任務說明" class="anchor" aria-label="Permalink: 🚀 任務說明" href="#-任務說明"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h3 class="heading-element">任務 1：「動態資料看板」JSON 獲取與渲染</h3><a id="user-content-任務-1動態資料看板json-獲取與渲染" class="anchor" aria-label="Permalink: 任務 1：「動態資料看板」JSON 獲取與渲染" href="#任務-1動態資料看板json-獲取與渲染"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h2 class="heading-element">🚀 任務說明</h2><a aria-label="Permalink: 🚀 任務說明" class="anchor" href="#-任務說明" id="user-content--任務說明"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 1：「動態資料看板」JSON 獲取與渲染</h3><a aria-label="Permalink: 任務 1：「動態資料看板」JSON 獲取與渲染" class="anchor" href="#任務-1動態資料看板json-獲取與渲染" id="user-content-任務-1動態資料看板json-獲取與渲染"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>在 <code>main.js</code> 的 <code>fetchDashboardData</code> 函式中：</p>
 <ol>
 <li>啟動加載狀態（顯示 Loading 動畫）。</li>
@@ -377,7 +1069,7 @@
 <li>將獲取的資料動態產生為 HTML 卡片並渲染至頁面。</li>
 <li>無論成功或失敗，最後都必須關閉加載狀態。</li>
 </ol>
-<div class="markdown-heading"><h3 class="heading-element">任務 2：「留言板實作」POST 請求提交</h3><a id="user-content-任務-2留言板實作post-請求提交" class="anchor" aria-label="Permalink: 任務 2：「留言板實作」POST 請求提交" href="#任務-2留言板實作post-請求提交"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 2：「留言板實作」POST 請求提交</h3><a aria-label="Permalink: 任務 2：「留言板實作」POST 請求提交" class="anchor" href="#任務-2留言板實作post-請求提交" id="user-content-任務-2留言板實作post-請求提交"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>在 <code>main.js</code> 的 <code>submitMessage</code> 函式中：</p>
 <ol>
 <li>阻止表單預設提交行為。</li>
@@ -387,39 +1079,38 @@
 <strong>關鍵點</strong>：正確設置 <code>headers</code> 為 <code>"Content-Type": "application/json"</code> 並將資料序列化。</li>
 <li>提交成功後顯示提示並清空表單。</li>
 </ol>
-<div class="markdown-heading"><h3 class="heading-element">任務 3：「強韌通訊官」逾時保護</h3><a id="user-content-任務-3強韌通訊官逾時保護" class="anchor" aria-label="Permalink: 任務 3：「強韌通訊官」逾時保護" href="#任務-3強韌通訊官逾時保護"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 3：「強韌通訊官」逾時保護</h3><a aria-label="Permalink: 任務 3：「強韌通訊官」逾時保護" class="anchor" href="#任務-3強韌通訊官逾時保護" id="user-content-任務-3強韌通訊官逾時保護"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>實作 <code>robustFetch</code> 封裝函式：</p>
 <ol>
 <li>使用 <code>AbortController</code> 實作逾時控制（預設 5 秒）。</li>
 <li>當請求超過預定時間時，主動拋出錯誤。</li>
 <li>在 UI 上區分「網路失敗」與「逾時失敗」並給予友善提示。</li>
 </ol>
-<hr>
-<div class="markdown-heading"><h2 class="heading-element">🛠️ 準備工作</h2><a id="user-content-️-準備工作" class="anchor" aria-label="Permalink: 🛠️ 準備工作" href="#️-準備工作"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h2 class="heading-element">🛠️ 準備工作</h2><a aria-label="Permalink: 🛠️ 準備工作" class="anchor" href="#️-準備工作" id="user-content-️-準備工作"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ol>
 <li>確保你已複製此程式庫 (Clone this 程式庫)。</li>
 <li>直接在瀏覽器中開啟 <code>index.html</code> 即可開始調試。</li>
 <li>推薦使用 <strong>VS Code Live Server</strong> 擴充功能以獲得最佳開發體驗。</li>
 </ol>
-<div class="markdown-heading"><h2 class="heading-element">📤 提交要求</h2><a id="user-content--提交要求" class="anchor" aria-label="Permalink: 📤 提交要求" href="#-提交要求"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">📤 提交要求</h2><a aria-label="Permalink: 📤 提交要求" class="anchor" href="#-提交要求" id="user-content--提交要求"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>完成所有 <code>TODO</code> 標記的實作代碼。</li>
 <li>確保程式碼風格整潔、無冗餘 console.log。</li>
 <li>
 <strong>通訊報告</strong>：在 <code>docs/Network.md</code> 中記錄你在不同網路環境下的測試結果（可選）。</li>
 </ul>
-<hr>
+<hr/>
 <blockquote>
 <p>專業的前端開發者，不僅是在畫面上工作，更是網路不確定性的掌控大師。加油！</p>
 </blockquote>
+</section>
 
-    </section>
-
-    <!-- Tutor Guide (Hidden) -->
-    <section id="tutor-guide" style="display: none;">
+<!-- Tutor Guide (Hidden) -->
+<section id="tutor-guide" style="display: none;">
 <p>針對 <strong><code>basic-06-unit-fetch-api</code> (JavaScript 非同步編程：Fetch API 基礎)</strong> 單元，這是學員從「靜態網頁」跨向「動態交互應用」的技術分水嶺。它要求學員具備 <strong>非同步編程 (Asynchronous Programming)</strong> 的思維，學習如何優雅地處理背景請求、解析 JSON 數據，並實作具備 <strong>「容錯能力 (Resilience)」</strong> 的強韌通訊模組，以應對不穩定的物聯網網路環境。</p>
 <p>以下是在 <strong>GitHub Classroom</strong> 部署其作業 (Assignments) 的具體建議：</p>
-<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repo) 配置建議</h3><a id="user-content-1-範本程式庫-template-repo-配置建議" class="anchor" aria-label="Permalink: 1. 範本程式庫 (Template Repo) 配置建議" href="#1-範本程式庫-template-repo-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repo) 配置建議</h3><a aria-label="Permalink: 1. 範本程式庫 (Template Repo) 配置建議" class="anchor" href="#1-範本程式庫-template-repo-配置建議" id="user-content-1-範本程式庫-template-repo-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>Fetch API 作業的核心在於「非同步邏輯」與「UI 狀態管理」，範本應包含前端介面骨架與模擬 API，建議包含：</p>
 <ul>
 <li>
@@ -431,9 +1122,9 @@
 <li>
 <strong>📂 <code>server/</code> (選配)</strong>：若學員手邊暫無 ESP32，可提供一個簡單的 <code>json-server</code> 配置供本地模擬測試。</li>
 </ul>
-<hr>
-<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a id="user-content-2-作業任務部署細節" class="anchor" aria-label="Permalink: 2. 作業任務部署細節" href="#2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h4 class="heading-element">任務 1：「動態資料看板」JSON 獲取與渲染 (Dynamic Dashboard Lab)</h4><a id="user-content-任務-1動態資料看板json-獲取與渲染-dynamic-dashboard-lab" class="anchor" aria-label="Permalink: 任務 1：「動態資料看板」JSON 獲取與渲染 (Dynamic Dashboard Lab)" href="#任務-1動態資料看板json-獲取與渲染-dynamic-dashboard-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a aria-label="Permalink: 2. 作業任務部署細節" class="anchor" href="#2-作業任務部署細節" id="user-content-2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 1：「動態資料看板」JSON 獲取與渲染 (Dynamic Dashboard Lab)</h4><a aria-label="Permalink: 任務 1：「動態資料看板」JSON 獲取與渲染 (Dynamic Dashboard Lab)" class="anchor" href="#任務-1動態資料看板json-獲取與渲染-dynamic-dashboard-lab" id="user-content-任務-1動態資料看板json-獲取與渲染-dynamic-dashboard-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：掌握 <code>fetch</code> 的基本 GET 用法與 <code>Fulfilled</code> 狀態處理，實作非阻塞式的內容加載。</li>
@@ -449,7 +1140,7 @@
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 2：「留言板實作」POST 請求提交 (Bulletin Board Lab)</h4><a id="user-content-任務-2留言板實作post-請求提交-bulletin-board-lab" class="anchor" aria-label="Permalink: 任務 2：「留言板實作」POST 請求提交 (Bulletin Board Lab)" href="#任務-2留言板實作post-請求提交-bulletin-board-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 2：「留言板實作」POST 請求提交 (Bulletin Board Lab)</h4><a aria-label="Permalink: 任務 2：「留言板實作」POST 請求提交 (Bulletin Board Lab)" class="anchor" href="#任務-2留言板實作post-請求提交-bulletin-board-lab" id="user-content-任務-2留言板實作post-請求提交-bulletin-board-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：學會配置 HTTP 請求標頭 (Headers) 與資料序列化 (Serialization)，理解 RESTful API 的寫入規範。</li>
@@ -467,7 +1158,7 @@
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 3：「強韌通訊官」斷網與逾時保護 (Robust Fetch Lab)</h4><a id="user-content-任務-3強韌通訊官斷網與逾時保護-robust-fetch-lab" class="anchor" aria-label="Permalink: 任務 3：「強韌通訊官」斷網與逾時保護 (Robust Fetch Lab)" href="#任務-3強韌通訊官斷網與逾時保護-robust-fetch-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 3：「強韌通訊官」斷網與逾時保護 (Robust Fetch Lab)</h4><a aria-label="Permalink: 任務 3：「強韌通訊官」斷網與逾時保護 (Robust Fetch Lab)" class="anchor" href="#任務-3強韌通訊官斷網與逾時保護-robust-fetch-lab" id="user-content-任務-3強韌通訊官斷網與逾時保護-robust-fetch-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：掌握防禦性編程 (Defensive Programming)，利用 <code>AbortController</code> 與 <code>res.ok</code> 機制建立商業級的容錯系統。</li>
@@ -485,15 +1176,15 @@
 </ul>
 </li>
 </ul>
-<hr>
-<div class="markdown-heading"><h3 class="heading-element">3. 非同步通訊與體驗優化點評標準 (Asynchronous UX &amp; Robustness Standards)</h3><a id="user-content-3-非同步通訊與體驗優化點評標準-asynchronous-ux--robustness-standards" class="anchor" aria-label="Permalink: 3. 非同步通訊與體驗優化點評標準 (Asynchronous UX &amp; Robustness Standards)" href="#3-非同步通訊與體驗優化點評標準-asynchronous-ux--robustness-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h3 class="heading-element">3. 非同步通訊與體驗優化點評標準 (Asynchronous UX &amp; Robustness Standards)</h3><a aria-label="Permalink: 3. 非同步通訊與體驗優化點評標準 (Asynchronous UX &amp; Robustness Standards)" class="anchor" href="#3-非同步通訊與體驗優化點評標準-asynchronous-ux--robustness-standards" id="user-content-3-非同步通訊與體驗優化點評標準-asynchronous-ux--robustness-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>此單元的價值在於 <strong>「對通訊生命週期的全面掌控與對異常狀態的優雅處理」</strong>：</p>
 <ul>
 <li>[ ] <strong>Body 解析深度</strong>：是否理解 <code>await res.json()</code> 的必要性（解析 Body 是耗時操作）？</li>
 <li>[ ] <strong>HTTP 狀態檢核</strong>：是否具備 <code>res.ok</code> 的檢查意識？</li>
 <li>[ ] <strong>系統穩健度</strong>：在模擬斷網或伺服器宕機情況下，網頁是否能正確顯示錯誤訊息而非「靜默卡死」？</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a id="user-content--推薦範本結構-github-classroom-template" class="anchor" aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" href="#-推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" class="anchor" href="#-推薦範本結構-github-classroom-template" id="user-content--推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <pre lang="text"><code>.
 ├── index.html        # UI：資料看板與提交表單的 HTML 結構
 ├── style.css         # 樣式：包含 Loading 動畫與 Error 提示樣式
@@ -505,8 +1196,7 @@
 |
 |
 太精采了！我們已經將 <strong>基礎 06</strong>（非同步與安全）系列中關於 CORS 安全性與 Fetch API 的 Classroom 部署定義全部完成了。這標誌著學員終於能像開發 API Pro 一樣，隨心所欲地控制網頁與硬體間的數據流動。恭喜！全端開發的最後一塊拼圖已經拼上！</p>
+</section>
 
-    </section>
 </body>
-
 </html>
