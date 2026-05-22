@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>HTML5 Canvas 與 CSS 圓形佈局 - Vibe Coding</title>
-    <link rel="stylesheet" href="/style.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     <!-- MathJax for rendering math formulas -->
     <script>
         window.MathJax = {
@@ -20,357 +19,778 @@
     </script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --ms-blue: #0078d4;
+            --ms-blue-dark: #005a9e;
+            --ms-blue-light: #deecf9;
+            --ms-gray-10: #f3f2f1;
+            --ms-gray-20: #e1dfdd;
+            --ms-gray-90: #201f1e;
+            --ms-green: #107c10;
+            --ms-red: #d13438;
+            --sidebar-w: 280px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fff;
+            color: #201f1e;
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* ─── TOP NAV ─── */
+        .ms-topnav {
+            background: var(--ms-blue);
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 4px rgba(0,0,0,.2);
+        }
+        .ms-topnav .brand {
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
+
+        /* ─── LAYOUT ─── */
+        .ms-layout { display: flex; min-height: calc(100vh - 48px); }
+
+        /* ─── SIDEBAR ─── */
+        .ms-sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            background: #faf9f8;
+            border-right: 1px solid #e1dfdd;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 48px;
+            height: calc(100vh - 48px);
+            overflow-y: auto;
+        }
+        .ms-sidebar-header {
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .ms-sidebar-header .module-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #605e5c;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .ms-sidebar-header .module-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #201f1e;
+            line-height: 1.4;
+        }
+        .ms-sidebar-header .meta {
+            font-size: 12px;
+            color: #605e5c;
+            margin-top: 6px;
+        }
+        .ms-unit-list { padding: 8px 0; }
+        .ms-unit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: background .12s, border-color .12s;
+            color: #201f1e;
+        }
+        .ms-unit-item:hover { background: #edebe9; }
+        .ms-unit-item.active {
+            border-left-color: var(--ms-blue);
+            background: #deecf9;
+        }
+        .ms-unit-item.active .unit-name { color: var(--ms-blue); font-weight: 600; }
+        .unit-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #c8c6c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            font-size: 10px;
+            background: #fff;
+        }
+        .unit-icon.done { background: var(--ms-green); border-color: var(--ms-green); color: #fff; }
+        .unit-icon.active-icon { border-color: var(--ms-blue); background: var(--ms-blue); color: #fff; }
+        .unit-meta { flex: 1; min-width: 0; }
+        .unit-name { font-size: 13px; line-height: 1.4; }
+        .unit-time { font-size: 11px; color: #605e5c; margin-top: 2px; }
+        .sidebar-progress {
+            padding: 12px 16px;
+            border-top: 1px solid #e1dfdd;
+            margin-top: auto;
+        }
+        .progress-bar-bg { background: #e1dfdd; border-radius: 4px; height: 6px; }
+        .progress-bar-fill { background: var(--ms-green); border-radius: 4px; height: 6px; transition: width .4s; }
+        .progress-text { font-size: 12px; color: #605e5c; margin-top: 6px; }
+
+        /* ─── MAIN ─── */
+        .ms-content { flex: 1; min-width: 0; }
+
+        .ms-breadcrumb {
+            padding: 10px 40px;
+            font-size: 12px;
+            color: #605e5c;
+            border-bottom: 1px solid #e1dfdd;
+            background: #fff;
+        }
+        .ms-breadcrumb a { color: var(--ms-blue); text-decoration: none; }
+        .ms-breadcrumb a:hover { text-decoration: underline; }
+        .ms-breadcrumb span { margin: 0 6px; }
+
+        /* ─── PAGES ─── */
+        .ms-unit-page { display: none; }
+        .ms-unit-page.visible { display: block; }
+
+        .unit-content {
+            max-width: 820px;
+            padding: 32px 40px 60px;
+            margin: 0 auto;
+        }
+
+        .unit-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .unit-completed-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #dff6dd;
+            color: #107c10;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 2px;
+        }
+        .unit-time-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #605e5c;
+            font-size: 13px;
+        }
+
+        /* Typography */
+        .unit-content h1 { font-size: 28px; font-weight: 700; margin: 0 0 20px; color: #201f1e; line-height: 1.3; }
+        .unit-content h2 { font-size: 20px; font-weight: 600; margin: 36px 0 12px; color: #201f1e; padding-top: 8px; }
+        .unit-content h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; color: #201f1e; }
+        .unit-content p { margin: 0 0 14px; }
+        .unit-content ul, .unit-content ol { margin: 0 0 14px; padding-left: 28px; }
+        .unit-content li { margin-bottom: 6px; }
+        .unit-content strong { font-weight: 600; }
+        .unit-content a { color: var(--ms-blue); text-decoration: none; }
+        .unit-content a:hover { text-decoration: underline; }
+        .unit-content code {
+            background: #f3f2f1;
+            border: 1px solid #e1dfdd;
+            border-radius: 3px;
+            padding: 1px 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #a31515;
+        }
+
+        /* Lab card */
+        .ms-lab-card {
+            background: linear-gradient(135deg, #eef6ff 0%, #f5f0ff 100%);
+            border: 1px solid #c7e0f4;
+            border-radius: 6px;
+            padding: 24px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: box-shadow .15s, border-color .15s;
+        }
+        .ms-lab-card:hover { box-shadow: 0 4px 16px rgba(0,120,212,.12); border-color: var(--ms-blue); }
+        .ms-lab-card h3 { margin: 0 0 12px; color: var(--ms-blue-dark); font-size: 16px; font-weight: 600; }
+        .ms-lab-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--ms-blue);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 12px;
+        }
+        .ms-lab-time {
+            font-size: 12px;
+            color: #605e5c;
+            margin-left: 8px;
+        }
+
+        /* Checklist */
+        .ms-checklist { list-style: none; padding: 0; margin: 12px 0; }
+        .ms-checklist li {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 6px 0; font-size: 14px;
+        }
+        .ms-checklist li .check-box {
+            width: 18px; height: 18px;
+            border: 2px solid #8a8886; border-radius: 2px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; margin-top: 1px; cursor: pointer; transition: all .15s;
+        }
+        .ms-checklist li .check-box.checked {
+            background: var(--ms-blue); border-color: var(--ms-blue); color: #fff;
+        }
+
+        /* Resource links */
+        .ms-resource-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; text-decoration: none; color: #201f1e;
+        }
+        .ms-resource-link:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .ms-resource-link i { font-size: 20px; color: var(--ms-blue); width: 24px; text-align: center; }
+
+        /* Unit nav */
+        .unit-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            border-top: 1px solid #e1dfdd;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .nav-btn-prev, .nav-btn-next {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 20px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; border: 1px solid;
+            font-family: inherit; transition: background .12s;
+        }
+        .nav-btn-next { background: var(--ms-blue); color: #fff; border-color: var(--ms-blue); }
+        .nav-btn-next:hover { background: var(--ms-blue-dark); border-color: var(--ms-blue-dark); }
+        .nav-btn-prev { background: #fff; color: var(--ms-blue); border-color: var(--ms-blue); }
+        .nav-btn-prev:hover { background: var(--ms-blue-light); }
+        .unit-page-indicator { font-size: 13px; color: #605e5c; }
+
+        /* Module index */
+        .module-meta-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        .ms-tag { background: #f3f2f1; color: #323130; font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: 500; }
+        .ms-tag.blue { background: #deecf9; color: var(--ms-blue-dark); }
+        .ms-tag.green { background: #dff6dd; color: #107c10; }
+        .unit-card-list { margin: 20px 0; }
+        .unit-card {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 0; border-bottom: 1px solid #f3f2f1; cursor: pointer;
+        }
+        .unit-card:last-child { border-bottom: none; }
+        .unit-card:hover .unit-card-name { color: var(--ms-blue); text-decoration: underline; }
+        .unit-card-num {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #f3f2f1; color: #605e5c;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .unit-card.lab .unit-card-num { background: #eef6ff; color: var(--ms-blue-dark); }
+        .unit-card-info { flex: 1; }
+        .unit-card-name { font-size: 15px; font-weight: 500; }
+        .unit-card-time { font-size: 12px; color: #605e5c; margin-top: 2px; }
+        .unit-card-arrow { color: #c8c6c4; font-size: 14px; }
+    </style>
 </head>
+<body>
 
-<body class="bg-gray-50 font-[Inter] text-gray-800 overscroll-none">
+    <!-- ─── TOP NAV ─── -->
+    <div class="ms-topnav">
+        <a class="brand" href="/">
+            <i class="fas fa-cubes"></i>
+            <span>Vibe Coding Learn</span>
+        </a>
+        <div class="divider"></div>
+        <div class="nav-label">HTML5 Canvas 與 CSS 圓形佈局</div>
+    </div>
 
-    <!-- Hero Section -->
-    <header
-        class="relative bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 text-white pt-24 pb-44 overflow-hidden">
-        <div
-            class="header-overlay absolute inset-0 bg-gradient-to-r from-indigo-900/90 to-purple-800/90 mix-blend-multiply">
-        </div>
-        <!-- Decorative background elements -->
-        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 opacity-20">
-            <div
-                class="absolute top-20 left-20 w-72 h-72 bg-indigo-500 rounded-full mix-blend-overlay filter blur-3xl animate-pulse">
+    <!-- ─── LAYOUT ─── -->
+    <div class="ms-layout">
+        <!-- Sidebar -->
+        <div class="ms-sidebar">
+            <div class="ms-sidebar-header">
+                <div class="module-label">Start 05</div>
+                <div class="module-title">HTML5 Canvas 與 CSS 圓形佈局</div>
+                <div class="meta"><i class="far fa-clock"></i> 約 3.5 小時 · 5 個單元</div>
             </div>
-            <div class="absolute bottom-20 right-20 w-96 h-96 bg-purple-500 rounded-full mix-blend-overlay filter blur-3xl animate-pulse"
-                style="animation-delay: 2s"></div>
-        </div>
-
-        <div class="container mx-auto px-4 relative z-30 pt-10 pb-10 text-center text-white">
-            <div
-                class="badge-header inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/20 text-indigo-200 border border-indigo-400/30 backdrop-blur-sm mb-8 text-sm font-semibold tracking-wide uppercase">
-                <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
-                Canvas & CSS Layout
+            <div class="ms-unit-list" id="sidebar-nav">
+                <!-- JavaScript populated -->
             </div>
-            <h1 class="text-4xl md:text-6xl font-bold mb-6 tracking-tight leading-tight">
-                HTML5 Canvas 與 <br class="hidden md:block" />CSS 圓形佈局
-            </h1>
-            <p class="text-xl text-indigo-100 max-w-2xl mx-auto leading-relaxed mb-10">
-                打造完美的圓：從 CSS 百分比定位到 Canvas 向量繪圖，<br>一步步解構網頁虛擬搖桿的實作原理。
-            </p>
-
-            <div class="flex flex-wrap justify-center gap-4">
-                <button onclick="enterMediaMode('video', window.RESOURCES.video)"
-                    class="resource-btn bg-indigo-500 hover:bg-indigo-400 text-white px-8 py-4 rounded-full flex items-center gap-3 shadow-lg shadow-indigo-500/30 font-bold transition-all">
-                    <span>📺</span> 觀看教學影片
-                </button>
-                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
-                    class="resource-btn bg-white/10 hover:bg-white/20 border border-white/20 text-white px-8 py-4 rounded-full flex items-center gap-3 backdrop-blur-sm font-bold transition-all">
-                    <span>📄</span> 閱讀課程講義
-                </button>
+            <div class="sidebar-progress">
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text" id="progress-text">0 / 5 已完成</div>
             </div>
         </div>
-    </header>
 
-    <main class="container mx-auto px-4 -mt-24 relative z-10 pb-20">
+        <!-- Content -->
+        <div class="ms-content">
+            <!-- Breadcrumbs -->
+            <div class="ms-breadcrumb">
+                <a href="/">課程</a>
+                <span>&gt;</span>
+                <a href="#">Start 05</a>
+                <span>&gt;</span>
+                <span id="bc-current">課程總覽</span>
+            </div>
 
-        <!-- Module 1: Intuitive Lab (CSS) -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden">
-                <div class="p-1 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
-                <div class="p-8 md:p-12">
-                    <div class="section-header-left border-l-4 border-indigo-500 pl-6 mb-12">
-                        <span class="text-indigo-600 font-bold tracking-wider uppercase text-sm">Module 1: Intuitive
-                            Lab</span>
-                        <h2 class="text-4xl font-bold text-gray-900 mt-2">CSS 圓形佈局與定位</h2>
+            <!-- PAGE: Index (0) -->
+            <div class="ms-unit-page visible" id="page-index">
+                <div class="unit-content">
+                    <div class="module-meta-tags">
+                        <span class="ms-tag blue"><i class="fas fa-layer-group"></i> CSS 佈局</span>
+                        <span class="ms-tag green"><i class="fas fa-paint-brush"></i> Canvas 繪圖</span>
+                    </div>
+                    <h1>HTML5 Canvas 與 CSS 圓形佈局</h1>
+                    <p class="text-gray-600">
+                        打造完美的圓：從 CSS 百分比定位到 Canvas 向量繪圖，一步步解構網頁虛擬搖桿的實作原理。
+                    </p>
+
+                    <h2>單元大綱</h2>
+                    <div class="unit-card-list" id="index-unit-list">
+                        <!-- JavaScript populated -->
                     </div>
 
-                    <div class="grid md:grid-cols-2 gap-12 items-center">
-                        <div>
-                            <h3 class="text-2xl font-bold text-gray-800 mb-4">完美的圓形容器</h3>
-                            <p class="text-gray-600 leading-relaxed mb-6">
+                    <h2>預備知識</h2>
+                    <ul class="text-gray-600">
+                        <li>基本 HTML 與 CSS 屬性概念</li>
+                        <li>JavaScript 基礎與 DOM 事件監聽</li>
+                    </ul>
+                </div>
+                <div class="unit-nav">
+                    <span></span>
+                    <button class="nav-btn-next" onclick="goToUnit(1)">下一單元 &nbsp;›</button>
+                </div>
+            </div>
+
+            <!-- PAGE: 簡介 (1) -->
+            <div class="ms-unit-page" id="page-1">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-1" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 5 分鐘</div>
+                    </div>
+                    <h1>課程簡介</h1>
+                    <p class="text-gray-600">
+                        觀看以下影片或講義，了解如何使用百分比定位及 `aspect-ratio` 屬性在 CSS 中設計圓形搖桿，並利用 HTML5 Canvas 來繪製靈活的座標系統與自訂儀表板。
+                    </p>
+
+                    <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; margin: 24px 0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        <iframe src="https://www.youtube.com/embed/RjTLD5LN_fI" style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;" allowfullscreen></iframe>
+                    </div>
+
+                    <p class="text-gray-600">
+                        在觀看影片後，請繼續點擊「CSS 圓形佈局與定位」來了解置中與定位技巧。
+                    </p>
+                </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一單元 &nbsp;›</button>
+                </div>
+            </div>
+
+            <!-- PAGE: CSS 圓形佈局與定位 (2) -->
+            <div class="ms-unit-page" id="page-2">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-2" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 15 分鐘</div>
+                    </div>
+                    <h1>CSS 圓形佈局與定位</h1>
+                    
+                    <div class="grid md:grid-cols-2 gap-8 items-start my-6">
+                        <div class="space-y-6">
+                            <h3 class="text-2xl font-bold text-gray-800">完美的圓形容器</h3>
+                            <p class="text-gray-600 leading-relaxed">
                                 在網頁中製作圓形並不難，但要讓它完美置中且適應各種螢幕，就需要一點 CSS 技巧。
                             </p>
 
-                            <div class="space-y-6">
-                                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                                    <h4 class="font-bold text-gray-700 mb-2">關鍵屬性：</h4>
-                                    <ul class="space-y-3 text-sm">
-                                        <li class="flex items-center gap-3">
-                                            <code
-                                                class="bg-white px-2 py-1 rounded border border-gray-300 text-indigo-600 font-mono">border-radius: 50%</code>
-                                            <span class="text-gray-600">將方形變成圓形。</span>
-                                        </li>
-                                        <li class="flex items-center gap-3">
-                                            <code
-                                                class="bg-white px-2 py-1 rounded border border-gray-300 text-indigo-600 font-mono">aspect-ratio: 1 / 1</code>
-                                            <span class="text-gray-600">確保寬高比永遠即是正方形。</span>
-                                        </li>
-                                        <li class="flex items-center gap-3">
-                                            <code
-                                                class="bg-white px-2 py-1 rounded border border-gray-300 text-indigo-600 font-mono">transform: translate(-50%, -50%)</code>
-                                            <span class="text-gray-600">基於自身尺寸的中心點偏移。</span>
-                                        </li>
-                                    </ul>
+                            <div class="bg-gray-50 rounded-xl p-4 border border-gray-100 space-y-3">
+                                <div class="flex items-start gap-3">
+                                    <code class="bg-white px-2 py-1 rounded border border-gray-200 text-indigo-600 font-mono text-xs">border-radius: 50%</code>
+                                    <span class="text-sm text-gray-600">將方形變成圓形。</span>
                                 </div>
+                                <div class="flex items-start gap-3">
+                                    <code class="bg-white px-2 py-1 rounded border border-gray-200 text-indigo-600 font-mono text-xs">aspect-ratio: 1 / 1</code>
+                                    <span class="text-sm text-gray-600">確保寬高比永遠即是正方形。</span>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <code class="bg-white px-2 py-1 rounded border border-gray-200 text-indigo-600 font-mono text-xs">transform: translate(-50%, -50%)</code>
+                                    <span class="text-sm text-gray-600">基於自身尺寸的中心點偏移，適用於絕對定位下的正置中。</span>
+                                </div>
+                            </div>
 
-                                <div
-                                    class="bg-yellow-50 text-yellow-800 p-4 rounded-lg text-sm border border-yellow-100">
-                                    <strong>線上任務：</strong><br>
-                                    製作一個半徑 100px 的灰色大圓（底座），裡面包含一個半徑 30px 的藍色小圓（搖桿頭），並讓它們完美同心對齊。
-                                </div>
+                            <div class="p-4 bg-yellow-50 text-yellow-800 rounded-lg text-sm border border-yellow-100">
+                                <strong>線上任務：</strong><br>
+                                製作一個半徑 100px 的灰色大圓（底座），裡面包含一個半徑 30px 的藍色小圓（搖桿頭），並讓它們完美同心對齊。
                             </div>
                         </div>
 
                         <!-- CSS Interactive Demo -->
-                        <div
-                            class="bg-slate-900 rounded-xl p-8 relative min-h-[400px] flex items-center justify-center border border-slate-700 shadow-inner overflow-hidden">
+                        <div class="bg-slate-900 rounded-xl p-8 relative min-h-[350px] flex flex-col items-center justify-center border border-slate-700 shadow-inner overflow-hidden select-none">
                             <!-- Background Grid -->
                             <div class="absolute inset-0 opacity-20"
                                 style="background-image: linear-gradient(#444 1px, transparent 1px), linear-gradient(90deg, #444 1px, transparent 1px); background-size: 20px 20px;">
                             </div>
 
                             <!-- The Joystick Base -->
-                            <div
-                                class="relative w-48 h-48 bg-gray-700 rounded-full border-2 border-gray-500 flex items-center justify-center shadow-lg">
+                            <div class="relative w-48 h-48 bg-gray-700 rounded-full border-2 border-gray-500 flex items-center justify-center shadow-lg">
                                 <!-- Center Markers -->
                                 <div class="absolute w-full h-[1px] bg-gray-500/50"></div>
                                 <div class="absolute h-full w-[1px] bg-gray-500/50"></div>
 
                                 <!-- The Joystick Handle -->
-                                <div
-                                    class="w-16 h-16 bg-blue-500 rounded-full shadow-2xl shadow-blue-500/50 border-2 border-blue-400 relative z-10 animate-pulse">
+                                <div class="w-16 h-16 bg-blue-500 rounded-full shadow-2xl shadow-blue-500/50 border-2 border-blue-400 relative z-10 animate-pulse">
                                 </div>
                             </div>
 
-                            <div class="absolute bottom-4 left-4 text-xs font-mono text-gray-500">
-                                .joystick-base { ... }<br>
-                                .joystick-knob { ... }
+                            <div class="absolute bottom-4 left-4 text-[10px] font-mono text-gray-500 leading-normal">
+                                .joystick-base { border-radius: 50%; position: relative; }<br>
+                                .joystick-knob { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一單元 &nbsp;›</button>
+                </div>
             </div>
-        </section>
 
-        <!-- Module 2: Core Principles (Canvas) -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden">
-                <div class="p-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
-                <div class="p-8 md:p-12">
-                    <div class="section-header-left border-l-4 border-purple-500 pl-6 mb-12">
-                        <span class="text-purple-600 font-bold tracking-wider uppercase text-sm">Module 2: Core
-                            Principles</span>
-                        <h2 class="text-4xl font-bold text-gray-900 mt-2">HTML5 Canvas 繪圖基礎</h2>
+            <!-- PAGE: HTML5 Canvas 繪圖基礎 (3) -->
+            <div class="ms-unit-page" id="page-3">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-3" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 20 分鐘</div>
                     </div>
-
-                    <div class="grid md:grid-cols-2 gap-12">
+                    <h1>HTML5 Canvas 繪圖基礎</h1>
+                    
+                    <div class="grid md:grid-cols-2 gap-8 items-start my-6">
                         <div class="space-y-6">
                             <h3 class="text-2xl font-bold text-gray-800">2D 渲染上下文</h3>
                             <p class="text-gray-600 leading-relaxed">
                                 Canvas 就像一張空白的畫布，我們需要透過 JavaScript 取得 <code>getContext('2d')</code> 這支「畫筆」才能開始作畫。
                             </p>
 
-                            <div class="bg-slate-900 rounded-xl p-6 shadow-xl border border-slate-800">
-                                <div
-                                    class="flex justify-between mb-3 text-sm text-slate-400 font-bold uppercase tracking-wider">
+                            <div class="bg-slate-900 rounded-xl p-4 shadow-xl border border-slate-800">
+                                <div class="flex justify-between mb-2 text-xs text-slate-400 font-bold uppercase tracking-wider">
                                     <span>JavaScript</span>
                                 </div>
-                                <pre
-                                    class="font-mono text-sm leading-relaxed overflow-x-auto p-4 bg-slate-950 rounded-lg text-slate-300">
-const canvas = document.getElementById('myCanvas');
-const ctx = canvas.<span class="text-yellow-300">getContext</span>('2d');
+                                <pre class="font-mono text-xs leading-normal overflow-x-auto p-3 bg-slate-950 rounded-lg text-slate-300">
+const canvas = document.getElementById('demoCanvas');
+const ctx = canvas.getContext('2d');
 
 function draw() {
-    <span class="text-gray-500">// 1. 清除畫布 (必備！)</span>
-    ctx.<span class="text-pink-400">clearRect</span>(0, 0, canvas.width, canvas.height);
+    // 1. 清除畫布 (避免殘影)
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    <span class="text-gray-500">// 2. 開始繪製路徑</span>
-    ctx.<span class="text-blue-400">beginPath</span>();
-    ctx.<span class="text-blue-400">arc</span>(x, y, radius, 0, Math.PI * 2);
-    ctx.<span class="text-blue-400">fillStyle</span> = 'blue';
-    ctx.<span class="text-blue-400">fill</span>();
+    // 2. 開始繪製路徑
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fillStyle = 'blue';
+    ctx.fill();
     
-    <span class="text-gray-500">// 3. 動畫循環</span>
+    // 3. 動畫循環
     requestAnimationFrame(draw);
-}
-</pre>
+}</pre>
                             </div>
 
                             <ul class="space-y-3">
                                 <li class="flex items-start gap-3">
-                                    <span
-                                        class="bg-purple-100 text-purple-700 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold mt-1">1</span>
+                                    <span class="bg-purple-100 text-purple-700 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold mt-1">1</span>
                                     <div>
-                                        <strong class="text-gray-800">座標系：</strong>
-                                        <p class="text-sm text-gray-500">原點 $(0,0)$ 位於畫布的<strong>左上角</strong>，X軸向右，Y軸向下。
-                                        </p>
+                                        <strong class="text-sm text-gray-800">座標系：</strong>
+                                        <p class="text-xs text-gray-500">原點 $(0,0)$ 位於畫布的<strong>左上角</strong>，X軸向右，Y軸向下。</p>
                                     </div>
                                 </li>
                                 <li class="flex items-start gap-3">
-                                    <span
-                                        class="bg-purple-100 text-purple-700 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold mt-1">2</span>
+                                    <span class="bg-purple-100 text-purple-700 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold mt-1">2</span>
                                     <div>
-                                        <strong class="text-gray-800">路徑繪製：</strong>
-                                        <p class="text-sm text-gray-500">所有的繪圖都從 <code>beginPath()</code>
-                                            開始，這告訴瀏覽器我們要畫一個新的形狀。</p>
+                                        <strong class="text-sm text-gray-800">路徑與繪製：</strong>
+                                        <p class="text-xs text-gray-500">所有的繪圖都從 <code>beginPath()</code> 開始，這告訴瀏覽器我們要畫一個新的形狀，最後使用 <code>fill()</code> 或 <code>stroke()</code> 將圖案渲染到畫布上。</p>
                                     </div>
                                 </li>
                             </ul>
                         </div>
 
                         <!-- Canvas Visualization -->
-                        <div
-                            class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm flex flex-col items-center justify-center relative">
-                            <h4 class="absolute top-4 left-4 text-gray-400 font-mono text-xs">Canvas Coordinate System
-                            </h4>
-                            <canvas id="demoCanvas" width="300" height="300"
-                                class="border border-gray-300 bg-gray-50 rounded cursor-crosshair"></canvas>
-                            <p class="mt-4 text-xs text-center text-gray-500">
-                                試著移動滑鼠：<br>
-                                <span id="coords" class="font-mono text-purple-600 font-bold">X: 0, Y: 0</span>
+                        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm flex flex-col items-center justify-center relative select-none">
+                            <h4 class="absolute top-4 left-4 text-gray-400 font-mono text-[10px] uppercase">Canvas Coordinate System</h4>
+                            <canvas id="demoCanvas" width="300" height="300" class="border border-gray-300 bg-gray-50 rounded cursor-crosshair touch-none"></canvas>
+                            <p class="mt-4 text-xs text-center text-gray-500 leading-relaxed">
+                                試著移動滑鼠或在畫布上滑動：<br>
+                                <span id="coords" class="font-mono text-purple-600 font-bold text-sm">X: 0, Y: 0</span>
                             </p>
                         </div>
                     </div>
                 </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一單元 &nbsp;›</button>
+                </div>
             </div>
-        </section>
 
-        <!-- Module 3: Math & Challenge -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden">
-                <div class="p-1 bg-gradient-to-r from-pink-500 to-rose-500"></div>
-                <div class="p-8 md:p-12">
-                    <div class="section-header-left border-l-4 border-pink-500 pl-6 mb-12">
-                        <span class="text-pink-600 font-bold tracking-wider uppercase text-sm">Module 3: Practical
-                            Challenge</span>
-                        <h2 class="text-4xl font-bold text-gray-900 mt-2">向量計算與實戰作業</h2>
+            <!-- PAGE: 教室實戰 (4) -->
+            <div class="ms-unit-page" id="page-4">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-4" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 165 分鐘</div>
                     </div>
+                    <h1>教室實戰與向量運算預習</h1>
+                    
+                    <div class="mb-8 bg-pink-50 rounded-xl p-6 border border-pink-100">
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">預習：向量與角度 (Trigonometry)</h3>
+                        <p class="text-sm text-gray-600 mb-4">要讓搖桿跟隨手指，我們需要計算兩點之間的距離與角度。</p>
 
-                    <!-- Math Theory -->
-                    <div class="mb-12 bg-pink-50 rounded-xl p-8 border border-pink-100">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-4">預習：向量與角度 (Trigonometry)</h3>
-                        <p class="text-gray-600 mb-6">要讓搖桿跟隨手指，我們需要計算兩點之間的距離與角度。</p>
-
-                        <div class="grid md:grid-cols-2 gap-8">
+                        <div class="grid md:grid-cols-2 gap-6">
                             <div>
-                                <h4 class="font-bold text-pink-700 mb-2">1. 角度計算 (Angle)</h4>
-                                <p class="text-sm text-gray-600 mb-2">使用 <code>Math.atan2(y, x)</code> 計算滑鼠位置相對於圓心的角度。
-                                </p>
-                                <div class="bg-white p-3 rounded font-mono text-sm border border-pink-200">
+                                <h4 class="font-bold text-pink-700 text-xs mb-1">1. 角度計算 (Angle)</h4>
+                                <p class="text-xs text-gray-600 mb-2">使用 <code>Math.atan2(y, x)</code> 計算相對圓心的弧度角度：</p>
+                                <div class="bg-white p-2 rounded font-mono text-xs border border-pink-200">
                                     \(\theta = \text{atan2}(dy, dx)\)
                                 </div>
                             </div>
                             <div>
-                                <h4 class="font-bold text-pink-700 mb-2">2. 距離計算 (Distance)</h4>
-                                <p class="text-sm text-gray-600 mb-2">使用畢氏定理計算距離，確保搖桿頭不會超出底座範圍。</p>
-                                <div class="bg-white p-3 rounded font-mono text-sm border border-pink-200">
+                                <h4 class="font-bold text-pink-700 text-xs mb-1">2. 距離計算 (Distance)</h4>
+                                <p class="text-xs text-gray-600 mb-2">使用畢氏定理計算距離，確保搖桿頭不會超出底座範圍：</p>
+                                <div class="bg-white p-2 rounded font-mono text-xs border border-pink-200">
                                     \(d = \sqrt{dx^2 + dy^2}\)
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Tasks Grid -->
-                    <div class="grid md:grid-cols-3 gap-8">
-                        <!-- Task 1-1 -->
-                        <div onclick="openSubmissionModal('task-1-1', '作業 1-1: 虛擬搖桿：觸控映射')"
-                            class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col h-full group hover:shadow-2xl transition-all cursor-pointer relative">
-                            <div class="bg-indigo-500 h-2"></div>
-                            <div class="p-6 flex-grow">
-                                <div class="flex justify-between items-start mb-4">
-                                    <h3 class="font-bold text-xl text-gray-800">作業 1-1</h3>
-                                    <span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded font-bold">60
-                                        min</span>
-                                </div>
-                                <h4 class="font-bold text-indigo-600 mb-2">虛擬搖桿：觸控映射</h4>
-                                <p class="text-sm text-gray-600 mb-4">
-                                    讓 CSS 製作的小圓（搖桿頭）跟隨手指移動，並限制在半徑 \(R\) 內。
-                                </p>
-                                <ul class="text-xs text-gray-500 list-disc list-inside space-y-1">
-                                    <li>計算偏移量 \(dx, dy\)</li>
-                                    <li>若 \(d > R\)，將距離限制在 \(R\)</li>
-                                    <li>將座標標準化映射至 \(-100\) 到 \(+100\)</li>
-                                </ul>
-                            </div>
-                            <!-- Click Hint Overlay -->
-                            <div
-                                class="absolute inset-0 bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span
-                                    class="bg-white text-indigo-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                                    📤 點擊繳交作業
-                                </span>
-                            </div>
+                    <div class="space-y-4">
+                        <div class="ms-lab-card" onclick="openSubmissionModal('task-1-1', '作業 1-1: 虛擬搖桿：觸控映射')">
+                            <div class="ms-lab-badge">Task 1-1</div>
+                            <span class="ms-lab-time"><i class="far fa-clock"></i> 60 分鐘</span>
+                            <h3>作業 1-1: 虛擬搖桿：觸控映射</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                讓 CSS 製作的小圓（搖桿頭）跟隨手指移動，並限制在半徑 \(R\) 內。計算偏移量 \(dx, dy\)，若 \(d > R\) 時將距離限制在邊界上，最後將座標標準化映射至 \(-100\) 到 \(+100\)。
+                            </p>
                         </div>
 
-                        <!-- Task 1-2 -->
-                        <div onclick="openSubmissionModal('task-1-2', '作業 1-2: 動態儀表板')"
-                            class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col h-full group hover:shadow-2xl transition-all cursor-pointer relative">
-                            <div class="bg-purple-500 h-2"></div>
-                            <div class="p-6 flex-grow">
-                                <div class="flex justify-between items-start mb-4">
-                                    <h3 class="font-bold text-xl text-gray-800">作業 1-2</h3>
-                                    <span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold">60
-                                        min</span>
-                                </div>
-                                <h4 class="font-bold text-purple-600 mb-2">動態儀表板</h4>
-                                <p class="text-sm text-gray-600 mb-4">
-                                    利用 Canvas 繪製一個隨速度變化的「動態指針」。
-                                </p>
-                                <ul class="text-xs text-gray-500 list-disc list-inside space-y-1">
-                                    <li>使用 <code>requestAnimationFrame</code></li>
-                                    <li>練習 <code>save()</code>, <code>restore()</code></li>
-                                    <li><code>rotate()</code> 旋轉畫布</li>
-                                </ul>
-                            </div>
-                            <!-- Click Hint Overlay -->
-                            <div
-                                class="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span
-                                    class="bg-white text-purple-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                                    📤 點擊繳交作業
-                                </span>
-                            </div>
+                        <div class="ms-lab-card" onclick="openSubmissionModal('task-1-2', '作業 1-2: 動態儀表板')">
+                            <div class="ms-lab-badge">Task 1-2</div>
+                            <span class="ms-lab-time"><i class="far fa-clock"></i> 60 分鐘</span>
+                            <h3>作業 1-2: 動態儀表板</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                利用 Canvas 繪製一個隨速度變化的「動態指針」。使用 <code>requestAnimationFrame</code> 進行刷新，並練習以 <code>save()</code>, <code>restore()</code> 與 <code>rotate()</code> 來控制指針的旋轉。
+                            </p>
                         </div>
 
-                        <!-- Task 1-3 -->
-                        <div onclick="openSubmissionModal('task-1-3', '作業 1-3: 視覺回饋特效')"
-                            class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col h-full group hover:shadow-2xl transition-all cursor-pointer relative">
-                            <div class="bg-pink-500 h-2"></div>
-                            <div class="p-6 flex-grow">
-                                <div class="flex justify-between items-start mb-4">
-                                    <h3 class="font-bold text-xl text-gray-800">作業 1-3</h3>
-                                    <span class="bg-pink-100 text-pink-700 text-xs px-2 py-1 rounded font-bold">45
-                                        min</span>
-                                </div>
-                                <h4 class="font-bold text-pink-600 mb-2">視覺回饋特效</h4>
-                                <p class="text-sm text-gray-600 mb-4">
-                                    當偵測到障礙物時（模擬數據），在 Canvas 上繪製紅色閃爍警示。
-                                </p>
-                                <ul class="text-xs text-gray-500 list-disc list-inside space-y-1">
-                                    <li>透明度動畫 (Alpha Blending)</li>
-                                    <li>製作呼吸燈光暈效果</li>
-                                </ul>
-                            </div>
-                            <!-- Click Hint Overlay -->
-                            <div
-                                class="absolute inset-0 bg-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span
-                                    class="bg-white text-pink-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                                    📤 點擊繳交作業
-                                </span>
-                            </div>
+                        <div class="ms-lab-card" onclick="openSubmissionModal('task-1-3', '作業 1-3: 視覺回饋特效')">
+                            <div class="ms-lab-badge">Task 1-3</div>
+                            <span class="ms-lab-time"><i class="far fa-clock"></i> 45 分鐘</span>
+                            <h3>作業 1-3: 視覺回饋特效</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                當偵測到障礙物時（模擬數據），在 Canvas 上繪製紅色閃爍警示。實作透明度動畫 (Alpha Blending) 並製作出平滑的呼吸燈光暈效果。
+                            </p>
                         </div>
                     </div>
                 </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一單元 &nbsp;›</button>
+                </div>
             </div>
-        </section>
 
-    </main>
+            <!-- PAGE: 摘要與資源 (5) -->
+            <div class="ms-unit-page" id="page-5">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-5" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 5 分鐘</div>
+                    </div>
+                    <h1>本單元摘要與學習資源</h1>
+                    <h2>重點回顧</h2>
+                    <ul class="text-gray-600">
+                        <li><strong>CSS 圓形佈局：</strong>利用 <code>border-radius: 50%</code> 結合 <code>aspect-ratio: 1 / 1</code> 快速構建正圓，使用 <code>translate(-50%, -50%)</code> 實作對稱置中。</li>
+                        <li><strong>Canvas 繪圖：</strong>利用 <code>getContext('2d')</code> 取得畫筆，每次重繪前皆需呼叫 <code>clearRect()</code> 避免產生舊畫面殘影。</li>
+                        <li><strong>座標映射：</strong>熟悉滑鼠與觸控座標到 Canvas 二維空間座標的轉換技巧，為動態指針和搖桿幾何打下堅實基礎。</li>
+                    </ul>
 
-    <footer class="bg-gray-900 text-white py-12 border-t border-gray-800">
-        <div class="container mx-auto px-4 text-center">
-            <p class="text-gray-500">© 2024 Vibe Coding. All rights reserved.</p>
+                    <h2>延伸閱讀與資源</h2>
+                    <div class="my-4">
+                        <a href="#" onclick="enterMediaMode('video', window.RESOURCES.video); return false;" class="ms-resource-link">
+                            <i class="fab fa-youtube"></i>
+                            <div>
+                                <div class="font-semibold">教學影片</div>
+                                <div class="text-xs text-gray-500">HTML5 Canvas 與 CSS 圓形佈局</div>
+                            </div>
+                        </a>
+                        <a href="#" onclick="enterMediaMode('doc', window.RESOURCES.doc); return false;" class="ms-resource-link">
+                            <i class="far fa-file-alt"></i>
+                            <div>
+                                <div class="font-semibold">課程講義</div>
+                                <div class="text-xs text-gray-500">詳細說明與幾何公式</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(5)">完成本單元 &nbsp;✓</button>
+                </div>
+            </div>
+
         </div>
-    </footer>
-
-    <!-- Media Overlay injected by course-shared.js?v=2026.04.05.FINAL_V6 -->
+    </div>
 
     <!-- Scripts -->
     <script>
+        /* ─── DATA ─── */
+        const UNITS = [
+            { id: 0, label: '課程總覽',       time: '',         type: 'index' },
+            { id: 1, label: '簡介',            time: '5 分鐘',  type: 'unit'  },
+            { id: 2, label: 'CSS 圓形佈局與定位', time: '15 分鐘', type: 'unit' },
+            { id: 3, label: 'HTML5 Canvas 繪圖基礎', time: '20 分鐘', type: 'unit' },
+            { id: 4, label: '教室實戰',       time: '165 分鐘', type: 'lab'   },
+            { id: 5, label: '摘要與資源',     time: '5 分鐘',  type: 'unit'  },
+        ];
+
+        let currentUnit = 0;
+        let doneSet = new Set();
+
+        /* ─── INIT ─── */
+        function init() {
+            buildSidebar();
+            buildIndexUnitList();
+            goToUnit(0);
+        }
+
+        function buildSidebar() {
+            const nav = document.getElementById('sidebar-nav');
+            nav.innerHTML = UNITS.map(u => {
+                const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>' : '';
+                return `
+                <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
+                    <div class="unit-icon" id="icon-${u.id}">${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div>
+                    <div class="unit-meta">
+                        <div class="unit-name">${u.label}${badge}</div>
+                        ${u.time ? `<div class="unit-time"><i class="far fa-clock"></i> ${u.time}</div>` : ''}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function buildIndexUnitList() {
+            const el = document.getElementById('index-unit-list');
+            el.innerHTML = UNITS.filter(u => u.id > 0).map(u => `
+                <div class="unit-card ${u.type}" onclick="goToUnit(${u.id})">
+                    <div class="unit-card-num">${u.id}</div>
+                    <div class="unit-card-info">
+                        <div class="unit-card-name">${u.label}</div>
+                        <div class="unit-card-time"><i class="far fa-clock"></i> ${u.time}</div>
+                    </div>
+                    <div class="unit-card-arrow">›</div>
+                </div>
+            `).join('');
+        }
+
+        /* ─── NAVIGATION ─── */
+        function goToUnit(id) {
+            document.querySelectorAll('.ms-unit-page').forEach(p => p.classList.remove('visible'));
+            const target = id === 0 ? document.getElementById('page-index') : document.getElementById(`page-${id}`);
+            if (target) target.classList.add('visible');
+
+            document.querySelectorAll('.ms-unit-item').forEach(el => el.classList.remove('active'));
+            const navItem = document.getElementById(`nav-${id}`);
+            if (navItem) { navItem.classList.add('active'); navItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+
+            UNITS.forEach(u => {
+                const icon = document.getElementById(`icon-${u.id}`);
+                if (!icon) return;
+                if (doneSet.has(u.id)) {
+                    icon.className = 'unit-icon done';
+                    icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>';
+                } else if (u.id === id) {
+                    icon.className = 'unit-icon active-icon';
+                    icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+                } else {
+                    icon.className = 'unit-icon';
+                    icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+                }
+            });
+
+            const unit = UNITS.find(u => u.id === id);
+            document.getElementById('bc-current').textContent = unit ? unit.label : '';
+            currentUnit = id;
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // If we enter page-3, draw the basic grid
+            if (id === 3) {
+                setTimeout(drawGrid, 100);
+            }
+        }
+
+        function markDone(id) {
+            doneSet.add(id);
+            const badge = document.getElementById(`badge-${id}`);
+            if (badge) badge.style.display = 'flex';
+            UNITS.forEach(u => {
+                const icon = document.getElementById(`icon-${u.id}`);
+                if (!icon) return;
+                if (doneSet.has(u.id)) { icon.className = 'unit-icon done'; icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>'; }
+            });
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const total = UNITS.length - 1;
+            const done = doneSet.size;
+            document.getElementById('progress-fill').style.width = Math.round(done / total * 100) + '%';
+            document.getElementById('progress-text').textContent = `${done} / ${total} 已完成`;
+        }
+
+        /* ─── CHECKLIST ─── */
+        function toggleCheck(el) {
+            el.classList.toggle('checked');
+            el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
+        }
+
+        /* ─── START ─── */
+        init();
+
         // --- Canvas Demo Logic ---
         const demoCanvas = document.getElementById('demoCanvas');
         const ctx = demoCanvas.getContext('2d');
@@ -422,8 +842,6 @@ function draw() {
             ctx.fillText(`(${x}, ${y})`, x + 10, y - 10);
         }
 
-        drawGrid();
-
         demoCanvas.addEventListener('mousemove', (e) => {
             const rect = demoCanvas.getBoundingClientRect();
             const x = Math.round(e.clientX - rect.left);
@@ -437,8 +855,22 @@ function draw() {
             coordsLabel.innerText = "X: 0, Y: 0";
         });
 
-        // --- Standard Media Overlay Logic ---
-        // Injected by course-shared.js?v=2026.04.05.FINAL_V6
+        // Touch support for demoCanvas
+        demoCanvas.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 0) {
+                e.preventDefault();
+                const rect = demoCanvas.getBoundingClientRect();
+                const x = Math.round(e.touches[0].clientX - rect.left);
+                const y = Math.round(e.touches[0].clientY - rect.top);
+                coordsLabel.innerText = `X: ${x}, Y: ${y}`;
+                drawCursor(x, y);
+            }
+        }, { passive: false });
+
+        demoCanvas.addEventListener('touchend', () => {
+            drawGrid();
+            coordsLabel.innerText = "X: 0, Y: 0";
+        });
 
         window.RESOURCES = {
             video: "https://www.youtube.com/embed/RjTLD5LN_fI",
@@ -616,5 +1048,4 @@ function draw() {
 
     </section>
 </body>
-
 </html>

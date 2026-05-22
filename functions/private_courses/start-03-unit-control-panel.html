@@ -1,326 +1,785 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>UI 佈局：HTML 按鈕與 CSS 控制面板 - Vibe Coding</title>
-    <link rel="stylesheet" href="/style.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <style>
+        :root {
+            --ms-blue: #0078d4;
+            --ms-blue-dark: #005a9e;
+            --ms-blue-light: #deecf9;
+            --ms-gray-10: #f3f2f1;
+            --ms-gray-20: #e1dfdd;
+            --ms-gray-90: #201f1e;
+            --ms-green: #107c10;
+            --ms-red: #d13438;
+            --sidebar-w: 280px;
+        }
 
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fff;
+            color: #201f1e;
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* ─── TOP NAV ─── */
+        .ms-topnav {
+            background: var(--ms-blue);
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 4px rgba(0,0,0,.2);
+        }
+        .ms-topnav .brand {
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
+
+        /* ─── LAYOUT ─── */
+        .ms-layout { display: flex; min-height: calc(100vh - 48px); }
+
+        /* ─── SIDEBAR ─── */
+        .ms-sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            background: #faf9f8;
+            border-right: 1px solid #e1dfdd;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 48px;
+            height: calc(100vh - 48px);
+            overflow-y: auto;
+        }
+        .ms-sidebar-header {
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .ms-sidebar-header .module-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #605e5c;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .ms-sidebar-header .module-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #201f1e;
+            line-height: 1.4;
+        }
+        .ms-sidebar-header .meta {
+            font-size: 12px;
+            color: #605e5c;
+            margin-top: 6px;
+        }
+        .ms-unit-list { padding: 8px 0; }
+        .ms-unit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: background .12s, border-color .12s;
+            color: #201f1e;
+        }
+        .ms-unit-item:hover { background: #edebe9; }
+        .ms-unit-item.active {
+            border-left-color: var(--ms-blue);
+            background: #deecf9;
+        }
+        .ms-unit-item.active .unit-name { color: var(--ms-blue); font-weight: 600; }
+        .unit-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #c8c6c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            font-size: 10px;
+            background: #fff;
+        }
+        .unit-icon.done { background: var(--ms-green); border-color: var(--ms-green); color: #fff; }
+        .unit-icon.active-icon { border-color: var(--ms-blue); background: var(--ms-blue); color: #fff; }
+        .unit-meta { flex: 1; min-width: 0; }
+        .unit-name { font-size: 13px; line-height: 1.4; }
+        .unit-time { font-size: 11px; color: #605e5c; margin-top: 2px; }
+        .sidebar-progress {
+            padding: 12px 16px;
+            border-top: 1px solid #e1dfdd;
+            margin-top: auto;
+        }
+        .progress-bar-bg { background: #e1dfdd; border-radius: 4px; height: 6px; }
+        .progress-bar-fill { background: var(--ms-green); border-radius: 4px; height: 6px; transition: width .4s; }
+        .progress-text { font-size: 12px; color: #605e5c; margin-top: 6px; }
+
+        /* ─── MAIN ─── */
+        .ms-content { flex: 1; min-width: 0; }
+
+        .ms-breadcrumb {
+            padding: 10px 40px;
+            font-size: 12px;
+            color: #605e5c;
+            border-bottom: 1px solid #e1dfdd;
+            background: #fff;
+        }
+        .ms-breadcrumb a { color: var(--ms-blue); text-decoration: none; }
+        .ms-breadcrumb a:hover { text-decoration: underline; }
+        .ms-breadcrumb span { margin: 0 6px; }
+
+        /* ─── PAGES ─── */
+        .ms-unit-page { display: none; }
+        .ms-unit-page.visible { display: block; }
+
+        .unit-content {
+            max-width: 820px;
+            padding: 32px 40px 60px;
+            margin: 0 auto;
+        }
+
+        .unit-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .unit-completed-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #dff6dd;
+            color: #107c10;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 2px;
+        }
+        .unit-time-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #605e5c;
+            font-size: 13px;
+        }
+
+        /* Typography */
+        .unit-content h1 { font-size: 28px; font-weight: 700; margin: 0 0 20px; color: #201f1e; line-height: 1.3; }
+        .unit-content h2 { font-size: 20px; font-weight: 600; margin: 36px 0 12px; color: #201f1e; padding-top: 8px; }
+        .unit-content h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; color: #201f1e; }
+        .unit-content p { margin: 0 0 14px; }
+        .unit-content ul, .unit-content ol { margin: 0 0 14px; padding-left: 28px; }
+        .unit-content li { margin-bottom: 6px; }
+        .unit-content strong { font-weight: 600; }
+        .unit-content a { color: var(--ms-blue); text-decoration: none; }
+        .unit-content a:hover { text-decoration: underline; }
+        .unit-content code {
+            background: #f3f2f1;
+            border: 1px solid #e1dfdd;
+            border-radius: 3px;
+            padding: 1px 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #a31515;
+        }
+
+        /* Lab card */
+        .ms-lab-card {
+            background: linear-gradient(135deg, #eef6ff 0%, #f5f0ff 100%);
+            border: 1px solid #c7e0f4;
+            border-radius: 6px;
+            padding: 24px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: box-shadow .15s, border-color .15s;
+        }
+        .ms-lab-card:hover { box-shadow: 0 4px 16px rgba(0,120,212,.12); border-color: var(--ms-blue); }
+        .ms-lab-card h3 { margin: 0 0 12px; color: var(--ms-blue-dark); font-size: 16px; font-weight: 600; }
+        .ms-lab-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--ms-blue);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 12px;
+        }
+        .ms-lab-time {
+            font-size: 12px;
+            color: #605e5c;
+            margin-left: 8px;
+        }
+
+        /* Checklist */
+        .ms-checklist { list-style: none; padding: 0; margin: 12px 0; }
+        .ms-checklist li {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 6px 0; font-size: 14px;
+        }
+        .ms-checklist li .check-box {
+            width: 18px; height: 18px;
+            border: 2px solid #8a8886; border-radius: 2px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; margin-top: 1px; cursor: pointer; transition: all .15s;
+        }
+        .ms-checklist li .check-box.checked {
+            background: var(--ms-blue); border-color: var(--ms-blue); color: #fff;
+        }
+
+        /* Resource links */
+        .ms-resource-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; text-decoration: none; color: #201f1e;
+        }
+        .ms-resource-link:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .ms-resource-link i { font-size: 20px; color: var(--ms-blue); width: 24px; text-align: center; }
+
+        /* Unit nav */
+        .unit-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            border-top: 1px solid #e1dfdd;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .nav-btn-prev, .nav-btn-next {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 20px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; border: 1px solid;
+            font-family: inherit; transition: background .12s;
+        }
+        .nav-btn-next { background: var(--ms-blue); color: #fff; border-color: var(--ms-blue); }
+        .nav-btn-next:hover { background: var(--ms-blue-dark); border-color: var(--ms-blue-dark); }
+        .nav-btn-prev { background: #fff; color: var(--ms-blue); border-color: var(--ms-blue); }
+        .nav-btn-prev:hover { background: var(--ms-blue-light); }
+        .unit-page-indicator { font-size: 13px; color: #605e5c; }
+
+        /* Module index */
+        .module-meta-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        .ms-tag { background: #f3f2f1; color: #323130; font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: 500; }
+        .ms-tag.blue { background: #deecf9; color: var(--ms-blue-dark); }
+        .ms-tag.green { background: #dff6dd; color: #107c10; }
+        .unit-card-list { margin: 20px 0; }
+        .unit-card {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 0; border-bottom: 1px solid #f3f2f1; cursor: pointer;
+        }
+        .unit-card:last-child { border-bottom: none; }
+        .unit-card:hover .unit-card-name { color: var(--ms-blue); text-decoration: underline; }
+        .unit-card-num {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #f3f2f1; color: #605e5c;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .unit-card.lab .unit-card-num { background: #eef6ff; color: var(--ms-blue-dark); }
+        .unit-card-info { flex: 1; }
+        .unit-card-name { font-size: 15px; font-weight: 500; }
+        .unit-card-time { font-size: 12px; color: #605e5c; margin-top: 2px; }
+        .unit-card-arrow { color: #c8c6c4; font-size: 14px; }
+
+        .demo-btn.disabled {
+            pointer-events: none;
+            opacity: 0.4;
+        }
+    </style>
 </head>
+<body>
 
-<body class="bg-gray-50 font-[Inter] text-gray-800">
+    <!-- ─── TOP NAV ─── -->
+    <div class="ms-topnav">
+        <a class="brand" href="/">
+            <i class="fas fa-cubes"></i>
+            <span>Vibe Coding Learn</span>
+        </a>
+        <div class="divider"></div>
+        <div class="nav-label">UI 佈局：HTML 按鈕與 CSS 控制面板</div>
+    </div>
 
-    <!-- Hero Section -->
-    <header
-        class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white pt-24 pb-32 overflow-hidden">
-        <div class="header-overlay absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-90"></div>
-        <div class="container mx-auto px-4 relative z-10 pt-20 pb-20 text-center text-white">
-            <h1 class="text-4xl md:text-5xl font-bold mb-6 tracking-tight">
-                UI 佈局：HTML 按鈕與 CSS 控制面板
-            </h1>
-            <p class="text-xl text-blue-100 max-w-2xl mx-auto leading-relaxed mb-10">
-                掌握 HTML5 語義化佈局與 CSS 偽類狀態，打造如同原生 App 般順滑的網頁遙控器介面。
-            </p>
-
-            <div class="flex flex-wrap justify-center gap-4">
-                <button onclick="enterMediaMode('video', window.RESOURCES.video)"
-                    class="resource-btn bg-blue-500 hover:bg-blue-400 text-white px-6 py-3 rounded-full flex items-center gap-2 shadow-lg font-bold">
-                    <span>📺</span> 觀看教學影片
-                </button>
-                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
-                    class="resource-btn bg-white/10 hover:bg-white/20 border border-white/20 text-white px-6 py-3 rounded-full flex items-center gap-2 backdrop-blur-sm font-bold">
-                    <span>📄</span> 閱讀課程講義
-                </button>
+    <!-- ─── LAYOUT ─── -->
+    <div class="ms-layout">
+        <!-- Sidebar -->
+        <div class="ms-sidebar">
+            <div class="ms-sidebar-header">
+                <div class="module-label">Start 03</div>
+                <div class="module-title">UI 佈局：HTML 按鈕與 CSS 控制面板</div>
+                <div class="meta"><i class="far fa-clock"></i> 約 3.5 小時 · 5 個單元</div>
+            </div>
+            <div class="ms-unit-list" id="sidebar-nav">
+                <!-- JavaScript populated -->
+            </div>
+            <div class="sidebar-progress">
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text" id="progress-text">0 / 5 已完成</div>
             </div>
         </div>
-    </header>
 
-    <main class="container mx-auto max-w-6xl px-4 py-12">
-
-        <!-- Module 1: Intuitive Lab -->
-        <section class="content-block mb-24">
-            <div class="section-header-left border-l-4 border-blue-500 pl-6 mb-10">
-                <span class="text-blue-600 font-bold tracking-wider uppercase text-sm">Module 1: Intuitive Lab</span>
-                <h2 class="text-3xl font-bold text-gray-900 mt-2">感知實驗室：按鈕的物理回饋</h2>
+        <!-- Content -->
+        <div class="ms-content">
+            <!-- Breadcrumbs -->
+            <div class="ms-breadcrumb">
+                <a href="/">課程</a>
+                <span>&gt;</span>
+                <a href="#">Start 03</a>
+                <span>&gt;</span>
+                <span id="bc-current">課程總覽</span>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div class="bg-white rounded-2xl p-8 shadow-xl border border-gray-100">
-                    <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
-                        <span
-                            class="bg-blue-100 text-blue-600 w-10 h-10 rounded-full flex items-center justify-center text-lg">1</span>
-                        狀態設計 (State Design)
-                    </h3>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
-                        一個好的按鈕不只是好看，還必須「好按」。透過 CSS 的 <code
-                            class="bg-gray-100 px-2 py-1 rounded text-blue-600 font-mono">:active</code>
-                        偽類，我們可以模擬真實物理按鈕被按下去的感覺。
+            <!-- PAGE: Index (0) -->
+            <div class="ms-unit-page visible" id="page-index">
+                <div class="unit-content">
+                    <div class="module-meta-tags">
+                        <span class="ms-tag blue"><i class="fas fa-palette"></i> UI/UX 佈局</span>
+                        <span class="ms-tag green"><i class="fas fa-mobile-alt"></i> 行動適配</span>
+                    </div>
+                    <h1>UI 佈局：HTML 按鈕與 CSS 控制面板</h1>
+                    <p class="text-gray-600">
+                        在本單元中，我們將學習如何利用 HTML5 語義化標籤與 CSS 網格、彈性排版等，來構建一個在不同尺寸的設備（特別是手機觸控螢幕）上都能穩定呈現、並且具備優質交互回饋的無人機/無人車控制面板。
                     </p>
 
-                    <div class="space-y-4">
-                        <div class="flex gap-4 items-center p-4 bg-gray-50 rounded-lg">
-                            <div class="text-2xl">🖱️</div>
-                            <div>
-                                <h4 class="font-bold text-gray-900">:hover (懸停)</h4>
-                                <p class="text-sm text-gray-600 mt-1">暗示它是可點擊的 (游標變化、微亮)。</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4 items-center p-4 bg-blue-50 rounded-lg border border-blue-100">
-                            <div class="text-2xl">👇</div>
-                            <div>
-                                <h4 class="font-bold text-blue-900">:active (按下)</h4>
-                                <p class="text-sm text-blue-800 mt-1">關鍵時刻！使用 <code>transform: scale(0.95)</code> 創造下沉感。
-                                </p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4 items-center p-4 bg-gray-100 rounded-lg opacity-70">
-                            <div class="text-2xl">🚫</div>
-                            <div>
-                                <h4 class="font-bold text-gray-600">:disabled (禁用)</h4>
-                                <p class="text-sm text-gray-500 mt-1">斷連時防止誤觸，搭配 <code>pointer-events: none</code>。</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Interactive Demo -->
-                <div
-                    class="bg-gray-900 rounded-xl p-8 flex flex-col items-center justify-center shadow-2xl min-h-[400px]">
-                    <div class="mb-6 flex gap-4">
-                        <label class="flex items-center gap-2 text-white cursor-pointer container-checkbox">
-                            <input type="checkbox" id="disable-toggle"
-                                class="w-4 h-4 rounded text-blue-600 bg-gray-700 border-gray-600 focus:ring-blue-500 max-w-[20px]">
-                            <span class="text-sm font-mono text-gray-300">模擬斷線 (Disable)</span>
-                        </label>
+                    <h2>單元大綱</h2>
+                    <div class="unit-card-list" id="index-unit-list">
+                        <!-- JavaScript populated -->
                     </div>
 
-                    <!-- D-Pad Demo -->
-                    <div
-                        class="d-pad-container relative w-48 h-48 bg-gray-800 rounded-full border-4 border-gray-700 shadow-inner flex items-center justify-center">
-                        <!-- Up -->
-                        <button id="btn-up"
-                            class="demo-btn absolute top-2 w-12 h-12 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center text-white shadow-lg border-b-4 border-gray-900 active:border-b-0 active:translate-y-1 transition-all">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7">
-                                </path>
-                            </svg>
-                        </button>
-                        <!-- Left -->
-                        <button id="btn-left"
-                            class="demo-btn absolute left-2 w-12 h-12 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center text-white shadow-lg border-b-4 border-gray-900 active:border-b-0 active:translate-y-1 transition-all">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 19l-7-7 7-7"></path>
-                            </svg>
-                        </button>
-                        <!-- Center (Stop) -->
-                        <button id="btn-stop"
-                            class="demo-btn w-14 h-14 bg-red-600 hover:bg-red-500 rounded-full flex items-center justify-center text-white shadow-lg border-b-4 border-red-800 active:border-b-0 active:translate-y-1 transition-all z-10">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
-                        <!-- Right -->
-                        <button id="btn-right"
-                            class="demo-btn absolute right-2 w-12 h-12 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center text-white shadow-lg border-b-4 border-gray-900 active:border-b-0 active:translate-y-1 transition-all">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
-                                </path>
-                            </svg>
-                        </button>
-                        <!-- Down -->
-                        <button id="btn-down"
-                            class="demo-btn absolute bottom-2 w-12 h-12 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center text-white shadow-lg border-b-4 border-gray-900 active:border-b-0 active:translate-y-1 transition-all">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </button>
-                    </div>
-
-                    <p class="mt-8 text-gray-400 text-xs font-mono bg-gray-800 px-3 py-1 rounded">Try clicking the
-                        buttons!</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Module 2: Core Principles -->
-        <section class="content-block mb-24">
-            <div class="section-header-left border-l-4 border-indigo-500 pl-6 mb-10">
-                <span class="text-indigo-600 font-bold tracking-wider uppercase text-sm">Module 2: Core
-                    Principles</span>
-                <h2 class="text-3xl font-bold text-gray-900 mt-2">三大構建基石</h2>
-            </div>
-
-            <div class="grid lg:grid-cols-3 gap-8">
-                <!-- Principle 1 -->
-                <div
-                    class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-2xl mb-4">🏗️
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-3">1. 語義化佈局</h3>
-                    <p class="text-gray-600 mb-4 text-sm">HTML5 不只是為了顯示，更是為了「結構」。使用 <code>section</code> 區分功能區塊，用 ID (如
-                        <code>#btn-up</code>) 給每個按鈕唯一的身份證。
-                    </p>
-                    <div class="bg-gray-50 p-3 rounded-lg text-xs font-mono text-gray-600 border border-gray-200">
-                        &lt;div id="d-pad"&gt;<br>
-                        &nbsp;&nbsp;&lt;button id="btn-up"&gt;...&lt;/button&gt;<br>
-                        &lt;/div&gt;
-                    </div>
-                </div>
-
-                <!-- Principle 2 -->
-                <div
-                    class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center text-2xl mb-4">🎨
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-3">2. 偽類魔法</h3>
-                    <p class="text-gray-600 mb-4 text-sm">透過 CSS 偽類 (:pseudo-classes) 來處理互動狀態，無需寫 JavaScript
-                        就能實現基礎的按壓反饋和視覺提示。</p>
-                    <ul class="text-sm text-gray-500 space-y-2 bg-gray-50 p-4 rounded-lg">
-                        <li class="flex items-center gap-2"><span class="text-purple-500">✔</span> :hover (PC端提示)</li>
-                        <li class="flex items-center gap-2"><span class="text-purple-500">✔</span> :active (按壓特效)</li>
-                        <li class="flex items-center gap-2"><span class="text-purple-500">✔</span> :disabled (狀態鎖定)</li>
+                    <h2>預備知識</h2>
+                    <ul class="text-gray-600">
+                        <li>已理解 HTML5 基礎結構</li>
+                        <li>對 CSS 選擇器與基礎屬性有初步認識</li>
                     </ul>
                 </div>
-
-                <!-- Principle 3 -->
-                <div
-                    class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-                    <div class="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center text-2xl mb-4">🖼️
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-3">3. 向量圖示 (SVG)</h3>
-                    <p class="text-gray-600 mb-4 text-sm">為什麼不用圖片？SVG 是數學描述的向量圖，放大不失真，且可以透過 CSS (fill/stroke) 隨意改色，非常適合
-                        RWD 介面。</p>
-                    <div class="bg-pink-50 p-3 rounded-lg text-xs text-pink-800 border border-pink-200">
-                        <strong>優勢：</strong><br>檔案極小、載入快、樣式可控。
-                    </div>
+                <div class="unit-nav">
+                    <span></span>
+                    <button class="nav-btn-next" onclick="goToUnit(1)">下一單元 &nbsp;›</button>
                 </div>
             </div>
-        </section>
 
-        <!-- Module 3: Practical Challenge -->
-        <section class="content-block">
-            <div class="section-header-left border-l-4 border-teal-500 pl-6 mb-10">
-                <span class="text-teal-600 font-bold tracking-wider uppercase text-sm">Module 3: Classroom
-                    Challenges</span>
-                <h2 class="text-3xl font-bold text-gray-900 mt-2">教室實戰：打造專業控制板</h2>
+            <!-- PAGE: 簡介 (1) -->
+            <div class="ms-unit-page" id="page-1">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-1" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 5 分鐘</div>
+                    </div>
+                    <h1>課程簡介</h1>
+                    <p class="text-gray-600">
+                        掌握 HTML5 語義化佈局與 CSS 偽類狀態，打造如同原生 App 般順滑的網頁遙控器介面。請先觀看以下影片或講義來理解本單元的學習重點。
+                    </p>
+
+                    <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; margin: 24px 0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        <iframe src="https://www.youtube.com/embed/npkVulZAkI8" style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;" allowfullscreen></iframe>
+                    </div>
+
+                    <p class="text-gray-600">
+                        在觀看影片後，請繼續往下點擊「感知實驗室」來體驗按鈕的物理回饋。
+                    </p>
+                </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一單元 &nbsp;›</button>
+                </div>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- Task 1-1 -->
-                <div onclick="openSubmissionModal('control-panel-task-1', '作業 1-1: Grid 佈局挑戰')"
-                    class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden group cursor-pointer relative">
-                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-2"></div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="font-bold text-xl text-gray-800 group-hover:text-blue-600 transition">作業 1-1</h3>
-                            <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold">60 min</span>
-                        </div>
-                        <h4 class="font-bold text-gray-700 mb-2">Grid 佈局挑戰</h4>
-                        <p class="text-sm text-gray-500 mb-4">目標：利用 CSS Grid 實作經典 3x3 控制網格，確保手機旋轉時十字鍵不變形。</p>
-
-                        <div class="mt-4 pt-4 border-t border-gray-100">
-                            <h5 class="text-xs font-bold text-gray-400 uppercase mb-2">Key Property</h5>
-                            <code
-                                class="block bg-gray-50 text-gray-700 p-2 rounded text-xs font-mono border border-gray-200">
-                                grid-template-areas:<br>
-                                ". up ."<br>
-                                "left stop right"<br>
-                                ". down ."
-                            </code>
-                        </div>
+            <!-- PAGE: 感知實驗室 (2) -->
+            <div class="ms-unit-page" id="page-2">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-2" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 15 分鐘</div>
                     </div>
-                    <!-- Click Hint Overlay -->
-                    <div
-                        class="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span
-                            class="bg-white text-blue-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                            📤 點擊繳交作業
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Task 1-2 -->
-                <div onclick="openSubmissionModal('control-panel-task-2', '作業 1-2: 觸控區域優化')"
-                    class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden group cursor-pointer relative">
-                    <div class="bg-gradient-to-r from-teal-500 to-teal-600 h-2"></div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="font-bold text-xl text-gray-800 group-hover:text-teal-600 transition">作業 1-2</h3>
-                            <span class="bg-teal-100 text-teal-700 text-xs px-2 py-1 rounded font-bold">45 min</span>
-                        </div>
-                        <h4 class="font-bold text-gray-700 mb-2">觸控區域優化</h4>
-                        <p class="text-sm text-gray-500 mb-4">目標：應用 Fitts's Law，調整按鈕的點擊熱區 (Touch Target)，確保至少 44x44px。
-                        </p>
-
-                        <div class="mt-4 pt-4 border-t border-gray-100">
-                            <h5 class="text-xs font-bold text-gray-400 uppercase mb-2">Challenge</h5>
-                            <p class="text-sm text-gray-600">
-                                使用 padding 擴大感應區，但不改變視覺上的按鈕大小。
-                            </p>
-                        </div>
-                    </div>
-                    <!-- Click Hint Overlay -->
-                    <div
-                        class="absolute inset-0 bg-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span
-                            class="bg-white text-teal-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                            📤 點擊繳交作業
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Task 1-3 -->
-                <div onclick="openSubmissionModal('control-panel-task-3', '作業 1-3: 多層級 UI 疊加')"
-                    class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden group cursor-pointer relative">
-                    <div class="bg-gradient-to-r from-purple-500 to-purple-600 h-2"></div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="font-bold text-xl text-gray-800 group-hover:text-purple-600 transition">作業 1-3
+                    <h1>感知實驗室：按鈕的物理回饋</h1>
+                    
+                    <div class="grid md:grid-cols-2 gap-8 items-start my-6">
+                        <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                            <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                                <span class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span>
+                                狀態設計 (State Design)
                             </h3>
-                            <span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold">60
-                                min</span>
-                        </div>
-                        <h4 class="font-bold text-gray-700 mb-2">多層級 UI 疊加</h4>
-                        <p class="text-sm text-gray-500 mb-4">目標：打造沈浸式 FPV 介面。將半透明控制層透過 <code>z-index</code> 疊加在視訊畫面上。
-                        </p>
+                            <p class="text-gray-600 mb-6 text-sm">
+                                一個好的按鈕不只是好看，還必須「好按」。透過 CSS 的 <code>:active</code> 偽類，我們可以模擬真實物理按鈕被按下去的感覺。
+                            </p>
 
-                        <div class="mt-4 pt-4 border-t border-gray-100">
-                            <h5 class="text-xs font-bold text-gray-400 uppercase mb-2">Visual</h5>
-                            <p class="text-sm text-gray-600">
-                                按下按鈕時產生光暈效果，強化指令送出的視覺回饋。
+                            <div class="space-y-4">
+                                <div class="flex gap-4 items-center p-3 bg-gray-50 rounded-lg">
+                                    <div class="text-xl">🖱️</div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900 text-sm">:hover (懸停)</h4>
+                                        <p class="text-xs text-gray-600 mt-0.5">暗示它是可點擊的 (游標變化、微亮)。</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-4 items-center p-3 bg-blue-50 rounded-lg border border-blue-100">
+                                    <div class="text-xl">👇</div>
+                                    <div>
+                                        <h4 class="font-bold text-blue-900 text-sm">:active (按下)</h4>
+                                        <p class="text-xs text-blue-800 mt-0.5">關鍵時刻！使用 <code>transform: scale(0.95)</code> 創造下沉感。</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-4 items-center p-3 bg-gray-100 rounded-lg opacity-70">
+                                    <div class="text-xl">🚫</div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-600 text-sm">:disabled (禁用)</h4>
+                                        <p class="text-xs text-gray-500 mt-0.5">斷連時防止誤觸，搭配 <code>pointer-events: none</code>。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- D-Pad Demo -->
+                        <div class="bg-gray-900 rounded-xl p-8 flex flex-col items-center justify-center shadow-xl min-h-[350px]">
+                            <div class="mb-6 flex gap-4">
+                                <label class="flex items-center gap-2 text-white cursor-pointer">
+                                    <input type="checkbox" id="disable-toggle" class="w-4 h-4 rounded text-blue-600 bg-gray-700 border-gray-600 focus:ring-blue-500 max-w-[20px]">
+                                    <span class="text-sm font-mono text-gray-300">模擬斷線 (Disable)</span>
+                                </label>
+                            </div>
+
+                            <div class="d-pad-container relative w-48 h-48 bg-gray-800 rounded-full border-4 border-gray-700 shadow-inner flex items-center justify-center">
+                                <!-- Up -->
+                                <button id="btn-up" class="demo-btn absolute top-2 w-12 h-12 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center text-white shadow-lg border-b-4 border-gray-900 active:border-b-0 active:translate-y-1 transition-all">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                                    </svg>
+                                </button>
+                                <!-- Left -->
+                                <button id="btn-left" class="demo-btn absolute left-2 w-12 h-12 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center text-white shadow-lg border-b-4 border-gray-900 active:border-b-0 active:translate-y-1 transition-all">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                    </svg>
+                                </button>
+                                <!-- Center (Stop) -->
+                                <button id="btn-stop" class="demo-btn w-14 h-14 bg-red-600 hover:bg-red-500 rounded-full flex items-center justify-center text-white shadow-lg border-b-4 border-red-800 active:border-b-0 active:translate-y-1 transition-all z-10">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                                <!-- Right -->
+                                <button id="btn-right" class="demo-btn absolute right-2 w-12 h-12 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center text-white shadow-lg border-b-4 border-gray-900 active:border-b-0 active:translate-y-1 transition-all">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </button>
+                                <!-- Down -->
+                                <button id="btn-down" class="demo-btn absolute bottom-2 w-12 h-12 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center text-white shadow-lg border-b-4 border-gray-900 active:border-b-0 active:translate-y-1 transition-all">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <p class="mt-4 text-gray-400 text-xs font-mono bg-gray-800 px-3 py-1 rounded">試點擊上方方向鍵體驗！</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一單元 &nbsp;›</button>
+                </div>
+            </div>
+
+            <!-- PAGE: 三大構建基石 (3) -->
+            <div class="ms-unit-page" id="page-3">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-3" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 15 分鐘</div>
+                    </div>
+                    <h1>三大構建基石</h1>
+                    <p class="text-gray-600">
+                        在設計遙控面板時，請務必遵循以下三大基石：
+                    </p>
+
+                    <div class="grid lg:grid-cols-3 gap-6 my-6">
+                        <div class="bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-xl mb-4">🏗️</div>
+                            <h3 class="text-lg font-bold text-gray-800 mb-2">1. 語義化佈局</h3>
+                            <p class="text-gray-600 text-sm mb-4">
+                                HTML5 不只是為了顯示，更是為了「結構」。使用 <code>section</code> 區分功能區塊，用 ID (如 <code>#btn-up</code>) 給每個按鈕唯一的身份。
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
+                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-xl mb-4">🎨</div>
+                            <h3 class="text-lg font-bold text-gray-800 mb-2">2. 偽類魔法</h3>
+                            <p class="text-gray-600 text-sm mb-4">
+                                透過 CSS 偽類 (:pseudo-classes) 來處理互動狀態，無需寫 JavaScript 就能實現基礎的按壓反饋和視覺提示。
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
+                            <div class="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center text-xl mb-4">🖼️</div>
+                            <h3 class="text-lg font-bold text-gray-800 mb-2">3. 向量圖示 (SVG)</h3>
+                            <p class="text-gray-600 text-sm mb-4">
+                                SVG 是數學描述的向量圖，放大不失真，且可以透過 CSS 隨意改色，非常適合響應式操控介面。
                             </p>
                         </div>
                     </div>
-                    <!-- Click Hint Overlay -->
-                    <div
-                        class="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span
-                            class="bg-white text-purple-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                            📤 點擊繳交作業
-                        </span>
-                    </div>
+                </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一單元 &nbsp;›</button>
                 </div>
             </div>
-        </section>
 
-    </main>
+            <!-- PAGE: 教室實戰 (4) -->
+            <div class="ms-unit-page" id="page-4">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-4" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 165 分鐘</div>
+                    </div>
+                    <h1>教室實戰：打造專業控制板</h1>
+                    <p class="text-gray-600">請完成以下實作挑戰。點擊卡片可繳交作業：</p>
 
-    <footer class="bg-gray-900 text-white py-12 border-t border-gray-800">
-        <div class="container mx-auto px-4 text-center">
-            <p class="text-gray-500">© 2024 Vibe Coding. All rights reserved.</p>
+                    <!-- Task 1-1 -->
+                    <div class="ms-lab-card" onclick="openSubmissionModal('control-panel-task-1', '作業 1-1: Grid 佈局挑戰')">
+                        <div class="ms-lab-badge"><i class="fas fa-project-diagram"></i> 作業 1-1</div>
+                        <span class="ms-lab-time"><i class="far fa-clock"></i> 約 60 分鐘</span>
+                        <h3>Grid 佈局挑戰</h3>
+                        <p class="text-sm text-gray-600 mb-4">
+                            目標：利用 CSS Grid 實作經典 3x3 控制網格，確保手機旋轉時十字鍵不變形。
+                        </p>
+                        <ul class="ms-checklist">
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>使用 <code>grid-template-areas</code> 為按鈕命名（如：<code>up</code>, <code>left</code>...）</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>確保在手機橫向與直向模式下，十字鍵的相對位置保持一致</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>避免使用大量的 <code>margin</code> 來微調位置，應依賴 Grid 系統</span></li>
+                        </ul>
+                    </div>
+
+                    <!-- Task 1-2 -->
+                    <div class="ms-lab-card" onclick="openSubmissionModal('control-panel-task-2', '作業 1-2: 觸控區域優化')">
+                        <div class="ms-lab-badge"><i class="fas fa-hand-pointer"></i> 作業 1-2</div>
+                        <span class="ms-lab-time"><i class="far fa-clock"></i> 約 45 分鐘</span>
+                        <h3>觸控區域優化</h3>
+                        <p class="text-sm text-gray-600 mb-4">
+                            目標：應用 Fitts's Law，調整按鈕的點擊熱區 (Touch Target)，確保至少 44x44px。
+                        </p>
+                        <ul class="ms-checklist">
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>確保每個按鈕的可點擊面積不小於 44x44px</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>利用 <code>transform: scale()</code> 與陰影變化實作 <code>:active</code> 狀態，模擬物理下沉感</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>設計一個明顯的 <code>:disabled</code> 樣式</span></li>
+                        </ul>
+                    </div>
+
+                    <!-- Task 1-3 -->
+                    <div class="ms-lab-card" onclick="openSubmissionModal('control-panel-task-3', '作業 1-3: 多層級 UI 疊加')">
+                        <div class="ms-lab-badge"><i class="fas fa-layer-group"></i> 作業 1-3</div>
+                        <span class="ms-lab-time"><i class="far fa-clock"></i> 約 60 分鐘</span>
+                        <h3>多層級 UI 疊加</h3>
+                        <p class="text-sm text-gray-600 mb-4">
+                            目標：打造沈浸式 FPV 介面。將半透明控制層透過 <code>z-index</code> 疊加在視訊畫面上。
+                        </p>
+                        <ul class="ms-checklist">
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>確保控制層浮於影像背景之上 (利用 <code>z-index</code>)</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>實作半透明背景 (Glassmorphism)，確保介面清晰且不遮擋視野</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>使用 SVG 圖示，並確保其顏色能隨狀態變化</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一單元 &nbsp;›</button>
+                </div>
+            </div>
+
+            <!-- PAGE: 摘要與資源 (5) -->
+            <div class="ms-unit-page" id="page-5">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-5" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 5 分鐘</div>
+                    </div>
+                    <h1>摘要與學習資源</h1>
+                    <p class="text-gray-600">
+                        恭喜你完成了「UI 佈局：HTML 按鈕與 CSS 控制面板」的學習！以下是本單元的重點摘要與參考資源：
+                    </p>
+
+                    <h3>學習摘要</h3>
+                    <ul class="text-gray-600">
+                        <li>使用 HTML5 語義化標籤讓介面具備可讀性與無障礙支援。</li>
+                        <li>利用 CSS Grid 能夠輕鬆實作十字鍵與其他方向面板的精確對齊。</li>
+                        <li>大於 44x44px 的觸碰區域能夠大幅減輕手指操作時的失誤與認知負擔。</li>
+                    </ul>
+
+                    <h3>參考連結</h3>
+                    <div class="my-4">
+                        <a href="https://docs.google.com/document/d/e/2PACX-1vQPo7mHN5wddfoXi1hNsYO4amKmJ1ci-10qdh5xEQraOeCttQPiMnTz3dqWSSMZ8WrHNh7uKv8XwPry/pub?embedded=true" target="_blank" class="ms-resource-link">
+                            <i class="fas fa-file-alt"></i>
+                            <div>
+                                <div style="font-weight:600;">課程講義</div>
+                                <div style="font-size:12px; color:#605e5c; margin-top:2px;">閱讀本單元的詳細文字教材與補充說明</div>
+                            </div>
+                            <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                        </a>
+
+                        <a href="https://classroom.github.com" target="_blank" class="ms-resource-link">
+                            <i class="fab fa-github"></i>
+                            <div>
+                                <div style="font-weight:600;">GitHub Classroom</div>
+                                <div style="font-size:12px; color:#605e5c; margin-top:2px;">classroom.github.com — 繳交你的專案作業</div>
+                            </div>
+                            <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                    <span class="unit-page-indicator font-bold text-green-600">✓ 模組已完成</span>
+                    <button class="ms-btn" onclick="markDone(5); alert('🎉 恭喜完成「UI 佈局：HTML 按鈕與 CSS 控制面板」單元！')">完成模組</button>
+                </div>
+            </div>
         </div>
-    </footer>
+    </div>
 
-    <!-- Media Overlay injected by course-shared.js?v=2026.04.05.FINAL_V6 -->
-
+    <!-- Scripts -->
     <script>
+        /* ─── DATA ─── */
+        const UNITS = [
+            { id: 0, label: '課程總覽',       time: '',         type: 'index' },
+            { id: 1, label: '簡介',            time: '5 分鐘',  type: 'unit'  },
+            { id: 2, label: '感知實驗室',     time: '15 分鐘',  type: 'unit'  },
+            { id: 3, label: '三大構建基石',   time: '15 分鐘',  type: 'unit'  },
+            { id: 4, label: '教室實戰',       time: '165 分鐘', type: 'lab'   },
+            { id: 5, label: '摘要與資源',     time: '5 分鐘',  type: 'unit'  },
+        ];
+
+        let currentUnit = 0;
+        let doneSet = new Set();
+
+        /* ─── INIT ─── */
+        function init() {
+            buildSidebar();
+            buildIndexUnitList();
+            goToUnit(0);
+        }
+
+        function buildSidebar() {
+            const nav = document.getElementById('sidebar-nav');
+            nav.innerHTML = UNITS.map(u => {
+                const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>' : '';
+                return `
+                <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
+                    <div class="unit-icon" id="icon-${u.id}">${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div>
+                    <div class="unit-meta">
+                        <div class="unit-name">${u.label}${badge}</div>
+                        ${u.time ? `<div class="unit-time"><i class="far fa-clock"></i> ${u.time}</div>` : ''}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function buildIndexUnitList() {
+            const el = document.getElementById('index-unit-list');
+            el.innerHTML = UNITS.filter(u => u.id > 0).map(u => `
+                <div class="unit-card ${u.type}" onclick="goToUnit(${u.id})">
+                    <div class="unit-card-num">${u.id}</div>
+                    <div class="unit-card-info">
+                        <div class="unit-card-name">${u.label}</div>
+                        <div class="unit-card-time"><i class="far fa-clock"></i> ${u.time}</div>
+                    </div>
+                    <div class="unit-card-arrow">›</div>
+                </div>
+            `).join('');
+        }
+
+        /* ─── NAVIGATION ─── */
+        function goToUnit(id) {
+            document.querySelectorAll('.ms-unit-page').forEach(p => p.classList.remove('visible'));
+            const target = id === 0 ? document.getElementById('page-index') : document.getElementById(`page-${id}`);
+            if (target) target.classList.add('visible');
+
+            document.querySelectorAll('.ms-unit-item').forEach(el => el.classList.remove('active'));
+            const navItem = document.getElementById(`nav-${id}`);
+            if (navItem) { navItem.classList.add('active'); navItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+
+            UNITS.forEach(u => {
+                const icon = document.getElementById(`icon-${u.id}`);
+                if (!icon) return;
+                if (doneSet.has(u.id)) {
+                    icon.className = 'unit-icon done';
+                    icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>';
+                } else if (u.id === id) {
+                    icon.className = 'unit-icon active-icon';
+                    icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+                } else {
+                    icon.className = 'unit-icon';
+                    icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+                }
+            });
+
+            const unit = UNITS.find(u => u.id === id);
+            document.getElementById('bc-current').textContent = unit ? unit.label : '';
+            currentUnit = id;
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function markDone(id) {
+            doneSet.add(id);
+            const badge = document.getElementById(`badge-${id}`);
+            if (badge) badge.style.display = 'flex';
+            UNITS.forEach(u => {
+                const icon = document.getElementById(`icon-${u.id}`);
+                if (!icon) return;
+                if (doneSet.has(u.id)) { icon.className = 'unit-icon done'; icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>'; }
+            });
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const total = UNITS.length - 1;
+            const done = doneSet.size;
+            document.getElementById('progress-fill').style.width = Math.round(done / total * 100) + '%';
+            document.getElementById('progress-text').textContent = `${done} / ${total} 已完成`;
+        }
+
+        /* ─── CHECKLIST ─── */
+        function toggleCheck(el) {
+            el.classList.toggle('checked');
+            el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
+        }
+
+        /* ─── START ─── */
+        init();
+
         // --- Interactive Demo Logic ---
         const disableToggle = document.getElementById('disable-toggle');
         const demoBtns = document.querySelectorAll('.demo-btn');
@@ -335,18 +794,16 @@
                 }
             });
         });
+    </script>
 
-        // --- Standard Media Overlay Logic ---
-        // Injected by course-shared.js?v=2026.04.05.FINAL_V6
-
+    <!-- Define Resources -->
+    <script>
         window.RESOURCES = {
             video: "https://www.youtube.com/embed/npkVulZAkI8",
             doc: "https://docs.google.com/document/d/e/2PACX-1vQPo7mHN5wddfoXi1hNsYO4amKmJ1ci-10qdh5xEQraOeCttQPiMnTz3dqWSSMZ8WrHNh7uKv8XwPry/pub?embedded=true"
         };
     </script>
     <script src="/js/course-shared.js?v=2026.05.22.V27.START_UNITS_LAYOUT_UPGRADE"></script>
-    <script>
-    </script>
 
     <!-- Assignment Guide (Hidden) -->
     <section id="assignment-guide" style="display: none;">
@@ -539,5 +996,4 @@
 
     </section>
 </body>
-
 </html>

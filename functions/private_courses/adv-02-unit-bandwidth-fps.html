@@ -243,26 +243,45 @@
 
     <!-- Assignment Guide (Hidden) -->
     <section id="assignment-guide" style="display: none;">
-        <div class="markdown-heading"><h1 class="heading-element">網路頻寬與幀率：作業指引</h1></div>
-        <p>本單元目標是建立「頻寬、畫質、流暢度」三者間的工程判斷能力。請依序完成以下任務，並提交到 GitHub Classroom repository。</p>
-        <div class="markdown-heading"><h2 class="heading-element">任務 1：頻寬標定與基線量測</h2></div>
-        <ul>
-            <li>量測不同解析度/品質設定下的 FPS 與流量變化。</li>
-            <li>整理為可比較的表格，標出可接受與不可接受區間。</li>
-            <li>提交內容：量測資料與結論摘要。</li>
-        </ul>
-        <div class="markdown-heading"><h2 class="heading-element">任務 2：弱網場景流暢度優化</h2></div>
-        <ul>
-            <li>模擬網路抖動與封包壅塞，觀察畫面延遲與掉幀。</li>
-            <li>提出至少一個優化策略，並比較優化前後差異。</li>
-            <li>提交內容：測試過程說明與優化效果對照。</li>
-        </ul>
-        <div class="markdown-heading"><h2 class="heading-element">任務 3：ABR 動態頻寬適應邏輯</h2></div>
-        <ul>
-            <li>實作「當 FPS 持續下降時自動降級解析度/品質」的邏輯。</li>
-            <li>避免過度震盪，確保切換規則穩定且可預期。</li>
-            <li>提交內容：ABR 規則、關鍵程式碼與測試結果。</li>
-        </ul>
+<div class="markdown-heading"><h1 class="heading-element">adv-02-unit-bandwidth-fps (網路頻寬與幀率的數學關係)</h1><a id="user-content-adv-02-unit-bandwidth-fps-網路頻寬與幀率的數學關係" class="anchor" aria-label="Permalink: adv-02-unit-bandwidth-fps (網路頻寬與幀率的數學關係)" href="#adv-02-unit-bandwidth-fps-網路頻寬與幀率的數學關係"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p>本單元旨在探討物聯網影像系統中的「資源取捨 (Trade-off)」。你將學習如何平衡解析度、影像品質與流暢度（FPS），並實作動態擁塞控制算法。</p>
+<div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2><a id="user-content--學習目標" class="anchor" aria-label="Permalink: 🎯 學習目標" href="#-學習目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<ol>
+<li>掌握解析度與頻寬消耗的量化關係。</li>
+<li>識別系統效能瓶頸（網路、硬體或算力）。</li>
+<li>實作 ABR (Adaptive Bitrate) 算法以應對網路波動。</li>
+</ol>
+<div class="markdown-heading"><h2 class="heading-element">📂 程式庫結構</h2><a id="user-content--程式庫結構" class="anchor" aria-label="Permalink: 📂 程式庫結構" href="#-程式庫結構"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<ul>
+<li>
+<code>src/main.cpp</code>: 主程式，包含效能監測邏輯。</li>
+<li>
+<code>src/abr_logic.cpp</code>: <strong>[任務點]</strong> 在此實作 ABR 降級邏輯。</li>
+<li>
+<code>analysis/throughput.csv</code>: <strong>[任務點]</strong> 紀錄實驗數據。</li>
+<li>
+<code>docs/bottleneck_report.md</code>: <strong>[任務點]</strong> 填寫系統瓶頸分析報告。</li>
+</ul>
+<div class="markdown-heading"><h2 class="heading-element">🚀 作業任務</h2><a id="user-content--作業任務" class="anchor" aria-label="Permalink: 🚀 作業任務" href="#-作業任務"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 1：頻寬消耗標定 (Bandwidth Profiling)</h3><a id="user-content-任務-1頻寬消耗標定-bandwidth-profiling" class="anchor" aria-label="Permalink: 任務 1：頻寬消耗標定 (Bandwidth Profiling)" href="#任務-1頻寬消耗標定-bandwidth-profiling"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p>透過實驗測量不同解析度下的頻寬佔用，並將數據填入 <code>analysis/throughput.csv</code>。</p>
+<div class="markdown-heading"><h3 class="heading-element">任務 2：動態擁塞控制 (ABR Logic)</h3><a id="user-content-任務-2動態擁塞控制-abr-logic" class="anchor" aria-label="Permalink: 任務 2：動態擁塞控制 (ABR Logic)" href="#任務-2動態擁塞控制-abr-logic"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p>在 <code>src/abr_logic.cpp</code> 中實作當 FPS 過低時自動降低解析度的邏輯。</p>
+<div class="markdown-heading"><h3 class="heading-element">任務 3：瓶頸分析 (Report)</h3><a id="user-content-任務-3瓶頸分析-report" class="anchor" aria-label="Permalink: 任務 3：瓶頸分析 (Report)" href="#任務-3瓶頸分析-report"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p>分析實驗結果，並在 <code>docs/bottleneck_report.md</code> 中勾選並解釋系統瓶頸。</p>
+<div class="markdown-heading"><h2 class="heading-element">📝 自我檢測</h2><a id="user-content--自我檢測" class="anchor" aria-label="Permalink: 📝 自我檢測" href="#-自我檢測"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p>本程式庫內建自動化評分工具。提交前請執行以下指令：</p>
+<ol>
+<li>安裝必要套件：
+<div class="highlight highlight-source-shell"><pre>pip install pandas</pre></div>
+</li>
+<li>執行評分腳本：
+<div class="highlight highlight-source-shell"><pre>python tools/grader.py</pre></div>
+</li>
+</ol>
+<hr>
+<p>祝開發順利！</p>
+
     </section>
 
     <!-- Footer -->

@@ -1,80 +1,435 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
     <title>觸控與滑鼠事件監聽：無人車的雙重操控術 - Vibe Coding</title>
-    <link rel="stylesheet" href="/style.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <style>
+        :root {
+            --ms-blue: #0078d4;
+            --ms-blue-dark: #005a9e;
+            --ms-blue-light: #deecf9;
+            --ms-gray-10: #f3f2f1;
+            --ms-gray-20: #e1dfdd;
+            --ms-gray-90: #201f1e;
+            --ms-green: #107c10;
+            --ms-red: #d13438;
+            --sidebar-w: 280px;
+        }
 
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fff;
+            color: #201f1e;
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* ─── TOP NAV ─── */
+        .ms-topnav {
+            background: var(--ms-blue);
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 4px rgba(0,0,0,.2);
+        }
+        .ms-topnav .brand {
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
+
+        /* ─── LAYOUT ─── */
+        .ms-layout { display: flex; min-height: calc(100vh - 48px); }
+
+        /* ─── SIDEBAR ─── */
+        .ms-sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            background: #faf9f8;
+            border-right: 1px solid #e1dfdd;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 48px;
+            height: calc(100vh - 48px);
+            overflow-y: auto;
+        }
+        .ms-sidebar-header {
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .ms-sidebar-header .module-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #605e5c;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .ms-sidebar-header .module-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #201f1e;
+            line-height: 1.4;
+        }
+        .ms-sidebar-header .meta {
+            font-size: 12px;
+            color: #605e5c;
+            margin-top: 6px;
+        }
+        .ms-unit-list { padding: 8px 0; }
+        .ms-unit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: background .12s, border-color .12s;
+            color: #201f1e;
+        }
+        .ms-unit-item:hover { background: #edebe9; }
+        .ms-unit-item.active {
+            border-left-color: var(--ms-blue);
+            background: #deecf9;
+        }
+        .ms-unit-item.active .unit-name { color: var(--ms-blue); font-weight: 600; }
+        .unit-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #c8c6c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            font-size: 10px;
+            background: #fff;
+        }
+        .unit-icon.done { background: var(--ms-green); border-color: var(--ms-green); color: #fff; }
+        .unit-icon.active-icon { border-color: var(--ms-blue); background: var(--ms-blue); color: #fff; }
+        .unit-meta { flex: 1; min-width: 0; }
+        .unit-name { font-size: 13px; line-height: 1.4; }
+        .unit-time { font-size: 11px; color: #605e5c; margin-top: 2px; }
+        .sidebar-progress {
+            padding: 12px 16px;
+            border-top: 1px solid #e1dfdd;
+            margin-top: auto;
+        }
+        .progress-bar-bg { background: #e1dfdd; border-radius: 4px; height: 6px; }
+        .progress-bar-fill { background: var(--ms-green); border-radius: 4px; height: 6px; transition: width .4s; }
+        .progress-text { font-size: 12px; color: #605e5c; margin-top: 6px; }
+
+        /* ─── MAIN ─── */
+        .ms-content { flex: 1; min-width: 0; }
+
+        .ms-breadcrumb {
+            padding: 10px 40px;
+            font-size: 12px;
+            color: #605e5c;
+            border-bottom: 1px solid #e1dfdd;
+            background: #fff;
+        }
+        .ms-breadcrumb a { color: var(--ms-blue); text-decoration: none; }
+        .ms-breadcrumb a:hover { text-decoration: underline; }
+        .ms-breadcrumb span { margin: 0 6px; }
+
+        /* ─── PAGES ─── */
+        .ms-unit-page { display: none; }
+        .ms-unit-page.visible { display: block; }
+
+        .unit-content {
+            max-width: 820px;
+            padding: 32px 40px 60px;
+            margin: 0 auto;
+        }
+
+        .unit-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .unit-completed-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #dff6dd;
+            color: #107c10;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 2px;
+        }
+        .unit-time-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #605e5c;
+            font-size: 13px;
+        }
+
+        /* Typography */
+        .unit-content h1 { font-size: 28px; font-weight: 700; margin: 0 0 20px; color: #201f1e; line-height: 1.3; }
+        .unit-content h2 { font-size: 20px; font-weight: 600; margin: 36px 0 12px; color: #201f1e; padding-top: 8px; }
+        .unit-content h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; color: #201f1e; }
+        .unit-content p { margin: 0 0 14px; }
+        .unit-content ul, .unit-content ol { margin: 0 0 14px; padding-left: 28px; }
+        .unit-content li { margin-bottom: 6px; }
+        .unit-content strong { font-weight: 600; }
+        .unit-content a { color: var(--ms-blue); text-decoration: none; }
+        .unit-content a:hover { text-decoration: underline; }
+        .unit-content code {
+            background: #f3f2f1;
+            border: 1px solid #e1dfdd;
+            border-radius: 3px;
+            padding: 1px 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #a31515;
+        }
+
+        /* Lab card */
+        .ms-lab-card {
+            background: linear-gradient(135deg, #eef6ff 0%, #f5f0ff 100%);
+            border: 1px solid #c7e0f4;
+            border-radius: 6px;
+            padding: 24px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: box-shadow .15s, border-color .15s;
+        }
+        .ms-lab-card:hover { box-shadow: 0 4px 16px rgba(0,120,212,.12); border-color: var(--ms-blue); }
+        .ms-lab-card h3 { margin: 0 0 12px; color: var(--ms-blue-dark); font-size: 16px; font-weight: 600; }
+        .ms-lab-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--ms-blue);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 12px;
+        }
+        .ms-lab-time {
+            font-size: 12px;
+            color: #605e5c;
+            margin-left: 8px;
+        }
+
+        /* Checklist */
+        .ms-checklist { list-style: none; padding: 0; margin: 12px 0; }
+        .ms-checklist li {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 6px 0; font-size: 14px;
+        }
+        .ms-checklist li .check-box {
+            width: 18px; height: 18px;
+            border: 2px solid #8a8886; border-radius: 2px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; margin-top: 1px; cursor: pointer; transition: all .15s;
+        }
+        .ms-checklist li .check-box.checked {
+            background: var(--ms-blue); border-color: var(--ms-blue); color: #fff;
+        }
+
+        /* Resource links */
+        .ms-resource-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; text-decoration: none; color: #201f1e;
+        }
+        .ms-resource-link:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .ms-resource-link i { font-size: 20px; color: var(--ms-blue); width: 24px; text-align: center; }
+
+        /* Unit nav */
+        .unit-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            border-top: 1px solid #e1dfdd;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .nav-btn-prev, .nav-btn-next {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 20px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; border: 1px solid;
+            font-family: inherit; transition: background .12s;
+        }
+        .nav-btn-next { background: var(--ms-blue); color: #fff; border-color: var(--ms-blue); }
+        .nav-btn-next:hover { background: var(--ms-blue-dark); border-color: var(--ms-blue-dark); }
+        .nav-btn-prev { background: #fff; color: var(--ms-blue); border-color: var(--ms-blue); }
+        .nav-btn-prev:hover { background: var(--ms-blue-light); }
+        .unit-page-indicator { font-size: 13px; color: #605e5c; }
+
+        /* Module index */
+        .module-meta-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        .ms-tag { background: #f3f2f1; color: #323130; font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: 500; }
+        .ms-tag.blue { background: #deecf9; color: var(--ms-blue-dark); }
+        .ms-tag.green { background: #dff6dd; color: #107c10; }
+        .unit-card-list { margin: 20px 0; }
+        .unit-card {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 0; border-bottom: 1px solid #f3f2f1; cursor: pointer;
+        }
+        .unit-card:last-child { border-bottom: none; }
+        .unit-card:hover .unit-card-name { color: var(--ms-blue); text-decoration: underline; }
+        .unit-card-num {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #f3f2f1; color: #605e5c;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .unit-card.lab .unit-card-num { background: #eef6ff; color: var(--ms-blue-dark); }
+        .unit-card-info { flex: 1; }
+        .unit-card-name { font-size: 15px; font-weight: 500; }
+        .unit-card-time { font-size: 12px; color: #605e5c; margin-top: 2px; }
+        .unit-card-arrow { color: #c8c6c4; font-size: 14px; }
+    </style>
 </head>
+<body>
 
-<body class="bg-indigo-50 font-[Inter] text-gray-800 overscroll-none">
+    <!-- ─── TOP NAV ─── -->
+    <div class="ms-topnav">
+        <a class="brand" href="/">
+            <i class="fas fa-cubes"></i>
+            <span>Vibe Coding Learn</span>
+        </a>
+        <div class="divider"></div>
+        <div class="nav-label">觸控與滑鼠事件監聽：無人車的雙重操控術</div>
+    </div>
 
-    <!-- Hero Section -->
-    <header
-        class="relative bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 text-white pt-24 pb-44 overflow-hidden">
-        <div
-            class="header-overlay absolute inset-0 bg-gradient-to-r from-indigo-900/90 to-purple-800/90 mix-blend-multiply">
-        </div>
-        <!-- Decorative background elements -->
-        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 opacity-20">
-            <div
-                class="absolute top-10 left-10 w-64 h-64 bg-indigo-500 rounded-full mix-blend-overlay filter blur-3xl animate-pulse">
+    <!-- ─── LAYOUT ─── -->
+    <div class="ms-layout">
+        <!-- Sidebar -->
+        <div class="ms-sidebar">
+            <div class="ms-sidebar-header">
+                <div class="module-label">Start 05</div>
+                <div class="module-title">觸控與滑鼠事件監聽</div>
+                <div class="meta"><i class="far fa-clock"></i> 約 3 小時 · 5 個單元</div>
             </div>
-            <div class="absolute bottom-10 right-10 w-80 h-80 bg-purple-500 rounded-full mix-blend-overlay filter blur-3xl animate-pulse"
-                style="animation-delay: 2s"></div>
-        </div>
-
-        <div class="container mx-auto px-4 relative z-30 pt-10 pb-10 text-center text-white">
-            <div
-                class="badge-header inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/20 text-indigo-200 border border-indigo-400/30 backdrop-blur-sm mb-8 text-sm font-semibold tracking-wide uppercase">
-                <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
-                Input Events Deep Dive
+            <div class="ms-unit-list" id="sidebar-nav">
+                <!-- JavaScript populated -->
             </div>
-            <h1 class="text-4xl md:text-6xl font-bold mb-6 tracking-tight leading-tight">
-                觸控 vs. 滑鼠：<br class="hidden md:block" />打造全平台通用的操控體驗
-            </h1>
-            <p class="text-xl text-indigo-100 max-w-2xl mx-auto leading-relaxed mb-10">
-                揭開 Click 300ms 延遲的真相，掌握 addEventListener 的 passive 陷阱，<br>實現「寫一次程式碼，滑鼠與手指通吃」的終極目標。
-            </p>
-
-            <div class="flex flex-wrap justify-center gap-4">
-                <button onclick="enterMediaMode('video', window.RESOURCES.video)"
-                    class="resource-btn bg-indigo-500 hover:bg-indigo-400 text-white px-8 py-4 rounded-full flex items-center gap-3 shadow-lg shadow-indigo-500/30 font-bold transition-all transform hover:-translate-y-1">
-                    <span>📺</span> 觀看教學影片
-                </button>
-                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
-                    class="resource-btn bg-white/10 hover:bg-white/20 border border-white/20 text-white px-8 py-4 rounded-full flex items-center gap-3 backdrop-blur-sm font-bold transition-all">
-                    <span>📄</span> 閱讀課程講義
-                </button>
+            <div class="sidebar-progress">
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text" id="progress-text">0 / 5 已完成</div>
             </div>
         </div>
-    </header>
 
-    <main class="container mx-auto px-4 -mt-24 relative z-10 pb-20">
+        <!-- Content -->
+        <div class="ms-content">
+            <!-- Breadcrumbs -->
+            <div class="ms-breadcrumb">
+                <a href="/">課程</a>
+                <span>&gt;</span>
+                <a href="#">Start 05</a>
+                <span>&gt;</span>
+                <span id="bc-current">課程總覽</span>
+            </div>
 
-        <!-- Module 1: Event Comparison Lab -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden border border-white/50">
-                <div class="p-1 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
-                <div class="p-8 md:p-12">
-                    <div class="section-header-left border-l-4 border-indigo-500 pl-6 mb-12">
-                        <span class="text-indigo-600 font-bold tracking-wider uppercase text-sm">Module 1: Intuitive
-                            Lab</span>
-                        <h2 class="text-4xl font-bold text-gray-900 mt-2">滑鼠 vs. 手指：速度對決</h2>
+            <!-- PAGE: Index (0) -->
+            <div class="ms-unit-page visible" id="page-index">
+                <div class="unit-content">
+                    <div class="module-meta-tags">
+                        <span class="ms-tag blue"><i class="fas fa-stream"></i> 前端事件流</span>
+                        <span class="ms-tag green"><i class="fas fa-mobile-alt"></i> 跨裝置相容</span>
+                    </div>
+                    <h1>觸控與滑鼠事件監聽：無人車的雙重操控術</h1>
+                    <p class="text-gray-600">
+                        揭開 Click 300ms 延遲的真相，掌握 addEventListener 的 passive 陷阱，實現「寫一次程式碼，滑鼠與手指通吃」的終極目標。
+                    </p>
+
+                    <h2>單元大綱</h2>
+                    <div class="unit-card-list" id="index-unit-list">
+                        <!-- JavaScript populated -->
                     </div>
 
-                    <div class="grid lg:grid-cols-2 gap-12 items-start">
+                    <h2>預備知識</h2>
+                    <ul class="text-gray-600">
+                        <li>HTML 與 CSS 基礎版面配置</li>
+                        <li>JavaScript 基本事件處理器與 DOM 節點監聽</li>
+                    </ul>
+                </div>
+                <div class="unit-nav">
+                    <span></span>
+                    <button class="nav-btn-next" onclick="goToUnit(1)">下一單元 &nbsp;›</button>
+                </div>
+            </div>
+
+            <!-- PAGE: 簡介 (1) -->
+            <div class="ms-unit-page" id="page-1">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-1" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 5 分鐘</div>
+                    </div>
+                    <h1>課程簡介</h1>
+                    <p class="text-gray-600">
+                        觀看以下影片或講義，了解在開發行動端 Web App 程式時，滑鼠與觸控事件鏈之間的執行先後順序，以及如何克服延遲與被動事件監聽器的物理限制。
+                    </p>
+
+                    <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; margin: 24px 0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        <iframe src="https://www.youtube.com/embed/J3lvIeNo-bY" style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;" allowfullscreen></iframe>
+                    </div>
+
+                    <p class="text-gray-600">
+                        在觀看影片後，請繼續點擊「下一單元」來實際測試並親眼見證 Touch 與 Click 之間的延遲時間差。
+                    </p>
+                </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一單元 &nbsp;›</button>
+                </div>
+            </div>
+
+            <!-- PAGE: 滑鼠 vs 手指：速度對決 (2) -->
+            <div class="ms-unit-page" id="page-2">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-2" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 20 分鐘</div>
+                    </div>
+                    <h1>滑鼠 vs. 手指：速度對決</h1>
+                    
+                    <div class="grid lg:grid-cols-2 gap-12 items-start my-6">
                         <div class="space-y-6">
                             <h3 class="text-2xl font-bold text-gray-800">為什麼手機上 click 比較慢？</h3>
                             <p class="text-gray-600 leading-relaxed">
                                 在觸控螢幕剛誕生時，為了偵測「雙擊縮放 (Double Tap to Zoom)」，瀏覽器在使用者點擊後會等待約
-                                <strong>300ms</strong>，確認沒有第二次點擊才會觸發 `click` 事件。
+                                <strong>300ms</strong>，確認沒有第二次點擊才會觸發 <code>click</code> 事件。
                             </p>
                             <p class="text-gray-600 leading-relaxed">
                                 這對於一般網頁瀏覽沒問題，但對於<strong>即時遙控車</strong>來說，300ms 的延遲就像是一世紀那麼長！
@@ -85,49 +440,45 @@
                                     <span>⚠️</span> 實驗觀察重點
                                 </h4>
                                 <ul class="list-disc list-inside text-sm text-orange-700 space-y-1">
-                                    <li>使用滑鼠點擊方塊，觀察 log。</li>
-                                    <li>使用手機模式 (DevTools Cmd+Shift+M) 輕觸方塊。</li>
-                                    <li>注意 <code class="bg-orange-200 px-1 rounded">touchstart</code> 與 <code
-                                            class="bg-orange-200 px-1 rounded">click</code> 的時間差。</li>
+                                    <li>使用滑鼠點擊方塊，觀察下方 log 日誌。</li>
+                                    <li>開啟開發者工具的手機模擬模式輕觸方塊。</li>
+                                    <li>注意 <code>touchstart</code> 與 <code>click</code> 的時間差 (Latency)。</li>
                                 </ul>
                             </div>
                         </div>
 
                         <!-- Comparison Visualizer -->
-                        <div
-                            class="bg-gray-900 rounded-2xl p-6 shadow-2xl border border-gray-800 flex flex-col min-h-[400px]">
+                        <div class="bg-gray-900 rounded-2xl p-6 shadow-2xl border border-gray-800 flex flex-col min-h-[400px]">
                             <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-2">
                                 <h4 class="text-white font-mono font-bold">Event Latency Tester</h4>
-                                <div class="text-xs font-mono text-gray-400">FPS: <span id="fps-counter"
-                                        class="text-green-400">60</span></div>
+                                <div class="text-xs font-mono text-gray-400">FPS: <span id="fps-counter" class="text-green-400">60</span></div>
                             </div>
 
-                            <div id="test-btn"
-                                class="flex-grow bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 rounded-xl flex flex-col items-center justify-center cursor-pointer transition-all active:scale-95 touch-manipulation user-select-none mb-4">
-                                <span class="text-4xl mb-2">TAP ME!</span>
+                            <div id="test-btn" class="flex-grow bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 rounded-xl flex flex-col items-center justify-center cursor-pointer transition-all active:scale-95 touch-manipulation user-select-none mb-4 min-h-[180px]">
+                                <span class="text-4xl mb-2 text-white font-bold">TAP ME!</span>
                                 <span class="text-indigo-200 text-sm">(Desktop Click vs Touch)</span>
                             </div>
 
-                            <div id="latency-log"
-                                class="h-40 bg-black rounded-lg p-3 font-mono text-xs text-green-400 overflow-y-auto border border-gray-700 shadow-inner code-scroll">
-                                <div class="opacity-50 text-center mt-10">--- Waiting for interaction ---</div>
+                            <div id="latency-log" class="h-40 bg-black rounded-lg p-3 font-mono text-xs text-green-400 overflow-y-auto border border-gray-700 shadow-inner code-scroll">
+                                <div class="opacity-50 text-center mt-10 text-gray-500">--- Waiting for interaction ---</div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一單元 &nbsp;›</button>
+                </div>
             </div>
-        </section>
 
-        <!-- Module 2: Core Principles -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden border border-white/50">
-                <div class="p-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
-                <div class="p-8 md:p-12">
-                    <div class="section-header-left border-l-4 border-purple-500 pl-6 mb-12">
-                        <span class="text-purple-600 font-bold tracking-wider uppercase text-sm">Module 2: Core
-                            Principles</span>
-                        <h2 class="text-4xl font-bold text-gray-900 mt-2">事件結構與監聽陷阱</h2>
+            <!-- PAGE: 事件結構與監聽陷阱 (3) -->
+            <div class="ms-unit-page" id="page-3">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-3" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 30 分鐘</div>
                     </div>
+                    <h1>事件結構與監聽陷阱</h1>
 
                     <!-- Comparison Table -->
                     <div class="overflow-hidden rounded-xl border border-gray-200 shadow-sm mb-12">
@@ -139,7 +490,7 @@
                                     <th class="p-4 border-b font-bold text-purple-600">觸控事件 (Touch)</th>
                                 </tr>
                             </thead>
-                            <tbody class="text-sm">
+                            <tbody class="text-sm text-gray-600">
                                 <tr class="bg-white border-b hover:bg-gray-50">
                                     <td class="p-4 font-semibold text-gray-600">關鍵事件</td>
                                     <td class="p-4 font-mono text-gray-500">mousedown, mousemove, mouseup</td>
@@ -148,8 +499,7 @@
                                 <tr class="bg-white border-b hover:bg-gray-50">
                                     <td class="p-4 font-semibold text-gray-600">座標取得</td>
                                     <td class="p-4 font-mono text-gray-500">e.clientX, e.clientY</td>
-                                    <td class="p-4 font-mono text-gray-500 text-red-500">e.touches[0].clientX (多層結構)
-                                    </td>
+                                    <td class="p-4 font-mono text-red-500">e.touches[0].clientX (多層結構)</td>
                                 </tr>
                                 <tr class="bg-white border-b hover:bg-gray-50">
                                     <td class="p-4 font-semibold text-gray-600">多點支援</td>
@@ -168,12 +518,10 @@
                     <div class="grid lg:grid-cols-2 gap-8">
                         <!-- Code Explanation -->
                         <div class="bg-slate-900 rounded-xl p-6 shadow-xl border border-slate-800">
-                            <div
-                                class="flex justify-between mb-3 text-sm text-slate-400 font-bold uppercase tracking-wider">
+                            <div class="flex justify-between mb-3 text-sm text-slate-400 font-bold uppercase tracking-wider">
                                 <span>JavaScript - Universal Coordinate Helper</span>
                             </div>
-                            <pre
-                                class="font-mono text-sm leading-relaxed overflow-x-auto p-4 bg-slate-950 rounded-lg text-slate-300 code-scroll">
+                            <pre class="font-mono text-sm leading-relaxed overflow-x-auto p-4 bg-slate-950 rounded-lg text-slate-300 code-scroll">
 function <span class="text-yellow-300">getPosition</span>(e) {
   let x, y;
   
@@ -195,126 +543,230 @@ function <span class="text-yellow-300">getPosition</span>(e) {
                         </div>
 
                         <!-- Passive Explanation -->
-                        <div class="space-y-4">
+                        <div class="space-y-4 text-gray-600">
                             <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
-                                <span
-                                    class="bg-red-100 text-red-600 w-8 h-8 rounded flex items-center justify-center text-sm">!</span>
+                                <span class="bg-red-100 text-red-600 w-8 h-8 rounded flex items-center justify-center text-sm">!</span>
                                 被動監聽器 (Passive Listener)
                             </h3>
-                            <p class="text-gray-600 text-sm leading-relaxed">
-                                為了提升捲動效能，現代瀏覽器預設將 `touchstart` 和 `touchmove` 視為 <code>{ passive: true }</code>。
+                            <p class="text-sm leading-relaxed">
+                                為了提升捲動效能，現代瀏覽器預設將 <code>touchstart</code> 和 <code>touchmove</code> 視為 <code>{ passive: true }</code>。
                                 這意味著你<strong>無法</strong>在這些事件中呼叫 <code>preventDefault()</code> 來阻止網頁捲動。
                             </p>
-                            <p class="text-gray-600 text-sm leading-relaxed">
+                            <p class="text-sm leading-relaxed">
                                 若要製作搖桿或拖曳功能，必須明確設定 <code>{ passive: false }</code>：
                             </p>
                             <div class="bg-gray-100 p-3 rounded font-mono text-xs text-gray-700 border border-gray-200">
-                                element.addEventListener('touchmove', handler, <span class="text-red-600">{ passive:
-                                    false }</span>);
+                                element.addEventListener('touchmove', handler, <span class="text-red-600">{ passive: false }</span>);
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一單元 &nbsp;›</button>
+                </div>
             </div>
-        </section>
 
-        <!-- Module 3: Practical Challenges -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden border border-white/50">
-                <div class="p-1 bg-gradient-to-r from-pink-500 to-rose-500"></div>
-                <div class="p-8 md:p-12">
-                    <div class="section-header-left border-l-4 border-pink-500 pl-6 mb-12">
-                        <span class="text-pink-600 font-bold tracking-wider uppercase text-sm">Module 3: Hands-on
-                            Challenges</span>
-                        <h2 class="text-4xl font-bold text-gray-900 mt-2">教室挑戰任務</h2>
+            <!-- PAGE: 教室挑戰任務 (4) -->
+            <div class="ms-unit-page" id="page-4">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-4" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 120 分鐘</div>
                     </div>
+                    <h1>教室挑戰任務</h1>
 
-                    <div class="grid md:grid-cols-3 gap-6">
-                        <!-- Task 2-1 -->
-                        <div onclick="openSubmissionModal('touch-vs-mouse-task-1', '作業 2-1: 萬用按鈕')"
-                            class="bg-white rounded-xl shadow border border-gray-100 p-6 hover:shadow-lg transition-shadow cursor-pointer relative group">
-                            <div
-                                class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 text-2xl mb-4">
-                                👆</div>
-                            <h3 class="font-bold text-lg mb-2">作業 2-1：萬用按鈕</h3>
-                            <p class="text-sm text-gray-600 mb-4">
+                    <div class="space-y-4">
+                        <div class="ms-lab-card" onclick="openSubmissionModal('touch-vs-mouse-task-1', '作業 2-1: 萬用按鈕')">
+                            <div class="ms-lab-badge">Task 2-1</div>
+                            <span class="ms-lab-time"><i class="far fa-clock"></i> 40 分鐘</span>
+                            <h3>作業 2-1：萬用按鈕</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">
                                 實作一個按鈕，同時監聽 Mouse 與 Touch 事件，但<strong>確保只觸發一次</strong>。
                             </p>
-                            <div class="bg-gray-50 p-3 rounded text-xs text-gray-500 border border-gray-200">
-                                Hint: 使用 <code>event.preventDefault()</code> 在 touchstart 時阻止模擬的 mousedown。
-                            </div>
-                            <!-- Click Hint Overlay -->
-                            <div
-                                class="absolute inset-0 bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-                                <span
-                                    class="bg-white text-indigo-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                                    📤 點擊繳交作業
-                                </span>
+                            <div class="bg-white/80 p-3 rounded text-xs text-gray-500 border border-gray-200">
+                                Hint: 使用 <code>event.preventDefault()</code> 在 <code>touchstart</code> 時阻止模擬的 <code>mousedown</code>。
                             </div>
                         </div>
 
-                        <!-- Task 2-2 -->
-                        <div onclick="openSubmissionModal('touch-vs-mouse-task-2', '作業 2-2: 防抖滑桿')"
-                            class="bg-white rounded-xl shadow border border-gray-100 p-6 hover:shadow-lg transition-shadow cursor-pointer relative group">
-                            <div
-                                class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 text-2xl mb-4">
-                                🎚️</div>
-                            <h3 class="font-bold text-lg mb-2">作業 2-2：防抖滑桿</h3>
-                            <p class="text-sm text-gray-600 mb-4">
+                        <div class="ms-lab-card" onclick="openSubmissionModal('touch-vs-mouse-task-2', '作業 2-2: 防抖滑桿')">
+                            <div class="ms-lab-badge">Task 2-2</div>
+                            <span class="ms-lab-time"><i class="far fa-clock"></i> 40 分鐘</span>
+                            <h3>作業 2-2：防抖滑桿</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">
                                 製作一個控制車速的 Slider。要求手指在滑桿上拖曳時，<strong>網頁背景不能跟著上下捲動</strong>。
                             </p>
-                            <div class="bg-gray-50 p-3 rounded text-xs text-gray-500 border border-gray-200">
+                            <div class="bg-white/80 p-3 rounded text-xs text-gray-500 border border-gray-200">
                                 Hint: 在 <code>touchmove</code> 中使用 <code>preventDefault()</code> (記得開 non-passive)。
-                            </div>
-                            <!-- Click Hint Overlay -->
-                            <div
-                                class="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-                                <span
-                                    class="bg-white text-purple-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                                    📤 點擊繳交作業
-                                </span>
                             </div>
                         </div>
 
-                        <!-- Task 2-3 -->
-                        <div onclick="openSubmissionModal('touch-vs-mouse-task-3', '作業 2-3: 原生級體驗')"
-                            class="bg-white rounded-xl shadow border border-gray-100 p-6 hover:shadow-lg transition-shadow cursor-pointer relative group">
-                            <div
-                                class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-pink-600 text-2xl mb-4">
-                                🎮</div>
-                            <h3 class="font-bold text-lg mb-2">作業 2-3：原生級體驗</h3>
-                            <p class="text-sm text-gray-600 mb-4">
+                        <div class="ms-lab-card" onclick="openSubmissionModal('touch-vs-mouse-task-3', '作業 2-3: 原生級體驗')">
+                            <div class="ms-lab-badge">Task 2-3</div>
+                            <span class="ms-lab-time"><i class="far fa-clock"></i> 40 分鐘</span>
+                            <h3>作業 2-3：原生級體驗</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">
                                 模擬遊戲手把。長按按鈕時，禁止跳出右鍵選單 (Context Menu) 或選取文字。
                             </p>
-                            <div class="bg-gray-50 p-3 rounded text-xs text-gray-500 border border-gray-200">
+                            <div class="bg-white/80 p-3 rounded text-xs text-gray-500 border border-gray-200">
                                 Hint: 監聽 <code>contextmenu</code> 事件並 return false。
-                            </div>
-                            <!-- Click Hint Overlay -->
-                            <div
-                                class="absolute inset-0 bg-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-                                <span
-                                    class="bg-white text-pink-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                                    📤 點擊繳交作業
-                                </span>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一單元 &nbsp;›</button>
+                </div>
             </div>
-        </section>
 
-    </main>
+            <!-- PAGE: 摘要與資源 (5) -->
+            <div class="ms-unit-page" id="page-5">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-5" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 5 分鐘</div>
+                    </div>
+                    <h1>本單元摘要與學習資源</h1>
+                    <h2>重點回顧</h2>
+                    <ul class="text-gray-600">
+                        <li><strong>事件順序：</strong>掌握 <code>touchstart</code> &rarr; <code>touchend</code> &rarr; <code>mousedown</code> &rarr; <code>click</code> 的時序特徵。</li>
+                        <li><strong>防重與防抖：</strong>在觸碰事件端適時呼叫 <code>e.preventDefault()</code> 斬斷事件模擬鏈，並使用 <code>{ passive: false }</code> 取消瀏覽器預設捲動行為。</li>
+                        <li><strong>原生操控感：</strong>利用 <code>contextmenu</code> 阻止長按選單，配合 CSS 消除點擊背景高亮，完成具備原生質感的 App 互動。</li>
+                    </ul>
 
-    <footer class="bg-gray-900 text-white py-12 border-t border-gray-800">
-        <div class="container mx-auto px-4 text-center">
-            <p class="text-gray-500">© 2024 Vibe Coding. All rights reserved.</p>
+                    <h2>延伸閱讀與資源</h2>
+                    <div class="my-4">
+                        <a href="#" onclick="enterMediaMode('video', window.RESOURCES.video); return false;" class="ms-resource-link">
+                            <i class="fab fa-youtube"></i>
+                            <div>
+                                <div class="font-semibold">教學影片</div>
+                                <div class="text-xs text-gray-500">觸控與滑鼠事件監聽：雙重操控術</div>
+                            </div>
+                        </a>
+                        <a href="#" onclick="enterMediaMode('doc', window.RESOURCES.doc); return false;" class="ms-resource-link">
+                            <i class="far fa-file-alt"></i>
+                            <div>
+                                <div class="font-semibold">課程講義</div>
+                                <div class="text-xs text-gray-500">深入了解跨裝置觸控相容性</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(5)">完成本單元 &nbsp;✓</button>
+                </div>
+            </div>
+
         </div>
-    </footer>
+    </div>
 
-    <!-- Fullscreen Media Overlay -->
-    <!-- Media Overlay injected by course-shared.js?v=2026.04.05.FINAL_V6 -->
-
+    <!-- Scripts -->
     <script>
+        /* ─── DATA ─── */
+        const UNITS = [
+            { id: 0, label: '課程總覽',       time: '',         type: 'index' },
+            { id: 1, label: '簡介',            time: '5 分鐘',  type: 'unit'  },
+            { id: 2, label: '滑鼠 vs. 手指：速度對決', time: '20 分鐘', type: 'unit' },
+            { id: 3, label: '事件結構與監聽陷阱', time: '30 分鐘', type: 'unit' },
+            { id: 4, label: '教室挑戰任務',       time: '120 分鐘', type: 'lab'   },
+            { id: 5, label: '摘要與資源',     time: '5 分鐘',  type: 'unit'  },
+        ];
+
+        let currentUnit = 0;
+        let doneSet = new Set();
+
+        /* ─── INIT ─── */
+        function init() {
+            buildSidebar();
+            buildIndexUnitList();
+            goToUnit(0);
+        }
+
+        function buildSidebar() {
+            const nav = document.getElementById('sidebar-nav');
+            nav.innerHTML = UNITS.map(u => {
+                const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>' : '';
+                return `
+                <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
+                    <div class="unit-icon" id="icon-${u.id}">${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div>
+                    <div class="unit-meta">
+                        <div class="unit-name">${u.label}${badge}</div>
+                        ${u.time ? `<div class="unit-time"><i class="far fa-clock"></i> ${u.time}</div>` : ''}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function buildIndexUnitList() {
+            const el = document.getElementById('index-unit-list');
+            el.innerHTML = UNITS.filter(u => u.id > 0).map(u => `
+                <div class="unit-card ${u.type}" onclick="goToUnit(${u.id})">
+                    <div class="unit-card-num">${u.id}</div>
+                    <div class="unit-card-info">
+                        <div class="unit-card-name">${u.label}</div>
+                        <div class="unit-card-time"><i class="far fa-clock"></i> ${u.time}</div>
+                    </div>
+                    <div class="unit-card-arrow">›</div>
+                </div>
+            `).join('');
+        }
+
+        /* ─── NAVIGATION ─── */
+        function goToUnit(id) {
+            document.querySelectorAll('.ms-unit-page').forEach(p => p.classList.remove('visible'));
+            const target = id === 0 ? document.getElementById('page-index') : document.getElementById(`page-${id}`);
+            if (target) target.classList.add('visible');
+
+            document.querySelectorAll('.ms-unit-item').forEach(el => el.classList.remove('active'));
+            const navItem = document.getElementById(`nav-${id}`);
+            if (navItem) { navItem.classList.add('active'); navItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+
+            UNITS.forEach(u => {
+                const icon = document.getElementById(`icon-${u.id}`);
+                if (!icon) return;
+                if (doneSet.has(u.id)) {
+                    icon.className = 'unit-icon done';
+                    icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>';
+                } else if (u.id === id) {
+                    icon.className = 'unit-icon active-icon';
+                    icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+                } else {
+                    icon.className = 'unit-icon';
+                    icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+                }
+            });
+
+            const unit = UNITS.find(u => u.id === id);
+            document.getElementById('bc-current').textContent = unit ? unit.label : '';
+            currentUnit = id;
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function markDone(id) {
+            doneSet.add(id);
+            const badge = document.getElementById(`badge-${id}`);
+            if (badge) badge.style.display = 'flex';
+            UNITS.forEach(u => {
+                const icon = document.getElementById(`icon-${u.id}`);
+                if (!icon) return;
+                if (doneSet.has(u.id)) { icon.className = 'unit-icon done'; icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>'; }
+            });
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const total = UNITS.length - 1;
+            const done = doneSet.size;
+            document.getElementById('progress-fill').style.width = Math.round(done / total * 100) + '%';
+            document.getElementById('progress-text').textContent = `${done} / ${total} 已完成`;
+        }
+
+        /* ─── START ─── */
+        init();
+
         // --- Latency Tester Logic ---
         const testBtn = document.getElementById('test-btn');
         const latencyLog = document.getElementById('latency-log');
@@ -344,8 +796,6 @@ function <span class="text-yellow-300">getPosition</span>(e) {
         });
 
         testBtn.addEventListener('mousedown', (e) => {
-            // Filter out simulated mouse events for clarity if needed, 
-            // but for this demo ensuring we see the order is key.
             log('🖱️ mousedown', 'mouse');
         });
 
@@ -364,18 +814,12 @@ function <span class="text-yellow-300">getPosition</span>(e) {
             log(`🎯 click${suffix}`, 'click');
         });
 
-
-        // --- Standard Media Overlay Logic ---
-        // Injected by course-shared.js?v=2026.04.05.FINAL_V6
-
         window.RESOURCES = {
             video: "https://www.youtube.com/embed/J3lvIeNo-bY",
             doc: "https://docs.google.com/document/d/e/2PACX-1vSYindzefS_LY2Dv-f6CSHuSGbZFLA1fyIdppswvYDosGbXhFvDM1v2DudxdWpN9zGiU1twAd2gwViL/pub?embedded=true"
         };
     </script>
     <script src="/js/course-shared.js?v=2026.05.22.V27.START_UNITS_LAYOUT_UPGRADE"></script>
-    <script>
-    </script>
 
     <!-- Assignment Guide (Hidden) -->
     <section id="assignment-guide" style="display: none;">
@@ -566,5 +1010,4 @@ function <span class="text-yellow-300">getPosition</span>(e) {
 
     </section>
 </body>
-
 </html>

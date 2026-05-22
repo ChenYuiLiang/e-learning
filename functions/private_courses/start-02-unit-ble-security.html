@@ -973,33 +973,33 @@
 <script src="/js/course-shared.js?v=2026.05.22.V27.START_UNITS_LAYOUT_UPGRADE"></script>
 <!-- Assignment Guide (Hidden) -->
 <section id="assignment-guide" style="display: none;">
-<div class="markdown-heading"><h1 class="heading-element">Web BLE 安全機制與權限規範 (Web BLE Security &amp; Permissions)</h1><a aria-label="Permalink: Web BLE 安全機制與權限規範 (Web BLE Security &amp; Permissions)" class="anchor" href="#web-ble-安全機制與權限規範-web-ble-security--permissions" id="user-content-web-ble-安全機制與權限規範-web-ble-security--permissions"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h1 class="heading-element">Web BLE 安全機制與權限規範 (Web BLE Security &amp; Permissions)</h1><a id="user-content-web-ble-安全機制與權限規範-web-ble-security--permissions" class="anchor" aria-label="Permalink: Web BLE 安全機制與權限規範 (Web BLE Security &amp; Permissions)" href="#web-ble-安全機制與權限規範-web-ble-security--permissions"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>歡迎來到 <strong>Start 02 Unit: BLE Security</strong>！
 在這個單元中，我們將學習 Web Bluetooth API 在瀏覽器沙箱中的各項限制（如 HTTPS、User Gesture 與設備過濾），並學習如何在多人高干擾環境下保護使用者的通訊主權，進行防禦性編程與精準過濾。</p>
-<div class="markdown-heading"><h2 class="heading-element">🎯 作業目標 (Assignment Objectives)</h2><a aria-label="Permalink: 🎯 作業目標 (Assignment Objectives)" class="anchor" href="#-作業目標-assignment-objectives" id="user-content--作業目標-assignment-objectives"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">🎯 作業目標 (Assignment Objectives)</h2><a id="user-content--作業目標-assignment-objectives" class="anchor" aria-label="Permalink: 🎯 作業目標 (Assignment Objectives)" href="#-作業目標-assignment-objectives"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>本作業分為三個主要任務，幫助你掌握 Web BLE 的安全機制：</p>
-<div class="markdown-heading"><h3 class="heading-element">任務 1：「授權失敗」模擬與排除</h3><a aria-label="Permalink: 任務 1：「授權失敗」模擬與排除" class="anchor" href="#任務-1授權失敗模擬與排除" id="user-content-任務-1授權失敗模擬與排除"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 1：「授權失敗」模擬與排除</h3><a id="user-content-任務-1授權失敗模擬與排除" class="anchor" aria-label="Permalink: 任務 1：「授權失敗」模擬與排除" href="#任務-1授權失敗模擬與排除"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>實作例外處理</strong>：使用 <code>try...catch</code> 包裹 <code>requestDevice()</code>，捕捉並處理不同的 Web BLE 錯誤碼（例如 <code>NotFoundError</code> 或是 <code>SecurityError</code>）。</li>
 <li>
 <strong>確保介面友善</strong>：當使用者拒絕授權或藍牙關閉時，網頁必須顯示「人類語言」的提示，而非在背景靜默失敗。</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">任務 2：多裝置環境下的「精準過濾」</h3><a aria-label="Permalink: 任務 2：多裝置環境下的「精準過濾」" class="anchor" href="#任務-2多裝置環境下的精準過濾" id="user-content-任務-2多裝置環境下的精準過濾"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 2：多裝置環境下的「精準過濾」</h3><a id="user-content-任務-2多裝置環境下的精準過濾" class="anchor" aria-label="Permalink: 任務 2：多裝置環境下的「精準過濾」" href="#任務-2多裝置環境下的精準過濾"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>設定過濾條件</strong>：利用 <code>filters</code> (例如 <code>namePrefix</code> 或 <code>services</code> UUID) 取代 <code>acceptAllDevices: true</code>，確保只掃描並連線到你的目標設備。</li>
 <li>
 <strong>防止數位誤入</strong>：在多人同時操作的環境下，你的程式碼應該只顯示你專屬的設備，降低連線錯誤的風險。</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">任務 3：跨平台權限大調查</h3><a aria-label="Permalink: 任務 3：跨平台權限大調查" class="anchor" href="#任務-3跨平台權限大調查" id="user-content-任務-3跨平台權限大調查"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 3：跨平台權限大調查</h3><a id="user-content-任務-3跨平台權限大調查" class="anchor" aria-label="Permalink: 任務 3：跨平台權限大調查" href="#任務-3跨平台權限大調查"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>多裝置與跨平台測試</strong>：使用不同的設備（Android、iOS、macOS、Windows 等）測試你的網頁。</li>
 <li>
 <strong>分析權限差異</strong>：觀察各個平台在請求藍牙與定位權限時的不同行為，將觀察到的現象與藍牙配對對話框的截圖記錄在你的報告中。</li>
 </ul>
-<div class="markdown-heading"><h2 class="heading-element">📝 繳交說明 (Submission Guidelines)</h2><a aria-label="Permalink: 📝 繳交說明 (Submission Guidelines)" class="anchor" href="#-繳交說明-submission-guidelines" id="user-content--繳交說明-submission-guidelines"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">📝 繳交說明 (Submission Guidelines)</h2><a id="user-content--繳交說明-submission-guidelines" class="anchor" aria-label="Permalink: 📝 繳交說明 (Submission Guidelines)" href="#-繳交說明-submission-guidelines"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>請確保你的程式庫 (Repository) 包含以下內容，並完成對應的要求：</p>
 <ol>
 <li>
@@ -1027,27 +1027,28 @@
 </ul>
 </li>
 </ol>
-<hr/>
-<div class="markdown-heading"><h2 class="heading-element">🧑‍💻 學生報告區 (Student Report)</h2><a aria-label="Permalink: 🧑‍💻 學生報告區 (Student Report)" class="anchor" href="#‍-學生報告區-student-report" id="user-content-‍-學生報告區-student-report"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr>
+<div class="markdown-heading"><h2 class="heading-element">🧑‍💻 學生報告區 (Student Report)</h2><a id="user-content-‍-學生報告區-student-report" class="anchor" aria-label="Permalink: 🧑‍💻 學生報告區 (Student Report)" href="#‍-學生報告區-student-report"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p><strong>姓名 / 學號：</strong> [請填寫你的姓名與學號]</p>
-<div class="markdown-heading"><h3 class="heading-element">1. 授權失敗與例外處理觀察</h3><a aria-label="Permalink: 1. 授權失敗與例外處理觀察" class="anchor" href="#1-授權失敗與例外處理觀察" id="user-content-1-授權失敗與例外處理觀察"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">1. 授權失敗與例外處理觀察</h3><a id="user-content-1-授權失敗與例外處理觀察" class="anchor" aria-label="Permalink: 1. 授權失敗與例外處理觀察" href="#1-授權失敗與例外處理觀察"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li><em>(請描述你如何處理 <code>NotFoundError</code> 與 <code>SecurityError</code>，以及畫面如何引導使用者)</em></li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">2. 精準過濾實作</h3><a aria-label="Permalink: 2. 精準過濾實作" class="anchor" href="#2-精準過濾實作" id="user-content-2-精準過濾實作"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">2. 精準過濾實作</h3><a id="user-content-2-精準過濾實作" class="anchor" aria-label="Permalink: 2. 精準過濾實作" href="#2-精準過濾實作"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li><em>(請說明你使用了哪些 <code>filters</code> 條件，為什麼選擇這些條件)</em></li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">3. 跨平台權限與相容性調查</h3><a aria-label="Permalink: 3. 跨平台權限與相容性調查" class="anchor" href="#3-跨平台權限與相容性調查" id="user-content-3-跨平台權限與相容性調查"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">3. 跨平台權限與相容性調查</h3><a id="user-content-3-跨平台權限與相容性調查" class="anchor" aria-label="Permalink: 3. 跨平台權限與相容性調查" href="#3-跨平台權限與相容性調查"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li><em>(請附上各平台的測試結果，說明是否需要開啟定位、是否強制 HTTPS，以及截圖證據)</em></li>
 </ul>
-</section>
+
+    </section>
 <!-- Tutor Guide (Hidden) -->
 <section id="tutor-guide" style="display: none;">
 <p>針對 <strong><code>start-02-unit-ble-security</code> (Web BLE 安全機制與權限規範)</strong> 單元，這是學員從「能動就好」進化為「安全開發」的必經之路。它要求學員具備 <strong>網路安全與隱私保護 (Security &amp; Privacy)</strong> 的意識，理解 Web Bluetooth API 在瀏覽器沙箱中的各項限制（如 HTTPS、User Gesture 與設備過濾），並學習如何在多人高干擾環境下保護使用者的通訊主權。</p>
 <p>以下是在 <strong>GitHub Classroom</strong> 部署其作業 (Assignments) 的具體建議：</p>
-<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repository) 配置建議</h3><a aria-label="Permalink: 1. 範本程式庫 (Template Repository) 配置建議" class="anchor" href="#1-範本程式庫-template-repository-配置建議" id="user-content-1-範本程式庫-template-repository-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repository) 配置建議</h3><a id="user-content-1-範本程式庫-template-repository-配置建議" class="anchor" aria-label="Permalink: 1. 範本程式庫 (Template Repository) 配置建議" href="#1-範本程式庫-template-repository-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>安全作業的核心在於「異常防禦與精準過濾」，範本應包含連線安全框架與跨平台測試模板，建議包含：</p>
 <ul>
 <li>
@@ -1059,9 +1060,9 @@
 <li>
 <strong>📂 <code>screenshots/</code></strong>：<strong>證據存放區</strong>。要求學員上傳不同平台（Android/Mac/iOS）的藍牙配對對話框截圖，進行跨平台設計對比。</li>
 </ul>
-<hr/>
-<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a aria-label="Permalink: 2. 作業任務部署細節" class="anchor" href="#2-作業任務部署細節" id="user-content-2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h4 class="heading-element">任務 1：「授權失敗」模擬與排除 (Permission Error Handling Lab)</h4><a aria-label="Permalink: 任務 1：「授權失敗」模擬與排除 (Permission Error Handling Lab)" class="anchor" href="#任務-1授權失敗模擬與排除-permission-error-handling-lab" id="user-content-任務-1授權失敗模擬與排除-permission-error-handling-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr>
+<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a id="user-content-2-作業任務部署細節" class="anchor" aria-label="Permalink: 2. 作業任務部署細節" href="#2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 1：「授權失敗」模擬與排除 (Permission Error Handling Lab)</h4><a id="user-content-任務-1授權失敗模擬與排除-permission-error-handling-lab" class="anchor" aria-label="Permalink: 任務 1：「授權失敗」模擬與排除 (Permission Error Handling Lab)" href="#任務-1授權失敗模擬與排除-permission-error-handling-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：實施防禦性編程。確保當使用者拒絕授權或藍牙關閉時，網頁能給出正確的「人類語言」提示，而非靜默失敗。</li>
@@ -1077,7 +1078,7 @@
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 2：多裝置環境下的「精準過濾」 (Precision Filtering Lab)</h4><a aria-label="Permalink: 任務 2：多裝置環境下的「精準過濾」 (Precision Filtering Lab)" class="anchor" href="#任務-2多裝置環境下的精準過濾-precision-filtering-lab" id="user-content-任務-2多裝置環境下的精準過濾-precision-filtering-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 2：多裝置環境下的「精準過濾」 (Precision Filtering Lab)</h4><a id="user-content-任務-2多裝置環境下的精準過濾-precision-filtering-lab" class="anchor" aria-label="Permalink: 任務 2：多裝置環境下的「精準過濾」 (Precision Filtering Lab)" href="#任務-2多裝置環境下的精準過濾-precision-filtering-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：實踐隱私最小化原則。在多台機器人同時廣播的環境下，透過過濾條件確保只連線到目標設備，防止「數位誤入」。</li>
@@ -1093,7 +1094,7 @@
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 3：跨平台權限大調查 (Cross-platform Audit Lab)</h4><a aria-label="Permalink: 任務 3：跨平台權限大調查 (Cross-platform Audit Lab)" class="anchor" href="#任務-3跨平台權限大調查-cross-platform-audit-lab" id="user-content-任務-3跨平台權限大調查-cross-platform-audit-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 3：跨平台權限大調查 (Cross-platform Audit Lab)</h4><a id="user-content-任務-3跨平台權限大調查-cross-platform-audit-lab" class="anchor" aria-label="Permalink: 任務 3：跨平台權限大調查 (Cross-platform Audit Lab)" href="#任務-3跨平台權限大調查-cross-platform-audit-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：拓寬工程視野。理解 Web 標準在不同作業系統（Android vs iOS vs MacOS）與瀏覽器核心下的實作差異。</li>
@@ -1109,15 +1110,15 @@
 </ul>
 </li>
 </ul>
-<hr/>
-<div class="markdown-heading"><h3 class="heading-element">3. 安全合規與異常處理點評標準 (Security Compliance &amp; Handling Standards)</h3><a aria-label="Permalink: 3. 安全合規與異常處理點評標準 (Security Compliance &amp; Handling Standards)" class="anchor" href="#3-安全合規與異常處理點評標準-security-compliance--handling-standards" id="user-content-3-安全合規與異常處理點評標準-security-compliance--handling-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr>
+<div class="markdown-heading"><h3 class="heading-element">3. 安全合規與異常處理點評標準 (Security Compliance &amp; Handling Standards)</h3><a id="user-content-3-安全合規與異常處理點評標準-security-compliance--handling-standards" class="anchor" aria-label="Permalink: 3. 安全合規與異常處理點評標準 (Security Compliance &amp; Handling Standards)" href="#3-安全合規與異常處理點評標準-security-compliance--handling-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>此單元的價值在於 <strong>「對 Web 安全約束的尊重與對用戶隱私操作的細膩處理」</strong>：</p>
 <ul>
 <li>[ ] <strong>沙箱理解深度</strong>：是否能正確解釋為什麼 Web BLE 禁止在背景自動連線（User Gesture 限制）？</li>
 <li>[ ] <strong>代碼健壯度</strong>：當硬體藍牙無預警關閉時，網頁前端是否具備自檢與自癒（給予重試指引）的能力？</li>
 <li>[ ] <strong>相容性敏感度</strong>：是否對「 Web BLE 在 iOS 上的局限性」有明確的認知與技術對策？</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" class="anchor" href="#-推薦範本結構-github-classroom-template" id="user-content--推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a id="user-content--推薦範本結構-github-classroom-template" class="anchor" aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" href="#-推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <pre lang="text"><code>.
 ├── index.html           # 結構：包含 HTTPS 狀態檢測與友好的錯誤提示視窗
 ├── app.js               # 核心：練習精準 filters 設定與三層 try-catch 例外捕獲
@@ -1126,8 +1127,9 @@
 └── assets/security_flow.png # 參考：Web Bluetooth 安全握手流程圖
 </code></pre>
 <p>透過這種部署方式，學生能體驗到 <strong>「好的前端工程師，不僅是會寫通訊代碼的人，而是能透視瀏覽器的安全沙箱、能預見極端環境下的權限衝突、並在保護用戶隱私的前提下提供最專業且無懈可擊的硬體互動介面大師」</strong>。掌握 Web BLE 安全與權限技術後，學員將擁有了開發「醫療級監控儀表、銀行級智慧鎖控制台、以及高等級自動化管理系統」最核心也最資深的防禦開發實力！</p>
-<hr/>
+<hr>
 <p>太熱血了！我們已經將 <strong>Start 02</strong>（JavaScript 與安全）的「安全守門員」單元標準化完成了。這標誌著學員現在已經具備了打造「不僅能動，而且極度安全可信」系統的素質。恭喜！通訊安全的防線已經全面佈防！</p>
-</section>
+
+    </section>
 </body>
 </html>

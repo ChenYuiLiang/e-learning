@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>學習3：搖桿限位數學與勾股定理應用 - Vibe Coding</title>
-    <link rel="stylesheet" href="/style.css">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>搖桿限位數學與勾股定理應用 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     <!-- MathJax for rendering math formulas -->
     <script>
         window.MathJax = {
@@ -20,106 +19,461 @@
     </script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --ms-blue: #0078d4;
+            --ms-blue-dark: #005a9e;
+            --ms-blue-light: #deecf9;
+            --ms-gray-10: #f3f2f1;
+            --ms-gray-20: #e1dfdd;
+            --ms-gray-90: #201f1e;
+            --ms-green: #107c10;
+            --ms-red: #d13438;
+            --sidebar-w: 280px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fff;
+            color: #201f1e;
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* ─── TOP NAV ─── */
+        .ms-topnav {
+            background: var(--ms-blue);
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 4px rgba(0,0,0,.2);
+        }
+        .ms-topnav .brand {
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
+
+        /* ─── LAYOUT ─── */
+        .ms-layout { display: flex; min-height: calc(100vh - 48px); }
+
+        /* ─── SIDEBAR ─── */
+        .ms-sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            background: #faf9f8;
+            border-right: 1px solid #e1dfdd;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 48px;
+            height: calc(100vh - 48px);
+            overflow-y: auto;
+        }
+        .ms-sidebar-header {
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .ms-sidebar-header .module-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #605e5c;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .ms-sidebar-header .module-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #201f1e;
+            line-height: 1.4;
+        }
+        .ms-sidebar-header .meta {
+            font-size: 12px;
+            color: #605e5c;
+            margin-top: 6px;
+        }
+        .ms-unit-list { padding: 8px 0; }
+        .ms-unit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: background .12s, border-color .12s;
+            color: #201f1e;
+        }
+        .ms-unit-item:hover { background: #edebe9; }
+        .ms-unit-item.active {
+            border-left-color: var(--ms-blue);
+            background: #deecf9;
+        }
+        .ms-unit-item.active .unit-name { color: var(--ms-blue); font-weight: 600; }
+        .unit-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #c8c6c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            font-size: 10px;
+            background: #fff;
+        }
+        .unit-icon.done { background: var(--ms-green); border-color: var(--ms-green); color: #fff; }
+        .unit-icon.active-icon { border-color: var(--ms-blue); background: var(--ms-blue); color: #fff; }
+        .unit-meta { flex: 1; min-width: 0; }
+        .unit-name { font-size: 13px; line-height: 1.4; }
+        .unit-time { font-size: 11px; color: #605e5c; margin-top: 2px; }
+        .sidebar-progress {
+            padding: 12px 16px;
+            border-top: 1px solid #e1dfdd;
+            margin-top: auto;
+        }
+        .progress-bar-bg { background: #e1dfdd; border-radius: 4px; height: 6px; }
+        .progress-bar-fill { background: var(--ms-green); border-radius: 4px; height: 6px; transition: width .4s; }
+        .progress-text { font-size: 12px; color: #605e5c; margin-top: 6px; }
+
+        /* ─── MAIN ─── */
+        .ms-content { flex: 1; min-width: 0; }
+
+        .ms-breadcrumb {
+            padding: 10px 40px;
+            font-size: 12px;
+            color: #605e5c;
+            border-bottom: 1px solid #e1dfdd;
+            background: #fff;
+        }
+        .ms-breadcrumb a { color: var(--ms-blue); text-decoration: none; }
+        .ms-breadcrumb a:hover { text-decoration: underline; }
+        .ms-breadcrumb span { margin: 0 6px; }
+
+        /* ─── PAGES ─── */
+        .ms-unit-page { display: none; }
+        .ms-unit-page.visible { display: block; }
+
+        .unit-content {
+            max-width: 820px;
+            padding: 32px 40px 60px;
+            margin: 0 auto;
+        }
+
+        .unit-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .unit-completed-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #dff6dd;
+            color: #107c10;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 2px;
+        }
+        .unit-time-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #605e5c;
+            font-size: 13px;
+        }
+
+        /* Typography */
+        .unit-content h1 { font-size: 28px; font-weight: 700; margin: 0 0 20px; color: #201f1e; line-height: 1.3; }
+        .unit-content h2 { font-size: 20px; font-weight: 600; margin: 36px 0 12px; color: #201f1e; padding-top: 8px; }
+        .unit-content h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; color: #201f1e; }
+        .unit-content p { margin: 0 0 14px; }
+        .unit-content ul, .unit-content ol { margin: 0 0 14px; padding-left: 28px; }
+        .unit-content li { margin-bottom: 6px; }
+        .unit-content strong { font-weight: 600; }
+        .unit-content a { color: var(--ms-blue); text-decoration: none; }
+        .unit-content a:hover { text-decoration: underline; }
+        .unit-content code {
+            background: #f3f2f1;
+            border: 1px solid #e1dfdd;
+            border-radius: 3px;
+            padding: 1px 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #a31515;
+        }
+
+        /* Lab card */
+        .ms-lab-card {
+            background: linear-gradient(135deg, #eef6ff 0%, #f5f0ff 100%);
+            border: 1px solid #c7e0f4;
+            border-radius: 6px;
+            padding: 24px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: box-shadow .15s, border-color .15s;
+        }
+        .ms-lab-card:hover { box-shadow: 0 4px 16px rgba(0,120,212,.12); border-color: var(--ms-blue); }
+        .ms-lab-card h3 { margin: 0 0 12px; color: var(--ms-blue-dark); font-size: 16px; font-weight: 600; }
+        .ms-lab-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--ms-blue);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 12px;
+        }
+        .ms-lab-time {
+            font-size: 12px;
+            color: #605e5c;
+            margin-left: 8px;
+        }
+
+        /* Checklist */
+        .ms-checklist { list-style: none; padding: 0; margin: 12px 0; }
+        .ms-checklist li {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 6px 0; font-size: 14px;
+        }
+        .ms-checklist li .check-box {
+            width: 18px; height: 18px;
+            border: 2px solid #8a8886; border-radius: 2px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; margin-top: 1px; cursor: pointer; transition: all .15s;
+        }
+        .ms-checklist li .check-box.checked {
+            background: var(--ms-blue); border-color: var(--ms-blue); color: #fff;
+        }
+
+        /* Resource links */
+        .ms-resource-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; text-decoration: none; color: #201f1e;
+        }
+        .ms-resource-link:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .ms-resource-link i { font-size: 20px; color: var(--ms-blue); width: 24px; text-align: center; }
+
+        /* Unit nav */
+        .unit-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            border-top: 1px solid #e1dfdd;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .nav-btn-prev, .nav-btn-next {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 20px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; border: 1px solid;
+            font-family: inherit; transition: background .12s;
+        }
+        .nav-btn-next { background: var(--ms-blue); color: #fff; border-color: var(--ms-blue); }
+        .nav-btn-next:hover { background: var(--ms-blue-dark); border-color: var(--ms-blue-dark); }
+        .nav-btn-prev { background: #fff; color: var(--ms-blue); border-color: var(--ms-blue); }
+        .nav-btn-prev:hover { background: var(--ms-blue-light); }
+        .unit-page-indicator { font-size: 13px; color: #605e5c; }
+
+        /* Module index */
+        .module-meta-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        .ms-tag { background: #f3f2f1; color: #323130; font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: 500; }
+        .ms-tag.blue { background: #deecf9; color: var(--ms-blue-dark); }
+        .ms-tag.green { background: #dff6dd; color: #107c10; }
+        .unit-card-list { margin: 20px 0; }
+        .unit-card {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 0; border-bottom: 1px solid #f3f2f1; cursor: pointer;
+        }
+        .unit-card:last-child { border-bottom: none; }
+        .unit-card:hover .unit-card-name { color: var(--ms-blue); text-decoration: underline; }
+        .unit-card-num {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #f3f2f1; color: #605e5c;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .unit-card.lab .unit-card-num { background: #eef6ff; color: var(--ms-blue-dark); }
+        .unit-card-info { flex: 1; }
+        .unit-card-name { font-size: 15px; font-weight: 500; }
+        .unit-card-time { font-size: 12px; color: #605e5c; margin-top: 2px; }
+        .unit-card-arrow { color: #c8c6c4; font-size: 14px; }
+    </style>
 </head>
+<body>
 
-<body class="bg-gray-50 font-[Inter] text-gray-800 overscroll-none">
+    <!-- ─── TOP NAV ─── -->
+    <div class="ms-topnav">
+        <a class="brand" href="/">
+            <i class="fas fa-cubes"></i>
+            <span>Vibe Coding Learn</span>
+        </a>
+        <div class="divider"></div>
+        <div class="nav-label">搖桿限位數學與勾股定理應用</div>
+    </div>
 
-    <!-- Hero Section -->
-    <header
-        class="relative bg-gradient-to-br from-blue-900 via-indigo-900 to-slate-900 text-white pt-24 pb-44 overflow-hidden">
-        <div
-            class="header-overlay absolute inset-0 bg-gradient-to-r from-blue-900/90 to-indigo-800/90 mix-blend-multiply">
-        </div>
-        <!-- Decorative background elements -->
-        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 opacity-20">
-            <div
-                class="absolute top-20 left-20 w-72 h-72 bg-blue-500 rounded-full mix-blend-overlay filter blur-3xl animate-pulse">
+    <!-- ─── LAYOUT ─── -->
+    <div class="ms-layout">
+        <!-- Sidebar -->
+        <div class="ms-sidebar">
+            <div class="ms-sidebar-header">
+                <div class="module-label">Start 05</div>
+                <div class="module-title">搖桿限位數學</div>
+                <div class="meta"><i class="far fa-clock"></i> 約 3 小時 · 5 個單元</div>
             </div>
-            <div class="absolute bottom-20 right-20 w-96 h-96 bg-indigo-500 rounded-full mix-blend-overlay filter blur-3xl animate-pulse"
-                style="animation-delay: 2s"></div>
-        </div>
-
-        <div class="container mx-auto px-4 relative z-30 pt-10 pb-10 text-center text-white">
-            <div
-                class="badge-header inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/20 text-blue-200 border border-blue-400/30 backdrop-blur-sm mb-8 text-sm font-semibold tracking-wide uppercase">
-                <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
-                Math & Physics Logic
+            <div class="ms-unit-list" id="sidebar-nav">
+                <!-- JavaScript populated -->
             </div>
-            <h1 class="text-4xl md:text-6xl font-bold mb-6 tracking-tight leading-tight">
-                搖桿限位數學：<br class="hidden md:block" />勾股定理的應用
-            </h1>
-            <p class="text-xl text-blue-100 max-w-2xl mx-auto leading-relaxed mb-10">
-                從 \( c = \sqrt{a^2 + b^2} \) 到流暢的虛擬搖桿體驗。<br>理解如何利用基本幾何學與三角函數，打造完美的觸控回饋。
-            </p>
-
-            <div class="flex flex-wrap justify-center gap-4">
-                <button onclick="enterMediaMode('video', window.RESOURCES.video)"
-                    class="resource-btn bg-blue-500 hover:bg-blue-400 text-white px-8 py-4 rounded-full flex items-center gap-3 shadow-lg shadow-blue-500/30 font-bold transition-all">
-                    <span>📺</span> 觀看教學影片
-                </button>
-                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
-                    class="resource-btn bg-white/10 hover:bg-white/20 border border-white/20 text-white px-8 py-4 rounded-full flex items-center gap-3 backdrop-blur-sm font-bold transition-all">
-                    <span>📄</span> 閱讀課程講義
-                </button>
+            <div class="sidebar-progress">
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text" id="progress-text">0 / 5 已完成</div>
             </div>
         </div>
-    </header>
 
-    <main class="container mx-auto px-4 -mt-24 relative z-10 pb-20">
+        <!-- Content -->
+        <div class="ms-content">
+            <!-- Breadcrumbs -->
+            <div class="ms-breadcrumb">
+                <a href="/">課程</a>
+                <span>&gt;</span>
+                <a href="#">Start 05</a>
+                <span>&gt;</span>
+                <span id="bc-current">課程總覽</span>
+            </div>
 
-        <!-- Module 1: Pythagorean Theorem -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden">
-                <div class="p-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
-                <div class="p-8 md:p-12">
-                    <div class="section-header-left border-l-4 border-blue-500 pl-6 mb-12">
-                        <span class="text-blue-600 font-bold tracking-wider uppercase text-sm">Module 1: The Math</span>
-                        <h2 class="text-4xl font-bold text-gray-900 mt-2">勾股定理與歐幾里得距離</h2>
+            <!-- PAGE: Index (0) -->
+            <div class="ms-unit-page visible" id="page-index">
+                <div class="unit-content">
+                    <div class="module-meta-tags">
+                        <span class="ms-tag blue"><i class="fas fa-calculator"></i> 幾何約束</span>
+                        <span class="ms-tag green"><i class="fas fa-expand-arrows-alt"></i> 數據歸一化</span>
+                    </div>
+                    <h1>搖桿限位數學：勾股定理的應用</h1>
+                    <p class="text-gray-600">
+                        從 \( c = \sqrt{a^2 + b^2} \) 到流暢的虛擬搖桿體驗。理解如何利用基本幾何學與三角函數，打造完美的觸控回饋。
+                    </p>
+
+                    <h2>單元大綱</h2>
+                    <div class="unit-card-list" id="index-unit-list">
+                        <!-- JavaScript populated -->
                     </div>
 
-                    <div class="grid md:grid-cols-2 gap-12 items-center">
-                        <div>
-                            <h3 class="text-2xl font-bold text-gray-800 mb-4">核心公式</h3>
-                            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 mb-6">
+                    <h2>預備知識</h2>
+                    <ul class="text-gray-600">
+                        <li>HTML5 Canvas 繪圖基礎</li>
+                        <li>國中基本畢氏定理 (勾股定理) 概念</li>
+                    </ul>
+                </div>
+                <div class="unit-nav">
+                    <span></span>
+                    <button class="nav-btn-next" onclick="goToUnit(1)">下一單元 &nbsp;›</button>
+                </div>
+            </div>
+
+            <!-- PAGE: 簡介 (1) -->
+            <div class="ms-unit-page" id="page-1">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-1" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 5 分鐘</div>
+                    </div>
+                    <h1>課程簡介</h1>
+                    <p class="text-gray-600">
+                        觀看以下影片或講義，了解如何利用幾何公式與圓周約束，將手指碰觸的二維座標映射至限制半徑內的控制訊號。
+                    </p>
+
+                    <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; margin: 24px 0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        <iframe src="https://www.youtube.com/embed/geLlEPK6MY8" style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;" allowfullscreen></iframe>
+                    </div>
+
+                    <p class="text-gray-600">
+                        在觀看影片後，請繼續點擊「勾股定理與歐幾里得距離」來開始體驗數學公式的幾何視覺化。
+                    </p>
+                </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一單元 &nbsp;›</button>
+                </div>
+            </div>
+
+            <!-- PAGE: 勾股定理與歐幾里得距離 (2) -->
+            <div class="ms-unit-page" id="page-2">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-2" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 20 分鐘</div>
+                    </div>
+                    <h1>勾股定理與歐幾里得距離</h1>
+                    
+                    <div class="grid md:grid-cols-2 gap-8 items-start my-6">
+                        <div class="space-y-6">
+                            <h3 class="text-2xl font-bold text-gray-800">核心公式</h3>
+                            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
                                 <div class="text-3xl text-center font-serif text-slate-800 mb-2">
                                     \( c = \sqrt{a^2 + b^2} \)
                                 </div>
                                 <p class="text-center text-slate-500 text-sm">直角三角形斜邊計算公式</p>
                             </div>
 
-                            <div class="space-y-6">
-                                <div>
-                                    <h4 class="font-bold text-gray-700 mb-2">控制場景應用：</h4>
-                                    <ul class="space-y-3 text-sm text-gray-600">
-                                        <li class="flex items-start gap-3">
-                                            <span class="font-mono text-blue-600 font-bold">Center</span>
-                                            <span>搖桿底座中心點座標 \((x_0, y_0)\)</span>
-                                        </li>
-                                        <li class="flex items-start gap-3">
-                                            <span class="font-mono text-blue-600 font-bold">Touch</span>
-                                            <span>手指觸碰點座標 \((x_1, y_1)\)</span>
-                                        </li>
-                                        <li class="flex items-start gap-3">
-                                            <span class="font-mono text-blue-600 font-bold">Delta</span>
-                                            <span>X軸與Y軸的偏移量 \(\Delta x, \Delta y\)</span>
-                                        </li>
-                                    </ul>
-                                </div>
+                            <div class="space-y-4">
+                                <h4 class="font-bold text-gray-700">控制場景應用：</h4>
+                                <ul class="space-y-3 text-sm text-gray-600">
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-mono text-blue-600 font-bold w-12 flex-shrink-0">Center</span>
+                                        <span>搖桿底座中心點座標 \((x_0, y_0)\)</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-mono text-blue-600 font-bold w-12 flex-shrink-0">Touch</span>
+                                        <span>手指觸碰點座標 \((x_1, y_1)\)</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="font-mono text-blue-600 font-bold w-12 flex-shrink-0">Delta</span>
+                                        <span>X軸與Y軸的偏移量 \(\Delta x = x_1 - x_0, \Delta y = y_1 - y_0\)</span>
+                                    </li>
+                                </ul>
 
-                                <div class="bg-blue-50 text-blue-900 p-4 rounded-lg text-sm border border-blue-100">
+                                <div class="bg-blue-50 text-blue-900 p-4 rounded-lg text-xs border border-blue-100 leading-relaxed">
                                     <strong>學習任務：</strong><br>
                                     給定中心點 \((0,0)\) 與觸控點 \((30, 40)\)，算出手指偏移了多少距離？<br>
-                                    <span class="text-xs text-blue-500 mt-1 block">提示：\(\sqrt{30^2 + 40^2} = \sqrt{900 +
-                                        1600} = \sqrt{2500}\)</span>
+                                    <span class="text-blue-500 font-bold mt-1 block">計算方式：\(\sqrt{30^2 + 40^2} = \sqrt{900 + 1600} = \sqrt{2500} = 50\)</span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Interactive Math Canvas -->
-                        <div
-                            class="bg-slate-900 rounded-xl p-6 relative flex flex-col items-center justify-center border border-slate-700 shadow-inner overflow-hidden">
-                            <canvas id="mathCanvas" width="300" height="300" class="cursor-crosshair"></canvas>
-                            <div class="mt-4 flex gap-4 text-xs font-mono text-slate-400">
+                        <div class="bg-slate-900 rounded-xl p-6 relative flex flex-col items-center justify-center border border-slate-700 shadow-inner overflow-hidden select-none">
+                            <canvas id="mathCanvas" width="300" height="300" class="cursor-crosshair bg-slate-950 rounded border border-slate-800 touch-none"></canvas>
+                            <p class="text-[10px] text-slate-500 mt-2">（在上方畫布內點擊並拖曳以改變座標位置）</p>
+                            <div class="mt-4 flex gap-6 text-xs font-mono text-slate-300 bg-slate-800/80 px-4 py-2 rounded-full">
                                 <div id="val-dx">dx: 0</div>
                                 <div id="val-dy">dy: 0</div>
                                 <div id="val-dist" class="text-yellow-400 font-bold">Distance: 0</div>
@@ -127,21 +481,22 @@
                         </div>
                     </div>
                 </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一單元 &nbsp;›</button>
+                </div>
             </div>
-        </section>
 
-        <!-- Module 2: Limit Logic -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden">
-                <div class="p-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
-                <div class="p-8 md:p-12">
-                    <div class="section-header-left border-l-4 border-purple-500 pl-6 mb-12">
-                        <span class="text-purple-600 font-bold tracking-wider uppercase text-sm">Module 2: Circular
-                            Clamping</span>
-                        <h2 class="text-4xl font-bold text-gray-900 mt-2">限位邏輯：半徑的限制</h2>
+            <!-- PAGE: 限位邏輯：半徑的限制 (3) -->
+            <div class="ms-unit-page" id="page-3">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-3" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 20 分鐘</div>
                     </div>
-
-                    <div class="grid md:grid-cols-2 gap-12">
+                    <h1>限位邏輯：半徑的限制</h1>
+                    
+                    <div class="grid md:grid-cols-2 gap-8 items-start my-6">
                         <div class="space-y-6">
                             <p class="text-gray-600 leading-relaxed">
                                 為什麼不能直接讓搖桿頭跟著手指跑？如果手指滑太遠，搖桿頭會飛出底座！我們需要實作<strong>圓形限制 (Circular Clamping)</strong>。
@@ -150,178 +505,269 @@
                             <div class="bg-purple-50 p-6 rounded-xl border border-purple-100">
                                 <h4 class="font-bold text-purple-800 mb-3">關鍵邏輯：</h4>
                                 <ol class="list-decimal list-inside space-y-2 text-sm text-gray-700">
-                                    <li>設定搖桿底座半徑為 \(R\) (例如 50px)。</li>
-                                    <li>計算目前距離 \(d = \sqrt{\Delta x^2 + \Delta y^2}\)。</li>
-                                    <li><strong>判斷：</strong>如果 \(d > R\)，則必須縮放位置。</li>
+                                    <li>設定搖桿底座最大限制半徑為 \(R\)。</li>
+                                    <li>計算目前偏移距離 \(d = \sqrt{\Delta x^2 + \Delta y^2}\)。</li>
+                                    <li><strong>判斷與等比縮放：</strong>如果 \(d > R\)，則必須將座標限縮回圓周邊界上。</li>
                                 </ol>
                             </div>
 
-                            <div class="bg-slate-800 rounded-lg p-4 font-mono text-sm text-slate-300 overflow-x-auto">
-                                <div class="text-gray-500 mb-2">// 比例縮放公式</div>
-                                if (distance > maxRadius) {
-                                const ratio = maxRadius / distance;
-                                newX = startX + deltaX * ratio;
-                                newY = startY + deltaY * ratio;
+                            <div class="bg-slate-900 rounded-lg p-4 font-mono text-xs text-slate-300 overflow-x-auto leading-normal">
+                                <div class="text-gray-500 mb-2">// 比例縮放公式 (Circular Clamping)</div>
+                                <span class="text-pink-400">if</span> (distance > maxRadius) {<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-blue-400">const</span> ratio = maxRadius / distance;<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;newX = startX + deltaX * ratio;<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;newY = startY + deltaY * ratio;<br>
                                 }
                             </div>
                         </div>
 
-                        <div class="flex flex-col justify-center items-center">
-                            <div
-                                class="relative w-64 h-64 bg-gray-100 rounded-full border-4 border-dashed border-gray-300 flex items-center justify-center">
-                                <div class="absolute w-full h-[1px] bg-gray-300"></div>
-                                <div class="absolute h-full w-[1px] bg-gray-300"></div>
+                        <div class="flex flex-col justify-center items-center select-none bg-gray-50 p-6 rounded-2xl border border-gray-200">
+                            <div class="relative w-64 h-64 bg-white rounded-full border-4 border-dashed border-gray-300 flex items-center justify-center shadow-inner">
+                                <div class="absolute w-full h-[1px] bg-gray-200"></div>
+                                <div class="absolute h-full w-[1px] bg-gray-200"></div>
 
                                 <!-- Visual Representation -->
                                 <div class="absolute w-2 h-2 bg-black rounded-full z-10"></div>
-                                <div
-                                    class="absolute w-[180px] h-1 bg-gradient-to-r from-transparent to-red-400 opacity-50 rotate-45 transform origin-left left-1/2 top-1/2 -mt-0.5">
-                                </div>
-                                <div
-                                    class="absolute w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow-lg top-[15%] right-[15%] z-20 animate-bounce">
-                                </div>
-                                <div
-                                    class="absolute w-4 h-4 bg-green-500 rounded-full border-2 border-white shadow-lg top-[24%] right-[24%] z-20 opacity-50">
-                                </div>
+                                <div class="absolute w-[180px] h-1 bg-gradient-to-r from-transparent to-red-400 opacity-50 rotate-45 transform origin-left left-1/2 top-1/2 -mt-0.5"></div>
+                                <div class="absolute w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow-lg top-[15%] right-[15%] z-20 animate-bounce"></div>
+                                <div class="absolute w-4 h-4 bg-green-500 rounded-full border-2 border-white shadow-lg top-[24%] right-[24%] z-20 opacity-50"></div>
 
-                                <div class="absolute top-10 right-10 text-xs text-red-500 font-bold bg-white px-1">Touch
-                                </div>
-                                <div class="absolute top-20 right-20 text-xs text-green-600 font-bold bg-white px-1">
-                                    Clamped</div>
+                                <div class="absolute top-10 right-10 text-[10px] text-red-500 font-bold bg-white px-2 py-0.5 rounded border border-red-200">Touch</div>
+                                <div class="absolute top-24 right-24 text-[10px] text-green-600 font-bold bg-white px-2 py-0.5 rounded border border-green-200">Clamped</div>
                             </div>
-                            <p class="mt-4 text-xs text-center text-gray-500 max-w-xs">
-                                當觸控點(紅)超出範圍時，系統會計算出圓周上的切點(綠)作為實際位置。
+                            <p class="mt-4 text-xs text-center text-gray-500 max-w-xs leading-relaxed">
+                                當觸控點(紅)超出最大半徑限制時，系統會計算出其在圓周上的相對投影切點(綠)作為搖桿實際位置。
                             </p>
                         </div>
                     </div>
                 </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一單元 &nbsp;›</button>
+                </div>
             </div>
-        </section>
 
-        <!-- Module 3: Vector Standardization & Homework -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden">
-                <div class="p-1 bg-gradient-to-r from-orange-500 to-amber-500"></div>
-                <div class="p-8 md:p-12">
-                    <div class="section-header-left border-l-4 border-orange-500 pl-6 mb-12">
-                        <span class="text-orange-600 font-bold tracking-wider uppercase text-sm">Module 3:
-                            Normalization</span>
-                        <h2 class="text-4xl font-bold text-gray-900 mt-2">向量標準化與實作任務</h2>
+            <!-- PAGE: 教室實戰 (4) -->
+            <div class="ms-unit-page" id="page-4">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-4" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 135 分鐘</div>
                     </div>
-
-                    <!-- Theory -->
-                    <div class="mb-12 bg-orange-50 rounded-xl p-8 border border-orange-100">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-4">預習：速度百分比計算</h3>
-                        <p class="text-gray-600 mb-6">
-                            硬體或 API 通常需要 -1.0 到 1.0 或 0 到 100% 的數值，而不是像素值。我們需要進行<strong>歸一化 (Normalization)</strong>。
+                    <h1>教室實戰與歸一化預習</h1>
+                    
+                    <div class="mb-8 bg-orange-50 rounded-xl p-6 border border-orange-100">
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">預習：速度百分比與向量歸一化</h3>
+                        <p class="text-sm text-gray-600 mb-4">
+                            硬體或 API 通常需要 \(-1.0\) 到 \(1.0\) 或 \(0\) 到 \(100\%\) 的推力數值，而非網頁的像素值。我們需要進行<strong>歸一化 (Normalization)</strong>。
                         </p>
-                        <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <div class="grid md:grid-cols-2 gap-4 text-xs">
                             <div class="bg-white p-4 rounded border border-orange-200">
-                                <strong class="block text-orange-700 mb-2">Power (推力):</strong>
+                                <strong class="block text-orange-700 mb-2">Power (推力百分比):</strong>
                                 <div>\(\text{Power} = \min(\frac{d}{R}, 1.0)\)</div>
-                                <div class="text-gray-500 mt-1">最大值鎖定在 100%。</div>
+                                <div class="text-gray-500 mt-1">將偏移距離與底座半徑相除，最大值限制在 100%。</div>
                             </div>
                             <div class="bg-white p-4 rounded border border-orange-200">
-                                <strong class="block text-orange-700 mb-2">Angle (角度):</strong>
+                                <strong class="block text-orange-700 mb-2">Angle (方向角度):</strong>
                                 <div>\(\theta = \text{atan2}(\Delta y, \Delta x)\)</div>
-                                <div class="text-gray-500 mt-1">計算方向弧度。</div>
+                                <div class="text-gray-500 mt-1">計算手指對應中心點的象限方向弧度，並轉換為角度。</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Tasks Grid -->
-                    <div class="grid md:grid-cols-3 gap-8">
-                        <!-- Homework 3-1 -->
-                        <div onclick="openSubmissionModal('joystick-math-task-1', '作業 3-1: 搖桿邊界鎖定實作')"
-                            class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col h-full group hover:shadow-2xl transition-all cursor-pointer relative">
-                            <div class="bg-blue-500 h-2"></div>
-                            <div class="p-6 flex-grow">
-                                <div class="flex justify-between items-start mb-4">
-                                    <h3 class="font-bold text-xl text-gray-800">作業 3-1</h3>
-                                    <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold">60
-                                        min</span>
-                                </div>
-                                <h4 class="font-bold text-blue-600 mb-2">搖桿邊界鎖定實作</h4>
-                                <p class="text-sm text-gray-600 mb-4">
-                                    編寫 <code>touchmove</code> 邏輯，利用勾股定理判斷距離，實作防拉出的虛擬搖桿。
-                                </p>
-                            </div>
-                            <!-- Click Hint Overlay -->
-                            <div
-                                class="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span
-                                    class="bg-white text-blue-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                                    📤 點擊繳交作業
-                                </span>
-                            </div>
+                    <div class="space-y-4">
+                        <div class="ms-lab-card" onclick="openSubmissionModal('joystick-math-task-1', '作業 3-1: 搖桿邊界鎖定實作')">
+                            <div class="ms-lab-badge">Task 3-1</div>
+                            <span class="ms-lab-time"><i class="far fa-clock"></i> 60 分鐘</span>
+                            <h3>作業 3-1: 搖桿邊界鎖定實作</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                編寫 <code>touchmove</code> 邏輯，利用勾股定理判斷當前手指座標距離中心的大小，實作等比例縮放以防止搖桿頭飛出底座。
+                            </p>
                         </div>
 
-                        <!-- Homework 3-2 -->
-                        <div onclick="openSubmissionModal('joystick-math-task-2', '作業 3-2: 動態數據顯示')"
-                            class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col h-full group hover:shadow-2xl transition-all cursor-pointer relative">
-                            <div class="bg-purple-500 h-2"></div>
-                            <div class="p-6 flex-grow">
-                                <div class="flex justify-between items-start mb-4">
-                                    <h3 class="font-bold text-xl text-gray-800">作業 3-2</h3>
-                                    <span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-bold">45
-                                        min</span>
-                                </div>
-                                <h4 class="font-bold text-purple-600 mb-2">動態數據顯示</h4>
-                                <p class="text-sm text-gray-600 mb-4">
-                                    在網頁上即時顯示搖桿的「推力百分比」與「旋轉角度」。
-                                </p>
-                            </div>
-                            <!-- Click Hint Overlay -->
-                            <div
-                                class="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span
-                                    class="bg-white text-purple-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                                    📤 點擊繳交作業
-                                </span>
-                            </div>
+                        <div class="ms-lab-card" onclick="openSubmissionModal('joystick-math-task-2', '作業 3-2: 動態數據顯示')">
+                            <div class="ms-lab-badge">Task 3-2</div>
+                            <span class="ms-lab-time"><i class="far fa-clock"></i> 45 分鐘</span>
+                            <h3>作業 3-2: 動態數據顯示</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                將點擊與拖移搖桿所產生的數據，轉換為 Power (百分比) 及 Angle (360度角)，並即時呈現在網頁的 Telemetry 數據看板上。
+                            </p>
                         </div>
 
-                        <!-- Homework 3-3 -->
-                        <div onclick="openSubmissionModal('joystick-math-task-3', '作業 3-3: 搖桿自動回彈')"
-                            class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col h-full group hover:shadow-2xl transition-all cursor-pointer relative">
-                            <div class="bg-orange-500 h-2"></div>
-                            <div class="p-6 flex-grow">
-                                <div class="flex justify-between items-start mb-4">
-                                    <h3 class="font-bold text-xl text-gray-800">作業 3-3</h3>
-                                    <span class="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded font-bold">30
-                                        min</span>
-                                </div>
-                                <h4 class="font-bold text-orange-600 mb-2">搖桿自動回彈</h4>
-                                <p class="text-sm text-gray-600 mb-4">
-                                    實作 <code>touchend</code> 事件，讓搖桿頭在放手後自動平滑歸零 \((0,0)\)。
-                                </p>
-                            </div>
-                            <!-- Click Hint Overlay -->
-                            <div
-                                class="absolute inset-0 bg-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span
-                                    class="bg-white text-orange-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                                    📤 點擊繳交作業
-                                </span>
-                            </div>
+                        <div class="ms-lab-card" onclick="openSubmissionModal('joystick-math-task-3', '作業 3-3: 搖桿自動回彈')">
+                            <div class="ms-lab-badge">Task 3-3</div>
+                            <span class="ms-lab-time"><i class="far fa-clock"></i> 30 分鐘</span>
+                            <h3>作業 3-3: 搖桿自動回彈</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                監聽 <code>touchend</code> 或 <code>mouseup</code> 事件，在放開手指時將搖桿頭重置回中心 \((0,0)\)，且所有推力數據立刻歸零以保障機器人操縱安全。
+                            </p>
                         </div>
                     </div>
                 </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一單元 &nbsp;›</button>
+                </div>
             </div>
-        </section>
 
-    </main>
+            <!-- PAGE: 摘要與資源 (5) -->
+            <div class="ms-unit-page" id="page-5">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-5" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 5 分鐘</div>
+                    </div>
+                    <h1>本單元摘要與學習資源</h1>
+                    <h2>重點回顧</h2>
+                    <ul class="text-gray-600">
+                        <li><strong>畢氏定理應用：</strong>使用公式 \(d = \sqrt{\Delta x^2 + \Delta y^2}\) 來算出手指與搖桿中心的相對直線距離。</li>
+                        <li><strong>圓形限位：</strong>利用比例因子 <code>ratio = maxRadius / distance</code> 將超出的位置等比拉回邊界圓周上。</li>
+                        <li><strong>歸一化與安全重置：</strong>轉換成硬體接受的 Power 百分比，並在 <code>touchend</code> 階段觸發安全歸零重置。</li>
+                    </ul>
 
-    <footer class="bg-gray-900 text-white py-12 border-t border-gray-800">
-        <div class="container mx-auto px-4 text-center">
-            <p class="text-gray-500">© 2024 Vibe Coding. All rights reserved.</p>
+                    <h2>延伸閱讀與資源</h2>
+                    <div class="my-4">
+                        <a href="#" onclick="enterMediaMode('video', window.RESOURCES.video); return false;" class="ms-resource-link">
+                            <i class="fab fa-youtube"></i>
+                            <div>
+                                <div class="font-semibold">教學影片</div>
+                                <div class="text-xs text-gray-500">搖桿限位數學與勾股定理應用</div>
+                            </div>
+                        </a>
+                        <a href="#" onclick="enterMediaMode('doc', window.RESOURCES.doc); return false;" class="ms-resource-link">
+                            <i class="far fa-file-alt"></i>
+                            <div>
+                                <div class="font-semibold">課程講義</div>
+                                <div class="text-xs text-gray-500">詳細說明與幾何公式</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(5)">完成本單元 &nbsp;✓</button>
+                </div>
+            </div>
+
         </div>
-    </footer>
-
-    <!-- Media Overlay injected by course-shared.js?v=2026.04.05.FINAL_V6 -->
+    </div>
 
     <!-- Scripts -->
     <script>
+        /* ─── DATA ─── */
+        const UNITS = [
+            { id: 0, label: '課程總覽',       time: '',         type: 'index' },
+            { id: 1, label: '簡介',            time: '5 分鐘',  type: 'unit'  },
+            { id: 2, label: '勾股定理與歐幾里得距離', time: '20 分鐘', type: 'unit' },
+            { id: 3, label: '限位邏輯：半徑的限制', time: '20 分鐘', type: 'unit' },
+            { id: 4, label: '教室實戰',       time: '135 分鐘', type: 'lab'   },
+            { id: 5, label: '摘要與資源',     time: '5 分鐘',  type: 'unit'  },
+        ];
+
+        let currentUnit = 0;
+        let doneSet = new Set();
+
+        /* ─── INIT ─── */
+        function init() {
+            buildSidebar();
+            buildIndexUnitList();
+            goToUnit(0);
+        }
+
+        function buildSidebar() {
+            const nav = document.getElementById('sidebar-nav');
+            nav.innerHTML = UNITS.map(u => {
+                const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>' : '';
+                return `
+                <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
+                    <div class="unit-icon" id="icon-${u.id}">${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div>
+                    <div class="unit-meta">
+                        <div class="unit-name">${u.label}${badge}</div>
+                        ${u.time ? `<div class="unit-time"><i class="far fa-clock"></i> ${u.time}</div>` : ''}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function buildIndexUnitList() {
+            const el = document.getElementById('index-unit-list');
+            el.innerHTML = UNITS.filter(u => u.id > 0).map(u => `
+                <div class="unit-card ${u.type}" onclick="goToUnit(${u.id})">
+                    <div class="unit-card-num">${u.id}</div>
+                    <div class="unit-card-info">
+                        <div class="unit-card-name">${u.label}</div>
+                        <div class="unit-card-time"><i class="far fa-clock"></i> ${u.time}</div>
+                    </div>
+                    <div class="unit-card-arrow">›</div>
+                </div>
+            `).join('');
+        }
+
+        /* ─── NAVIGATION ─── */
+        function goToUnit(id) {
+            document.querySelectorAll('.ms-unit-page').forEach(p => p.classList.remove('visible'));
+            const target = id === 0 ? document.getElementById('page-index') : document.getElementById(`page-${id}`);
+            if (target) target.classList.add('visible');
+
+            document.querySelectorAll('.ms-unit-item').forEach(el => el.classList.remove('active'));
+            const navItem = document.getElementById(`nav-${id}`);
+            if (navItem) { navItem.classList.add('active'); navItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+
+            UNITS.forEach(u => {
+                const icon = document.getElementById(`icon-${u.id}`);
+                if (!icon) return;
+                if (doneSet.has(u.id)) {
+                    icon.className = 'unit-icon done';
+                    icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>';
+                } else if (u.id === id) {
+                    icon.className = 'unit-icon active-icon';
+                    icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+                } else {
+                    icon.className = 'unit-icon';
+                    icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+                }
+            });
+
+            const unit = UNITS.find(u => u.id === id);
+            document.getElementById('bc-current').textContent = unit ? unit.label : '';
+            currentUnit = id;
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Redraw math canvas when entering page-2
+            if (id === 2) {
+                setTimeout(drawMath, 100);
+            }
+        }
+
+        function markDone(id) {
+            doneSet.add(id);
+            const badge = document.getElementById(`badge-${id}`);
+            if (badge) badge.style.display = 'flex';
+            UNITS.forEach(u => {
+                const icon = document.getElementById(`icon-${u.id}`);
+                if (!icon) return;
+                if (doneSet.has(u.id)) { icon.className = 'unit-icon done'; icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>'; }
+            });
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const total = UNITS.length - 1;
+            const done = doneSet.size;
+            document.getElementById('progress-fill').style.width = Math.round(done / total * 100) + '%';
+            document.getElementById('progress-text').textContent = `${done} / ${total} 已完成`;
+        }
+
+        /* ─── CHECKLIST ─── */
+        function toggleCheck(el) {
+            el.classList.toggle('checked');
+            el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
+        }
+
+        /* ─── START ─── */
+        init();
+
         // --- Math Canvas Logic ---
         const mathCanvas = document.getElementById('mathCanvas');
         const ctx = mathCanvas.getContext('2d');
@@ -380,8 +826,6 @@
             document.getElementById('val-dist').innerText = `d: ${dist}`;
         }
 
-        drawMath();
-
         let isDragging = false;
 
         function updatePos(x, y) {
@@ -409,18 +853,12 @@
         }, { passive: false });
         window.addEventListener('touchend', () => { isDragging = false; });
 
-
-        // --- Standard Media Overlay Logic ---
-        // Injected by course-shared.js?v=2026.04.05.FINAL_V6
-
         window.RESOURCES = {
             video: "https://www.youtube.com/embed/geLlEPK6MY8",
             doc: "https://docs.google.com/document/d/e/2PACX-1vQ2sXMOF430KsULyFkuVLQ91n3F2ptIerKFL3nGHA-wO8lPtgWs_896bLg-PfOmeF5atIDJNpzv6tgB/pub?embedded=true"
         };
     </script>
     <script src="/js/course-shared.js?v=2026.05.22.V27.START_UNITS_LAYOUT_UPGRADE"></script>
-    <script>
-    </script>
 
     <!-- Assignment Guide (Hidden) -->
     <section id="assignment-guide" style="display: none;">
@@ -565,5 +1003,4 @@
 
     </section>
 </body>
-
 </html>

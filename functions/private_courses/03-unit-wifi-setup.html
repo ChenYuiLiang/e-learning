@@ -480,26 +480,65 @@
 
     <!-- Assignment Guide (Hidden) -->
     <section id="assignment-guide" style="display: none;">
-        <div class="markdown-heading"><h1 class="heading-element">WiFi 組態設定：作業指引</h1></div>
-        <p>本單元聚焦在 <strong>Web Bluetooth + ESP32 WiFi 配網</strong> 的完整流程。請依序完成以下任務，並將成果提交到您的 GitHub Classroom repository。</p>
-        <div class="markdown-heading"><h2 class="heading-element">任務 1：連線狀態與 UX 回饋</h2></div>
-        <ul>
-            <li>實作明確的藍牙連線狀態顯示（連線中、已連線、已中斷）。</li>
-            <li>處理 <code>gattserverdisconnected</code> 事件，讓使用者可以安全重連。</li>
-            <li>提交內容：連線流程截圖與關鍵程式片段說明。</li>
-        </ul>
-        <div class="markdown-heading"><h2 class="heading-element">任務 2：UTF-8 與傳輸除錯</h2></div>
-        <ul>
-            <li>使用 <code>TextEncoder</code> 編碼 SSID/Password，並檢查長度限制。</li>
-            <li>以 <code>try...catch</code> 捕捉寫入異常，記錄可追蹤的錯誤訊息。</li>
-            <li>提交內容：除錯紀錄（console output）與錯誤處理邏輯說明。</li>
-        </ul>
-        <div class="markdown-heading"><h2 class="heading-element">任務 3：NVS 記憶與重啟驗證</h2></div>
-        <ul>
-            <li>驗證 WiFi 設定可被持久化儲存，重啟後可自動連線。</li>
-            <li>進行多次覆寫測試，確認配置流程在連續操作下仍穩定。</li>
-            <li>提交內容：重啟測試結果與穩定性觀察結論。</li>
-        </ul>
+<div class="markdown-heading"><h1 class="heading-element">WiFi 組態設定 - BLE 傳輸 (學生作業指南)</h1><a id="user-content-wifi-組態設定---ble-傳輸-學生作業指南" class="anchor" aria-label="Permalink: WiFi 組態設定 - BLE 傳輸 (學生作業指南)" href="#wifi-組態設定---ble-傳輸-學生作業指南"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p>歡迎來到本單元的實戰練習！在本單元中，你將學習如何利用網頁前端技術（Web Bluetooth API）來為嵌入式設備（ESP32）進行 WiFi 配網設定。這是一個將 Web 技術與硬體互動結合的典型應用場景。</p>
+<div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2><a id="user-content--學習目標" class="anchor" aria-label="Permalink: 🎯 學習目標" href="#-學習目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<ol>
+<li>掌握 Web Bluetooth API 的異步操作與連線流程。</li>
+<li>實作優質的使用者經驗（UX），提供清晰的連線狀態回饋。</li>
+<li>理解資料編碼（UTF-8）與藍牙傳輸協議。</li>
+<li>完成硬體整合測試，驗證 NVS（非揮發性儲存）的持久化功能。</li>
+</ol>
+<div class="markdown-heading"><h2 class="heading-element">📂 程式庫結構</h2><a id="user-content--程式庫結構" class="anchor" aria-label="Permalink: 📂 程式庫結構" href="#-程式庫結構"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<ul>
+<li>
+<code>wifi-config.html</code>: 前端配網介面（你主要的開發工作區）。</li>
+<li>
+<code>firmware/</code>: 包含 ESP32 的韌體原始碼。</li>
+<li>
+<code>test/</code>: 包含自動化測試腳本。</li>
+<li>
+<code>serial-output.log</code>: 用於提交硬體連線日誌。</li>
+</ul>
+<div class="markdown-heading"><h2 class="heading-element">🛠 任務清單</h2><a id="user-content--任務清單" class="anchor" aria-label="Permalink: 🛠 任務清單" href="#-任務清單"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 1：連線狀態與 UX 優化</h3><a id="user-content-任務-1連線狀態與-ux-優化" class="anchor" aria-label="Permalink: 任務 1：連線狀態與 UX 優化" href="#任務-1連線狀態與-ux-優化"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p><strong>目標</strong>：提升藍牙連線時的透明度，讓使用者清楚知道目前的連線狀態。</p>
+<ul>
+<li>在 <code>wifi-config.html</code> 中實作 <code>gattserverdisconnected</code> 事件監聽。</li>
+<li>當藍牙斷開時，正確重置 UI 狀態。</li>
+<li>使用 CSS 動畫（建議使用 Tailwind 的 <code>animate-pulse</code>）來顯示「連線中」的狀態。</li>
+</ul>
+<div class="markdown-heading"><h3 class="heading-element">任務 2：編碼與異常處理</h3><a id="user-content-任務-2編碼與異常處理" class="anchor" aria-label="Permalink: 任務 2：編碼與異常處理" href="#任務-2編碼與異常處理"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p><strong>目標</strong>：確保 SSID 與密碼能正確轉換並處理潛在的通訊錯誤。</p>
+<ul>
+<li>使用 <code>TextEncoder</code> 將字串轉換為 Byte Stream。</li>
+<li>使用 <code>try...catch</code> 封裝藍牙特徵值寫入（Characteristic Write）的邏輯，以捕捉連線中斷或寫入失敗的異常。</li>
+</ul>
+<div class="markdown-heading"><h3 class="heading-element">任務 3：硬體整合與 NVS 驗證</h3><a id="user-content-任務-3硬體整合與-nvs-驗證" class="anchor" aria-label="Permalink: 任務 3：硬體整合與 NVS 驗證" href="#任務-3硬體整合與-nvs-驗證"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p><strong>目標</strong>：將設定寫入 ESP32 並確認其能成功連線至 WiFi。</p>
+<ul>
+<li>將韌體燒錄至 ESP32。</li>
+<li>使用你的網頁介面連接 ESP32 並傳送 WiFi 資訊。</li>
+<li>確認 ESP32 重啟後成功連線，並將序列埠監控器（Serial Monitor）的完整日誌複製到 <code>serial-output.log</code> 中。</li>
+</ul>
+<div class="markdown-heading"><h2 class="heading-element">📝 提交要求</h2><a id="user-content--提交要求" class="anchor" aria-label="Permalink: 📝 提交要求" href="#-提交要求"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<ol>
+<li>確保 <code>wifi-config.html</code> 中的 <code>TODO</code> 標記已全部完成。</li>
+<li>
+<code>serial-output.log</code> 必須包含 <code>WiFi Connected!</code> 與 <code>NVS Commit Success</code> 等關鍵日誌。</li>
+<li>將所有變更推送到你的 GitHub 程式庫。</li>
+</ol>
+<div class="markdown-heading"><h2 class="heading-element">💡 小提示</h2><a id="user-content--小提示" class="anchor" aria-label="Permalink: 💡 小提示" href="#-小提示"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<ul>
+<li>
+<strong>iOS 使用者</strong>：推薦使用 <strong>Bluefy</strong> 瀏覽器以支援 Web Bluetooth。</li>
+<li>
+<strong>除錯技巧</strong>：善用瀏覽器的開發者工具（F12）查看 Console 中的輸出訊息。</li>
+<li>
+<strong>安全建議</strong>：在測試時，請確保你的 WiFi 密碼不會在公開的程式碼中洩露（本練習僅需提交執行日誌）。</li>
+</ul>
+<p>加油！讓我們開始打造跨領域的配網工具吧！</p>
+
     </section>
 
     <script src="/js/course-shared.js?v=2026.05.21.V21.DISABLE_UNIFIED_SUPPORT_HUB"></script>

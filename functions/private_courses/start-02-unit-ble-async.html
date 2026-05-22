@@ -1112,10 +1112,10 @@ navigator.bluetooth.requestDevice({...})
 <script src="/js/course-shared.js?v=2026.05.22.V27.START_UNITS_LAYOUT_UPGRADE"></script>
 <!-- Assignment Guide (Hidden) -->
 <section id="assignment-guide" style="display: none;">
-<div class="markdown-heading"><h1 class="heading-element">JavaScript 非同步編程：操作 BLE 的靈魂 (start-02-unit-ble-async)</h1><a aria-label="Permalink: JavaScript 非同步編程：操作 BLE 的靈魂 (start-02-unit-ble-async)" class="anchor" href="#javascript-非同步編程操作-ble-的靈魂-start-02-unit-ble-async" id="user-content-javascript-非同步編程操作-ble-的靈魂-start-02-unit-ble-async"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h1 class="heading-element">JavaScript 非同步編程：操作 BLE 的靈魂 (start-02-unit-ble-async)</h1><a id="user-content-javascript-非同步編程操作-ble-的靈魂-start-02-unit-ble-async" class="anchor" aria-label="Permalink: JavaScript 非同步編程：操作 BLE 的靈魂 (start-02-unit-ble-async)" href="#javascript-非同步編程操作-ble-的靈魂-start-02-unit-ble-async"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>歡迎來到 <strong>Start 02</strong> 單元！在這個練習中，你將學習如何使用 JavaScript 的非同步特性（<code>async/await</code>、<code>Promise</code>）來控制藍牙低功耗 (BLE) 裝置。</p>
 <p>在無線通訊的環境中，連線往往是不穩定的，且各項操作需要時間等待。掌握非同步流程控制，是開發穩定硬體互動介面的關鍵。</p>
-<div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2><a aria-label="Permalink: 🎯 學習目標" class="anchor" href="#-學習目標" id="user-content--學習目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2><a id="user-content--學習目標" class="anchor" aria-label="Permalink: 🎯 學習目標" href="#-學習目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ol>
 <li>
 <strong>非同步流程控制</strong>：熟練運用 <code>async/await</code> 處理 BLE 連線鏈。</li>
@@ -1126,26 +1126,26 @@ navigator.bluetooth.requestDevice({...})
 <li>
 <strong>超時保護 (Timeout)</strong>：使用 <code>Promise.race</code> 實作連線超時處理，提升使用者體驗。</li>
 </ol>
-<div class="markdown-heading"><h2 class="heading-element">🚀 任務說明</h2><a aria-label="Permalink: 🚀 任務說明" class="anchor" href="#-任務說明" id="user-content--任務說明"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h3 class="heading-element">任務 1：「逐步點亮」狀態機實作</h3><a aria-label="Permalink: 任務 1：「逐步點亮」狀態機實作" class="anchor" href="#任務-1逐步點亮狀態機實作" id="user-content-任務-1逐步點亮狀態機實作"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">🚀 任務說明</h2><a id="user-content--任務說明" class="anchor" aria-label="Permalink: 🚀 任務說明" href="#-任務說明"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 1：「逐步點亮」狀態機實作</h3><a id="user-content-任務-1逐步點亮狀態機實作" class="anchor" aria-label="Permalink: 任務 1：「逐步點亮」狀態機實作" href="#任務-1逐步點亮狀態機實作"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>在 <code>ble-handler.js</code> 中實作連線邏輯，並在每個關鍵步驟（搜尋、連線、掃描服務）之間更新 <code>index.html</code> 中的進度條或狀態文字。</p>
 <ul>
 <li>
 <strong>關鍵點</strong>：確保在連線過程中將「連線」按鈕設為 <code>disabled</code>。</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">任務 2：處理並發與競爭條件</h3><a aria-label="Permalink: 任務 2：處理並發與競爭條件" class="anchor" href="#任務-2處理並發與競爭條件" id="user-content-任務-2處理並發與競爭條件"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 2：處理並發與競爭條件</h3><a id="user-content-任務-2處理並發與競爭條件" class="anchor" aria-label="Permalink: 任務 2：處理並發與競爭條件" href="#任務-2處理並發與競爭條件"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>當使用者快速連續點擊按鈕時，可能會發生 <code>GATT operation already in progress</code> 錯誤。請在 <code>ble-handler.js</code> 中使用 <code>isBusy</code> 旗標或 <code>try...finally</code> 結構來保護你的連線流程。</p>
 <ul>
 <li>
 <strong>關鍵點</strong>：無論連線成功或失敗，最後都必須釋放鎖定。</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">任務 3：非同步超時保護</h3><a aria-label="Permalink: 任務 3：非同步超時保護" class="anchor" href="#任務-3非同步超時保護" id="user-content-任務-3非同步超時保護"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 3：非同步超時保護</h3><a id="user-content-任務-3非同步超時保護" class="anchor" aria-label="Permalink: 任務 3：非同步超時保護" href="#任務-3非同步超時保護"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>實作一個超時機制。如果在 10 秒內無法完成連線，應主動取消等待並告知使用者「連線逾時」，而不是讓 UI 永久處於等待狀態。</p>
 <ul>
 <li>
 <strong>提示</strong>：可以使用 <code>Promise.race</code> 來達成此功能。</li>
 </ul>
-<div class="markdown-heading"><h2 class="heading-element">📂 程式庫結構</h2><a aria-label="Permalink: 📂 程式庫結構" class="anchor" href="#-程式庫結構" id="user-content--程式庫結構"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">📂 程式庫結構</h2><a id="user-content--程式庫結構" class="anchor" aria-label="Permalink: 📂 程式庫結構" href="#-程式庫結構"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <code>index.html</code>：包含進度條與狀態提示的控制面板。</li>
@@ -1156,20 +1156,21 @@ navigator.bluetooth.requestDevice({...})
 <li>
 <code>assets/</code>：參考圖檔（如連線時序圖）。</li>
 </ul>
-<div class="markdown-heading"><h2 class="heading-element">📝 提交要求</h2><a aria-label="Permalink: 📝 提交要求" class="anchor" href="#-提交要求" id="user-content--提交要求"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">📝 提交要求</h2><a id="user-content--提交要求" class="anchor" aria-label="Permalink: 📝 提交要求" href="#-提交要求"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ol>
 <li>完成 <code>ble-handler.js</code> 中的 <code>TODO</code> 項目。</li>
 <li>確保你的 UI 在各種異常情況（如斷線、超時、拒絕連線）下都能正確恢復到初始狀態。</li>
 <li>在本程式庫的 <code>README.md</code> 下方簡短記錄：你是如何解決並發連線衝突的？</li>
 </ol>
-<hr/>
+<hr>
 <p><em>祝你在非同步編程的挑戰中取得成功！</em></p>
-</section>
+
+    </section>
 <!-- Tutor Guide (Hidden) -->
 <section id="tutor-guide" style="display: none;">
 <p>針對 <strong><code>start-02-unit-ble-async</code> (JavaScript 非同步編程：操作 BLE 的靈魂)</strong> 單元，這是學員從「靜態頁面」跨入「動態硬體互動」的核心樞紐。它要求學員具備 <strong>非同步流控制 (Async Flow Control)</strong> 的意識，學習如何透過 <code>Promise</code> 與 <code>async/await</code> 駕馭藍牙連線的不確定性，並特別針對「連線狀態機」、「競爭條件 (Race Condition)」與「超時保護 (Timeout)」進行實戰，確保控制介面在高波動的無線環境下依然強韌穩定。</p>
 <p>以下是在 <strong>GitHub Classroom</strong> 部署其作業 (Assignments) 的具體建議：</p>
-<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repo) 配置建議</h3><a aria-label="Permalink: 1. 範本程式庫 (Template Repo) 配置建議" class="anchor" href="#1-範本程式庫-template-repo-配置建議" id="user-content-1-範本程式庫-template-repo-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repo) 配置建議</h3><a id="user-content-1-範本程式庫-template-repo-配置建議" class="anchor" aria-label="Permalink: 1. 範本程式庫 (Template Repo) 配置建議" href="#1-範本程式庫-template-repo-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>非同步作業的核心在於「時序處理與異常捕獲」，範本應包含通訊驅動程式框架與模擬環境，建議包含：</p>
 <ul>
 <li>
@@ -1181,9 +1182,9 @@ navigator.bluetooth.requestDevice({...})
 <li>
 <strong>📂 <code>assets/</code></strong>：提供 Web BLE 的連線時序圖 (Sequence Diagram)，作為學員實作代碼的邏輯參考。</li>
 </ul>
-<hr/>
-<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a aria-label="Permalink: 2. 作業任務部署細節" class="anchor" href="#2-作業任務部署細節" id="user-content-2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h4 class="heading-element">任務 1：「逐步點亮」狀態機實作 (Status Timeline Machine Lab)</h4><a aria-label="Permalink: 任務 1：「逐步點亮」狀態機實作 (Status Timeline Machine Lab)" class="anchor" href="#任務-1逐步點亮狀態機實作-status-timeline-machine-lab" id="user-content-任務-1逐步點亮狀態機實作-status-timeline-machine-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr>
+<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a id="user-content-2-作業任務部署細節" class="anchor" aria-label="Permalink: 2. 作業任務部署細節" href="#2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 1：「逐步點亮」狀態機實作 (Status Timeline Machine Lab)</h4><a id="user-content-任務-1逐步點亮狀態機實作-status-timeline-machine-lab" class="anchor" aria-label="Permalink: 任務 1：「逐步點亮」狀態機實作 (Status Timeline Machine Lab)" href="#任務-1逐步點亮狀態機實作-status-timeline-machine-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：透過非同步進度驅動 UI 更新，讓使用者隨時掌握「現在藍牙連線到哪一步了」。</li>
@@ -1199,7 +1200,7 @@ navigator.bluetooth.requestDevice({...})
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 2：處理並發與競爭 (Race Condition Defense Lab)</h4><a aria-label="Permalink: 任務 2：處理並發與競爭 (Race Condition Defense Lab)" class="anchor" href="#任務-2處理並發與競爭-race-condition-defense-lab" id="user-content-任務-2處理並發與競爭-race-condition-defense-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 2：處理並發與競爭 (Race Condition Defense Lab)</h4><a id="user-content-任務-2處理並發與競爭-race-condition-defense-lab" class="anchor" aria-label="Permalink: 任務 2：處理並發與競爭 (Race Condition Defense Lab)" href="#任務-2處理並發與競爭-race-condition-defense-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：防止 GATT 作業重疊導致的系統崩潰。建立「單一執行路徑」的保護意識。</li>
@@ -1215,7 +1216,7 @@ navigator.bluetooth.requestDevice({...})
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 3：不同步超時保護 (Async Timeout Recovery Lab)</h4><a aria-label="Permalink: 任務 3：不同步超時保護 (Async Timeout Recovery Lab)" class="anchor" href="#任務-3不同步超時保護-async-timeout-recovery-lab" id="user-content-任務-3不同步超時保護-async-timeout-recovery-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 3：不同步超時保護 (Async Timeout Recovery Lab)</h4><a id="user-content-任務-3不同步超時保護-async-timeout-recovery-lab" class="anchor" aria-label="Permalink: 任務 3：不同步超時保護 (Async Timeout Recovery Lab)" href="#任務-3不同步超時保護-async-timeout-recovery-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：解決「永久等待」的殭屍狀態。學會利用競速機制 (<code>Promise.race</code>) 主動奪回控制權。</li>
@@ -1231,15 +1232,15 @@ navigator.bluetooth.requestDevice({...})
 </ul>
 </li>
 </ul>
-<hr/>
-<div class="markdown-heading"><h3 class="heading-element">3. 非同步架構與可靠性點評標準 (Async Architecture &amp; Reliability Standards)</h3><a aria-label="Permalink: 3. 非同步架構與可靠性點評標準 (Async Architecture &amp; Reliability Standards)" class="anchor" href="#3-非同步架構與可靠性點評標準-async-architecture--reliability-standards" id="user-content-3-非同步架構與可靠性點評標準-async-architecture--reliability-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr>
+<div class="markdown-heading"><h3 class="heading-element">3. 非同步架構與可靠性點評標準 (Async Architecture &amp; Reliability Standards)</h3><a id="user-content-3-非同步架構與可靠性點評標準-async-architecture--reliability-standards" class="anchor" aria-label="Permalink: 3. 非同步架構與可靠性點評標準 (Async Architecture &amp; Reliability Standards)" href="#3-非同步架構與可靠性點評標準-async-architecture--reliability-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>此單元的價值在於 <strong>「對硬體延遲的容忍力與對軟體執行緒狀態的絕對掌控力」</strong>：</p>
 <ul>
 <li>[ ] <strong>捕捉完整性</strong>：<code>try...catch</code> 是否層層包裹，確保任何斷線或被拒絕都不會導致整個 JavaScript 執行緒崩潰？</li>
 <li>[ ] <strong>鎖定機制嚴謹性</strong>：旗標是否在連線成功與失敗（<code>finally</code> 區塊）都正確釋放？</li>
 <li>[ ] <strong>用戶體感流暢度</strong>：在非同步等待期間，畫面是否依然保有高頻率的 FPS 回饋？</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" class="anchor" href="#-推薦範本結構-github-classroom-template" id="user-content--推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a id="user-content--推薦範本結構-github-classroom-template" class="anchor" aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" href="#-推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <pre lang="text"><code>.
 ├── index.html           # 結構：具備連線進度條與狀態提示的控制面板
 ├── ble-handler.js       # 核心：練習 async/await 鏈接、Try-catch 與 Race 控制
@@ -1251,6 +1252,7 @@ navigator.bluetooth.requestDevice({...})
 |
 |
 太熱血了！我們已經將 <strong>Start 02</strong>（JavaScript 核心）的第一個「靈魂單元」非同步編成了！這標誌著學員現在終於擁有了「跟機器人對話的時間感」。恭喜！通訊工程的底層邏輯已經全面佔領！</p>
-</section>
+
+    </section>
 </body>
 </html>

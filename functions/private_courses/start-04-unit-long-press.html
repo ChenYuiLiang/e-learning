@@ -1,167 +1,510 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>長按邏輯的實現：定時器的妙用 - Vibe Coding</title>
-    <link rel="stylesheet" href="/style.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <style>
+        :root {
+            --ms-blue: #0078d4;
+            --ms-blue-dark: #005a9e;
+            --ms-blue-light: #deecf9;
+            --ms-gray-10: #f3f2f1;
+            --ms-gray-20: #e1dfdd;
+            --ms-gray-90: #201f1e;
+            --ms-green: #107c10;
+            --ms-red: #d13438;
+            --sidebar-w: 280px;
+        }
 
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fff;
+            color: #201f1e;
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* ─── TOP NAV ─── */
+        .ms-topnav {
+            background: var(--ms-blue);
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 4px rgba(0,0,0,.2);
+        }
+        .ms-topnav .brand {
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
+
+        /* ─── LAYOUT ─── */
+        .ms-layout { display: flex; min-height: calc(100vh - 48px); }
+
+        /* ─── SIDEBAR ─── */
+        .ms-sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            background: #faf9f8;
+            border-right: 1px solid #e1dfdd;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 48px;
+            height: calc(100vh - 48px);
+            overflow-y: auto;
+        }
+        .ms-sidebar-header {
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .ms-sidebar-header .module-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #605e5c;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .ms-sidebar-header .module-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #201f1e;
+            line-height: 1.4;
+        }
+        .ms-sidebar-header .meta {
+            font-size: 12px;
+            color: #605e5c;
+            margin-top: 6px;
+        }
+        .ms-unit-list { padding: 8px 0; }
+        .ms-unit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: background .12s, border-color .12s;
+            color: #201f1e;
+        }
+        .ms-unit-item:hover { background: #edebe9; }
+        .ms-unit-item.active {
+            border-left-color: var(--ms-blue);
+            background: #deecf9;
+        }
+        .ms-unit-item.active .unit-name { color: var(--ms-blue); font-weight: 600; }
+        .unit-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #c8c6c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            font-size: 10px;
+            background: #fff;
+        }
+        .unit-icon.done { background: var(--ms-green); border-color: var(--ms-green); color: #fff; }
+        .unit-icon.active-icon { border-color: var(--ms-blue); background: var(--ms-blue); color: #fff; }
+        .unit-meta { flex: 1; min-width: 0; }
+        .unit-name { font-size: 13px; line-height: 1.4; }
+        .unit-time { font-size: 11px; color: #605e5c; margin-top: 2px; }
+        .sidebar-progress {
+            padding: 12px 16px;
+            border-top: 1px solid #e1dfdd;
+            margin-top: auto;
+        }
+        .progress-bar-bg { background: #e1dfdd; border-radius: 4px; height: 6px; }
+        .progress-bar-fill { background: var(--ms-green); border-radius: 4px; height: 6px; transition: width .4s; }
+        .progress-text { font-size: 12px; color: #605e5c; margin-top: 6px; }
+
+        /* ─── MAIN ─── */
+        .ms-content { flex: 1; min-width: 0; }
+
+        .ms-breadcrumb {
+            padding: 10px 40px;
+            font-size: 12px;
+            color: #605e5c;
+            border-bottom: 1px solid #e1dfdd;
+            background: #fff;
+        }
+        .ms-breadcrumb a { color: var(--ms-blue); text-decoration: none; }
+        .ms-breadcrumb a:hover { text-decoration: underline; }
+        .ms-breadcrumb span { margin: 0 6px; }
+
+        /* ─── PAGES ─── */
+        .ms-unit-page { display: none; }
+        .ms-unit-page.visible { display: block; }
+
+        .unit-content {
+            max-width: 820px;
+            padding: 32px 40px 60px;
+            margin: 0 auto;
+        }
+
+        .unit-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .unit-completed-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #dff6dd;
+            color: #107c10;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 2px;
+        }
+        .unit-time-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #605e5c;
+            font-size: 13px;
+        }
+
+        /* Typography */
+        .unit-content h1 { font-size: 28px; font-weight: 700; margin: 0 0 20px; color: #201f1e; line-height: 1.3; }
+        .unit-content h2 { font-size: 20px; font-weight: 600; margin: 36px 0 12px; color: #201f1e; padding-top: 8px; }
+        .unit-content h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; color: #201f1e; }
+        .unit-content p { margin: 0 0 14px; }
+        .unit-content ul, .unit-content ol { margin: 0 0 14px; padding-left: 28px; }
+        .unit-content li { margin-bottom: 6px; }
+        .unit-content strong { font-weight: 600; }
+        .unit-content a { color: var(--ms-blue); text-decoration: none; }
+        .unit-content a:hover { text-decoration: underline; }
+        .unit-content code {
+            background: #f3f2f1;
+            border: 1px solid #e1dfdd;
+            border-radius: 3px;
+            padding: 1px 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #a31515;
+        }
+
+        /* Lab card */
+        .ms-lab-card {
+            background: linear-gradient(135deg, #eef6ff 0%, #f5f0ff 100%);
+            border: 1px solid #c7e0f4;
+            border-radius: 6px;
+            padding: 24px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: box-shadow .15s, border-color .15s;
+        }
+        .ms-lab-card:hover { box-shadow: 0 4px 16px rgba(0,120,212,.12); border-color: var(--ms-blue); }
+        .ms-lab-card h3 { margin: 0 0 12px; color: var(--ms-blue-dark); font-size: 16px; font-weight: 600; }
+        .ms-lab-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--ms-blue);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 12px;
+        }
+        .ms-lab-time {
+            font-size: 12px;
+            color: #605e5c;
+            margin-left: 8px;
+        }
+
+        /* Checklist */
+        .ms-checklist { list-style: none; padding: 0; margin: 12px 0; }
+        .ms-checklist li {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 6px 0; font-size: 14px;
+        }
+        .ms-checklist li .check-box {
+            width: 18px; height: 18px;
+            border: 2px solid #8a8886; border-radius: 2px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; margin-top: 1px; cursor: pointer; transition: all .15s;
+        }
+        .ms-checklist li .check-box.checked {
+            background: var(--ms-blue); border-color: var(--ms-blue); color: #fff;
+        }
+
+        /* Resource links */
+        .ms-resource-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; text-decoration: none; color: #201f1e;
+        }
+        .ms-resource-link:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .ms-resource-link i { font-size: 20px; color: var(--ms-blue); width: 24px; text-align: center; }
+
+        /* Unit nav */
+        .unit-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            border-top: 1px solid #e1dfdd;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .nav-btn-prev, .nav-btn-next {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 20px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; border: 1px solid;
+            font-family: inherit; transition: background .12s;
+        }
+        .nav-btn-next { background: var(--ms-blue); color: #fff; border-color: var(--ms-blue); }
+        .nav-btn-next:hover { background: var(--ms-blue-dark); border-color: var(--ms-blue-dark); }
+        .nav-btn-prev { background: #fff; color: var(--ms-blue); border-color: var(--ms-blue); }
+        .nav-btn-prev:hover { background: var(--ms-blue-light); }
+        .unit-page-indicator { font-size: 13px; color: #605e5c; }
+
+        /* Module index */
+        .module-meta-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        .ms-tag { background: #f3f2f1; color: #323130; font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: 500; }
+        .ms-tag.blue { background: #deecf9; color: var(--ms-blue-dark); }
+        .ms-tag.green { background: #dff6dd; color: #107c10; }
+        .unit-card-list { margin: 20px 0; }
+        .unit-card {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 0; border-bottom: 1px solid #f3f2f1; cursor: pointer;
+        }
+        .unit-card:last-child { border-bottom: none; }
+        .unit-card:hover .unit-card-name { color: var(--ms-blue); text-decoration: underline; }
+        .unit-card-num {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #f3f2f1; color: #605e5c;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .unit-card.lab .unit-card-num { background: #eef6ff; color: var(--ms-blue-dark); }
+        .unit-card-info { flex: 1; }
+        .unit-card-name { font-size: 15px; font-weight: 500; }
+        .unit-card-time { font-size: 12px; color: #605e5c; margin-top: 2px; }
+        .unit-card-arrow { color: #c8c6c4; font-size: 14px; }
+    </style>
 </head>
+<body>
 
-<body class="bg-gray-50 font-[Inter] text-gray-800 overscroll-none">
+    <!-- ─── TOP NAV ─── -->
+    <div class="ms-topnav">
+        <a class="brand" href="/">
+            <i class="fas fa-cubes"></i>
+            <span>Vibe Coding Learn</span>
+        </a>
+        <div class="divider"></div>
+        <div class="nav-label">長按邏輯的實現：定時器的妙用</div>
+    </div>
 
-    <!-- Hero Section -->
-    <header
-        class="relative bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 text-white pt-24 pb-44 overflow-hidden">
-        <div
-            class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-20">
-        </div>
-
-        <!-- Decorative background elements -->
-        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-            <div
-                class="absolute top-20 left-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-overlay filter blur-3xl animate-pulse opacity-30">
+    <!-- ─── LAYOUT ─── -->
+    <div class="ms-layout">
+        <!-- Sidebar -->
+        <div class="ms-sidebar">
+            <div class="ms-sidebar-header">
+                <div class="module-label">Start 04</div>
+                <div class="module-title">長按邏輯的實現：定時器的妙用</div>
+                <div class="meta"><i class="far fa-clock"></i> 約 3.5 小時 · 5 個單元</div>
             </div>
-            <div class="absolute bottom-10 right-10 w-96 h-96 bg-blue-500 rounded-full mix-blend-overlay filter blur-3xl animate-pulse opacity-30"
-                style="animation-delay: 2s"></div>
-        </div>
-
-        <div class="container mx-auto px-4 relative z-30 pt-10 pb-10 text-center">
-            <div
-                class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/20 text-indigo-200 border border-indigo-400/30 backdrop-blur-sm mb-8 text-sm font-semibold tracking-wide uppercase">
-                <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
-                Timer Logic & Safety
+            <div class="ms-unit-list" id="sidebar-nav">
+                <!-- JavaScript populated -->
             </div>
-            <h1 class="text-4xl md:text-6xl font-bold mb-6 tracking-tight leading-tight">
-                長按邏輯的實現：<br class="hidden md:block" />定時器的妙用與安全機制
-            </h1>
-            <p class="text-xl text-indigo-100 max-w-2xl mx-auto leading-relaxed mb-10">
-                掌握 setInterval 與 clearInterval 的核心運作，學會如何設計安全、流暢且防抖動的長按控制邏輯，讓你的無人車乖乖聽話。
-            </p>
-
-            <div class="flex flex-wrap justify-center gap-4">
-                <button onclick="enterMediaMode('video', window.RESOURCES.video)"
-                    class="bg-indigo-500 hover:bg-indigo-400 text-white px-8 py-4 rounded-full flex items-center gap-3 shadow-lg shadow-indigo-500/30 font-bold transition-all transform hover:-translate-y-1">
-                    <span>📺</span> 觀看教學影片
-                </button>
-                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
-                    class="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-8 py-4 rounded-full flex items-center gap-3 backdrop-blur-sm font-bold transition-all">
-                    <span>📄</span> 閱讀課程講義
-                </button>
+            <div class="sidebar-progress">
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text" id="progress-text">0 / 5 已完成</div>
             </div>
         </div>
-    </header>
 
-    <main class="container mx-auto px-4 -mt-24 relative z-10 pb-20">
+        <!-- Content -->
+        <div class="ms-content">
+            <!-- Breadcrumbs -->
+            <div class="ms-breadcrumb">
+                <a href="/">課程</a>
+                <span>&gt;</span>
+                <a href="#">Start 04</a>
+                <span>&gt;</span>
+                <span id="bc-current">課程總覽</span>
+            </div>
 
-        <!-- Module 1: Intuitive Lab -->
-        <section class="mb-16">
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-                <div class="h-1 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
-                <div class="p-8 md:p-12">
-                    <div class="flex flex-col md:flex-row gap-12">
-                        <!-- Concept -->
-                        <div class="flex-1 space-y-6">
-                            <div class="border-l-4 border-indigo-500 pl-6">
-                                <span class="text-indigo-600 font-bold tracking-wider uppercase text-sm">Module 1:
-                                    Intuitive Lab</span>
-                                <h2 class="text-3xl font-bold text-gray-900 mt-2">JS 的心跳：定時器實驗</h2>
-                            </div>
+            <!-- PAGE: Index (0) -->
+            <div class="ms-unit-page visible" id="page-index">
+                <div class="unit-content">
+                    <div class="module-meta-tags">
+                        <span class="ms-tag blue"><i class="fas fa-history"></i> 計時與安全</span>
+                        <span class="ms-tag green"><i class="fas fa-microchip"></i> 控制硬體</span>
+                    </div>
+                    <h1>長按邏輯的實現：定時器的妙用與安全機制</h1>
+                    <p class="text-gray-600">
+                        掌握 <code>setInterval</code> 與 <code>clearInterval</code> 的核心運作，學會如何設計安全、流暢且防抖動的長按控制邏輯，讓你的無人車乖乖聽話。
+                    </p>
 
-                            <p class="text-gray-600 leading-relaxed">
-                                <code>setInterval</code> 就像一個永不疲倦的節拍器，每隔固定時間就會執行一次任務。而 <code>clearInterval</code>
-                                則是讓它停下來的唯一開關。
-                                試著操作右側的實驗裝置，觀察數字的變化與節奏。
+                    <h2>單元大綱</h2>
+                    <div class="unit-card-list" id="index-unit-list">
+                        <!-- JavaScript populated -->
+                    </div>
+
+                    <h2>預備知識</h2>
+                    <ul class="text-gray-600">
+                        <li>已理解 HTML5 基礎結構與按鈕事件</li>
+                        <li>已掌握基礎 JavaScript 事件監聽器 (Event Listeners)</li>
+                    </ul>
+                </div>
+                <div class="unit-nav">
+                    <span></span>
+                    <button class="nav-btn-next" onclick="goToUnit(1)">下一單元 &nbsp;›</button>
+                </div>
+            </div>
+
+            <!-- PAGE: 簡介 (1) -->
+            <div class="ms-unit-page" id="page-1">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-1" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 5 分鐘</div>
+                    </div>
+                    <h1>課程簡介</h1>
+                    <p class="text-gray-600">
+                        觀看以下影片或講義，理解如何透過定時器機制，實作不卡頓的按鈕長按連發與斷連熔斷防護。
+                    </p>
+
+                    <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; margin: 24px 0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        <iframe src="https://www.youtube.com/embed/U1A_b2SCAQY" style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;" allowfullscreen></iframe>
+                    </div>
+
+                    <p class="text-gray-600">
+                        在觀看影片後，請繼續往下點擊「定時器實驗」來體驗計時器的運作。
+                    </p>
+                </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一單元 &nbsp;›</button>
+                </div>
+            </div>
+
+            <!-- PAGE: 定時器實驗 (2) -->
+            <div class="ms-unit-page" id="page-2">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-2" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 15 分鐘</div>
+                    </div>
+                    <h1>JS 的心跳：定時器實驗</h1>
+                    
+                    <div class="grid md:grid-cols-2 gap-8 items-start my-6">
+                        <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm space-y-4">
+                            <h3 class="text-xl font-bold mb-2 flex items-center gap-2 text-indigo-600">
+                                節拍器原理
+                            </h3>
+                            <p class="text-gray-600 text-sm">
+                                <code>setInterval</code> 就像一個永不疲倦的節拍器，每隔固定時間就會執行一次任務。而 <code>clearInterval</code> 則是讓它停下來的唯一開關。
                             </p>
 
-                            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
-                                <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
-                                    <span class="text-lg">🔑</span> 核心語法
-                                </h3>
-                                <div class="space-y-3 font-mono text-sm">
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <h4 class="font-bold text-slate-800 mb-2 text-sm">🔑 核心語法</h4>
+                                <div class="space-y-3 font-mono text-xs">
                                     <div class="bg-white p-3 rounded border border-slate-200 text-slate-600">
-                                        <span class="text-purple-600">const</span> timer = <span
-                                            class="text-blue-600">setInterval</span>(fn, <span
-                                            class="text-orange-600">1000</span>);
-                                        <div class="text-xs text-slate-400 mt-1">// 每 1000ms 執行一次 fn</div>
+                                        <span class="text-purple-600">const</span> timer = <span class="text-blue-600">setInterval</span>(fn, <span class="text-orange-600">1000</span>);
+                                        <div class="text-[10px] text-slate-400 mt-1">// 每 1000ms 執行一次 fn</div>
                                     </div>
                                     <div class="bg-white p-3 rounded border border-slate-200 text-slate-600">
                                         <span class="text-blue-600">clearInterval</span>(timer);
-                                        <div class="text-xs text-slate-400 mt-1">// 停止指定的 timer ID</div>
+                                        <div class="text-[10px] text-slate-400 mt-1">// 停止指定的 timer ID</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Interactive Demo -->
-                        <div
-                            class="flex-1 bg-slate-900 rounded-2xl p-8 shadow-inner flex flex-col items-center justify-center relative overflow-hidden">
+                        <!-- Simulator -->
+                        <div class="flex-1 bg-slate-900 rounded-2xl p-8 shadow-inner flex flex-col items-center justify-center relative overflow-hidden min-h-[280px]">
                             <!-- Background Pulse -->
-                            <div id="pulse-bg"
-                                class="absolute inset-0 bg-indigo-500/0 transition-colors duration-100 pointer-events-none">
-                            </div>
+                            <div id="pulse-bg" class="absolute inset-0 bg-indigo-500/0 transition-colors duration-100 pointer-events-none"></div>
 
-                            <div class="text-6xl font-mono font-bold text-white mb-8 z-10 tabular-nums"
-                                id="counter-display">0</div>
+                            <div class="text-6xl font-mono font-bold text-white mb-8 z-10 tabular-nums" id="counter-display">0</div>
 
                             <div class="flex gap-4 z-10">
-                                <button id="btn-start"
-                                    class="bg-green-500 hover:bg-green-400 text-green-900 font-bold py-3 px-8 rounded-full transition shadow-lg shadow-green-500/20 active:scale-95">
+                                <button id="btn-start" class="bg-green-500 hover:bg-green-400 text-green-900 font-bold py-3 px-6 rounded-full transition shadow-lg shadow-green-500/20 active:scale-95 text-sm">
                                     開始計數 (Start)
                                 </button>
-                                <button id="btn-stop"
-                                    class="bg-red-500 hover:bg-red-400 text-white font-bold py-3 px-8 rounded-full transition shadow-lg shadow-red-500/20 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <button id="btn-stop" class="bg-red-500 hover:bg-red-400 text-white font-bold py-3 px-6 rounded-full transition shadow-lg shadow-red-500/20 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed text-sm" disabled>
                                     停止 (Stop)
                                 </button>
                             </div>
 
-                            <div class="mt-8 font-mono text-xs text-slate-500 text-center z-10">
+                            <div class="mt-6 font-mono text-xs text-slate-500 text-center z-10">
                                 Timer ID: <span id="timer-id-display" class="text-yellow-400">null</span>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一單元 &nbsp;›</button>
+                </div>
             </div>
-        </section>
 
-        <!-- Module 2: Core Principles -->
-        <section class="mb-16">
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-                <div class="h-1 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
-                <div class="p-8 md:p-12">
-                    <div class="border-l-4 border-purple-500 pl-6 mb-10">
-                        <span class="text-purple-600 font-bold tracking-wider uppercase text-sm">Module 2: Core
-                            Principles</span>
-                        <h2 class="text-3xl font-bold text-gray-900 mt-2">長按邏輯的「三部曲」架構</h2>
+            <!-- PAGE: 三大構建基石 (3) -->
+            <div class="ms-unit-page" id="page-3">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-3" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 15 分鐘</div>
                     </div>
+                    <h1>長按邏輯的「三部曲」架構</h1>
+                    <p class="text-gray-600">
+                        在設計長按遙控器邏輯時，我們需要明確將整個操作生命週期切分為以下三段：
+                    </p>
 
-                    <div class="grid lg:grid-cols-2 gap-10">
-                        <div class="space-y-8">
+                    <div class="grid lg:grid-cols-2 gap-8 my-6">
+                        <div class="space-y-6">
                             <!-- Step 1 -->
                             <div class="flex gap-4">
-                                <div
-                                    class="flex-shrink-0 w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xl">
-                                    1</div>
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">1</div>
                                 <div>
-                                    <h3 class="font-bold text-lg text-gray-800">Start (按下瞬間)</h3>
+                                    <h3 class="font-bold text-gray-800">Start (按下瞬間)</h3>
                                     <p class="text-gray-600 text-sm mt-1">
-                                        監聽 <code>touchstart</code> 或 <code>mousedown</code> 事件。
-                                        在這裡啟動 <code>setInterval</code>，開始不斷發送指令。
+                                        監聽 <code>touchstart</code> 或 <code>mousedown</code> 事件。在這裡啟動 <code>setInterval</code>，開始不斷發送指令。
                                     </p>
                                 </div>
                             </div>
                             <!-- Step 2 -->
                             <div class="flex gap-4">
-                                <div
-                                    class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xl">
-                                    2</div>
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold">2</div>
                                 <div>
-                                    <h3 class="font-bold text-lg text-gray-800">Loop (持續長按)</h3>
+                                    <h3 class="font-bold text-gray-800">Loop (持續長按)</h3>
                                     <p class="text-gray-600 text-sm mt-1">
                                         定時器每隔一段時間 (例如 50ms) 執行一次 callback，向 ESP32 發送「前進」指令。
                                     </p>
@@ -169,43 +512,31 @@
                             </div>
                             <!-- Step 3 -->
                             <div class="flex gap-4">
-                                <div
-                                    class="flex-shrink-0 w-12 h-12 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center font-bold text-xl">
-                                    3</div>
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center font-bold">3</div>
                                 <div>
-                                    <h3 class="font-bold text-lg text-gray-800">Stop (放開手指)</h3>
+                                    <h3 class="font-bold text-gray-800">Stop (放開手指)</h3>
                                     <p class="text-gray-600 text-sm mt-1">
-                                        監聽 <code>touchend</code> 或 <code>mouseup</code> 事件。
-                                        <strong class="text-red-500">清除定時器</strong> 並發送最後一次「停止」指令。
+                                        監聽 <code>touchend</code> 或 <code>mouseup</code> 事件。<strong>清除定時器</strong> 並發送最後一次「停止」指令。
                                     </p>
                                 </div>
                             </div>
 
-                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-5">
-                                <h4 class="font-bold text-yellow-800 text-sm mb-2 flex items-center gap-2">⚠️ 危險：Timer
-                                    Stacking (定時器疊加)</h4>
-                                <p class="text-sm text-yellow-800 leading-relaxed">
-                                    如果使用者狂點按鈕，可能會連續觸發多次 Start 而來不及 Stop，導致產生多個「停不下來」的幽靈定時器。
-                                    <br><br>
-                                    <strong>解法：</strong> 在每次 <code>setInterval</code> 之前，先執行一次
-                                    <code>clearInterval</code>。
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                <h4 class="font-bold text-yellow-800 text-sm mb-1">⚠️ 危險：Timer Stacking (定時器疊加)</h4>
+                                <p class="text-xs text-yellow-800 leading-relaxed">
+                                    如果使用者狂點按鈕，可能會連續觸發多次 Start 而來不及 Stop，導致產生多個「停不下來」的幽靈定時器。<br>
+                                    <strong>解法：</strong> 在每次 <code>setInterval</code> 之前，先執行一次 <code>clearInterval</code>。
                                 </p>
                             </div>
                         </div>
 
-                        <!-- Code Example -->
-                        <div class="bg-[#1e293b] rounded-xl overflow-hidden shadow-2xl flex flex-col h-full">
-                            <div
-                                class="bg-[#0f172a] px-4 py-2 flex items-center justify-between border-b border-gray-700">
+                        <!-- Code block -->
+                        <div class="bg-[#1e293b] rounded-xl overflow-hidden shadow-xl flex flex-col h-full">
+                            <div class="bg-[#0f172a] px-4 py-2 flex items-center justify-between border-b border-gray-700">
                                 <span class="text-xs font-mono text-gray-400">long-press.js</span>
-                                <div class="flex gap-1.5">
-                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                                </div>
                             </div>
-                            <div class="p-6 overflow-auto code-preview flex-grow">
-                                <pre class="font-mono text-sm leading-relaxed text-gray-300">
+                            <div class="p-4 overflow-auto code-preview flex-grow">
+                                <pre class="font-mono text-xs leading-relaxed text-gray-300">
 <span class="text-purple-400">let</span> timer = <span class="text-blue-400">null</span>;
 
 <span class="text-gray-500">// 1. Start</span>
@@ -213,12 +544,11 @@
   <span class="text-gray-500">// 防呆：先清除舊的，避免疊加</span>
   <span class="text-blue-400">if</span> (timer) <span class="text-blue-400">clearInterval</span>(timer);
 
-  console.<span class="text-blue-400">log</span>(<span class="text-green-300">'Move Forward'</span>); <span class="text-gray-500">// 立即執行第一次</span>
+  console.<span class="text-blue-400">log</span>(<span class="text-green-300">'Move Forward'</span>);
   
   <span class="text-gray-500">// 2. Loop</span>
   timer = <span class="text-blue-400">setInterval</span>(() => {
     console.<span class="text-blue-400">log</span>(<span class="text-green-300">'Move Forward...'</span>);
-    <span class="text-gray-500">// sendCommand('F');</span>
   }, <span class="text-orange-400">50</span>);
 }
 
@@ -229,127 +559,238 @@
     timer = <span class="text-blue-400">null</span>;
   }
   console.<span class="text-blue-400">log</span>(<span class="text-red-400">'STOP'</span>);
-  <span class="text-gray-500">// sendCommand('S');</span>
 }
 
 btn.<span class="text-blue-400">addEventListener</span>(<span class="text-green-300">'touchstart'</span>, startMove);
-btn.<span class="text-blue-400">addEventListener</span>(<span class="text-green-300">'touchend'</span>, stopMove);
-</pre>
+btn.<span class="text-blue-400">addEventListener</span>(<span class="text-green-300">'touchend'</span>, stopMove);</pre>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- Module 3: Practical Challenge -->
-        <section class="mb-16">
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-                <div class="h-1 bg-gradient-to-r from-red-500 to-orange-500"></div>
-                <div class="p-8 md:p-12">
-                    <div class="border-l-4 border-red-500 pl-6 mb-10">
-                        <span class="text-red-600 font-bold tracking-wider uppercase text-sm">Module 3: Classroom
-                            Battles</span>
-                        <h2 class="text-3xl font-bold text-gray-900 mt-2">教室實戰挑戰</h2>
-                    </div>
-
-                    <div class="grid md:grid-cols-3 gap-6">
-                        <!-- Challenge 1 -->
-                        <div onclick="openSubmissionModal('long-press-task-1', '作業 2-1: 甜蜜頻率尋找賽')"
-                            class="group bg-slate-50 hover:bg-white rounded-xl p-6 border border-slate-200 hover:border-indigo-300 hover:shadow-lg transition-all duration-300 cursor-pointer relative">
-                            <div class="flex justify-between items-start mb-4">
-                                <div
-                                    class="bg-indigo-100 text-indigo-700 font-bold px-3 py-1 rounded text-xs uppercase">
-                                    HW 2-1</div>
-                                <span class="text-slate-400 text-xs font-mono">45 min</span>
-                            </div>
-                            <h3
-                                class="text-lg font-bold text-slate-800 mb-2 group-hover:text-indigo-600 transition-colors">
-                                甜蜜頻率尋找賽</h3>
-                            <p class="text-slate-600 text-sm leading-relaxed mb-4">
-                                實測不同 setInterval 毫秒數 (10ms ~ 500ms) 對無人車反應的影響。找出一個不卡頓也不會讓 ESP32 當機的「甜蜜點」。
-                            </p>
-                            <div class="text-xs text-indigo-500 font-bold">👉 目標：20ms - 100ms</div>
-                            <!-- Hover Overlay -->
-                            <div
-                                class="absolute inset-0 bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-                                <span
-                                    class="bg-white text-indigo-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform">
-                                    📤 點擊繳交作業
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Challenge 2 -->
-                        <div onclick="openSubmissionModal('long-press-task-2', '作業 2-2: 雙重保險機制')"
-                            class="group bg-slate-50 hover:bg-white rounded-xl p-6 border border-slate-200 hover:border-purple-300 hover:shadow-lg transition-all duration-300 cursor-pointer relative">
-                            <div class="flex justify-between items-start mb-4">
-                                <div
-                                    class="bg-purple-100 text-purple-700 font-bold px-3 py-1 rounded text-xs uppercase">
-                                    HW 2-2</div>
-                                <span class="text-slate-400 text-xs font-mono">60 min</span>
-                            </div>
-                            <h3
-                                class="text-lg font-bold text-slate-800 mb-2 group-hover:text-purple-600 transition-colors">
-                                雙重保險機制</h3>
-                            <p class="text-slate-600 text-sm leading-relaxed mb-4">
-                                為了防止瀏覽器當機導致車子暴衝，實作安全保護：
-                                1. 前端限時 5 秒自動停止。
-                                2. 斷線偵測 (navigator.onLine)。
-                            </p>
-                            <div class="text-xs text-purple-500 font-bold">👉 目標：極端狀況也能煞車</div>
-                            <!-- Hover Overlay -->
-                            <div
-                                class="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-                                <span
-                                    class="bg-white text-purple-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform">
-                                    📤 點擊繳交作業
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Challenge 3 -->
-                        <div onclick="openSubmissionModal('long-press-task-3', '作業 2-3: 多按鈕並行邏輯')"
-                            class="group bg-slate-50 hover:bg-white rounded-xl p-6 border border-slate-200 hover:border-pink-300 hover:shadow-lg transition-all duration-300 cursor-pointer relative">
-                            <div class="flex justify-between items-start mb-4">
-                                <div class="bg-pink-100 text-pink-700 font-bold px-3 py-1 rounded text-xs uppercase">HW
-                                    2-3</div>
-                                <span class="text-slate-400 text-xs font-mono">60 min</span>
-                            </div>
-                            <h3
-                                class="text-lg font-bold text-slate-800 mb-2 group-hover:text-pink-600 transition-colors">
-                                多按鈕並行邏輯</h3>
-                            <p class="text-slate-600 text-sm leading-relaxed mb-4">
-                                當右手按「前進」，左手按「左轉」時，如何不打架？
-                                練習將指令打包成 JSON：<code>{F:1, L:1}</code> 統一發送。
-                            </p>
-                            <div class="text-xs text-pink-500 font-bold">👉 目標：多工協同運作</div>
-                            <!-- Hover Overlay -->
-                            <div
-                                class="absolute inset-0 bg-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-                                <span
-                                    class="bg-white text-pink-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform">
-                                    📤 點擊繳交作業
-                                </span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一單元 &nbsp;›</button>
                 </div>
             </div>
-        </section>
 
-    </main>
+            <!-- PAGE: 教室實戰 (4) -->
+            <div class="ms-unit-page" id="page-4">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-4" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 165 分鐘</div>
+                    </div>
+                    <h1>教室實戰：長按與安全熔斷機制</h1>
+                    <p class="text-gray-600">請完成以下實作挑戰。點擊卡片可繳交作業：</p>
 
-    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
-        <div class="container mx-auto px-4 text-center">
-            <p>© 2024 Vibe Coding. All rights reserved.</p>
+                    <!-- Task 2-1 -->
+                    <div class="ms-lab-card" onclick="openSubmissionModal('long-press-task-1', '作業 2-1: 甜蜜頻率尋找賽')">
+                        <div class="ms-lab-badge"><i class="fas fa-tachometer-alt"></i> 作業 2-1</div>
+                        <span class="ms-lab-time"><i class="far fa-clock"></i> 約 45 分鐘</span>
+                        <h3>甜蜜頻率尋找賽</h3>
+                        <p class="text-sm text-gray-600 mb-4">
+                            實測不同 <code>setInterval</code> 毫秒數 (10ms ~ 500ms) 對無人車反應的影響。找出一個不卡頓也不會讓 ESP32 當機的「甜蜜點」。
+                        </p>
+                        <ul class="ms-checklist">
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>按下按鈕時，動作是否能流暢連發且沒有卡頓？</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>尋找合適頻率以滿足 ESP32 串列埠接收限流 (目標：20ms - 100ms)</span></li>
+                        </ul>
+                    </div>
+
+                    <!-- Task 2-2 -->
+                    <div class="ms-lab-card" onclick="openSubmissionModal('long-press-task-2', '作業 2-2: 雙重保險機制')">
+                        <div class="ms-lab-badge"><i class="fas fa-shield-alt"></i> 作業 2-2</div>
+                        <span class="ms-lab-time"><i class="far fa-clock"></i> 約 60 分鐘</span>
+                        <h3>雙重保險機制</h3>
+                        <p class="text-sm text-gray-600 mb-4">
+                            為防瀏覽器當機、分頁切換或網路瞬斷導致無人車暴衝，實作雙重保險熔斷：
+                        </p>
+                        <ul class="ms-checklist">
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>前端按住 5 秒超時，自動執行 <code>stopMove</code> 強制熔斷煞車</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>監聽 <code>window.blur</code> 或 <code>visibilitychange</code>，失焦時自動煞車</span></li>
+                        </ul>
+                    </div>
+
+                    <!-- Task 2-3 -->
+                    <div class="ms-lab-card" onclick="openSubmissionModal('long-press-task-3', '作業 2-3: 多按鈕並行邏輯')">
+                        <div class="ms-lab-badge"><i class="fas fa-cubes"></i> 作業 2-3</div>
+                        <span class="ms-lab-time"><i class="far fa-clock"></i> 約 60 分鐘</span>
+                        <h3>多按鈕並行邏輯</h3>
+                        <p class="text-sm text-gray-600 mb-4">
+                            當右手按「前進」，左手按「左轉」時，如何不讓定時器互相干擾覆蓋？
+                        </p>
+                        <ul class="ms-checklist">
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>管理多組獨立定時器 ID，放開個別按鍵只清除對應定時器</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>將並行狀態打包成單一 JSON 物件 (e.g. <code>{F:1, L:1}</code>) 發送</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一單元 &nbsp;›</button>
+                </div>
+            </div>
+
+            <!-- PAGE: 摘要與資源 (5) -->
+            <div class="ms-unit-page" id="page-5">
+                <div class="unit-content">
+                    <div class="unit-status-bar">
+                        <div class="unit-completed-badge" id="badge-5" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-time-badge"><i class="far fa-clock"></i> 5 分鐘</div>
+                    </div>
+                    <h1>摘要與學習資源</h1>
+                    <p class="text-gray-600">
+                        恭喜你完成了「長按邏輯的實現：定時器的妙用」的學習！以下是本單元的重點摘要與參考資源：
+                    </p>
+
+                    <h3>學習摘要</h3>
+                    <ul class="text-gray-600">
+                        <li><code>setInterval</code> 與 <code>clearInterval</code> 是 JavaScript 最核心的週期性輪詢機制。</li>
+                        <li>啟動新定時器前務必 <code>clearInterval(timer)</code>，清除變數殘留，杜絕「定時器疊加」Bug。</li>
+                        <li>為遙控軟體配備 5 秒超時自動煞車、以及視窗失焦偵測等，是實體控制系統中不可或缺的 Fail-safe 安全防範。</li>
+                    </ul>
+
+                    <h3>參考連結</h3>
+                    <div class="my-4">
+                        <a href="https://docs.google.com/document/d/e/2PACX-1vT71TVYUiMQVH69DkFUvBUFcJ1w7Z9vs0Y25Km3NFZxOSMLlUhDUEVWYuVH4QqMABJENFo57pIXJDFE/pub?embedded=true" target="_blank" class="ms-resource-link">
+                            <i class="fas fa-file-alt"></i>
+                            <div>
+                                <div style="font-weight:600;">課程講義</div>
+                                <div style="font-size:12px; color:#605e5c; margin-top:2px;">閱讀本單元的詳細文字教材與安全機制說明</div>
+                            </div>
+                            <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                        </a>
+
+                        <a href="https://classroom.github.com" target="_blank" class="ms-resource-link">
+                            <i class="fab fa-github"></i>
+                            <div>
+                                <div style="font-weight:600;">GitHub Classroom</div>
+                                <div style="font-size:12px; color:#605e5c; margin-top:2px;">classroom.github.com — 繳交你的安全熔斷作業</div>
+                            </div>
+                            <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="unit-nav">
+                    <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                    <span class="unit-page-indicator font-bold text-green-600">✓ 模組已完成</span>
+                    <button class="ms-btn" onclick="markDone(5); alert('🎉 恭喜完成「長按邏輯的實現：定時器的妙用」單元！')">完成模組</button>
+                </div>
+            </div>
         </div>
-    </footer>
-
-    <!-- Media Overlay injected by course-shared.js?v=2026.04.05.FINAL_V6 -->
+    </div>
 
     <!-- Scripts -->
     <script>
+        /* ─── DATA ─── */
+        const UNITS = [
+            { id: 0, label: '課程總覽',       time: '',         type: 'index' },
+            { id: 1, label: '簡介',            time: '5 分鐘',  type: 'unit'  },
+            { id: 2, label: '定時器實驗',     time: '15 分鐘',  type: 'unit'  },
+            { id: 3, label: '三大構建基石',   time: '15 分鐘',  type: 'unit'  },
+            { id: 4, label: '教室實戰',       time: '165 分鐘', type: 'lab'   },
+            { id: 5, label: '摘要與資源',     time: '5 分鐘',  type: 'unit'  },
+        ];
+
+        let currentUnit = 0;
+        let doneSet = new Set();
+
+        /* ─── INIT ─── */
+        function init() {
+            buildSidebar();
+            buildIndexUnitList();
+            goToUnit(0);
+        }
+
+        function buildSidebar() {
+            const nav = document.getElementById('sidebar-nav');
+            nav.innerHTML = UNITS.map(u => {
+                const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>' : '';
+                return `
+                <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
+                    <div class="unit-icon" id="icon-${u.id}">${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div>
+                    <div class="unit-meta">
+                        <div class="unit-name">${u.label}${badge}</div>
+                        ${u.time ? `<div class="unit-time"><i class="far fa-clock"></i> ${u.time}</div>` : ''}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function buildIndexUnitList() {
+            const el = document.getElementById('index-unit-list');
+            el.innerHTML = UNITS.filter(u => u.id > 0).map(u => `
+                <div class="unit-card ${u.type}" onclick="goToUnit(${u.id})">
+                    <div class="unit-card-num">${u.id}</div>
+                    <div class="unit-card-info">
+                        <div class="unit-card-name">${u.label}</div>
+                        <div class="unit-card-time"><i class="far fa-clock"></i> ${u.time}</div>
+                    </div>
+                    <div class="unit-card-arrow">›</div>
+                </div>
+            `).join('');
+        }
+
+        /* ─── NAVIGATION ─── */
+        function goToUnit(id) {
+            document.querySelectorAll('.ms-unit-page').forEach(p => p.classList.remove('visible'));
+            const target = id === 0 ? document.getElementById('page-index') : document.getElementById(`page-${id}`);
+            if (target) target.classList.add('visible');
+
+            document.querySelectorAll('.ms-unit-item').forEach(el => el.classList.remove('active'));
+            const navItem = document.getElementById(`nav-${id}`);
+            if (navItem) { navItem.classList.add('active'); navItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+
+            UNITS.forEach(u => {
+                const icon = document.getElementById(`icon-${u.id}`);
+                if (!icon) return;
+                if (doneSet.has(u.id)) {
+                    icon.className = 'unit-icon done';
+                    icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>';
+                } else if (u.id === id) {
+                    icon.className = 'unit-icon active-icon';
+                    icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+                } else {
+                    icon.className = 'unit-icon';
+                    icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+                }
+            });
+
+            const unit = UNITS.find(u => u.id === id);
+            document.getElementById('bc-current').textContent = unit ? unit.label : '';
+            currentUnit = id;
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function markDone(id) {
+            doneSet.add(id);
+            const badge = document.getElementById(`badge-${id}`);
+            if (badge) badge.style.display = 'flex';
+            UNITS.forEach(u => {
+                const icon = document.getElementById(`icon-${u.id}`);
+                if (!icon) return;
+                if (doneSet.has(u.id)) { icon.className = 'unit-icon done'; icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>'; }
+            });
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const total = UNITS.length - 1;
+            const done = doneSet.size;
+            document.getElementById('progress-fill').style.width = Math.round(done / total * 100) + '%';
+            document.getElementById('progress-text').textContent = `${done} / ${total} 已完成`;
+        }
+
+        /* ─── CHECKLIST ─── */
+        function toggleCheck(el) {
+            el.classList.toggle('checked');
+            el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
+        }
+
+        /* ─── START ─── */
+        init();
+
         // --- Lab Logic ---
         const counterDisplay = document.getElementById('counter-display');
         const timerIdDisplay = document.getElementById('timer-id-display');
@@ -388,18 +829,16 @@ btn.<span class="text-blue-400">addEventListener</span>(<span class="text-green-
             document.getElementById('btn-start').disabled = false;
             document.getElementById('btn-stop').disabled = true;
         });
+    </script>
 
-        // --- Standard Media Overlay Logic ---
-        // Injected by course-shared.js?v=2026.04.05.FINAL_V6
-
+    <!-- Define Resources -->
+    <script>
         window.RESOURCES = {
             video: "https://www.youtube.com/embed/U1A_b2SCAQY",
             doc: "https://docs.google.com/document/d/e/2PACX-1vT71TVYUiMQVH69DkFUvBUFcJ1w7Z9vs0Y25Km3NFZxOSMLlUhDUEVWYuVH4QqMABJENFo57pIXJDFE/pub?embedded=true"
         };
     </script>
     <script src="/js/course-shared.js?v=2026.05.22.V27.START_UNITS_LAYOUT_UPGRADE"></script>
-    <script>
-    </script>
 
     <!-- Assignment Guide (Hidden) -->
     <section id="assignment-guide" style="display: none;">
@@ -544,5 +983,4 @@ btn.<span class="text-blue-400">addEventListener</span>(<span class="text-green-
 
     </section>
 </body>
-
 </html>
