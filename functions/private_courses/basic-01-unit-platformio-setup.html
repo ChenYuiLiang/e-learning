@@ -947,10 +947,10 @@
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
-                <div class="unit-icon" id="icon-${u.id}">\${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div>
+                <div class="unit-icon" id="icon-${u.id}">${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div>
                 <div class="unit-meta">
-                    <div class="unit-name">\${u.label}\${badge}</div>
-                    \${u.time ? `<div class="unit-time"><i class="far fa-clock"></i> \${u.time}</div>` : ''}
+                    <div class="unit-name">${u.label}${badge}</div>
+                    ${u.time ? `<div class="unit-time"><i class="far fa-clock"></i> ${u.time}</div>` : ''}
                 </div>
             </div>`;
         }).join('');
@@ -962,11 +962,11 @@
     function buildIndexUnitList() {
         const el = document.getElementById('index-unit-list');
         el.innerHTML = UNITS.filter(u => u.id > 0).map(u => `
-            <div class="unit-card \${u.type}" onclick="goToUnit(\${u.id})">
-                <div class="unit-card-num">\${u.id}</div>
+            <div class="unit-card ${u.type}" onclick="goToUnit(${u.id})">
+                <div class="unit-card-num">${u.id}</div>
                 <div class="unit-card-info">
-                    <div class="unit-card-name">\${u.label}</div>
-                    <div class="unit-card-time"><i class="far fa-clock"></i> \${u.time}</div>
+                    <div class="unit-card-name">${u.label}</div>
+                    <div class="unit-card-time"><i class="far fa-clock"></i> ${u.time}</div>
                 </div>
                 <div class="unit-card-arrow">›</div>
             </div>
@@ -980,15 +980,15 @@
      */
     function goToUnit(id) {
         document.querySelectorAll('.ms-unit-page').forEach(p => p.classList.remove('visible'));
-        const target = id === 0 ? document.getElementById('page-index') : document.getElementById(`page-\${id}`);
+        const target = id === 0 ? document.getElementById('page-index') : document.getElementById(`page-${id}`);
         if (target) target.classList.add('visible');
 
         document.querySelectorAll('.ms-unit-item').forEach(el => el.classList.remove('active'));
-        const navItem = document.getElementById(`nav-\${id}`);
+        const navItem = document.getElementById(`nav-${id}`);
         if (navItem) { navItem.classList.add('active'); navItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
 
         UNITS.forEach(u => {
-            const icon = document.getElementById(`icon-\${u.id}`);
+            const icon = document.getElementById(`icon-${u.id}`);
             if (!icon) return;
             if (doneSet.has(u.id)) {
                 icon.className = 'unit-icon done';
@@ -1015,10 +1015,10 @@
      */
     function markDone(id) {
         doneSet.add(id);
-        const badge = document.getElementById(`badge-\${id}`);
+        const badge = document.getElementById(`badge-${id}`);
         if (badge) badge.style.display = 'flex';
         UNITS.forEach(u => {
-            const icon = document.getElementById(`icon-\${u.id}`);
+            const icon = document.getElementById(`icon-${u.id}`);
             if (!icon) return;
             if (doneSet.has(u.id)) { icon.className = 'unit-icon done'; icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>'; }
         });
@@ -1032,7 +1032,17 @@
         const total = UNITS.length - 1;
         const done = doneSet.size;
         document.getElementById('progress-fill').style.width = Math.round(done / total * 100) + '%';
-        document.getElementById('progress-text').textContent = `\${done} / \${total} 已完成`;
+        document.getElementById('progress-text').textContent = `${done} / ${total} 已完成`;
+    }
+
+    /* ─── CHECKLIST ─── */
+    /**
+     * 切換核取方塊的狀態。
+     * @param {HTMLElement} el - 核取方塊元素
+     */
+    function toggleCheck(el) {
+        el.classList.toggle('checked');
+        el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
     /* ─── START ─── */
