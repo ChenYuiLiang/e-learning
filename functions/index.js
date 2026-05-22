@@ -860,6 +860,78 @@ function extractReferralAssignmentsFromOrder(orderItems = {}, lessons = []) {
     return assignments;
 }
 
+function itemContainsUnit(itemKey = '', lessons = [], targetUnitId = '') {
+    if (!itemKey || !targetUnitId) return false;
+    const canonicalTargetUnitId = resolveCanonicalUnitId(targetUnitId, lessons);
+    const lesson = lessons.find(l => l.courseId === itemKey);
+    if (lesson && Array.isArray(lesson.courseUnits)) {
+        return lesson.courseUnits
+            .map(unitId => resolveCanonicalUnitId(unitId, lessons))
+            .includes(canonicalTargetUnitId);
+    }
+    const canonicalItemKey = resolveCanonicalUnitId(itemKey, lessons);
+    return canonicalItemKey === canonicalTargetUnitId;
+}
+
+async function backfillTutorReferralForPaidOrders(db, {
+    uid,
+    unitId,
+    tutorEmail,
+    promotionCode = '',
+    assignmentUrl = '',
+    lessons = [],
+    source = 'unitBinding'
+}) {
+    if (!uid || !unitId || !tutorEmail) return { updatedOrders: 0, updatedItems: 0 };
+
+    const ordersSnap = await db.collection('orders')
+        .where('uid', '==', uid)
+        .where('status', '==', 'SUCCESS')
+        .get();
+
+    if (ordersSnap.empty) return { updatedOrders: 0, updatedItems: 0 };
+
+    let updatedOrders = 0;
+    let updatedItems = 0;
+    const normalizedTutorEmail = String(tutorEmail).trim();
+    const normalizedPromotionCode = String(promotionCode || '').trim().toUpperCase();
+    const normalizedAssignmentUrl = String(assignmentUrl || '').trim();
+
+    for (const orderDoc of ordersSnap.docs) {
+        const orderData = orderDoc.data() || {};
+        const items = JSON.parse(JSON.stringify(orderData.items || {}));
+        let hasOrderChange = false;
+
+        for (const [itemKey, itemValue] of Object.entries(items)) {
+            if (!itemContainsUnit(itemKey, lessons, unitId)) continue;
+            if (!itemValue || typeof itemValue !== 'object') continue;
+
+            itemValue.referredTutorEmail = normalizedTutorEmail;
+            itemValue.referralTutor = normalizedTutorEmail;
+            if (normalizedAssignmentUrl) {
+                itemValue.referralLink = normalizedAssignmentUrl;
+                itemValue.promoCode = normalizedAssignmentUrl;
+            }
+            if (normalizedPromotionCode) {
+                itemValue.promotionCode = normalizedPromotionCode;
+            }
+            hasOrderChange = true;
+            updatedItems++;
+        }
+
+        if (hasOrderChange) {
+            await db.collection('orders').doc(orderDoc.id).set({
+                items,
+                lastTutorBindingBackfillAt: admin.firestore.FieldValue.serverTimestamp(),
+                lastTutorBindingBackfillSource: source
+            }, { merge: true });
+            updatedOrders++;
+        }
+    }
+
+    return { updatedOrders, updatedItems };
+}
+
 function hasActiveOrderForCourse(ordersSnapshot, courseId) {
     let hasCourse = false;
     const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
@@ -2593,8 +2665,12 @@ exports.getDashboardData = onCall(async (request) => {
                     .get();
                 
                 result.earnings = ledgerSnap.docs
-                    .map(doc => ({ id: doc.id, ...doc.data() }))
-                    .sort((a, b) => (b.month || "").localeCompare(a.month || ""));
+                    .map(doc => {
+                        const row = { id: doc.id, ...doc.data() };
+                        row.month = row.month || row.period || '-';
+                        return row;
+                    })
+                    .sort((a, b) => String(b.month || '').localeCompare(String(a.month || '')));
             } catch (err) {
                 console.error("Error fetching profit data for dashboard:", err);
             }
@@ -4329,6 +4405,15 @@ exports.bindTutorToUnit = onCall(async (request) => {
              }
         }
 
+        await backfillTutorReferralForPaidOrders(db, {
+            uid,
+            unitId: canonicalUnitId,
+            tutorEmail,
+            assignmentUrl: normalizedLink,
+            lessons,
+            source: 'bindTutorToUnit'
+        });
+
         return { success: true, tutorEmail };
     } catch (error) {
         console.error("Self-binding failed:", error);
@@ -4430,6 +4515,16 @@ exports.bindTutorByPromotionCode = onCall(async (request) => {
             },
             updatedAt: admin.firestore.FieldValue.serverTimestamp()
         }, { merge: true });
+
+        await backfillTutorReferralForPaidOrders(db, {
+            uid,
+            unitId: canonicalUnitId,
+            tutorEmail,
+            promotionCode: resolvedPromotionCode,
+            assignmentUrl,
+            lessons,
+            source: 'bindTutorByPromotionCode'
+        });
 
         return {
             success: true,

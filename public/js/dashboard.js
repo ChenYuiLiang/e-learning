@@ -3541,13 +3541,14 @@ window.renderEarningsTab = window.renderEarningsTab || function(data) {
     } else {
         tableBody.innerHTML = earnings.map(d => {
             total += d.shareAmount;
+            const levelLabel = Number(d.level) <= 1 ? '直接' : `第 ${Number(d.level)} 層`;
             return `
                 <tr class="hover:bg-gray-50 transition border-b border-gray-100">
-                    <td class="py-3 px-2 font-medium">${d.month}</td>
+                    <td class="py-3 px-2 font-medium">${d.month || d.period || '-'}</td>
                     <td class="py-3 px-2 text-gray-500 font-mono text-[10px]">${d.studentUid || '-'}</td>
                     <td class="py-3 px-2 text-right">NT$ ${d.orderAmount.toLocaleString()}</td>
                     <td class="py-3 px-2 text-right font-bold text-emerald-600">NT$ ${d.shareAmount.toLocaleString()}</td>
-                    <td class="py-3 px-2 text-right text-gray-400 text-xs">${d.level === 0 ? '直接' : '第二層'}</td>
+                    <td class="py-3 px-2 text-right text-gray-400 text-xs">${levelLabel}</td>
                 </tr>
             `;
         }).join('');
