@@ -4,409 +4,1122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web App 開發環境與 HTML5 基礎 - Vibe Coding</title>
-    <link rel="stylesheet" href="/style.css">
+    <title>Web App 開發環境與 HTML5 基礎 - Vibe Coding Learn</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <style>
+        :root {
+            --ms-blue: #0078d4;
+            --ms-blue-dark: #005a9e;
+            --ms-blue-light: #deecf9;
+            --ms-gray-10: #f3f2f1;
+            --ms-gray-20: #e1dfdd;
+            --ms-gray-90: #201f1e;
+            --ms-green: #107c10;
+            --ms-red: #d13438;
+            --sidebar-w: 280px;
+        }
 
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fff;
+            color: #201f1e;
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* ─── TOP NAV ─── */
+        .ms-topnav {
+            background: var(--ms-blue);
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 4px rgba(0,0,0,.2);
+        }
+        .ms-topnav .brand {
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
+
+        /* ─── LAYOUT ─── */
+        .ms-layout { display: flex; min-height: calc(100vh - 48px); }
+
+        /* ─── SIDEBAR ─── */
+        .ms-sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            background: #faf9f8;
+            border-right: 1px solid #e1dfdd;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 48px;
+            height: calc(100vh - 48px);
+            overflow-y: auto;
+        }
+        .ms-sidebar-header {
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .ms-sidebar-header .module-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #605e5c;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .ms-sidebar-header .module-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #201f1e;
+            line-height: 1.4;
+        }
+        .ms-sidebar-header .meta {
+            font-size: 12px;
+            color: #605e5c;
+            margin-top: 6px;
+        }
+        .ms-unit-list { padding: 8px 0; }
+        .ms-unit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: background .12s, border-color .12s;
+            color: #201f1e;
+        }
+        .ms-unit-item:hover { background: #edebe9; }
+        .ms-unit-item.active {
+            border-left-color: var(--ms-blue);
+            background: #deecf9;
+        }
+        .ms-unit-item.active .unit-name { color: var(--ms-blue); font-weight: 600; }
+        .unit-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #c8c6c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            font-size: 10px;
+            background: #fff;
+        }
+        .unit-icon.done { background: var(--ms-green); border-color: var(--ms-green); color: #fff; }
+        .unit-icon.active-icon { border-color: var(--ms-blue); background: var(--ms-blue); color: #fff; }
+        .unit-meta { flex: 1; min-width: 0; }
+        .unit-name { font-size: 13px; line-height: 1.4; }
+        .unit-time { font-size: 11px; color: #605e5c; margin-top: 2px; }
+        .sidebar-progress {
+            padding: 12px 16px;
+            border-top: 1px solid #e1dfdd;
+            margin-top: auto;
+        }
+        .progress-bar-bg { background: #e1dfdd; border-radius: 4px; height: 6px; }
+        .progress-bar-fill { background: var(--ms-green); border-radius: 4px; height: 6px; transition: width .4s; }
+        .progress-text { font-size: 12px; color: #605e5c; margin-top: 6px; }
+
+        /* ─── MAIN ─── */
+        .ms-content { flex: 1; min-width: 0; }
+
+        .ms-breadcrumb {
+            padding: 10px 40px;
+            font-size: 12px;
+            color: #605e5c;
+            border-bottom: 1px solid #e1dfdd;
+            background: #fff;
+        }
+        .ms-breadcrumb a { color: var(--ms-blue); text-decoration: none; }
+        .ms-breadcrumb a:hover { text-decoration: underline; }
+        .ms-breadcrumb span { margin: 0 6px; }
+
+        /* ─── PAGES ─── */
+        .ms-unit-page { display: none; }
+        .ms-unit-page.visible { display: block; }
+
+        .unit-content {
+            max-width: 820px;
+            padding: 32px 40px 60px;
+            margin: 0 auto;
+        }
+
+        .unit-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .unit-completed-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #dff6dd;
+            color: #107c10;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 2px;
+        }
+        .unit-time-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #605e5c;
+            font-size: 13px;
+        }
+
+        /* Typography */
+        .unit-content h1 { font-size: 28px; font-weight: 700; margin: 0 0 20px; color: #201f1e; line-height: 1.3; }
+        .unit-content h2 { font-size: 20px; font-weight: 600; margin: 36px 0 12px; color: #201f1e; padding-top: 8px; }
+        .unit-content h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; color: #201f1e; }
+        .unit-content p { margin: 0 0 14px; }
+        .unit-content ul, .unit-content ol { margin: 0 0 14px; padding-left: 28px; }
+        .unit-content li { margin-bottom: 6px; }
+        .unit-content strong { font-weight: 600; }
+        .unit-content a { color: var(--ms-blue); text-decoration: none; }
+        .unit-content a:hover { text-decoration: underline; }
+        .unit-content code {
+            background: #f3f2f1;
+            border: 1px solid #e1dfdd;
+            border-radius: 3px;
+            padding: 1px 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #a31515;
+        }
+
+        /* Callouts */
+        .ms-note, .ms-tip, .ms-warning, .ms-important {
+            display: flex;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid;
+            font-size: 14px;
+        }
+        .ms-note { background: #deecf9; border-color: var(--ms-blue); }
+        .ms-note .note-icon { color: var(--ms-blue); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-tip { background: #dff6dd; border-color: var(--ms-green); }
+        .ms-tip .note-icon { color: var(--ms-green); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-warning { background: #fff4ce; border-color: #ffaa44; }
+        .ms-warning .note-icon { color: #ffaa44; font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-important { background: #fde7e9; border-color: var(--ms-red); }
+        .ms-important .note-icon { color: var(--ms-red); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .note-body strong { display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+
+        /* Scenario */
+        .ms-scenario {
+            background: #f3f2f1;
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #323130;
+            border-left: 4px solid #c8c6c4;
+        }
+        .ms-scenario-label {
+            font-style: normal;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #605e5c;
+            margin-bottom: 8px;
+        }
+
+        /* Steps */
+        .ms-steps { margin: 16px 0; }
+        .ms-step { display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start; }
+        .ms-step-num {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: var(--ms-blue); color: #fff;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .ms-step-body { flex: 1; }
+        .ms-step-body h4 { font-size: 14px; font-weight: 600; margin: 0 0 4px; }
+        .ms-step-body p { font-size: 14px; margin: 0; }
+
+        /* Table */
+        .ms-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+        .ms-table th {
+            background: #f3f2f1; font-weight: 600; text-align: left;
+            padding: 10px 14px; border: 1px solid #e1dfdd; color: #323130;
+        }
+        .ms-table td { padding: 9px 14px; border: 1px solid #e1dfdd; vertical-align: top; }
+        .ms-table tr:nth-child(even) td { background: #faf9f8; }
+        .ms-table .check { color: var(--ms-green); font-size: 16px; }
+        .ms-table .cross { color: #8a8886; font-size: 16px; }
+
+        /* Checklist */
+        .ms-checklist { list-style: none; padding: 0; margin: 12px 0; }
+        .ms-checklist li {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 6px 0; font-size: 14px;
+        }
+        .ms-checklist li .check-box {
+            width: 18px; height: 18px;
+            border: 2px solid #8a8886; border-radius: 2px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; margin-top: 1px; cursor: pointer; transition: all .15s;
+        }
+        .ms-checklist li .check-box.checked {
+            background: var(--ms-blue); border-color: var(--ms-blue); color: #fff;
+        }
+
+        /* Code block */
+        .ms-code {
+            background: #1e1e1e;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px 0;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-x: auto;
+        }
+        .ms-code .c-comment { color: #6a9955; }
+        .ms-code .c-str { color: #ce9178; }
+        .ms-code .c-kw { color: #569cd6; }
+        .ms-code .c-attr { color: #9cdcfe; }
+        .ms-code .c-val { color: #ce9178; }
+        .ms-code .c-tag { color: #4ec9b0; }
+        .ms-code .c-white { color: #d4d4d4; }
+
+        /* Lab card */
+        .ms-lab-card {
+            background: linear-gradient(135deg, #eef6ff 0%, #f5f0ff 100%);
+            border: 1px solid #c7e0f4;
+            border-radius: 6px;
+            padding: 24px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: box-shadow .15s, border-color .15s;
+        }
+        .ms-lab-card:hover { box-shadow: 0 4px 16px rgba(0,120,212,.12); border-color: var(--ms-blue); }
+        .ms-lab-card h3 { margin: 0 0 12px; color: var(--ms-blue-dark); font-size: 16px; font-weight: 600; }
+        .ms-lab-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--ms-blue);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 12px;
+        }
+        .ms-lab-time {
+            font-size: 12px;
+            color: #605e5c;
+            margin-left: 8px;
+        }
+
+        /* Compare grid */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .compare-card {
+            border: 1px solid #e1dfdd;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .compare-card-header {
+            padding: 12px 14px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .compare-card-body {
+            padding: 14px;
+            font-size: 13px;
+            color: #605e5c;
+            line-height: 1.5;
+        }
+
+        /* Buttons */
+        .ms-btn {
+            background: var(--ms-blue); color: #fff; border: none;
+            padding: 7px 18px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; transition: background .12s;
+            font-family: inherit;
+        }
+        .ms-btn:hover { background: var(--ms-blue-dark); }
+        .ms-btn-ghost {
+            background: transparent; color: var(--ms-blue);
+            border: 1px solid var(--ms-blue); padding: 6px 18px;
+            font-size: 14px; font-weight: 600; border-radius: 2px;
+            cursor: pointer; transition: background .12s; font-family: inherit;
+        }
+        .ms-btn-ghost:hover { background: var(--ms-blue-light); }
+
+        /* Nav */
+        .unit-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            border-top: 1px solid #e1dfdd;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .nav-btn-prev, .nav-btn-next {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 20px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; border: 1px solid;
+            font-family: inherit; transition: background .12s;
+        }
+        .nav-btn-next { background: var(--ms-blue); color: #fff; border-color: var(--ms-blue); }
+        .nav-btn-next:hover { background: var(--ms-blue-dark); border-color: var(--ms-blue-dark); }
+        .nav-btn-prev { background: #fff; color: var(--ms-blue); border-color: var(--ms-blue); }
+        .nav-btn-prev:hover { background: var(--ms-blue-light); }
+        .unit-page-indicator { font-size: 13px; color: #605e5c; }
+
+        /* Module index */
+        .module-meta-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        .ms-tag { background: #f3f2f1; color: #323130; font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: 500; }
+        .ms-tag.blue { background: #deecf9; color: var(--ms-blue-dark); }
+        .ms-tag.green { background: #dff6dd; color: #107c10; }
+        .unit-card-list { margin: 20px 0; }
+        .unit-card {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 0; border-bottom: 1px solid #f3f2f1; cursor: pointer;
+        }
+        .unit-card:last-child { border-bottom: none; }
+        .unit-card:hover .unit-card-name { color: var(--ms-blue); text-decoration: underline; }
+        .unit-card-num {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #f3f2f1; color: #605e5c;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .unit-card.lab .unit-card-num { background: #eef6ff; color: var(--ms-blue-dark); }
+        .unit-card.quiz .unit-card-num { background: #fff4ce; color: #8a6914; }
+        .unit-card-info { flex: 1; }
+        .unit-card-name { font-size: 15px; font-weight: 500; }
+        .unit-card-time { font-size: 12px; color: #605e5c; margin-top: 2px; }
+        .unit-card-arrow { color: #c8c6c4; font-size: 14px; }
+
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 10px 14px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; cursor: pointer; transition: background .1s, border-color .1s; font-size: 14px;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback { display: none; margin-top: 8px; padding: 10px 14px; border-radius: 4px; font-size: 13px; font-weight: 500; }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
+
+        /* Resource links */
+        .ms-resource-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; text-decoration: none; color: #201f1e;
+            font-size: 14px; transition: background .1s;
+        }
+        .ms-resource-link:hover { background: #f3f2f1; }
+        .ms-resource-link i { color: var(--ms-blue); font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+
+        /* Achievement */
+        .ms-achievement {
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            color: #fff; border-radius: 6px; padding: 24px 28px;
+            margin: 24px 0; display: flex; align-items: center; gap: 20px;
+        }
+        .achievement-icon { font-size: 48px; flex-shrink: 0; }
+        .achievement-text h3 { margin: 0 0 4px; font-size: 18px; }
+        .achievement-text p { margin: 0; font-size: 14px; opacity: .9; }
+
+        /* Keyboard shortcut */
+        kbd {
+            display: inline-flex; align-items: center; justify-content: center;
+            min-width: 28px; height: 26px; padding: 0 6px;
+            background: #fff; border: 1px solid #c8c6c4; border-bottom: 3px solid #8a8886;
+            border-radius: 4px; font-family: 'Consolas', monospace; font-size: 13px;
+            font-weight: 700; color: #323130; box-shadow: 0 1px 2px rgba(0,0,0,.08);
+        }
+
+        @media (max-width: 768px) {
+            .ms-sidebar { display: none; }
+            .unit-content { padding: 20px 16px 40px; }
+            .unit-nav { padding: 16px; }
+            .ms-breadcrumb { padding: 8px 16px; }
+            .compare-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 
-<body class="bg-gray-50 font-[Inter] text-gray-800">
+<body>
 
-    <!-- Hero Section -->
-    <header
-        class="relative bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 text-white pt-24 pb-32 overflow-hidden">
-        <div
-            class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=2940&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-overlay">
+<!-- TOP NAV -->
+<nav class="ms-topnav">
+    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <div class="divider"></div>
+    <span class="nav-label">入門課程單元</span>
+</nav>
+
+<div class="ms-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="ms-sidebar">
+        <div class="ms-sidebar-header">
+            <div class="module-label">模組</div>
+            <div class="module-title">Web App 開發環境與 HTML5 基礎</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 33 分鐘 · 5 個單元</div>
         </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-gray-50 to-transparent bottom-0 h-16"></div>
+        <nav class="ms-unit-list" id="sidebar-nav"></nav>
+        <div class="sidebar-progress">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+            </div>
+            <div class="progress-text" id="progress-text">0 / 5 已完成</div>
+        </div>
+    </aside>
 
-        <div class="container mx-auto px-4 relative z-10 text-center">
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit]">
-                Web App 開發環境與<br>HTML5 基礎
-            </h1>
-            <p class="text-xl md:text-2xl text-purple-100 max-w-2xl mx-auto font-light leading-relaxed">
-                從零打造你的第一個物聯網控制介面，掌握現代 Web 開發核心工作流。
-            </p>
+    <!-- MAIN -->
+    <main class="ms-content">
 
-            <div class="mt-8 flex flex-wrap justify-center gap-4">
-                <button onclick="enterMediaMode('video', window.RESOURCES.youtube)"
-                    class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
-                    <span>📺</span> 觀看教學影片
-                </button>
-                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
-                    class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">
-                    <span>📄</span> 閱讀課程講義
-                </button>
+        <div class="ms-breadcrumb">
+            <a href="#">Vibe Coding</a><span>›</span>
+            <a href="#">入門課程單元</a><span>›</span>
+            <span id="bc-current">課程總覽</span>
+        </div>
+
+        <!-- ══════════ PAGE 0: INDEX ══════════ -->
+        <div class="ms-unit-page visible" id="page-index">
+            <div class="unit-content">
+                <h1>Web App 開發環境與 HTML5 基礎</h1>
+                <div class="module-meta-tags">
+                    <span class="ms-tag">模組</span>
+                    <span class="ms-tag">5 個單元</span>
+                    <span class="ms-tag green">入門</span>
+                    <span class="ms-tag blue">前端開發</span>
+                    <span class="ms-tag blue">物聯網</span>
+                </div>
+
+                <p>
+                    從零打造你的第一個物聯網控制介面，掌握現代 Web 開發核心工作流。
+                    在這個單元中，你將學會如何在電腦架設即時預覽環境、理解 HTML5 的語義化結構，
+                    並掌握行動優先設計，讓你的遙控介面在手機上完美呈現。
+                </p>
+
+                <h2>學習目標</h2>
+                <p>完成本模組後，你將能夠：</p>
+                <ul>
+                    <li>使用 <strong>VS Code + Live Server</strong> 建立跨裝置即時預覽的開發工作流。</li>
+                    <li>正確撰寫 <strong>HTML5 語義化骨架</strong>（header、main、footer），了解每個標籤的結構意義。</li>
+                    <li>加入 <strong>viewport meta 標籤</strong>，解決手機縮放問題，實現行動優先設計。</li>
+                    <li>使用 <strong>CSS 觸控優化屬性</strong>，消除點擊延遲與誤觸問題。</li>
+                    <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
+                </ul>
+
+                <h2>必要條件</h2>
+                <ul>
+                    <li>已安裝 VS Code 並啟用 Live Server 擴充套件</li>
+                    <li>擁有 GitHub 帳號，能夠接受 GitHub Classroom 邀請</li>
+                    <li>一支智慧型手機，用於實機測試（與電腦連接同一個 WiFi）</li>
+                </ul>
+
+                <h2>本模組單元</h2>
+                <div class="unit-card-list" id="index-unit-list"></div>
+                <div style="margin-top:32px;">
+                    <button class="ms-btn" onclick="goToUnit(1)">開始模組 &nbsp;›</button>
+                </div>
             </div>
         </div>
-    </header>
 
-    <main class="container mx-auto px-4 -mt-20 relative z-20 pb-20">
+        <!-- ══════════ PAGE 1: 簡介 ══════════ -->
+        <div class="ms-unit-page" id="page-1">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-1" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                </div>
 
-        <!-- Module 1: Intuitive Lab -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden">
-                <div class="p-1 bg-gradient-to-r from-blue-500 to-cyan-400"></div>
-                <div class="p-8 md:p-12">
-                    <div class="section-header-left border-l-4 border-blue-500 pl-6 mb-10">
-                        <span class="text-blue-600 font-bold tracking-wider uppercase text-sm">Module 1: Intuitive
-                            Lab</span>
-                        <h2 class="text-3xl font-bold text-gray-900 mt-2">直觀實驗室：所見即所得的開發體驗</h2>
-                    </div>
+                <h1>簡介</h1>
 
-                    <div class="grid md:grid-cols-2 gap-12 items-center">
-                        <div class="bg-white rounded-2xl p-8 shadow-xl border border-gray-100">
-                            <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
-                                <span
-                                    class="bg-blue-100 text-blue-600 w-10 h-10 rounded-full flex items-center justify-center text-lg">1</span>
-                                VS Code + Live Server
-                            </h3>
-                            <p class="text-gray-600 mb-6 leading-relaxed">
-                                在傳統開發中，每次修改 HTML 都需要手動重新整理瀏覽器。但在現代 Web 開發，我們使用 <strong>Live Server</strong> 來建立即時的同步通道。
-                            </p>
+                <p>
+                    在現代 Vibe Coding 開發模式中，AI 能幫你生成大量的 HTML、CSS 與 JavaScript 代碼，
+                    但要讓這些代碼真正在「手機瀏覽器」上流暢地控制無人車或物聯網設備，
+                    你需要首先建立一套高效的「本地開發工作流」。
+                </p>
 
-                            <div class="space-y-4">
-                                <div class="flex gap-4 items-start p-4 bg-blue-50 rounded-lg">
-                                    <div class="text-2xl">🔌</div>
-                                    <div>
-                                        <h4 class="font-bold text-blue-900">本地伺服器 (Local Server)</h4>
-                                        <p class="text-sm text-blue-800 mt-1">模擬真實網站運作環境，讓你的電腦變成一台小型伺服器。</p>
-                                    </div>
-                                </div>
-                                <div class="flex gap-4 items-start p-4 bg-green-50 rounded-lg">
-                                    <div class="text-2xl">🔄</div>
-                                    <div>
-                                        <h4 class="font-bold text-green-900">熱重載 (Hot Reload)</h4>
-                                        <p class="text-sm text-green-800 mt-1">存檔的瞬間，瀏覽器自動更新畫面，無需手動 F5。</p>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="ms-scenario">
+                    <div class="ms-scenario-label">情境</div>
+                    小明寫好了一個遙控介面，但每次改了一行 CSS，都要手動按 F5 重新整理瀏覽器，
+                    而且在手機上測試時，按鈕因為「雙擊縮放」而無法快速連續點擊。
+                    老師說：「你需要的是 Live Server 的熱重載，以及 <code>touch-action: manipulation</code>。」
+                </div>
+
+                <p>
+                    本模組的核心目標就是解決這兩個問題。你將學習如何讓電腦成為一台區域網路伺服器，
+                    讓手機直接訪問正在開發中的網頁，並且在存檔的瞬間就能看到即時更新。
+                </p>
+
+                <h2>教學影片</h2>
+                <div style="border-radius:4px; overflow:hidden; margin:20px 0; box-shadow:0 2px 8px rgba(0,0,0,.12); aspect-ratio:16/9;">
+                    <iframe src="https://www.youtube.com/embed/Vyn9KVCsvb0"
+                        title="Web App 開發環境與 HTML5 基礎教學" allowfullscreen
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        style="width:100%; height:100%; display:block; border:0;">
+                    </iframe>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
+                <span class="unit-page-indicator">1 / 5</span>
+                <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 2: 直觀實驗室 ══════════ -->
+        <div class="ms-unit-page" id="page-2">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-2" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 8 分鐘</div>
+                </div>
+
+                <h1>直觀實驗室：所見即所得的開發體驗</h1>
+
+                <p>
+                    傳統的網頁開發需要手動重新整理瀏覽器，而現代工作流使用 <strong>Live Server</strong> 建立即時同步通道。
+                    更重要的是，你可以讓手機直接存取電腦上正在運行的開發伺服器，實現真正的跨裝置同步預覽。
+                </p>
+
+                <h2>架設步驟</h2>
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>安裝 Live Server 擴充套件</h4>
+                            <p>在 VS Code 中按 <kbd>Ctrl+Shift+X</kbd>，搜尋 <strong>Live Server</strong>（由 Ritwick Dey 發行），點擊安裝。</p>
                         </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>啟動本地伺服器</h4>
+                            <p>在 <code>index.html</code> 上按右鍵，選擇 <strong>「Open with Live Server」</strong>。瀏覽器會自動在 <code>http://localhost:5500</code> 開啟你的網頁。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>找出電腦的內網 IP</h4>
+                            <p>Windows：在命令提示字元輸入 <code>ipconfig</code>；macOS：輸入 <code>ifconfig | grep inet</code>，找到類似 <code>192.168.x.x</code> 的位址。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>手機連入開發伺服器</h4>
+                            <p>確保手機和電腦在<strong>同一個 WiFi 網路</strong>。在手機瀏覽器輸入 <code>http://[電腦IP]:5500</code>，即可看到你的網頁並即時同步更新。</p>
+                        </div>
+                    </div>
+                </div>
 
-                        <div class="relative">
-                            <!-- Setup Checklist -->
-                            <div class="bg-gray-900 rounded-xl overflow-hidden shadow-2xl">
-                                <div class="bg-gray-800 px-4 py-2 flex items-center gap-2 border-b border-gray-700">
-                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                                    <span class="text-gray-400 text-xs ml-2 font-mono">setup.task</span>
-                                </div>
-                                <div class="p-6 font-mono text-sm leading-8">
-                                    <div class="flex items-center gap-3 text-green-400">
-                                        <span class="opacity-50">1.</span>
-                                        <span>安裝 VS Code 擴充功能: Live Server</span>
-                                        <span
-                                            class="bg-green-900/50 text-green-300 px-2 py-0.5 rounded text-xs ml-auto">Done</span>
-                                    </div>
-                                    <div class="flex items-center gap-3 text-blue-300 mt-2">
-                                        <span class="opacity-50">2.</span>
-                                        <span>右鍵點擊 HTML 檔案 -> "Open with Live Server"</span>
-                                    </div>
-                                    <div class="flex items-center gap-3 text-purple-300 mt-2">
-                                        <span class="opacity-50">3.</span>
-                                        <span>尋找本機 IP (cmd: ipconfig / mac: ifconfig)</span>
-                                    </div>
-                                    <div class="flex items-center gap-3 text-yellow-300 mt-2">
-                                        <span class="opacity-50">4.</span>
-                                        <span>手機開啟: http://[電腦IP]:5500</span>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>防火牆注意事項</strong>
+                        如果手機無法連入，很可能是電腦的防火牆阻擋了 Port 5500 的連線。請前往系統設定，暫時允許 VS Code / Node.js 通過防火牆，或改用手機熱點讓電腦連線。
+                    </div>
+                </div>
 
-                            <!-- Floating Badge -->
-                            <div
-                                class="absolute -bottom-6 -right-6 bg-white p-4 rounded-xl shadow-lg border border-gray-100 flex items-center gap-3 animate-bounce-slow">
-                                <div
-                                    class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-2xl">
-                                    📱
-                                </div>
-                                <div>
-                                    <div class="text-xs text-gray-500 font-bold uppercase">Goal</div>
-                                    <div class="font-bold text-indigo-900">手機同步預覽</div>
-                                </div>
-                            </div>
+                <h2>Live Server 的兩大核心功能</h2>
+                <div class="compare-grid">
+                    <div class="compare-card">
+                        <div class="compare-card-header" style="background:#eef6ff; color:var(--ms-blue-dark);">
+                            <i class="fas fa-server"></i> 本地伺服器
+                        </div>
+                        <div class="compare-card-body">
+                            <strong>模擬真實網站環境</strong>
+                            <p style="margin-top:8px;">讓你的電腦變成小型伺服器，HTML 以正確的 HTTP 協議運行，避免直接開啟檔案時的各種限制（如 CORS 問題）。</p>
+                        </div>
+                    </div>
+                    <div class="compare-card">
+                        <div class="compare-card-header" style="background:#dff6dd; color:#107c10;">
+                            <i class="fas fa-sync-alt"></i> 熱重載
+                        </div>
+                        <div class="compare-card-body">
+                            <strong>存檔即更新</strong>
+                            <p style="margin-top:8px;">每次按下 <kbd>Ctrl+S</kbd> 存檔，所有連線中的瀏覽器（包含手機）立即自動重新整理，無需手動按 F5。</p>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">2 / 5</span>
+                <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
 
-        <!-- Module 2: Core Principles -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden">
-                <div class="p-1 bg-gradient-to-r from-blue-500 to-cyan-400"></div>
-                <div class="p-8 md:p-12">
-                    <div class="section-header-left border-l-4 border-indigo-500 pl-6 mb-10">
-                        <span class="text-indigo-600 font-bold tracking-wider uppercase text-sm">Module 2: Core
-                            Principles</span>
-                        <h2 class="text-3xl font-bold text-gray-900 mt-2">HTML5 骨架與行動優先設計</h2>
+        <!-- ══════════ PAGE 3: HTML5 骨架與行動優先 ══════════ -->
+        <div class="ms-unit-page" id="page-3">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-3" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 8 分鐘</div>
+                </div>
+
+                <h1>HTML5 骨架與行動優先設計</h1>
+
+                <p>
+                    HTML5 就像無人車控制面板的鋼骨結構。為了讓程式碼可讀、可維護，
+                    我們使用具有語義意義的標籤，而不是一堆無意義的 <code>&lt;div&gt;</code>。
+                </p>
+
+                <h2>語義化骨架（控制面板比喻）</h2>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>為什麼要語義化？</strong>
+                        搜尋引擎、螢幕閱讀器、以及你未來的隊友都會感謝你使用正確的標籤。
+                        <code>&lt;header&gt;</code> 比 <code>&lt;div class="header"&gt;</code> 更清楚地傳達意圖。
                     </div>
+                </div>
 
-                    <div class="grid lg:grid-cols-2 gap-16">
-                        <!-- Concept 1: Semantic HTML -->
-                        <div>
-                            <h3 class="text-2xl font-bold mb-6 text-gray-800">無人車控制面板的構造 (HTML Structure)</h3>
-                            <p class="text-gray-600 mb-6">HTML5 就像房子的鋼骨結構。為了讓機器人（無人車）能被理解，我們使用具有意義的標籤。</p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>HTML5 標籤</th>
+                            <th>無人車控制面板對應功能</th>
+                            <th>常見內容</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>&lt;header&gt;</code></td>
+                            <td>頂部導航與狀態列</td>
+                            <td>Logo、連線狀態燈、車輛 ID</td>
+                        </tr>
+                        <tr>
+                            <td><code>&lt;main&gt;</code></td>
+                            <td>核心操控區域</td>
+                            <td>FPV 影像、方向鈕、速度拉桿</td>
+                        </tr>
+                        <tr>
+                            <td><code>&lt;section&gt;</code></td>
+                            <td>功能分區</td>
+                            <td>感測器讀值區、相機控制區</td>
+                        </tr>
+                        <tr>
+                            <td><code>&lt;footer&gt;</code></td>
+                            <td>狀態資訊列</td>
+                            <td>IP 位址、電池電量、版本號</td>
+                        </tr>
+                    </tbody>
+                </table>
 
-                            <div class="space-y-6">
-                                <div class="group cursor-pointer">
-                                    <h4 class="font-bold text-lg mb-2 flex items-center gap-2 text-indigo-700">
-                                        <span
-                                            class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-sm">&lt;&gt;</span>
-                                        &lt;header&gt; 標題區
-                                    </h4>
-                                    <p
-                                        class="text-sm text-gray-500 pl-10 border-l-2 border-dashed border-indigo-200 ml-4 pb-2">
-                                        放置 Logo、連線狀態指示燈。告訴使用者「我在控制哪一台車」。</p>
-                                </div>
+                <h2>行動優先（Mobile First）：最關鍵的一行 HTML</h2>
 
-                                <div class="group cursor-pointer">
-                                    <h4 class="font-bold text-lg mb-2 flex items-center gap-2 text-indigo-700">
-                                        <span
-                                            class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-sm">&lt;&gt;</span>
-                                        &lt;main&gt; 核心操作區
-                                    </h4>
-                                    <div
-                                        class="pl-10 text-sm text-gray-600 border-l-2 border-dashed border-indigo-200 ml-4 pb-2 space-y-2">
-                                        <div class="flex items-center gap-2"><span
-                                                class="font-mono bg-gray-100 px-2 rounded text-pink-600">&lt;video&gt;</span>
-                                            ESP32-CAM 即時串流影像</div>
-                                        <div class="flex items-center gap-2"><span
-                                                class="font-mono bg-gray-100 px-2 rounded text-pink-600">&lt;button&gt;</span>
-                                            前進、後退、轉彎控制</div>
-                                        <div class="flex items-center gap-2"><span
-                                                class="font-mono bg-gray-100 px-2 rounded text-pink-600">&lt;input
-                                                type="range"&gt;</span> 速度控制拉桿</div>
-                                    </div>
-                                </div>
+                <p>
+                    預設情況下，手機會假裝自己是 980px 寬的桌面螢幕，然後整頁縮小顯示。
+                    對於遙控介面來說，這是災難性的 — 按鈕變得極小無法點擊，FPV 影像也會扭曲。
+                </p>
 
-                                <div class="group cursor-pointer">
-                                    <h4 class="font-bold text-lg mb-2 flex items-center gap-2 text-indigo-700">
-                                        <span
-                                            class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-sm">&lt;&gt;</span>
-                                        &lt;footer&gt; 狀態資訊
-                                    </h4>
-                                    <p
-                                        class="text-sm text-gray-500 pl-10 border-l-2 border-dashed border-indigo-200 ml-4 pb-2">
-                                        顯示 IP 位址、版權宣告、除錯訊息。</p>
-                                </div>
-                            </div>
+                <div class="ms-code">
+                    <span class="c-tag">&lt;head&gt;</span><br>
+                    &nbsp;&nbsp;<span class="c-tag">&lt;meta</span> <span class="c-attr">charset</span>=<span class="c-val">"UTF-8"</span><span class="c-tag">&gt;</span><br>
+                    &nbsp;&nbsp;<span class="c-tag">&lt;meta</span> <span class="c-attr">name</span>=<span class="c-val">"viewport"</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-attr">content</span>=<span class="c-val">"width=device-width, initial-scale=1.0"</span><span class="c-tag">&gt;</span>
+                    <span class="c-comment">&nbsp;&nbsp;← 這行很關鍵！</span><br>
+                    <span class="c-tag">&lt;/head&gt;</span>
+                </div>
+
+                <ul>
+                    <li><strong>width=device-width</strong>：強制網頁寬度等於手機螢幕實際寬度，1:1 完整呈現。</li>
+                    <li><strong>initial-scale=1.0</strong>：初始縮放比例 100%，禁止瀏覽器自動縮小。</li>
+                </ul>
+
+                <h2>觸控友善性優化</h2>
+
+                <p>遙控介面的按鈕需要能快速、連續地被觸控，避免以下常見問題：</p>
+
+                <div class="compare-grid">
+                    <div class="compare-card">
+                        <div class="compare-card-header" style="background:#fde7e9; color:var(--ms-red);">
+                            <i class="fas fa-times-circle"></i> 問題：雙擊縮放
                         </div>
-
-                        <!-- Concept 2: Mobile First -->
-                        <div class="bg-gray-50 rounded-2xl p-8 border border-gray-100">
-                            <h3 class="text-2xl font-bold mb-6 text-gray-800">行動優先 (Mobile First) 的關鍵</h3>
-                            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
-                                <p class="font-bold text-yellow-800">為什麼手機網頁字這麼小？</p>
-                                <p class="text-sm text-yellow-700 mt-1">預設情況下，手機會假裝自己是 980px 寬的電腦螢幕，然後縮小顯示。這對操控遙控車是致命的。
-                                </p>
-                            </div>
-
-                            <div class="bg-gray-900 rounded-lg p-4 font-mono text-sm shadow-inner mb-4">
-                                <span class="text-gray-500">&lt;head&gt;</span><br>
-                                <span class="pl-4 text-purple-400">&lt;meta</span> <span
-                                    class="text-sky-300">name</span>=<span class="text-orange-300">"viewport"</span><br>
-                                <span class="pl-8 text-sky-300">content</span>=<span
-                                    class="text-orange-300">"width=device-width, initial-scale=1.0"</span><span
-                                    class="text-purple-400">&gt;</span><br>
-                                <span class="text-gray-500">&lt;/head&gt;</span>
-                            </div>
-
-                            <ul class="space-y-3 text-sm">
-                                <li class="flex items-center gap-2 text-gray-700">
-                                    <span class="text-green-500">✔</span>
-                                    <strong>width=device-width</strong>: 強制網頁寬度等於手機螢幕寬度 (1:1)。
-                                </li>
-                                <li class="flex items-center gap-2 text-gray-700">
-                                    <span class="text-green-500">✔</span>
-                                    <strong>initial-scale=1.0</strong>: 初始縮放比例為 100%。
-                                </li>
-                            </ul>
+                        <div class="compare-card-body">
+                            iOS 和 Android 的預設行為：快速雙擊會放大頁面，導致方向鈕點擊後介面突然縮放失控。
+                        </div>
+                    </div>
+                    <div class="compare-card">
+                        <div class="compare-card-header" style="background:#dff6dd; color:#107c10;">
+                            <i class="fas fa-check-circle"></i> 解法：touch-action
+                        </div>
+                        <div class="compare-card-body">
+                            <code>touch-action: manipulation</code> — 允許基本觸控滾動，但禁止雙擊縮放。是遙控介面的標準配備。
+                        </div>
+                    </div>
+                    <div class="compare-card">
+                        <div class="compare-card-header" style="background:#fde7e9; color:var(--ms-red);">
+                            <i class="fas fa-times-circle"></i> 問題：長按選取文字
+                        </div>
+                        <div class="compare-card-body">
+                            長按按鈕時，瀏覽器會出現文字選取的藍色框，干擾控制操作，讓使用者無法專注於駕駛。
+                        </div>
+                    </div>
+                    <div class="compare-card">
+                        <div class="compare-card-header" style="background:#dff6dd; color:#107c10;">
+                            <i class="fas fa-check-circle"></i> 解法：user-select
+                        </div>
+                        <div class="compare-card-body">
+                            <code>user-select: none</code> — 禁止所有文字選取行為，讓控制介面不受干擾，操作更流暢直接。
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">3 / 5</span>
+                <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
 
-        <!-- Module 3: Practical Challenge -->
-        <section class="module-section mb-16">
-            <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden">
-                <div class="p-1 bg-gradient-to-r from-blue-500 to-cyan-400"></div>
-                <div class="p-8 md:p-12">
-                    <div class="section-header-left border-l-4 border-pink-500 pl-6 mb-10">
-                        <span class="text-pink-600 font-bold tracking-wider uppercase text-sm">Module 3: Practical
-                            Challenge</span>
-                        <h2 class="text-3xl font-bold text-gray-900 mt-2">實戰挑戰：打造你的駕駛艙</h2>
-                    </div>
+        <!-- ══════════ PAGE 4: 實作挑戰 ══════════ -->
+        <div class="ms-unit-page" id="page-4">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-4" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 150 分鐘</div>
+                </div>
 
-                    <!-- Git Base Station Metaphor -->
-                    <div
-                        class="bg-slate-900 rounded-xl p-6 mb-12 text-blue-300 font-mono text-sm border-l-4 border-blue-500">
-                        <div class="flex items-center gap-3 mb-4">
-                            <span class="text-2xl">📡</span>
-                            <h3 class="text-white font-bold text-lg">基地台通訊協議 (Git Workflow)</h3>
-                        </div>
-                        <p class="mb-4 text-slate-400">在任務中，GitHub 是你的「基地台」。請確保每完成一個里程碑，就將數據回傳。</p>
-                        <ul class="space-y-2">
-                            <li class="flex items-center gap-2">
-                                <span class="text-blue-500">Step 1.</span>
-                                <span>接受 GitHub Classroom 邀請，複製 (Clone) 專屬任務程式庫。</span>
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <span class="text-blue-500">Step 2.</span>
-                                <span>完成代碼撰寫後，執行 <code
-                                        class="bg-slate-800 px-2 py-0.5 rounded text-pink-400">git push</code>
-                                    將進度上傳。</span>
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <span class="text-blue-500">Step 3.</span>
-                                <span>自動化助理會即時在 PR (Pull Request) 中回饋評分結果。</span>
-                            </li>
+                <h1>實戰挑戰：打造你的駕駛艙</h1>
+
+                <p>
+                    請動手完成以下三項實作任務，這將為你未來開發跨裝置遙控介面打下最關鍵的技術基礎。
+                    每項任務完成後，請點擊卡片繳交作業截圖。
+                </p>
+
+                <div class="lab-cards-group">
+                    <!-- Task 1 -->
+                    <div class="ms-lab-card" onclick="openSubmissionModal('html5-basics-task-1', '作業 1-1: 實機部署與跨裝置連線')">
+                        <div class="ms-lab-badge"><i class="fas fa-mobile-alt"></i>&nbsp; 作業 1-1</div>
+                        <span class="ms-lab-time"><i class="far fa-clock"></i> 約 45 分鐘</span>
+                        <h3>實機部署與跨裝置連線</h3>
+                        <p style="font-size:14px; color:#323130; margin-bottom:14px;">
+                            目標：讓你的手機透過同一 WiFi 連上電腦的 Live Server，在手機瀏覽器上看到即時同步的網頁。
+                        </p>
+                        <ul class="ms-checklist">
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>安裝 VS Code 的 Live Server 擴充套件</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>使用 <code>ipconfig</code> / <code>ifconfig</code> 找出電腦內網 IP</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>手機與電腦連接同一個 WiFi 網路</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>在手機瀏覽器輸入 <code>http://[IP]:5500</code> 成功顯示網頁</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>截圖存為 <code>assets/mobile-preview.png</code> 並更新 README.md</span></li>
                         </ul>
+                        <div class="ms-note" style="margin-top:12px;">
+                            <i class="fas fa-info-circle note-icon"></i>
+                            <div class="note-body">
+                                <strong>繳交說明</strong>
+                                請在 README.md 的學生報告區貼上手機實機預覽的截圖，並簡述是否遇到防火牆問題及解決方式。完成後請點擊此卡片繳交。
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="grid md:grid-cols-3 gap-8">
-                        <!-- Task 1 -->
-                        <div onclick="openSubmissionModal('html5-basics-task-1', '作業 1-1: 實機部署與跨裝置連線')"
-                            class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden group cursor-pointer relative flex flex-col">
-                            <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-2"></div>
-                            <div class="p-6 flex-grow">
-                                <div class="flex justify-between items-start mb-4">
-                                    <h3 class="font-bold text-xl text-gray-800 group-hover:text-blue-600 transition">作業
-                                        1-1</h3>
-                                    <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold">45
-                                        min</span>
-                                </div>
-                                <h4 class="font-bold text-gray-700 mb-2">實機部署與跨裝置連線</h4>
-                                <p class="text-sm text-gray-500 mb-4">目標：讓你的手機連上電腦的 Live Server。完成後請截圖存放在 <code
-                                        class="text-blue-600">README.md</code> 回報。</p>
-
-                                <div class="mt-4 pt-4 border-t border-gray-100">
-                                    <h5 class="text-xs font-bold text-gray-400 uppercase mb-2">Troubleshooting</h5>
-                                    <div class="overflow-x-auto">
-                                        <table class="w-full text-[10px] text-gray-600 border-collapse">
-                                            <thead>
-                                                <tr class="bg-gray-50">
-                                                    <th class="border p-1 text-left">徵兆</th>
-                                                    <th class="border p-1 text-left">對策</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td class="border p-1">找不到網頁</td>
-                                                    <td class="border p-1">確認手機與電腦是否在同一個 WiFi</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="border p-1">連線被拒絕</td>
-                                                    <td class="border p-1">檢查電腦防火牆是否允許 VS Code</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Click Hint Overlay -->
-                            <div
-                                class="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span
-                                    class="bg-white text-blue-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                                    📤 點擊繳交作業
-                                </span>
+                    <!-- Task 2 -->
+                    <div class="ms-lab-card" onclick="openSubmissionModal('html5-basics-task-2', '作業 1-2: 觸控友善性優化')">
+                        <div class="ms-lab-badge"><i class="fas fa-hand-pointer"></i>&nbsp; 作業 1-2</div>
+                        <span class="ms-lab-time"><i class="far fa-clock"></i> 約 60 分鐘</span>
+                        <h3>觸控友善性優化</h3>
+                        <p style="font-size:14px; color:#323130; margin-bottom:14px;">
+                            目標：解決遙控介面上的手機觸控痛點，包含雙擊縮放、文字誤選與點擊熱區不足。
+                        </p>
+                        <ul class="ms-checklist">
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>在 CSS 中加入 <code>touch-action: manipulation</code> 消除點擊延遲</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>在按鈕元素加入 <code>user-select: none</code> 防止長按選取文字</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>確認所有按鈕的點擊熱區不小於 48×48 像素</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>在手機上連續點擊，確認不再出現雙擊縮放或文字選取</span></li>
+                        </ul>
+                        <div class="ms-tip" style="margin-top:12px;">
+                            <i class="fas fa-lightbulb note-icon"></i>
+                            <div class="note-body">
+                                <strong>測試技巧</strong>
+                                用兩根手指快速交替點擊同一個按鈕，若頁面不縮放，代表 <code>touch-action</code> 已正確生效！
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Task 2 -->
-                        <div onclick="openSubmissionModal('html5-basics-task-2', '作業 1-2: 觸控友善性優化')"
-                            class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden group cursor-pointer relative flex flex-col">
-                            <div class="bg-gradient-to-r from-indigo-500 to-indigo-600 h-2"></div>
-                            <div class="p-6 flex-grow">
-                                <div class="flex justify-between items-start mb-4">
-                                    <h3 class="font-bold text-xl text-gray-800 group-hover:text-indigo-600 transition">
-                                        作業 1-2
-                                    </h3>
-                                    <span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded font-bold">60
-                                        min</span>
-                                </div>
-                                <h4 class="font-bold text-gray-700 mb-2">觸控友善性優化</h4>
-                                <p class="text-sm text-gray-500 mb-4">目標：解決點擊延遲與誤觸。讓按鈕適合大拇指操作。</p>
-
-                                <div class="mt-4 pt-4 border-t border-gray-100">
-                                    <h5 class="text-xs font-bold text-gray-400 uppercase mb-2">Key CSS</h5>
-                                    <code class="block bg-gray-900 text-green-400 p-2 rounded text-xs font-mono">
-                                user-select: none;<br>
-                                touch-action: manipulation;
-                            </code>
-                                    <p class="text-xs text-gray-500 mt-2">防止長按選取文字與雙擊縮放。</p>
-                                </div>
-                            </div>
-                            <!-- Click Hint Overlay -->
-                            <div
-                                class="absolute inset-0 bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span
-                                    class="bg-white text-indigo-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                                    📤 點擊繳交作業
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Task 3 -->
-                        <div onclick="openSubmissionModal('html5-basics-task-3', '作業 1-3: FPV 影像容器佈局')"
-                            class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden group cursor-pointer relative flex flex-col">
-                            <div class="bg-gradient-to-r from-pink-500 to-pink-600 h-2"></div>
-                            <div class="p-6 flex-grow">
-                                <div class="flex justify-between items-start mb-4">
-                                    <h3 class="font-bold text-xl text-gray-800 group-hover:text-pink-600 transition">作業
-                                        1-3</h3>
-                                    <span class="bg-pink-100 text-pink-700 text-xs px-2 py-1 rounded font-bold">45
-                                        min</span>
-                                </div>
-                                <h4 class="font-bold text-gray-700 mb-2">FPV 影像容器佈局</h4>
-                                <p class="text-sm text-gray-500 mb-4">目標：實作滿版影像容器，解決 16:9 vs 21:9 比例問題。</p>
-
-                                <div class="mt-4 pt-4 border-t border-gray-100">
-                                    <h5 class="text-xs font-bold text-gray-400 uppercase mb-2">Visual Feedback</h5>
-                                    <p class="text-sm text-gray-600 mb-2">使用 CSS <code
-                                            class="text-pink-600 font-mono">object-fit: cover</code> 確保影像不變形。</p>
-                                    <p class="text-[10px] text-gray-500 italic">💡 進階任務：建立多個 Branch (如 feature/ios,
-                                        feature/android) 測試不同比例顯示效果。</p>
-                                </div>
-                            </div>
-                            <!-- Click Hint Overlay -->
-                            <div
-                                class="absolute inset-0 bg-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span
-                                    class="bg-white text-pink-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                                    📤 點擊繳交作業
-                                </span>
+                    <!-- Task 3 -->
+                    <div class="ms-lab-card" onclick="openSubmissionModal('html5-basics-task-3', '作業 1-3: FPV 影像容器佈局')">
+                        <div class="ms-lab-badge"><i class="fas fa-video"></i>&nbsp; 作業 1-3</div>
+                        <span class="ms-lab-time"><i class="far fa-clock"></i> 約 45 分鐘</span>
+                        <h3>FPV 影像容器佈局</h3>
+                        <p style="font-size:14px; color:#323130; margin-bottom:14px;">
+                            目標：建立自適應的全螢幕影像容器，讓無人車回傳的 FPV 影像在任何螢幕（直/橫向）都不變形。
+                        </p>
+                        <ul class="ms-checklist">
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>建立 <code>width:100vw; height:100vh</code> 的全螢幕容器</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>使用 <code>object-fit: cover</code> 確保影像充滿容器不變形</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>在 <code>assets/</code> 資料夾放入測試圖片模擬 FPV 串流</span></li>
+                            <li><div class="check-box" onclick="event.stopPropagation(); toggleCheck(this)"></div><span>手機旋轉直/橫向，確認影像皆能正確自適應</span></li>
+                        </ul>
+                        <div class="ms-note" style="margin-top:12px;">
+                            <i class="fas fa-info-circle note-icon"></i>
+                            <div class="note-body">
+                                <strong>進階挑戰</strong>
+                                嘗試建立兩個 Branch（<code>feature/portrait</code> 與 <code>feature/landscape</code>），分別針對直向與橫向做專屬佈局優化。
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">4 / 5</span>
+                <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 5: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-5">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-5" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                </div>
+
+                <h1>摘要與資源</h1>
+
+                <p>
+                    恭喜！你已經完成了「Web App 開發環境與 HTML5 基礎」模組。
+                    現在你的電腦不只是一台安裝了編輯器的機器，而是一個能夠即時同步到手機的開發指揮中心。
+                </p>
+
+                <div class="ms-achievement">
+                    <div class="achievement-icon">🚀</div>
+                    <div class="achievement-text">
+                        <h3>恭喜！你已完成本模組</h3>
+                        <p>你已具備開發跨裝置物聯網控制介面的核心基礎。持續累積，下一個模組等著你！</p>
+                    </div>
+                </div>
+
+                <h2>完成本模組後，你已學會：</h2>
+                <ul>
+                    <li>如何使用 <strong>VS Code Live Server</strong> 建立區域網路熱重載開發工作流。</li>
+                    <li>如何讓手機透過 WiFi 連入電腦伺服器，實現真正的跨裝置預覽。</li>
+                    <li>正確撰寫 <strong>HTML5 語義化骨架</strong>（header / main / section / footer）。</li>
+                    <li>使用 <strong>viewport meta 標籤</strong>解決手機螢幕縮放問題。</li>
+                    <li>使用 <strong>touch-action</strong> 與 <strong>user-select</strong> 消除觸控操控痛點。</li>
+                    <li>建立 <strong>object-fit: cover</strong> 的全螢幕影像容器，讓 FPV 串流不變形。</li>
+                </ul>
+
+                <h2>延伸學習資源</h2>
+
+                <a href="https://www.youtube.com/watch?v=Vyn9KVCsvb0" target="_blank" class="ms-resource-link">
+                    <i class="fab fa-youtube" style="color:#ff0000;"></i>
+                    <div>
+                        <div style="font-weight:600;">課程教學影片</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">YouTube — Web App 開發環境與 HTML5 基礎完整示範</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+
+                <a href="https://docs.google.com/document/d/e/2PACX-1vTCF7RjZXdhW4uyPmKkCcXUGr0ejVJUjU6ixDYAuB7bF2UNadtNI6m34jz813rAE1iViYS2d3p4Q8G7/pub?embedded=true" target="_blank" class="ms-resource-link">
+                    <i class="fas fa-file-alt"></i>
+                    <div>
+                        <div style="font-weight:600;">課程完整講義</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">Google Docs — 詳細環境架設步驟、HTML5 骨架說明與觸控優化技巧</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+
+                <a href="https://developer.mozilla.org/zh-TW/docs/Web/HTML" target="_blank" class="ms-resource-link">
+                    <i class="fas fa-book"></i>
+                    <div>
+                        <div style="font-weight:600;">MDN Web Docs — HTML 參考</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">developer.mozilla.org — 最權威的 HTML5 標籤與屬性完整文件</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+
+                <a href="https://classroom.github.com" target="_blank" class="ms-resource-link">
+                    <i class="fab fa-github"></i>
+                    <div>
+                        <div style="font-weight:600;">GitHub Classroom</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">classroom.github.com — 管理你的作業提交與自動評分結果</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
+                <button class="ms-btn" onclick="markDone(5); alert('🎉 恭喜完成「Web App 開發環境與 HTML5 基礎」模組！')">完成模組</button>
+            </div>
+        </div>
 
     </main>
+</div>
 
-    <footer class="bg-gray-900 text-white py-12 border-t border-gray-800">
-        <div class="container mx-auto px-4 text-center">
-            <p class="text-gray-500">© 2024 Vibe Coding. All rights reserved.</p>
-        </div>
-    </footer>
+<script>
+    /* ─── DATA ─── */
+    const UNITS = [
+        { id: 0, label: '課程總覽',       time: '',         type: 'index' },
+        { id: 1, label: '簡介',            time: '3 分鐘',  type: 'unit'  },
+        { id: 2, label: '直觀實驗室',     time: '8 分鐘',  type: 'unit'  },
+        { id: 3, label: 'HTML5 骨架',     time: '8 分鐘',  type: 'unit'  },
+        { id: 4, label: '實戰挑戰',       time: '150 分鐘', type: 'lab'   },
+        { id: 5, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+    ];
 
-    <!-- Media Overlay injected by course-shared.js?v=2026.04.05.FINAL_V6 -->
+    let currentUnit = 0;
+    let doneSet = new Set();
 
+    /* ─── INIT ─── */
+    function init() {
+        buildSidebar();
+        buildIndexUnitList();
+        goToUnit(0);
+    }
+
+    function buildSidebar() {
+        const nav = document.getElementById('sidebar-nav');
+        nav.innerHTML = UNITS.map(u => {
+            const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : '';
+            return `
+            <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
+                <div class="unit-icon" id="icon-${u.id}">${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div>
+                <div class="unit-meta">
+                    <div class="unit-name">${u.label}${badge}</div>
+                    ${u.time ? `<div class="unit-time"><i class="far fa-clock"></i> ${u.time}</div>` : ''}
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function buildIndexUnitList() {
+        const el = document.getElementById('index-unit-list');
+        el.innerHTML = UNITS.filter(u => u.id > 0).map(u => `
+            <div class="unit-card ${u.type}" onclick="goToUnit(${u.id})">
+                <div class="unit-card-num">${u.id}</div>
+                <div class="unit-card-info">
+                    <div class="unit-card-name">${u.label}</div>
+                    <div class="unit-card-time"><i class="far fa-clock"></i> ${u.time}</div>
+                </div>
+                <div class="unit-card-arrow">›</div>
+            </div>
+        `).join('');
+    }
+
+    /* ─── NAVIGATION ─── */
+    function goToUnit(id) {
+        document.querySelectorAll('.ms-unit-page').forEach(p => p.classList.remove('visible'));
+        const target = id === 0 ? document.getElementById('page-index') : document.getElementById(`page-${id}`);
+        if (target) target.classList.add('visible');
+
+        document.querySelectorAll('.ms-unit-item').forEach(el => el.classList.remove('active'));
+        const navItem = document.getElementById(`nav-${id}`);
+        if (navItem) { navItem.classList.add('active'); navItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) {
+                icon.className = 'unit-icon done';
+                icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>';
+            } else if (u.id === id) {
+                icon.className = 'unit-icon active-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            } else {
+                icon.className = 'unit-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            }
+        });
+
+        const unit = UNITS.find(u => u.id === id);
+        document.getElementById('bc-current').textContent = unit ? unit.label : '';
+        currentUnit = id;
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function markDone(id) {
+        doneSet.add(id);
+        const badge = document.getElementById(`badge-${id}`);
+        if (badge) badge.style.display = 'flex';
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) { icon.className = 'unit-icon done'; icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>'; }
+        });
+        updateProgress();
+    }
+
+    function updateProgress() {
+        const total = UNITS.length - 1;
+        const done = doneSet.size;
+        document.getElementById('progress-fill').style.width = Math.round(done / total * 100) + '%';
+        document.getElementById('progress-text').textContent = `${done} / ${total} 已完成`;
+    }
+
+    /* ─── CHECKLIST ─── */
+    function toggleCheck(el) {
+        el.classList.toggle('checked');
+        el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
+    }
+
+    /* ─── START ─── */
+    init();
+</script>
+
+    <!-- Define Resources -->
     <script>
-        // Define Resources
         window.RESOURCES = {
             video: "https://www.youtube.com/embed/Vyn9KVCsvb0?autoplay=1",
             doc: "https://docs.google.com/document/d/e/2PACX-1vTCF7RjZXdhW4uyPmKkCcXUGr0ejVJUjU6ixDYAuB7bF2UNadtNI6m34jz813rAE1iViYS2d3p4Q8G7/pub?embedded=true"
         };
     </script>
-    <script src="/js/course-shared.js?v=2026.05.22.V27.START_UNITS_LAYOUT_UPGRADE"></script>
+    <script src="/js/course-shared.js?v=2026.05.22.V22.SUBMISSION_BTN"></script>
 
     <!-- Assignment Guide (Hidden) -->
     <section id="assignment-guide" style="display: none;">
@@ -495,7 +1208,7 @@
 <li>
 <strong>📂 <code>README.md</code></strong>：<strong>實機測試日誌</strong>。要求學員貼上手機成功連入 Live Server 的截圖，並簡述他們在測試「點擊延遲」時的觀察。</li>
 </ul>
-<hr>
+<hr/>
 <div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a id="user-content-2-作業任務部署細節" class="anchor" aria-label="Permalink: 2. 作業任務部署細節" href="#2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <div class="markdown-heading"><h4 class="heading-element">任務 1：實機部署與跨裝置連線 (Real-device Deployment Lab)</h4><a id="user-content-任務-1實機部署與跨裝置連線-real-device-deployment-lab" class="anchor" aria-label="Permalink: 任務 1：實機部署與跨裝置連線 (Real-device Deployment Lab)" href="#任務-1實機部署與跨裝置連線-real-device-deployment-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
@@ -547,7 +1260,7 @@
 </ul>
 </li>
 </ul>
-<hr>
+<hr/>
 <div class="markdown-heading"><h3 class="heading-element">3. 工程素養與行動開發點評標準 (Mobile Development Standards)</h3><a id="user-content-3-工程素養與行動開發點評標準-mobile-development-standards" class="anchor" aria-label="Permalink: 3. 工程素養與行動開發點評標準 (Mobile Development Standards)" href="#3-工程素養與行動開發點評標準-mobile-development-standards"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>此單元的價值在於 <strong>「對 Web 工具鏈的初步掌控與對移動端細節的感知力」</strong>：</p>
 <ul>
@@ -564,8 +1277,11 @@
 └── assets/mobile-preview.png # 證據：學生提交的手機實機預覽截圖
 </code></pre>
 <p>透過這種部署方式，學生能體驗到 <strong>「好的 Web 工程師，不僅是會寫標籤的人，而是能掌控開發環境、預見移動端交互痛點、並在專案發車前就為使用者準備好完美視角與觸控手感的部署專家」</strong>。掌握 HTML5 基礎與實機預覽技術後，學員將擁有了開發「跨裝置遙控介面、移動端儀表板、以及物聯網前端」最核心也最資深的基礎開發實力！</p>
-<hr>
+<hr/>
 <p>太熱血了！我們已經將 <strong>Start 01</strong>（環境架設）的核心單元標竿化完成了。這標誌著學員現在已經正式「入職」開發團隊，準備好接受更高難度的佈局與控制挑戰。恭喜！教學地圖的起點已經完美奠基！</p>
 
     </section>
+
 </body>
+
+</html>
