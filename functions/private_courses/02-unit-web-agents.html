@@ -4,165 +4,643 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>網頁版代理人 - AI 代理人專題 | Vibe Coding</title>
-    <link rel="stylesheet" href="/style.css">
+    <title>原生 Web 代理環境與實戰 | Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <style>
+        
+        :root {
+            --ms-blue: #0078d4;
+            --ms-blue-dark: #005a9e;
+            --ms-blue-light: #deecf9;
+            --ms-gray-10: #f3f2f1;
+            --ms-gray-20: #e1dfdd;
+            --ms-gray-90: #201f1e;
+            --ms-green: #107c10;
+            --ms-red: #d13438;
+            --sidebar-w: 280px;
+        }
+
+        * { box-sizing: border-box; }
+        #assignment-guide, #tutor-guide { display: none !important; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fff;
+            color: #201f1e;
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* ─── TOP NAV ─── */
+        .ms-topnav {
+            background: var(--ms-blue);
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 4px rgba(0,0,0,.2);
+        }
+        .ms-topnav .brand {
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
+
+        /* ─── LAYOUT ─── */
+        .ms-layout { display: flex; min-height: calc(100vh - 48px); }
+
+        /* ─── SIDEBAR ─── */
+        .ms-sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            background: #faf9f8;
+            border-right: 1px solid #e1dfdd;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 48px;
+            height: calc(100vh - 48px);
+            overflow-y: auto;
+        }
+        .ms-sidebar-header {
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .ms-sidebar-header .module-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #605e5c;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .ms-sidebar-header .module-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #201f1e;
+            line-height: 1.4;
+        }
+        .ms-sidebar-header .meta {
+            font-size: 12px;
+            color: #605e5c;
+            margin-top: 6px;
+        }
+        .ms-unit-list { padding: 8px 0; }
+        .ms-unit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: background .12s, border-color .12s;
+            color: #201f1e;
+        }
+        .ms-unit-item:hover { background: #edebe9; }
+        .ms-unit-item.active {
+            border-left-color: var(--ms-blue);
+            background: #deecf9;
+        }
+        .ms-unit-item.active .unit-name { color: var(--ms-blue); font-weight: 600; }
+        .unit-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #c8c6c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            font-size: 10px;
+            background: #fff;
+        }
+        .unit-icon.done { background: var(--ms-green); border-color: var(--ms-green); color: #fff; }
+        .unit-icon.active-icon { border-color: var(--ms-blue); background: var(--ms-blue); color: #fff; }
+        .unit-meta { flex: 1; min-width: 0; }
+        .unit-name { font-size: 13px; line-height: 1.4; }
+        .unit-time { font-size: 11px; color: #605e5c; margin-top: 2px; }
+        .sidebar-progress {
+            padding: 12px 16px;
+            border-top: 1px solid #e1dfdd;
+            margin-top: auto;
+        }
+        .progress-bar-bg { background: #e1dfdd; border-radius: 4px; height: 6px; }
+        .progress-bar-fill { background: var(--ms-green); border-radius: 4px; height: 6px; transition: width .4s; }
+        .progress-text { font-size: 12px; color: #605e5c; margin-top: 6px; }
+
+        /* ─── MAIN ─── */
+        .ms-content { flex: 1; min-width: 0; }
+
+        .ms-breadcrumb {
+            padding: 10px 40px;
+            font-size: 12px;
+            color: #605e5c;
+            border-bottom: 1px solid #e1dfdd;
+            background: #fff;
+        }
+        .ms-breadcrumb a { color: var(--ms-blue); text-decoration: none; }
+        .ms-breadcrumb a:hover { text-decoration: underline; }
+        .ms-breadcrumb span { margin: 0 6px; }
+
+        /* ─── PAGES ─── */
+        .ms-unit-page { display: none; }
+        .ms-unit-page.visible { display: block; }
+
+        .unit-content {
+            max-width: 820px;
+            padding: 32px 40px 60px;
+            margin: 0 auto;
+        }
+
+        .unit-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .unit-completed-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #dff6dd;
+            color: #107c10;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 2px;
+        }
+        .unit-time-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #605e5c;
+            font-size: 13px;
+        }
+
+        /* Typography */
+        .unit-content h1 { font-size: 28px; font-weight: 700; margin: 0 0 20px; color: #201f1e; line-height: 1.3; }
+        .unit-content h2 { font-size: 20px; font-weight: 600; margin: 36px 0 12px; color: #201f1e; padding-top: 8px; }
+        .unit-content h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; color: #201f1e; }
+        .unit-content p { margin: 0 0 14px; }
+        .unit-content ul, .unit-content ol { margin: 0 0 14px; padding-left: 28px; }
+        .unit-content li { margin-bottom: 6px; }
+        .unit-content strong { font-weight: 600; }
+        .unit-content a { color: var(--ms-blue); text-decoration: none; }
+        .unit-content a:hover { text-decoration: underline; }
+        .unit-content code {
+            background: #f3f2f1;
+            border: 1px solid #e1dfdd;
+            border-radius: 3px;
+            padding: 1px 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #a31515;
+        }
+
+        /* Callouts */
+        .ms-note, .ms-tip, .ms-warning, .ms-important {
+            display: flex;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid;
+            font-size: 14px;
+        }
+        .ms-note { background: #deecf9; border-color: var(--ms-blue); }
+        .ms-note .note-icon { color: var(--ms-blue); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-tip { background: #dff6dd; border-color: var(--ms-green); }
+        .ms-tip .note-icon { color: var(--ms-green); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-warning { background: #fff4ce; border-color: #ffaa44; }
+        .ms-warning .note-icon { color: #ffaa44; font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-important { background: #fde7e9; border-color: var(--ms-red); }
+        .ms-important .note-icon { color: var(--ms-red); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .note-body strong { display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+
+        /* Scenario */
+        .ms-scenario {
+            background: #f3f2f1;
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #323130;
+            border-left: 4px solid #c8c6c4;
+        }
+        .ms-scenario-label {
+            font-style: normal;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #605e5c;
+            margin-bottom: 8px;
+        }
+
+        /* Steps */
+        .ms-steps { margin: 16px 0; }
+        .ms-step { display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start; }
+        .ms-step-num {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: var(--ms-blue); color: #fff;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .ms-step-body { flex: 1; }
+        .ms-step-body h4 { font-size: 14px; font-weight: 600; margin: 0 0 4px; }
+        .ms-step-body p { font-size: 14px; margin: 0; }
+
+        /* Table */
+        .ms-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+        .ms-table th {
+            background: #f3f2f1; font-weight: 600; text-align: left;
+            padding: 10px 14px; border: 1px solid #e1dfdd; color: #323130;
+        }
+        .ms-table td { padding: 9px 14px; border: 1px solid #e1dfdd; vertical-align: top; }
+        .ms-table tr:nth-child(even) td { background: #faf9f8; }
+        .ms-table .check { color: var(--ms-green); font-size: 16px; }
+        .ms-table .cross { color: #8a8886; font-size: 16px; }
+
+        /* Checklist */
+        .ms-checklist { list-style: none; padding: 0; margin: 12px 0; }
+        .ms-checklist li {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 6px 0; font-size: 14px;
+        }
+        .ms-checklist li .check-box {
+            width: 18px; height: 18px;
+            border: 2px solid #8a8886; border-radius: 2px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; margin-top: 1px; cursor: pointer; transition: all .15s;
+        }
+        .ms-checklist li .check-box.checked {
+            background: var(--ms-blue); border-color: var(--ms-blue); color: #fff;
+        }
+
+        /* Lab card */
+        .ms-lab-card {
+            background: linear-gradient(135deg, #eef6ff 0%, #f5f0ff 100%);
+            border: 1px solid #c7e0f4;
+            border-radius: 6px;
+            padding: 24px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: box-shadow .15s, border-color .15s;
+        }
+        .ms-lab-card:hover { box-shadow: 0 4px 16px rgba(0,120,212,.12); border-color: var(--ms-blue); }
+        .ms-lab-card h3 { margin: 0 0 12px; color: var(--ms-blue-dark); font-size: 16px; font-weight: 600; }
+        .ms-lab-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--ms-blue);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 12px;
+        }
+        .ms-lab-time {
+            font-size: 12px;
+            color: #605e5c;
+            margin-left: 8px;
+        }
+
+        /* Buttons */
+        .ms-btn {
+            background: var(--ms-blue); color: #fff; border: none;
+            padding: 7px 18px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; transition: background .12s;
+            font-family: inherit;
+        }
+        .ms-btn:hover { background: var(--ms-blue-dark); }
+
+        /* Nav */
+        .unit-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            border-top: 1px solid #e1dfdd;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .nav-btn-prev, .nav-btn-next {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 20px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; border: 1px solid;
+            font-family: inherit; transition: background .12s;
+        }
+        .nav-btn-next { background: var(--ms-blue); color: #fff; border-color: var(--ms-blue); }
+        .nav-btn-next:hover { background: var(--ms-blue-dark); border-color: var(--ms-blue-dark); }
+        .nav-btn-prev { background: #fff; color: var(--ms-blue); border-color: var(--ms-blue); }
+        .nav-btn-prev:hover { background: var(--ms-blue-light); }
+        .unit-page-indicator { font-size: 13px; color: #605e5c; }
+
+        /* Module index */
+        .module-meta-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        .ms-tag { background: #f3f2f1; color: #323130; font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: 500; }
+        .ms-tag.blue { background: #deecf9; color: var(--ms-blue-dark); }
+        .ms-tag.green { background: #dff6dd; color: #107c10; }
+        .unit-card-list { margin: 20px 0; }
+        .unit-card {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 0; border-bottom: 1px solid #f3f2f1; cursor: pointer;
+        }
+        .unit-card:last-child { border-bottom: none; }
+        .unit-card:hover .unit-card-name { color: var(--ms-blue); text-decoration: underline; }
+        .unit-card-num {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #f3f2f1; color: #605e5c;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .unit-card.lab .unit-card-num { background: #eef6ff; color: var(--ms-blue-dark); }
+        .unit-card.quiz .unit-card-num { background: #fff4ce; color: #8a6914; }
+        .unit-card-info { flex: 1; }
+        .unit-card-name { font-size: 15px; font-weight: 500; }
+        .unit-card-time { font-size: 12px; color: #605e5c; margin-top: 2px; }
+        .unit-card-arrow { color: #c8c6c4; font-size: 14px; }
+
+        /* Resource links */
+        .ms-resource-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; text-decoration: none; color: #201f1e;
+            font-size: 14px; transition: background .1s;
+        }
+        .ms-resource-link:hover { background: #f3f2f1; }
+        .ms-resource-link i { color: var(--ms-blue); font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+
+        /* Achievement */
+        .ms-achievement {
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            color: #fff; border-radius: 6px; padding: 24px 28px;
+            margin: 24px 0; display: flex; align-items: center; gap: 20px;
+        }
+        .achievement-icon { font-size: 48px; flex-shrink: 0; }
+        .achievement-text h3 { margin: 0 0 4px; font-size: 18px; }
+        .achievement-text p { margin: 0; font-size: 14px; opacity: .9; }
+
+        @media (max-width: 768px) {
+            .ms-sidebar { display: none; }
+            .unit-content { padding: 20px 16px 40px; }
+            .unit-nav { padding: 16px; }
+            .ms-breadcrumb { padding: 8px 16px; }
+        }
+
+    </style>
 </head>
 
-<body class="bg-gray-50 text-gray-800 leading-relaxed font-[Inter]">
+<body>
 
-    <!-- Hero Section -->
-    <header
-        class="relative bg-gradient-to-br from-indigo-950 via-blue-950 to-slate-950 text-white pt-24 pb-32 overflow-hidden">
-        <div
-            class="header-overlay absolute inset-0 bg-gradient-to-r from-indigo-900/90 to-blue-800/90 mix-blend-multiply">
-        </div>
-        <div
-            class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?q=80&w=3000&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-overlay">
-        </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-gray-50 to-transparent bottom-0 h-16"></div>
+<!-- TOP NAV -->
+<nav class="ms-topnav">
+    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <div class="divider"></div>
+    <span class="nav-label">The Agentic Platform</span>
+</nav>
 
-        <div class="container mx-auto px-4 relative z-10 text-center">
-            <div
-                class="badge-header inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/20 text-indigo-100 border border-indigo-400/30 backdrop-blur-sm mb-6 text-sm font-semibold tracking-wide uppercase">
-                <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
-                The Agentic Platform
+<div class="ms-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="ms-sidebar">
+        <div class="ms-sidebar-header">
+            <div class="module-label">模組</div>
+            <div class="module-title">原生 Web 代理環境與實戰</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 171 分鐘 · 6 個單元</div>
+        </div>
+        <nav class="ms-unit-list" id="sidebar-nav"></nav>
+        <div class="sidebar-progress">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight font-[Outfit]">
-                原生 Web 代理<br>環境與實戰
-            </h1>
-            <p class="text-xl md:text-2xl text-purple-100 max-w-2xl mx-auto font-light leading-relaxed mb-10">
-                傳統 IDE 是給人寫的，現代 Web Agent 是給「任務」執行的。掌握未來軟體開發的新常態。
-            </p>
-
-            <div class="flex flex-wrap justify-center gap-4 mb-16">
-                <button onclick="enterMediaMode('video', window.RESOURCES.youtube)"
-                    class="resource-btn bg-red-600 hover:bg-red-500 text-white px-8 py-4 rounded-full flex items-center gap-3 shadow-lg shadow-red-500/30 font-bold transition-all">
-                    <span>📺</span> 觀看教學影片
-                </button>
-                <button onclick="enterMediaMode('doc', window.RESOURCES.doc)"
-                    class="resource-btn bg-white/10 hover:bg-white/20 border border-white/20 text-white px-8 py-4 rounded-full flex items-center gap-3 backdrop-blur-sm font-bold transition-all">
-                    <span>📄</span> 閱讀課程講義
-                </button>
-            </div>
+            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
         </div>
-    </header>
+    </aside>
 
-    <main class="container mx-auto px-4 -mt-20 relative z-20 pb-20">
+    <!-- MAIN -->
+    <main class="ms-content">
 
-        <!-- 1. Copilot Workspace -->
-        <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden mb-8">
-            <div class="p-1 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
-            <div class="p-8 md:p-12">
-                <div class="flex items-center gap-4 mb-8">
-                    <div
-                        class="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-2xl shadow-xl">
-                        <i class="fa-solid fa-layer-group"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-3xl font-bold text-slate-800 tracking-tight font-[Outfit]">GitHub Copilot
-                            Workspace</h2>
-                        <p class="text-slate-500 text-sm mt-1">原生 Web 代理環境：以「任務」為中心的平台</p>
-                    </div>
+        <div class="ms-breadcrumb">
+            <a href="#">Vibe Coding</a><span>›</span>
+            <a href="#">The Agentic Platform</a><span>›</span>
+            <span id="bc-current">課程總覽</span>
+        </div>
+
+        <!-- ══════════ PAGE 0: INDEX ══════════ -->
+        <div class="ms-unit-page visible" id="page-index">
+            <div class="unit-content">
+                <h1>原生 Web 代理環境與實戰</h1>
+                <div class="module-meta-tags">
+                    <span class="ms-tag">模組</span>
+                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag green">The Agentic Platform</span>
+                    <span class="ms-tag blue">自主學習</span>
+                    <span class="ms-tag blue">實戰演練</span>
                 </div>
 
+                <p>傳統 IDE 是給人寫的，現代 Web Agent 是給「任務」執行的。掌握未來軟體開發的新常態。</p>
+
+                <h2>學習目標</h2>
+                <p>完成本模組後，你將能夠：</p>
+                <ul>
+                    <li>理解並掌握 <strong>GitHub Copilot Workspace</strong> 的核心觀念與操作實務。</li>
+                    <li>學會 <strong>雲端輕量與完整開發環境</strong> 的關鍵原理，並能將其應用於開發。</li>
+                    <li>掌握 <strong>GitHub Agentic Workflows (自動化)</strong> 的調校技巧與穩定性測試。</li>
+                    <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
+                </ul>
+
+                <h2>必要條件</h2>
+                <ul>
+                    <li>擁有 GitHub 帳號，能夠接受 GitHub Classroom 邀請</li>
+                    <li>配備合適的電腦開發環境及瀏覽器（推薦 Chrome）</li>
+                </ul>
+
+                <h2>本模組單元</h2>
+                <div class="unit-card-list" id="index-unit-list"></div>
+                <div style="margin-top:32px;">
+                    <button class="ms-btn" onclick="goToUnit(1)">開始模組 &nbsp;›</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 1: 簡介 ══════════ -->
+        <div class="ms-unit-page" id="page-1">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-1" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                </div>
+
+                <h1>簡介</h1>
+
+                <p>
+                    歡迎來到本模組！本單元的核心主題是 <strong>原生 Web 代理環境與實戰</strong>。
+                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
+                    但要建立一套高可用、穩定的物聯網與軟體系統，你必須確實理解底層的架構與控制協定。
+                </p>
+
+                <div class="ms-scenario" id="intro-scenario">
+                    <div class="ms-scenario-label">學習指引</div>
+                    「工欲善其事，必先利其器。」在開始實作之前，請先花時間閱讀講義或觀看影片，
+                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                </div>
+
+                <div id="video-section" class="mt-8">
+                    <h2>教學影片</h2>
+                    <div style="border-radius:4px; overflow:hidden; margin:20px 0; box-shadow:0 2px 8px rgba(0,0,0,.12); aspect-ratio:16/9;">
+                        <iframe src="https://www.youtube.com/embed/U7cF4RRQ5VI?autoplay=1"
+                            title="原生 Web 代理環境與實戰 教學影片" allowfullscreen
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            style="width:100%; height:100%; display:block; border:0;">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
+                <span class="unit-page-indicator">1 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 2: 單元 1 ══════════ -->
+        <div class="ms-unit-page" id="page-2">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-2" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
+                </div>
+
+                <h1>GitHub Copilot Workspace</h1>
+                
                 <div class="grid md:grid-cols-3 gap-6 mb-10">
-                    <div
-                        class="p-6 bg-slate-50 rounded-2xl border border-slate-100 group hover:border-blue-400 transition-colors">
-                        <i class="fa-solid fa-map text-2xl text-blue-500 mb-4"></i>
-                        <h3 class="font-bold mb-2 font-[Outfit]">規劃 (Plan)</h3>
-                        <p class="text-sm text-slate-500">代理人會讀取整個程式庫，針對你的需求寫出一份實施計畫。</p>
-                    </div>
-                    <div
-                        class="p-6 bg-slate-50 rounded-2xl border border-slate-100 group hover:border-indigo-400 transition-colors">
-                        <i class="fa-solid fa-code-branch text-2xl text-blue-500 mb-4"></i>
-                        <h3 class="font-bold mb-2 font-[Outfit]">執行 (Implement)</h3>
-                        <p class="text-sm text-slate-500">確認計畫後，它會自動在雲端環境中修改多個檔案。</p>
-                    </div>
-                    <div
-                        class="p-6 bg-slate-50 rounded-2xl border border-slate-100 group hover:border-cyan-400 transition-colors">
-                        <i class="fa-solid fa-vial-circle-check text-2xl text-blue-500 mb-4"></i>
-                        <h3 class="font-bold mb-2 font-[Outfit]">驗證 (Verify)</h3>
-                        <p class="text-sm text-slate-500">自動執行測試，如果失敗，代理人會自行修復錯誤。</p>
-                    </div>
-                </div>
-
-                <div
-                    class="flex flex-col md:flex-row items-center gap-8 bg-blue-600 rounded-2xl p-8 text-white shadow-lg shadow-blue-200">
-                    <div class="flex-grow">
-                        <h4 class="text-xl font-bold mb-2 font-[Outfit]">核心工作流：From Issue to PR</h4>
-                        <p class="text-sm text-blue-100">一旦任務完成並通過驗證，Agent 會直接幫你開啟 Pull Request。它是目前自動化程度最高的 Web 編程環境。
+<div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 group hover:border-blue-400 transition-colors">
+<i class="fa-solid fa-map text-2xl text-blue-500 mb-4"></i>
+<h3 class="font-bold mb-2 font-[Outfit]">規劃 (Plan)</h3>
+<p class="text-sm text-slate-500">代理人會讀取整個程式庫，針對你的需求寫出一份實施計畫。</p>
+</div>
+<div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 group hover:border-indigo-400 transition-colors">
+<i class="fa-solid fa-code-branch text-2xl text-blue-500 mb-4"></i>
+<h3 class="font-bold mb-2 font-[Outfit]">執行 (Implement)</h3>
+<p class="text-sm text-slate-500">確認計畫後，它會自動在雲端環境中修改多個檔案。</p>
+</div>
+<div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 group hover:border-cyan-400 transition-colors">
+<i class="fa-solid fa-vial-circle-check text-2xl text-blue-500 mb-4"></i>
+<h3 class="font-bold mb-2 font-[Outfit]">驗證 (Verify)</h3>
+<p class="text-sm text-slate-500">自動執行測試，如果失敗，代理人會自行修復錯誤。</p>
+</div>
+</div><div class="flex flex-col md:flex-row items-center gap-8 bg-blue-600 rounded-2xl p-8 text-white shadow-lg shadow-blue-200">
+<div class="flex-grow">
+<h4 class="text-xl font-bold mb-2 font-[Outfit]">核心工作流：From Issue to PR</h4>
+<p class="text-sm text-blue-100">一旦任務完成並通過驗證，Agent 會直接幫你開啟 Pull Request。它是目前自動化程度最高的 Web 編程環境。
                         </p>
-                    </div>
-                    <div class="flex-shrink-0">
-                        <a href="https://copilot-workspace.github.next.com/" target="_blank"
-                            class="px-6 py-3 bg-white text-blue-600 rounded-full font-bold shadow-lg hover:scale-110 transition inline-block">立即前往
+</div>
+<div class="flex-shrink-0">
+<a class="px-6 py-3 bg-white text-blue-600 rounded-full font-bold shadow-lg hover:scale-110 transition inline-block" href="https://copilot-workspace.github.next.com/" target="_blank">立即前往
                             <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i></a>
-                    </div>
-                </div>
+</div>
+</div>
+                
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">2 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- 2. Web Chat + Codespaces -->
-        <div class="grid md:grid-cols-2 gap-8 mb-8">
-            <!-- Web Chat -->
-            <div class="glass-card bg-white rounded-2xl p-8 shadow-xl border border-slate-100 flex flex-col">
-                <div
-                    class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-xl mb-6 shadow-sm">
-                    <i class="fa-solid fa-comments"></i>
+        <!-- ══════════ PAGE 3: 單元 2 ══════════ -->
+        <div class="ms-unit-page" id="page-3">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-3" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
-                <h3 class="text-xl font-bold mb-4 font-[Outfit]">GitHub.com Copilot Chat</h3>
-                <p class="text-sm text-slate-600 mb-6 flex-grow leading-relaxed">
+
+                <h1>雲端輕量與完整開發環境</h1>
+                
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
+<!-- Web Chat -->
+<div class="glass-card bg-white rounded-2xl p-8 shadow-xl border border-slate-100 flex flex-col">
+<div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-xl mb-6 shadow-sm">
+<i class="fa-solid fa-comments"></i>
+</div>
+<h3 class="text-xl font-bold mb-4 font-[Outfit]">GitHub.com Copilot Chat</h3>
+<p class="text-sm text-slate-600 mb-6 flex-grow leading-relaxed">
                     直接在程式庫網頁使用對話。最新功能支援 <strong>Tool Calls</strong>，這意味著 Agent 可以調用工具來搜尋程式碼、分析檔案結構。
                 </p>
-                <div class="pt-4 border-t border-slate-50">
-                    <span
-                        class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full inline-block">按下
+<div class="pt-4 border-t border-slate-50">
+<span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full inline-block">按下
                         Ctrl+B 啟動</span>
-                </div>
-            </div>
-
-            <!-- Codespaces -->
-            <div class="glass-card bg-white rounded-2xl p-8 shadow-xl border border-slate-100 flex flex-col">
-                <div
-                    class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-xl mb-6 shadow-sm">
-                    <i class="fa-solid fa-terminal"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-4 font-[Outfit]">github.dev / Codespaces</h3>
-                <p class="text-sm text-slate-600 mb-6 flex-grow leading-relaxed">
+</div>
+</div>
+<!-- Codespaces -->
+<div class="glass-card bg-white rounded-2xl p-8 shadow-xl border border-slate-100 flex flex-col">
+<div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-xl mb-6 shadow-sm">
+<i class="fa-solid fa-terminal"></i>
+</div>
+<h3 class="text-xl font-bold mb-4 font-[Outfit]">github.dev / Codespaces</h3>
+<p class="text-sm text-slate-600 mb-6 flex-grow leading-relaxed">
                     這是運行在雲端的「完整開發環境」。你可以在 <strong>Terminal</strong> 中安裝套件、執行程式碼，並使用完整的 <strong>Agent Mode</strong>。
                 </p>
-                <div class="pt-4 border-t border-slate-50">
-                    <span
-                        class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-full inline-block">在程式庫頁按
+<div class="pt-4 border-t border-slate-50">
+<span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-full inline-block">在程式庫頁按
                         "." (句點) 進入</span>
-                </div>
+</div>
+</div>
+</div>
+                
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">3 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- 3. Actions Section -->
-        <div class="glass-card bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden mb-8">
-            <div class="p-1 bg-gradient-to-r from-orange-500 to-amber-400"></div>
-            <div class="p-8 md:p-12">
-                <div class="flex items-center gap-4 mb-6">
-                    <div
-                        class="w-12 h-12 bg-orange-600 text-white rounded-2xl flex items-center justify-center text-xl shadow-lg">
-                        <i class="fa-solid fa-gears"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold text-slate-800 font-[Outfit]">GitHub Agentic Workflows (自動化)</h2>
+        <!-- ══════════ PAGE 4: 單元 3 ══════════ -->
+        <div class="ms-unit-page" id="page-4">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-4" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
+
+                <h1>GitHub Agentic Workflows (自動化)</h1>
+                
                 <p class="text-slate-600 mb-8 font-light leading-relaxed">
                     讓 AI Agent 變成一個自動運行的後台機器人。例如：直接指派 Issue 給 <code>@copilot</code>，它會自動開分支、寫程式碼並提交 PR。
-                </p>
-
-                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-inner">
-                    <div class="flex items-center gap-3 text-xs text-slate-500 mb-4 font-mono">
-                        <i class="fa-solid fa-file-code"></i> .github/workflows/agent.yml
+                </p><div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-inner">
+<div class="flex items-center gap-3 text-xs text-slate-500 mb-4 font-mono">
+<i class="fa-solid fa-file-code"></i> .github/workflows/agent.yml
                     </div>
-                    <code class="text-xs text-blue-300 block whitespace-pre overflow-x-auto leading-relaxed">
+<code class="text-xs text-blue-300 block whitespace-pre overflow-x-auto leading-relaxed">
 # 範例：當 Issue 標記為 'ai-fix' 時啟動 Agent
 on:
   issues:
@@ -176,124 +654,351 @@ jobs:
       - name: Run Copilot Agent
         run: copilot-agent --issue ${{ github.event.issue.number }}
                     </code>
-                </div>
+</div>
+<div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden mb-16">
+<div class="p-8 md:p-12">
+<h2 class="text-3xl font-bold text-slate-800 mb-8 text-center font-[Outfit]">Web vs. Desktop 功能對照</h2>
+<div class="overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
+<table class="w-full text-left bg-white">
+<thead class="bg-slate-50 border-b border-slate-200">
+<tr>
+<th class="px-6 py-4 font-bold text-slate-800 text-sm">功能</th>
+<th class="px-6 py-4 font-bold text-slate-700 text-sm">GitHub.com (Web Chat)</th>
+<th class="px-6 py-4 font-bold text-blue-600 text-sm">Copilot Workspace</th>
+<th class="px-6 py-4 font-bold text-indigo-600 text-sm">VS Code (Desktop)</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 text-xs">
+<tr>
+<td class="px-6 py-4 font-bold text-slate-800">跨檔案編輯</td>
+<td class="px-6 py-4 text-slate-500">僅限建議</td>
+<td class="px-6 py-4 font-bold text-blue-600">自動規劃與執行</td>
+<td class="px-6 py-4 font-bold text-indigo-600">Agent Mode 自助修改</td>
+</tr>
+<tr>
+<td class="px-6 py-4 font-bold text-slate-800">執行指令 (Terminal)</td>
+<td class="px-6 py-4 text-slate-500">不支援</td>
+<td class="px-6 py-4 font-bold text-blue-600">雲端執行與驗證</td>
+<td class="px-6 py-4 font-bold text-indigo-600">本地終端機執行</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+                
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">4 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- Feature Comparison -->
-        <div class="glass-card bg-white rounded-2xl shadow-xl overflow-hidden mb-16">
-            <div class="p-8 md:p-12">
-                <h2 class="text-3xl font-bold text-slate-800 mb-8 text-center font-[Outfit]">Web vs. Desktop 功能對照</h2>
-                <div class="overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
-                    <table class="w-full text-left bg-white">
-                        <thead class="bg-slate-50 border-b border-slate-200">
-                            <tr>
-                                <th class="px-6 py-4 font-bold text-slate-800 text-sm">功能</th>
-                                <th class="px-6 py-4 font-bold text-slate-700 text-sm">GitHub.com (Web Chat)</th>
-                                <th class="px-6 py-4 font-bold text-blue-600 text-sm">Copilot Workspace</th>
-                                <th class="px-6 py-4 font-bold text-indigo-600 text-sm">VS Code (Desktop)</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100 text-xs">
-                            <tr>
-                                <td class="px-6 py-4 font-bold text-slate-800">跨檔案編輯</td>
-                                <td class="px-6 py-4 text-slate-500">僅限建議</td>
-                                <td class="px-6 py-4 font-bold text-blue-600">自動規劃與執行</td>
-                                <td class="px-6 py-4 font-bold text-indigo-600">Agent Mode 自助修改</td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 font-bold text-slate-800">執行指令 (Terminal)</td>
-                                <td class="px-6 py-4 text-slate-500">不支援</td>
-                                <td class="px-6 py-4 font-bold text-blue-600">雲端執行與驗證</td>
-                                <td class="px-6 py-4 font-bold text-indigo-600">本地終端機執行</td>
-                            </tr>
-                        </tbody>
-                    </table>
+        <!-- ══════════ PAGE 5: 實作挑戰 ══════════ -->
+        <div class="ms-unit-page" id="page-5">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-5" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 135 分鐘</div>
                 </div>
+
+                <h1>實戰任務挑戰</h1>
+
+                <p>
+                    請動手完成以下三項實作任務，這是驗證本單元學習成果的核心挑戰。
+                    完成後請將程式碼與報告提交至 GitHub Classroom。
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-6 my-6">
+                    <!-- Task 1 -->
+                    <div onclick="openSubmissionModal('ai-agent-task-2-1', '作業 2-1: Copilot Workspace 任務')"
+                        class="border border-gray-200 bg-white rounded-xl p-6 hover:shadow-lg transition cursor-pointer relative group flex flex-col justify-between">
+                        <div>
+                            <div class="bg-[#E76F51] text-white w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 2-1</div>
+                            <h3 class="text-lg font-bold mb-2">Copilot Workspace 任務</h3>
+                            <p class="text-xs text-gray-600 mb-4">在 Workspace 平台描述一個 Functional Requirement，並讓它自動產生 PR。</p>
+                        </div>
+                        <div class="border-t border-gray-100 pt-3 flex items-center justify-between text-xs text-[#E76F51] font-bold">
+                            <span>⏱ 45 min</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                            <span class="bg-[#E76F51] text-white text-xs px-4 py-2 rounded-full font-bold shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                                📤 點擊繳交作業
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Task 2 -->
+                    <div onclick="openSubmissionModal('ai-agent-task-2-2', '作業 2-2: 自動化 Agent Workflow')"
+                        class="border border-gray-200 bg-white rounded-xl p-6 hover:shadow-lg transition cursor-pointer relative group flex flex-col justify-between">
+                        <div>
+                            <div class="bg-[#2A9D8F] text-white w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 2-2</div>
+                            <h3 class="text-lg font-bold mb-2">自動化 Agent Workflow</h3>
+                            <p class="text-xs text-gray-600 mb-4">設定一個 GitHub Action，當下標籤時自動啟動 Copilot 進行代碼檢查。</p>
+                        </div>
+                        <div class="border-t border-gray-100 pt-3 flex items-center justify-between text-xs text-[#2A9D8F] font-bold">
+                            <span>⏱ 45 min</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                            <span class="bg-[#2A9D8F] text-white text-xs px-4 py-2 rounded-full font-bold shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                                📤 點擊繳交作業
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Task 3 -->
+                    <div onclick="openSubmissionModal('ai-agent-task-2-3', '作業 2-3: 雲端 IDE 免安裝開發')"
+                        class="border border-gray-200 bg-white rounded-xl p-6 hover:shadow-lg transition cursor-pointer relative group flex flex-col justify-between">
+                        <div>
+                            <div class="bg-[#457B9D] text-white w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 2-3</div>
+                            <h3 class="text-lg font-bold mb-2">雲端 IDE 免安裝開發</h3>
+                            <p class="text-xs text-gray-600 mb-4">在 github.dev 中使用網頁版對話功能完成一個跨檔案的代碼重構。</p>
+                        </div>
+                        <div class="border-t border-gray-100 pt-3 flex items-center justify-between text-xs text-[#457B9D] font-bold">
+                            <span>⏱ 45 min</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                            <span class="bg-[#457B9D] text-white text-xs px-4 py-2 rounded-full font-bold shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                                📤 點擊繳交作業
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">5 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- Assignments Section -->
-        <section class="mb-16">
-            <h2 class="text-3xl font-bold text-slate-800 text-center mb-12 font-[Outfit]">🛠️ 課後練習與挑戰</h2>
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- HW 2-1 -->
-                <div onclick="openSubmissionModal('ai-agent-task-2-1', '作業 2-1: Copilot Workspace 任務')"
-                    class="bg-white rounded-2xl shadow-md border border-slate-100 p-8 cursor-pointer relative group hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
-                    <div
-                        class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-xl font-bold mb-6">
-                        2-1</div>
-                    <h3 class="font-bold text-xl mb-3 text-slate-800">Copilot Workspace 任務</h3>
-                    <p class="text-sm text-slate-500 mb-6 leading-relaxed flex-grow">在 Workspace 平台描述一個 Functional
-                        Requirement，並讓它自動產生 PR。</p>
-                    <div
-                        class="absolute inset-0 bg-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
-                        <span
-                            class="bg-white text-blue-600 px-6 py-2 rounded-full font-bold shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform">📤
-                            點擊繳交作業</span>
+        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-6">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                </div>
+
+                <h1>單元摘要與參考資源</h1>
+
+                <p>
+                    恭喜！你已經完成了「<strong>原生 Web 代理環境與實戰</strong>」模組。
+                    透過本單元的學習與實作，你已經掌握了關鍵的核心技術，為後續的開發奠定了深厚的基石。
+                </p>
+
+                <div class="ms-achievement">
+                    <div class="achievement-icon">🚀</div>
+                    <div class="achievement-text">
+                        <h3>恭喜！你已完成本模組</h3>
+                        <p>你已具備開發與調校本單元核心功能的專業實力。持續累積，前進下一個挑戰！</p>
                     </div>
                 </div>
 
-                <!-- HW 2-2 -->
-                <div onclick="openSubmissionModal('ai-agent-task-2-2', '作業 2-2: 自動化 Agent Workflow')"
-                    class="bg-white rounded-2xl shadow-md border border-slate-100 p-8 cursor-pointer relative group hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
-                    <div
-                        class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center text-xl font-bold mb-6">
-                        2-2</div>
-                    <h3 class="font-bold text-xl mb-3 text-slate-800">自動化 Agent Workflow</h3>
-                    <p class="text-sm text-slate-500 mb-6 leading-relaxed flex-grow">設定一個 GitHub Action，當下標籤時自動啟動
-                        Copilot 進行代碼檢查。</p>
-                    <div
-                        class="absolute inset-0 bg-orange-600/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
-                        <span
-                            class="bg-white text-orange-600 px-6 py-2 rounded-full font-bold shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform">📤
-                            點擊繳交作業</span>
-                    </div>
-                </div>
+                <h2>完成本模組後，你已學會：</h2>
+                <ul>
+                    <li><strong>GitHub Copilot Workspace</strong> 的基本架構與實作技能。</li>
+                    <li><strong>雲端輕量與完整開發環境</strong> 的調試方法與資料傳輸細節。</li>
+                    <li><strong>GitHub Agentic Workflows (自動化)</strong> 的優化指標與生產環境安全機制。</li>
+                    <li>在實戰挑戰中，透過 Git 與 GitHub Classroom 提交完整的專案成果。</li>
+                </ul>
 
-                <!-- HW 2-3 -->
-                <div onclick="openSubmissionModal('ai-agent-task-2-3', '作業 2-3: 雲端 IDE 免安裝開發')"
-                    class="bg-white rounded-2xl shadow-md border border-slate-100 p-8 cursor-pointer relative group hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
-                    <div
-                        class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-xl font-bold mb-6">
-                        2-3</div>
-                    <h3 class="font-bold text-xl mb-3 text-slate-800">雲端 IDE 免安裝開發</h3>
-                    <p class="text-sm text-slate-500 mb-6 leading-relaxed flex-grow">在 `github.dev`
-                        中使用網頁版對話功能完成一個跨檔案的代碼重構。</p>
-                    <div
-                        class="absolute inset-0 bg-indigo-600/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
-                        <span
-                            class="bg-white text-indigo-600 px-6 py-2 rounded-full font-bold shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform">📤
-                            點擊繳交作業</span>
+                <h2>延伸學習資源</h2>
+
+                <a id="resource-link-video" href="https://www.youtube.com/embed/U7cF4RRQ5VI?autoplay=1" target="_blank" class="ms-resource-link">
+                    <i class="fab fa-youtube" style="color:#ff0000;"></i>
+                    <div>
+                        <div style="font-weight:600;">課程教學影片</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">YouTube — 本單元核心觀念與實作示範影片</div>
                     </div>
-                </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+
+                <a id="resource-link-doc" href="https://docs.google.com/document/d/1GQqGRkPu8K1m12oQWyXLNb0XHywEAcyQabCz2tCBH0k/edit?usp=sharing" target="_blank" class="ms-resource-link">
+                    <i class="fas fa-file-alt"></i>
+                    <div>
+                        <div style="font-weight:600;">課程完整講義</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">Google Docs — 詳細實驗步驟、技術文件與程式碼指南</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+
+                <a href="https://classroom.github.com" target="_blank" class="ms-resource-link">
+                    <i class="fab fa-github"></i>
+                    <div>
+                        <div style="font-weight:600;">GitHub Classroom</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">classroom.github.com — 管理你的作業提交與自動評分結果</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
             </div>
-        </section>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
+                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「原生 Web 代理環境與實戰」模組！')">完成模組</button>
+            </div>
+        </div>
 
     </main>
+</div>
 
-    <!-- Resources & Script -->
-    <script>
-        window.RESOURCES = {
-            video: "https://www.youtube.com/embed/U7cF4RRQ5VI?autoplay=1",
-            doc: "https://docs.google.com/document/d/1GQqGRkPu8K1m12oQWyXLNb0XHywEAcyQabCz2tCBH0k/edit?usp=sharing"
-        };
-    </script>
-    <script src="/js/course-shared.js?v=2026.05.21.V21.DISABLE_UNIFIED_SUPPORT_HUB"></script>
+<script>
+    /* ─── DATA ─── */
+    const UNITS = [
+        { id: 0, label: '課程總覽',       time: '',         type: 'index' },
+        { id: 1, label: '簡介',            time: '3 分鐘',  type: 'unit'  },
+        { id: 2, label: 'GitHub Copilot Workspace', time: '10 分鐘', type: 'unit' },
+        { id: 3, label: '雲端輕量與完整開發環境', time: '10 分鐘', type: 'unit' },
+        { id: 4, label: 'GitHub Agentic Workflows (自動化)', time: '10 分鐘', type: 'unit' },
+        { id: 5, label: '實戰挑戰',       time: '135 分鐘', type: 'lab'   },
+        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+    ];
 
-    <!-- Assignment Guide (Hidden) -->
-    <section id="assignment-guide" style="display: none;">
-<div class="markdown-heading"><h1 class="heading-element">02-Unit-Web-Agents: 原生 Web 代理環境實戰</h1><a id="user-content-02-unit-web-agents-原生-web-代理環境實戰" class="anchor" aria-label="Permalink: 02-Unit-Web-Agents: 原生 Web 代理環境實戰" href="#02-unit-web-agents-原生-web-代理環境實戰"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+    let currentUnit = 0;
+    let doneSet = new Set();
+
+    /* ─── INIT ─── */
+    function init() {
+        buildSidebar();
+        buildIndexUnitList();
+        
+        // Hide empty resources
+        if (!window.RESOURCES.video) {
+            const videoSection = document.getElementById('video-section');
+            if (videoSection) videoSection.style.display = 'none';
+            const videoLink = document.getElementById('resource-link-video');
+            if (videoLink) videoLink.style.display = 'none';
+        }
+        if (!window.RESOURCES.doc) {
+            const docLink = document.getElementById('resource-link-doc');
+            if (docLink) docLink.style.display = 'none';
+        }
+
+        goToUnit(0);
+    }
+
+    /**
+     * 動態建構側邊欄單元選單。
+     */
+    function buildSidebar() {
+        const nav = document.getElementById('sidebar-nav');
+        nav.innerHTML = UNITS.map(u => {
+            const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : '';
+            return `
+            <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
+                <div class="unit-icon" id="icon-${u.id}">${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div>
+                <div class="unit-meta">
+                    <div class="unit-name">${u.label}${badge}</div>
+                    ${u.time ? `<div class="unit-time"><i class="far fa-clock"></i> ${u.time}</div>` : ''}
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    /**
+     * 動態建構首頁單元卡片列表。
+     */
+    function buildIndexUnitList() {
+        const el = document.getElementById('index-unit-list');
+        el.innerHTML = UNITS.filter(u => u.id > 0).map(u => `
+            <div class="unit-card ${u.type}" onclick="goToUnit(${u.id})">
+                <div class="unit-card-num">${u.id}</div>
+                <div class="unit-card-info">
+                    <div class="unit-card-name">${u.label}</div>
+                    <div class="unit-card-time"><i class="far fa-clock"></i> ${u.time}</div>
+                </div>
+                <div class="unit-card-arrow">›</div>
+            </div>
+        `).join('');
+    }
+
+    /* ─── NAVIGATION ─── */
+    function goToUnit(id) {
+        document.querySelectorAll('.ms-unit-page').forEach(p => p.classList.remove('visible'));
+        const target = id === 0 ? document.getElementById('page-index') : document.getElementById(`page-${id}`);
+        if (target) target.classList.add('visible');
+
+        document.querySelectorAll('.ms-unit-item').forEach(el => el.classList.remove('active'));
+        const navItem = document.getElementById(`nav-${id}`);
+        if (navItem) { navItem.classList.add('active'); navItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) {
+                icon.className = 'unit-icon done';
+                icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>';
+            } else if (u.id === id) {
+                icon.className = 'unit-icon active-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            } else {
+                icon.className = 'unit-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            }
+        });
+
+        const unit = UNITS.find(u => u.id === id);
+        document.getElementById('bc-current').textContent = unit ? unit.label : '';
+        currentUnit = id;
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function markDone(id) {
+        doneSet.add(id);
+        const badge = document.getElementById(`badge-${id}`);
+        if (badge) badge.style.display = 'flex';
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) { icon.className = 'unit-icon done'; icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>'; }
+        });
+        updateProgress();
+    }
+
+    function updateProgress() {
+        const total = UNITS.length - 1;
+        const done = doneSet.size;
+        document.getElementById('progress-fill').style.width = Math.round(done / total * 100) + '%';
+        document.getElementById('progress-text').textContent = `${done} / ${total} 已完成`;
+    }
+
+    function toggleCheck(el) {
+        el.classList.toggle('checked');
+        el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
+    }
+
+    init();
+</script>
+
+<!-- Define Resources -->
+<script>
+    window.RESOURCES = {
+        video: "https://www.youtube.com/embed/U7cF4RRQ5VI?autoplay=1",
+        doc: "https://docs.google.com/document/d/1GQqGRkPu8K1m12oQWyXLNb0XHywEAcyQabCz2tCBH0k/edit?usp=sharing"
+    };
+</script>
+<script src="/js/course-shared.js?v=2026.05.22.V27.START_UNITS_LAYOUT_UPGRADE"></script>
+
+
+
+<!-- Assignment Guide (Hidden) -->
+<section id="assignment-guide" style="display: none !important;">
+<div class="markdown-heading"><h1 class="heading-element">02-Unit-Web-Agents: 原生 Web 代理環境實戰</h1><a aria-label="Permalink: 02-Unit-Web-Agents: 原生 Web 代理環境實戰" class="anchor" href="#02-unit-web-agents-原生-web-代理環境實戰" id="user-content-02-unit-web-agents-原生-web-代理環境實戰"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>歡迎來到第二單元！在這個單元中，我們將離開本地開發環境，將開發戰場移向雲端，並實踐 <strong>「以任務為中心 (Task-Centric)」</strong> 的現代開發流程。你將學會如何指揮 AI 代理人（AI Agents）在雲端完成從需求描述到代碼部署的完整流程。</p>
-<div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2><a id="user-content--學習目標" class="anchor" aria-label="Permalink: 🎯 學習目標" href="#-學習目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2><a aria-label="Permalink: 🎯 學習目標" class="anchor" href="#-學習目標" id="user-content--學習目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>掌握 <strong>Copilot Workspace</strong> 的完整開發閉環。</li>
 <li>學會配置並觸發 <strong>GitHub Actions</strong> 中的 AI 自動化工作流。</li>
 <li>實踐 <strong>Zero-Install</strong> 開發模式，利用瀏覽器即時修復與重構代碼。</li>
 </ul>
-<hr>
-<div class="markdown-heading"><h2 class="heading-element">🚀 作業任務</h2><a id="user-content--作業任務" class="anchor" aria-label="Permalink: 🚀 作業任務" href="#-作業任務"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h3 class="heading-element">任務 1：從需求到 PR - Copilot Workspace 實戰</h3><a id="user-content-任務-1從需求到-pr---copilot-workspace-實戰" class="anchor" aria-label="Permalink: 任務 1：從需求到 PR - Copilot Workspace 實戰" href="#任務-1從需求到-pr---copilot-workspace-實戰"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h2 class="heading-element">🚀 作業任務</h2><a aria-label="Permalink: 🚀 作業任務" class="anchor" href="#-作業任務" id="user-content--作業任務"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 1：從需求到 PR - Copilot Workspace 實戰</h3><a aria-label="Permalink: 任務 1：從需求到 PR - Copilot Workspace 實戰" class="anchor" href="#任務-1從需求到-pr---copilot-workspace-實戰" id="user-content-任務-1從需求到-pr---copilot-workspace-實戰"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>在本任務中，你將練習如何透過精確的需求描述，引導 AI 生成解決方案並開啟 Pull Request (PR)。</p>
 <ol>
 <li>在程式庫中開啟一個新的 <strong>Issue</strong>，描述一個功能需求或修復任務。</li>
@@ -304,7 +1009,7 @@ jobs:
 <li>執行計畫並開啟 <strong>Pull Request</strong>。</li>
 <li>將產生的 PR 連結填寫至本程式庫的 <code>PR_LINK.md</code> 檔案中。</li>
 </ol>
-<div class="markdown-heading"><h3 class="heading-element">任務 2：幽靈編程師 - GitHub Actions 自動化</h3><a id="user-content-任務-2幽靈編程師---github-actions-自動化" class="anchor" aria-label="Permalink: 任務 2：幽靈編程師 - GitHub Actions 自動化" href="#任務-2幽靈編程師---github-actions-自動化"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 2：幽靈編程師 - GitHub Actions 自動化</h3><a aria-label="Permalink: 任務 2：幽靈編程師 - GitHub Actions 自動化" class="anchor" href="#任務-2幽靈編程師---github-actions-自動化" id="user-content-任務-2幽靈編程師---github-actions-自動化"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>本任務要求你將 AI 代理人嵌入 CI/CD 流程中，實現標籤觸發的自動代碼檢查與修復。</p>
 <ol>
 <li>查看 <code>.github/workflows/ai-agent.yml</code>，確保其觸發條件設定為 <code>types: [labeled]</code>。</li>
@@ -312,22 +1017,22 @@ jobs:
 <li>手動為該 Issue 貼上 <code>ai-fix</code> 標籤。</li>
 <li>前往程式庫的 <strong>"Actions"</strong> 頁籤，確認自動化工作流已成功啟動並開始執行任務。</li>
 </ol>
-<div class="markdown-heading"><h3 class="heading-element">任務 3：雲端極簡主義 - Zero-Install 開發實踐</h3><a id="user-content-任務-3雲端極簡主義---zero-install-開發實踐" class="anchor" aria-label="Permalink: 任務 3：雲端極簡主義 - Zero-Install 開發實踐" href="#任務-3雲端極簡主義---zero-install-開發實踐"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 3：雲端極簡主義 - Zero-Install 開發實踐</h3><a aria-label="Permalink: 任務 3：雲端極簡主義 - Zero-Install 開發實踐" class="anchor" href="#任務-3雲端極簡主義---zero-install-開發實踐" id="user-content-任務-3雲端極簡主義---zero-install-開發實踐"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>利用瀏覽器快捷鍵快速進入輕量化編程環境，完成代碼重構。</p>
 <ol>
 <li>在程式庫首頁按下鍵盤上的 <code>.</code> (句點) 鍵，進入 <code>github.dev</code> 編輯環境。</li>
 <li>針對 <code>tasks/style-refactor.css</code> 進行跨檔案的代碼重構（例如：修改 CSS 變數或統一風格）。</li>
 <li>完成後進行 Commit，並在 Commit Message 中註明：<code>Refactored via github.dev Web Agent</code>。</li>
 </ol>
-<hr>
-<div class="markdown-heading"><h2 class="heading-element">📝 提交清單</h2><a id="user-content--提交清單" class="anchor" aria-label="Permalink: 📝 提交清單" href="#-提交清單"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h2 class="heading-element">📝 提交清單</h2><a aria-label="Permalink: 📝 提交清單" class="anchor" href="#-提交清單" id="user-content--提交清單"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>[ ] 已將 Task 1 的 PR 連結填入 <code>PR_LINK.md</code>。</li>
 <li>[ ] 已在 Task 2 的 Actions 頁面確認執行紀錄。</li>
 <li>[ ] 已完成 Task 3 的網頁版 Commit。</li>
 </ul>
-<hr>
-<div class="markdown-heading"><h2 class="heading-element">📂 程式庫結構說明</h2><a id="user-content--程式庫結構說明" class="anchor" aria-label="Permalink: 📂 程式庫結構說明" href="#-程式庫結構說明"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h2 class="heading-element">📂 程式庫結構說明</h2><a aria-label="Permalink: 📂 程式庫結構說明" class="anchor" href="#-程式庫結構說明" id="user-content--程式庫結構說明"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <code>.github/workflows/</code>：存放自動化腳本，包含 AI 代理人的調度邏輯。</li>
@@ -338,18 +1043,15 @@ jobs:
 <li>
 <code>PR_LINK.md</code>：請在此記錄你的任務成果連結。</li>
 </ul>
-<hr>
+<hr/>
 <p><em>提示：本單元強調「瀏覽器即是最強 IDE」。請盡可能在雲端環境完成所有操作。</em></p>
+</section>
 
-    </section>
-    <script src="/js/course-shared.js?v=2026.05.21.V21.DISABLE_UNIFIED_SUPPORT_HUB"></script>
-
-
-    <!-- Tutor Guide (Hidden) -->
-    <section id="tutor-guide" style="display: none;">
+<!-- Tutor Guide (Hidden) -->
+<section id="tutor-guide" style="display: none !important;">
 <p>針對 <strong><code>02-unit-web-agents</code> (原生 Web 代理環境)</strong> 單元，這個單元將開發戰場從本地 IDE 移向了雲端，強調 <strong>「以任務為中心 (Task-Centric)」</strong> 的開發流程。</p>
 <p>以下是在 <strong>GitHub Classroom</strong> 部署其作業 (Assignments) 的具體建議：</p>
-<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template 程式庫) 配置建議</h3><a id="user-content-1-範本程式庫-template-程式庫-配置建議" class="anchor" aria-label="Permalink: 1. 範本程式庫 (Template 程式庫) 配置建議" href="#1-範本程式庫-template-程式庫-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template 程式庫) 配置建議</h3><a aria-label="Permalink: 1. 範本程式庫 (Template 程式庫) 配置建議" class="anchor" href="#1-範本程式庫-template-程式庫-配置建議" id="user-content-1-範本程式庫-template-程式庫-配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>由於本單元高度依賴 GitHub 的原生功能（如 Workspace, Actions, Issues），範本程式庫應包含：</p>
 <ul>
 <li>
@@ -359,9 +1061,9 @@ jobs:
 <li>
 <strong>📂 <code>.github/ISSUE_TEMPLATE/</code></strong>：預置一個「Feature Request」模板，引導學員寫出能讓 Agent 理解的高品質需求描述。</li>
 </ul>
-<hr>
-<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a id="user-content-2-作業任務部署細節" class="anchor" aria-label="Permalink: 2. 作業任務部署細節" href="#2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h4 class="heading-element">任務 1：從需求到 PR - Copilot Workspace 實戰 (Product Engineering)</h4><a id="user-content-任務-1從需求到-pr---copilot-workspace-實戰-product-engineering" class="anchor" aria-label="Permalink: 任務 1：從需求到 PR - Copilot Workspace 實戰 (Product Engineering)" href="#任務-1從需求到-pr---copilot-workspace-實戰-product-engineering"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a aria-label="Permalink: 2. 作業任務部署細節" class="anchor" href="#2-作業任務部署細節" id="user-content-2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 1：從需求到 PR - Copilot Workspace 實戰 (Product Engineering)</h4><a aria-label="Permalink: 任務 1：從需求到 PR - Copilot Workspace 實戰 (Product Engineering)" class="anchor" href="#任務-1從需求到-pr---copilot-workspace-實戰-product-engineering" id="user-content-任務-1從需求到-pr---copilot-workspace-實戰-product-engineering"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：練習「需求描述 -&gt; AI 規劃 -&gt; 代碼生成 -&gt; PR 開啟」的完整雲端閉環。</li>
@@ -375,7 +1077,7 @@ jobs:
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 2：幽靈編程師 - GitHub Actions 自動化 (Workflow Automation)</h4><a id="user-content-任務-2幽靈編程師---github-actions-自動化-workflow-automation" class="anchor" aria-label="Permalink: 任務 2：幽靈編程師 - GitHub Actions 自動化 (Workflow Automation)" href="#任務-2幽靈編程師---github-actions-自動化-workflow-automation"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 2：幽靈編程師 - GitHub Actions 自動化 (Workflow Automation)</h4><a aria-label="Permalink: 任務 2：幽靈編程師 - GitHub Actions 自動化 (Workflow Automation)" class="anchor" href="#任務-2幽靈編程師---github-actions-自動化-workflow-automation" id="user-content-任務-2幽靈編程師---github-actions-自動化-workflow-automation"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：將 AI 代理人嵌入 CI/CD 流程，實現標籤觸發的自動代碼檢查。</li>
@@ -391,7 +1093,7 @@ jobs:
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 3：雲端極簡主義 - Zero-Install 開發實踐 (Cloud Native)</h4><a id="user-content-任務-3雲端極簡主義---zero-install-開發實踐-cloud-native" class="anchor" aria-label="Permalink: 任務 3：雲端極簡主義 - Zero-Install 開發實踐 (Cloud Native)" href="#任務-3雲端極簡主義---zero-install-開發實踐-cloud-native"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 3：雲端極簡主義 - Zero-Install 開發實踐 (Cloud Native)</h4><a aria-label="Permalink: 任務 3：雲端極簡主義 - Zero-Install 開發實踐 (Cloud Native)" class="anchor" href="#任務-3雲端極簡主義---zero-install-開發實踐-cloud-native" id="user-content-任務-3雲端極簡主義---zero-install-開發實踐-cloud-native"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：熟練使用瀏覽器快捷鍵 <code>.</code> (句點) 進入輕量化網頁編程環境。</li>
@@ -405,15 +1107,15 @@ jobs:
 </ul>
 </li>
 </ul>
-<hr>
-<div class="markdown-heading"><h3 class="heading-element">3. 給導師的評估與導引重點 (Tutor Benchmarks)</h3><a id="user-content-3-給導師的評估與導引重點-tutor-benchmarks" class="anchor" aria-label="Permalink: 3. 給導師的評估與導引重點 (Tutor Benchmarks)" href="#3-給導師的評估與導引重點-tutor-benchmarks"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h3 class="heading-element">3. 給導師的評估與導引重點 (Tutor Benchmarks)</h3><a aria-label="Permalink: 3. 給導師的評估與導引重點 (Tutor Benchmarks)" class="anchor" href="#3-給導師的評估與導引重點-tutor-benchmarks" id="user-content-3-給導師的評估與導引重點-tutor-benchmarks"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>本單元的評分重點在於學員對 <strong>「雲端開發流程 (Cloud Flow)」</strong> 的適應度：</p>
 <ul>
 <li>[ ] <strong>規劃能力</strong>：在 Workspace 生成計畫前，學員是否能寫出具備 Context 的 Issue 描述？</li>
 <li>[ ] <strong>自動化邏輯</strong>：是否理解 YAML 腳本中如何調度 AI 權限與觸發時機？</li>
 <li>[ ] <strong>應急修復力</strong>：是否學會了在無開發環境的電腦上，利用電腦瀏覽器快速修復線上 Bug 並 Push 的技巧？</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a id="user-content--推薦範本結構-github-classroom-template" class="anchor" aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" href="#-推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" class="anchor" href="#-推薦範本結構-github-classroom-template" id="user-content--推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <pre lang="text"><code>.
 ├── .github/
 │   ├── workflows/
@@ -425,8 +1127,7 @@ jobs:
 └── README.md               # 包含 Actions 運行結果與雲端操作心得
 </code></pre>
 <p>這種部署方案能讓學生站在 GitHub 生態系的最前線，深刻體會到 <strong>「瀏覽器即是最強 IDE」</strong> 的未來趨勢。</p>
+</section>
 
-    </section>
 </body>
-
 </html>

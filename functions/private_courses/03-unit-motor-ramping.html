@@ -5,184 +5,696 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>馬達 Ramping 調校 | Vibe Coding</title>
-    <link rel="stylesheet" href="/style.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     <style>
+        
+        :root {
+            --ms-blue: #0078d4;
+            --ms-blue-dark: #005a9e;
+            --ms-blue-light: #deecf9;
+            --ms-gray-10: #f3f2f1;
+            --ms-gray-20: #e1dfdd;
+            --ms-gray-90: #201f1e;
+            --ms-green: #107c10;
+            --ms-red: #d13438;
+            --sidebar-w: 280px;
+        }
+
+        * { box-sizing: border-box; }
+        #assignment-guide, #tutor-guide { display: none !important; }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fff;
+            color: #201f1e;
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
         }
 
-        .step-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        /* ─── TOP NAV ─── */
+        .ms-topnav {
+            background: var(--ms-blue);
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 4px rgba(0,0,0,.2);
+        }
+        .ms-topnav .brand {
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
+
+        /* ─── LAYOUT ─── */
+        .ms-layout { display: flex; min-height: calc(100vh - 48px); }
+
+        /* ─── SIDEBAR ─── */
+        .ms-sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            background: #faf9f8;
+            border-right: 1px solid #e1dfdd;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 48px;
+            height: calc(100vh - 48px);
+            overflow-y: auto;
+        }
+        .ms-sidebar-header {
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .ms-sidebar-header .module-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #605e5c;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .ms-sidebar-header .module-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #201f1e;
+            line-height: 1.4;
+        }
+        .ms-sidebar-header .meta {
+            font-size: 12px;
+            color: #605e5c;
+            margin-top: 6px;
+        }
+        .ms-unit-list { padding: 8px 0; }
+        .ms-unit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: background .12s, border-color .12s;
+            color: #201f1e;
+        }
+        .ms-unit-item:hover { background: #edebe9; }
+        .ms-unit-item.active {
+            border-left-color: var(--ms-blue);
+            background: #deecf9;
+        }
+        .ms-unit-item.active .unit-name { color: var(--ms-blue); font-weight: 600; }
+        .unit-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #c8c6c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            font-size: 10px;
+            background: #fff;
+        }
+        .unit-icon.done { background: var(--ms-green); border-color: var(--ms-green); color: #fff; }
+        .unit-icon.active-icon { border-color: var(--ms-blue); background: var(--ms-blue); color: #fff; }
+        .unit-meta { flex: 1; min-width: 0; }
+        .unit-name { font-size: 13px; line-height: 1.4; }
+        .unit-time { font-size: 11px; color: #605e5c; margin-top: 2px; }
+        .sidebar-progress {
+            padding: 12px 16px;
+            border-top: 1px solid #e1dfdd;
+            margin-top: auto;
+        }
+        .progress-bar-bg { background: #e1dfdd; border-radius: 4px; height: 6px; }
+        .progress-bar-fill { background: var(--ms-green); border-radius: 4px; height: 6px; transition: width .4s; }
+        .progress-text { font-size: 12px; color: #605e5c; margin-top: 6px; }
+
+        /* ─── MAIN ─── */
+        .ms-content { flex: 1; min-width: 0; }
+
+        .ms-breadcrumb {
+            padding: 10px 40px;
+            font-size: 12px;
+            color: #605e5c;
+            border-bottom: 1px solid #e1dfdd;
+            background: #fff;
+        }
+        .ms-breadcrumb a { color: var(--ms-blue); text-decoration: none; }
+        .ms-breadcrumb a:hover { text-decoration: underline; }
+        .ms-breadcrumb span { margin: 0 6px; }
+
+        /* ─── PAGES ─── */
+        .ms-unit-page { display: none; }
+        .ms-unit-page.visible { display: block; }
+
+        .unit-content {
+            max-width: 820px;
+            padding: 32px 40px 60px;
+            margin: 0 auto;
         }
 
-        .input-group label {
-            @apply text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1 block;
+        .unit-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .unit-completed-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #dff6dd;
+            color: #107c10;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 2px;
+        }
+        .unit-time-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #605e5c;
+            font-size: 13px;
         }
 
-        .input-group input {
-            @apply w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition font-mono text-sm;
+        /* Typography */
+        .unit-content h1 { font-size: 28px; font-weight: 700; margin: 0 0 20px; color: #201f1e; line-height: 1.3; }
+        .unit-content h2 { font-size: 20px; font-weight: 600; margin: 36px 0 12px; color: #201f1e; padding-top: 8px; }
+        .unit-content h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; color: #201f1e; }
+        .unit-content p { margin: 0 0 14px; }
+        .unit-content ul, .unit-content ol { margin: 0 0 14px; padding-left: 28px; }
+        .unit-content li { margin-bottom: 6px; }
+        .unit-content strong { font-weight: 600; }
+        .unit-content a { color: var(--ms-blue); text-decoration: none; }
+        .unit-content a:hover { text-decoration: underline; }
+        .unit-content code {
+            background: #f3f2f1;
+            border: 1px solid #e1dfdd;
+            border-radius: 3px;
+            padding: 1px 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #a31515;
         }
+
+        /* Callouts */
+        .ms-note, .ms-tip, .ms-warning, .ms-important {
+            display: flex;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid;
+            font-size: 14px;
+        }
+        .ms-note { background: #deecf9; border-color: var(--ms-blue); }
+        .ms-note .note-icon { color: var(--ms-blue); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-tip { background: #dff6dd; border-color: var(--ms-green); }
+        .ms-tip .note-icon { color: var(--ms-green); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-warning { background: #fff4ce; border-color: #ffaa44; }
+        .ms-warning .note-icon { color: #ffaa44; font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-important { background: #fde7e9; border-color: var(--ms-red); }
+        .ms-important .note-icon { color: var(--ms-red); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .note-body strong { display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+
+        /* Scenario */
+        .ms-scenario {
+            background: #f3f2f1;
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #323130;
+            border-left: 4px solid #c8c6c4;
+        }
+        .ms-scenario-label {
+            font-style: normal;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #605e5c;
+            margin-bottom: 8px;
+        }
+
+        /* Steps */
+        .ms-steps { margin: 16px 0; }
+        .ms-step { display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start; }
+        .ms-step-num {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: var(--ms-blue); color: #fff;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .ms-step-body { flex: 1; }
+        .ms-step-body h4 { font-size: 14px; font-weight: 600; margin: 0 0 4px; }
+        .ms-step-body p { font-size: 14px; margin: 0; }
+
+        /* Table */
+        .ms-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+        .ms-table th {
+            background: #f3f2f1; font-weight: 600; text-align: left;
+            padding: 10px 14px; border: 1px solid #e1dfdd; color: #323130;
+        }
+        .ms-table td { padding: 9px 14px; border: 1px solid #e1dfdd; vertical-align: top; }
+        .ms-table tr:nth-child(even) td { background: #faf9f8; }
+        .ms-table .check { color: var(--ms-green); font-size: 16px; }
+        .ms-table .cross { color: #8a8886; font-size: 16px; }
+
+        /* Checklist */
+        .ms-checklist { list-style: none; padding: 0; margin: 12px 0; }
+        .ms-checklist li {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 6px 0; font-size: 14px;
+        }
+        .ms-checklist li .check-box {
+            width: 18px; height: 18px;
+            border: 2px solid #8a8886; border-radius: 2px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; margin-top: 1px; cursor: pointer; transition: all .15s;
+        }
+        .ms-checklist li .check-box.checked {
+            background: var(--ms-blue); border-color: var(--ms-blue); color: #fff;
+        }
+
+        /* Lab card */
+        .ms-lab-card {
+            background: linear-gradient(135deg, #eef6ff 0%, #f5f0ff 100%);
+            border: 1px solid #c7e0f4;
+            border-radius: 6px;
+            padding: 24px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: box-shadow .15s, border-color .15s;
+        }
+        .ms-lab-card:hover { box-shadow: 0 4px 16px rgba(0,120,212,.12); border-color: var(--ms-blue); }
+        .ms-lab-card h3 { margin: 0 0 12px; color: var(--ms-blue-dark); font-size: 16px; font-weight: 600; }
+        .ms-lab-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--ms-blue);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 12px;
+        }
+        .ms-lab-time {
+            font-size: 12px;
+            color: #605e5c;
+            margin-left: 8px;
+        }
+
+        /* Buttons */
+        .ms-btn {
+            background: var(--ms-blue); color: #fff; border: none;
+            padding: 7px 18px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; transition: background .12s;
+            font-family: inherit;
+        }
+        .ms-btn:hover { background: var(--ms-blue-dark); }
+
+        /* Nav */
+        .unit-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            border-top: 1px solid #e1dfdd;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .nav-btn-prev, .nav-btn-next {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 20px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; border: 1px solid;
+            font-family: inherit; transition: background .12s;
+        }
+        .nav-btn-next { background: var(--ms-blue); color: #fff; border-color: var(--ms-blue); }
+        .nav-btn-next:hover { background: var(--ms-blue-dark); border-color: var(--ms-blue-dark); }
+        .nav-btn-prev { background: #fff; color: var(--ms-blue); border-color: var(--ms-blue); }
+        .nav-btn-prev:hover { background: var(--ms-blue-light); }
+        .unit-page-indicator { font-size: 13px; color: #605e5c; }
+
+        /* Module index */
+        .module-meta-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        .ms-tag { background: #f3f2f1; color: #323130; font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: 500; }
+        .ms-tag.blue { background: #deecf9; color: var(--ms-blue-dark); }
+        .ms-tag.green { background: #dff6dd; color: #107c10; }
+        .unit-card-list { margin: 20px 0; }
+        .unit-card {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 0; border-bottom: 1px solid #f3f2f1; cursor: pointer;
+        }
+        .unit-card:last-child { border-bottom: none; }
+        .unit-card:hover .unit-card-name { color: var(--ms-blue); text-decoration: underline; }
+        .unit-card-num {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #f3f2f1; color: #605e5c;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .unit-card.lab .unit-card-num { background: #eef6ff; color: var(--ms-blue-dark); }
+        .unit-card.quiz .unit-card-num { background: #fff4ce; color: #8a6914; }
+        .unit-card-info { flex: 1; }
+        .unit-card-name { font-size: 15px; font-weight: 500; }
+        .unit-card-time { font-size: 12px; color: #605e5c; margin-top: 2px; }
+        .unit-card-arrow { color: #c8c6c4; font-size: 14px; }
+
+        /* Resource links */
+        .ms-resource-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; text-decoration: none; color: #201f1e;
+            font-size: 14px; transition: background .1s;
+        }
+        .ms-resource-link:hover { background: #f3f2f1; }
+        .ms-resource-link i { color: var(--ms-blue); font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+
+        /* Achievement */
+        .ms-achievement {
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            color: #fff; border-radius: 6px; padding: 24px 28px;
+            margin: 24px 0; display: flex; align-items: center; gap: 20px;
+        }
+        .achievement-icon { font-size: 48px; flex-shrink: 0; }
+        .achievement-text h3 { margin: 0 0 4px; font-size: 18px; }
+        .achievement-text p { margin: 0; font-size: 14px; opacity: .9; }
+
+        @media (max-width: 768px) {
+            .ms-sidebar { display: none; }
+            .unit-content { padding: 20px 16px 40px; }
+            .unit-nav { padding: 16px; }
+            .ms-breadcrumb { padding: 8px 16px; }
+        }
+
     </style>
 </head>
 
-<body class="text-gray-800 pb-20">
+<body>
 
-    <!-- Hero Section -->
-    <header class="bg-gradient-to-r from-purple-800 to-indigo-900 text-white py-12">
-        <div class="container mx-auto px-4 text-center">
-            <h1 class="text-3xl md:text-4xl font-bold mb-4">⚙️ 馬達 Ramping 調校</h1>
-            <p class="text-purple-200 max-w-2xl mx-auto">
-                調校馬達出力曲線，解決抖動與反應遲鈍問題。透過 BLE 直接與 ESP32 的結構體 (Struct) 進行二進位通訊。
-            </p>
+<!-- TOP NAV -->
+<nav class="ms-topnav">
+    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <div class="divider"></div>
+    <span class="nav-label">ESP32 硬體控制</span>
+</nav>
+
+<div class="ms-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="ms-sidebar">
+        <div class="ms-sidebar-header">
+            <div class="module-label">模組</div>
+            <div class="module-title">馬達 Ramping 調校</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 136 分鐘 · 6 個單元</div>
         </div>
-    </header>
+        <nav class="ms-unit-list" id="sidebar-nav"></nav>
+        <div class="sidebar-progress">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+            </div>
+            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+        </div>
+    </aside>
 
-    <main class="container mx-auto px-4 py-8 max-w-5xl">
+    <!-- MAIN -->
+    <main class="ms-content">
 
-        <!-- BLE Connection Panel -->
-        <div class="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden mb-12">
-            <div
-                class="p-6 bg-slate-50 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600">
-                        <i class="fa-brands fa-bluetooth text-xl"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-lg font-bold text-slate-800">裝置連線</h2>
-                        <p class="text-xs text-slate-500">Service UUID: <span class="font-mono">4fafc201...</span></p>
+        <div class="ms-breadcrumb">
+            <a href="#">Vibe Coding</a><span>›</span>
+            <a href="#">ESP32 硬體控制</a><span>›</span>
+            <span id="bc-current">課程總覽</span>
+        </div>
+
+        <!-- ══════════ PAGE 0: INDEX ══════════ -->
+        <div class="ms-unit-page visible" id="page-index">
+            <div class="unit-content">
+                <h1>馬達 Ramping 調校</h1>
+                <div class="module-meta-tags">
+                    <span class="ms-tag">模組</span>
+                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag green">ESP32 硬體控制</span>
+                    <span class="ms-tag blue">自主學習</span>
+                    <span class="ms-tag blue">實戰演練</span>
+                </div>
+
+                <p>調校馬達出力曲線，解決抖動與反應遲鈍問題。透過 BLE 直接與 ESP32 的結構體 (Struct) 進行二進位通訊。</p>
+
+                <h2>學習目標</h2>
+                <p>完成本模組後，你將能夠：</p>
+                <ul>
+                    <li>理解並掌握 <strong>裝置連線與設定</strong> 的核心觀念與操作實務。</li>
+                    <li>學會 <strong>Ramping 原理示意</strong> 的關鍵原理，並能將其應用於開發。</li>
+                    <li>掌握 <strong>技術開發細節</strong> 的調校技巧與穩定性測試。</li>
+                    <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
+                </ul>
+
+                <h2>必要條件</h2>
+                <ul>
+                    <li>擁有 GitHub 帳號，能夠接受 GitHub Classroom 邀請</li>
+                    <li>配備合適的電腦開發環境及瀏覽器（推薦 Chrome）</li>
+                </ul>
+
+                <h2>本模組單元</h2>
+                <div class="unit-card-list" id="index-unit-list"></div>
+                <div style="margin-top:32px;">
+                    <button class="ms-btn" onclick="goToUnit(1)">開始模組 &nbsp;›</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 1: 簡介 ══════════ -->
+        <div class="ms-unit-page" id="page-1">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-1" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                </div>
+
+                <h1>簡介</h1>
+
+                <p>
+                    歡迎來到本模組！本單元的核心主題是 <strong>馬達 Ramping 調校</strong>。
+                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
+                    但要建立一套高可用、穩定的物聯網與軟體系統，你必須確實理解底層的架構與控制協定。
+                </p>
+
+                <div class="ms-scenario" id="intro-scenario">
+                    <div class="ms-scenario-label">學習指引</div>
+                    「工欲善其事，必先利其器。」在開始實作之前，請先花時間閱讀講義或觀看影片，
+                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                </div>
+
+                <div id="video-section" class="mt-8">
+                    <h2>教學影片</h2>
+                    <div style="border-radius:4px; overflow:hidden; margin:20px 0; box-shadow:0 2px 8px rgba(0,0,0,.12); aspect-ratio:16/9;">
+                        <iframe src=""
+                            title="馬達 Ramping 調校 教學影片" allowfullscreen
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            style="width:100%; height:100%; display:block; border:0;">
+                        </iframe>
                     </div>
                 </div>
-                <div class="flex items-center gap-3">
-                    <span id="statusBadge"
-                        class="px-3 py-1 bg-slate-200 text-slate-600 rounded-full text-sm font-medium flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-slate-400"></span> 未連線
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
+                <span class="unit-page-indicator">1 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 2: 單元 1 ══════════ -->
+        <div class="ms-unit-page" id="page-2">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-2" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
+                </div>
+
+                <h1>裝置連線與設定</h1>
+                
+                <div class="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden mb-12">
+<div class="p-6 bg-slate-50 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600">
+<i class="fa-brands fa-bluetooth text-xl"></i>
+</div>
+<div>
+<h2 class="text-lg font-bold text-slate-800">裝置連線</h2>
+<p class="text-xs text-slate-500">Service UUID: <span class="font-mono">4fafc201...</span></p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="px-3 py-1 bg-slate-200 text-slate-600 rounded-full text-sm font-medium flex items-center gap-2" id="statusBadge">
+<span class="w-2 h-2 rounded-full bg-slate-400"></span> 未連線
                     </span>
-                    <button id="connectBtn"
-                        class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-lg font-medium shadow-md transition flex items-center gap-2">
-                        <i class="fa-solid fa-link"></i> 連線 BLE
+<button class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-lg font-medium shadow-md transition flex items-center gap-2" id="connectBtn">
+<i class="fa-solid fa-link"></i> 連線 BLE
                     </button>
-                </div>
-            </div>
-
-            <div class="p-6 md:p-8 grid md:grid-cols-2 gap-8 opacity-50 pointer-events-none transition-all duration-300"
-                id="mainPanel">
-                <!-- Throttle Config -->
-                <div>
-                    <h3 class="flex items-center gap-2 text-indigo-600 font-bold mb-4">
-                        <i class="fa-solid fa-gauge-high"></i> Throttle (油門/直線)
+</div>
+</div>
+<div class="p-6 md:p-8 grid md:grid-cols-2 gap-8 opacity-50 pointer-events-none transition-all duration-300" id="mainPanel">
+<!-- Throttle Config -->
+<div>
+<h3 class="flex items-center gap-2 text-indigo-600 font-bold mb-4">
+<i class="fa-solid fa-gauge-high"></i> Throttle (油門/直線)
                     </h3>
-                    <div class="space-y-4">
-                        <div class="input-group">
-                            <label>PWM Effective Limit (0-255)</label>
-                            <input type="number" id="pwmEffectiveLimitT" min="0" max="255">
-                            <p class="text-[10px] text-slate-400 mt-1">PWM 最大輸出限制</p>
-                        </div>
-                        <div class="input-group">
-                            <label>Ramp Accel Step</label>
-                            <input type="number" id="rampAccelStepT" min="1" max="100">
-                            <p class="text-[10px] text-slate-400 mt-1">每 10ms 增加的 PWM 數值 (加速度)</p>
-                        </div>
-                        <div class="input-group">
-                            <label>PWM Start Kick</label>
-                            <input type="number" id="pwmStartKickT" min="0" max="255">
-                            <p class="text-[10px] text-slate-400 mt-1">起步最小 PWM (克服靜摩擦力)</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Steering Config -->
-                <div class="md:border-l md:border-slate-100 md:pl-8">
-                    <h3 class="flex items-center gap-2 text-emerald-600 font-bold mb-4">
-                        <i class="fa-solid fa-arrows-left-right"></i> Steering (轉向/差速)
+<div class="space-y-4">
+<div class="input-group">
+<label>PWM Effective Limit (0-255)</label>
+<input id="pwmEffectiveLimitT" max="255" min="0" type="number"/>
+<p class="text-[10px] text-slate-400 mt-1">PWM 最大輸出限制</p>
+</div>
+<div class="input-group">
+<label>Ramp Accel Step</label>
+<input id="rampAccelStepT" max="100" min="1" type="number"/>
+<p class="text-[10px] text-slate-400 mt-1">每 10ms 增加的 PWM 數值 (加速度)</p>
+</div>
+<div class="input-group">
+<label>PWM Start Kick</label>
+<input id="pwmStartKickT" max="255" min="0" type="number"/>
+<p class="text-[10px] text-slate-400 mt-1">起步最小 PWM (克服靜摩擦力)</p>
+</div>
+</div>
+</div>
+<!-- Steering Config -->
+<div class="md:border-l md:border-slate-100 md:pl-8">
+<h3 class="flex items-center gap-2 text-emerald-600 font-bold mb-4">
+<i class="fa-solid fa-arrows-left-right"></i> Steering (轉向/差速)
                     </h3>
-                    <div class="space-y-4">
-                        <div class="input-group">
-                            <label>PWM Effective Limit (0-255)</label>
-                            <input type="number" id="pwmEffectiveLimitS" min="0" max="255">
-                        </div>
-                        <div class="input-group">
-                            <label>Ramp Accel Step</label>
-                            <input type="number" id="rampAccelStepS" min="1" max="100">
-                        </div>
-                        <div class="input-group">
-                            <label>PWM Start Kick</label>
-                            <input type="number" id="pwmStartKickS" min="0" max="255">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Common & Actions -->
-                <div class="md:col-span-2 pt-6 border-t border-slate-100 flex flex-col items-center gap-4">
-                    <div class="w-full max-w-xs">
-                        <label
-                            class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1 text-center">Control
+<div class="space-y-4">
+<div class="input-group">
+<label>PWM Effective Limit (0-255)</label>
+<input id="pwmEffectiveLimitS" max="255" min="0" type="number"/>
+</div>
+<div class="input-group">
+<label>Ramp Accel Step</label>
+<input id="rampAccelStepS" max="100" min="1" type="number"/>
+</div>
+<div class="input-group">
+<label>PWM Start Kick</label>
+<input id="pwmStartKickS" max="255" min="0" type="number"/>
+</div>
+</div>
+</div>
+<!-- Common & Actions -->
+<div class="md:col-span-2 pt-6 border-t border-slate-100 flex flex-col items-center gap-4">
+<div class="w-full max-w-xs">
+<label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1 text-center">Control
                             Timeout (ms)</label>
-                        <input type="number" id="controlTimeoutMs"
-                            class="w-full text-center px-3 py-2 border rounded-md" min="100" max="5000">
-                    </div>
-
-                    <button id="saveBtn"
-                        class="w-full md:w-auto px-8 py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold shadow-lg transition flex items-center justify-center gap-2">
-                        <i class="fa-regular fa-floppy-disk"></i> 傳送設定至裝置 (Binary 28 Bytes)
+<input class="w-full text-center px-3 py-2 border rounded-md" id="controlTimeoutMs" max="5000" min="100" type="number"/>
+</div>
+<button class="w-full md:w-auto px-8 py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold shadow-lg transition flex items-center justify-center gap-2" id="saveBtn">
+<i class="fa-regular fa-floppy-disk"></i> 傳送設定至裝置 (Binary 28 Bytes)
                     </button>
-                    <p id="msgLabel" class="text-sm text-slate-400 min-h-[20px]"></p>
-                </div>
+<p class="text-sm text-slate-400 min-h-[20px]" id="msgLabel"></p>
+</div>
+</div>
+</div>
+                
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">2 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- Instructional Content -->
-        <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-            Ramping 原理示意
-        </h2>
+        <!-- ══════════ PAGE 3: 單元 2 ══════════ -->
+        <div class="ms-unit-page" id="page-3">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-3" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
+                </div>
 
-        <div class="grid md:grid-cols-2 gap-8 mb-16">
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                <h3 class="font-bold text-lg mb-4 text-slate-700">為什麼需要 Ramping？</h3>
-                <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                <h1>Ramping 原理示意</h1>
+                
+                <div class="grid md:grid-cols-2 gap-8 mb-16">
+<div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+<h3 class="font-bold text-lg mb-4 text-slate-700">為什麼需要 Ramping？</h3>
+<p class="text-slate-600 text-sm leading-relaxed mb-4">
                     當您在操控無人車時，若直接將 PWM 從 0 瞬間拉到 255，會發生以下問題：
                 </p>
-                <ul class="list-disc list-inside text-sm text-slate-600 space-y-2">
-                    <li><strong>電流突波</strong>：瞬間大電流可能導致 ESP32 重啟。</li>
-                    <li><strong>機械應力</strong>：齒輪箱承受瞬間撞擊，容易損壞。</li>
-                    <li><strong>打滑失控</strong>：輪胎失去抓地力，導致車輛打轉。</li>
-                </ul>
-                <div class="mt-4 p-4 bg-purple-50 rounded-lg text-xs text-purple-700">
-                    <strong>rampAccelStep</strong> 就像是「虛擬彈簧」，數值越小，彈簧越軟（加速越平滑）；數值越大，反應越直接。
+<ul class="list-disc list-inside text-sm text-slate-600 space-y-2">
+<li><strong>電流突波</strong>：瞬間大電流可能導致 ESP32 重啟。</li>
+<li><strong>機械應力</strong>：齒輪箱承受瞬間撞擊，容易損壞。</li>
+<li><strong>打滑失控</strong>：輪胎失去抓地力，導致車輛打轉。</li>
+</ul>
+<div class="mt-4 p-4 bg-purple-50 rounded-lg text-xs text-purple-700">
+<strong>rampAccelStep</strong> 就像是「虛擬彈簧」，數值越小，彈簧越軟（加速越平滑）；數值越大，反應越直接。
                 </div>
+</div>
+<!-- Placeholder for Visual -->
+<div class="bg-indigo-50 rounded-xl p-8 flex items-center justify-center border border-indigo-100">
+<div class="text-center">
+<i class="fa-solid fa-chart-line text-4xl text-indigo-300 mb-2"></i>
+<p class="text-indigo-400 text-sm">PWM Ramping Curve Visualization</p>
+<div class="mt-4 h-24 flex items-end gap-1 justify-center opacity-50">
+<div class="w-4 bg-indigo-400 h-1/6 rounded-t"></div>
+<div class="w-4 bg-indigo-400 h-2/6 rounded-t"></div>
+<div class="w-4 bg-indigo-400 h-3/6 rounded-t"></div>
+<div class="w-4 bg-indigo-400 h-4/6 rounded-t"></div>
+<div class="w-4 bg-indigo-400 h-5/6 rounded-t"></div>
+<div class="w-4 bg-indigo-400 h-full rounded-t"></div>
+</div>
+</div>
+</div>
+</div>
+                
             </div>
-            <!-- Placeholder for Visual -->
-            <div class="bg-indigo-50 rounded-xl p-8 flex items-center justify-center border border-indigo-100">
-                <div class="text-center">
-                    <i class="fa-solid fa-chart-line text-4xl text-indigo-300 mb-2"></i>
-                    <p class="text-indigo-400 text-sm">PWM Ramping Curve Visualization</p>
-                    <div class="mt-4 h-24 flex items-end gap-1 justify-center opacity-50">
-                        <div class="w-4 bg-indigo-400 h-1/6 rounded-t"></div>
-                        <div class="w-4 bg-indigo-400 h-2/6 rounded-t"></div>
-                        <div class="w-4 bg-indigo-400 h-3/6 rounded-t"></div>
-                        <div class="w-4 bg-indigo-400 h-4/6 rounded-t"></div>
-                        <div class="w-4 bg-indigo-400 h-5/6 rounded-t"></div>
-                        <div class="w-4 bg-indigo-400 h-full rounded-t"></div>
-                    </div>
-                </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">3 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- Developer Section -->
-        <section class="mb-16">
-            <h2 class="text-2xl font-bold text-slate-800 mb-6">🛠️ 技術開發細節 (For Developer)</h2>
-
-            <div class="bg-slate-900 rounded-xl overflow-hidden text-slate-300 font-mono text-sm shadow-xl">
-                <div class="bg-slate-800 px-6 py-3 border-b border-slate-700 flex justify-between items-center">
-                    <span class="font-bold text-white">C++ Struct Definition</span>
-                    <span class="text-xs px-2 py-1 bg-slate-700 rounded">Total: 28 Bytes</span>
+        <!-- ══════════ PAGE 4: 單元 3 ══════════ -->
+        <div class="ms-unit-page" id="page-4">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-4" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
-                <div class="p-6 overflow-x-auto">
-                    <pre class="whitespace-pre"><span class="text-pink-400">struct</span> <span class="text-yellow-300">MotorConfig_t</span> {
+
+                <h1>技術開發細節</h1>
+                
+                <section class="mb-16">
+<h2 class="text-2xl font-bold text-slate-800 mb-6">🛠️ 技術開發細節 (For Developer)</h2>
+<div class="bg-slate-900 rounded-xl overflow-hidden text-slate-300 font-mono text-sm shadow-xl">
+<div class="bg-slate-800 px-6 py-3 border-b border-slate-700 flex justify-between items-center">
+<span class="font-bold text-white">C++ Struct Definition</span>
+<span class="text-xs px-2 py-1 bg-slate-700 rounded">Total: 28 Bytes</span>
+</div>
+<div class="p-6 overflow-x-auto">
+<pre class="whitespace-pre"><span class="text-pink-400">struct</span> <span class="text-yellow-300">MotorConfig_t</span> {
   <span class="text-blue-400">uint32_t</span> controlTimeoutMs;   <span class="text-slate-500">// Offset 0  (4 bytes)</span>
   <span class="text-blue-400">int32_t</span>  pwmEffectiveLimitT; <span class="text-slate-500">// Offset 4  (4 bytes)</span>
   <span class="text-blue-400">int32_t</span>  rampAccelStepT;     <span class="text-slate-500">// Offset 8  (4 bytes)</span>
@@ -191,138 +703,341 @@
   <span class="text-blue-400">int32_t</span>  rampAccelStepS;     <span class="text-slate-500">// Offset 20 (4 bytes)</span>
   <span class="text-blue-400">int32_t</span>  pwmStartKickS;      <span class="text-slate-500">// Offset 24 (4 bytes)</span>
 };</pre>
-                </div>
-                <div class="bg-indigo-900/30 p-4 border-t border-indigo-900/50">
-                    <h4 class="text-indigo-300 font-bold mb-2 text-xs uppercase">為什麼使用二進位傳輸？</h4>
-                    <p class="mb-2">1. <strong>極致效能</strong>：28 Bytes vs JSON 字串 (~150 Bytes)。</p>
-                    <p>2. <strong>零解析開銷</strong>：嵌入式端只需 <code>memcpy</code>，無需 JSON Parser。</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Troubleshooting -->
-        <section class="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-16">
-            <h2 class="text-lg font-bold text-amber-800 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-triangle-exclamation"></i> 錯誤排查
+</div>
+<div class="bg-indigo-900/30 p-4 border-t border-indigo-900/50">
+<h4 class="text-indigo-300 font-bold mb-2 text-xs uppercase">為什麼使用二進位傳輸？</h4>
+<p class="mb-2">1. <strong>極致效能</strong>：28 Bytes vs JSON 字串 (~150 Bytes)。</p>
+<p>2. <strong>零解析開銷</strong>：嵌入式端只需 <code>memcpy</code>，無需 JSON Parser。</p>
+</div>
+</div>
+</section>
+<section class="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-16">
+<h2 class="text-lg font-bold text-amber-800 mb-4 flex items-center gap-2">
+<i class="fa-solid fa-triangle-exclamation"></i> 錯誤排查
             </h2>
-            <div class="grid md:grid-cols-3 gap-6 text-sm text-amber-900/80">
-                <div>
-                    <strong class="block text-amber-900 mb-1">❌ 無法掃描到裝置</strong>
-                    <p>請重新插拔 ESP32 電源，並確認藍牙權限已開啟。</p>
-                </div>
-                <div>
-                    <strong class="block text-amber-900 mb-1">⚠️ 數據長度錯誤</strong>
-                    <p>若讀取時發生 Error，代表網頁端定義的 28 Bytes 與韌體端不一致，請檢查 Struct 對齊。</p>
-                </div>
-                <div>
-                    <strong class="block text-amber-900 mb-1">❌ 寫入後沒反應</strong>
-                    <p>請確認數值是否為整數 (Integer)。DataView 對型別非常敏感。</p>
-                </div>
+<div class="grid md:grid-cols-3 gap-6 text-sm text-amber-900/80">
+<div>
+<strong class="block text-amber-900 mb-1">❌ 無法掃描到裝置</strong>
+<p>請重新插拔 ESP32 電源，並確認藍牙權限已開啟。</p>
+</div>
+<div>
+<strong class="block text-amber-900 mb-1">⚠️ 數據長度錯誤</strong>
+<p>若讀取時發生 Error，代表網頁端定義的 28 Bytes 與韌體端不一致，請檢查 Struct 對齊。</p>
+</div>
+<div>
+<strong class="block text-amber-900 mb-1">❌ 寫入後沒反應</strong>
+<p>請確認數值是否為整數 (Integer)。DataView 對型別非常敏感。</p>
+</div>
+</div>
+</section>
+                
             </div>
-        </section>
-
-        <!-- Homework -->
-        <h2 class="text-2xl font-bold text-slate-800 text-center mb-8">🛠️ 課後練習與提交要求（Classroom 同步版）</h2>
-        <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-6 mb-8">
-            <h3 class="text-lg font-bold text-indigo-900 mb-3">📂 程式庫結構（提交時請確認）</h3>
-            <ul class="text-sm text-indigo-900 list-disc list-inside space-y-1">
-                <li><code>ramping-app.html</code>：主要網頁控制程式（需完成 UI 驗證與 DataView 邏輯）</li>
-                <li><code>test-protocol.js</code>：本地測試二進位解析腳本</li>
-                <li><code>firmware/</code>：ESP32 韌體源碼（實機測試用）</li>
-            </ul>
-        </div>
-        <div class="grid md:grid-cols-3 gap-6 mb-12">
-            <!-- HW 2-1 -->
-            <div onclick="openSubmissionModal('motor-ramping-task-1', '作業 1: 軟體保險絲 - 前端輸入驗證')"
-                class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 cursor-pointer relative group hover:shadow-lg transition-all">
-                <div
-                    class="w-12 h-12 bg-blue-100/50 rounded-full flex items-center justify-center text-blue-600 text-xl font-bold mb-4">
-                    1</div>
-                <h3 class="font-bold text-lg mb-2">軟體保險絲：前端輸入驗證</h3>
-                <p class="text-sm text-slate-600 mb-4">防止非法參數導致馬達損壞，是第一道安全防線。</p>
-                <ul class="text-sm text-slate-500 list-disc list-inside mb-4">
-                    <li>PWM Limit 價值必須在合法範圍</li>
-                    <li>非法值時禁用傳送或顯示紅框警告</li>
-                    <li>避免輸入如 999 造成硬體風險</li>
-                </ul>
-                <!-- Hover Overlay -->
-                <div
-                    class="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-                    <span
-                        class="bg-white text-blue-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform">
-                        📤 點擊繳交作業
-                    </span>
-                </div>
-            </div>
-
-            <!-- HW 2-2 -->
-            <div onclick="openSubmissionModal('motor-ramping-task-2', '作業 2: 二進位橋樑 - 資料結構映射')"
-                class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 cursor-pointer relative group hover:shadow-lg transition-all">
-                <div
-                    class="w-12 h-12 bg-purple-100/50 rounded-full flex items-center justify-center text-purple-600 text-xl font-bold mb-4">
-                    2</div>
-                <h3 class="font-bold text-lg mb-2">二進位橋樑：資料結構映射</h3>
-                <p class="text-sm text-slate-600 mb-4">確保網頁封包與韌體結構完整對齊（28 Bytes, Little-Endian）。</p>
-                <ul class="text-sm text-slate-500 list-disc list-inside mb-4">
-                    <li>在 <code>ramping-app.html</code> 完成 TODO 區塊</li>
-                    <li>封包長度 28 Bytes、編碼 Little-Endian</li>
-                    <li>關鍵偏移量需正確（例如 <code>pwmStartKickT</code> 在 offset 12）</li>
-                </ul>
-                <!-- Hover Overlay -->
-                <div
-                    class="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-                    <span
-                        class="bg-white text-purple-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform">
-                        📤 點擊繳交作業
-                    </span>
-                </div>
-            </div>
-
-            <!-- HW 2-3 -->
-            <div onclick="openSubmissionModal('motor-ramping-task-3', '作業 3: 物理安全保護驗證')"
-                class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 cursor-pointer relative group hover:shadow-lg transition-all">
-                <div
-                    class="w-12 h-12 bg-emerald-100/50 rounded-full flex items-center justify-center text-emerald-600 text-xl font-bold mb-4">
-                    3</div>
-                <h3 class="font-bold text-lg mb-2">物理安全保護驗證</h3>
-                <p class="text-sm text-slate-600 mb-4">驗證超時保護（Fail-Safe）可在異常情境下自動停車。</p>
-                <ul class="text-sm text-slate-500 list-disc list-inside mb-4">
-                    <li>將 <code>controlTimeoutMs</code> 設為 500ms</li>
-                    <li>啟動馬達後立即關閉控制網頁</li>
-                    <li>日誌截圖需含 <code>[SAFETY] Timeout - Motor Stop</code></li>
-                </ul>
-                <!-- Hover Overlay -->
-                <div
-                    class="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-                    <span
-                        class="bg-white text-emerald-600 px-4 py-2 rounded-full font-bold shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform">
-                        📤 點擊繳交作業
-                    </span>
-                </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">4 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
-        <div class="bg-slate-900 text-slate-200 rounded-xl p-6 mb-12">
-            <h3 class="text-lg font-bold text-white mb-3">📝 提交要求（與 GitHub Classroom README 一致）</h3>
-            <ol class="list-decimal list-inside text-sm space-y-2">
-                <li><code>ramping-app.html</code> 完成指定 TODO 並通過自動評分。</li>
-                <li>提交完整程式碼修改並 push 到 GitHub Classroom repository。</li>
-                <li>任務 3 安全停車截圖為選繳，但建議附上。</li>
-            </ol>
+
+        <!-- ══════════ PAGE 5: 實作挑戰 ══════════ -->
+        <div class="ms-unit-page" id="page-5">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-5" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 100 分鐘</div>
+                </div>
+
+                <h1>實戰任務挑戰</h1>
+
+                <p>
+                    請動手完成以下三項實作任務，這是驗證本單元學習成果的核心挑戰。
+                    完成後請將程式碼與報告提交至 GitHub Classroom。
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-6 my-6">
+                    <!-- Task 1 -->
+                    <div onclick="openSubmissionModal('motor-ramping-task-1', '作業 1: 軟體保險絲 - 前端輸入驗證')"
+                        class="border border-gray-200 bg-white rounded-xl p-6 hover:shadow-lg transition cursor-pointer relative group flex flex-col justify-between">
+                        <div>
+                            <div class="bg-[#E76F51] text-white w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 1</div>
+                            <h3 class="text-lg font-bold mb-2">軟體保險絲：前端輸入驗證</h3>
+                            <p class="text-xs text-gray-600 mb-4">防止非法參數導致馬達損壞，是第一道安全防線。</p>
+                        </div>
+                        <div class="border-t border-gray-100 pt-3 flex items-center justify-between text-xs text-[#E76F51] font-bold">
+                            <span>⏱ 30 min</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                            <span class="bg-[#E76F51] text-white text-xs px-4 py-2 rounded-full font-bold shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                                📤 點擊繳交作業
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Task 2 -->
+                    <div onclick="openSubmissionModal('motor-ramping-task-2', '作業 2: 二進位橋樑 - 資料結構映射')"
+                        class="border border-gray-200 bg-white rounded-xl p-6 hover:shadow-lg transition cursor-pointer relative group flex flex-col justify-between">
+                        <div>
+                            <div class="bg-[#2A9D8F] text-white w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 2</div>
+                            <h3 class="text-lg font-bold mb-2">二進位橋樑：資料結構映射</h3>
+                            <p class="text-xs text-gray-600 mb-4">確保網頁封包與韌體結構完整對齊（28 Bytes, Little-Endian）。</p>
+                        </div>
+                        <div class="border-t border-gray-100 pt-3 flex items-center justify-between text-xs text-[#2A9D8F] font-bold">
+                            <span>⏱ 40 min</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                            <span class="bg-[#2A9D8F] text-white text-xs px-4 py-2 rounded-full font-bold shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                                📤 點擊繳交作業
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Task 3 -->
+                    <div onclick="openSubmissionModal('motor-ramping-task-3', '作業 3: 物理安全保護驗證')"
+                        class="border border-gray-200 bg-white rounded-xl p-6 hover:shadow-lg transition cursor-pointer relative group flex flex-col justify-between">
+                        <div>
+                            <div class="bg-[#457B9D] text-white w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 3</div>
+                            <h3 class="text-lg font-bold mb-2">物理安全保護驗證</h3>
+                            <p class="text-xs text-gray-600 mb-4">驗證超時保護（Fail-Safe）可在異常情境下自動停車。</p>
+                        </div>
+                        <div class="border-t border-gray-100 pt-3 flex items-center justify-between text-xs text-[#457B9D] font-bold">
+                            <span>⏱ 30 min</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                            <span class="bg-[#457B9D] text-white text-xs px-4 py-2 rounded-full font-bold shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                                📤 點擊繳交作業
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">5 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-6">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                </div>
+
+                <h1>單元摘要與參考資源</h1>
+
+                <p>
+                    恭喜！你已經完成了「<strong>馬達 Ramping 調校</strong>」模組。
+                    透過本單元的學習與實作，你已經掌握了關鍵的核心技術，為後續的開發奠定了深厚的基石。
+                </p>
+
+                <div class="ms-achievement">
+                    <div class="achievement-icon">🚀</div>
+                    <div class="achievement-text">
+                        <h3>恭喜！你已完成本模組</h3>
+                        <p>你已具備開發與調校本單元核心功能的專業實力。持續累積，前進下一個挑戰！</p>
+                    </div>
+                </div>
+
+                <h2>完成本模組後，你已學會：</h2>
+                <ul>
+                    <li><strong>裝置連線與設定</strong> 的基本架構與實作技能。</li>
+                    <li><strong>Ramping 原理示意</strong> 的調試方法與資料傳輸細節。</li>
+                    <li><strong>技術開發細節</strong> 的優化指標與生產環境安全機制。</li>
+                    <li>在實戰挑戰中，透過 Git 與 GitHub Classroom 提交完整的專案成果。</li>
+                </ul>
+
+                <h2>延伸學習資源</h2>
+
+                <a id="resource-link-video" href="" target="_blank" class="ms-resource-link">
+                    <i class="fab fa-youtube" style="color:#ff0000;"></i>
+                    <div>
+                        <div style="font-weight:600;">課程教學影片</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">YouTube — 本單元核心觀念與實作示範影片</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+
+                <a id="resource-link-doc" href="" target="_blank" class="ms-resource-link">
+                    <i class="fas fa-file-alt"></i>
+                    <div>
+                        <div style="font-weight:600;">課程完整講義</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">Google Docs — 詳細實驗步驟、技術文件與程式碼指南</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+
+                <a href="https://classroom.github.com" target="_blank" class="ms-resource-link">
+                    <i class="fab fa-github"></i>
+                    <div>
+                        <div style="font-weight:600;">GitHub Classroom</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">classroom.github.com — 管理你的作業提交與自動評分結果</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
+                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「馬達 Ramping 調校」模組！')">完成模組</button>
+            </div>
         </div>
 
     </main>
+</div>
 
-    <!-- Logic Script -->
-    <script src="/js/course-shared.js?v=2026.05.21.V21.DISABLE_UNIFIED_SUPPORT_HUB"></script>
+<script>
+    /* ─── DATA ─── */
+    const UNITS = [
+        { id: 0, label: '課程總覽',       time: '',         type: 'index' },
+        { id: 1, label: '簡介',            time: '3 分鐘',  type: 'unit'  },
+        { id: 2, label: '裝置連線與設定', time: '10 分鐘', type: 'unit' },
+        { id: 3, label: 'Ramping 原理示意', time: '10 分鐘', type: 'unit' },
+        { id: 4, label: '技術開發細節', time: '10 分鐘', type: 'unit' },
+        { id: 5, label: '實戰挑戰',       time: '100 分鐘', type: 'lab'   },
+        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+    ];
+
+    let currentUnit = 0;
+    let doneSet = new Set();
+
+    /* ─── INIT ─── */
+    function init() {
+        buildSidebar();
+        buildIndexUnitList();
+        
+        // Hide empty resources
+        if (!window.RESOURCES.video) {
+            const videoSection = document.getElementById('video-section');
+            if (videoSection) videoSection.style.display = 'none';
+            const videoLink = document.getElementById('resource-link-video');
+            if (videoLink) videoLink.style.display = 'none';
+        }
+        if (!window.RESOURCES.doc) {
+            const docLink = document.getElementById('resource-link-doc');
+            if (docLink) docLink.style.display = 'none';
+        }
+
+        goToUnit(0);
+    }
+
+    /**
+     * 動態建構側邊欄單元選單。
+     */
+    function buildSidebar() {
+        const nav = document.getElementById('sidebar-nav');
+        nav.innerHTML = UNITS.map(u => {
+            const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : '';
+            return `
+            <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
+                <div class="unit-icon" id="icon-${u.id}">${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div>
+                <div class="unit-meta">
+                    <div class="unit-name">${u.label}${badge}</div>
+                    ${u.time ? `<div class="unit-time"><i class="far fa-clock"></i> ${u.time}</div>` : ''}
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    /**
+     * 動態建構首頁單元卡片列表。
+     */
+    function buildIndexUnitList() {
+        const el = document.getElementById('index-unit-list');
+        el.innerHTML = UNITS.filter(u => u.id > 0).map(u => `
+            <div class="unit-card ${u.type}" onclick="goToUnit(${u.id})">
+                <div class="unit-card-num">${u.id}</div>
+                <div class="unit-card-info">
+                    <div class="unit-card-name">${u.label}</div>
+                    <div class="unit-card-time"><i class="far fa-clock"></i> ${u.time}</div>
+                </div>
+                <div class="unit-card-arrow">›</div>
+            </div>
+        `).join('');
+    }
+
+    /* ─── NAVIGATION ─── */
+    function goToUnit(id) {
+        document.querySelectorAll('.ms-unit-page').forEach(p => p.classList.remove('visible'));
+        const target = id === 0 ? document.getElementById('page-index') : document.getElementById(`page-${id}`);
+        if (target) target.classList.add('visible');
+
+        document.querySelectorAll('.ms-unit-item').forEach(el => el.classList.remove('active'));
+        const navItem = document.getElementById(`nav-${id}`);
+        if (navItem) { navItem.classList.add('active'); navItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) {
+                icon.className = 'unit-icon done';
+                icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>';
+            } else if (u.id === id) {
+                icon.className = 'unit-icon active-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            } else {
+                icon.className = 'unit-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            }
+        });
+
+        const unit = UNITS.find(u => u.id === id);
+        document.getElementById('bc-current').textContent = unit ? unit.label : '';
+        currentUnit = id;
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function markDone(id) {
+        doneSet.add(id);
+        const badge = document.getElementById(`badge-${id}`);
+        if (badge) badge.style.display = 'flex';
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) { icon.className = 'unit-icon done'; icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>'; }
+        });
+        updateProgress();
+    }
+
+    function updateProgress() {
+        const total = UNITS.length - 1;
+        const done = doneSet.size;
+        document.getElementById('progress-fill').style.width = Math.round(done / total * 100) + '%';
+        document.getElementById('progress-text').textContent = `${done} / ${total} 已完成`;
+    }
+
+    function toggleCheck(el) {
+        el.classList.toggle('checked');
+        el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
+    }
+
+    init();
+</script>
+
+<!-- Define Resources -->
+<script>
+    window.RESOURCES = {
+        video: "",
+        doc: ""
+    };
+</script>
+<script src="/js/course-shared.js?v=2026.05.22.V27.START_UNITS_LAYOUT_UPGRADE"></script>
+
+
     <script>
-        // DOM Elements
+        // DOM 元素
         const connectBtn = document.getElementById('connectBtn');
         const statusBadge = document.getElementById('statusBadge');
         const mainPanel = document.getElementById('mainPanel');
         const saveBtn = document.getElementById('saveBtn');
         const msgLabel = document.getElementById('msgLabel');
 
-        // Inputs
+        // 輸入欄位
         const inputIds = [
             'controlTimeoutMs',
             'pwmEffectiveLimitT', 'rampAccelStepT', 'pwmStartKickT',
@@ -332,17 +1047,17 @@
         const inputs = {};
         inputIds.forEach(id => inputs[id] = document.getElementById(id));
 
-        // BLE Constants
+        // BLE 常數
         const SERVICE_UUID = '4fafc201-1fb5-459e-8fcc-c0ffee00dead';
         const CHAR_CONFIG_UUID = '4fafc203-1fb5-459e-8fcc-c0ffee02dead';
 
         let bleDevice;
         let configChar;
 
-        // --- Connection Logic ---
+        // --- 連線邏輯 ---
         connectBtn.addEventListener('click', async () => {
             try {
-                // 1. Request Device
+                // 1. 請求裝置
                 bleDevice = await navigator.bluetooth.requestDevice({
                     filters: [{ namePrefix: 'esp32' }],
                     optionalServices: [SERVICE_UUID]
@@ -350,19 +1065,19 @@
 
                 updateStatus('connecting');
 
-                // 2. Connect GATT
+                // 2. 連線 GATT
                 const server = await bleDevice.gatt.connect();
                 const service = await server.getPrimaryService(SERVICE_UUID);
                 configChar = await service.getCharacteristic(CHAR_CONFIG_UUID);
 
-                // 3. Read Initial Config
+                // 3. 讀取初始設定
                 await readConfig(configChar);
 
-                // 4. Update UI
+                // 4. 更新 UI
                 updateStatus('connected');
                 mainPanel.classList.remove('opacity-50', 'pointer-events-none');
 
-                // Handle Disconnect
+                // 處理斷線
                 bleDevice.addEventListener('gattserverdisconnected', onDisconnect);
 
             } catch (err) {
@@ -372,7 +1087,7 @@
             }
         });
 
-        // --- Read Configuration (Binary Unpacking) ---
+        // --- 讀取設定 (二進位解包) ---
         async function readConfig(characteristic) {
             console.log('Reading config...');
             const value = await characteristic.readValue(); // DataView
@@ -381,33 +1096,33 @@
                 alert(`⚠️ 警告: 裝置回傳長度 (${value.byteLength}) 與預期 (28) 不符！`);
             }
 
-            // Little-Endian Unpacking
-            // Offset 0: controlTimeoutMs (Uint32)
+            // Little-Endian 解包
+            // 偏移量 0: controlTimeoutMs (Uint32)
             inputs.controlTimeoutMs.value = value.getUint32(0, true);
 
-            // Offset 4: pwmEffectiveLimitT (Int32)
+            // 偏移量 4: pwmEffectiveLimitT (Int32)
             inputs.pwmEffectiveLimitT.value = value.getInt32(4, true);
-            // Offset 8: rampAccelStepT
+            // 偏移量 8: rampAccelStepT
             inputs.rampAccelStepT.value = value.getInt32(8, true);
-            // Offset 12: pwmStartKickT
+            // 偏移量 12: pwmStartKickT
             inputs.pwmStartKickT.value = value.getInt32(12, true);
 
-            // Offset 16: pwmEffectiveLimitS
+            // 偏移量 16: pwmEffectiveLimitS
             inputs.pwmEffectiveLimitS.value = value.getInt32(16, true);
-            // Offset 20: rampAccelStepS
+            // 偏移量 20: rampAccelStepS
             inputs.rampAccelStepS.value = value.getInt32(20, true);
-            // Offset 24: pwmStartKickS
+            // 偏移量 24: pwmStartKickS
             inputs.pwmStartKickS.value = value.getInt32(24, true);
 
             msgLabel.textContent = "✅ 已從裝置讀取最新設定";
             msgLabel.className = "text-green-600 font-bold text-sm mt-2";
         }
 
-        // --- Save Configuration (Binary Packing) ---
+        // --- 儲存設定 (二進位打包) ---
         saveBtn.addEventListener('click', async () => {
             if (!configChar) return;
 
-            // Validation (Basic)
+            // 驗證 (基本)
             for (const id of inputIds) {
                 if (!inputs[id].value) {
                     alert('❌ 所有欄位皆必填！');
@@ -419,7 +1134,7 @@
                 const buffer = new ArrayBuffer(28);
                 const view = new DataView(buffer);
 
-                // Pack Data (Little-Endian)
+                // 打包資料 (Little-Endian)
                 view.setUint32(0, parseInt(inputs.controlTimeoutMs.value), true);
 
                 view.setInt32(4, parseInt(inputs.pwmEffectiveLimitT.value), true);
@@ -437,7 +1152,7 @@
                 msgLabel.textContent = "✅ 設定已成功傳送! (28 Bytes)";
                 msgLabel.className = "text-green-600 font-bold text-sm mt-2";
 
-                // Flash success visual
+                // 顯示成功視覺回饋
                 saveBtn.classList.add('bg-green-600');
                 setTimeout(() => saveBtn.classList.remove('bg-green-600'), 1000);
 
@@ -447,7 +1162,7 @@
             }
         });
 
-        // --- Helpers ---
+        // --- 輔助函式 ---
         function updateStatus(state) {
             const badgeSpan = statusBadge.querySelector('span');
             if (state === 'connected') {
@@ -471,11 +1186,13 @@
             alert('裝置已斷線');
         }
     </script>
-    <!-- Assignment Guide (Hidden) -->
-    <section id="assignment-guide" style="display: none;">
-<div class="markdown-heading"><h1 class="heading-element">馬達 Ramping 組態設定 (Motor Ramping Configuration)</h1><a id="user-content-馬達-ramping-組態設定-motor-ramping-configuration" class="anchor" aria-label="Permalink: 馬達 Ramping 組態設定 (Motor Ramping Configuration)" href="#馬達-ramping-組態設定-motor-ramping-configuration"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+
+
+<!-- Assignment Guide (Hidden) -->
+<section id="assignment-guide" style="display: none !important;">
+<div class="markdown-heading"><h1 class="heading-element">馬達 Ramping 組態設定 (Motor Ramping Configuration)</h1><a aria-label="Permalink: 馬達 Ramping 組態設定 (Motor Ramping Configuration)" class="anchor" href="#馬達-ramping-組態設定-motor-ramping-configuration" id="user-content-馬達-ramping-組態設定-motor-ramping-configuration"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>歡迎來到本單元！在這個練習中，你將學習如何透過網頁介面與硬體進行「二進位通訊協議 (Binary Protocol)」的對接，並實作關鍵的物理安全控制邏輯。</p>
-<div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2><a id="user-content--學習目標" class="anchor" aria-label="Permalink: 🎯 學習目標" href="#-學習目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2><a aria-label="Permalink: 🎯 學習目標" class="anchor" href="#-學習目標" id="user-content--學習目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ol>
 <li>
 <strong>前端安全防護</strong>：學習如何在 UI 層級進行數值驗證，防止非法參數導致硬體損毀。</li>
@@ -486,8 +1203,8 @@
 <li>
 <strong>物理安全驗證</strong>：理解並驗證硬體端的超時保護 (Fail-Safe) 機制。</li>
 </ol>
-<div class="markdown-heading"><h2 class="heading-element">🛠️ 任務說明</h2><a id="user-content-️-任務說明" class="anchor" aria-label="Permalink: 🛠️ 任務說明" href="#️-任務說明"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h3 class="heading-element">任務 1：軟體保險絲 - 前端輸入驗證</h3><a id="user-content-任務-1軟體保險絲---前端輸入驗證" class="anchor" aria-label="Permalink: 任務 1：軟體保險絲 - 前端輸入驗證" href="#任務-1軟體保險絲---前端輸入驗證"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">🛠️ 任務說明</h2><a aria-label="Permalink: 🛠️ 任務說明" class="anchor" href="#️-任務說明" id="user-content-️-任務說明"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 1：軟體保險絲 - 前端輸入驗證</h3><a aria-label="Permalink: 任務 1：軟體保險絲 - 前端輸入驗證" class="anchor" href="#任務-1軟體保險絲---前端輸入驗證" id="user-content-任務-1軟體保險絲---前端輸入驗證"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>請在 <code>ramping-app.html</code> 中實作輸入驗證邏輯：</p>
 <ul>
 <li>
@@ -497,7 +1214,7 @@
 <li>
 <strong>重要性</strong>：這是防止馬達因非法輸入（如設為 999）而燒毀的第一道防線。</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">任務 2：二進位橋樑 - 資料結構映射</h3><a id="user-content-任務-2二進位橋樑---資料結構映射" class="anchor" aria-label="Permalink: 任務 2：二進位橋樑 - 資料結構映射" href="#任務-2二進位橋樑---資料結構映射"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 2：二進位橋樑 - 資料結構映射</h3><a aria-label="Permalink: 任務 2：二進位橋樑 - 資料結構映射" class="anchor" href="#任務-2二進位橋樑---資料結構映射" id="user-content-任務-2二進位橋樑---資料結構映射"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>你需要實作二進位封包的填充邏輯：</p>
 <ul>
 <li>
@@ -514,7 +1231,7 @@
 <li>
 <strong>驗證方式</strong>：執行 <code>verify-bytes.js</code>（如有提供）或查看序列埠輸出的十六進位字串。</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">任務 3：物理安全保護驗證</h3><a id="user-content-任務-3物理安全保護驗證" class="anchor" aria-label="Permalink: 任務 3：物理安全保護驗證" href="#任務-3物理安全保護驗證"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 3：物理安全保護驗證</h3><a aria-label="Permalink: 任務 3：物理安全保護驗證" class="anchor" href="#任務-3物理安全保護驗證" id="user-content-任務-3物理安全保護驗證"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>驗證硬體的「安全停車」機制：</p>
 <ol>
 <li>將 <code>controlTimeoutMs</code> 設定為 <code>500ms</code>。</li>
@@ -522,7 +1239,7 @@
 <li>
 <strong>截圖證明</strong>：從序列埠日誌中截圖，證明馬達在 0.5 秒內自動停止（應出現 <code>[SAFETY] Timeout - Motor Stop</code> 訊息）。</li>
 </ol>
-<div class="markdown-heading"><h2 class="heading-element">📂 程式庫結構</h2><a id="user-content--程式庫結構" class="anchor" aria-label="Permalink: 📂 程式庫結構" href="#-程式庫結構"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">📂 程式庫結構</h2><a aria-label="Permalink: 📂 程式庫結構" class="anchor" href="#-程式庫結構" id="user-content--程式庫結構"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <code>ramping-app.html</code>：主要的網頁控制程式（需完成 UI 驗證與 DataView 邏輯）。</li>
@@ -531,24 +1248,21 @@
 <li>
 <code>firmware/</code>：對應的 ESP32 韌體源碼（供參考與實機測試）。</li>
 </ul>
-<div class="markdown-heading"><h2 class="heading-element">📝 繳交規範</h2><a id="user-content--繳交規範" class="anchor" aria-label="Permalink: 📝 繳交規範" href="#-繳交規範"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h2 class="heading-element">📝 繳交規範</h2><a aria-label="Permalink: 📝 繳交規範" class="anchor" href="#-繳交規範" id="user-content--繳交規範"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ol>
 <li>確保 <code>ramping-app.html</code> 已通過自動評分測試。</li>
 <li>提交包含所有程式碼修改的 Commit。</li>
 <li>（選繳）上傳任務 3 的安全停車截圖。</li>
 </ol>
-<hr>
+<hr/>
 <p><em>祝你在二進位通訊的世界中探索愉快！</em></p>
+</section>
 
-    </section>
-    <script src="/js/course-shared.js?v=2026.05.21.V21.DISABLE_UNIFIED_SUPPORT_HUB"></script>
-
-
-    <!-- Tutor Guide (Hidden) -->
-    <section id="tutor-guide" style="display: none;">
+<!-- Tutor Guide (Hidden) -->
+<section id="tutor-guide" style="display: none !important;">
 <p>針對 <strong><code>03-unit-motor-ramping</code> (馬達 Ramping 組態設定)</strong> 單元，這是一個結合了「二進位通訊協議 (Binary Protocol)」與「物理安全控制」的高難度單元。</p>
 <p>以下是在 <strong>GitHub Classroom</strong> 部署其作業 (Assignments) 的具體建議：</p>
-<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫配置建議</h3><a id="user-content-1-範本程式庫配置建議" class="anchor" aria-label="Permalink: 1. 範本程式庫配置建議" href="#1-範本程式庫配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫配置建議</h3><a aria-label="Permalink: 1. 範本程式庫配置建議" class="anchor" href="#1-範本程式庫配置建議" id="user-content-1-範本程式庫配置建議"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <p>由於此單元涉及精確的位元組對齊（28 Bytes），建議範本中包含：</p>
 <ul>
 <li>
@@ -558,9 +1272,9 @@
 <li>
 <strong>📂 <code>firmware/main.cpp</code></strong>：提供對應的 ESP32 韌體源碼，讓有硬體的學生能進行真實測試。</li>
 </ul>
-<hr>
-<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a id="user-content-2-作業任務部署細節" class="anchor" aria-label="Permalink: 2. 作業任務部署細節" href="#2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h4 class="heading-element">任務 1：軟體保險絲 - 前端輸入驗證 (UI Validation)</h4><a id="user-content-任務-1軟體保險絲---前端輸入驗證-ui-validation" class="anchor" aria-label="Permalink: 任務 1：軟體保險絲 - 前端輸入驗證 (UI Validation)" href="#任務-1軟體保險絲---前端輸入驗證-ui-validation"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a aria-label="Permalink: 2. 作業任務部署細節" class="anchor" href="#2-作業任務部署細節" id="user-content-2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 1：軟體保險絲 - 前端輸入驗證 (UI Validation)</h4><a aria-label="Permalink: 任務 1：軟體保險絲 - 前端輸入驗證 (UI Validation)" class="anchor" href="#任務-1軟體保險絲---前端輸入驗證-ui-validation" id="user-content-任務-1軟體保險絲---前端輸入驗證-ui-validation"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：防止非法數值（如 PWM 限制設為 999）導致馬達損毀。</li>
@@ -571,7 +1285,7 @@
 <li>
 <strong>測試案例</strong>：嘗試在油門限制欄位輸入 <code>999</code>。如果「傳送」按鈕沒有被禁用 (Disabled) 或沒有出現紅框警告，則自動評分失敗。這能訓練學生重視「前端第一線安全控管」。</li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 2：二進位橋樑 - 資料結構映射 (DataView Lab)</h4><a id="user-content-任務-2二進位橋樑---資料結構映射-dataview-lab" class="anchor" aria-label="Permalink: 任務 2：二進位橋樑 - 資料結構映射 (DataView Lab)" href="#任務-2二進位橋樑---資料結構映射-dataview-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 2：二進位橋樑 - 資料結構映射 (DataView Lab)</h4><a aria-label="Permalink: 任務 2：二進位橋樑 - 資料結構映射 (DataView Lab)" class="anchor" href="#任務-2二進位橋樑---資料結構映射-dataview-lab" id="user-content-任務-2二進位橋樑---資料結構映射-dataview-lab"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：精確操作位元組偏移量 (Offset) 與位元編碼格式 (Little-Endian)。</li>
@@ -585,7 +1299,7 @@
 <li>
 <strong>驗證方式</strong>：學生需撰寫一個 <code>verify-bytes.js</code>，將填充好的 <code>ArrayBuffer</code> 轉換為十六進位字串（Hex String）並與導師提供的預期結果比對。</li>
 </ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 3：斷電與超時保護驗證 (Fail-Safe Check)</h4><a id="user-content-任務-3斷電與超時保護驗證-fail-safe-check" class="anchor" aria-label="Permalink: 任務 3：斷電與超時保護驗證 (Fail-Safe Check)" href="#任務-3斷電與超時保護驗證-fail-safe-check"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 3：斷電與超時保護驗證 (Fail-Safe Check)</h4><a aria-label="Permalink: 任務 3：斷電與超時保護驗證 (Fail-Safe Check)" class="anchor" href="#任務-3斷電與超時保護驗證-fail-safe-check" id="user-content-任務-3斷電與超時保護驗證-fail-safe-check"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>目標</strong>：驗證韌體的「安全停車」機制。</li>
@@ -596,8 +1310,8 @@
 <li>
 <strong>任務內容</strong>：設定 <code>controlTimeoutMs</code> 為 <code>500ms</code>，啟動馬達後關閉網頁。截圖需證明馬達在半秒內自動停止（終端機出現 <code>[SAFETY] Timeout - Motor Stop</code>）。</li>
 </ul>
-<hr>
-<div class="markdown-heading"><h3 class="heading-element">3. 翻轉教室與導師評估指標</h3><a id="user-content-3-翻轉教室與導師評估指標" class="anchor" aria-label="Permalink: 3. 翻轉教室與導師評估指標" href="#3-翻轉教室與導師評估指標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<hr/>
+<div class="markdown-heading"><h3 class="heading-element">3. 翻轉教室與導師評估指標</h3><a aria-label="Permalink: 3. 翻轉教室與導師評估指標" class="anchor" href="#3-翻轉教室與導師評估指標" id="user-content-3-翻轉教室與導師評估指標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
 <li>
 <strong>教學重難點</strong>：</li>
@@ -612,11 +1326,7 @@
 <li>[ ] <strong>協議文件化</strong>：是否在 README 中清楚標註了 28 Bytes 分別代表哪些資料項？</li>
 </ul>
 <p>這套部署方案能將原本抽象的「二進位協議」轉化為「可測試、可觀察」的具體任務，讓學生在學習 Web 控制硬體時，建立起極致效能與物理安全性併重的觀念。</p>
+</section>
 
-    </section>
 </body>
-
-</html>
-</body>
-
 </html>
