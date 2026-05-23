@@ -25,9 +25,8 @@
 ---
 
 ## 📖 相關文件 (Documentation)
-- **[📈 估值模型 (Valuation Model)](docs/valuation-model.md)**：市場大小、三年情境、公司估值與系統估值框架（含可調參數 CSV）。
-- **[🧭 融資路線圖 (Funding Roadmap)](docs/funding-roadmap.md)**：F/Angel 到 Seed/Pre-A 再到 A round 的里程碑與 KPI 規劃。
-- **[👥 共同創業股權框架 (Founder Equity Framework)](docs/founder-equity-framework.md)**：早期共同創業夥伴角色、股權、vesting 與治理建議。
+- **[📈 估值模型 (Valuation Model)](docs/investor/valuation-model.md)**：市場大小、三年情境、公司估值與系統估值框架（含可調參數 CSV）。
+- **[🧭 融資計劃 (Funding Roadmap)](docs/investor/funding-roadmap.md)**：F/Angel 到 Seed/Pre-A 再到 A round 的里程碑與 KPI 規劃。
 - **[⚖️ 開發與營運規範 (Project Rules)](AGENT.md)**：包含零元帳單規範、權限模型、ID 歸一化準則與開發 SOP。
 - **[🗄️ Firestore 結構文件](docs/database.md)**：集合、欄位與遷移備註（以實作為準）。
 - **[✉️ Email 通知規格](docs/email-notifications.md)**：通知觸發條件、收件者、深連結與異常告警規範。
