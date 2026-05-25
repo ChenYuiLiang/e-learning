@@ -74,6 +74,22 @@
 > - `ai-agents-vibe.courseUnits` 已切換為 `02-unit-agent-mode.html`, `02-unit-web-agents.html`, `02-unit-vibe-coding.html`
 > - `github-classroom.courseUnits` 已整併為 `03-unit-github-classroom.html`
 
+### `metadata_lessons` 規劃中欄位（Platform Expansion Plan）
+
+下列欄位尚屬下一階段規劃，作為課程架構升級與外部內容倉遷移使用：
+
+| 欄位名稱 | 類型 | 說明 |
+| :--- | :--- | :--- |
+| `courseKey` | string | 新的穩定課程主鍵，取代對 HTML 檔名的直接依賴。 |
+| `track` | string | 課程主軸，例如 `common`、`car`。 |
+| `level` | string | 課程層級，例如 `common`、`starter`、`basic`、`advanced`。 |
+| `entryUnitId` | string | 課程入口單元 ID，用於取代 `*-master-*` 頁面的進入責任。 |
+| `contentRef` | string | 對應外部內容倉的內容路徑，例如 `courses/zh-TW/tw-car-starter-html5-basics.html`。 |
+| `i18n` | map | 可選的多語內容設定，例如各語系內容路徑或語系可用性資訊。 |
+
+參考模板：
+- `docs/examples/metadata-lessons-migration-template.csv`
+
 ---
 
 ## 4. `assignments` 集合

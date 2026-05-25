@@ -61,13 +61,13 @@ New naming examples:
 ### 2.5 Confirmed Taiwan file naming rules
 
 1. Original preparation/unit files `*-unit-*.html`
-   - Rename to `TW-common-*.html`
+   - Rename to `tw-common-*.html`
 2. Original starter course files `start-*-unit-*.html`
-   - Rename to `TW-car-starter-*.html`
+   - Rename to `tw-car-starter-*.html`
 3. Original basic course files `basic-*-unit-*.html`
-   - Rename to `TW-car-basic-*.html`
+   - Rename to `tw-car-basic-*.html`
 4. Original advanced course files `advanced-*-unit-*.html`
-   - Rename to `TW-car-advanced-*.html`
+   - Rename to `tw-car-advanced-*.html`
 
 This naming rule is a planning target. Existing Firestore keys should migrate gradually.
 
@@ -209,15 +209,15 @@ All unit files now follow a consistent structure:
 content-repo/
   courses/
     zh-TW/
-      TW-common-*.html
-      TW-car-starter-*.html
-      TW-car-basic-*.html
-      TW-car-advanced-*.html
+      tw-common-*.html
+      tw-car-starter-*.html
+      tw-car-basic-*.html
+      tw-car-advanced-*.html
     en/
-      EN-common-*.html
-      EN-car-starter-*.html
-      EN-car-basic-*.html
-      EN-car-advanced-*.html
+      en-common-*.html
+      en-car-starter-*.html
+      en-car-basic-*.html
+      en-car-advanced-*.html
 ```
 
 Current decision:
@@ -367,6 +367,93 @@ Admin needs:
 3. Add simulation and warnings
 4. Add order-level `region/channelType/policyId`
 
+---
+
+## 7. Implementation Checklist
+
+### 7.1 Data model and Firestore
+
+- [ ] Add `courseKey` to `metadata_lessons`
+- [ ] Add `track` to `metadata_lessons`
+- [ ] Add `level` to `metadata_lessons`
+- [ ] Add `entryUnitId` to `metadata_lessons`
+- [ ] Add `contentRef` to `metadata_lessons`
+- [ ] Add `locale` to `users`
+- [ ] Add `region` to `users`
+- [ ] Add `region` to `orders`
+- [ ] Add `channelType` to `orders`
+- [ ] Add `policyId` to `orders`
+- [ ] Add `pricingVersion` to `orders`
+- [ ] Create `revenue_share_policies` collection
+
+### 7.2 Content routing and serving
+
+- [x] Add locale-aware content lookup in `serveCourse`
+- [x] Add old-filename -> new-filename fallback for i18n content paths
+- [ ] Replace `classroomUrl/masterFile` scope validation with `courseKey + unit list`
+- [ ] Make `entryUnitId` the primary course entry target
+- [ ] Convert `*-master-*` pages into compatibility redirects
+- [ ] Remove `*-master-*` dependencies from token generation and entry links
+
+### 7.3 External content repo MVP
+
+- [x] Create `sync_i18n_private_courses.sh` MVP tool
+- [x] Add `--dry-run` support
+- [x] Add stale-file detection
+- [x] Add optional stale-file deletion via `--apply-delete`
+- [ ] Create external private content repo
+- [ ] Add first `zh-TW` pilot content
+- [ ] Add first `en` pilot content
+- [ ] Define publish SOP: update repo -> sync -> deploy
+- [ ] Verify fallback order with one migrated unit
+
+### 7.4 Naming migration
+
+- [x] Confirm new lowercase naming examples
+- [x] Create old filename -> new filename mapping table
+- [x] Create old `unitId` -> `contentRef` mapping table
+- [ ] Hide `-unit-` technical prefixes in all UI surfaces
+- [ ] Update `prepare.html` and related entry pages to use new metadata-driven names
+
+Reference artifacts:
+
+- `docs/examples/content-filename-mapping.csv`
+- `docs/examples/unit-contentref-mapping.csv`
+- `docs/examples/master-retirement-mapping.csv`
+- `docs/examples/metadata-lessons-migration-template.csv`
+
+### 7.5 Revenue share system
+
+- [ ] Store role-based revenue share policies in Firestore
+- [ ] Add tutor share calculation by policy
+- [ ] Add agent share calculation by policy
+- [ ] Reserve `courseDevRate` support without payout when no owner exists
+- [ ] Add upline share calculation for tutor
+- [ ] Add upline share calculation for agent
+- [ ] Persist `policySnapshot` into ledger records
+- [ ] Add admin policy CRUD
+- [ ] Add admin revenue simulation UI
+
+### 7.6 Validation and pilot rollout
+
+- [ ] Pick 1 `tw-common-*` unit as pilot
+- [ ] Pick 1 `tw-car-starter-*` unit as pilot
+- [ ] Verify course open flow
+- [ ] Verify authorization scope
+- [ ] Verify dashboard lesson entry
+- [ ] Verify assignment-guide and tutor-guide rendering
+- [ ] Verify autograde and writeback are unaffected
+- [ ] Remove `*-master-*` only after pilot validation succeeds
+
+---
+
+## 8. Immediate Next Steps
+
+1. Create the filename mapping tables
+2. Add the new metadata fields in Firestore planning
+3. Refactor `serveCourse` authorization away from `masterFile`
+4. Prepare 1-2 pilot units for external private repo migration
+
 ### Phase 3
 
 1. Redirect and remove remaining `*-master-*` (30 files)
@@ -400,4 +487,3 @@ Controls:
 2. Use it to drive implementation tasks in order: naming → entry routing → content repo → revenue share policies.
 3. Keep old planning docs only as compatibility pointers.
 4. Collect 46 missing video/doc URLs for advanced course files from content owners.
-
