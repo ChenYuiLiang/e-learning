@@ -189,7 +189,12 @@ All unit files now follow a consistent structure:
 | Full content rewrite | `prepare-09-wifi-setup.html` | BLE, Web Bluetooth API, NVS, TextEncoder |
 | Quality verification | `prepare-01` ~ `prepare-07` | Already met standards; no changes needed |
 
-### 3.7 Remaining content issues
+### 3.7 Post-polish fixes (2025-05)
+
+- **Start unit styling alignment**: All 15 start unit files updated to match prepare/basic/adv format (top nav brand/label, sidebar module-label hidden, breadcrumb with real module titles).
+- **JS init crash in `prepare-08` and `prepare-09`**: `init()` referenced `window.RESOURCES` before it was defined in a later `<script>` block, causing a `TypeError` that prevented breadcrumb and navigation from initializing. Fixed with a defensive `if (window.RESOURCES)` guard.
+
+### 3.8 Remaining content issues
 
 - **46 adv files missing video/doc URLs**: `adv-02` through `adv-15` have empty `video` and `doc` fields in `window.RESOURCES`. Only `adv-01` (3 units) and `adv-04-filter-algorithms` have actual URLs. These require user-provided YouTube and Google Docs links.
 
@@ -350,6 +355,11 @@ Admin needs:
 7. Enrich all 104 course files to MS Learn standard ✅
 8. Add knowledge quizzes to all 95 unit files ✅
 9. Add `seed-emulator.js` and `firebase-local.js` for local dev ✅
+10. Align start unit files to match prepare/basic/adv styling ✅
+    - Top nav: `Vibe Coding Learn` → `Vibe Coding` + rocket icon, nav label linked to `/start.html`
+    - Sidebar: hide `module-label` via `display: none`
+    - Breadcrumb: replace generic `Start 03`/`入門課程單元` with actual module titles
+11. Fix `prepare-08` and `prepare-09` JS init crash (`window.RESOURCES` accessed before definition) ✅
 
 ### Phase 1
 
