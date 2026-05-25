@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PID 三兄弟的數學直覺 - Vibe Coding Learn</title>
+    <title>PID 三兄弟的數學直覺 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 12 - 數學直覺</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">PID 三兄弟的數學直覺</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 12</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>PID 三兄弟的數學直覺</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 12</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,14 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>PID 三兄弟的數學直覺</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    P 負責「現在該出多少力」，I 負責「過去累積的怨氣該怎麼清」，D 負責「未來會不會衝過頭」——這三個角色各司其職，卻又必須協同作戰。
+                    本模組將用最直覺的物理比喻，帶你深入理解 <strong>比例、積分、微分</strong> 三項的數學公式與離散化實作，
+                    並解決工程中最常見的兩大陷阱：積分飽和 (Windup) 與微分雜訊放大。
                 </p>
 
                 <div class="ms-scenario">
                     <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    你的機器人裝上了 P 控制器，速度曲線看起來已經很不錯了——但它永遠差最後 3 公分到不了終點。加上 I 項後終於到達了，卻發現衝過頭又彈回來。再疊加 D 項，波形終於收斂了，但感測器的微小雜訊卻讓馬達瘋狂抖動。觀看下方影片，建立 PID 三兄弟的物理直覺，再進入公式推導會事半功倍。
                 </div>
 
                 <h2>教學影片</h2>
@@ -576,7 +575,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -590,46 +589,104 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>P 1. 比例 (P)：關注當下的距離</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                比例項就像是你的腳踩油門的力度。離目標越遠，踩得越重；快到了，就慢慢放開。這是最直觀的控制邏輯。
-                            </p>
-<div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-justify text-justify">
-<h4 class="font-bold text-blue-900 mb-4 text-[10px] uppercase tracking-widest leading-relaxed text-center">
-                                    P Output Formula</h4>
-<div class="text-xl font-mono text-blue-600 mb-4 text-center text-justify">
-                                    \[Output_p = K_p \times Error\]
-                                </div>
-<p class="text-[9px] text-slate-500 italic text-center text-justify">Error = Target -
-                                    Current</p>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-center text-justify">
-                                Static Error Barrier</h4>
-<div class="relative z-10 flex items-center justify-center gap-4 text-justify">
-<div class="w-1 h-20 bg-slate-700 rounded-full overflow-hidden text-justify text-left">
-<div class="w-full h-2/3 bg-blue-500 animate-[pulse_2s_infinite] text-justify">
-</div>
-</div>
-<div class="text-left text-[10px] text-slate-400 text-justify text-justify">
-<p class="text-blue-400 font-bold mb-1 text-justify">❌ 靜態誤差 (Steady state error)</p>
-<p class="text-justify text-left text-justify">純 P
-                                        控制永遠差那麼一點。<br/>因為推力與誤差平衡時，<br/>系統會卡在終點前不前進。</p>
-</div>
-</div>
-</div>
-</div>
+                <h1>比例 (P)：關注當下的距離</h1>
+
+                <p>
+                    比例項 (Proportional Term) 是 PID 控制器中最直觀的一環。它的邏輯極其簡單：<strong>誤差越大，出力越猛；誤差越小，出力越輕</strong>。就像你開車接近停車場入口——還差很遠時全速前進，快到了就慢慢滑行。
+                </p>
+
+                <h2>數學公式</h2>
+
+                <p>比例項的輸出完全由當前誤差決定：</p>
+
+                <p style="text-align:center; font-size:18px; margin:20px 0;">
+                    \[Output_P = K_p \times e(t)\]
+                </p>
+
+                <p>其中：</p>
+                <ul>
+                    <li>\(K_p\) — 比例增益 (Proportional Gain)，決定系統的反應靈敏度</li>
+                    <li>\(e(t) = \text{Target} - \text{Measured}\) — 當前時刻的誤差</li>
+                </ul>
+
+                <div class="ms-code">
+<span class="c-comment">// C++ 離散實作</span><br>
+<span class="c-kw">float</span><span class="c-white"> error = targetPos - currentPos;</span><br>
+<span class="c-kw">float</span><span class="c-white"> output_P = </span><span class="c-attr">Kp</span><span class="c-white"> * error;</span><br><br>
+<span class="c-comment">// 範例數值：</span><br>
+<span class="c-comment">// targetPos = 150 cm, currentPos = 80 cm</span><br>
+<span class="c-comment">// error = 70 cm</span><br>
+<span class="c-comment">// Kp = 2.0</span><br>
+<span class="c-comment">// output_P = 2.0 × 70 = 140（PWM 輸出值）</span>
+                </div>
+
+                <h2>Kp 的效果：太小 vs. 太大</h2>
+
+                <p>選擇正確的 \(K_p\) 值是控制工程中最基本的調校任務。以下表格說明不同 \(K_p\) 的影響：</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>\(K_p\) 大小</th>
+                            <th>系統行為</th>
+                            <th>物理現象</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>太小</strong> (如 0.5)</td>
+                            <td>反應遲鈍，需很長時間才接近目標</td>
+                            <td>機器人像烏龜爬行，停在目標前很遠處</td>
+                        </tr>
+                        <tr>
+                            <td><strong>適中</strong> (如 2.0)</td>
+                            <td>快速接近目標，最終穩定（但仍有殘留誤差）</td>
+                            <td>機器人平穩靠近目標，但最後差幾公分</td>
+                        </tr>
+                        <tr>
+                            <td><strong>太大</strong> (如 10.0)</td>
+                            <td>反應過激，在目標附近劇烈震盪</td>
+                            <td>機器人像醉漢一樣左右搖擺，無法停穩</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>穩定性邊界</strong>
+                        當 \(K_p\) 超過某個臨界值時，系統會從「收斂」變成「發散」——誤差不但不減小，反而越來越大。這個臨界點稱為<strong>穩定性邊界 (Stability Margin)</strong>，是控制工程中必須嚴格避免的危險區域。
+                    </div>
+                </div>
+
+                <h2>P 控制的固有缺陷：靜態誤差</h2>
+
+                <p>
+                    純 P 控制有一個無法迴避的物理侷限——<strong>靜態誤差 (Steady-State Error)</strong>。當誤差足夠小時，\(K_p \times e\) 產生的出力會低於馬達的最小啟動電壓（死區電壓），系統就卡住了。
+                </p>
+
+                <p>用數學表達這個平衡：</p>
+
+                <p style="text-align:center; font-size:16px; margin:16px 0;">
+                    \[K_p \times e_{ss} = F_{friction} \quad \Rightarrow \quad e_{ss} = \frac{F_{friction}}{K_p}\]
+                </p>
+
+                <p>
+                    即使增大 \(K_p\)，殘留誤差 \(e_{ss}\) 只會變小但<strong>永遠不會歸零</strong>（除非摩擦力為零，但這在物理世界中不存在）。這就是為什麼我們需要積分項 (I) 來徹底消除靜態誤差。
+                </p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>學習重點</strong>
+                        P 項是 PID 控制器的「脊梁骨」——它決定了系統的基本反應速度。但它只看「此刻」，對過去的累積和未來的趨勢視而不見。接下來的 I 項和 D 項將分別彌補這兩個盲點。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -643,43 +700,105 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>I 2. 積分 (I)：記仇的歷史紀錄</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                積分項會記住過去「沒到達目標」的時間。如果卡在終點前太久，它會越來越「不爽」，慢慢增加推力直到剷平誤差。
-                            </p>
-<div class="bg-emerald-50 p-8 rounded-3xl border border-emerald-100 text-justify">
-<h4 class="text-emerald-900 font-bold mb-4 text-xs uppercase tracking-widest text-center text-justify text-justify">
-                                    I Output Formula</h4>
-<div class="text-xl font-mono text-emerald-600 text-center text-justify text-justify">
-                                    \[Output_i = K_i \times \sum (Error \cdot \Delta t)\]
-                                </div>
-<p class="text-[10px] text-slate-400 mt-4 italic font-light text-center text-justify text-justify">
-                                    消除靜態誤差的最後一哩路</p>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-emerald-500/5 text-justify"></div>
-<h4 class="text-emerald-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-center text-justify">
-                                Accumulation Effect</h4>
-<div class="w-full h-12 flex items-end gap-1 relative z-10 px-4 text-justify text-left">
-<div class="w-2 bg-emerald-500/20 h-2 text-justify"></div>
-<div class="w-2 bg-emerald-500/40 h-4 text-justify"></div>
-<div class="w-2 bg-emerald-500/60 h-7 text-justify text-left"></div>
-<div class="w-2 bg-emerald-500/80 h-10 text-justify text-left"></div>
-<div class="w-2 bg-emerald-500 h-full text-justify text-left"></div>
-</div>
-<p class="text-[9px] text-slate-500 mt-4 font-mono tracking-tighter uppercase relative z-10 text-center text-justify">
-                                Side Effect: Overshoot Risk</p>
-</div>
-</div>
+                <h1>積分 (I)：記仇的歷史紀錄</h1>
+
+                <p>
+                    積分項 (Integral Term) 是 PID 中的「長期記憶」。它不看此刻的誤差大小，而是關注<strong>誤差存在了多久</strong>。如果系統卡在目標前方太長時間，積分值會不斷累積，像慢慢填滿的水桶一樣，持續增加推力直到最終突破阻力、消滅殘留誤差。
+                </p>
+
+                <h2>數學公式</h2>
+
+                <p>積分項對歷史誤差做時間累積：</p>
+
+                <p style="text-align:center; font-size:18px; margin:20px 0;">
+                    \[Output_I = K_i \times \int_0^t e(\tau) \, d\tau\]
+                </p>
+
+                <p>離散化為程式碼時，積分變成了累加：</p>
+
+                <div class="ms-code">
+<span class="c-comment">// 離散積分實作</span><br>
+<span class="c-attr">integral</span><span class="c-white"> += error * dt;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 每個迴圈週期累加</span><br>
+<span class="c-kw">float</span><span class="c-white"> output_I = </span><span class="c-attr">Ki</span><span class="c-white"> * integral;</span><br><br>
+<span class="c-comment">// 範例：error = 3 cm（很小，P 項已無力）</span><br>
+<span class="c-comment">// 經過 100 個週期 (dt = 0.01s)：</span><br>
+<span class="c-comment">// integral = 3 × 0.01 × 100 = 3.0</span><br>
+<span class="c-comment">// Ki = 5.0 → output_I = 5.0 × 3.0 = 15.0</span><br>
+<span class="c-comment">// 時間越長，推力越大，最終克服死區！</span>
+                </div>
+
+                <h2>為什麼 I 項能消除靜態誤差？</h2>
+
+                <p>
+                    回顧 P 項的侷限：當 \(K_p \times e\) 小於馬達死區電壓時，系統卡住。但 I 項不會因為誤差小就放棄——只要誤差<strong>持續存在</strong>，積分值就會持續增長。最終，\(K_i \times \text{integral}\) 會大到足以克服任何靜摩擦力，把系統推到精確的目標點。
+                </p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>直覺理解</strong>
+                        想像你推一扇很重的門。P 項是你施加的即時力量——門很重，你的力氣不夠推動它。但 I 項就像你「越來越生氣」——推了 5 秒沒開，你使出 120% 的力；推了 10 秒還沒開，你怒氣值爆表，最終一定能推開。
+                    </div>
+                </div>
+
+                <h2>積分飽和 (Integral Windup) 問題</h2>
+
+                <p>
+                    I 項的最大副作用是<strong>積分飽和 (Windup)</strong>。當系統長時間無法到達目標（例如被障礙物卡住），積分值會累積到極大數字。一旦障礙物移除，這個巨大的積分值會導致系統猛烈過衝 (Overshoot)。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>階段</th>
+                            <th>積分值狀態</th>
+                            <th>系統行為</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>正常運行</td>
+                            <td>小幅度累積，穩步消除殘餘誤差</td>
+                            <td>平穩收斂至目標</td>
+                        </tr>
+                        <tr>
+                            <td>受阻期間</td>
+                            <td>持續瘋狂累積（因為誤差一直存在）</td>
+                            <td>輸出飽和，馬達全速但車動不了</td>
+                        </tr>
+                        <tr>
+                            <td>障礙移除後</td>
+                            <td>巨大的積分值需要很長時間才能「洩掉」</td>
+                            <td>嚴重過衝，可能撞毀</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Anti-Windup 解法：積分限幅</h3>
+
+                <div class="ms-code">
+<span class="c-comment">// Anti-Windup：限制積分值的上下界</span><br>
+<span class="c-attr">integral</span><span class="c-white"> += error * dt;</span><br>
+<span class="c-attr">integral</span><span class="c-white"> = </span><span class="c-tag">constrain</span><span class="c-white">(integral, -</span><span class="c-val">MAX_INTEGRAL</span><span class="c-white">, </span><span class="c-val">MAX_INTEGRAL</span><span class="c-white">);</span><br><br>
+<span class="c-comment">// 或者：當誤差改變方向時，清除積分</span><br>
+<span class="c-kw">if</span><span class="c-white"> ((error > </span><span class="c-val">0</span><span class="c-white"> && lastError < </span><span class="c-val">0</span><span class="c-white">) || </span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;(error < </span><span class="c-val">0</span><span class="c-white"> && lastError > </span><span class="c-val">0</span><span class="c-white">)) {</span><br>
+<span class="c-white">&nbsp;&nbsp;integral = </span><span class="c-val">0</span><span class="c-white">;&nbsp;&nbsp;</span><span class="c-comment">// 過零點清除</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>工程實務</strong>
+                        在嵌入式系統中，永遠不要讓積分值無限增長。<code>constrain()</code> 是你的第一道防線。專業的控制庫（如 Arduino PID Library）內建 Anti-Windup 機制，但理解其原理才能在極端場景下正確調校。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -693,53 +812,129 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>D 3. 微分 (D)：預測未來的預警師</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
-                                微分項關注的是誤差變化的「斜率」。當系統衝得太快，它會提前踩下阻尼，防止系統衝過頭 (Overshoot)。
-                            </p>
-<div class="bg-purple-500/10 p-8 rounded-3xl border border-purple-500/20 shadow-inner text-justify text-justify text-left">
-<h4 class="font-bold text-purple-400 mb-4 text-xs uppercase tracking-widest text-center text-justify">
-                                    D Output Formula</h4>
-<div class="text-xl font-mono text-purple-600 text-center text-justify text-justify">
-                                    \[Output_d = K_d \times \frac{Error - Last\_Error}{\Delta t}\]
-                                </div>
-<ul class="grid grid-cols-1 gap-2 mt-6 text-[11px] text-slate-400 font-light text-justify text-left">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1.5 text-justify"></span>
-<div><strong class="text-white text-justify">抑制震盪</strong>：像避震器一樣讓系統平滑且安分地到達目標。
-                                        </div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1.5 text-justify"></span>
-<div><strong class="text-white text-justify text-justify text-left">預判阻尼</strong>：提前感應速度變化，防止機械結構因慣性受損。
-                                        </div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-purple-600/10 p-10 rounded-3xl border border-purple-500/20 text-center relative overflow-hidden group text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-purple-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify">
-</div>
-<h4 class="text-purple-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center text-justify">
-                                Future Prediction Engine</h4>
-<div class="w-full h-32 bg-black/50 rounded-xl relative overflow-hidden border border-purple-500/20 flex items-center justify-center text-justify">
-<svg class="w-full h-full p-4 text-justify" viewbox="0 0 100 60">
-<path class="text-justify" d="M0,50 Q40,10 80,45 T100,50" fill="none" stroke="#a855f7" stroke-width="2"></path>
-<line class="text-justify" stroke="#ef4444" stroke-dasharray="4" stroke-width="2" x1="40" x2="60" y1="10" y2="10"></line>
-<text class="text-justify" fill="#ef4444" font-size="6" text-anchor="middle" x="50" y="8">PREDICTION BRAKE</text>
-</svg>
-</div>
-<p class="text-[11px] text-slate-500 mt-6 leading-relaxed font-light italic text-center text-justify">
-                                "微分讓我們看見變動的趨勢，而非僅僅是數字。"
-                            </p>
-</div>
-</div>
+                <h1>微分 (D)：預測未來的預警師</h1>
+
+                <p>
+                    微分項 (Derivative Term) 是 PID 中的「先知」。它不關心你離目標多遠（那是 P 的事），也不關心你累積了多少未償誤差（那是 I 的事）。它只關注一件事：<strong>誤差正在以多快的速度變化</strong>。如果誤差急速減小（代表你正在高速衝向目標），D 項會提前踩下煞車，防止過衝。
+                </p>
+
+                <h2>數學公式</h2>
+
+                <p>微分項計算的是誤差的變化率（斜率）：</p>
+
+                <p style="text-align:center; font-size:18px; margin:20px 0;">
+                    \[Output_D = K_d \times \frac{de(t)}{dt}\]
+                </p>
+
+                <p>離散化實作：</p>
+
+                <div class="ms-code">
+<span class="c-comment">// 離散微分實作</span><br>
+<span class="c-kw">float</span><span class="c-white"> derivative = (error - lastError) / dt;</span><br>
+<span class="c-kw">float</span><span class="c-white"> output_D = </span><span class="c-attr">Kd</span><span class="c-white"> * derivative;</span><br>
+<span class="c-attr">lastError</span><span class="c-white"> = error;&nbsp;&nbsp;</span><span class="c-comment">// 儲存本次誤差供下次使用</span><br><br>
+<span class="c-comment">// 範例：dt = 0.01s</span><br>
+<span class="c-comment">// 上一次 error = 50 cm, 這次 error = 30 cm</span><br>
+<span class="c-comment">// derivative = (30 - 50) / 0.01 = -2000 cm/s</span><br>
+<span class="c-comment">// 負值！代表誤差正在快速減小 → 正在接近目標</span><br>
+<span class="c-comment">// Kd = 0.02 → output_D = 0.02 × (-2000) = -40</span><br>
+<span class="c-comment">// D 項產生反向力，踩煞車防止過衝！</span>
+                </div>
+
+                <h2>D 項的物理直覺：汽車避震器</h2>
+
+                <p>
+                    想像一輛沒有避震器的車開過減速帶——車身會上下劇烈彈跳。避震器的作用是<strong>阻尼</strong>：它不關心車身在哪個高度（那是彈簧的事），它只關心車身移動的速度。移動越快，阻尼力越大。D 項在控制系統中扮演的就是避震器的角色。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>誤差變化趨勢</th>
+                            <th>derivative 值</th>
+                            <th>D 項的行為</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>誤差快速減小（高速逼近目標）</td>
+                            <td>大負值</td>
+                            <td>產生強力反向煞車，提前減速</td>
+                        </tr>
+                        <tr>
+                            <td>誤差緩慢減小（慢速接近）</td>
+                            <td>小負值</td>
+                            <td>輕微阻尼，不影響前進</td>
+                        </tr>
+                        <tr>
+                            <td>誤差不變（系統卡住）</td>
+                            <td>零</td>
+                            <td>D 項完全不作用</td>
+                        </tr>
+                        <tr>
+                            <td>誤差增大（正在遠離目標）</td>
+                            <td>正值</td>
+                            <td>加速推向目標方向</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>D 項的致命弱點：雜訊放大</h2>
+
+                <p>
+                    微分運算本質上是對信號做「差分」——這會將高頻雜訊放大到災難性的程度。即使感測器只有 ±1 的微小抖動，經過 \(\div dt\) 運算後也會變成巨大的尖峰信號，導致馬達瘋狂抖動。
+                </p>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>雜訊放大效應</strong>
+                        假設感測器雜訊 = ±1 cm，dt = 0.01s。<br>
+                        微分值 = 1 / 0.01 = <strong>100 cm/s</strong> 的假信號！<br>
+                        若 Kd = 0.5，D 項會輸出 ±50 的隨機抖動——馬達直接瘋掉。
+                    </div>
+                </div>
+
+                <h3>解法：低通濾波器</h3>
+
+                <p>在計算微分之前，先對誤差信號做移動平均或一階低通濾波，濾除高頻雜訊：</p>
+
+                <div class="ms-code">
+<span class="c-comment">// 一階低通濾波 (Exponential Moving Average)</span><br>
+<span class="c-kw">const float</span><span class="c-white"> </span><span class="c-attr">alpha</span><span class="c-white"> = </span><span class="c-val">0.1</span><span class="c-white">;&nbsp;&nbsp;</span><span class="c-comment">// 濾波係數 (0~1, 越小越平滑)</span><br>
+<span class="c-attr">filteredError</span><span class="c-white"> = alpha * error + (</span><span class="c-val">1</span><span class="c-white"> - alpha) * filteredError;</span><br><br>
+<span class="c-comment">// 用濾波後的信號計算微分</span><br>
+<span class="c-kw">float</span><span class="c-white"> derivative = (filteredError - lastFilteredError) / dt;</span><br>
+<span class="c-kw">float</span><span class="c-white"> output_D = Kd * derivative;</span>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>工程取捨</strong>
+                        濾波強度是一把雙刃劍：濾太多會引入<strong>相位延遲 (Phase Lag)</strong>，讓 D 項的「預判」變成「後知後覺」；濾太少則雜訊依然猖狂。找到平衡點是系統調校的藝術。建議從 \(\alpha = 0.1\) 開始，逐步增大直到抖動可接受。
+                    </div>
+                </div>
+
+                <h2>完整 PID 公式彙整</h2>
+
+                <p>將三項合併，完整的離散 PID 控制器輸出為：</p>
+
+                <div class="ms-code">
+<span class="c-comment">// 完整離散 PID 控制器</span><br>
+<span class="c-attr">error</span><span class="c-white"> = target - measured;</span><br>
+<span class="c-attr">integral</span><span class="c-white"> += error * dt;</span><br>
+<span class="c-attr">integral</span><span class="c-white"> = constrain(integral, -MAX_I, MAX_I);</span><br>
+<span class="c-attr">derivative</span><span class="c-white"> = (error - lastError) / dt;</span><br><br>
+<span class="c-attr">output</span><span class="c-white"> = </span><span class="c-attr">Kp</span><span class="c-white">*error + </span><span class="c-attr">Ki</span><span class="c-white">*integral + </span><span class="c-attr">Kd</span><span class="c-white">*derivative;</span><br>
+<span class="c-attr">output</span><span class="c-white"> = constrain(output, -</span><span class="c-val">255</span><span class="c-white">, </span><span class="c-val">255</span><span class="c-white">);</span><br><br>
+<span class="c-attr">lastError</span><span class="c-white"> = error;</span>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -818,16 +1013,134 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>
+                    請回答以下問題，測試你對「<strong>PID 數學推導</strong>」的理解程度。
+                    選擇完畢後點擊「送出答案」查看結果與解析。
+                </p>
+
+                <div id="quiz-container" style="margin:24px 0;">
+
+                    <div class="quiz-question" id="quiz-q0" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">1. PID 控制器的離散化公式中，積分項通常使用什麼方法近似？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt0">
+                            <input type="radio" name="quiz-q0" value="0" style="accent-color:var(--ms-blue);">
+                            <span>泰勒展開</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt1">
+                            <input type="radio" name="quiz-q0" value="1" style="accent-color:var(--ms-blue);">
+                            <span>矩形法（累加歷史誤差 × 取樣週期）</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt2">
+                            <input type="radio" name="quiz-q0" value="2" style="accent-color:var(--ms-blue);">
+                            <span>傅立葉轉換</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt3">
+                            <input type="radio" name="quiz-q0" value="3" style="accent-color:var(--ms-blue);">
+                            <span>拉普拉斯反轉換</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp0" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q1" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">2. 微分項的離散近似公式為何？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt0">
+                            <input type="radio" name="quiz-q1" value="0" style="accent-color:var(--ms-blue);">
+                            <span>Kd × (error[n] - error[n-1]) / Δt</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt1">
+                            <input type="radio" name="quiz-q1" value="1" style="accent-color:var(--ms-blue);">
+                            <span>Kd × error[n] × Δt</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt2">
+                            <input type="radio" name="quiz-q1" value="2" style="accent-color:var(--ms-blue);">
+                            <span>Kd × Σerror[n]</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt3">
+                            <input type="radio" name="quiz-q1" value="3" style="accent-color:var(--ms-blue);">
+                            <span>Kd × error[n]²</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp1" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q2" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">3. 為什麼 PID 控制器需要「Anti-Windup（抗積分飽和）」機制？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt0">
+                            <input type="radio" name="quiz-q2" value="0" style="accent-color:var(--ms-blue);">
+                            <span>防止 P 項過大</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt1">
+                            <input type="radio" name="quiz-q2" value="1" style="accent-color:var(--ms-blue);">
+                            <span>防止積分累積超出物理執行器的輸出範圍，導致響應延遲</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt2">
+                            <input type="radio" name="quiz-q2" value="2" style="accent-color:var(--ms-blue);">
+                            <span>防止微分項產生雜訊</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt3">
+                            <input type="radio" name="quiz-q2" value="3" style="accent-color:var(--ms-blue);">
+                            <span>減少計算量</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp2" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q3" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">4. 取樣週期（Δt）對 PID 控制器的影響，下列敘述何者正確？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt0">
+                            <input type="radio" name="quiz-q3" value="0" style="accent-color:var(--ms-blue);">
+                            <span>Δt 越大，控制越精準</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt1">
+                            <input type="radio" name="quiz-q3" value="1" style="accent-color:var(--ms-blue);">
+                            <span>Δt 必須固定且足夠小，才能準確反映系統動態</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt2">
+                            <input type="radio" name="quiz-q3" value="2" style="accent-color:var(--ms-blue);">
+                            <span>Δt 對控制品質沒有影響</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt3">
+                            <input type="radio" name="quiz-q3" value="3" style="accent-color:var(--ms-blue);">
+                            <span>Δt 越大，微分項越準確</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp3" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">送出答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+
+                <div id="quiz-result" style="display:none; margin-top:20px; padding:16px 20px; border-radius:6px; font-weight:600;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -885,9 +1198,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「PID 三兄弟的數學直覺」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「PID 三兄弟的數學直覺」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -903,7 +1216,8 @@
         { id: 3, label: '積分 (I)：記仇的歷史紀錄', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '微分 (D)：預測未來的預警師', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -923,6 +1237,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1024,8 +1339,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = [1, 0, 1, 1];
+    const QUIZ_EXPLANATIONS = ["離散系統中，積分用求和（Σ error × Δt）近似連續積分，即矩形法數值積分。","微分是變化率，離散化為相鄰兩次誤差的差值除以時間間隔：(e[n] - e[n-1]) / Δt。","當執行器已達飽和，積分項繼續累加會導致回歸正常需要很長時間（積分飽和），Anti-Windup 限制積分項的累積範圍。","取樣週期決定了離散化的精度，Δt 太大會遺失系統動態資訊，且必須保持恆定以確保積分與微分計算正確。"];
+
+    function submitQuiz() {
+        let score = 0;
+        QUIZ_ANSWERS.forEach((ans, i) => {
+            const selected = document.querySelector(`input[name="quiz-q${i}"]:checked`);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            const qEl = document.getElementById(`quiz-q${i}`);
+            if (selected && parseInt(selected.value) === ans) {
+                score++;
+                qEl.style.borderColor = '#107c10';
+                expEl.style.background = '#dff6dd';
+                expEl.innerHTML = '<strong style="color:#107c10;">✓ 正確！</strong> ' + QUIZ_EXPLANATIONS[i];
+            } else {
+                qEl.style.borderColor = '#d13438';
+                expEl.style.background = '#fde7e9';
+                expEl.innerHTML = '<strong style="color:#d13438;">✗ 不正確。</strong> ' + QUIZ_EXPLANATIONS[i];
+            }
+            expEl.style.display = 'block';
+        });
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === QUIZ_ANSWERS.length) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.style.color = '#107c10';
+            resultEl.textContent = `🎉 滿分！你答對了全部 ${QUIZ_ANSWERS.length} 題！`;
+        } else {
+            resultEl.style.background = '#deecf9';
+            resultEl.style.color = '#005a9e';
+            resultEl.textContent = `你答對了 ${score} / ${QUIZ_ANSWERS.length} 題，請查看解析後再試一次。`;
+        }
+    }
+
+    function resetQuiz() {
+        QUIZ_ANSWERS.forEach((_, i) => {
+            const radios = document.querySelectorAll(`input[name="quiz-q${i}"]`);
+            radios.forEach(r => r.checked = false);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            expEl.style.display = 'none';
+            const qEl = document.getElementById(`quiz-q${i}`);
+            qEl.style.borderColor = '#e1dfdd';
+        });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 12：PID 控制';
 </script>
 
 <!-- Define Resources -->

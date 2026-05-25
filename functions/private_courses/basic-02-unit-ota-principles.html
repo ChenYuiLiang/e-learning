@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arduino OTA & Web OTA 原理 - Vibe Coding Learn</title>
+    <title>Arduino OTA & Web OTA 原理 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -81,6 +81,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -104,6 +105,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -494,9 +496,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 2 - 雲端更新</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -506,25 +510,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">Arduino OTA & Web OTA 原理</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 191 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 2</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -532,7 +532,7 @@
                 <h1>Arduino OTA & Web OTA 原理</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 2</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -543,10 +543,10 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>🔄 OTA 的核心：雙分區機制</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>🌐 Web OTA 的傳輸流程</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>🔐 安全與驗證的護城河</strong> 的調校技巧與穩定性測試。</li>
-                    <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
+                    <li>能夠解釋 OTA 雙分區（A/B Partition）切換機制，說明為何更新中途斷電不會導致裝置「變磚」。</li>
+                    <li>能夠實作 Web OTA 更新功能，建立 <code>/update</code> 路由並使用 <code>Update.begin()</code>、<code>Update.write()</code>、<code>Update.end()</code> 處理韌體二進位流。</li>
+                    <li>能夠利用 JavaScript <code>XMLHttpRequest</code> 的 <code>progress</code> 事件實作動態進度條，並設計更新完成後的自動重啟跳轉邏輯。</li>
+                    <li>能夠模擬斷電情境驗證 A/B 分區回滾機制的可靠性，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
                 <h2>必要條件</h2>
@@ -576,15 +576,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>Arduino OTA & Web OTA 原理</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    當你的 IoT 裝置部署到天花板、工廠產線或戶外田間，每次修 Bug 都要拆下來接線燒錄，不僅耗時更可能損壞接頭。
+                    OTA（Over-The-Air）讓韌體能透過 Wi-Fi 無線推送更新，搭配雙分區切換機制，即使更新中途斷電也不會「變磚」。
+                    理解 OTA 原理，是讓你的產品從實驗室原型走向真實部署的關鍵一步。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你開發了一套教室空氣品質監測系統，50 顆 ESP32 感測器分布在天花板各處。上線一週後發現 CO₂ 校正公式有誤，數值偏高 15%。
+                    如果沒有 OTA，你得爬上梯子逐一拆板、接線、燒錄、裝回——光人力就要花兩天。
+                    但如果事先寫好 OTA 機制，你只需從筆電推送一次修正韌體，50 個節點就能在幾分鐘內全部更新完畢。
                 </div>
 
                 <h2>教學影片</h2>
@@ -598,7 +599,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -612,56 +613,120 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔄 OTA 的核心：雙分區機制</h1>
-                
-                <p class="text-gray-500 mb-10 text-lg">如何確保更新過程中斷電，機器也不會變成「磚頭」？</p><div class="grid lg:grid-cols-2 gap-16 items-start">
-<div class="space-y-8">
-<div class="flex gap-6 group">
-<div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
-                                    1</div>
-<div>
-<h3 class="font-bold text-xl text-gray-800 mb-2">預防「磚頭化」 (Bricking)</h3>
-<p class="text-gray-500 leading-relaxed text-sm lg:text-base">絕不覆蓋運行中程式！OTA
-                                        採用「備用空間下載，驗證後切換」策略。</p>
-</div>
-</div>
-<div class="flex gap-6 group">
-<div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
-                                    2</div>
-<div>
-<h3 class="font-bold text-xl text-gray-800 mb-2">A/B 分區切換 (Partition Switching)</h3>
-<p class="text-gray-500 leading-relaxed text-sm lg:text-base">ESP32 將 Flash 分為 app0
-                                        與 app1。當 app0 忙碌時，寫入 app1。</p>
-</div>
-</div>
-</div>
-<div class="bg-slate-900 p-8 rounded-3xl border border-slate-700 shadow-2xl">
-<h4 class="font-bold mb-6 text-center text-indigo-300 tracking-widest uppercase text-sm">
-                                Flash Partition 視覺化</h4>
-<div class="space-y-6">
-<div class="ota-partition bg-indigo-500 text-white shadow-[0_0_20px_rgba(99,102,241,0.4)] relative overflow-hidden group">
-<span class="z-10">Application 0 (Active)</span>
-<div class="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000">
-</div>
-</div>
-<div class="flex flex-col items-center gap-2">
-<div class="text-slate-500 animate-bounce">⬇️</div>
-<span class="text-[10px] text-slate-500 font-mono">OTA STREAMING...</span>
-</div>
-<div class="ota-partition bg-slate-800 text-slate-400 border-2 border-dashed border-slate-600 italic text-justify">
-                                    Application 1 (Backup)
-                                </div>
-<div class="mt-6 p-4 bg-indigo-500/10 rounded-xl border border-indigo-500/20 text-xs text-indigo-300 leading-relaxed text-justify">
-<strong>工程筆記：</strong> 建議選擇 4MB Flash 以上，才具備完整 Web OTA 空間。
-                                </div>
-</div>
-</div>
-</div>
+                <h1>OTA 的核心：雙分區機制</h1>
+
+                <p>OTA（Over-The-Air）更新的核心挑戰在於：如何在不中斷裝置正常運作的前提下，安全地將新韌體寫入 Flash 記憶體？答案就是<strong>雙分區（A/B Partition）機制</strong>。這套設計靈感來自伺服器世界的藍綠部署（Blue-Green Deployment），確保即使更新過程中發生斷電或網路中斷，裝置仍能回到上一個正常運作的韌體版本。</p>
+
+                <p>在傳統的單分區架構中，新韌體會直接覆蓋舊韌體。一旦寫入過程中發生異常（例如斷電、封包遺失），Flash 中的資料就會處於「半新半舊」的損壞狀態，裝置將無法正常啟動——這就是俗稱的「變磚」（Bricking）。雙分區機制徹底消除了這個風險。</p>
+
+                <h2>A/B 分區的運作原理</h2>
+
+                <p>ESP32 的 Flash 被劃分為兩個大小相等的應用程式分區：<code>app0</code>（又稱 OTA_0）和 <code>app1</code>（又稱 OTA_1）。在任何時刻，只有一個分區是「活躍」的（正在執行的韌體所在），另一個則是「備用」的（等待接收新韌體）。OTA 更新流程不會觸碰正在運行的分區，而是將新韌體寫入備用分區。</p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>接收韌體資料</h4>
+                            <p>裝置透過 Wi-Fi 接收新的韌體二進位流（.bin 檔案），並將資料逐塊寫入<strong>備用分區</strong>。此時活躍分區的程式仍在正常執行。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>驗證完整性</h4>
+                            <p>所有資料寫入完畢後，系統會驗證備用分區中的韌體完整性（Checksum 或 SHA-256 校驗）。若驗證失敗，備用分區標記為無效，裝置繼續使用原韌體。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>切換啟動分區</h4>
+                            <p>驗證成功後，系統更新 <code>otadata</code> 分區中的引導標記，將「下次啟動分區」指向剛寫入的備用分區，然後執行重啟。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>啟動新韌體</h4>
+                            <p>重啟後，Bootloader 讀取 <code>otadata</code> 中的標記，從新分區載入韌體。原本的活躍分區現在成為備用分區，角色互換完成。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>otadata 分區的關鍵角色</h2>
+
+                <p><code>otadata</code> 是一個僅 8KB 的微型分區，但它是整個 OTA 機制的「指揮中心」。它記錄了哪個應用分區應該被啟動、上次更新是否成功，以及是否需要回滾。ESP32 的 Bootloader 在每次開機時都會先讀取 <code>otadata</code>，再決定載入哪個分區的韌體。</p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        若新韌體啟動後未呼叫 <code>esp_ota_mark_app_valid_cancel_rollback()</code> 確認自身健康，系統會在下次重啟時自動回滾到舊分區。這是 ESP-IDF 內建的「自動回滾」安全網。
+                    </div>
+                </div>
+
+                <h2>為什麼需要 4MB 以上的 Flash？</h2>
+
+                <p>以典型的 OTA 分區配置為例，一個支援雙分區 OTA 的 ESP32 裝置需要以下最低空間分配：</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>分區名稱</th>
+                            <th>類型</th>
+                            <th>建議大小</th>
+                            <th>用途</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>nvs</code></td>
+                            <td>data</td>
+                            <td>16 KB</td>
+                            <td>Wi-Fi 設定、使用者參數</td>
+                        </tr>
+                        <tr>
+                            <td><code>otadata</code></td>
+                            <td>data</td>
+                            <td>8 KB</td>
+                            <td>OTA 引導標記與回滾狀態</td>
+                        </tr>
+                        <tr>
+                            <td><code>app0</code> (OTA_0)</td>
+                            <td>app</td>
+                            <td>1.5 MB</td>
+                            <td>主應用程式分區 A</td>
+                        </tr>
+                        <tr>
+                            <td><code>app1</code> (OTA_1)</td>
+                            <td>app</td>
+                            <td>1.5 MB</td>
+                            <td>主應用程式分區 B</td>
+                        </tr>
+                        <tr>
+                            <td><code>spiffs</code></td>
+                            <td>data</td>
+                            <td>896 KB</td>
+                            <td>網頁資源 / 設定檔</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>從上表可以看出，光是兩個應用分區就需要 3MB 空間。加上 NVS、otadata 和檔案系統，4MB 是支援完整 Web OTA 功能的最低門檻。若你的韌體包含 BLE + Wi-Fi + Web Server 等大型功能，建議選用 8MB 或 16MB Flash 的開發板。</p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在 PlatformIO 中，你可以透過 <code>board_build.partitions = partitions_two_ota.csv</code> 指定使用雙 OTA 分區表。ESP-IDF 預設提供多種分區表範本，位於 <code>$IDF_PATH/components/partition_table/</code> 目錄下。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -675,52 +740,118 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🌐 Web OTA 的傳輸流程</h1>
-                
-                <div class="grid md:grid-cols-3 gap-8 mb-12">
-<div class="p-6 rounded-2xl bg-emerald-50 border border-emerald-100 hover:bg-emerald-100 transition-colors">
-<div class="text-3xl mb-4">📤</div>
-<h3 class="font-bold text-emerald-800 mb-2">1. HTTP POST 上傳</h3>
-<p class="text-sm text-emerald-600 leading-relaxed text-left text-justify">瀏覽器透過 `FormData`
-                                將 .bin 檔案包裝為二進位流發送。</p>
-</div>
-<div class="p-6 rounded-2xl bg-blue-50 border border-blue-100 hover:bg-blue-100 transition-colors">
-<div class="text-3xl mb-4">🧱</div>
-<h3 class="font-bold text-blue-800 mb-2 text-justify">2. 串流分塊寫入</h3>
-<p class="text-sm text-blue-600 leading-relaxed text-justify">ESP32 透過 `Update.write()` 逐步寫入
-                                Flash 特定物理地址。</p>
-</div>
-<div class="p-6 rounded-2xl bg-purple-50 border border-purple-100 hover:bg-purple-100 transition-colors">
-<div class="text-3xl mb-4 text-justify">3. JavaScript 回饋</div>
-<h3 class="font-bold text-purple-800 mb-2 text-justify">3. JavaScript 回饋</h3>
-<p class="text-sm text-purple-600 leading-relaxed text-justify">前端監聽 `onprogress`
-                                量，顯示即時百分比與動畫。</p>
-</div>
-</div><div class="bg-gray-900 rounded-3xl p-8 relative overflow-hidden group">
-<div class="absolute top-4 right-6 text-[10px] text-slate-500 font-mono tracking-widest uppercase">
-                            ota-frontend-handler.js</div>
-<h4 class="text-white font-bold mb-6 flex items-center gap-2">
-<span class="w-3 h-3 bg-red-500 rounded-full"></span>
-                            前端進度監聽核心實作
-                        </h4>
-<div class="code-block group-hover:border-indigo-500/50 transition">
-<span class="text-slate-500 italic">// 監聽 XMLHttpRequest 上傳事件</span><br/>
-                            xhr.upload.<span class="text-indigo-300">addEventListener</span>(<span class="text-emerald-300 text-justify">'progress'</span>, function(e) {<br/>
-                              if (e.lengthComputable) {<br/>
-                                const <span class="text-orange-300">percent</span> =
-                            Math.round((e.loaded / e.total) * 100);<br/>
-                                progressBar.<span class="text-blue-300">style</span>.width = percent
-                            + <span class="text-emerald-300 text-justify">'%'</span>;<br/>
-                                statusText.<span class="text-blue-300">innerText</span> = <span class="text-emerald-300 text-justify">`已完成: ${percent}%`</span>;<br/>
-                              }<br/>
-                            });
+                <h1>Web OTA 的傳輸流程</h1>
+
+                <p>Web OTA 是一種透過 HTTP 協議實現韌體更新的方法。使用者只需開啟瀏覽器、選擇 <code>.bin</code> 韌體檔案、按下上傳按鈕，ESP32 就能自動接收並寫入新韌體。這個流程涉及前端（瀏覽器 JavaScript）與後端（ESP32 WebServer）的緊密協作。</p>
+
+                <p>相較於 Arduino OTA（使用 UDP 廣播與專用協議），Web OTA 的優勢在於：不需要安裝任何開發工具，任何有瀏覽器的設備（手機、平板、筆電）都能執行更新。這使得 Web OTA 成為生產環境中最常採用的遠端更新方案。</p>
+
+                <h2>完整傳輸流程解析</h2>
+
+                <p>Web OTA 的資料流可以分為三個階段：前端封裝、網路傳輸、後端寫入。每個階段都有對應的技術實作重點。</p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>前端：封裝二進位資料</h4>
+                            <p>使用者透過 <code>&lt;input type="file"&gt;</code> 選取 <code>.bin</code> 檔案後，JavaScript 將檔案包裝進 <code>FormData</code> 物件，並透過 <code>XMLHttpRequest</code> 以 HTTP POST 方法發送至 ESP32 的 <code>/update</code> 路由。</p>
                         </div>
-</div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>傳輸：串流式分塊上傳</h4>
+                            <p>由於韌體檔案通常為 1～2MB，瀏覽器不會一次送出全部資料，而是將檔案分割成多個 HTTP chunk 逐步傳輸。ESP32 的 WebServer 在接收每個 chunk 時立即調用回呼函式處理。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>後端：逐塊寫入 Flash</h4>
+                            <p>ESP32 在 <code>/update</code> 路由的 handler 中使用 <code>Update</code> 類別的三段式 API：<code>Update.begin()</code> 開始更新、<code>Update.write()</code> 逐塊寫入、<code>Update.end()</code> 完成並驗證。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>完成：重啟切換分區</h4>
+                            <p>寫入完成後，ESP32 回傳成功回應給瀏覽器，然後呼叫 <code>ESP.restart()</code> 重新啟動，Bootloader 自動載入新寫入的分區。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>ESP32 後端核心程式碼</h2>
+
+                <p>以下是 <code>/update</code> 路由的核心處理邏輯。此 handler 會在每個資料區塊到達時被呼叫：</p>
+
+                <pre class="ms-code"><span class="c-comment">// /update POST handler — 處理韌體二進位流</span>
+<span class="c-kw">server</span>.<span class="c-attr">on</span>(<span class="c-str">"/update"</span>, HTTP_POST,
+  <span class="c-comment">// 回應函式：上傳完成後執行</span>
+  [](<span class="c-tag">AsyncWebServerRequest</span> *request) {
+    request-&gt;<span class="c-attr">send</span>(200, <span class="c-str">"text/plain"</span>,
+      Update.<span class="c-attr">hasError</span>() ? <span class="c-str">"FAIL"</span> : <span class="c-str">"OK"</span>);
+    <span class="c-attr">ESP</span>.<span class="c-attr">restart</span>();
+  },
+  <span class="c-comment">// 上傳處理函式：逐塊接收資料</span>
+  [](<span class="c-tag">AsyncWebServerRequest</span> *request, <span class="c-tag">String</span> filename,
+     <span class="c-kw">size_t</span> index, <span class="c-kw">uint8_t</span> *data, <span class="c-kw">size_t</span> len, <span class="c-kw">bool</span> final) {
+    <span class="c-kw">if</span> (index == 0) {
+      Update.<span class="c-attr">begin</span>(UPDATE_SIZE_UNKNOWN);
+    }
+    Update.<span class="c-attr">write</span>(data, len);
+    <span class="c-kw">if</span> (final) {
+      Update.<span class="c-attr">end</span>(<span class="c-kw">true</span>);
+    }
+  }
+);</pre>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        <code>Update.begin()</code> 的參數若傳入 <code>UPDATE_SIZE_UNKNOWN</code>，系統會使用整個備用分區的空間。若你已知韌體大小，建議傳入精確的 byte 數以啟用大小檢查，避免寫入超出分區範圍的資料。
+                    </div>
+                </div>
+
+                <h2>前端進度監聽實作</h2>
+
+                <p>使用者體驗的關鍵在於即時回饋。透過 <code>XMLHttpRequest</code> 的 <code>upload.onprogress</code> 事件，前端可以精確計算已上傳的百分比並更新 UI：</p>
+
+                <pre class="ms-code"><span class="c-kw">const</span> <span class="c-attr">xhr</span> = <span class="c-kw">new</span> XMLHttpRequest();
+<span class="c-kw">const</span> <span class="c-attr">formData</span> = <span class="c-kw">new</span> FormData();
+formData.<span class="c-attr">append</span>(<span class="c-str">'firmware'</span>, fileInput.files[0]);
+
+<span class="c-comment">// 監聽上傳進度事件</span>
+xhr.upload.<span class="c-attr">addEventListener</span>(<span class="c-str">'progress'</span>, <span class="c-kw">function</span>(e) {
+  <span class="c-kw">if</span> (e.lengthComputable) {
+    <span class="c-kw">const</span> <span class="c-attr">percent</span> = Math.round((e.loaded / e.total) * 100);
+    progressBar.style.width = percent + <span class="c-str">'%'</span>;
+    statusText.innerText = <span class="c-str">`上傳中: ${percent}%`</span>;
+  }
+});
+
+<span class="c-comment">// 監聽完成事件</span>
+xhr.<span class="c-attr">onload</span> = <span class="c-kw">function</span>() {
+  statusText.innerText = <span class="c-str">'更新成功！裝置重啟中...'</span>;
+  setTimeout(() =&gt; location.reload(), 5000);
+};
+
+xhr.<span class="c-attr">open</span>(<span class="c-str">'POST'</span>, <span class="c-str">'/update'</span>);
+xhr.<span class="c-attr">send</span>(formData);</pre>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        更新完成後，ESP32 會重啟並可能獲得新的 IP 位址。建議在前端設計中加入 mDNS 名稱（如 <code>esp32.local</code>）作為重新導向目標，而非使用硬編碼的 IP 位址。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -734,25 +865,98 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔐 安全與驗證的護城河</h1>
-                
-                <p class="text-slate-400 mb-8 text-lg font-light leading-relaxed text-justify">
-                                開放 OTA 就像把鑰匙留在無線網路上。安全機制是生產環境的必需品。
-                            </p><div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-<div class="p-5 bg-slate-800/50 rounded-2xl border border-slate-700">
-<h4 class="font-bold text-slate-200 mb-2">mDNS 本地發現</h4>
-<p class="text-xs text-slate-400">使用 `esp32.local` 代替難記 IP。</p>
-</div>
-<div class="p-5 bg-slate-800/50 rounded-2xl border border-slate-700">
-<h4 class="font-bold text-slate-200 mb-2">HTTP Basic Auth</h4>
-<p class="text-xs text-slate-400">進入更新頁面前，必須通過密碼驗證。</p>
-</div>
-</div>
+                <h1>安全與驗證的護城河</h1>
+
+                <p>開放 OTA 端口等同於在無線網路上公開了一扇「可以替換裝置大腦」的門。若缺乏適當的安全防護，任何在同一網段的攻擊者都能推送惡意韌體，接管你的裝置。在生產環境中，OTA 安全機制不是「加分項」，而是<strong>絕對必要</strong>的基礎設施。</p>
+
+                <p>一個完善的 OTA 安全體系通常包含多層防護：網路層的存取控制、應用層的身份驗證、韌體層的完整性校驗。每一層都能獨立阻擋特定類型的攻擊，層層疊加形成縱深防禦（Defense in Depth）。</p>
+
+                <h2>mDNS 本地服務發現</h2>
+
+                <p>mDNS（Multicast DNS）讓你能使用人類可讀的名稱（如 <code>esp32.local</code>）來存取裝置，取代難以記憶且可能動態變化的 IP 位址。雖然 mDNS 本身不是安全機制，但它是建立可靠 OTA 工作流程的基礎設施——你需要一個穩定的方式來「找到」你的裝置。</p>
+
+                <pre class="ms-code"><span class="c-comment">// 在 setup() 中初始化 mDNS</span>
+<span class="c-kw">#include</span> <span class="c-str">&lt;ESPmDNS.h&gt;</span>
+
+<span class="c-kw">void</span> <span class="c-attr">setup</span>() {
+  WiFi.<span class="c-attr">begin</span>(ssid, password);
+  <span class="c-kw">while</span> (WiFi.<span class="c-attr">status</span>() != WL_CONNECTED) delay(500);
+
+  <span class="c-comment">// 註冊 mDNS 名稱：sensor-01.local</span>
+  <span class="c-kw">if</span> (MDNS.<span class="c-attr">begin</span>(<span class="c-str">"sensor-01"</span>)) {
+    MDNS.<span class="c-attr">addService</span>(<span class="c-str">"http"</span>, <span class="c-str">"tcp"</span>, 80);
+  }
+}</pre>
+
+                <h2>HTTP Basic Authentication</h2>
+
+                <p>HTTP Basic Auth 是最基礎的存取控制機制。當使用者嘗試進入 <code>/update</code> 頁面時，ESP32 會檢查 HTTP Header 中是否包含正確的帳號密碼。若驗證失敗，瀏覽器會彈出登入對話框，要求使用者提供認證資訊。</p>
+
+                <p>在 ESP32 的 WebServer 框架中，實作 Basic Auth 只需幾行程式碼：</p>
+
+                <pre class="ms-code"><span class="c-kw">const char</span>* <span class="c-attr">ota_username</span> = <span class="c-str">"admin"</span>;
+<span class="c-kw">const char</span>* <span class="c-attr">ota_password</span> = <span class="c-str">"mySecurePass123"</span>;
+
+server.<span class="c-attr">on</span>(<span class="c-str">"/update"</span>, HTTP_GET, []() {
+  <span class="c-kw">if</span> (!server.<span class="c-attr">authenticate</span>(ota_username, ota_password)) {
+    <span class="c-kw">return</span> server.<span class="c-attr">requestAuthentication</span>();
+  }
+  server.<span class="c-attr">send</span>(200, <span class="c-str">"text/html"</span>, update_page_html);
+});</pre>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        HTTP Basic Auth 的帳密是以 Base64 編碼（非加密）傳輸的。在區域網路內這提供了基本防護，但若需要在公開網路上操作 OTA，應搭配 HTTPS（TLS）以防止密碼被竊聽。
+                    </div>
+                </div>
+
+                <h2>韌體完整性校驗</h2>
+
+                <p>即使通過了身份驗證，仍需確保上傳的韌體檔案本身是完整且未被篡改的。ESP32 的 <code>Update</code> 類別內建了基礎的校驗機制：在 <code>Update.end()</code> 時會驗證已寫入資料的 MD5 雜湊值。你也可以額外實作更嚴格的驗證：</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>驗證層級</th>
+                            <th>方法</th>
+                            <th>防護目標</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>基礎</td>
+                            <td>Update 內建 MD5 校驗</td>
+                            <td>傳輸過程中的資料損壞</td>
+                        </tr>
+                        <tr>
+                            <td>進階</td>
+                            <td>SHA-256 雜湊比對</td>
+                            <td>檔案被惡意替換</td>
+                        </tr>
+                        <tr>
+                            <td>企業級</td>
+                            <td>RSA/ECDSA 數位簽章</td>
+                            <td>韌體來源偽造（中間人攻擊）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        ESP-IDF 原生支援 Secure Boot v2，可在 Bootloader 層級驗證韌體的數位簽章。啟用後，只有使用你的私鑰簽署的韌體才能被載入執行。這是商業產品的最高安全標準。
+                    </div>
+                </div>
+
+                <p>在本課程的實作中，我們將聚焦於 HTTP Basic Auth 與版本檢查這兩個最實用的防護層。在後續的進階課程中，你將學習如何整合 TLS 加密與韌體簽章，建立完整的企業級安全鏈。</p>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -831,16 +1035,76 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識檢測 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識檢測</h1>
+                <p>測試你對本模組核心概念的理解程度。選擇每題最正確的答案後按下「提交答案」。</p>
+
+                <form id="quiz-form" onsubmit="return false;" style="margin:24px 0;">
+                    <!-- Q1 -->
+                    <div style="margin-bottom:28px;">
+                        <p style="font-weight:600;">1. ESP32 OTA 雙分區（A/B Partition）機制的核心目的是什麼？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;"><input type="radio" name="q1" value="a" style="margin-right:8px;">a) 讓韌體檔案大小翻倍</label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;"><input type="radio" name="q1" value="b" style="margin-right:8px;">b) 確保更新中途斷電不會「變磚」，可回滾到上一個正常版本</label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;"><input type="radio" name="q1" value="c" style="margin-right:8px;">c) 加快Wi-Fi傳輸速度</label>
+                        <div class="quiz-feedback" id="fb-q1" style="display:none; margin-top:8px; padding:10px 14px; border-radius:4px; font-size:14px;"></div>
+                    </div>
+                    <!-- Q2 -->
+                    <div style="margin-bottom:28px;">
+                        <p style="font-weight:600;">2. 在Web OTA中，ESP32後端使用哪三個核心API來處理韌體二進位流？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;"><input type="radio" name="q2" value="a" style="margin-right:8px;">a) WiFi.begin()、WiFi.send()、WiFi.end()</label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;"><input type="radio" name="q2" value="b" style="margin-right:8px;">b) Update.begin()、Update.write()、Update.end()</label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;"><input type="radio" name="q2" value="c" style="margin-right:8px;">c) Flash.open()、Flash.write()、Flash.close()</label>
+                        <div class="quiz-feedback" id="fb-q2" style="display:none; margin-top:8px; padding:10px 14px; border-radius:4px; font-size:14px;"></div>
+                    </div>
+                    <!-- Q3 -->
+                    <div style="margin-bottom:28px;">
+                        <p style="font-weight:600;">3. otadata分區在OTA更新流程中扮演什麼角色？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;"><input type="radio" name="q3" value="a" style="margin-right:8px;">a) 存放Wi-Fi密碼與使用者設定</label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;"><input type="radio" name="q3" value="b" style="margin-right:8px;">b) 記錄哪個應用分區應該被啟動，以及是否需要回滾</label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;"><input type="radio" name="q3" value="c" style="margin-right:8px;">c) 存放韌體的原始碼供除錯使用</label>
+                        <div class="quiz-feedback" id="fb-q3" style="display:none; margin-top:8px; padding:10px 14px; border-radius:4px; font-size:14px;"></div>
+                    </div>
+                    <!-- Q4 -->
+                    <div style="margin-bottom:28px;">
+                        <p style="font-weight:600;">4. 在前端使用XMLHttpRequest實作OTA上傳進度條時，應監聽哪個事件？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;"><input type="radio" name="q4" value="a" style="margin-right:8px;">a) xhr.onload</label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;"><input type="radio" name="q4" value="b" style="margin-right:8px;">b) xhr.upload的progress事件</label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;"><input type="radio" name="q4" value="c" style="margin-right:8px;">c) xhr.onerror</label>
+                        <div class="quiz-feedback" id="fb-q4" style="display:none; margin-top:8px; padding:10px 14px; border-radius:4px; font-size:14px;"></div>
+                    </div>
+
+                    <div style="display:flex; gap:12px; margin-top:20px;">
+                        <button type="button" class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button type="button" class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; font-weight:600; font-size:15px;"></div>
+                </form>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -898,9 +1162,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「Arduino OTA & Web OTA 原理」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「Arduino OTA & Web OTA 原理」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -916,8 +1180,17 @@
         { id: 3, label: '🌐 Web OTA 的傳輸流程', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🔐 安全與驗證的護城河', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '150 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識檢測',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: '正確！雙分區機制確保新韌體寫入備用分區，活躍分區不受影響。即使更新過程中斷電，裝置仍能從原分區正常啟動。',
+        q2: '正確！Update.begin() 開始更新、Update.write() 逐塊寫入資料、Update.end() 完成並驗證，這是 ESP32 處理 OTA 二進位流的標準三段式 API。',
+        q3: '正確！otadata 是一個 8KB 的微型分區，記錄了哪個應用分區應被啟動、更新是否成功，以及是否需要回滾，是 OTA 機制的指揮中心。',
+        q4: '正確！xhr.upload.addEventListener("progress") 可精確計算 (e.loaded / e.total) 的上傳百分比，即時更新進度條 UI。'
+    };
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -936,6 +1209,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1037,8 +1311,42 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const fb = document.getElementById(`fb-${q}`);
+            if (selected && selected.value === correct) {
+                score++;
+                fb.style.display = 'block';
+                fb.style.background = '#dff6dd';
+                fb.style.color = '#107c10';
+                fb.textContent = QUIZ_EXPLANATIONS[q];
+            } else {
+                fb.style.display = 'block';
+                fb.style.background = '#fde7e9';
+                fb.style.color = '#d13438';
+                fb.textContent = selected ? '不正確，請再想想。正確答案是 ' + correct.toUpperCase() + '。' : '請選擇一個答案。';
+            }
+        }
+        const scoreEl = document.getElementById('quiz-score');
+        scoreEl.style.display = 'block';
+        scoreEl.textContent = `得分：${score} / ${total}`;
+        scoreEl.style.color = score === total ? '#107c10' : '#d13438';
+        if (score === total) markDone(6);
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+        document.querySelectorAll('.quiz-feedback').forEach(fb => fb.style.display = 'none');
+        document.getElementById('quiz-score').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 02：OTA 更新架構';
 </script>
 
 <!-- Define Resources -->

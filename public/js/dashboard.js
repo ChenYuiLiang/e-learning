@@ -4,19 +4,14 @@ console.log("Dashboard Script v2026.05.15.V23.INVITE_BINDING_TOOL Loaded");
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-functions.js";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyCO6Y6Pa7b7zbieJIErysaNF6-UqbT8KJw",
-    authDomain: "e-learning-942f7.firebaseapp.com",
-    projectId: "e-learning-942f7",
-    storageBucket: "e-learning-942f7.firebasestorage.app",
-    messagingSenderId: "878397058574",
-    appId: "1:878397058574:web:28aaa07a291ee3baab165f"
-};
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { firebaseConfig, connectFirebaseEmulators } from "./firebase-local.js";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 const functions = getFunctions(app, 'asia-east1');
+connectFirebaseEmulators({ auth, db, functions });
 const vibeFetchLessons = httpsCallable(functions, 'getLessonsMetadata');
 const PUBLIC_SITE_URL = 'https://vibe-coding.tw';
 
@@ -467,7 +462,16 @@ function isRenderableUnitFile(fileName) {
 function normalizeTutorAdminUnitId(unitId) {
     const raw = String(unitId || '').trim();
     if (!raw) return raw;
-    if (raw === '02-unit-classroom-workflow.html') return '03-unit-github-classroom.html';
+    if (raw === '02-unit-classroom-workflow.html') return 'prepare-07-github-classroom.html';
+    if (raw === '03-unit-github-classroom.html') return 'prepare-07-github-classroom.html';
+    if (raw === '03-unit-wifi-setup.html') return 'prepare-09-wifi-setup.html';
+    if (raw === '03-unit-motor-ramping.html') return 'prepare-08-motor-ramping.html';
+    if (raw === '01-unit-developer-identity.html') return 'prepare-01-developer-identity.html';
+    if (raw === '01-unit-vscode-online.html') return 'prepare-02-vscode-online.html';
+    if (raw === '01-unit-vscode-setup.html') return 'prepare-03-vscode-setup.html';
+    if (raw === '02-unit-agent-mode.html') return 'prepare-04-agent-mode.html';
+    if (raw === '02-unit-vibe-coding.html') return 'prepare-05-vibe-coding.html';
+    if (raw === '02-unit-web-agents.html') return 'prepare-06-web-agents.html';
     if (raw.startsWith('04-')) return raw.replace(/^04-/, '02-');
     return raw;
 }
@@ -475,7 +479,8 @@ function normalizeTutorAdminUnitId(unitId) {
 function shouldHideTutorAdminUnit(unitId) {
     const normalized = normalizeTutorAdminUnitId(unitId);
     return normalized === '02-unit-vibe-coding-intro.html' ||
-        normalized === '02-unit-teacher-matrix.html';
+        normalized === '02-unit-teacher-matrix.html' ||
+        normalized === 'prepare-05-vibe-coding.html'; // 舊 vibe-coding-intro 對應
 }
 
 function normalizeTutorIdentifier(value) {
@@ -1126,15 +1131,19 @@ function renderAdminDashboard(data, filterUnitId = null) {
             'io5rxgxl': '搖桿控制實務'
         };
 
-        // 2. Definition of "Prepare" units (課前準備)
+        // 2. Definition of "Prepare" units (準備課程)
         const prepareCids = [
             'github-classroom-free',
-            '02-master-ai-agents.html',
+            'prepare-04-agent-mode.html',
+            'prepare-05-vibe-coding.html',
+            'prepare-06-web-agents.html',
             'cvhofqxc'              // WiFi & Motor
         ];
         const prepareTitles = {
             'github-classroom-free': 'GitHub Classroom & Vibe Coding 實務',
-            '02-master-ai-agents.html': 'AI 代理人與 Vibe Coding 實務',
+            'prepare-04-agent-mode.html': 'AI Agent 模式實務',
+            'prepare-05-vibe-coding.html': 'Vibe Coding 實戰',
+            'prepare-06-web-agents.html': '網頁版 AI 代理人實務',
             'cvhofqxc': 'WiFi 組態設定'
         };
         
@@ -2882,7 +2891,7 @@ window.aggregateData = window.aggregateData || function(data) {
 
     const MENU_PAGES = new Set([
         'index.html', 'advanced.html', 'basic.html', 
-        'started.html', 'prepare.html', 'auth.html', 'dashboard.html', 
+        'start.html', 'prepare.html', 'auth.html', 'dashboard.html', 
         'cart.html', 'students.html', 'payment-return.html', 'tutors.html',
         'index', 'advanced', 'basic', 'started', 'prepare', 'auth', 'dashboard', 'cart', 'students'
     ]);

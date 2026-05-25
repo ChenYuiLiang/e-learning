@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP32-S3 影像處理與 DMA 觀念 - Vibe Coding Learn</title>
+    <title>ESP32-S3 影像處理與 DMA 觀念 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 15 - 影像 DMA</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">ESP32-S3 影像處理與 DMA 觀念</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 15</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>ESP32-S3 影像處理與 DMA 觀念</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 15</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>ESP32-S3 影像處理與 DMA 觀念</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    歡迎來到本模組！本單元聚焦於 <strong>ESP32-S3 影像處理與 DMA 觀念</strong>。
+                    要讓你的機器人擁有「數位雙眼」，僅僅接上攝影機是不夠的——一張 320x240 的 RAW 影像就高達 150KB，如果讓 CPU 逐位元搬運，控制迴圈將被徹底癱瘓。
+                    本模組將教你利用 ESP32-S3 的 GDMA 硬體引擎實現零 CPU 負擔的像素搬運、透過硬體 JPEG 編碼壓榨頻寬，並以雙緩衝機制徹底消滅高速移動下的影像撕裂。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境設定</div>
+                    你的機器人搭載了 OV2640 攝影機，串流畫面卻只有 8 FPS，而且每當車體快速轉彎時畫面就出現明顯的水平撕裂——上半截是新影格，下半截還卡在舊影格。
+                    你用 micros() 一查，發現 CPU 花了大量時間在記憶體搬運上，根本沒有餘力執行 PID 運算。
+                    請先觀看教學影片，了解如何讓硬體 DMA 引擎接管這些苦力活，釋放 CPU 去做真正重要的事。
                 </div>
 
                 <h2>教學影片</h2>
@@ -576,7 +577,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -591,59 +592,71 @@
                 </div>
 
                 <h1>🚀 1. 揭祕 DMA：硬體數據搬運助手</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify text-justify">
-                                CPU 不應浪費在搬運像素點上。DMA (Direct Memory Access) 就像專業的搬運工，讓鏡頭數據自動流向記憶體，釋放極其珍貴的 CPU 核心算力用於避障決策。
-                            </p>
-<div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-justify">
-<h4 class="font-bold text-blue-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed text-center text-justify">
-                                    Hardware Architecture Advantages</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify text-justify">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify text-left">非阻塞傳輸</strong>：傳輸過程無需 CPU 參與，可同時執行
-                                            PID 運算或 AI 識別。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify">PSRAM 直接映射</strong>：數據塊繞過繁重總線，直接進入外部大容量記憶體存取。
-                                        </div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify">中斷回呼驅動</strong>：僅在影幀傳輸完成瞬間通知 CPU 處理，最大化處理效能。
-                                        </div>
-</li>
-</ul>
+
+                <p>
+                    DMA (Direct Memory Access，直接記憶體存取) 是嵌入式系統中最關鍵的硬體加速技術之一。在傳統架構中，CPU 必須逐位元組地將攝影機的像素數據從 I/O 暫存器搬運到記憶體——一張 320×240 的 RGB565 影像有 153,600 bytes，若 CPU 每個時脈週期搬 1 byte，以 240MHz 主頻計算也需要約 640μs。在此期間，CPU 完全無法執行 PID 運算、感測器讀取或 WiFi 通訊。DMA 引擎徹底改變了這個局面。
+                </p>
+
+                <h2>ESP32-S3 的 GDMA 架構</h2>
+
+                <p>
+                    ESP32-S3 搭載了 <strong>GDMA (General Direct Memory Access)</strong> 控制器，它是一個獨立於 CPU 的硬體模組，能自主完成記憶體之間的數據搬運。GDMA 透過「描述符鏈 (Descriptor Chain)」機制運作：CPU 只需在啟動時將搬運指令寫入一組鏈式描述符結構，GDMA 引擎便會依序自動執行所有搬運任務，全程零 CPU 介入。
+                </p>
+
+                <table class="ms-table">
+                    <tr><th>比較項目</th><th>CPU 輪詢搬運</th><th>GDMA 硬體搬運</th></tr>
+                    <tr><td>CPU 佔用率</td><td>100%（完全阻塞）</td><td>≈ 0%（僅中斷回呼）</td></tr>
+                    <tr><td>搬運 150KB 耗時</td><td>~640μs</td><td>~150μs（匯流排速度限制）</td></tr>
+                    <tr><td>同時執行其他任務</td><td><span class="cross"><i class="fas fa-times"></i></span> 不可能</td><td><span class="check"><i class="fas fa-check"></i></span> PID、WiFi、AI 並行</td></tr>
+                    <tr><td>功耗效率</td><td>高（CPU 全速運轉）</td><td>低（專用硬體電路）</td></tr>
+                </table>
+
+                <h2>描述符鏈的運作機制</h2>
+
+                <p>
+                    GDMA 使用鏈式描述符 (Linked List Descriptor) 來描述一次完整的搬運任務。每個描述符包含：數據來源位址、目標位址、搬運長度、以及指向下一個描述符的指標。當最後一個描述符設定 <code>EOF</code> 旗標時，GDMA 引擎會觸發「傳輸完成」中斷，通知 CPU 進行後續處理。
+                </p>
+
+<div class="ms-code">
+<span class="c-comment">// GDMA 描述符結構 (ESP-IDF 底層定義)</span><br>
+<span class="c-kw">typedef struct</span> <span class="c-white">{</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">struct</span><span class="c-white"> {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">uint32_t</span> <span class="c-attr">size</span>   <span class="c-white">: 12;&nbsp;</span><span class="c-comment">// 緩衝區總大小</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">uint32_t</span> <span class="c-attr">length</span> <span class="c-white">: 12;&nbsp;</span><span class="c-comment">// 實際數據長度</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">uint32_t</span> <span class="c-attr">eof</span>    <span class="c-white">: 1;&nbsp;&nbsp;</span><span class="c-comment">// 鏈結束旗標</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">uint32_t</span> <span class="c-attr">owner</span>  <span class="c-white">: 1;&nbsp;&nbsp;</span><span class="c-comment">// 1=DMA 擁有, 0=CPU 擁有</span><br>
+<span class="c-white">&nbsp;&nbsp;};</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">void</span><span class="c-white">* </span><span class="c-attr">buf</span><span class="c-white">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 數據緩衝區指標</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">void</span><span class="c-white">* </span><span class="c-attr">next</span><span class="c-white">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 下一個描述符指標</span><br>
+<span class="c-white">} </span><span class="c-tag">dma_descriptor_t</span><span class="c-white">;</span>
 </div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors text-justify">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-center text-justify">
-                                GDMA Image Data Flow</h4>
-<div class="relative z-10 flex flex-col items-center gap-5 text-justify">
-<div class="flex items-center gap-4 text-justify">
-<div class="px-3 py-2 border border-slate-700 rounded text-[9px] text-justify uppercase font-black">
-                                        CMOS SENSOR</div>
-<div class="text-blue-500 font-bold animate-pulse text-justify">&gt;&gt;&gt;&gt;</div>
-<div class="px-3 py-2 border border-indigo-500/50 bg-indigo-500/20 rounded text-[9px] text-indigo-400 text-justify uppercase font-black">
-                                        GDMA Controller</div>
-<div class="text-blue-500 font-bold animate-pulse text-justify">&gt;&gt;&gt;&gt;</div>
-<div class="px-3 py-2 border border-slate-700 rounded text-[9px] text-justify uppercase font-black">
-                                        EXT PSRAM</div>
-</div>
-<div class="text-[9px] text-slate-600 font-mono mt-4 text-justify uppercase tracking-widest italic font-black">
-                                    "Zero CPU Cycle Intervention"</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-10 font-mono tracking-widest text-center text-justify uppercase font-black">
-                                Hardware Interconnection Schema</p>
-</div>
-</div>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        GDMA 描述符和數據緩衝區必須滿足 <strong>4-byte 對齊</strong>要求。若使用 PSRAM（外部 SPI RAM），緩衝區還需額外滿足 <strong>16-byte 對齊</strong>。使用 <code>heap_caps_aligned_alloc(16, size, MALLOC_CAP_SPIRAM)</code> 分配記憶體可確保對齊正確。不符合對齊要求將導致 <code>LoadStoreAlignment</code> 硬體異常。
+                    </div>
+                </div>
+
+                <h2>LCD_CAM 外設與攝影機整合</h2>
+
+                <p>
+                    在 ESP32-S3 上，攝影機介面透過 <strong>LCD_CAM</strong> 外設模組實現。此模組整合了 GDMA 通道，能直接將 OV2640/OV5640 感測器輸出的像素數據經由 8-bit 並行匯流排傳入 PSRAM，全程由硬體自動控制 VSYNC/HREF/PCLK 時序同步。ESP-IDF 的 <code>esp_camera</code> 驅動已封裝了這些底層細節，開發者只需透過 <code>esp_camera_fb_get()</code> 即可獲取完整影幀。
+                </p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在初始化攝影機時，設定 <code>config.grab_mode = CAMERA_GRAB_LATEST</code> 可確保每次 <code>fb_get()</code> 取得的都是最新影幀，而非佇列中的舊影幀。這對於即時控制應用至關重要——你不會想讓避障演算法處理 200ms 前的過時影像。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -658,51 +671,88 @@
                 </div>
 
                 <h1>🎞️ 2. 頻寬戰爭：RAW vs. 硬體 JPEG</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                影像數據是通訊中的巨獸。了解為何 RAW 格式無法用於遠程串流，而硬體加速的 JPEG 編碼卻能實現 30 FPS 以上的流暢視覺回傳。
-                            </p>
-<div class="bg-cyan-50 p-8 rounded-3xl border border-cyan-100 text-center text-justify">
-<h4 class="text-cyan-900 font-bold mb-4 text-xs uppercase tracking-widest text-center text-justify text-justify text-justify">
-                                    Bandwidth Throughput Analysis</h4>
-<div class="grid grid-cols-2 gap-4 text-justify">
-<div class="p-4 bg-white rounded-xl shadow-sm text-[10px] text-justify"><span class="block font-bold text-slate-500 mb-1 text-justify uppercase">RGB565
-                                            (RAW)</span> 4.88 MB/s (HEAVY)</div>
-<div class="p-4 bg-cyan-600 text-white rounded-xl shadow-lg text-[10px] text-justify text-left">
-<span class="block font-bold text-cyan-200 mb-1 text-justify uppercase">Hardwired
-                                            JPEG</span> 250 KB/s (LITE)</div>
+
+                <p>
+                    影像數據是嵌入式通訊中的「頻寬巨獸」。一張看似不大的 320×240 影像，以 RGB565 原始格式 (RAW) 儲存需要 150KB；如果目標是 30 FPS 的即時串流，每秒產生的數據量高達 <strong>4.5 MB/s</strong>。ESP32-S3 的 WiFi 實際吞吐量約 2-4 MB/s，這意味著 RAW 串流在物理上就已不可行。解決方案是利用硬體加速的 JPEG 編碼，在源頭就將數據量壓縮 10-20 倍。
+                </p>
+
+                <h2>影像格式頻寬對比</h2>
+
+                <table class="ms-table">
+                    <tr><th>格式</th><th>單幀大小 (320×240)</th><th>30 FPS 頻寬</th><th>CPU 負擔</th><th>適用場景</th></tr>
+                    <tr>
+                        <td><strong>RGB565 (RAW)</strong></td>
+                        <td>150 KB</td>
+                        <td>4.5 MB/s</td>
+                        <td>零（無編碼）</td>
+                        <td>本地記憶體處理、AI 推論輸入</td>
+                    </tr>
+                    <tr>
+                        <td><strong>YUV422</strong></td>
+                        <td>150 KB</td>
+                        <td>4.5 MB/s</td>
+                        <td>低</td>
+                        <td>中間格式，常用於 JPEG 編碼前置</td>
+                    </tr>
+                    <tr>
+                        <td><strong>JPEG (QF=12)</strong></td>
+                        <td>8-15 KB</td>
+                        <td>240-450 KB/s</td>
+                        <td>零（硬體編碼器）</td>
+                        <td>WiFi/BLE 遠端串流</td>
+                    </tr>
+                    <tr>
+                        <td><strong>JPEG (QF=5)</strong></td>
+                        <td>4-8 KB</td>
+                        <td>120-240 KB/s</td>
+                        <td>零</td>
+                        <td>低頻寬環境、高 FPS 需求</td>
+                    </tr>
+                </table>
+
+                <h2>ESP32-S3 硬體 JPEG 編碼器</h2>
+
+                <p>
+                    ESP32-S3 內建了硬體 JPEG 編碼器，與 LCD_CAM 外設及 GDMA 引擎深度整合。攝影機捕獲的原始像素資料直接透過 DMA 送入 JPEG 硬體編碼器，編碼完成的壓縮影像再由另一條 DMA 通道寫入 PSRAM。整個過程完全由硬體完成，CPU 只需在最終設定品質係數 (Quality Factor) 並讀取壓縮後的影像大小。
+                </p>
+
+<div class="ms-code">
+<span class="c-comment">// 攝影機初始化：啟用硬體 JPEG 編碼</span><br>
+<span class="c-white">camera_config_t config;</span><br>
+<span class="c-white">config.</span><span class="c-attr">pixel_format</span> <span class="c-white">= PIXFORMAT_JPEG;&nbsp;&nbsp;</span><span class="c-comment">// 啟用硬體 JPEG</span><br>
+<span class="c-white">config.</span><span class="c-attr">frame_size</span> <span class="c-white">= FRAMESIZE_QVGA;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 320×240</span><br>
+<span class="c-white">config.</span><span class="c-attr">jpeg_quality</span> <span class="c-white">= 12;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// QF: 0(最佳)~63(最差)</span><br>
+<span class="c-white">config.</span><span class="c-attr">fb_count</span> <span class="c-white">= 2;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 雙緩衝</span><br>
+<span class="c-white">config.</span><span class="c-attr">grab_mode</span> <span class="c-white">= CAMERA_GRAB_LATEST;</span><span class="c-comment">// 取最新幀</span><br>
+<span class="c-tag">esp_camera_init</span><span class="c-white">(&amp;config);</span>
 </div>
-<p class="text-[10px] text-slate-400 mt-6 italic font-light text-center text-justify">高達
-                                    20:1 的即時壓縮比，是穩定連線的基石</p>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-cyan-500/5 text-justify"></div>
-<h4 class="text-cyan-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-center text-justify">
-                                Real-time Stream Telemetry</h4>
-<div class="w-full space-y-4 px-10 relative z-10 text-justify">
-<div class="flex justify-between text-[8px] text-slate-400 text-justify"><span>Frame
-                                        Rate (FPS)</span> <span>34 FPS</span></div>
-<div class="w-full bg-slate-800 h-1 rounded-full overflow-hidden text-justify">
-<div class="bg-cyan-500 h-full w-[95%] text-justify"></div>
-</div>
-<div class="flex justify-between text-[8px] text-slate-400 text-justify"><span>Buffer
-                                        Pressure</span> <span>15.2%</span></div>
-<div class="w-full bg-slate-800 h-1 rounded-full overflow-hidden text-justify">
-<div class="bg-green-500 h-full w-[15%] text-justify"></div>
-</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-10 font-mono tracking-widest uppercase text-center text-justify italic font-black">
-                                Accelerated Encoding: SYNCED</p>
-</div>
-</div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        <code>jpeg_quality</code> 的值越小，影像品質越高但檔案也越大。數值 12 是避障應用的推薦起點——在 320×240 下每幀約 8-15KB，足以辨識障礙物輪廓。若需更高 FPS（如 >40 FPS），可將 QF 調至 20-30 以進一步縮小檔案。
+                    </div>
+                </div>
+
+                <h2>品質與延遲的權衡</h2>
+
+                <p>
+                    JPEG 品質不僅影響畫面清晰度，還直接影響整個系統的端到端延遲。更高的品質意味著更大的檔案，WiFi 傳輸時間更長，前端解碼時間也更長。在即時控制場景中，<strong>低延遲比高畫質更重要</strong>——你需要的是即時看到「前方有障礙物」，而非欣賞障礙物的紋理細節。
+                </p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        可以在前端建立一個動態品質調整機制：當偵測到 FPS 下降至閾值以下時，自動向 ESP32 發送指令降低 <code>jpeg_quality</code> 值；當頻寬充裕時再回調。這種自適應策略能在不同網路環境下維持最佳的操控體驗。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -717,53 +767,90 @@
                 </div>
 
                 <h1>📼 3. 雙緩衝機制：消滅影像撕裂</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify text-justify text-justify">
-<div class="flex-1 space-y-6 text-justify text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
-                                完美並行的工業標準。當 DMA 正在將新數據填入 Buffer A 時，WiFi 任務同時從 Buffer B
-                                發送已完成帧。透過輪替（Ping-Pong）機制，徹底消除影像斷層（撕裂）與讀寫衝突。
-                            </p>
-<div class="bg-cyan-500/10 p-8 rounded-3xl border border-cyan-500/20 shadow-inner text-justify text-justify">
-<h4 class="font-bold text-cyan-400 mb-4 text-xs uppercase tracking-widest text-center text-justify text-left text-justify">
-                                    Industrial Synchronization Protocol</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify text-left text-justify">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">FB_COUNT =
-                                                2</strong>：配置雙重影幀緩衝區，支撐零延遲讀寫。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">GRAB_LATEST
-                                                模式</strong>：處理器自動丟棄過時緩存，強制選取最即時的環境影幀。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">原子切換鎖定</strong>：利用中斷服務 (ISR) 確保在
-                                            Buffer 指針切換瞬間絕不發生競爭。</div>
-</li>
-</ul>
+
+                <p>
+                    當攝影機以 30 FPS 持續捕獲影像，WiFi 任務同時嘗試讀取並發送影幀時，一個致命的問題浮現：如果 DMA 正在向記憶體寫入新影幀的上半部，而 WiFi 任務同時讀取同一塊記憶體的下半部（仍是上一幀的數據），最終發送出去的影像將是兩幀的拼接——上半部是新的，下半部是舊的。這就是<strong>影像撕裂 (Tearing)</strong>，而解決方案是經典的<strong>雙緩衝 (Double Buffering)</strong> 機制。
+                </p>
+
+                <h2>為什麼單緩衝必然撕裂</h2>
+
+                <p>
+                    在單緩衝架構中，DMA 寫入和 WiFi 讀取共用同一塊影幀記憶體。由於兩者的執行速度不同且沒有同步機制，讀寫衝突 (Race Condition) 是必然的。即使在低 FPS 下看似正常，一旦系統負載升高或 WiFi 發送延遲增加，撕裂就會頻繁出現。
+                </p>
+
+                <table class="ms-table">
+                    <tr><th>架構</th><th>FB_COUNT</th><th>撕裂風險</th><th>記憶體用量</th><th>最大 FPS</th></tr>
+                    <tr>
+                        <td><strong>單緩衝</strong></td>
+                        <td>1</td>
+                        <td>極高（讀寫競爭）</td>
+                        <td>~150 KB</td>
+                        <td>受限於發送速度</td>
+                    </tr>
+                    <tr>
+                        <td><strong>雙緩衝</strong></td>
+                        <td>2</td>
+                        <td>零（完全隔離）</td>
+                        <td>~300 KB</td>
+                        <td>攝影機原生 FPS</td>
+                    </tr>
+                    <tr>
+                        <td><strong>三緩衝</strong></td>
+                        <td>3</td>
+                        <td>零（附帶預取）</td>
+                        <td>~450 KB</td>
+                        <td>攝影機原生 FPS+</td>
+                    </tr>
+                </table>
+
+                <h2>乒乓 (Ping-Pong) 運作原理</h2>
+
+                <p>
+                    雙緩衝的核心是「乒乓切換」：系統維護兩塊獨立的影幀緩衝區（Buffer A 和 Buffer B）。在任意時刻，一塊緩衝區由 DMA 獨佔寫入新影幀，另一塊由 WiFi/處理任務獨佔讀取。當 DMA 完成一幀的寫入後，兩塊緩衝區的角色互換——Buffer A 變成讀取區，Buffer B 變成寫入區。
+                </p>
+
+<div class="ms-code">
+<span class="c-comment">// 雙緩衝影像串流核心邏輯</span><br>
+<span class="c-kw">void</span> <span class="c-tag">streamTask</span><span class="c-white">(</span><span class="c-kw">void</span><span class="c-white">* param) {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">while</span><span class="c-white">(1) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;camera_fb_t* fb = </span><span class="c-tag">esp_camera_fb_get</span><span class="c-white">();</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (!fb) </span><span class="c-kw">continue</span><span class="c-white">;</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// fb 指向「已完成寫入」的緩衝區</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// DMA 此時正在填充另一塊緩衝區</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">httpd_resp_send_chunk</span><span class="c-white">(req, (</span><span class="c-kw">char</span><span class="c-white">*)fb->buf, fb->len);</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">esp_camera_fb_return</span><span class="c-white">(fb);</span><span class="c-comment"> // 歸還緩衝區供 DMA 再使用</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<span class="c-white">}</span>
 </div>
-</div>
-<div class="lg:w-80 bg-cyan-600/10 p-10 rounded-3xl border border-cyan-500/20 text-center relative overflow-hidden group text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-cyan-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify">
-</div>
-<h4 class="text-cyan-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center text-justify">
-                                Ping-Pong Sync Matrix</h4>
-<div class="flex justify-center gap-4 text-justify">
-<div class="px-3 py-2 border border-emerald-500 rounded text-emerald-400 text-[10px] animate-pulse text-justify uppercase font-black">
-                                    BUF A: WRITE</div>
-<div class="px-3 py-2 border border-blue-500 rounded text-blue-400 text-[10px] text-justify uppercase font-black">
-                                    BUF B: SEND</div>
-</div>
-<p class="text-[11px] text-slate-500 mt-10 leading-relaxed font-light italic text-center text-justify text-left text-justify">
-                                "將軟硬體協同優化到極限，讓邊緣運算具備流暢視覺。"
-                            </p>
-</div>
-</div>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        <code>esp_camera_fb_return(fb)</code> 必須在影幀處理完成後<strong>儘快呼叫</strong>。如果長時間持有影幀不歸還，在雙緩衝模式下另一塊緩衝區也被 DMA 填滿後，攝影機將因無可用緩衝區而停止捕獲。這會造成 FPS 驟降甚至影像凍結。
+                    </div>
+                </div>
+
+                <h2>GRAB_LATEST 的關鍵作用</h2>
+
+                <p>
+                    設定 <code>grab_mode = CAMERA_GRAB_LATEST</code> 後，<code>fb_get()</code> 會自動丟棄佇列中的舊影幀，只返回最新的一幀。這對即時控制應用至關重要——如果 WiFi 發送暫時變慢，佇列中可能累積多幀舊影像。沒有 GRAB_LATEST，你的避障演算法可能正在處理 500ms 前的「過時」畫面。
+                </p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        ESP32-S3 的 PSRAM 容量為 8MB，雙緩衝 QVGA JPEG 影幀（每幀 8-15KB）僅佔用約 30KB，遠低於容量上限。如果需要更高解析度（如 VGA 640×480），影幀大小會增至 30-60KB，此時三緩衝（<code>fb_count=3</code>）可提供額外的延遲緩衝空間。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -842,16 +929,134 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>
+                    請回答以下問題，測試你對「<strong>影像 DMA 傳輸</strong>」的理解程度。
+                    選擇完畢後點擊「送出答案」查看結果與解析。
+                </p>
+
+                <div id="quiz-container" style="margin:24px 0;">
+
+                    <div class="quiz-question" id="quiz-q0" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">1. DMA（Direct Memory Access）的核心優勢是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt0">
+                            <input type="radio" name="quiz-q0" value="0" style="accent-color:var(--ms-blue);">
+                            <span>提高 CPU 的時脈頻率</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt1">
+                            <input type="radio" name="quiz-q0" value="1" style="accent-color:var(--ms-blue);">
+                            <span>讓外設直接存取記憶體，不需要 CPU 介入搬移資料</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt2">
+                            <input type="radio" name="quiz-q0" value="2" style="accent-color:var(--ms-blue);">
+                            <span>增加系統的記憶體容量</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt3">
+                            <input type="radio" name="quiz-q0" value="3" style="accent-color:var(--ms-blue);">
+                            <span>簡化程式碼邏輯</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp0" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q1" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">2. 在影像串流應用中，使用「雙緩衝（Double Buffer）」的目的是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt0">
+                            <input type="radio" name="quiz-q1" value="0" style="accent-color:var(--ms-blue);">
+                            <span>增加影像解析度</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt1">
+                            <input type="radio" name="quiz-q1" value="1" style="accent-color:var(--ms-blue);">
+                            <span>一個緩衝區在被 DMA 填入時，另一個可被 CPU 處理，避免資料撕裂</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt2">
+                            <input type="radio" name="quiz-q1" value="2" style="accent-color:var(--ms-blue);">
+                            <span>減少記憶體使用量</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt3">
+                            <input type="radio" name="quiz-q1" value="3" style="accent-color:var(--ms-blue);">
+                            <span>加快網路傳輸速度</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp1" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q2" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">3. ESP32-CAM 使用 DMA 傳輸影像時，為什麼記憶體對齊（Alignment）很重要？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt0">
+                            <input type="radio" name="quiz-q2" value="0" style="accent-color:var(--ms-blue);">
+                            <span>讓影像看起來更清晰</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt1">
+                            <input type="radio" name="quiz-q2" value="1" style="accent-color:var(--ms-blue);">
+                            <span>DMA 控制器通常要求緩衝區地址為特定位元組的倍數才能正確存取</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt2">
+                            <input type="radio" name="quiz-q2" value="2" style="accent-color:var(--ms-blue);">
+                            <span>減少程式碼的行數</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt3">
+                            <input type="radio" name="quiz-q2" value="3" style="accent-color:var(--ms-blue);">
+                            <span>增加 WiFi 訊號強度</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp2" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q3" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">4. 影像 DMA 傳輸完成後，系統通常透過什麼機制通知 CPU？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt0">
+                            <input type="radio" name="quiz-q3" value="0" style="accent-color:var(--ms-blue);">
+                            <span>CPU 持續輪詢狀態暫存器</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt1">
+                            <input type="radio" name="quiz-q3" value="1" style="accent-color:var(--ms-blue);">
+                            <span>觸發中斷（DMA Transfer Complete Interrupt）</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt2">
+                            <input type="radio" name="quiz-q3" value="2" style="accent-color:var(--ms-blue);">
+                            <span>透過藍牙通知</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt3">
+                            <input type="radio" name="quiz-q3" value="3" style="accent-color:var(--ms-blue);">
+                            <span>寫入 SD 卡後再讀取</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp3" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">送出答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+
+                <div id="quiz-result" style="display:none; margin-top:20px; padding:16px 20px; border-radius:6px; font-weight:600;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -909,9 +1114,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「ESP32-S3 影像處理與 DMA 觀念」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「ESP32-S3 影像處理與 DMA 觀念」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -927,7 +1132,8 @@
         { id: 3, label: '🎞️ 2. 頻寬戰爭：RAW vs. 硬體 JPEG', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '📼 3. 雙緩衝機制：消滅影像撕裂', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -947,6 +1153,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1048,8 +1255,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = [1, 1, 1, 1];
+    const QUIZ_EXPLANATIONS = ["DMA 控制器可獨立於 CPU 執行資料搬移，CPU 只需啟動傳輸後就能去做其他運算，大幅提升效率。","雙緩衝讓 DMA 寫入和 CPU 讀取可以同時進行（前後交替），消除等待時間並防止讀到不完整的影格。","DMA 硬體通常要求記憶體地址按 4 或 32 位元組對齊，未對齊可能導致存取錯誤或效能降低。","DMA 完成中斷讓 CPU 在等待期間可以執行其他任務，傳輸完成時才被通知處理，最大化系統效率。"];
+
+    function submitQuiz() {
+        let score = 0;
+        QUIZ_ANSWERS.forEach((ans, i) => {
+            const selected = document.querySelector(`input[name="quiz-q${i}"]:checked`);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            const qEl = document.getElementById(`quiz-q${i}`);
+            if (selected && parseInt(selected.value) === ans) {
+                score++;
+                qEl.style.borderColor = '#107c10';
+                expEl.style.background = '#dff6dd';
+                expEl.innerHTML = '<strong style="color:#107c10;">✓ 正確！</strong> ' + QUIZ_EXPLANATIONS[i];
+            } else {
+                qEl.style.borderColor = '#d13438';
+                expEl.style.background = '#fde7e9';
+                expEl.innerHTML = '<strong style="color:#d13438;">✗ 不正確。</strong> ' + QUIZ_EXPLANATIONS[i];
+            }
+            expEl.style.display = 'block';
+        });
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === QUIZ_ANSWERS.length) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.style.color = '#107c10';
+            resultEl.textContent = `🎉 滿分！你答對了全部 ${QUIZ_ANSWERS.length} 題！`;
+        } else {
+            resultEl.style.background = '#deecf9';
+            resultEl.style.color = '#005a9e';
+            resultEl.textContent = `你答對了 ${score} / ${QUIZ_ANSWERS.length} 題，請查看解析後再試一次。`;
+        }
+    }
+
+    function resetQuiz() {
+        QUIZ_ANSWERS.forEach((_, i) => {
+            const radios = document.querySelectorAll(`input[name="quiz-q${i}"]`);
+            radios.forEach(r => r.checked = false);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            expEl.style.display = 'none';
+            const qEl = document.getElementById(`quiz-q${i}`);
+            qEl.style.borderColor = '#e1dfdd';
+        });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 15：系統架構設計';
 </script>
 
 <!-- Define Resources -->

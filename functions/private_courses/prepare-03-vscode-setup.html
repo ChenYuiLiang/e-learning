@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VS Code 安裝與基礎配置 - Vibe Coding</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <style>
+        :root {
+            --ms-blue: #0078d4;
+            --ms-blue-dark: #005a9e;
+            --ms-blue-light: #deecf9;
+            --ms-gray-10: #f3f2f1;
+            --ms-gray-20: #e1dfdd;
+            --ms-gray-90: #201f1e;
+            --ms-green: #107c10;
+            --ms-red: #d13438;
+            --sidebar-w: 280px;
+        }
+
+        * { box-sizing: border-box; }
+        #assignment-guide, #tutor-guide { display: none !important; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fff;
+            color: #201f1e;
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* ─── TOP NAV ─── */
+        .ms-topnav {
+            background: var(--ms-blue);
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 4px rgba(0,0,0,.2);
+        }
+        .ms-topnav .brand {
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
+
+        /* ─── LAYOUT ─── */
+        .ms-layout { display: flex; min-height: calc(100vh - 48px); }
+
+        /* ─── SIDEBAR ─── */
+        .ms-sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            background: #faf9f8;
+            border-right: 1px solid #e1dfdd;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 48px;
+            height: calc(100vh - 48px);
+            overflow-y: auto;
+        }
+        .ms-sidebar-header {
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .ms-sidebar-header .module-label {
+            display: none;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #605e5c;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .ms-sidebar-header .module-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #201f1e;
+            line-height: 1.4;
+        }
+        .ms-sidebar-header .meta {
+            font-size: 12px;
+            color: #605e5c;
+            margin-top: 6px;
+        }
+        .ms-unit-list { padding: 8px 0; }
+        .ms-unit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: background .12s, border-color .12s;
+            color: #201f1e;
+        }
+        .ms-unit-item:hover { background: #edebe9; }
+        .ms-unit-item.active {
+            border-left-color: var(--ms-blue);
+            background: #deecf9;
+        }
+        .ms-unit-item.active .unit-name { color: var(--ms-blue); font-weight: 600; }
+        .unit-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #c8c6c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            font-size: 10px;
+            background: #fff;
+        }
+        .unit-icon.done { background: var(--ms-green); border-color: var(--ms-green); color: #fff; }
+        .unit-icon.active-icon { border-color: var(--ms-blue); background: var(--ms-blue); color: #fff; }
+        .unit-meta { flex: 1; min-width: 0; }
+        .unit-name { font-size: 13px; line-height: 1.4; }
+        .unit-time { font-size: 11px; color: #605e5c; margin-top: 2px; }
+        .sidebar-progress {
+            padding: 12px 16px;
+            border-top: 1px solid #e1dfdd;
+            margin-top: auto;
+        }
+        .progress-bar-bg { background: #e1dfdd; border-radius: 4px; height: 6px; }
+        .progress-bar-fill { background: var(--ms-green); border-radius: 4px; height: 6px; transition: width .4s; }
+        .progress-text { font-size: 12px; color: #605e5c; margin-top: 6px; }
+
+        /* ─── MAIN ─── */
+        .ms-content { flex: 1; min-width: 0; }
+
+        .ms-breadcrumb {
+            padding: 10px 40px;
+            font-size: 12px;
+            color: #605e5c;
+            border-bottom: 1px solid #e1dfdd;
+            background: #fff;
+        }
+        .ms-breadcrumb a { color: var(--ms-blue); text-decoration: none; }
+        .ms-breadcrumb a:hover { text-decoration: underline; }
+        .ms-breadcrumb span { margin: 0 6px; }
+
+        /* ─── PAGES ─── */
+        .ms-unit-page { display: none; }
+        .ms-unit-page.visible { display: block; }
+
+        .unit-content {
+            max-width: 820px;
+            padding: 32px 40px 60px;
+            margin: 0 auto;
+        }
+
+        .unit-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+        .unit-completed-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #dff6dd;
+            color: #107c10;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 2px;
+        }
+        .unit-time-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #605e5c;
+            font-size: 13px;
+        }
+
+        /* Typography */
+        .unit-content h1 { font-size: 28px; font-weight: 700; margin: 0 0 20px; color: #201f1e; line-height: 1.3; }
+        .unit-content h2 { font-size: 20px; font-weight: 600; margin: 36px 0 12px; color: #201f1e; padding-top: 8px; }
+        .unit-content h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; color: #201f1e; }
+        .unit-content p { margin: 0 0 14px; }
+        .unit-content ul, .unit-content ol { margin: 0 0 14px; padding-left: 28px; }
+        .unit-content li { margin-bottom: 6px; }
+        .unit-content strong { font-weight: 600; }
+        .unit-content a { color: var(--ms-blue); text-decoration: none; }
+        .unit-content a:hover { text-decoration: underline; }
+        .unit-content code {
+            background: #f3f2f1;
+            border: 1px solid #e1dfdd;
+            border-radius: 3px;
+            padding: 1px 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #a31515;
+        }
+
+        /* Callouts */
+        .ms-note, .ms-tip, .ms-warning, .ms-important {
+            display: flex;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid;
+            font-size: 14px;
+        }
+        .ms-note { background: #deecf9; border-color: var(--ms-blue); }
+        .ms-note .note-icon { color: var(--ms-blue); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-tip { background: #dff6dd; border-color: var(--ms-green); }
+        .ms-tip .note-icon { color: var(--ms-green); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-warning { background: #fff4ce; border-color: #ffaa44; }
+        .ms-warning .note-icon { color: #ffaa44; font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-important { background: #fde7e9; border-color: var(--ms-red); }
+        .ms-important .note-icon { color: var(--ms-red); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .note-body strong { display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+
+        /* Scenario */
+        .ms-scenario {
+            background: #f3f2f1;
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #323130;
+            border-left: 4px solid #c8c6c4;
+        }
+        .ms-scenario-label {
+            font-style: normal;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #605e5c;
+            margin-bottom: 8px;
+        }
+
+        /* Steps */
+        .ms-steps { margin: 16px 0; }
+        .ms-step { display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start; }
+        .ms-step-num {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: var(--ms-blue); color: #fff;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .ms-step-body { flex: 1; }
+        .ms-step-body h4 { font-size: 14px; font-weight: 600; margin: 0 0 4px; }
+        .ms-step-body p { font-size: 14px; margin: 0; }
+
+        /* Table */
+        .ms-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+        .ms-table th {
+            background: #f3f2f1; font-weight: 600; text-align: left;
+            padding: 10px 14px; border: 1px solid #e1dfdd; color: #323130;
+        }
+        .ms-table td { padding: 9px 14px; border: 1px solid #e1dfdd; vertical-align: top; }
+        .ms-table tr:nth-child(even) td { background: #faf9f8; }
+        .ms-table .check { color: var(--ms-green); font-size: 16px; }
+        .ms-table .cross { color: #8a8886; font-size: 16px; }
+        .ms-table .partial { color: #ffaa44; font-size: 16px; }
+
+        /* Checklist */
+        .ms-checklist { list-style: none; padding: 0; margin: 12px 0; }
+        .ms-checklist li {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 6px 0; font-size: 14px;
+        }
+        .ms-checklist li .check-box {
+            width: 18px; height: 18px;
+            border: 2px solid #8a8886; border-radius: 2px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; margin-top: 1px; cursor: pointer; transition: all .15s;
+        }
+        .ms-checklist li .check-box.checked {
+            background: var(--ms-blue); border-color: var(--ms-blue); color: #fff;
+        }
+
+        /* Video */
+        .ms-video-embed {
+            border-radius: 4px; overflow: hidden; margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,.12); aspect-ratio: 16/9;
+        }
+        .ms-video-embed iframe { width: 100%; height: 100%; display: block; border: 0; }
+
+        /* Keyboard shortcut */
+        kbd {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            height: 26px;
+            padding: 0 6px;
+            background: #fff;
+            border: 1px solid #c8c6c4;
+            border-bottom: 3px solid #8a8886;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            color: #323130;
+            box-shadow: 0 1px 2px rgba(0,0,0,.08);
+        }
+
+        /* Extensions Cards */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .compare-card {
+            border: 1px solid #e1dfdd;
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .compare-card-header {
+            padding: 12px 14px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .compare-card-header i { font-size: 18px; }
+        .compare-card-body {
+            padding: 14px;
+            font-size: 13px;
+            color: #605e5c;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        /* Lab card */
+        .ms-lab-card {
+            background: linear-gradient(135deg, #eef6ff 0%, #f5f0ff 100%);
+            border: 1px solid #c7e0f4;
+            border-radius: 6px;
+            padding: 24px;
+            margin: 20px 0;
+        }
+        .ms-lab-card h3 { margin: 0 0 12px; color: var(--ms-blue-dark); font-size: 16px; font-weight: 600; }
+        .ms-lab-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--ms-blue);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 12px;
+        }
+        .ms-lab-time {
+            font-size: 12px;
+            color: #605e5c;
+            margin-left: 8px;
+        }
+
+        /* Buttons */
+        .ms-btn {
+            background: var(--ms-blue); color: #fff; border: none;
+            padding: 7px 18px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; transition: background .12s;
+            font-family: inherit;
+        }
+        .ms-btn:hover { background: var(--ms-blue-dark); }
+        .ms-btn-ghost {
+            background: transparent; color: var(--ms-blue);
+            border: 1px solid var(--ms-blue); padding: 6px 18px;
+            font-size: 14px; font-weight: 600; border-radius: 2px;
+            cursor: pointer; transition: background .12s; font-family: inherit;
+        }
+        .ms-btn-ghost:hover { background: var(--ms-blue-light); }
+
+        /* Nav */
+        .unit-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            border-top: 1px solid #e1dfdd;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .nav-btn-prev, .nav-btn-next {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 20px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; border: 1px solid;
+            font-family: inherit; transition: background .12s;
+        }
+        .nav-btn-next { background: var(--ms-blue); color: #fff; border-color: var(--ms-blue); }
+        .nav-btn-next:hover { background: var(--ms-blue-dark); border-color: var(--ms-blue-dark); }
+        .nav-btn-prev { background: #fff; color: var(--ms-blue); border-color: var(--ms-blue); }
+        .nav-btn-prev:hover { background: var(--ms-blue-light); }
+        .unit-page-indicator { font-size: 13px; color: #605e5c; }
+
+        /* Module index */
+        .module-meta-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        .ms-tag { background: #f3f2f1; color: #323130; font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: 500; }
+        .ms-tag.blue { background: #deecf9; color: var(--ms-blue-dark); }
+        .ms-tag.green { background: #dff6dd; color: #107c10; }
+        .unit-card-list { margin: 20px 0; }
+        .unit-card {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 0; border-bottom: 1px solid #f3f2f1; cursor: pointer;
+        }
+        .unit-card:last-child { border-bottom: none; }
+        .unit-card:hover .unit-card-name { color: var(--ms-blue); text-decoration: underline; }
+        .unit-card-num {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #f3f2f1; color: #605e5c;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .unit-card.quiz .unit-card-num { background: #fff4ce; color: #8a6914; }
+        .unit-card.lab .unit-card-num { background: #eef6ff; color: var(--ms-blue-dark); }
+        .unit-card-info { flex: 1; }
+        .unit-card-name { font-size: 15px; font-weight: 500; }
+        .unit-card-time { font-size: 12px; color: #605e5c; margin-top: 2px; }
+        .unit-card-arrow { color: #c8c6c4; font-size: 14px; }
+
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 10px 14px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; cursor: pointer; transition: background .1s, border-color .1s; font-size: 14px;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback { display: none; margin-top: 8px; padding: 10px 14px; border-radius: 4px; font-size: 13px; font-weight: 500; }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
+
+        /* Resource links */
+        .ms-resource-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; text-decoration: none; color: #201f1e;
+            font-size: 14px; transition: background .1s;
+        }
+        .ms-resource-link:hover { background: #f3f2f1; }
+        .ms-resource-link i { color: var(--ms-blue); font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+
+        /* Achievement */
+        .ms-achievement {
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            color: #fff; border-radius: 6px; padding: 24px 28px;
+            margin: 24px 0; display: flex; align-items: center; gap: 20px;
+        }
+        .achievement-icon { font-size: 48px; flex-shrink: 0; }
+        .achievement-text h3 { margin: 0 0 4px; font-size: 18px; }
+        .achievement-text p { margin: 0; font-size: 14px; opacity: .9; }
+
+        @media (max-width: 768px) {
+            .ms-sidebar { display: none; }
+            .unit-content { padding: 20px 16px 40px; }
+            .unit-nav { padding: 16px; }
+            .ms-breadcrumb { padding: 8px 16px; }
+            .compare-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- TOP NAV -->
+<nav class="ms-topnav">
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
+    <div class="divider"></div>
+    <a href="/prepare.html" target="_top" class="nav-label">準備課程</a>
+</nav>
+
+<div class="ms-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="ms-sidebar">
+        <div class="ms-sidebar-header">
+            <div class="module-label">模組</div>
+            <div class="module-title">VS Code 安裝與基礎配置</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 48 分鐘 · 6 個單元</div>
+        </div>
+        <nav class="ms-unit-list" id="sidebar-nav"></nav>
+        <div class="sidebar-progress">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+            </div>
+            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="ms-content">
+
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
+
+        <!-- ══════════ PAGE 0: INDEX ══════════ -->
+        <div class="ms-unit-page visible" id="page-index">
+            <div class="unit-content">
+                <h1>VS Code 安裝與基礎配置</h1>
+                <div class="module-meta-tags">
+                    <span class="ms-tag">模組</span>
+                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag green">初學者</span>
+                    <span class="ms-tag blue">開發者</span>
+                    <span class="ms-tag blue">本機環境</span>
+                </div>
+
+                <p>
+                    工欲善其事，必先利其器。雖然雲端開發環境（如 github.dev、Codespaces）非常便利，
+                    但如果你要進行離線開發、或是連接實體硬體設備（如 ESP32、感測器、馬達等），
+                    你仍需要在電腦上安裝一套完整的 VS Code 本地環境。
+                </p>
+                <p>
+                    本模組將引導你完成 VS Code 本機端的下載、安裝、中文化配置與必備擴充套件，
+                    並設定 GitHub 帳號同步，讓你的開發偏好設定永不遺失。
+                </p>
+
+                <h2>學習目標</h2>
+                <p>完成本模組後，你將能夠：</p>
+                <ul>
+                    <li>成功下載並安裝 <strong>Visual Studio Code (VS Code) 桌面版</strong>。</li>
+                    <li>安裝 <strong>Chinese (Traditional) Language Pack</strong> 完成介面中文化。</li>
+                    <li>配置 <strong>Prettier</strong>、<strong>Material Icon Theme</strong> 與 <strong>Error Lens</strong> 等必備擴充套件。</li>
+                    <li>掌握 <strong>GitHub Settings Sync</strong>，實現設定的跨裝置備份與同步。</li>
+                </ul>
+
+                <h2>必要條件</h2>
+                <ul>
+                    <li>電腦一台（支援 Windows, macOS 或 Linux）</li>
+                    <li>可上網的網路連線，用於下載安裝檔與套件</li>
+                </ul>
+
+                <h2>本模組單元</h2>
+                <div class="unit-card-list" id="index-unit-list"></div>
+                <div style="margin-top:32px;">
+                    <button class="ms-btn" onclick="goToUnit(1)">開始模組 &nbsp;›</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 1: 簡介 ══════════ -->
+        <div class="ms-unit-page" id="page-1">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-1" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                </div>
+
+                <h1>簡介</h1>
+
+                <p>
+                    在現代的 Vibe Coding 模式中，AI 能幫你寫出大量程式碼，但要將這些程式碼在真實硬體上編譯、執行、除錯，
+                    依然需要一個穩定、高度客製化的「指揮中心」。而這個中心就是本地端的 Visual Studio Code。
+                </p>
+
+                <div class="ms-scenario">
+                    <div class="ms-scenario-label">情境</div>
+                    小華使用 Codespaces 寫好了一個 ESP32 網頁控制的程式碼。但當他要把程式碼燒錄到手邊的開發板時，
+                    他發現網頁瀏覽器無法直接存取本機的序列埠（Serial Port），也無法直接插上 USB 燒錄。
+                    老師點醒他：「雲端虛擬機在天邊，你的開發板在手邊。這時你需要將代碼同步回本機，用本地安裝的 VS Code 開發。」
+                </div>
+
+                <p>
+                    本地 VS Code 的優勢在於：它可以完全控制你的電腦資源、直接使用終端機執行任意編譯工具鏈，
+                    並且可以通過 USB 與藍牙與你的硬體直接溝通。這是瀏覽器網頁版目前難以做到的。
+                    本單元將引導你在 15 分鐘內，搭建起這套強大的本地開發環境。
+                </p>
+
+                <h2>教學影片</h2>
+                <div class="ms-video-embed">
+                    <iframe src="https://www.youtube.com/embed/Z3t_Y41Ji4Y"
+                        title="VS Code 本地安裝與基礎配置教學" allowfullscreen
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
+                <span class="unit-page-indicator">1 / 5</span>
+                <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 2: 安裝與中文化 ══════════ -->
+        <div class="ms-unit-page" id="page-2">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-2" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
+                </div>
+
+                <h1>安裝與中文化</h1>
+
+                <p>
+                    打地基的時間到了！我們將循序漸進完成編輯器主體的部署，並設定好親切的繁體中文介面。
+                </p>
+
+                <h2>安裝步驟</h2>
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>下載 VS Code</h4>
+                            <p>前往官方網站 <a href="https://code.visualstudio.com" target="_blank">code.visualstudio.com</a>，點擊下載適用於你作業系統（Windows/macOS/Linux）的安裝包。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>執行安裝程序</h4>
+                            <p>執行安裝檔，並依指示完成安裝。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>Windows 用戶關鍵設定</strong>
+                        安裝時的「選取其他工作」步驟，務必勾選 <strong>「加入 '開啟以程式碼編輯' 動作到 Windows 檔案總管內容功能表」</strong> (Add "Open with Code")。
+                        這讓你能在任何資料夾直接按右鍵開啟專案，開發效率大幅提升！
+                    </div>
+                </div>
+
+                <h2>繁體中文介面設定</h2>
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>打開 Extensions 控制面板</h4>
+                            <p>開啟安裝好的 VS Code。點擊左側工具欄最下方的四個方塊圖示 (Extensions) ，或按快捷鍵 <kbd>Ctrl+Shift+X</kbd> (Mac 為 <kbd>Cmd+Shift+X</kbd>)。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>搜尋與安裝中文包</h4>
+                            <p>在搜尋框輸入 <strong>Chinese</strong>，找到名為 <strong>"Chinese (Traditional) Language Pack"</strong> (由 Microsoft 官方發行) 的擴充套件，點擊 <strong>Install</strong> 安裝。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>重啟套用</h4>
+                            <p>安裝完成後，右下角會彈出重啟提示，點擊 <strong>Restart</strong>。重啟後介面將切換為繁體中文。</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">2 / 5</span>
+                <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 3: 必備擴充套件 ══════════ -->
+        <div class="ms-unit-page" id="page-3">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-3" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 8 分鐘</div>
+                </div>
+
+                <h1>必備擴充套件推薦</h1>
+
+                <p>
+                    VS Code 本身是一台輕快的骨架，但加上適合的外掛 (Extensions) 後，它將成為你的神兵利器。
+                    以下是我們強烈建議每位網頁與物聯網開發者立刻裝上的三個基本擴充套件。
+                </p>
+
+                <h2>擴充套件介紹</h2>
+
+                <div class="compare-grid">
+                    <!-- Prettier -->
+                    <div class="compare-card">
+                        <div class="compare-card-header" style="background:#eef6ff; color:var(--ms-blue-dark);">
+                            <i class="fas fa-magic"></i> Prettier
+                        </div>
+                        <div class="compare-card-body">
+                            <strong>代碼格式化（Code Formatter）</strong>
+                            <p style="margin-top:8px;">
+                                自動幫你把縮排亂掉、括號對齊錯誤的程式碼排版整齊。在存檔瞬间（可設定 format on save），讓混亂一秒歸零。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Material Icon Theme -->
+                    <div class="compare-card">
+                        <div class="compare-card-header" style="background:#dff6dd; color:#107c10;">
+                            <i class="fas fa-folder-open"></i> Material Icon Theme
+                        </div>
+                        <div class="compare-card-body">
+                            <strong>檔案標誌美化（File Icons）</strong>
+                            <p style="margin-top:8px;">
+                                讓檔案樹列表出現漂亮、易辨識的標誌與圖示。HTML 檔案顯示 HTML 圖標，JavaScript 檔案顯示 JS 圖標，方便快速定位檔案類型。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Error Lens -->
+                    <div class="compare-card">
+                        <div class="compare-card-header" style="background:#fde7e9; color:var(--ms-red);">
+                            <i class="fas fa-bug"></i> Error Lens
+                        </div>
+                        <div class="compare-card-body">
+                            <strong>即時除錯反饋（Instant Debug）</strong>
+                            <p style="margin-top:8px;">
+                                直接把代碼中的錯誤、警告以及語法警告提示，以高亮色彩直接顯示在出錯程式碼的行尾，不用將滑鼠移上去懸停，除錯效率提升 200%。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>自動存檔排版設定</strong>
+                        安裝 Prettier 後，建議進入 VS Code 設定（<kbd>Ctrl+,</kbd>），搜尋 <code>format on save</code> 並將其勾選。
+                        如此一來，每次存檔時 VS Code 都會自動以 Prettier 標準幫你重新排版！
+                    </div>
+                </div>
+
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">3 / 5</span>
+                <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 4: 實作練習 ══════════ -->
+        <div class="ms-unit-page" id="page-4">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-4" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 15 分鐘</div>
+                </div>
+
+                <h1>實作練習：本地開發環境與同步</h1>
+
+                <p>
+                    請動手完成以下兩項本地端配置任務，這將為你未來的程式開發與 AI 協作打下最穩固的基礎。
+                </p>
+
+                <div class="lab-cards-group">
+                    <!-- Task 1 -->
+                    <div class="ms-lab-card" onclick="openSubmissionModal('vscode-setup-task-1', '安裝 GitHub Copilot')">
+                        <div class="ms-lab-badge"><i class="fas fa-robot"></i>&nbsp; 作業 1</div>
+                        <span class="ms-lab-time"><i class="far fa-clock"></i> 約 10 分鐘</span>
+                        <h3>安裝 GitHub Copilot</h3>
+                        <p style="font-size:14px; color:#323130; margin-bottom:14px;">
+                            讓 AI 成為你的副駕駛，體驗結對編程（Pair Programming）的強大威力。
+                        </p>
+                        <ul class="ms-checklist">
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>點擊左側 Extensions 圖示或按 <kbd>Ctrl+Shift+X</kbd></span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>搜尋 <strong>GitHub Copilot</strong> 並點擊安裝 (Install)</span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>點擊右下角的登入通知，點選 "Allow" 登入 GitHub 帳號以獲取授權</span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>確認 VS Code 右下角狀態列出現 Copilot 小圖示（無斜線標示），即可開始使用</span></li>
+                        </ul>
+                        <div class="ms-note" style="margin-top:12px;">
+                            <i class="fas fa-info-circle note-icon"></i>
+                            <div class="note-body">
+                                <strong>小提示</strong>
+                                GitHub Copilot 對於學生或符合特定資格的開發者提供免費試用；若無訂閱，也可以先安裝，之後再進行啟用。
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task 2 -->
+                    <div class="ms-lab-card" onclick="openSubmissionModal('vscode-setup-task-2', '作業 2-2: Git 帳號同步')">
+                        <div class="ms-lab-badge"><i class="fas fa-sync"></i>&nbsp; 作業 2</div>
+                        <span class="ms-lab-time"><i class="far fa-clock"></i> 約 10 分鐘</span>
+                        <h3>Git 帳號設定同步</h3>
+                        <p style="font-size:14px; color:#323130; margin-bottom:14px;">
+                            設定 Settings Sync，讓你的編輯器外掛、快捷鍵、主題跟著帳號走。
+                        </p>
+                        <ul class="ms-checklist">
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>點擊 VS Code 左下角的人頭 👤 帳戶圖示</span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>點擊 <strong>"開啟設定同步... (Turn on Settings Sync...)"</strong></span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>在跳出的選單中點擊 "Sign in & Turn on"，並選擇使用 GitHub 帳號登入</span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>於瀏覽器完成 GitHub 授權後，確認 VS Code 左下角頭像顯示已登入，啟用同步狀態</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">4 / 5</span>
+                <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 5: QUIZ ══════════ -->
+        <div class="ms-unit-page" id="page-5">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-5" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <div class="quiz-question">
+                        <p>1. Windows 用戶在安裝 VS Code 本地版時，建議勾選哪一個關鍵設定以提升專案開啟效率？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 啟用精簡模式介面</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 將「開啟以程式碼編輯」動作加入檔案總管內容功能表 (Add "Open with Code")</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 關閉所有背景網路傳輸</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>2. 若要讓程式碼在存檔瞬間自動進行排版，讓混亂程式碼自動變整齊，需要安裝哪一個擴充套件？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> Error Lens</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> Chinese Language Pack</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> Prettier - Code Formatter</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>3. 啟用 VS Code 本地端的「設定同步 (Settings Sync)」主要的優點是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 可以將本地程式碼自動發布至網頁伺服器</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 加快電腦運行速度並清除硬碟快取</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 讓你的主題、外掛與快捷鍵設定備份在雲端，換電腦時無縫同步</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>4. 本地安裝的 VS Code 桌面版比起網頁版（github.dev）最關鍵的優勢是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 桌面版完全免費使用，網頁版需要收費</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 桌面版才支援安裝繁體中文介面</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 桌面版擁有本地終端機可執行與編譯程式，且可直接連接 USB / 藍牙等硬體通訊</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">5 / 5</span>
+                <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 6: SUMMARY ══════════ -->
+        <div class="ms-unit-page" id="page-6">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                </div>
+
+                <h1>摘要與資源</h1>
+
+                <p>
+                    恭喜！你已經成功完成了本地端開發環境的安裝與配置。
+                    現在不論是面對一般的網頁開發、AI 協作、還是複雜的硬體（如 ESP32、無人車晶片）燒錄與除錯，你的電腦都已成為具備強大擴充性的代碼指揮中心。
+                </p>
+
+                <div class="ms-achievement">
+                    <div class="achievement-icon">🛠️</div>
+                    <div class="achievement-text">
+                        <h3>恭喜！你已完成本地環境架設</h3>
+                        <p>現在你的電腦已經是一個功能強大、擁有 AI 增強與設定同步的開發者基地。</p>
+                    </div>
+                </div>
+
+                <h2>完成本模組後，你已學會：</h2>
+                <ul>
+                    <li>如何在不同作業系統上下載並完成 <strong>VS Code 桌面版</strong> 的正確安裝。</li>
+                    <li>如何安裝擴充套件，並成功套用 <strong>繁體中文化</strong> 介面。</li>
+                    <li>配置 <strong>Prettier</strong> 進行程式碼自動格式化排版。</li>
+                    <li>整合 <strong>Material Icon Theme</strong> 與 <strong>Error Lens</strong> 提升程式碼結構辨識與即時除錯回饋效率。</li>
+                    <li>開啟 <strong>Settings Sync (設定同步)</strong>，確保你的所有個人化設定跟著 GitHub 帳號走。</li>
+                </ul>
+
+                <h2>延伸學習資源</h2>
+
+                <a href="https://www.youtube.com/watch?v=Z3t_Y41Ji4Y" target="_blank" class="ms-resource-link">
+                    <i class="fab fa-youtube" style="color:#ff0000;"></i>
+                    <div>
+                        <div style="font-weight:600;">課程教學影片</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">YouTube — VS Code 本地安裝與配置示範</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+
+                <a href="https://docs.google.com/document/d/1yjmiikdeBpduR4xHXlho4LZqTN2Mv_NNHwZijz0dEkQ/edit?usp=sharing" target="_blank" class="ms-resource-link">
+                    <i class="fas fa-file-alt"></i>
+                    <div>
+                        <div style="font-weight:600;">課程官方講義</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">Google Docs — 詳細本地配置步驟圖文說明</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+
+                <a href="https://code.visualstudio.com/docs" target="_blank" class="ms-resource-link">
+                    <i class="fas fa-book"></i>
+                    <div>
+                        <div style="font-weight:600;">VS Code 官方文件</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">code.visualstudio.com — 最權威的功能介紹與快捷鍵指南</div>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
+                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「VS Code 安裝與基礎配置」模組！')">完成模組</button>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script>
+    /* ─── DATA ─── */
+    const UNITS = [
+        { id: 0, label: '課程總覽',              time: '',        type: 'index' },
+        { id: 1, label: '簡介',                  time: '3 分鐘',  type: 'unit'  },
+        { id: 2, label: '安裝與中文化',          time: '10 分鐘', type: 'unit'  },
+        { id: 3, label: '必備外掛推薦',          time: '8 分鐘',  type: 'unit'  },
+        { id: 4, label: '實作練習',              time: '15 分鐘', type: 'lab'   },
+        { id: 5, label: '知識測驗',              time: '4 分鐘',  type: 'quiz'  },
+        { id: 6, label: '摘要與資源',            time: '3 分鐘',  type: 'unit'  },
+    ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'c', q3: 'c', q4: 'c' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！勾選此項目可以讓我們直接在資料夾上按右鍵選擇「使用 VS Code 開啟」，大幅提升日常開發效率。' },
+        q2: { c: '正確！Prettier 是最主流的程式碼排版工具，能一鍵將代碼自動排版為標準格式。' },
+        q3: { c: '正確！Settings Sync 能將你的編輯器設定備份至 GitHub，在多部電腦之間無縫同步。' },
+        q4: { c: '正確！網頁版沒有本地終端機，亦無法直接讀取本機 USB/藍牙與硬體通訊；本地 VS Code 才能發揮完整的編譯與硬體控制能力。' },
+    };
+
+    let currentUnit = 0;
+    let doneSet = new Set();
+
+    /* ─── INIT ─── */
+    function init() {
+        buildSidebar();
+        buildIndexUnitList();
+        goToUnit(0);
+    }
+
+    function buildSidebar() {
+        const nav = document.getElementById('sidebar-nav');
+        nav.innerHTML = UNITS.map(u => {
+            const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
+                        : '';
+            return `
+            <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
+                <div class="unit-icon" id="icon-${u.id}">${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div>
+                <div class="unit-meta">
+                    <div class="unit-name">${u.label}${badge}</div>
+                    ${u.time ? `<div class="unit-time"><i class="far fa-clock"></i> ${u.time}</div>` : ''}
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function buildIndexUnitList() {
+        const el = document.getElementById('index-unit-list');
+        el.innerHTML = UNITS.filter(u => u.id > 0).map(u => `
+            <div class="unit-card ${u.type}" onclick="goToUnit(${u.id})">
+                <div class="unit-card-num">${u.id}</div>
+                <div class="unit-card-info">
+                    <div class="unit-card-name">${u.label}</div>
+                    <div class="unit-card-time"><i class="far fa-clock"></i> ${u.time}</div>
+                </div>
+                <div class="unit-card-arrow">›</div>
+            </div>
+        `).join('');
+    }
+
+    /* ─── NAVIGATION ─── */
+    function goToUnit(id) {
+        document.querySelectorAll('.ms-unit-page').forEach(p => p.classList.remove('visible'));
+        const target = id === 0 ? document.getElementById('page-index') : document.getElementById(`page-${id}`);
+        if (target) target.classList.add('visible');
+
+        document.querySelectorAll('.ms-unit-item').forEach(el => el.classList.remove('active'));
+        const navItem = document.getElementById(`nav-${id}`);
+        if (navItem) { navItem.classList.add('active'); navItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) {
+                icon.className = 'unit-icon done';
+                icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>';
+            } else if (u.id === id) {
+                icon.className = 'unit-icon active-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            } else {
+                icon.className = 'unit-icon';
+                icon.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id;
+            }
+        });
+
+        const unit = UNITS.find(u => u.id === id);
+        document.getElementById('bc-current').textContent = unit ? unit.label : '';
+        currentUnit = id;
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function markDone(id) {
+        doneSet.add(id);
+        const badge = document.getElementById(`badge-${id}`);
+        if (badge) badge.style.display = 'flex';
+        UNITS.forEach(u => {
+            const icon = document.getElementById(`icon-${u.id}`);
+            if (!icon) return;
+            if (doneSet.has(u.id)) { icon.className = 'unit-icon done'; icon.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>'; }
+        });
+        updateProgress();
+    }
+
+    function updateProgress() {
+        const total = UNITS.length - 1;
+        const done = doneSet.size;
+        document.getElementById('progress-fill').style.width = Math.round(done / total * 100) + '%';
+        document.getElementById('progress-text').textContent = `${done} / ${total} 已完成`;
+    }
+
+    /* ─── CHECKLIST ─── */
+    function toggleCheck(el) {
+        el.classList.toggle('checked');
+        el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
+    }
+
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            document.querySelectorAll(`input[name="${qid}"]`).forEach(opt => {
+                opt.disabled = true;
+                if (opt.value === answer) opt.parentElement.classList.add('correct');
+                if (opt.checked && opt.value !== answer) opt.parentElement.classList.add('wrong');
+            });
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                feedbackEl.textContent = '✗ 不正確。' + QUIZ_EXPLANATIONS[qid][answer];
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        const pct = Math.round(correct / total * 100);
+        scoreEl.style.display = 'block';
+        scoreEl.innerHTML = `<span style="font-size:20px;">${pct >= 75 ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pct >= 75 ? '通過！繼續前往下一個單元。' : '建議回顧相關單元後再試一次。'}</div>`;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => el.classList.remove('correct','wrong'));
+        document.querySelectorAll('input[type=radio]').forEach(el => { el.checked = false; el.disabled = false; });
+        document.querySelectorAll('.quiz-feedback').forEach(el => { el.className = 'quiz-feedback'; el.textContent = ''; });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
+    /* ─── START ─── */
+    init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;
+</script>
+
+    <!-- Define Resources -->
+    <script>
+        window.RESOURCES = {
+            video: "https://www.youtube.com/embed/Z3t_Y41Ji4Y",
+            doc: "https://docs.google.com/document/d/1yjmiikdeBpduR4xHXlho4LZqTN2Mv_NNHwZijz0dEkQ/edit?usp=sharing"
+        };
+    </script>
+    <script src="/js/course-shared.js?v=2026.05.21.V21.DISABLE_UNIFIED_SUPPORT_HUB"></script>
+
+    <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+<div class="markdown-heading"><h1 class="heading-element">🚀 單元 01：VS Code 本地安裝與開發環境配置</h1><a id="user-content--單元-01vs-code-本地安裝與開發環境配置" class="anchor" aria-label="Permalink: 🚀 單元 01：VS Code 本地安裝與開發環境配置" href="#-單元-01vs-code-本地安裝與開發環境配置"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p>歡迎來到你的第一個開發者任務！在本單元中，我們將一起完成開發環境的架設。工欲善其事，必先利其器。擁有一個順手的編輯器是成為優秀開發者的第一步。</p>
+<div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2><a id="user-content--學習目標" class="anchor" aria-label="Permalink: 🎯 學習目標" href="#-學習目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<ul>
+<li>成功安裝並配置 <strong>Visual Studio Code (VS Code)</strong>。</li>
+<li>掌握 <strong>GitHub Setting Sync</strong>，讓你的設定跟著帳號走。</li>
+<li>學會使用 <strong>Live Server</strong> 進行網頁即時預覽。</li>
+<li>練習透過 <strong>Git</strong> 提交你的第一份環境檢查報告。</li>
+</ul>
+<hr>
+<div class="markdown-heading"><h2 class="heading-element">🛠️ 操作步驟</h2><a id="user-content-️-操作步驟" class="anchor" aria-label="Permalink: 🛠️ 操作步驟" href="#️-操作步驟"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">1. 安裝與初始化</h3><a id="user-content-1-安裝與初始化" class="anchor" aria-label="Permalink: 1. 安裝與初始化" href="#1-安裝與初始化"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p>如果您尚未安裝 VS Code，請至 <a href="https://code.visualstudio.com/" rel="nofollow">官網</a> 下載並安裝。
+開啟本資料夾後，您會看到右下角跳出「建議安裝外掛」的提示，請點選 <strong>「全部安裝 (Install All)」</strong>。</p>
+<blockquote>
+<p>[!TIP]
+我們推薦安裝：<code>Chinese (Traditional) Language Pack</code> (中文化) 與 <code>Live Server</code> (網頁預覽)。</p>
+</blockquote>
+<div class="markdown-heading"><h3 class="heading-element">2. 設定同步 (Settings Sync)</h3><a id="user-content-2-設定同步-settings-sync" class="anchor" aria-label="Permalink: 2. 設定同步 (Settings Sync)" href="#2-設定同步-settings-sync"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p>點擊 VS Code 左下角的 <strong>「人頭圖示」</strong>，選擇 <strong>「開啟設定同步 (Turn on Settings Sync...)」</strong>，並使用您的 <strong>GitHub 帳號</strong> 登入。
+這能確保未來不論換到哪台電腦，您的偏好設定都能自動套用。</p>
+<div class="markdown-heading"><h3 class="heading-element">3. 環境測試 (Live Server)</h3><a id="user-content-3-環境測試-live-server" class="anchor" aria-label="Permalink: 3. 環境測試 (Live Server)" href="#3-環境測試-live-server"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<ol>
+<li>在左側檔案瀏覽器點擊 <code>index.html</code>。</li>
+<li>點擊編輯器右下角的 <strong>「Go Live」</strong> 按鈕。</li>
+<li>您的預設瀏覽器應會自動開啟，並顯示「環境測試成功！」的字樣。</li>
+</ol>
+<hr>
+<div class="markdown-heading"><h2 class="heading-element">📝 繳交任務</h2><a id="user-content--繳交任務" class="anchor" aria-label="Permalink: 📝 繳交任務" href="#-繳交任務"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p>請完成以下兩項任務，以證明您的環境已準備就緒：</p>
+<div class="markdown-heading"><h3 class="heading-element">任務 1：全視窗截圖 (<code>setup-ui.png</code>)</h3><a id="user-content-任務-1全視窗截圖-setup-uipng" class="anchor" aria-label="Permalink: 任務 1：全視窗截圖 (setup-ui.png)" href="#任務-1全視窗截圖-setup-uipng"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p>截下一張 <strong>VS Code 的全視窗截圖</strong>。</p>
+<ul>
+<li>
+<strong>必須包含</strong>：左側導覽列、下方的狀態列、以及左下角已登入的人頭圖示。</li>
+<li>
+<strong>檔案命名</strong>：<code>setup-ui.png</code>。</li>
+<li>
+<strong>存檔路徑</strong>：直接放入專案根目錄。</li>
+</ul>
+<div class="markdown-heading"><h3 class="heading-element">任務 2：網頁預覽截圖 (<code>html-preview.png</code>)</h3><a id="user-content-任務-2網頁預覽截圖-html-previewpng" class="anchor" aria-label="Permalink: 任務 2：網頁預覽截圖 (html-preview.png)" href="#任務-2網頁預覽截圖-html-previewpng"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p>截下一張包含 <strong>「VS Code 編輯器」</strong> 與 <strong>「瀏覽器預覽畫面」</strong> 並排的圖片。</p>
+<ul>
+<li>
+<strong>檔案命名</strong>：<code>html-preview.png</code>。</li>
+<li>
+<strong>存檔路徑</strong>：直接放入專案根目錄。</li>
+</ul>
+<div class="markdown-heading"><h3 class="heading-element">任務 3：填寫檢查清單</h3><a id="user-content-任務-3填寫檢查清單" class="anchor" aria-label="Permalink: 任務 3：填寫檢查清單" href="#任務-3填寫檢查清單"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p>開啟 <a href="env-check.md"><code>env-check.md</code></a>，將您的進度打勾 <code>[x]</code>，並確認截圖已正確顯示。</p>
+<hr>
+<div class="markdown-heading"><h2 class="heading-element">🚀 提交方式</h2><a id="user-content--提交方式" class="anchor" aria-label="Permalink: 🚀 提交方式" href="#-提交方式"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p>當您完成上述步驟後，請在終端機 (Terminal) 輸入以下指令：</p>
+<div class="highlight highlight-source-shell"><pre>git add <span class="pl-c1">.</span>
+git commit -m <span class="pl-s"><span class="pl-pds">"</span>feat: complete vscode environment setup<span class="pl-pds">"</span></span>
+git push</pre></div>
+<p>最後，請回到 GitHub 程式庫頁面並點擊 <strong>「Create Pull Request」</strong>，這將通知導師進行檢核。</p>
+<hr>
+<blockquote>
+<p>[!IMPORTANT]
+如果在啟動 Live Server 時遇到 <code>Port 5500 is already in use</code> 錯誤，請嘗試重啟 VS Code 或在設定中更改 Live Server 的 Port。</p>
+</blockquote>
+
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+<p>針對 <strong><code>01-unit-vscode-setup</code> (VS Code 本地安裝與配置)</strong> 單元，由於重點在於「軟體環境安裝」，在 GitHub Classroom 的部署上需要結合「圖片證明」與「設定檔測試」。</p>
+<p>以下是針對本單元作業 (Assignments) 的部署建議：</p>
+<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repo) 的關鍵配置</h3><a id="user-content-1-範本程式庫-template-repo-的關鍵配置" class="anchor" aria-label="Permalink: 1. 範本程式庫 (Template Repo) 的關鍵配置" href="#1-範本程式庫-template-repo-的關鍵配置"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p>為了讓學生一打開程式庫就能「接收到安裝建議」，強烈建議在範本中加入以下設定：</p>
+<ul>
+<li>
+<strong>📂 <code>.vscode/extensions.json</code></strong>：這是 VS Code 的「推薦外掛」功能。
+<ul>
+<li>內容包含：<code>ritwickdey.liveserver</code> 與 <code>ms-ceintl.vscode-language-pack-zh-hant</code>。</li>
+<li>
+<em>效果</em>：當學生 Clone 並開啟資料夾，右下角會自動跳出「此程式庫建議安裝外掛」的提示，大幅降低學生搜尋的時間。</li>
+</ul>
+</li>
+<li>
+<strong>📂 <code>index.html</code></strong>：放一個簡單常用的 HTML 範例。
+<ul>
+<li>
+<em>效果</em>：這能用來測試 VS Code 是否已正確啟動。如果安裝成功，學生可以使用 Live Server 預覽網頁內容。</li>
+</ul>
+</li>
+</ul>
+<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a id="user-content-2-作業任務部署細節" class="anchor" aria-label="Permalink: 2. 作業任務部署細節" href="#2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h4 class="heading-element">任務 1：中文化與同步測試 (L10N &amp; Sync)</h4><a id="user-content-任務-1中文化與同步測試-l10n--sync" class="anchor" aria-label="Permalink: 任務 1：中文化與同步測試 (L10N &amp; Sync)" href="#任務-1中文化與同步測試-l10n--sync"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<ul>
+<li>
+<strong>驗證方式</strong>：<strong>螢幕截圖法</strong>。
+<ul>
+<li>要求學生將當前 VS Code 的全視窗截圖，命名為 <code>setup-ui.png</code> 放入程式庫。</li>
+<li>導師檢核點：介面是否為中文？左下角人頭圖示是否顯示登入？</li>
+</ul>
+</li>
+<li>
+<strong>自動化檢核自學 (Autograding)</strong>：
+<ul>
+<li>設置一個 Action 檢查 <code>setup-ui.png</code> 檔案是否存在。</li>
+</ul>
+</li>
+</ul>
+<div class="markdown-heading"><h4 class="heading-element">任務 2：網頁開發環境測試 (Live Server)</h4><a id="user-content-任務-2網頁開發環境測試-live-server" class="anchor" aria-label="Permalink: 任務 2：網頁開發環境測試 (Live Server)" href="#任務-2網頁開發環境測試-live-server"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<ul>
+<li>
+<strong>驗證方式</strong>：<strong>報告更新法</strong>。
+<ul>
+<li>提供一個 <code>env-check.md</code> 檢核表。</li>
+<li>要求學生在成功使用 Live Server 開啟網頁後，截下一張含有 <strong>「VS Code 編輯器」</strong> 與 <strong>「瀏覽器預覽畫面」</strong> 的圖片 <code>html-preview.png</code>。</li>
+<li>將圖片嵌入 <code>env-check.md</code> 中並 Push。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<div class="markdown-heading"><h3 class="heading-element">3. 給導師的翻轉教室策略 (Flipped Strategy)</h3><a id="user-content-3-給導師的翻轉教室策略-flipped-strategy" class="anchor" aria-label="Permalink: 3. 給導師的翻轉教室策略 (Flipped Strategy)" href="#3-給導師的翻轉教室策略-flipped-strategy"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<ul>
+<li>
+<strong>自動化回饋 (Feedback PR)</strong>：
+<ul>
+<li>利用 Classroom 的自動建立 PR 功能。</li>
+<li>導師若看到學生截圖中的 PIO 狀態列顯示 <code>Loading...</code> 或錯誤提示，可直接在截圖處留言指導。</li>
+</ul>
+</li>
+<li>
+<strong>解決「大檔案下載」痛點</strong>：
+<ul>
+<li>由於 PlatformIO 第一次啟動會下載約 500MB 的組件，在課堂上可能會發生網路擁塞。</li>
+<li>
+<strong>部署建議</strong>：在 README 中提早釋出下載連結，讓學員在「課前」就先完成下載動作，課中專注於 Sync 邏輯與介面操作。</li>
+</ul>
+</li>
+</ul>
+<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a id="user-content--推薦範本結構-github-classroom-template" class="anchor" aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" href="#-推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<pre lang="text"><code>.
+├── .vscode/
+│   └── extensions.json    # 引導學生一鍵安裝所有必備外掛
+├── index.html             # 測試環境用的 HTML 範例
+├── env-check.md           # 學生需填寫的環境檢查清單
+└── README.md              # 作業提交指南與截圖上傳說明
+</code></pre>
+<p>透過這種方式，您不僅能驗證學生是否「裝好了」，更能確保他們學會了如何<strong>透過 Git 提交開發環境報告</strong>，這對未來的協作開發是非常好的開端。</p>
+
+    </section>
+
+</body>
+
+</html>

@@ -80,6 +80,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -335,6 +336,14 @@
         }
         .ms-btn:hover { background: var(--ms-blue-dark); }
 
+        .ms-btn-ghost {
+            background: transparent; color: var(--ms-blue);
+            border: 1px solid var(--ms-blue); padding: 6px 18px;
+            font-size: 14px; font-weight: 600; border-radius: 2px;
+            cursor: pointer; transition: background .12s; font-family: inherit;
+        }
+        .ms-btn-ghost:hover { background: var(--ms-blue-light); }
+
         /* Nav */
         .unit-nav {
             display: flex;
@@ -402,6 +411,35 @@
         .achievement-text h3 { margin: 0 0 4px; font-size: 18px; }
         .achievement-text p { margin: 0; font-size: 14px; opacity: .9; }
 
+        /* Code block */
+        .ms-code-block {
+            background: #1e1e1e; border-radius: 6px; padding: 16px 20px;
+            margin: 16px 0; font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px; line-height: 1.7; overflow-x: auto; color: #d4d4d4;
+        }
+
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 10px 14px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; cursor: pointer; transition: background .1s, border-color .1s; font-size: 14px;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback { display: none; margin-top: 8px; padding: 10px 14px; border-radius: 4px; font-size: 13px; font-weight: 500; }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
+        .ms-btn-ghost {
+            background: transparent; color: var(--ms-blue); border: 1px solid var(--ms-blue);
+            padding: 7px 18px; font-size: 14px; font-weight: 600;
+            border-radius: 2px; cursor: pointer; transition: background .12s; font-family: inherit;
+        }
+        .ms-btn-ghost:hover { background: var(--ms-blue-light); }
+
         @media (max-width: 768px) {
             .ms-sidebar { display: none; }
             .unit-content { padding: 20px 16px 40px; }
@@ -416,9 +454,9 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">ESP32 硬體控制</span>
+    <a href="/prepare.html" target="_top" class="nav-label">準備課程</a>
 </nav>
 
 <div class="ms-layout">
@@ -428,25 +466,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">馬達 Ramping 調校</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 136 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 139 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">ESP32 硬體控制</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -454,7 +488,7 @@
                 <h1>馬達 Ramping 調校</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">ESP32 硬體控制</span>
                     <span class="ms-tag blue">自主學習</span>
                     <span class="ms-tag blue">實戰演練</span>
@@ -465,9 +499,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>裝置連線與設定</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>Ramping 原理示意</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>技術開發細節</strong> 的調校技巧與穩定性測試。</li>
+                    <li>理解 PWM 控制馬達的原理，以及瞬間全速造成的電流突波與機械損壞風險。</li>
+                    <li>使用 JavaScript <code>DataView</code> 與 <code>ArrayBuffer</code> 實作二進位 BLE 通訊協議。</li>
+                    <li>掌握 Ramping 演算法的加速曲線調校，依據場景選擇合適的 <code>rampAccelStep</code> 參數。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -497,18 +531,27 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>馬達 Ramping 調校</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網與軟體系統，你必須確實理解底層的架構與控制協定。
+                    馬達是無人車的動力核心，但「如何啟動」決定了車輛的穩定性。
+                    直接將 PWM 從 0 拉到最大值，就像把油門從零踩到底——結果不是加速，而是失控。
+                    本模組將教你用 Ramping 演算法讓加速曲線平滑可控，同時透過 BLE 二進位協議即時調校參數。
                 </p>
 
                 <div class="ms-scenario" id="intro-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始實作之前，請先花時間閱讀講義或觀看影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    小明用遙控器操控他組裝好的 ESP32 無人車。他興奮地推下油門，車子猛地衝出去，打了一個轉就撞上桌腳。
+                    問題不在馬達太強，而在 PWM 從 0 瞬間跳到 255——沒有任何緩衝。
+                    這就是本模組要解決的問題：用 Ramping 演算法讓加速曲線變得平滑可控。
                 </div>
 
-                <div id="video-section" class="mt-8">
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>本模組重點</strong>
+                        你將學會三件事：(1) PWM 控制馬達速度的原理；(2) BLE 二進位通訊的資料結構映射；(3) Ramping 加速曲線的調校與安全機制。
+                    </div>
+                </div>
+
+                <div id="video-section">
                     <h2>教學影片</h2>
                     <div style="border-radius:4px; overflow:hidden; margin:20px 0; box-shadow:0 2px 8px rgba(0,0,0,.12); aspect-ratio:16/9;">
                         <iframe src=""
@@ -521,12 +564,12 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 2: 單元 1 ══════════ -->
+        <!-- ══════════ PAGE 2: 裝置連線與設定 ══════════ -->
         <div class="ms-unit-page" id="page-2">
             <div class="unit-content">
                 <div class="unit-status-bar">
@@ -536,95 +579,144 @@
                 </div>
 
                 <h1>裝置連線與設定</h1>
-                
-                <div class="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden mb-12">
-<div class="p-6 bg-slate-50 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600">
-<i class="fa-brands fa-bluetooth text-xl"></i>
-</div>
-<div>
-<h2 class="text-lg font-bold text-slate-800">裝置連線</h2>
-<p class="text-xs text-slate-500">Service UUID: <span class="font-mono">4fafc201...</span></p>
-</div>
-</div>
-<div class="flex items-center gap-3">
-<span class="px-3 py-1 bg-slate-200 text-slate-600 rounded-full text-sm font-medium flex items-center gap-2" id="statusBadge">
-<span class="w-2 h-2 rounded-full bg-slate-400"></span> 未連線
-                    </span>
-<button class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-lg font-medium shadow-md transition flex items-center gap-2" id="connectBtn">
-<i class="fa-solid fa-link"></i> 連線 BLE
-                    </button>
-</div>
-</div>
-<div class="p-6 md:p-8 grid md:grid-cols-2 gap-8 opacity-50 pointer-events-none transition-all duration-300" id="mainPanel">
-<!-- Throttle Config -->
-<div>
-<h3 class="flex items-center gap-2 text-indigo-600 font-bold mb-4">
-<i class="fa-solid fa-gauge-high"></i> Throttle (油門/直線)
-                    </h3>
-<div class="space-y-4">
-<div class="input-group">
-<label>PWM Effective Limit (0-255)</label>
-<input id="pwmEffectiveLimitT" max="255" min="0" type="number"/>
-<p class="text-[10px] text-slate-400 mt-1">PWM 最大輸出限制</p>
-</div>
-<div class="input-group">
-<label>Ramp Accel Step</label>
-<input id="rampAccelStepT" max="100" min="1" type="number"/>
-<p class="text-[10px] text-slate-400 mt-1">每 10ms 增加的 PWM 數值 (加速度)</p>
-</div>
-<div class="input-group">
-<label>PWM Start Kick</label>
-<input id="pwmStartKickT" max="255" min="0" type="number"/>
-<p class="text-[10px] text-slate-400 mt-1">起步最小 PWM (克服靜摩擦力)</p>
-</div>
-</div>
-</div>
-<!-- Steering Config -->
-<div class="md:border-l md:border-slate-100 md:pl-8">
-<h3 class="flex items-center gap-2 text-emerald-600 font-bold mb-4">
-<i class="fa-solid fa-arrows-left-right"></i> Steering (轉向/差速)
-                    </h3>
-<div class="space-y-4">
-<div class="input-group">
-<label>PWM Effective Limit (0-255)</label>
-<input id="pwmEffectiveLimitS" max="255" min="0" type="number"/>
-</div>
-<div class="input-group">
-<label>Ramp Accel Step</label>
-<input id="rampAccelStepS" max="100" min="1" type="number"/>
-</div>
-<div class="input-group">
-<label>PWM Start Kick</label>
-<input id="pwmStartKickS" max="255" min="0" type="number"/>
-</div>
-</div>
-</div>
-<!-- Common & Actions -->
-<div class="md:col-span-2 pt-6 border-t border-slate-100 flex flex-col items-center gap-4">
-<div class="w-full max-w-xs">
-<label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1 text-center">Control
-                            Timeout (ms)</label>
-<input class="w-full text-center px-3 py-2 border rounded-md" id="controlTimeoutMs" max="5000" min="100" type="number"/>
-</div>
-<button class="w-full md:w-auto px-8 py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold shadow-lg transition flex items-center justify-center gap-2" id="saveBtn">
-<i class="fa-regular fa-floppy-disk"></i> 傳送設定至裝置 (Binary 28 Bytes)
-                    </button>
-<p class="text-sm text-slate-400 min-h-[20px]" id="msgLabel"></p>
-</div>
-</div>
-</div>
+
+                <p>
+                    在操控無人車之前，你需要先理解三個核心概念：PWM 如何控制馬達轉速、BLE 二進位通訊為何比文字協議更適合嵌入式裝置，
+                    以及如何用 JavaScript 的 <code>DataView</code> 將參數精確映射到 C 語言的結構體記憶體佈局。
+                </p>
+
+                <h2>PWM（脈衝寬度調變）與馬達速度</h2>
+
+                <p>
+                    PWM 不是直接控制電壓大小，而是透過快速開關訊號的「高電位時間比例」（Duty Cycle）來調節平均功率。
+                    當 Duty Cycle 為 0% 時馬達不轉，100% 時全速運轉。ESP32 的 LEDC 模組可輸出 0–255 共 256 級的 PWM 值，
+                    對應 0%–100% 的轉速比例。
+                </p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>Note</strong>
+                        PWM 值 127 不代表「半速」——馬達的轉速與 PWM 之間是非線性關係，受到靜摩擦力、負載與電池電壓影響。這也是為什麼需要 <code>pwmStartKick</code> 參數來克服啟動死區。
+                    </div>
+                </div>
+
+                <h2>BLE 二進位通訊 vs. 文字協議</h2>
+
+                <p>
+                    傳統做法是用 JSON 字串傳送參數（如 <code>{"pwmLimit":200}</code>），但這對嵌入式裝置有兩個問題：
+                    一是字串解析需要消耗 CPU 與記憶體（ESP32 僅 520KB SRAM），二是 BLE 單次傳輸最大 512 Bytes，
+                    JSON 的冗餘字元浪費了寶貴的頻寬。二進位協議將 7 個參數壓縮成固定的 28 Bytes，嵌入式端只需一次 <code>memcpy</code> 即可完成解析。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>比較項目</th><th>JSON 文字協議</th><th>Binary 二進位協議</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>封包大小（7 個 int32）</td><td>~120–150 Bytes</td><td>固定 28 Bytes</td></tr>
+                        <tr><td>嵌入式端解析方式</td><td>需要 JSON Parser 函式庫</td><td><code>memcpy(&config, buf, 28)</code></td></tr>
+                        <tr><td>CPU 開銷</td><td>高（逐字元解析）</td><td>趨近零</td></tr>
+                        <tr><td>型別安全性</td><td>低（字串轉數字可能出錯）</td><td>高（固定偏移量 + 型別）</td></tr>
+                    </tbody>
+                </table>
+
+                <h2>C Struct 與 DataView 的對應關係</h2>
+
+                <p>
+                    ESP32 韌體定義了一個 <code>MotorConfig_t</code> 結構體，共 28 Bytes。網頁端使用 JavaScript 的
+                    <code>ArrayBuffer</code>（原始記憶體）配合 <code>DataView</code>（帶偏移量的讀寫介面）來組裝完全相同的位元組排列。
+                    關鍵在於兩端必須使用相同的位元組序（Little-Endian）與型別寬度。
+                </p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>建立 ArrayBuffer</h4>
+                            <p><code>const buffer = new ArrayBuffer(28);</code> — 分配 28 Bytes 的連續記憶體空間。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>包裝為 DataView</h4>
+                            <p><code>const view = new DataView(buffer);</code> — DataView 提供 <code>setInt32()</code>、<code>getUint32()</code> 等方法，可指定偏移量和位元組序。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>逐欄寫入（Little-Endian）</h4>
+                            <p><code>view.setInt32(offset, value, true);</code> — 第三個參數 <code>true</code> 表示 Little-Endian，與 ESP32 的記憶體排列一致。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>Tip</strong>
+                        忘記設定 Little-Endian（省略第三個參數）是最常見的錯誤——DataView 預設使用 Big-Endian，與 ESP32 相反，導致讀出的數值完全錯誤。
+                    </div>
+                </div>
+
+                <h2>互動工具：BLE 裝置設定面板</h2>
+                <p>以下面板可直接連線你的 ESP32 無人車，讀取並修改 Ramping 參數。連線後所有欄位將自動填入裝置當前的設定值。</p>
+
+                <div style="border:1px solid #e1dfdd; border-radius:6px; overflow:hidden; margin:20px 0;">
+                    <div style="padding:14px 20px; background:#faf9f8; border-bottom:1px solid #e1dfdd; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <i class="fa-brands fa-bluetooth" style="color:#0078d4; font-size:20px;"></i>
+                            <div>
+                                <strong style="font-size:15px;">裝置連線</strong>
+                                <div style="font-size:11px; color:#605e5c;">Service UUID: <code>4fafc201...</code></div>
+                            </div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span id="statusBadge" style="padding:4px 12px; background:#e1dfdd; color:#605e5c; border-radius:12px; font-size:13px; font-weight:500; display:flex; align-items:center; gap:6px;">
+                                <span style="width:8px; height:8px; border-radius:50%; background:#8a8886; display:inline-block;"></span> 未連線
+                            </span>
+                            <button class="ms-btn" id="connectBtn"><i class="fa-solid fa-link"></i> 連線 BLE</button>
+                        </div>
+                    </div>
+                    <div id="mainPanel" style="padding:20px; display:grid; grid-template-columns:1fr 1fr; gap:24px; opacity:0.5; pointer-events:none; transition:all .3s;">
+                        <div>
+                            <h3 style="font-size:15px; font-weight:600; color:#0078d4; margin:0 0 14px;"><i class="fa-solid fa-gauge-high"></i> Throttle（油門/直線）</h3>
+                            <div style="display:flex; flex-direction:column; gap:12px;">
+                                <div><label style="font-size:13px; font-weight:500; display:block; margin-bottom:4px;">PWM Effective Limit (0-255)</label><input id="pwmEffectiveLimitT" max="255" min="0" type="number" style="width:100%; padding:6px 10px; border:1px solid #e1dfdd; border-radius:3px; font-size:14px;"/></div>
+                                <div><label style="font-size:13px; font-weight:500; display:block; margin-bottom:4px;">Ramp Accel Step</label><input id="rampAccelStepT" max="100" min="1" type="number" style="width:100%; padding:6px 10px; border:1px solid #e1dfdd; border-radius:3px; font-size:14px;"/></div>
+                                <div><label style="font-size:13px; font-weight:500; display:block; margin-bottom:4px;">PWM Start Kick</label><input id="pwmStartKickT" max="255" min="0" type="number" style="width:100%; padding:6px 10px; border:1px solid #e1dfdd; border-radius:3px; font-size:14px;"/></div>
+                            </div>
+                        </div>
+                        <div style="border-left:1px solid #e1dfdd; padding-left:24px;">
+                            <h3 style="font-size:15px; font-weight:600; color:#107c10; margin:0 0 14px;"><i class="fa-solid fa-arrows-left-right"></i> Steering（轉向/差速）</h3>
+                            <div style="display:flex; flex-direction:column; gap:12px;">
+                                <div><label style="font-size:13px; font-weight:500; display:block; margin-bottom:4px;">PWM Effective Limit (0-255)</label><input id="pwmEffectiveLimitS" max="255" min="0" type="number" style="width:100%; padding:6px 10px; border:1px solid #e1dfdd; border-radius:3px; font-size:14px;"/></div>
+                                <div><label style="font-size:13px; font-weight:500; display:block; margin-bottom:4px;">Ramp Accel Step</label><input id="rampAccelStepS" max="100" min="1" type="number" style="width:100%; padding:6px 10px; border:1px solid #e1dfdd; border-radius:3px; font-size:14px;"/></div>
+                                <div><label style="font-size:13px; font-weight:500; display:block; margin-bottom:4px;">PWM Start Kick</label><input id="pwmStartKickS" max="255" min="0" type="number" style="width:100%; padding:6px 10px; border:1px solid #e1dfdd; border-radius:3px; font-size:14px;"/></div>
+                            </div>
+                        </div>
+                        <div style="grid-column:1/-1; border-top:1px solid #e1dfdd; padding-top:16px; text-align:center;">
+                            <label style="font-size:12px; font-weight:600; color:#605e5c; text-transform:uppercase; letter-spacing:.04em; display:block; margin-bottom:6px;">Control Timeout (ms)</label>
+                            <input id="controlTimeoutMs" max="5000" min="100" type="number" style="width:200px; text-align:center; padding:6px 10px; border:1px solid #e1dfdd; border-radius:3px; font-size:14px;"/>
+                            <div style="margin-top:14px;">
+                                <button class="ms-btn" id="saveBtn"><i class="fa-regular fa-floppy-disk"></i> 傳送設定至裝置 (Binary 28 Bytes)</button>
+                            </div>
+                            <p id="msgLabel" style="font-size:13px; color:#605e5c; margin-top:8px; min-height:20px;"></p>
+                        </div>
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 3: 單元 2 ══════════ -->
+        <!-- ══════════ PAGE 3: Ramping 原理示意 ══════════ -->
         <div class="ms-unit-page" id="page-3">
             <div class="unit-content">
                 <div class="unit-status-bar">
@@ -634,48 +726,85 @@
                 </div>
 
                 <h1>Ramping 原理示意</h1>
-                
-                <div class="grid md:grid-cols-2 gap-8 mb-16">
-<div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-<h3 class="font-bold text-lg mb-4 text-slate-700">為什麼需要 Ramping？</h3>
-<p class="text-slate-600 text-sm leading-relaxed mb-4">
-                    當您在操控無人車時，若直接將 PWM 從 0 瞬間拉到 255，會發生以下問題：
+
+                <p>
+                    Ramping 的核心概念是：不要讓 PWM 輸出瞬間到達目標值，而是每隔固定時間（例如 10ms）遞增或遞減一個步進量，
+                    讓實際輸出如同「爬坡」般逐漸逼近目標。這個步進量就是 <code>rampAccelStep</code> 參數。
                 </p>
-<ul class="list-disc list-inside text-sm text-slate-600 space-y-2">
-<li><strong>電流突波</strong>：瞬間大電流可能導致 ESP32 重啟。</li>
-<li><strong>機械應力</strong>：齒輪箱承受瞬間撞擊，容易損壞。</li>
-<li><strong>打滑失控</strong>：輪胎失去抓地力，導致車輛打轉。</li>
-</ul>
-<div class="mt-4 p-4 bg-purple-50 rounded-lg text-xs text-purple-700">
-<strong>rampAccelStep</strong> 就像是「虛擬彈簧」，數值越小，彈簧越軟（加速越平滑）；數值越大，反應越直接。
+
+                <h2>為什麼需要 Ramping？</h2>
+
+                <p>
+                    當你在操控無人車時，若直接將 PWM 從 0 瞬間拉到 255，會觸發三個連鎖問題：
+                    首先是電流突波——馬達啟動瞬間的堵轉電流可達穩態的 5–8 倍，可能導致 ESP32 的 3.3V 電源軌壓降，
+                    造成 Brown-out Reset（低電壓重啟）。其次是機械應力——齒輪箱的塑膠齒輪承受瞬間衝擊力，
+                    長期使用容易斷裂。最後是打滑失控——輪胎瞬間突破靜摩擦力極限，失去抓地力後車輛打轉。
+                </p>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>Warning</strong>
+                        電流突波不只影響馬達——同一條電源線上的所有元件（ESP32、感測器、LED）都會受到瞬間壓降影響。嚴重時可能造成 Flash 寫入中斷、導致韌體毀損。
+                    </div>
                 </div>
-</div>
-<!-- Placeholder for Visual -->
-<div class="bg-indigo-50 rounded-xl p-8 flex items-center justify-center border border-indigo-100">
-<div class="text-center">
-<i class="fa-solid fa-chart-line text-4xl text-indigo-300 mb-2"></i>
-<p class="text-indigo-400 text-sm">PWM Ramping Curve Visualization</p>
-<div class="mt-4 h-24 flex items-end gap-1 justify-center opacity-50">
-<div class="w-4 bg-indigo-400 h-1/6 rounded-t"></div>
-<div class="w-4 bg-indigo-400 h-2/6 rounded-t"></div>
-<div class="w-4 bg-indigo-400 h-3/6 rounded-t"></div>
-<div class="w-4 bg-indigo-400 h-4/6 rounded-t"></div>
-<div class="w-4 bg-indigo-400 h-5/6 rounded-t"></div>
-<div class="w-4 bg-indigo-400 h-full rounded-t"></div>
-</div>
-</div>
-</div>
-</div>
-                
+
+                <h2>rampAccelStep：虛擬彈簧的剛性</h2>
+
+                <p>
+                    你可以把 <code>rampAccelStep</code> 想像成一條虛擬彈簧，連接「目標 PWM」與「實際 PWM」。
+                    數值越小，彈簧越軟，加速越平滑但反應越慢；數值越大，彈簧越硬，反應越靈敏但衝擊越大。
+                    選擇合適的數值需要在「操控手感」與「硬體安全」之間取得平衡。
+                </p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>Note</strong>
+                        Ramping 的週期固定為 10ms（100Hz 更新率）。這意味著 <code>rampAccelStep = 5</code> 時，從 0 加速到 255 需要 255 ÷ 5 × 10ms = 510ms（約半秒）。
+                    </div>
+                </div>
+
+                <h2>不同 rampAccelStep 值的效果比較</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>rampAccelStep</th><th>0→255 所需時間</th><th>適用場景</th><th>風險</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>1</code></td><td>2.55 秒</td><td>精密定位、循跡緩行</td><td>反應遲鈍，操控延遲明顯</td></tr>
+                        <tr><td><code>5</code></td><td>510 ms</td><td>一般行駛、教學演示</td><td>平衡良好，推薦預設值</td></tr>
+                        <tr><td><code>15</code></td><td>170 ms</td><td>競速模式、快速反應</td><td>齒輪箱承受較大衝擊</td></tr>
+                        <tr><td><code>50</code></td><td>51 ms</td><td>幾乎無 Ramping</td><td>電流突波風險高，接近直接輸出</td></tr>
+                        <tr><td><code>255</code></td><td>10 ms（一步到位）</td><td>等同關閉 Ramping</td><td>全部風險爆發，僅供測試</td></tr>
+                    </tbody>
+                </table>
+
+                <h2>pwmStartKick：克服靜摩擦力的起步推力</h2>
+
+                <p>
+                    馬達在低 PWM 值時可能無法轉動——靜摩擦力 + 齒輪箱阻力需要最低啟動電流才能克服。
+                    <code>pwmStartKick</code> 定義了「當目標 PWM > 0 且實際 PWM 為 0 時，直接跳到的最低值」。
+                    例如設為 40，代表起步時 PWM 會直接從 0 跳到 40，跳過馬達無法動彈的死區。
+                </p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>Tip</strong>
+                        每台車的 <code>pwmStartKick</code> 最佳值不同，取決於馬達品質、齒輪比與輪胎摩擦力。建議從 30 開始測試，逐步增加直到車輛能穩定起步。
+                    </div>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 4: 單元 3 ══════════ -->
+        <!-- ══════════ PAGE 4: 技術開發細節 ══════════ -->
         <div class="ms-unit-page" id="page-4">
             <div class="unit-content">
                 <div class="unit-status-bar">
@@ -685,56 +814,103 @@
                 </div>
 
                 <h1>技術開發細節</h1>
-                
-                <section class="mb-16">
-<h2 class="text-2xl font-bold text-slate-800 mb-6">🛠️ 技術開發細節 (For Developer)</h2>
-<div class="bg-slate-900 rounded-xl overflow-hidden text-slate-300 font-mono text-sm shadow-xl">
-<div class="bg-slate-800 px-6 py-3 border-b border-slate-700 flex justify-between items-center">
-<span class="font-bold text-white">C++ Struct Definition</span>
-<span class="text-xs px-2 py-1 bg-slate-700 rounded">Total: 28 Bytes</span>
-</div>
-<div class="p-6 overflow-x-auto">
-<pre class="whitespace-pre"><span class="text-pink-400">struct</span> <span class="text-yellow-300">MotorConfig_t</span> {
-  <span class="text-blue-400">uint32_t</span> controlTimeoutMs;   <span class="text-slate-500">// Offset 0  (4 bytes)</span>
-  <span class="text-blue-400">int32_t</span>  pwmEffectiveLimitT; <span class="text-slate-500">// Offset 4  (4 bytes)</span>
-  <span class="text-blue-400">int32_t</span>  rampAccelStepT;     <span class="text-slate-500">// Offset 8  (4 bytes)</span>
-  <span class="text-blue-400">int32_t</span>  pwmStartKickT;      <span class="text-slate-500">// Offset 12 (4 bytes)</span>
-  <span class="text-blue-400">int32_t</span>  pwmEffectiveLimitS; <span class="text-slate-500">// Offset 16 (4 bytes)</span>
-  <span class="text-blue-400">int32_t</span>  rampAccelStepS;     <span class="text-slate-500">// Offset 20 (4 bytes)</span>
-  <span class="text-blue-400">int32_t</span>  pwmStartKickS;      <span class="text-slate-500">// Offset 24 (4 bytes)</span>
+
+                <p>
+                    本單元深入探討二進位通訊協議的實作細節。你需要理解 ESP32 韌體端的 C Struct 如何定義記憶體佈局，
+                    以及 JavaScript 端如何精確對齊每個欄位的偏移量與型別。
+                </p>
+
+                <h2>C++ Struct 定義</h2>
+
+                <p>
+                    ESP32 韌體中定義了以下結構體，共 7 個欄位、28 Bytes。所有整數型別為 32-bit（4 Bytes），
+                    因此每個欄位的偏移量恰好是 4 的倍數，不存在 Padding 問題。
+                </p>
+
+                <pre class="ms-code-block"><span style="color:#c586c0">struct</span> <span style="color:#4ec9b0">MotorConfig_t</span> {
+  <span style="color:#569cd6">uint32_t</span> controlTimeoutMs;   <span style="color:#6a9955">// Offset 0  (4 bytes)</span>
+  <span style="color:#569cd6">int32_t</span>  pwmEffectiveLimitT; <span style="color:#6a9955">// Offset 4  (4 bytes)</span>
+  <span style="color:#569cd6">int32_t</span>  rampAccelStepT;     <span style="color:#6a9955">// Offset 8  (4 bytes)</span>
+  <span style="color:#569cd6">int32_t</span>  pwmStartKickT;      <span style="color:#6a9955">// Offset 12 (4 bytes)</span>
+  <span style="color:#569cd6">int32_t</span>  pwmEffectiveLimitS; <span style="color:#6a9955">// Offset 16 (4 bytes)</span>
+  <span style="color:#569cd6">int32_t</span>  rampAccelStepS;     <span style="color:#6a9955">// Offset 20 (4 bytes)</span>
+  <span style="color:#569cd6">int32_t</span>  pwmStartKickS;      <span style="color:#6a9955">// Offset 24 (4 bytes)</span>
 };</pre>
-</div>
-<div class="bg-indigo-900/30 p-4 border-t border-indigo-900/50">
-<h4 class="text-indigo-300 font-bold mb-2 text-xs uppercase">為什麼使用二進位傳輸？</h4>
-<p class="mb-2">1. <strong>極致效能</strong>：28 Bytes vs JSON 字串 (~150 Bytes)。</p>
-<p>2. <strong>零解析開銷</strong>：嵌入式端只需 <code>memcpy</code>，無需 JSON Parser。</p>
-</div>
-</div>
-</section>
-<section class="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-16">
-<h2 class="text-lg font-bold text-amber-800 mb-4 flex items-center gap-2">
-<i class="fa-solid fa-triangle-exclamation"></i> 錯誤排查
-            </h2>
-<div class="grid md:grid-cols-3 gap-6 text-sm text-amber-900/80">
-<div>
-<strong class="block text-amber-900 mb-1">❌ 無法掃描到裝置</strong>
-<p>請重新插拔 ESP32 電源，並確認藍牙權限已開啟。</p>
-</div>
-<div>
-<strong class="block text-amber-900 mb-1">⚠️ 數據長度錯誤</strong>
-<p>若讀取時發生 Error，代表網頁端定義的 28 Bytes 與韌體端不一致，請檢查 Struct 對齊。</p>
-</div>
-<div>
-<strong class="block text-amber-900 mb-1">❌ 寫入後沒反應</strong>
-<p>請確認數值是否為整數 (Integer)。DataView 對型別非常敏感。</p>
-</div>
-</div>
-</section>
-                
+
+                <h2>位元組偏移量對照表</h2>
+
+                <p>
+                    以下表格列出每個欄位在 28 Bytes 封包中的精確位置。JavaScript 端使用 <code>DataView</code> 時，
+                    必須以相同的偏移量與型別方法（<code>setUint32</code> 或 <code>setInt32</code>）來寫入，否則韌體解析將得到錯誤數值。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>Byte Offset</th><th>欄位名稱</th><th>DataView 方法</th><th>用途說明</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>0</code></td><td>controlTimeoutMs</td><td><code>setUint32(0, val, true)</code></td><td>BLE 斷線後自動停車的超時時間（ms）</td></tr>
+                        <tr><td><code>4</code></td><td>pwmEffectiveLimitT</td><td><code>setInt32(4, val, true)</code></td><td>油門通道 PWM 上限（0–255）</td></tr>
+                        <tr><td><code>8</code></td><td>rampAccelStepT</td><td><code>setInt32(8, val, true)</code></td><td>油門加速步進量（每 10ms）</td></tr>
+                        <tr><td><code>12</code></td><td>pwmStartKickT</td><td><code>setInt32(12, val, true)</code></td><td>油門起步推力（克服靜摩擦）</td></tr>
+                        <tr><td><code>16</code></td><td>pwmEffectiveLimitS</td><td><code>setInt32(16, val, true)</code></td><td>轉向通道 PWM 上限（0–255）</td></tr>
+                        <tr><td><code>20</code></td><td>rampAccelStepS</td><td><code>setInt32(20, val, true)</code></td><td>轉向加速步進量（每 10ms）</td></tr>
+                        <tr><td><code>24</code></td><td>pwmStartKickS</td><td><code>setInt32(24, val, true)</code></td><td>轉向起步推力（克服靜摩擦）</td></tr>
+                    </tbody>
+                </table>
+
+                <h2>Little-Endian 編碼說明</h2>
+
+                <p>
+                    ESP32 使用 Xtensa LX6/LX7 處理器，採用 Little-Endian 位元組序。這代表一個 32-bit 整數的「最低有效位元組」
+                    存放在最低地址。例如數值 <code>500</code>（十六進位 <code>0x000001F4</code>）在記憶體中的排列是
+                    <code>F4 01 00 00</code>，而非 Big-Endian 的 <code>00 00 01 F4</code>。
+                </p>
+
+                <p>
+                    JavaScript <code>DataView</code> 的第三個參數 <code>littleEndian</code> 設為 <code>true</code> 時，
+                    會自動以 Little-Endian 格式讀寫。若省略此參數（預設 <code>false</code>），則使用 Big-Endian，
+                    韌體端將解析出完全錯誤的數值。
+                </p>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>Important</strong>
+                        Big-Endian / Little-Endian 錯誤不會產生任何 JavaScript 例外——程式照常執行，但韌體收到的數值是錯的。例如你傳送 <code>200</code>，韌體可能解讀為 <code>3355443200</code>。這是最難除錯的 Bug 之一。
+                    </div>
+                </div>
+
+                <h2>常見錯誤排查</h2>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>無法掃描到裝置</strong>
+                        請重新插拔 ESP32 電源，並確認瀏覽器已授予藍牙權限。部分瀏覽器需要在 HTTPS 環境下才能使用 Web Bluetooth API。
+                    </div>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>數據長度錯誤</strong>
+                        讀取時若出現長度不符的錯誤（如收到 24 Bytes 而非 28 Bytes），代表網頁端定義的結構與韌體端不一致。請確認韌體版本是否已更新至最新的 7 欄位版本。
+                    </div>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>寫入後裝置沒有反應</strong>
+                        確認輸入值是否為整數（不含小數點）。<code>DataView.setInt32()</code> 接收到 <code>NaN</code> 時不會報錯，但寫入的位元組全為 0，導致參數被清空。建議在寫入前使用 <code>parseInt()</code> 強制轉型。
+                    </div>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -813,12 +989,12 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識檢測 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
@@ -827,27 +1003,93 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
 
+                <h1>知識檢測</h1>
+                <p>回答以下問題，確認你已掌握本模組的核心概念。</p>
+
+                <div id="quiz-container">
+                    <!-- Q1 -->
+                    <div class="quiz-question" id="qq-1">
+                        <p>1. 為什麼 PWM 從 0 瞬間跳到 255 會造成問題？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 因為 ESP32 不支援 255 以上的 PWM 值</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 因為瞬間大電流可能導致電壓驟降、齒輪箱衝擊與輪胎打滑</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 因為 BLE 傳輸速度太慢，無法即時送出 255</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="d"> 因為 PWM 255 超過了馬達的額定電壓</label>
+                        <div class="quiz-feedback" id="fb-1"></div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="quiz-question" id="qq-2">
+                        <p>2. 使用 DataView 寫入 ArrayBuffer 時，第三個參數 <code>true</code> 代表什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 啟用資料壓縮</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 啟用 Little-Endian 位元組序（與 ESP32 記憶體排列一致）</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 允許寫入負數</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="d"> 啟用錯誤檢查碼（CRC）</label>
+                        <div class="quiz-feedback" id="fb-2"></div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="quiz-question" id="qq-3">
+                        <p>3. <code>pwmStartKick</code> 參數的主要用途是？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 設定馬達的最高轉速上限</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 當目標 PWM 從 0 開始時，跳過馬達無法轉動的低 PWM 死區，克服靜摩擦力</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 在馬達停止時產生剎車效果</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="d"> 決定 BLE 連線的重試次數</label>
+                        <div class="quiz-feedback" id="fb-3"></div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="quiz-question" id="qq-4">
+                        <p>4. <code>controlTimeoutMs</code> 的 Fail-Safe 機制如何運作？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 超過時間後自動提高 PWM 輸出</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 超過時間後切斷 BLE 連線</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 若在指定時間內未收到新的控制指令，韌體自動將馬達 PWM 歸零停車</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="d"> 限制每次 BLE 傳輸的最大封包大小</label>
+                        <div class="quiz-feedback" id="fb-4"></div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">送出答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                </div>
+
                 <h1>單元摘要與參考資源</h1>
 
                 <p>
                     恭喜！你已經完成了「<strong>馬達 Ramping 調校</strong>」模組。
-                    透過本單元的學習與實作，你已經掌握了關鍵的核心技術，為後續的開發奠定了深厚的基石。
+                    透過本單元的學習與實作，你已經掌握了從二進位通訊到馬達控制演算法的完整技術鏈。
                 </p>
 
                 <div class="ms-achievement">
                     <div class="achievement-icon">🚀</div>
                     <div class="achievement-text">
                         <h3>恭喜！你已完成本模組</h3>
-                        <p>你已具備開發與調校本單元核心功能的專業實力。持續累積，前進下一個挑戰！</p>
+                        <p>你已具備開發與調校馬達 Ramping 系統的專業實力。持續累積，前進下一個挑戰！</p>
                     </div>
                 </div>
 
                 <h2>完成本模組後，你已學會：</h2>
                 <ul>
-                    <li><strong>裝置連線與設定</strong> 的基本架構與實作技能。</li>
-                    <li><strong>Ramping 原理示意</strong> 的調試方法與資料傳輸細節。</li>
-                    <li><strong>技術開發細節</strong> 的優化指標與生產環境安全機制。</li>
-                    <li>在實戰挑戰中，透過 Git 與 GitHub Classroom 提交完整的專案成果。</li>
+                    <li><strong>PWM 與馬達控制</strong>：理解脈衝寬度調變如何控制轉速，以及瞬間全速的風險。</li>
+                    <li><strong>BLE 二進位協議</strong>：使用 DataView + ArrayBuffer 組裝固定 28 Bytes 封包，與 C Struct 精確對齊。</li>
+                    <li><strong>Ramping 演算法</strong>：依據場景調校 rampAccelStep，在操控手感與硬體安全間取得平衡。</li>
+                    <li><strong>安全機制</strong>：controlTimeoutMs 的 Fail-Safe 設計，確保通訊中斷時自動停車。</li>
                 </ul>
 
                 <h2>延伸學習資源</h2>
@@ -880,9 +1122,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「馬達 Ramping 調校」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「馬達 Ramping 調校」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -898,18 +1140,58 @@
         { id: 3, label: 'Ramping 原理示意', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '技術開發細節', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '100 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識檢測',       time: '3 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
     let doneSet = new Set();
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'c' };
+    const QUIZ_EXPLANATIONS = {
+        q1: '瞬間全速會產生堵轉電流突波（可達穩態 5–8 倍），導致電壓驟降、齒輪箱機械衝擊，以及輪胎打滑失控。',
+        q2: 'DataView 方法的第三個參數 littleEndian 設為 true 時，以 Little-Endian 格式讀寫，與 ESP32 Xtensa 處理器的記憶體排列一致。',
+        q3: 'pwmStartKick 是起步推力值——當目標 PWM 大於 0 且實際 PWM 為 0 時，直接跳到此值以克服馬達的靜摩擦力死區。',
+        q4: '若韌體在 controlTimeoutMs 時間內未收到新的控制指令（表示 BLE 可能已斷線），會自動將所有馬達 PWM 歸零，防止車輛失控。'
+    };
+
+    function submitQuiz() {
+        let allAnswered = true;
+        for (let i = 1; i <= 4; i++) {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+            const fb = document.getElementById(`fb-${i}`);
+            const correct = selected.value === QUIZ_ANSWERS[`q${i}`];
+            fb.textContent = correct
+                ? `✓ 正確！${QUIZ_EXPLANATIONS['q'+i]}`
+                : `✗ 不正確。${QUIZ_EXPLANATIONS['q'+i]}`;
+            fb.className = `quiz-feedback ${correct ? 'correct' : 'wrong'}`;
+
+            document.querySelectorAll(`#qq-${i} .quiz-option`).forEach(opt => {
+                opt.classList.remove('correct', 'wrong');
+                const radio = opt.querySelector('input');
+                if (radio.value === QUIZ_ANSWERS[`q${i}`]) opt.classList.add('correct');
+                else if (radio.checked && !correct) opt.classList.add('wrong');
+            });
+        }
+        if (!allAnswered) alert('請回答所有問題後再送出。');
+    }
+
+    function resetQuiz() {
+        for (let i = 1; i <= 4; i++) {
+            document.querySelectorAll(`input[name="q${i}"]`).forEach(r => r.checked = false);
+            const fb = document.getElementById(`fb-${i}`);
+            fb.className = 'quiz-feedback'; fb.textContent = '';
+            document.querySelectorAll(`#qq-${i} .quiz-option`).forEach(opt => opt.classList.remove('correct', 'wrong'));
+        }
+    }
 
     /* ─── INIT ─── */
     function init() {
         buildSidebar();
         buildIndexUnitList();
         
-        // Hide empty resources
         if (!window.RESOURCES.video) {
             const videoSection = document.getElementById('video-section');
             if (videoSection) videoSection.style.display = 'none';
@@ -924,13 +1206,11 @@
         goToUnit(0);
     }
 
-    /**
-     * 動態建構側邊欄單元選單。
-     */
     function buildSidebar() {
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -943,9 +1223,6 @@
         }).join('');
     }
 
-    /**
-     * 動態建構首頁單元卡片列表。
-     */
     function buildIndexUnitList() {
         const el = document.getElementById('index-unit-list');
         el.innerHTML = UNITS.filter(u => u.id > 0).map(u => `
@@ -1017,6 +1294,7 @@
     }
 
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;
 </script>
 
 <!-- Define Resources -->
@@ -1075,7 +1353,7 @@
 
                 // 4. 更新 UI
                 updateStatus('connected');
-                mainPanel.classList.remove('opacity-50', 'pointer-events-none');
+                mainPanel.style.opacity = '1'; mainPanel.style.pointerEvents = 'auto';
 
                 // 處理斷線
                 bleDevice.addEventListener('gattserverdisconnected', onDisconnect);
@@ -1097,32 +1375,22 @@
             }
 
             // Little-Endian 解包
-            // 偏移量 0: controlTimeoutMs (Uint32)
             inputs.controlTimeoutMs.value = value.getUint32(0, true);
-
-            // 偏移量 4: pwmEffectiveLimitT (Int32)
             inputs.pwmEffectiveLimitT.value = value.getInt32(4, true);
-            // 偏移量 8: rampAccelStepT
             inputs.rampAccelStepT.value = value.getInt32(8, true);
-            // 偏移量 12: pwmStartKickT
             inputs.pwmStartKickT.value = value.getInt32(12, true);
-
-            // 偏移量 16: pwmEffectiveLimitS
             inputs.pwmEffectiveLimitS.value = value.getInt32(16, true);
-            // 偏移量 20: rampAccelStepS
             inputs.rampAccelStepS.value = value.getInt32(20, true);
-            // 偏移量 24: pwmStartKickS
             inputs.pwmStartKickS.value = value.getInt32(24, true);
 
             msgLabel.textContent = "✅ 已從裝置讀取最新設定";
-            msgLabel.className = "text-green-600 font-bold text-sm mt-2";
+            msgLabel.style.color = "#107c10"; msgLabel.style.fontWeight = "600";
         }
 
         // --- 儲存設定 (二進位打包) ---
         saveBtn.addEventListener('click', async () => {
             if (!configChar) return;
 
-            // 驗證 (基本)
             for (const id of inputIds) {
                 if (!inputs[id].value) {
                     alert('❌ 所有欄位皆必填！');
@@ -1134,13 +1402,10 @@
                 const buffer = new ArrayBuffer(28);
                 const view = new DataView(buffer);
 
-                // 打包資料 (Little-Endian)
                 view.setUint32(0, parseInt(inputs.controlTimeoutMs.value), true);
-
                 view.setInt32(4, parseInt(inputs.pwmEffectiveLimitT.value), true);
                 view.setInt32(8, parseInt(inputs.rampAccelStepT.value), true);
                 view.setInt32(12, parseInt(inputs.pwmStartKickT.value), true);
-
                 view.setInt32(16, parseInt(inputs.pwmEffectiveLimitS.value), true);
                 view.setInt32(20, parseInt(inputs.rampAccelStepS.value), true);
                 view.setInt32(24, parseInt(inputs.pwmStartKickS.value), true);
@@ -1150,11 +1415,10 @@
                 await configChar.writeValue(buffer);
 
                 msgLabel.textContent = "✅ 設定已成功傳送! (28 Bytes)";
-                msgLabel.className = "text-green-600 font-bold text-sm mt-2";
+                msgLabel.style.color = "#107c10"; msgLabel.style.fontWeight = "600";
 
-                // 顯示成功視覺回饋
-                saveBtn.classList.add('bg-green-600');
-                setTimeout(() => saveBtn.classList.remove('bg-green-600'), 1000);
+                saveBtn.style.background = "#107c10";
+                setTimeout(() => saveBtn.style.background = "", 1000);
 
             } catch (err) {
                 console.error(err);
@@ -1164,20 +1428,18 @@
 
         // --- 輔助函式 ---
         function updateStatus(state) {
-            const badgeSpan = statusBadge.querySelector('span');
             if (state === 'connected') {
-                statusBadge.className = 'px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium flex items-center gap-2';
-                badgeSpan.className = 'w-2 h-2 rounded-full bg-green-500';
-                statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-green-500"></span> ${bleDevice.name} 已連線`;
-                connectBtn.classList.add('hidden');
+                statusBadge.style.background = '#dff6dd'; statusBadge.style.color = '#107c10';
+                statusBadge.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:#107c10;display:inline-block;"></span> ${bleDevice.name} 已連線`;
+                connectBtn.style.display = 'none';
             } else if (state === 'connecting') {
-                badgeSpan.className = 'w-2 h-2 rounded-full bg-amber-500 animate-pulse';
-                statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> 連線中...`;
+                statusBadge.style.background = '#fff4ce'; statusBadge.style.color = '#8a6914';
+                statusBadge.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:#ffaa44;display:inline-block;"></span> 連線中...`;
             } else {
-                statusBadge.className = 'px-3 py-1 bg-slate-200 text-slate-600 rounded-full text-sm font-medium flex items-center gap-2';
-                connectBtn.classList.remove('hidden');
-                statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-slate-400"></span> 未連線`;
-                mainPanel.classList.add('opacity-50', 'pointer-events-none');
+                statusBadge.style.background = '#e1dfdd'; statusBadge.style.color = '#605e5c';
+                connectBtn.style.display = '';
+                statusBadge.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:#8a8886;display:inline-block;"></span> 未連線`;
+                mainPanel.style.opacity = '0.5'; mainPanel.style.pointerEvents = 'none';
             }
         }
 

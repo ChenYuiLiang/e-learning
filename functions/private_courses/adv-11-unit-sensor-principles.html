@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>光電感測器原理與方波訊號 - Vibe Coding Learn</title>
+    <title>光電感測器原理與方波訊號 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 11 - 感測器</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">光電感測器原理與方波訊號</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 11</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>光電感測器原理與方波訊號</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 11</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,14 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>光電感測器原理與方波訊號</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    機器人如何「看見」自己的輪子轉了多快？答案藏在一對紅外線光電管與一片編碼盤之間。
+                    本模組從最底層的 <strong>光電遮斷現象</strong> 出發，帶你理解數位方波的物理意義，
+                    並建立一套從「脈衝計數」到「RPM 轉速」再到「cm/s 時速」的完整物理單位轉換引擎——這是所有閉迴路速度控制的數據基石。
                 </p>
 
                 <div class="ms-scenario">
                     <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    你手動轉動馬達一圈，Serial Monitor 上跳出了 20 個脈衝。這 20 代表什麼？每個脈衝對應多少公分的前進距離？如果換一顆更大的輪子，數字又會怎麼變？先觀看下方影片，建立對光電感測器與編碼盤解析度 (PPR) 的直覺認知，後續的標定實驗會更有方向感。
                 </div>
 
                 <h2>教學影片</h2>
@@ -576,7 +575,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -591,43 +590,88 @@
                 </div>
 
                 <h1>👁️ 1. 光電遮斷器：數位化的眼睛</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                透過紅外線對管與編碼盤（Encoder Disk）的組合，將旋轉的機械運動轉化為 0 與 1 的數位訊號。這是所有數位測速系統的物理基礎。
-                            </p>
-<div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-justify text-justify">
-<h4 class="font-bold text-blue-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
-                                    Working Principle</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify">
-<li class="flex items-center gap-2 text-justify text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> <strong>遮斷
-                                            (Blocked)</strong>：輸出高電位 (3.3V)。</li>
-<li class="flex items-center gap-2 text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> <strong>通過
-                                            (Clear)</strong>：輸出低電位 (0V)。</li>
-<li class="flex items-center gap-2 text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> <strong>解析度
-                                            (PPR)</strong>：一圈產生的脈衝數計為格數。</li>
-</ul>
+
+                <p>
+                    光電遮斷器（Photo-Interrupter）是最常見的數位測速感測器。它由一顆<strong>紅外線 LED</strong>
+                    與一顆<strong>光電晶體 (Phototransistor)</strong> 對向安裝組成「光閘」。
+                    當編碼盤（Encoder Disk）的格柵旋轉通過光閘時，紅外線交替被遮斷與通過，產生對應的高低電位數位訊號。
+                </p>
+
+                <div class="ms-note">
+                    <strong>注意：</strong>光電遮斷器是<strong>數位感測器</strong>，輸出只有 HIGH (3.3V) 和 LOW (0V) 兩種狀態。
+                    它不像類比感測器能輸出連續值。遮斷（Blocked）時輸出 HIGH；通過（Clear）時輸出 LOW（以 NPN 型為例，實際極性依電路設計而定）。
+                </div>
+
+                <div class="ms-table">
+                    <table>
+                        <caption>光電遮斷器硬體規格</caption>
+                        <thead>
+                            <tr>
+                                <th>元件</th>
+                                <th>功能</th>
+                                <th>典型規格</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>紅外線 LED</td>
+                                <td>發射端：持續發射 940nm 紅外線</td>
+                                <td>正向電流 20mA，需串聯限流電阻</td>
+                            </tr>
+                            <tr>
+                                <td>光電晶體</td>
+                                <td>接收端：有光時導通，無光時截止</td>
+                                <td>回應時間 &lt; 10μs</td>
+                            </tr>
+                            <tr>
+                                <td>編碼盤</td>
+                                <td>固定在馬達軸上，隨馬達旋轉</td>
+                                <td>常見格數：10、20、40 格/圈</td>
+                            </tr>
+                            <tr>
+                                <td>輸出訊號</td>
+                                <td>數位方波，頻率正比於轉速</td>
+                                <td>0V – 3.3V（或 5V）</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p>
+                    編碼盤的<strong>格數</strong>決定了感測器的<strong>解析度 (PPR, Pulses Per Revolution)</strong>。
+                    格數越多，每一格代表的角度越小，能感知的最小旋轉量也越精細。
+                    但格數並非越多越好——格柵太密會導致紅外線無法完全被遮斷，訊號邊緣變模糊。
+                </p>
+
+                <div class="ms-steps">
+                    <h4>光電遮斷器接線步驟</h4>
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div>將紅外線 LED 端串聯限流電阻（220Ω – 330Ω），連接至 3.3V 與 GND。</div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div>將光電晶體端的集極接 3.3V（經上拉電阻 10kΩ），射極接 GND。集極同時接至 ESP32 的 GPIO 輸入腳位。</div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div>將編碼盤安裝在馬達軸上，確保格柵能順暢通過光閘的縫隙。</div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div>用 <code>digitalRead()</code> 或示波器驗證：手動旋轉時，GPIO 應交替讀到 HIGH 與 LOW。</div>
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <strong>提示：</strong>許多市售光電遮斷器模組已內建限流電阻與上拉電阻，可直接接 VCC、GND、OUT 三線。
+                    但自製電路時，請務必確認限流電阻的阻值，避免燒毀紅外線 LED。
+                </div>
+
 </div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-justify">
-                                Digital Edge Detection</h4>
-<div class="relative w-32 h-32 mx-auto border-4 border-dashed border-indigo-500/30 rounded-full flex items-center justify-center animate-[spin_4s_linear_infinite] text-justify text-justify">
-<div class="absolute w-full h-1 bg-indigo-500 text-justify"></div>
-<div class="absolute w-1 h-full bg-indigo-500 text-justify text-left"></div>
-</div>
-<p class="text-[9px] text-indigo-400 mt-6 font-mono tracking-widest text-center text-justify text-justify">
-                                PHOTO-INTERRUPTER SENSING...</p>
-</div>
-</div>
-                
-            </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -642,48 +686,89 @@
                 </div>
 
                 <h1>📉 2. 方波訊號與物理換算</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                我們透過計算「每秒產生的脈衝數」來得知物理速度。重點在於邊緣 (Edge) 的精確捕捉。
-                            </p>
-<div class="bg-purple-50 p-8 rounded-3xl border border-purple-100 text-justify">
-<h4 class="text-purple-900 font-bold mb-4 text-xs uppercase tracking-widest text-center text-justify text-justify">
-                                    RPM Formula</h4>
-<div class="text-xl font-mono text-purple-600 text-center text-justify text-justify">
-                                    \[RPM = \frac{Ticks_{1s} \times 60}{PPR}\]
-                                </div>
-<p class="text-[10px] text-slate-400 mt-4 italic font-light text-center text-justify">
-                                    關鍵指標：PPR (Pulses Per Revolution)</p>
+
+                <p>
+                    光電遮斷器的輸出是一連串的<strong>方波 (Square Wave)</strong>——在示波器上呈現為規則的高低電位交替。
+                    理解方波的三個關鍵參數，是從原始訊號中提取物理資訊的基礎。
+                </p>
+
+                <div class="ms-table">
+                    <table>
+                        <caption>方波訊號三大參數</caption>
+                        <thead>
+                            <tr>
+                                <th>參數</th>
+                                <th>定義</th>
+                                <th>在測速中的意義</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>振幅 (Amplitude)</strong></td>
+                                <td>高電位與低電位的差值（如 3.3V）</td>
+                                <td>決定 GPIO 能否正確辨識為 HIGH/LOW</td>
+                            </tr>
+                            <tr>
+                                <td><strong>頻率 (Frequency)</strong></td>
+                                <td>每秒的脈衝數（Hz）</td>
+                                <td>頻率 = PPR × RPS，與轉速成正比</td>
+                            </tr>
+                            <tr>
+                                <td><strong>占空比 (Duty Cycle)</strong></td>
+                                <td>HIGH 時間佔一個週期的百分比</td>
+                                <td>理想編碼盤為 50%（格柵寬 = 間隙寬）</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p>
+                    從脈衝計數換算轉速的核心公式如下。假設在 1 秒內計數到 <em>N</em> 個脈衝，而編碼盤每圈有 <em>PPR</em> 個格：
+                </p>
+
+                <div class="ms-note">
+                    <strong>核心公式：</strong>
+                    \[RPM = \frac{N \times 60}{PPR}\]
+                    其中 <em>N</em> 為每秒脈衝數，<em>PPR</em> 為每圈脈衝數 (Pulses Per Revolution)，<em>RPM</em> 為每分鐘轉速。
+                </div>
+
+                <div class="ms-code">
+                    <div class="code-header">C++ (Arduino) — 基礎 RPM 計算</div>
+<pre><code>const int PPR = 20;           // 編碼盤格數
+volatile int ticks = 0;
+
+void IRAM_ATTR countTick() {
+    ticks++;
+}
+
+void setup() {
+    Serial.begin(115200);
+    attachInterrupt(digitalPinToInterrupt(SENSOR_PIN),
+                    countTick, FALLING);
+}
+
+void loop() {
+    delay(1000);              // 每秒取樣一次
+    noInterrupts();
+    int n = ticks;
+    ticks = 0;                // 歸零重新計數
+    interrupts();
+
+    float rpm = (float)n * 60.0 / PPR;
+    Serial.printf("Ticks: %d, RPM: %.1f\n", n, rpm);
+}</code></pre>
+                </div>
+
+                <div class="ms-important">
+                    <strong>重要：</strong>PPR 的值必須透過實測校準，而非僅依賴規格書。
+                    方法：手動旋轉馬達一整圈，記錄中斷計數器的增量，即為實際 PPR。
+                    不同編碼盤、不同安裝方式可能導致 PPR 偏差 ±1–2 格。
+                </div>
+
 </div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent text-justify">
-</div>
-<h4 class="text-purple-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-justify">
-                                Real-time Signal View</h4>
-<div class="w-full h-24 flex items-end gap-1 relative z-10 text-justify">
-<div class="w-1/6 h-full border-t-2 border-r-2 border-purple-400/60 transition-all group-hover:border-purple-400 text-justify">
-</div>
-<div class="w-1/6 h-1/4 border-t-2 border-r-2 border-purple-400/60 transition-all group-hover:border-purple-400 text-justify">
-</div>
-<div class="w-1/6 h-full border-t-2 border-r-2 border-purple-400/60 transition-all group-hover:border-purple-400">
-</div>
-<div class="w-1/6 h-1/4 border-t-2 border-r-2 border-purple-400/60 transition-all group-hover:border-purple-400">
-</div>
-<div class="w-1/6 h-full border-t-2 border-r-2 border-purple-400/60 transition-all group-hover:border-purple-400 text-justify">
-</div>
-</div>
-<p class="text-[9px] text-slate-500 mt-4 font-mono tracking-tighter uppercase relative z-10 text-center text-justify">
-                                Square Wave Amplitude: 3.3V</p>
-</div>
-</div>
-                
-            </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -698,48 +783,97 @@
                 </div>
 
                 <h1>📏 3. 解析度與物理量映射</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
-                                理解「一個脈衝代表前進多少公分」是自動導航的基石。這涉及到輪胎直徑與格數的幾何關係。
-                            </p>
-<div class="bg-emerald-500/10 p-8 rounded-3xl border border-emerald-500/20 shadow-inner text-justify">
-<h4 class="font-bold text-emerald-400 mb-4 text-xs uppercase tracking-widest text-justify">
-                                    Kinematic Calibration</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify text-justify">
-<li class="flex items-start gap-2 text-justify text-justify"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">解析度
-                                                (Ticks)</strong>：格數越多，解析度越高，能感知的最小移動量越小。</div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">遲滯
-                                                (Hysteresis)</strong>：防止在臨界位置時訊號因微小晃動而瘋狂跳動。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-justify"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify text-justify">映射邏輯</strong>：建立從脈衝到
-                                            RPM，再從 RPM 到 cm/s 的穩定轉換管線。</div>
-</li>
-</ul>
+
+                <p>
+                    知道轉速 (RPM) 還不夠——在機器人導航中，我們需要的是<strong>線速度 (cm/s)</strong> 和<strong>行進距離 (cm)</strong>。
+                    這需要將感測器的脈衝數映射到實際的物理尺寸，建立完整的<strong>脈衝→距離→速度</strong>換算管線。
+                </p>
+
+                <div class="ms-note">
+                    <strong>核心映射公式：</strong>
+                    \[\text{cm/tick} = \frac{\pi \times D}{PPR}\]
+                    其中 <em>D</em> 為輪胎直徑 (cm)，<em>PPR</em> 為每圈脈衝數。
+                    每一個脈衝代表車輪前進了 <em>cm/tick</em> 公分。
+                </div>
+
+                <div class="ms-table">
+                    <table>
+                        <caption>物理量換算管線</caption>
+                        <thead>
+                            <tr>
+                                <th>原始資料</th>
+                                <th>換算公式</th>
+                                <th>結果 (物理量)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>脈衝總數 <em>N<sub>total</sub></em></td>
+                                <td>距離 = N<sub>total</sub> × cm/tick</td>
+                                <td>行進距離 (cm)</td>
+                            </tr>
+                            <tr>
+                                <td>每秒脈衝數 <em>N</em></td>
+                                <td>速度 = N × cm/tick</td>
+                                <td>線速度 (cm/s)</td>
+                            </tr>
+                            <tr>
+                                <td>每秒脈衝數 <em>N</em></td>
+                                <td>RPM = N × 60 / PPR</td>
+                                <td>轉速 (RPM)</td>
+                            </tr>
+                            <tr>
+                                <td>RPM</td>
+                                <td>v = RPM × π × D / 60</td>
+                                <td>線速度 (cm/s)，交叉驗證用</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="ms-code">
+                    <div class="code-header">C++ (Arduino) — 完整物理量換算</div>
+<pre><code>const int   PPR      = 20;          // 每圈脈衝數（實測值）
+const float WHEEL_D  = 6.5;         // 輪胎直徑 cm
+const float CM_TICK  = PI * WHEEL_D / PPR;  // ≈ 1.021 cm/tick
+
+volatile int ticks = 0;
+long totalTicks = 0;
+
+void IRAM_ATTR countTick() { ticks++; }
+
+void loop() {
+    delay(100);  // 100ms 取樣
+    noInterrupts();
+    int n = ticks;
+    ticks = 0;
+    interrupts();
+
+    totalTicks += n;
+    float speed_cmps = n * CM_TICK * 10;   // ×10 因取樣 100ms
+    float distance   = totalTicks * CM_TICK;
+
+    Serial.printf("Speed: %.1f cm/s | Distance: %.1f cm\n",
+                  speed_cmps, distance);
+}</code></pre>
+                </div>
+
+                <div class="ms-warning">
+                    <strong>警告：</strong>輪胎直徑 <em>D</em> 必須精確量測——包含橡膠胎的壓縮量。
+                    建議的校準方法：讓機器人直線行駛已知距離（如 100cm），比對脈衝累積數與理論值，反推實際有效直徑。
+                    輪胎磨損、氣壓變化都會影響 <em>D</em> 的準確性。
+                </div>
+
+                <div class="ms-tip">
+                    <strong>提示：</strong>解析度 (cm/tick) 越小，定位精度越高。若需要更高精度，可以：
+                    (1) 增加編碼盤格數、(2) 使用 <code>CHANGE</code> 模式同時偵測上升緣與下降緣（等效 PPR 翻倍）、
+                    (3) 使用減速齒輪組放大脈衝頻率。
+                </div>
+
 </div>
-</div>
-<div class="lg:w-80 bg-emerald-600/10 p-10 rounded-3xl border border-emerald-500/20 text-center relative overflow-hidden group text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify">
-</div>
-<h4 class="text-emerald-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center text-justify">
-                                Hardware Logic</h4>
-<p class="text-[11px] text-slate-500 leading-relaxed font-light mb-8 italic text-center text-justify text-left">
-                                "將物理世界的旋轉轉化為精確的代碼指令，是機器人感知的第一步。"
-                            </p>
-<div class="inline-block px-8 py-3 bg-emerald-500 text-white rounded-xl font-bold text-[10px] shadow-lg cursor-pointer hover:bg-emerald-400 transition-colors text-center text-justify">
-                                Apply Scale Factor</div>
-</div>
-</div>
-                
-            </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -818,16 +952,134 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>
+                    請回答以下問題，測試你對「<strong>感測器原理</strong>」的理解程度。
+                    選擇完畢後點擊「送出答案」查看結果與解析。
+                </p>
+
+                <div id="quiz-container" style="margin:24px 0;">
+
+                    <div class="quiz-question" id="quiz-q0" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">1. 光電感測器的基本工作原理是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt0">
+                            <input type="radio" name="quiz-q0" value="0" style="accent-color:var(--ms-blue);">
+                            <span>利用磁場變化偵測物體</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt1">
+                            <input type="radio" name="quiz-q0" value="1" style="accent-color:var(--ms-blue);">
+                            <span>利用光線被遮斷或反射來偵測物體</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt2">
+                            <input type="radio" name="quiz-q0" value="2" style="accent-color:var(--ms-blue);">
+                            <span>利用溫度變化偵測距離</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt3">
+                            <input type="radio" name="quiz-q0" value="3" style="accent-color:var(--ms-blue);">
+                            <span>利用聲波反射計算距離</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp0" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q1" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">2. 編碼器（Encoder）產生的脈衝訊號主要用於量測什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt0">
+                            <input type="radio" name="quiz-q1" value="0" style="accent-color:var(--ms-blue);">
+                            <span>溫度變化</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt1">
+                            <input type="radio" name="quiz-q1" value="1" style="accent-color:var(--ms-blue);">
+                            <span>旋轉角度與速度</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt2">
+                            <input type="radio" name="quiz-q1" value="2" style="accent-color:var(--ms-blue);">
+                            <span>電壓穩定度</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt3">
+                            <input type="radio" name="quiz-q1" value="3" style="accent-color:var(--ms-blue);">
+                            <span>無線訊號強度</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp1" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q2" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">3. 類比感測器輸出的訊號需要經過什麼轉換才能被微控制器讀取？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt0">
+                            <input type="radio" name="quiz-q2" value="0" style="accent-color:var(--ms-blue);">
+                            <span>DAC（數位轉類比）</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt1">
+                            <input type="radio" name="quiz-q2" value="1" style="accent-color:var(--ms-blue);">
+                            <span>ADC（類比轉數位）</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt2">
+                            <input type="radio" name="quiz-q2" value="2" style="accent-color:var(--ms-blue);">
+                            <span>PWM 調變</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt3">
+                            <input type="radio" name="quiz-q2" value="3" style="accent-color:var(--ms-blue);">
+                            <span>I2C 通訊</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp2" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q3" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">4. 感測器校準（Calibration）的目的是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt0">
+                            <input type="radio" name="quiz-q3" value="0" style="accent-color:var(--ms-blue);">
+                            <span>提高感測器的供電效率</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt1">
+                            <input type="radio" name="quiz-q3" value="1" style="accent-color:var(--ms-blue);">
+                            <span>消除系統性誤差，建立原始值與實際物理量的對應關係</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt2">
+                            <input type="radio" name="quiz-q3" value="2" style="accent-color:var(--ms-blue);">
+                            <span>減少感測器的功耗</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt3">
+                            <input type="radio" name="quiz-q3" value="3" style="accent-color:var(--ms-blue);">
+                            <span>增加感測器的通訊速度</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp3" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">送出答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+
+                <div id="quiz-result" style="display:none; margin-top:20px; padding:16px 20px; border-radius:6px; font-weight:600;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -885,9 +1137,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「光電感測器原理與方波訊號」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「光電感測器原理與方波訊號」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -903,7 +1155,8 @@
         { id: 3, label: '📉 2. 方波訊號與物理換算', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '📏 3. 解析度與物理量映射', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -923,6 +1176,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1024,8 +1278,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = [1, 1, 1, 1];
+    const QUIZ_EXPLANATIONS = ["光電感測器透過發射光線並偵測其是否被遮斷或反射，來判斷物體的存在與位置。","編碼器將機械旋轉轉換為電子脈衝，透過計算脈衝數量與頻率可得知角度與轉速。","微控制器只能處理數位訊號，類比感測器的連續電壓值必須透過 ADC 轉換為離散數位值。","校準建立感測器讀數與真實物理量之間的映射關係，消除製造公差與環境因素造成的系統性偏差。"];
+
+    function submitQuiz() {
+        let score = 0;
+        QUIZ_ANSWERS.forEach((ans, i) => {
+            const selected = document.querySelector(`input[name="quiz-q${i}"]:checked`);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            const qEl = document.getElementById(`quiz-q${i}`);
+            if (selected && parseInt(selected.value) === ans) {
+                score++;
+                qEl.style.borderColor = '#107c10';
+                expEl.style.background = '#dff6dd';
+                expEl.innerHTML = '<strong style="color:#107c10;">✓ 正確！</strong> ' + QUIZ_EXPLANATIONS[i];
+            } else {
+                qEl.style.borderColor = '#d13438';
+                expEl.style.background = '#fde7e9';
+                expEl.innerHTML = '<strong style="color:#d13438;">✗ 不正確。</strong> ' + QUIZ_EXPLANATIONS[i];
+            }
+            expEl.style.display = 'block';
+        });
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === QUIZ_ANSWERS.length) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.style.color = '#107c10';
+            resultEl.textContent = `🎉 滿分！你答對了全部 ${QUIZ_ANSWERS.length} 題！`;
+        } else {
+            resultEl.style.background = '#deecf9';
+            resultEl.style.color = '#005a9e';
+            resultEl.textContent = `你答對了 ${score} / ${QUIZ_ANSWERS.length} 題，請查看解析後再試一次。`;
+        }
+    }
+
+    function resetQuiz() {
+        QUIZ_ANSWERS.forEach((_, i) => {
+            const radios = document.querySelectorAll(`input[name="quiz-q${i}"]`);
+            radios.forEach(r => r.checked = false);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            expEl.style.display = 'none';
+            const qEl = document.getElementById(`quiz-q${i}`);
+            qEl.style.borderColor = '#e1dfdd';
+        });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 11：光電感測器';
 </script>
 
 <!-- Define Resources -->

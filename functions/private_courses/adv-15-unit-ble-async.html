@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Bluetooth 非同步與連線優化 - Vibe Coding Learn</title>
+    <title>Web Bluetooth 非同步與連線優化 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -471,9 +473,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">進階課程 15 - 單元 1</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +487,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">Web Bluetooth 非同步與連線優化</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">進階課程 15</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,7 +509,7 @@
                 <h1>Web Bluetooth 非同步與連線優化</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">進階課程 15</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -553,15 +553,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>Web Bluetooth 非同步與連線優化</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    歡迎來到本模組！本單元聚焦於 <strong>Web Bluetooth 非同步與連線優化</strong>。
+                    藍牙連線充滿了不確定性：使用者可能取消配對、裝置可能突然斷電、訊號可能被牆壁遮蔽。如果你的連線邏輯還停留在層層巢狀的 .then() 地獄，錯誤處理將如同一場噩夢。
+                    本模組將教你用現代 async/await 語法重構連線管道、部署指數退避自動重連機制，並解決控制指令與遙測數據的高頻併發衝突。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境設定</div>
+                    你的機器人正在進行自動循跡表演，觀眾圍成一圈觀看。突然有人的手機開啟了藍牙掃描，訊號干擾導致連線中斷三秒。
+                    普通的系統需要使用者手動刷新網頁重新連線，但你的系統在裝置回場後悄無聲息地自動恢復了數據流，觀眾甚至沒有察覺中斷。
+                    請先觀看教學影片，了解如何打造這樣的「自癒式」通訊架構。
                 </div>
 
                 <h2>教學影片</h2>
@@ -575,7 +576,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -590,50 +591,129 @@
                 </div>
 
                 <h1>🤝 1. 非同步握手：從 Promise 鏈到 Async</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
-<div class="space-y-6">
-<p class="text-lg text-gray-600 leading-relaxed font-light">
-                                藍牙連線是一個充滿不確定性且緩慢的過程。使用現代語法 <code>async/await</code> 代替繁瑣的 <code>.then()</code>
-                                地獄，讓複雜的硬體連線邏輯具備極高的高可讀性。
-                            </p>
-<div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-<h4 class="font-bold text-blue-900 mb-2 text-xs uppercase tracking-widest leading-relaxed">
-                                    Sequential Connection Pipeline</h4>
-<ul class="text-xs text-slate-500 space-y-2 font-light">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span>
-<div><strong>過濾選取 (Request)</strong>：利用 UUID 與多重 Filter 精確鎖定目標車輛。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span>
-<div><strong>服務鏈結 (GATT)</strong>：建立連線橋樑並取得 Primary Service 核心特徵。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span>
-<div><strong>訂閱推送 (Notify)</strong>：開啟底層自動通知，實現零延遲的非阻塞式數據回填。</div>
-</li>
-</ul>
+
+                <p>
+                    在 Web Bluetooth API 中，每一步操作——從請求裝置、建立 GATT 連線到訂閱特徵通知——都是非同步的 I/O 操作。傳統的 <code>.then()</code> 鏈式寫法在面對多階段連線管道時，會迅速堆疊成難以維護的「回呼地獄 (Callback Hell)」。現代 JavaScript 的 <code>async/await</code> 語法讓我們能以線性、同步般的方式撰寫非同步邏輯，大幅提升程式碼的可讀性與錯誤處理能力。
+                </p>
+
+                <h2>為什麼 BLE 連線必須是非同步的？</h2>
+
+                <p>
+                    藍牙低功耗 (BLE) 的連線過程涉及多個硬體層級的交握：射頻掃描、GAP 廣播解析、GATT 服務發現、特徵值訂閱等。每一步都依賴無線通訊的物理回應，耗時從數十毫秒到數秒不等。如果使用同步阻塞式呼叫，整個瀏覽器介面將在連線期間完全凍結，使用者無法進行任何互動。
+                </p>
+
+                <p>
+                    <code>async/await</code> 的核心價值在於：它讓非同步程式碼看起來像同步程式碼一樣線性執行，同時保持了 JavaScript 事件迴圈的非阻塞特性。搭配 <code>try/catch</code> 結構，我們可以優雅地捕捉連線過程中任何階段的異常。
+                </p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        Web Bluetooth API 目前僅在 Chrome、Edge 等 Chromium 核心瀏覽器中獲得支援，且必須在安全環境 (HTTPS 或 localhost) 下使用。使用者必須透過手勢觸發（如點擊按鈕）才能啟動裝置掃描，這是瀏覽器安全策略的強制要求。
+                    </div>
+                </div>
+
+                <h2>連線管道的三階段序列</h2>
+
+                <p>完整的 BLE 連線管道可拆分為三個嚴格依序執行的階段。每個階段都必須等待前一階段成功完成後才能繼續：</p>
+
+                <table class="ms-table">
+                    <tr><th>階段</th><th>API 方法</th><th>功能說明</th><th>常見錯誤</th></tr>
+                    <tr>
+                        <td><strong>1. 裝置選取</strong></td>
+                        <td><code>navigator.bluetooth.requestDevice()</code></td>
+                        <td>顯示系統配對視窗，依據 UUID 或名稱過濾目標裝置</td>
+                        <td>使用者取消選取 → <code>NotFoundError</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>2. GATT 連結</strong></td>
+                        <td><code>device.gatt.connect()</code></td>
+                        <td>建立底層 ATT 連線，獲取 GATT Server 物件</td>
+                        <td>裝置離線 → <code>NetworkError</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>3. 特徵訂閱</strong></td>
+                        <td><code>characteristic.startNotifications()</code></td>
+                        <td>啟用 BLE Notify 機制，裝置端主動推送數據</td>
+                        <td>UUID 不符 → <code>NotFoundError</code></td>
+                    </tr>
+                </table>
+
+                <h2>使用 async/await 重構連線管道</h2>
+
+                <p>以下範例展示了如何將三階段連線管道重構為線性化的 <code>async/await</code> 程式碼。每個 <code>await</code> 暫停點都代表一次等待硬體回應的時機：</p>
+
+<div class="ms-code">
+<span class="c-kw">async function</span> <span class="c-attr">connectBLE</span><span class="c-white">() {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">try</span><span class="c-white"> {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 階段 1：使用 Service UUID 過濾並選取目標裝置</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">device</span> <span class="c-white">= </span><span class="c-kw">await</span> <span class="c-white">navigator.bluetooth.</span><span class="c-tag">requestDevice</span><span class="c-white">({</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;filters: [{ services: [</span><span class="c-str">'0000ffe0-0000-1000-8000-00805f9b34fb'</span><span class="c-white">] }]</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;});</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 階段 2：建立 GATT 連線並取得 Primary Service</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">server</span> <span class="c-white">= </span><span class="c-kw">await</span> <span class="c-white">device.gatt.</span><span class="c-tag">connect</span><span class="c-white">();</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">service</span> <span class="c-white">= </span><span class="c-kw">await</span> <span class="c-white">server.</span><span class="c-tag">getPrimaryService</span><span class="c-white">(SERVICE_UUID);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">char</span> <span class="c-white">= </span><span class="c-kw">await</span> <span class="c-white">service.</span><span class="c-tag">getCharacteristic</span><span class="c-white">(CHAR_UUID);</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 階段 3：啟用 Notify，開始接收遙測數據流</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">await</span> <span class="c-white">char.</span><span class="c-tag">startNotifications</span><span class="c-white">();</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;char.</span><span class="c-tag">addEventListener</span><span class="c-white">(</span><span class="c-str">'characteristicvaluechanged'</span><span class="c-white">, onTelemetry);</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;} </span><span class="c-kw">catch</span><span class="c-white"> (err) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (err.name === </span><span class="c-str">'NotFoundError'</span><span class="c-white">) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;showToast(</span><span class="c-str">'使用者取消了裝置選取'</span><span class="c-white">);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;} </span><span class="c-kw">else</span><span class="c-white"> {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;showToast(</span><span class="c-str">`連線失敗：${err.message}`</span><span class="c-white">);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<span class="c-white">}</span>
 </div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors">
-</div>
-<h4 class="text-xs font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10">
-                                Asynchronous Logic Sequence</h4>
-<div class="relative z-10 space-y-3">
-<div class="text-xs font-mono text-blue-400">await bleDevice.connect() <span class="text-slate-600">... ESTABLISHED</span></div>
-<div class="text-xs font-mono text-blue-400">await charNotify.startNotifications() <span class="text-slate-600">... STREAMING</span></div>
-<div class="w-full bg-slate-800 h-1 rounded-full flex">
-<div class="bg-blue-500 h-full w-full animate-pulse"></div>
-</div>
-</div>
-<p class="text-[10px] text-slate-600 mt-10 font-mono tracking-widest uppercase font-black">
-                                Linear Resource Allocation Active</p>
-</div>
-</div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在 <code>catch</code> 區塊中，務必區分 <code>NotFoundError</code>（使用者主動取消）與 <code>NetworkError</code>（裝置離線）。前者是預期行為，應顯示友善提示而非錯誤訊息；後者則應觸發重連邏輯。
+                    </div>
+                </div>
+
+                <h2>Promise 鏈 vs. Async/Await 對比</h2>
+
+                <p>以下對比展示了相同連線邏輯在兩種寫法下的差異。隨著連線階段增加，<code>.then()</code> 鏈的巢狀層級呈指數增長，而 <code>async/await</code> 始終保持線性結構：</p>
+
+                <div class="compare-grid">
+                    <div class="compare-card">
+                        <div class="compare-card-header" style="background:#fde7e9;">
+                            <i class="fas fa-times-circle" style="color:var(--ms-red);"></i> .then() 鏈式寫法
+                        </div>
+                        <div class="compare-card-body">
+                            回呼函式逐層巢狀，錯誤處理分散在每一個 <code>.catch()</code> 中，邏輯流難以追蹤。當需要在中間階段存取前幾階段的變數時，必須透過外部閉包或額外的變數傳遞，大幅降低可維護性。
+                        </div>
+                    </div>
+                    <div class="compare-card">
+                        <div class="compare-card-header" style="background:#dff6dd;">
+                            <i class="fas fa-check-circle" style="color:var(--ms-green);"></i> async/await 線性寫法
+                        </div>
+                        <div class="compare-card-body">
+                            所有變數（<code>device</code>、<code>server</code>、<code>service</code>）都在同一個函式作用域內可用，單一 <code>try/catch</code> 統一處理所有階段的異常，程式碼如同閱讀操作手冊般清晰直觀。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        <code>requestDevice()</code> 必須由使用者手勢（click、touch）直接觸發。在非手勢驅動的上下文中呼叫——例如 <code>setTimeout</code> 回呼、<code>DOMContentLoaded</code> 事件或 WebSocket 訊息處理器——會被瀏覽器安全策略阻擋並拋出 <code>SecurityError</code>。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -648,49 +728,100 @@
                 </div>
 
                 <h1>🛡️ 2. 自癒式架構：指數退避重連機制</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-<div class="space-y-8">
-<p class="text-lg text-gray-600 leading-relaxed font-light">
-                                在真實極端環境中，通訊隨時會因干擾或斷電中斷。學會監聽 <code>gattserverdisconnected</code>
-                                並實施「指數退避」重連策略，打造具備自癒能力的工業級控制面板。
-                            </p>
-<div class="bg-purple-50 p-8 rounded-3xl border border-purple-100">
-<h4 class="text-purple-900 font-bold mb-4 text-xs uppercase tracking-widest text-center">
-                                    Exponential Reconnect Strategy</h4>
-<div class="flex justify-center gap-4">
-<div class="text-xs p-3 bg-white rounded-xl border border-purple-200 text-center">
-                                        Attempt 1<br/><span class="text-slate-400 uppercase font-black mt-1 inline-block">1.5s
-                                            Wait</span></div>
-<div class="text-xs p-3 bg-white rounded-xl border border-purple-200 text-center">
-                                        Attempt 2<br/><span class="text-slate-400 uppercase font-black mt-1 inline-block">3.0s
-                                            Wait</span></div>
-<div class="text-xs p-3 bg-white rounded-xl border border-purple-500 bg-purple-500/10 text-purple-600 font-bold text-center">
-                                        Attempt 3<br/><span class="text-purple-400 uppercase font-black mt-1 inline-block">6.0s
-                                            Wait</span></div>
+
+                <p>
+                    在真實環境中，BLE 連線隨時可能因為訊號干擾、裝置斷電、超出有效距離或使用者意外操作而中斷。一個生產級的控制系統不能要求使用者手動刷新頁面重新連線——它必須具備<strong>自癒能力</strong>：在連線中斷後自動偵測、等待適當時機、然後悄無聲息地恢復數據流。
+                </p>
+
+                <h2>監聽 GATT 斷線事件</h2>
+
+                <p>
+                    Web Bluetooth API 提供了 <code>gattserverdisconnected</code> 事件，當底層 GATT 連線因任何原因中斷時（包括裝置端主動斷開、射頻干擾、超距等），此事件會被觸發。這是實作自動重連的入口點：
+                </p>
+
+<div class="ms-code">
+<span class="c-comment">// 掛載斷線監聽器（在首次連線成功後立即設定）</span><br>
+<span class="c-white">device.</span><span class="c-tag">addEventListener</span><span class="c-white">(</span><span class="c-str">'gattserverdisconnected'</span><span class="c-white">, () => {</span><br>
+<span class="c-white">&nbsp;&nbsp;console.</span><span class="c-tag">warn</span><span class="c-white">(</span><span class="c-str">'GATT 連線已中斷，啟動自動重連...'</span><span class="c-white">);</span><br>
+<span class="c-white">&nbsp;&nbsp;updateUI(</span><span class="c-str">'disconnected'</span><span class="c-white">);</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">exponentialReconnect</span><span class="c-white">(device);</span><br>
+<span class="c-white">});</span>
 </div>
-<p class="text-xs text-slate-400 mt-6 italic font-light text-center">"Avoid Drowning the
-                                    Radio spectrum during signal failure"</p>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        <code>gattserverdisconnected</code> 事件在使用者主動呼叫 <code>device.gatt.disconnect()</code> 時也會觸發。在重連邏輯中必須區分「意外斷線」與「使用者主動斷線」。建議設置一個 <code>userInitiatedDisconnect</code> 旗標，在主動斷線前將其設為 <code>true</code>，避免觸發不必要的重連。
+                    </div>
+                </div>
+
+                <h2>指數退避演算法 (Exponential Backoff)</h2>
+
+                <p>
+                    當連線中斷後，最直觀的做法是立即嘗試重連。但如果中斷原因是環境干擾或裝置斷電，立即重試幾乎必定失敗，而持續的重試嘗試會佔用 BLE 射頻資源（Spectrum Drowning），干擾周圍其他 BLE 裝置。指數退避策略讓每次失敗後的等待時間呈倍數增長，在「快速恢復」與「資源節約」之間取得平衡：
+                </p>
+
+                <table class="ms-table">
+                    <tr><th>重試次數</th><th>等待時間</th><th>公式</th><th>累計等待</th></tr>
+                    <tr><td>第 1 次</td><td>1,000 ms</td><td>1000 × 2<sup>0</sup></td><td>1.0s</td></tr>
+                    <tr><td>第 2 次</td><td>2,000 ms</td><td>1000 × 2<sup>1</sup></td><td>3.0s</td></tr>
+                    <tr><td>第 3 次</td><td>4,000 ms</td><td>1000 × 2<sup>2</sup></td><td>7.0s</td></tr>
+                    <tr><td>第 4 次</td><td>8,000 ms</td><td>1000 × 2<sup>3</sup></td><td>15.0s</td></tr>
+                    <tr><td>第 5 次</td><td>16,000 ms (上限)</td><td>min(1000 × 2<sup>4</sup>, MAX)</td><td>31.0s</td></tr>
+                </table>
+
+                <h2>完整重連實作</h2>
+
+<div class="ms-code">
+<span class="c-kw">async function</span> <span class="c-attr">exponentialReconnect</span><span class="c-white">(device, maxRetries = 5) {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">BASE_DELAY</span> <span class="c-white">= 1000;</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">MAX_DELAY</span> <span class="c-white">= 16000;</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">for</span><span class="c-white"> (</span><span class="c-kw">let</span> <span class="c-attr">attempt</span><span class="c-white"> = 0; attempt &lt; maxRetries; attempt++) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">delay</span> <span class="c-white">= Math.</span><span class="c-tag">min</span><span class="c-white">(BASE_DELAY * 2 ** attempt, MAX_DELAY);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">jitter</span> <span class="c-white">= Math.</span><span class="c-tag">random</span><span class="c-white">() * delay * 0.2;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">await</span> <span class="c-tag">sleep</span><span class="c-white">(delay + jitter);</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">try</span><span class="c-white"> {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">await</span> <span class="c-white">device.gatt.</span><span class="c-tag">connect</span><span class="c-white">();</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">await</span> <span class="c-tag">resubscribeNotifications</span><span class="c-white">(device);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.</span><span class="c-tag">log</span><span class="c-white">(</span><span class="c-str">`重連成功 (第 ${attempt + 1} 次嘗試)`</span><span class="c-white">);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span><span class="c-white">;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;} </span><span class="c-kw">catch</span><span class="c-white"> (err) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.</span><span class="c-tag">warn</span><span class="c-white">(</span><span class="c-str">`重連失敗 #${attempt + 1}：${err.message}`</span><span class="c-white">);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<span class="c-white">&nbsp;&nbsp;showToast(</span><span class="c-str">'裝置無法連線，請手動重試'</span><span class="c-white">);</span><br>
+<span class="c-white">}</span>
 </div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-purple-500/5"></div>
-<h4 class="text-purple-400 font-bold mb-6 text-xs uppercase tracking-widest relative z-10">
-                                Link Redundancy Logic</h4>
-<div class="flex items-center gap-3">
-<div class="w-3 h-3 rounded-full bg-red-500 animate-ping"></div>
-<div class="text-xs text-slate-400 font-mono tracking-tighter uppercase">Link Lost.
-                                    Reconnecting in 4500ms...</div>
-</div>
-<p class="text-[10px] text-slate-600 mt-10 font-mono tracking-widest uppercase text-center italic font-black">
-                                Self-Healing Protocol: ENGAGED</p>
-</div>
-</div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        加入 <strong>Jitter（隨機抖動）</strong>是工業實踐的最佳做法。當多台裝置同時斷線後嘗試重連（例如基地台重啟），如果所有裝置都在完全相同的時刻發起重連請求，會造成「驚群效應 (Thundering Herd)」。加入 ±20% 的隨機延遲可有效分散重連請求，降低射頻碰撞機率。
+                    </div>
+                </div>
+
+                <h2>重連後的狀態恢復</h2>
+
+                <p>
+                    成功重連 GATT 後，必須重新訂閱 Notify 特徵並恢復所有事件監聽器。這是因為 BLE 的 CCCD (Client Characteristic Configuration Descriptor) 設定在斷線後會被裝置端清除。<code>resubscribeNotifications()</code> 函式需要重新執行 <code>getPrimaryService()</code>、<code>getCharacteristic()</code> 和 <code>startNotifications()</code> 的完整序列。
+                </p>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        自動重連僅適用於先前已通過 <code>requestDevice()</code> 配對的裝置。Web Bluetooth 的安全模型不允許在背景中自動掃描新裝置。因此請務必在首次連線時保存 <code>device</code> 物件的參考，供後續重連使用。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -705,56 +836,106 @@
                 </div>
 
                 <h1>⚡ 3. 非同步並行：雙向流控處理</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center">
-<div class="flex-1 space-y-6">
-<p class="text-slate-400 font-light leading-relaxed text-lg">
-                                徹底解決「控制指令」與「遙測數據」相互衝撞的瓶頸。實現高頻控制寫入 (Write) 與實時狀態接收 (Notify) 的並行處理，確保毫秒級的響應穩定度。
-                            </p>
-<div class="bg-blue-500/10 p-8 rounded-3xl border border-blue-500/20 shadow-inner">
-<h4 class="font-bold text-blue-400 mb-4 text-xs uppercase tracking-widest">Concurrency
-                                    Rules &amp; Throttling</h4>
-<ul class="grid grid-cols-1 gap-4 text-sm text-slate-400 font-light">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span>
-<div><strong class="text-white">智能節流 (Throttling)</strong>：限制寫入頻率，防止 BLE
-                                            傳輸緩衝區發生暫時性阻塞與溢位。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span>
-<div><strong class="text-white">異步隔離模式</strong>：將數據通訊解析與 UI DOM 渲染完全隔離，維持介面 60
-                                            FPS 流暢度。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span>
-<div><strong class="text-white">多路併發
-                                                (Promise.all)</strong>：對不同特徵值執行併行初始化，最大化利用握手時間。</div>
-</li>
-</ul>
+
+                <p>
+                    在控制系統中，數據流是雙向的：瀏覽器需要高頻地向 ESP32 發送控制指令（Write），同時也需要接收來自裝置的遙測數據（Notify）。這兩條數據通道共享同一條 BLE 連線，如果不加以管理，高頻的 Write 操作可能佔滿傳輸佇列，導致 Notify 回傳延遲甚至遺失。實現穩健的<strong>雙向流控 (Duplex Flow Control)</strong> 是打造流暢控制體驗的最後一塊拼圖。
+                </p>
+
+                <h2>Write 與 Notify 的衝突本質</h2>
+
+                <p>
+                    BLE GATT 的底層使用同一條 L2CAP 通道承載所有操作。Write（主機→周邊）和 Notify（周邊→主機）在連線事件 (Connection Event) 中交替執行。當 Write 請求過於密集時，連線事件的時間槽會被 Write 佔滿，Notify 封包只能排隊等待下一輪連線事件。
+                </p>
+
+                <table class="ms-table">
+                    <tr><th>操作類型</th><th>方向</th><th>GATT 方法</th><th>確認機制</th><th>適用場景</th></tr>
+                    <tr>
+                        <td><strong>Write with Response</strong></td>
+                        <td>主機 → 周邊</td>
+                        <td><code>writeValueWithResponse()</code></td>
+                        <td>等待 ATT 確認</td>
+                        <td>關鍵指令（煞車、模式切換）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Write without Response</strong></td>
+                        <td>主機 → 周邊</td>
+                        <td><code>writeValueWithoutResponse()</code></td>
+                        <td>無（Fire & Forget）</td>
+                        <td>高頻搖桿數據</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Notify</strong></td>
+                        <td>周邊 → 主機</td>
+                        <td><code>startNotifications()</code></td>
+                        <td>無</td>
+                        <td>遙測資料、感測器數值</td>
+                    </tr>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        對於高頻搖桿控制指令，建議使用 <code>writeValueWithoutResponse()</code>。此方法跳過 ATT 層的確認握手，在單一連線事件中可發送更多封包。代價是無法確認裝置是否收到——但對於每秒 20-50 次的搖桿更新而言，偶爾遺失一筆指令幾乎不會被感知。
+                    </div>
+                </div>
+
+                <h2>智慧節流 (Throttling) 機制</h2>
+
+                <p>
+                    搖桿的 <code>pointermove</code> 事件觸發頻率可達 60-120Hz，但 BLE 的有效傳輸頻率通常只有 20-50Hz。直接將每一次搖桿事件都轉為 Write 請求，會迅速塞滿 BLE 的傳輸佇列。節流機制的核心思想是：在固定時間窗口內只發送最新一筆數據，丟棄中間的過時數據。
+                </p>
+
+<div class="ms-code">
+<span class="c-kw">let</span> <span class="c-attr">lastSend</span> <span class="c-white">= 0;</span><br>
+<span class="c-kw">const</span> <span class="c-attr">THROTTLE_MS</span> <span class="c-white">= 30;</span><span class="c-comment"> // ~33Hz 發送頻率</span><br>
+<br>
+<span class="c-kw">function</span> <span class="c-attr">onJoystickMove</span><span class="c-white">(x, y) {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">now</span> <span class="c-white">= performance.</span><span class="c-tag">now</span><span class="c-white">();</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (now - lastSend &lt; THROTTLE_MS) </span><span class="c-kw">return</span><span class="c-white">;</span><br>
+<span class="c-white">&nbsp;&nbsp;lastSend = now;</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">packet</span> <span class="c-white">= </span><span class="c-tag">packCommand</span><span class="c-white">(x, y);</span><br>
+<span class="c-white">&nbsp;&nbsp;txChar.</span><span class="c-tag">writeValueWithoutResponse</span><span class="c-white">(packet)</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;.</span><span class="c-tag">catch</span><span class="c-white">(err => console.</span><span class="c-tag">warn</span><span class="c-white">(</span><span class="c-str">'Write 失敗:'</span><span class="c-white">, err));</span><br>
+<span class="c-white">}</span>
 </div>
+
+                <h2>併行初始化：Promise.all 加速握手</h2>
+
+                <p>
+                    當 BLE 連線成功後，通常需要依序取得多個 Service 和 Characteristic。但如果這些操作之間沒有依賴關係，可以使用 <code>Promise.all()</code> 將它們並行化，大幅縮短初始化時間：
+                </p>
+
+<div class="ms-code">
+<span class="c-kw">const</span> <span class="c-white">[txChar, rxChar] = </span><span class="c-kw">await</span> <span class="c-white">Promise.</span><span class="c-tag">all</span><span class="c-white">([</span><br>
+<span class="c-white">&nbsp;&nbsp;service.</span><span class="c-tag">getCharacteristic</span><span class="c-white">(TX_UUID),</span><br>
+<span class="c-white">&nbsp;&nbsp;service.</span><span class="c-tag">getCharacteristic</span><span class="c-white">(RX_UUID),</span><br>
+<span class="c-white">]);</span><br>
+<span class="c-kw">await</span> <span class="c-white">rxChar.</span><span class="c-tag">startNotifications</span><span class="c-white">();</span><br>
+<span class="c-white">rxChar.</span><span class="c-tag">addEventListener</span><span class="c-white">(</span><span class="c-str">'characteristicvaluechanged'</span><span class="c-white">, onTelemetry);</span>
 </div>
-<div class="lg:w-80 bg-blue-600/10 p-10 rounded-3xl border border-blue-500/20 text-center relative overflow-hidden group">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-blue-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-blue-400 font-bold mb-4 text-xs uppercase tracking-widest">Duplex Stream
-                                Monitoring</h4>
-<div class="flex justify-between items-center h-20 px-8">
-<div class="flex flex-col items-center">
-<div class="text-[10px] text-blue-400 uppercase mb-2 font-black">TX CMD</div>
-<div class="w-2 bg-blue-500 h-10 animate-[pulse_1.2s_infinite]"></div>
-</div>
-<div class="flex flex-col items-center">
-<div class="text-[10px] text-indigo-400 uppercase mb-2 font-black">RX TLM</div>
-<div class="w-2 bg-indigo-500 h-14 animate-[pulse_1.8s_infinite]"></div>
-</div>
-</div>
-<p class="text-xs text-slate-500 mt-10 leading-relaxed font-light italic">
-                                "讓通訊層不再成為控制系統的性能天花板。"
-                            </p>
-</div>
-</div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        將 Write 特徵 (TX) 與 Notify 特徵 (RX) 分成兩個不同的 GATT Characteristic，是實現穩健雙向流控的設計最佳實踐。兩個特徵可共用同一個 Service UUID，但使用不同的 Characteristic UUID。這種分離設計讓韌體端也能獨立管理收發佇列。
+                    </div>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        Web Bluetooth 的 <code>writeValueWithoutResponse()</code> 內部仍有流量控制——當 BLE 控制器的發送佇列已滿時，此 Promise 會暫時掛起直到佇列有空位。如果在上一次 Write 完成前就發起新的 Write，可能導致 <code>GATT operation already in progress</code> 錯誤。建議使用序列化佇列或確保每次 Write 完成後才發送下一次。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -833,16 +1014,134 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>
+                    請回答以下問題，測試你對「<strong>BLE 非同步通訊</strong>」的理解程度。
+                    選擇完畢後點擊「送出答案」查看結果與解析。
+                </p>
+
+                <div id="quiz-container" style="margin:24px 0;">
+
+                    <div class="quiz-question" id="quiz-q0" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">1. BLE（低功耗藍牙）與傳統藍牙（Classic Bluetooth）的主要差異是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt0">
+                            <input type="radio" name="quiz-q0" value="0" style="accent-color:var(--ms-blue);">
+                            <span>BLE 傳輸速度更快</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt1">
+                            <input type="radio" name="quiz-q0" value="1" style="accent-color:var(--ms-blue);">
+                            <span>BLE 設計用於低功耗間歇傳輸，Classic 用於持續串流</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt2">
+                            <input type="radio" name="quiz-q0" value="2" style="accent-color:var(--ms-blue);">
+                            <span>BLE 使用 WiFi 頻段</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt3">
+                            <input type="radio" name="quiz-q0" value="3" style="accent-color:var(--ms-blue);">
+                            <span>BLE 不需要配對</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp0" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q1" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">2. 在 BLE 的 GATT 架構中，「Characteristic」代表什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt0">
+                            <input type="radio" name="quiz-q1" value="0" style="accent-color:var(--ms-blue);">
+                            <span>藍牙裝置的名稱</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt1">
+                            <input type="radio" name="quiz-q1" value="1" style="accent-color:var(--ms-blue);">
+                            <span>一個可讀寫的資料端點，如速度值或控制指令</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt2">
+                            <input type="radio" name="quiz-q1" value="2" style="accent-color:var(--ms-blue);">
+                            <span>連線的加密等級</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt3">
+                            <input type="radio" name="quiz-q1" value="3" style="accent-color:var(--ms-blue);">
+                            <span>裝置的電池電量</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp1" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q2" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">3. 非同步通訊中使用「回呼函式（Callback）」的好處是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt0">
+                            <input type="radio" name="quiz-q2" value="0" style="accent-color:var(--ms-blue);">
+                            <span>讓程式執行更快</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt1">
+                            <input type="radio" name="quiz-q2" value="1" style="accent-color:var(--ms-blue);">
+                            <span>不需要持續輪詢，事件發生時系統自動通知處理</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt2">
+                            <input type="radio" name="quiz-q2" value="2" style="accent-color:var(--ms-blue);">
+                            <span>減少記憶體使用</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt3">
+                            <input type="radio" name="quiz-q2" value="3" style="accent-color:var(--ms-blue);">
+                            <span>簡化錯誤處理</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp2" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q3" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">4. BLE Notify 機制的作用是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt0">
+                            <input type="radio" name="quiz-q3" value="0" style="accent-color:var(--ms-blue);">
+                            <span>讓裝置自動配對</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt1">
+                            <input type="radio" name="quiz-q3" value="1" style="accent-color:var(--ms-blue);">
+                            <span>讓 Server 端在資料更新時主動推送給 Client，無需 Client 輪詢</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt2">
+                            <input type="radio" name="quiz-q3" value="2" style="accent-color:var(--ms-blue);">
+                            <span>加密傳輸的資料</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt3">
+                            <input type="radio" name="quiz-q3" value="3" style="accent-color:var(--ms-blue);">
+                            <span>增加傳輸範圍</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp3" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">送出答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+
+                <div id="quiz-result" style="display:none; margin-top:20px; padding:16px 20px; border-radius:6px; font-weight:600;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -900,9 +1199,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「Web Bluetooth 非同步與連線優化」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「Web Bluetooth 非同步與連線優化」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -918,7 +1217,8 @@
         { id: 3, label: '🛡️ 2. 自癒式架構：指數退避重連機制', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '非同步並行：雙向流控處理', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -938,6 +1238,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1039,8 +1340,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = [1, 1, 1, 1];
+    const QUIZ_EXPLANATIONS = ["BLE 為物聯網設計，以極低功耗進行短暫的資料交換；Classic 適合音訊串流等持續傳輸場景。","Characteristic 是 GATT 中最小的資料單位，每個 Characteristic 代表一個特定的資料項目（如感測值）。","回呼模式讓主程式不必阻塞等待，當 BLE 事件（如收到資料、連線斷開）發生時自動觸發處理函式。","Notify 是 Server→Client 的主動推送機制，Client 訂閱後會自動收到更新，避免浪費功耗在定期查詢。"];
+
+    function submitQuiz() {
+        let score = 0;
+        QUIZ_ANSWERS.forEach((ans, i) => {
+            const selected = document.querySelector(`input[name="quiz-q${i}"]:checked`);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            const qEl = document.getElementById(`quiz-q${i}`);
+            if (selected && parseInt(selected.value) === ans) {
+                score++;
+                qEl.style.borderColor = '#107c10';
+                expEl.style.background = '#dff6dd';
+                expEl.innerHTML = '<strong style="color:#107c10;">✓ 正確！</strong> ' + QUIZ_EXPLANATIONS[i];
+            } else {
+                qEl.style.borderColor = '#d13438';
+                expEl.style.background = '#fde7e9';
+                expEl.innerHTML = '<strong style="color:#d13438;">✗ 不正確。</strong> ' + QUIZ_EXPLANATIONS[i];
+            }
+            expEl.style.display = 'block';
+        });
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === QUIZ_ANSWERS.length) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.style.color = '#107c10';
+            resultEl.textContent = `🎉 滿分！你答對了全部 ${QUIZ_ANSWERS.length} 題！`;
+        } else {
+            resultEl.style.background = '#deecf9';
+            resultEl.style.color = '#005a9e';
+            resultEl.textContent = `你答對了 ${score} / ${QUIZ_ANSWERS.length} 題，請查看解析後再試一次。`;
+        }
+    }
+
+    function resetQuiz() {
+        QUIZ_ANSWERS.forEach((_, i) => {
+            const radios = document.querySelectorAll(`input[name="quiz-q${i}"]`);
+            radios.forEach(r => r.checked = false);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            expEl.style.display = 'none';
+            const qEl = document.getElementById(`quiz-q${i}`);
+            qEl.style.borderColor = '#e1dfdd';
+        });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 15：系統架構設計';
 </script>
 
 <!-- Define Resources -->

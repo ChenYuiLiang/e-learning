@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JavaScript 非同步編程：Fetch API 基礎 - Vibe Coding Learn</title>
+    <title>JavaScript 非同步編程：Fetch API 基礎 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -471,9 +473,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 6 - 非同步編程</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +487,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">JavaScript 非同步編程：Fetch API 基礎</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 6</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,7 +509,7 @@
                 <h1>JavaScript 非同步編程：Fetch API 基礎</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 6</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -520,9 +520,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>Fetch 的進化</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>Async / Await：優雅</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>🛡️ 3. 攔截與逾時</strong> 的調校技巧與穩定性測試。</li>
+                    <li>能夠使用 <code>fetch()</code> 搭配 <code>async/await</code> 語法發送 GET 與 POST 請求，並正確解析 JSON 回應與動態渲染至 DOM。</li>
+                    <li>能夠判斷 <code>res.ok</code> 狀態並實作 <code>try/catch</code> 錯誤處理，區分伺服器錯誤（404/500）與網路斷線等不同異常。</li>
+                    <li>能夠使用 <code>AbortController</code> 實作請求逾時保護機制，確保網頁在 ESP32 無回應時不會無限等待並提供友善提示。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -553,15 +553,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>JavaScript 非同步編程：Fetch API 基礎</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    <strong>Fetch API</strong> 是現代 JavaScript 發送網路請求的標準工具，基於 Promise 的非同步設計讓程式碼告別回呼地獄。
+                    本單元將帶你掌握 <code>async/await</code> 語法、JSON 解析流程，以及如何用 <code>AbortController</code> 實作逾時保護，
+                    讓你的控制面板在網路不穩定時也能優雅降級，而非靜默卡死。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的無人車控制面板上有一個「讀取感測器」按鈕，使用者點擊後畫面完全凍結了五秒才顯示數據；
+                    更糟的是，當 ESP32 斷網時，按鈕永遠轉圈、沒有任何錯誤提示。你需要用非同步請求搭配逾時保護，
+                    建立一個「永不卡死、處處有回饋」的專業互動體驗。
                 </div>
 
                 <h2>教學影片</h2>
@@ -575,7 +576,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -589,50 +590,106 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⏳ 1. Fetch 的進化</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tight">
-                                基於 Promise，通訊變得直覺簡潔。
-                            </p>
-<div class="p-8 rounded-3xl border border-blue-100 shadow-sm bg-blue-50 text-justify uppercase tracking-widest font-black leading-relaxed">
-<h4 class="font-bold text-blue-800 mb-4 text-xs uppercase tracking-widest italic text-justify font-black">
-                                    Why Fetch?</h4>
-<ul class="space-y-3 text-slate-600 font-light leading-relaxed text-[11px] text-justify uppercase tracking-tighter">
-<li class="flex items-center gap-2 text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span><strong class="text-blue-900 text-justify">Promise 驅動</strong>：告別回呼地獄。</li>
-<li class="flex items-center gap-2 text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span><strong class="text-blue-900 text-justify">語義化介面</strong>：函式名稱即是動作。</li>
-<li class="flex items-center gap-2 text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span><strong class="text-blue-900 font-black text-justify">原生支援</strong>：無需外部套件。</li>
-</ul>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 text-blue-300 bg-slate-900 text-justify uppercase tracking-widest font-black">
-<h4 class="font-bold text-slate-500 mb-6 uppercase tracking-widest text-[10px] text-justify">
-                                Promise Lifecycle</h4>
-<div class="space-y-6 text-justify uppercase tracking-widest leading-relaxed">
-<div class="flex items-center gap-4 group text-justify">
-<span class="w-24 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded font-bold text-amber-500 text-center uppercase text-[10px] text-justify">Pending</span>
-<p class="text-slate-500 group-hover:text-slate-300 transition text-[11px] text-justify uppercase tracking-widest font-black">
-                                        請求發送中（等待）。</p>
-</div>
-<div class="flex items-center gap-4 group text-emerald-400 text-justify border border-slate-700">
-<span class="w-24 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded font-bold text-center uppercase text-[10px] text-justify">Fulfilled</span>
-<p class="text-slate-500 group-hover:text-emerald-300 transition text-[11px] text-justify uppercase tracking-widest">
-                                        獲取數據。</p>
-</div>
-<div class="flex items-center gap-4 group text-red-400 text-justify border border-slate-700">
-<span class="w-24 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded font-bold text-center uppercase text-[10px] text-justify">Rejected</span>
-<p class="text-slate-500 group-hover:text-red-300 transition text-[11px] text-justify">
-                                        失敗（斷網）。</p>
-</div>
-</div>
-</div>
-</div>
+                <h1>Fetch 的進化</h1>
+
+                <p>
+                    在早期的 Web 開發中，要從伺服器取得資料，開發者必須使用 <code>XMLHttpRequest</code>（XHR）——
+                    一套笨重、語法繁瑣且容易掉入「回呼地獄（Callback Hell）」的 API。
+                    <strong>Fetch API</strong> 是現代瀏覽器提供的全新網路請求介面，基於 <strong>Promise</strong> 設計，
+                    讓非同步通訊的程式碼變得直覺、簡潔且可讀性極高。
+                </p>
+
+                <h2>從 XMLHttpRequest 到 Fetch</h2>
+                <p>
+                    以下比較展示了同一個功能（從 API 取得 JSON 資料）在兩種方式下的寫法差異：
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th style="width:20%">比較項目</th>
+                            <th>XMLHttpRequest（舊）</th>
+                            <th>Fetch API（新）</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>語法風格</strong></td>
+                            <td>事件監聽 + 回呼函式，巢狀層層包裹</td>
+                            <td>Promise 鏈 / async-await，線性易讀</td>
+                        </tr>
+                        <tr>
+                            <td><strong>錯誤處理</strong></td>
+                            <td>需手動檢查 <code>readyState</code> 與 <code>status</code></td>
+                            <td>統一用 <code>.catch()</code> 或 <code>try/catch</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>串流支援</strong></td>
+                            <td>有限，需自行處理</td>
+                            <td>原生支援 <code>ReadableStream</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>取消請求</strong></td>
+                            <td><code>xhr.abort()</code></td>
+                            <td><code>AbortController</code> 搭配 <code>signal</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>瀏覽器支援</strong></td>
+                            <td>所有瀏覽器（含 IE）</td>
+                            <td>所有現代瀏覽器（IE 除外）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>Promise 的三種狀態</h2>
+                <p>
+                    Fetch API 回傳的是一個 <strong>Promise</strong> 物件。Promise 代表一個「尚未完成但最終會有結果」的非同步操作，
+                    它在整個生命週期中會處於以下三種狀態之一：
+                </p>
+                <ul>
+                    <li><strong>Pending（等待中）</strong>：請求已發出，但尚未收到回應。此時 UI 應顯示 Loading 狀態。</li>
+                    <li><strong>Fulfilled（已實現）</strong>：請求成功完成，回傳了 Response 物件。可以繼續解析 JSON 或文字內容。</li>
+                    <li><strong>Rejected（已拒絕）</strong>：請求因<strong>網路層級錯誤</strong>（如斷網、DNS 解析失敗）而失敗。進入 <code>.catch()</code> 處理。</li>
+                </ul>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        <code>fetch()</code> 的 Promise 只有在<strong>網路層級錯誤</strong>時才會被 reject（進入 catch）。
+                        即使伺服器回傳 <code>404</code> 或 <code>500</code> 錯誤，Promise 仍然會 resolve（進入 then）——
+                        你必須自己檢查 <code>response.ok</code> 或 <code>response.status</code> 來判斷請求是否真的成功。
+                    </div>
+                </div>
+
+                <h2>最基本的 Fetch 範例</h2>
+                <p>以下是使用 <code>fetch()</code> 發送 GET 請求的最簡寫法：</p>
+                <div class="ms-code">
+                    <span class="c-comment">// 最基本的 fetch 用法</span><br>
+                    <span class="c-kw">fetch</span><span class="c-white">(</span><span class="c-str">"http://192.168.4.1/sensor"</span><span class="c-white">)</span><br>
+                    <span class="c-white">&nbsp;&nbsp;.</span><span class="c-kw">then</span><span class="c-white">(</span><span class="c-attr">res</span> <span class="c-kw">=></span> <span class="c-attr">res</span><span class="c-white">.</span><span class="c-kw">json</span><span class="c-white">())</span>
+                    <span class="c-comment">&nbsp;&nbsp;// 解析 JSON</span><br>
+                    <span class="c-white">&nbsp;&nbsp;.</span><span class="c-kw">then</span><span class="c-white">(</span><span class="c-attr">data</span> <span class="c-kw">=></span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;console.</span><span class="c-kw">log</span><span class="c-white">(</span><span class="c-attr">data</span><span class="c-white">.</span><span class="c-attr">temperature</span><span class="c-white">);</span>
+                    <span class="c-comment"> // 25.3</span><br>
+                    <span class="c-white">&nbsp;&nbsp;})</span><br>
+                    <span class="c-white">&nbsp;&nbsp;.</span><span class="c-kw">catch</span><span class="c-white">(</span><span class="c-attr">err</span> <span class="c-kw">=></span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;console.</span><span class="c-kw">error</span><span class="c-white">(</span><span class="c-str">"網路錯誤："</span><span class="c-white">,</span> <span class="c-attr">err</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;});</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        雖然 <code>.then().catch()</code> 寫法可以運作，但在現代開發中，更推薦使用 <code>async/await</code> 語法——
+                        它讓非同步程式碼讀起來像同步程式碼一樣直覺。下一節將詳細介紹這種更優雅的寫法。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -646,55 +703,106 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>✨ 2. Async / Await：優雅</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify uppercase tracking-widest">
-<div class="space-y-8 text-justify font-black">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tighter">
-                                非同步變同步順暢。
-                            </p>
-<div class="grid grid-cols-2 gap-4 text-justify font-black border border-slate-100">
-<div class="p-5 rounded-2xl border border-indigo-100 bg-indigo-50 text-justify uppercase tracking-widest">
-<h5 class="text-[10px] font-bold text-indigo-400 mb-2 uppercase tracking-widest italic text-justify font-black">
-                                        Step 01</h5>
-<p class="text-xs font-bold text-indigo-900 mb-1 text-justify font-black">等待 Header
-                                    </p>
-<p class="text-[10px] text-slate-500 font-light leading-relaxed text-justify uppercase tracking-widest font-black">
-                                        回傳狀態碼。</p>
-</div>
-<div class="p-5 rounded-2xl border border-purple-100 bg-purple-50 text-justify uppercase tracking-tighter">
-<h5 class="text-[10px] font-bold text-purple-400 mb-2 uppercase tracking-widest italic text-justify">
-                                        Step 02</h5>
-<p class="text-xs font-bold text-purple-900 mb-1 text-justify uppercase tracking-widest font-black">
-                                        解析 Body</p>
-<p class="text-[10px] text-slate-500 font-light leading-relaxed text-justify uppercase tracking-widest font-black">
-                                        轉為 JSON。</p>
-</div>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 bg-slate-900 text-justify uppercase tracking-widest font-black">
-<div class="flex items-center gap-3 mb-6 text-justify font-black">
-<span class="w-3 h-3 bg-red-400 rounded-full text-justify font-black"></span>
-<span class="w-3 h-3 bg-amber-400 rounded-full text-justify font-black"></span>
-<span class="w-3 h-3 bg-emerald-400 rounded-full text-justify font-black"></span>
-<span class="ml-auto text-slate-500 font-mono tracking-widest text-justify uppercase tracking-widest font-black text-[10px]">CLEAN
-                                    CODE</span>
-</div>
-<pre class="leading-relaxed overflow-x-auto text-indigo-300 font-mono text-justify uppercase tracking-widest font-black text-[11px] border border-slate-700">
-<span class="text-purple-400 text-justify font-black">async</span> <span class="text-blue-500 text-justify font-black">function</span> <span class="text-emerald-400 text-justify font-black">load</span>() {
-  <span class="text-slate-500 text-justify font-black">// 1. 送出請求</span>
-  <span class="text-purple-400 text-justify font-black">const</span> res = <span class="text-purple-400 text-justify font-black">await</span> <span class="text-blue-400 text-justify font-black">fetch</span>(url);
-  
-  <span class="text-slate-500 text-justify font-black">// 2. 解析 JSON</span>
-  <span class="text-purple-400 text-justify font-black">const</span> data = <span class="text-purple-400 text-justify font-black">await</span> res.<span class="text-blue-400 text-justify font-black">json</span>();
-}</pre>
-</div>
-</div>
+                <h1>Async / Await：優雅的非同步語法</h1>
+
+                <p>
+                    <code>async/await</code> 是 ES2017 引入的語法糖，建立在 Promise 之上，讓非同步程式碼讀起來就像同步程式碼一樣流暢。
+                    在物聯網 Web 控制台的開發中，你會大量使用它來處理與 ESP32 的通訊——從發送請求、等待回應、到解析數據，
+                    每一步都清晰明瞭，不再有層層巢狀的回呼函式。
+                </p>
+
+                <h2>Fetch 的兩階段等待</h2>
+                <p>
+                    使用 <code>fetch()</code> 取得資料其實需要經過<strong>兩次 <code>await</code></strong>，
+                    這是初學者最容易忽略的重點：
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th style="width:15%">階段</th>
+                            <th style="width:30%">程式碼</th>
+                            <th>說明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>第一次 await</strong></td>
+                            <td><code>await fetch(url)</code></td>
+                            <td>等待伺服器回傳<strong>回應標頭（Headers）</strong>。此時你可以檢查 <code>res.ok</code>、<code>res.status</code>，但 Body 還沒有完全下載。</td>
+                        </tr>
+                        <tr>
+                            <td><strong>第二次 await</strong></td>
+                            <td><code>await res.json()</code></td>
+                            <td>等待回應<strong>正文（Body）</strong>完整下載並解析為 JavaScript 物件。這是一個耗時操作，因此也是非同步的。</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        為什麼需要兩次 <code>await</code>？因為 HTTP 回應是<strong>串流（Stream）</strong>傳輸的——伺服器先傳送狀態碼與標頭，
+                        然後才逐步傳送 Body 內容。第一次 <code>await</code> 在收到標頭時就完成了，
+                        但 Body 可能還在傳輸中，所以需要第二次 <code>await</code> 來等待完整的資料。
+                    </div>
+                </div>
+
+                <h2>完整的 async/await 範例</h2>
+                <p>以下是使用 <code>async/await</code> 搭配 <code>fetch()</code> 的標準寫法：</p>
+                <div class="ms-code">
+                    <span class="c-kw">async function</span> <span class="c-tag">loadSensorData</span><span class="c-white">() {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">res</span> <span class="c-white">=</span> <span class="c-kw">await</span> <span class="c-kw">fetch</span><span class="c-white">(</span><span class="c-str">"http://192.168.4.1/sensor"</span><span class="c-white">);</span><br><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(!</span><span class="c-attr">res</span><span class="c-white">.</span><span class="c-attr">ok</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">throw new</span> <span class="c-tag">Error</span><span class="c-white">(</span><span class="c-str">`HTTP 錯誤：${</span><span class="c-attr">res</span><span class="c-str">.status}`</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">data</span> <span class="c-white">=</span> <span class="c-kw">await</span> <span class="c-attr">res</span><span class="c-white">.</span><span class="c-kw">json</span><span class="c-white">();</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">document</span><span class="c-white">.</span><span class="c-kw">getElementById</span><span class="c-white">(</span><span class="c-str">"temp"</span><span class="c-white">)</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;.</span><span class="c-attr">textContent</span> <span class="c-white">=</span> <span class="c-attr">data</span><span class="c-white">.</span><span class="c-attr">temperature</span> <span class="c-white">+</span> <span class="c-str">" °C"</span><span class="c-white">;</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <h2>POST 請求的 async/await 寫法</h2>
+                <p>
+                    當你需要向 ESP32 發送控制指令（如前進、後退）時，需要使用 POST 請求並傳送 JSON Body：
+                </p>
+                <div class="ms-code">
+                    <span class="c-kw">async function</span> <span class="c-tag">sendCommand</span><span class="c-white">(</span><span class="c-attr">direction</span><span class="c-white">,</span> <span class="c-attr">speed</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">res</span> <span class="c-white">=</span> <span class="c-kw">await</span> <span class="c-kw">fetch</span><span class="c-white">(</span><span class="c-str">"http://192.168.4.1/move"</span><span class="c-white">, {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-attr">method</span><span class="c-white">:</span> <span class="c-str">"POST"</span><span class="c-white">,</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-attr">headers</span><span class="c-white">: {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-str">"Content-Type"</span><span class="c-white">:</span> <span class="c-str">"application/json"</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;},</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-attr">body</span><span class="c-white">:</span> <span class="c-tag">JSON</span><span class="c-white">.</span><span class="c-kw">stringify</span><span class="c-white">({</span> <span class="c-attr">direction</span><span class="c-white">,</span> <span class="c-attr">speed</span> <span class="c-white">})</span><br>
+                    <span class="c-white">&nbsp;&nbsp;});</span><br><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">result</span> <span class="c-white">=</span> <span class="c-kw">await</span> <span class="c-attr">res</span><span class="c-white">.</span><span class="c-kw">json</span><span class="c-white">();</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-attr">result</span><span class="c-white">;</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        使用 <code>async/await</code> 時，<strong>一定要用 <code>try/catch</code> 包裹</strong>你的 fetch 呼叫。
+                        沒有 <code>try/catch</code> 的 <code>await</code> 在遇到網路錯誤時會直接拋出未捕獲的例外，
+                        可能導致整個應用程式的後續邏輯被中斷。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        <code>async</code> 函式永遠回傳一個 Promise。這意味著你可以在外部使用 <code>.then()</code> 接續處理，
+                        也可以在另一個 <code>async</code> 函式中用 <code>await</code> 等待它完成。兩種風格可以自由混用。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -708,48 +816,122 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🛡️ 3. 攔截與逾時</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify uppercase tracking-widest">
-<div class="flex-1 space-y-6 text-justify font-black">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify font-black uppercase tracking-tighter">
-                                優先處理「異常」。
-                            </p>
-<div class="p-8 rounded-3xl border border-emerald-500/20 shadow-inner bg-emerald-500/10 text-justify uppercase tracking-widest font-black text-left">
-<h4 class="font-bold text-emerald-400 mb-4 text-xs uppercase tracking-widest text-justify font-black">
-                                    容錯策略</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify uppercase tracking-widest font-black">
-<li class="flex items-start gap-2 text-justify font-black"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1 text-justify font-black"></span>
-<div><strong class="text-white text-justify font-black">res.ok 檢查</strong>：攔截
-                                            404/500。</div>
-</li>
-<li class="flex items-start gap-2 text-justify font-black"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">try/catch</strong>：處理斷網失敗。</div>
-</li>
-<li class="flex items-start gap-2 text-justify font-black"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white font-black text-justify uppercase tracking-widest">AbortController</strong>：逾時保護。
-                                        </div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 p-10 rounded-3xl border border-emerald-500/20 text-center relative overflow-hidden group bg-emerald-600/10 text-justify font-black">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify font-black">
-</div>
-<h4 class="text-emerald-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-justify font-black uppercase tracking-widest">
-                                Network Sentry</h4>
-<p class="text-slate-500 leading-relaxed font-light mb-8 italic text-[11px] text-justify uppercase tracking-widest font-black border border-slate-700">
-                                "不處理 Timeout，網頁按鈕會空轉。"
-                            </p>
-<div class="inline-block px-8 py-3 bg-emerald-500 text-white rounded-xl font-bold text-[10px] shadow-lg text-justify uppercase tracking-widest font-black">
-                                controller.abort();</div>
-</div>
-</div>
+                <h1>攔截與逾時保護</h1>
+
+                <p>
+                    在物聯網場景中，網路環境遠比一般 Web 開發更加不穩定——ESP32 可能斷電、Wi-Fi 訊號弱、或者伺服器暫時過載。
+                    一個專業的 Web 控制台必須能<strong>優雅地處理所有異常情況</strong>，而不是讓使用者面對一個永遠轉圈的 Loading 圖示。
+                    這一節將教你建立一套完整的容錯機制。
+                </p>
+
+                <h2>三層防禦策略</h2>
+                <p>完善的 Fetch 錯誤處理應包含以下三層：</p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th style="width:20%">防禦層</th>
+                            <th>處理的問題</th>
+                            <th style="width:30%">實作方式</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>res.ok 檢查</strong></td>
+                            <td>伺服器回傳了錯誤狀態碼（404、500 等），但 fetch 仍然 resolve</td>
+                            <td><code>if (!res.ok) throw new Error()</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>try/catch 捕獲</strong></td>
+                            <td>網路斷線、DNS 失敗等導致 fetch 被 reject</td>
+                            <td><code>try { ... } catch (err) { ... }</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>AbortController</strong></td>
+                            <td>ESP32 無回應，請求無限等待（無 timeout）</td>
+                            <td>搭配 <code>setTimeout</code> 主動取消</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        <code>fetch()</code> 本身<strong>沒有內建的逾時（timeout）機制</strong>。如果 ESP32 斷電了，
+                        <code>fetch()</code> 會一直等待直到瀏覽器自行放棄（通常需要數分鐘），期間使用者看到的就是一個「凍結」的介面。
+                        你必須使用 <code>AbortController</code> 自行實作逾時保護。
+                    </div>
+                </div>
+
+                <h2>AbortController 逾時保護實作</h2>
+                <p>
+                    <code>AbortController</code> 是瀏覽器原生的請求取消機制。搭配 <code>setTimeout</code>，
+                    你可以在指定時間內自動取消尚未完成的 fetch 請求：
+                </p>
+                <div class="ms-code">
+                    <span class="c-kw">async function</span> <span class="c-tag">robustFetch</span><span class="c-white">(</span><span class="c-attr">url</span><span class="c-white">,</span> <span class="c-attr">timeout</span> <span class="c-white">=</span> <span class="c-val">5000</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">controller</span> <span class="c-white">=</span> <span class="c-kw">new</span> <span class="c-tag">AbortController</span><span class="c-white">();</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">timer</span> <span class="c-white">=</span> <span class="c-kw">setTimeout</span><span class="c-white">(() =></span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-attr">controller</span><span class="c-white">.</span><span class="c-kw">abort</span><span class="c-white">(),</span> <span class="c-attr">timeout</span><br>
+                    <span class="c-white">&nbsp;&nbsp;);</span><br><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">try</span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">res</span> <span class="c-white">=</span> <span class="c-kw">await</span> <span class="c-kw">fetch</span><span class="c-white">(</span><span class="c-attr">url</span><span class="c-white">, {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-attr">signal</span><span class="c-white">:</span> <span class="c-attr">controller</span><span class="c-white">.</span><span class="c-attr">signal</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;});</span><br><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(!</span><span class="c-attr">res</span><span class="c-white">.</span><span class="c-attr">ok</span><span class="c-white">)</span> <span class="c-kw">throw new</span> <span class="c-tag">Error</span><span class="c-white">(</span><span class="c-str">`${res.status}`</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return await</span> <span class="c-attr">res</span><span class="c-white">.</span><span class="c-kw">json</span><span class="c-white">();</span><br><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span> <span class="c-kw">catch</span> <span class="c-white">(</span><span class="c-attr">err</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(</span><span class="c-attr">err</span><span class="c-white">.</span><span class="c-attr">name</span> <span class="c-white">===</span> <span class="c-str">"AbortError"</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">throw new</span> <span class="c-tag">Error</span><span class="c-white">(</span><span class="c-str">"請求逾時，ESP32 無回應"</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">throw new</span> <span class="c-tag">Error</span><span class="c-white">(</span><span class="c-str">"網路連線失敗"</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span> <span class="c-kw">finally</span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">clearTimeout</span><span class="c-white">(</span><span class="c-attr">timer</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <h2>在 UI 中整合錯誤提示</h2>
+                <p>
+                    好的錯誤處理不只是在 Console 印出訊息，而是要讓使用者<strong>在畫面上看到明確的回饋</strong>。
+                    以下是將 <code>robustFetch</code> 整合到 UI 的完整範例：
+                </p>
+                <div class="ms-code">
+                    <span class="c-kw">async function</span> <span class="c-tag">refreshDashboard</span><span class="c-white">() {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">statusEl</span><span class="c-white">.</span><span class="c-attr">textContent</span> <span class="c-white">=</span> <span class="c-str">"載入中..."</span><span class="c-white">;</span><br><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">try</span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">data</span> <span class="c-white">=</span> <span class="c-kw">await</span> <span class="c-tag">robustFetch</span><span class="c-white">(</span><span class="c-str">"/sensor"</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-attr">renderData</span><span class="c-white">(</span><span class="c-attr">data</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-attr">statusEl</span><span class="c-white">.</span><span class="c-attr">textContent</span> <span class="c-white">=</span> <span class="c-str">"更新完成"</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span> <span class="c-kw">catch</span> <span class="c-white">(</span><span class="c-attr">err</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-attr">statusEl</span><span class="c-white">.</span><span class="c-attr">textContent</span> <span class="c-white">=</span> <span class="c-attr">err</span><span class="c-white">.</span><span class="c-attr">message</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-attr">statusEl</span><span class="c-white">.</span><span class="c-attr">style</span><span class="c-white">.</span><span class="c-attr">color</span> <span class="c-white">=</span> <span class="c-str">"red"</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        建議將 <code>robustFetch</code> 封裝為專案中的通用工具函式，讓所有 API 呼叫都自動具備逾時保護與錯誤分類功能。
+                        這種「一次封裝、處處受益」的模式，是專業前端工程的最佳實踐。
+                    </div>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        <code>finally</code> 區塊非常適合用來<strong>關閉 Loading 狀態</strong>。無論請求成功或失敗，
+                        <code>finally</code> 都一定會執行，確保 Loading 轉圈不會永遠卡在畫面上。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -828,16 +1010,75 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
-
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: QUIZ ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <div class="quiz-question">
+                        <p>1. 使用 fetch() 取得 JSON 資料時，為什麼需要兩次 await？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 因為 JavaScript 的語法規定必須使用雙重 await</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 第一次 await 等待伺服器回傳回應標頭，第二次 await 等待 Body 完整下載並解析為 JS 物件</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 第一次 await 建立 TCP 連線，第二次 await 發送請求</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>2. 當伺服器回傳 404 狀態碼時，fetch() 的 Promise 會進入什麼狀態？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> Rejected（被拒絕），進入 catch</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> Fulfilled（已實現），進入 then——必須自己檢查 res.ok 判斷是否真的成功</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> Pending（等待中），永遠不會完成</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>3. AbortController 在 fetch 中的主要用途是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 加密網路請求以確保安全傳輸</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 實作請求逾時保護，避免 ESP32 無回應時網頁無限等待</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 壓縮請求數據以節省頻寬</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>4. 使用 async/await 時，如果沒有用 try/catch 包裹 fetch 呼叫，遇到網路錯誤會發生什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 錯誤會被自動忽略，程式繼續執行</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 會直接拋出未捕獲的例外，可能導致整個應用程式的後續邏輯被中斷</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> async 函式會自動重試三次</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -895,9 +1136,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「JavaScript 非同步編程：Fetch API 基礎」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「JavaScript 非同步編程：Fetch API 基礎」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -913,8 +1154,17 @@
         { id: 3, label: 'Async / Await：優雅', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🛡️ 3. 攔截與逾時', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '150 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',              time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！HTTP 回應是串流傳輸的。第一次 await fetch(url) 在收到標頭時完成；Body 可能還在傳輸中，所以需要第二次 await res.json() 等待完整資料。' },
+        q2: { b: '正確！fetch() 只有在網路層級錯誤（如斷網）時才會 reject。即使伺服器回傳 404 或 500，Promise 仍會 resolve，你必須手動檢查 res.ok 或 res.status。' },
+        q3: { b: '正確！fetch() 沒有內建逾時機制。AbortController 搭配 setTimeout 可在指定時間內主動取消尚未完成的請求，避免使用者面對永遠轉圈的 Loading。' },
+        q4: { b: '正確！沒有 try/catch 的 await 在遇到網路錯誤時會拋出未捕獲的例外（Unhandled Promise Rejection），可能導致後續程式碼完全不執行。' },
+    };
+
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -933,6 +1183,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1036,6 +1287,7 @@
 
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 06：HTTP 與 Web 通訊';
 </script>
 
 <!-- Define Resources -->

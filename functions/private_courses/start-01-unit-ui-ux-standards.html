@@ -386,6 +386,22 @@
             .ms-breadcrumb { padding: 8px 16px; }
             .compare-grid { grid-template-columns: 1fr !important; }
         }
+    
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 10px 14px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; cursor: pointer; transition: background .1s, border-color .1s; font-size: 14px;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback { display: none; margin-top: 8px; padding: 10px 14px; border-radius: 4px; font-size: 13px; font-weight: 500; }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
     </style>
 </head>
 
@@ -413,7 +429,7 @@
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
@@ -787,10 +803,68 @@
         </div>
 
         <!-- Page 6: Summary & Resources -->
+        
+        <!-- ══════════ PAGE 6: QUIZ ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
-                    <div class="unit-completed-badge" id="badge-6" style="display:none;"><i class="fas fa-check"></i> 已完成</div>
+                    <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <div class="quiz-question">
+                        <p>1. 根據費茲定律（Fitts's Law），在行動裝置介面設計中，「緊急停止」按鈕應遵循什麼原則？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 按鈕越小越精緻，放在畫面角落避免誤觸</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 按鈕面積要大、位置要靠近拇指自然觸及區域</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 按鈕顏色要與背景融為一體以保持美觀</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>2. 什麼是「認知負荷（Cognitive Load）」在介面設計中的實際意義？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 使用者的手機處理器在渲染 UI 時消耗的運算資源</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 使用者在操作介面時，大腦需要處理的資訊量與決策壓力</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 網頁載入時所消耗的網路流量與頻寬</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>3. 為什麼按鈕需要提供「按下 → 按住 → 放開」三種視覺狀態回饋？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 為了增加 CSS 程式碼的複雜度以展示技術能力</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 讓使用者在每個操作階段都能確認系統已收到指令，建立操控信心</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 為了減少瀏覽器的重繪次數，提升渲染效能</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>4. 在 Apple Human Interface Guidelines 中，建議行動端觸控目標的最小尺寸為多少？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 24 × 24 像素</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 44 × 44 像素</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 64 × 64 像素</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+<div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none;"><i class="fas fa-check"></i> 已完成</div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i> 預估時間：3 分鐘</div>
                 </div>
 
@@ -826,9 +900,9 @@
                 </div>
 
                 <div class="unit-nav">
-                    <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                     <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                    <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「UI/UX 設計規範：從視覺到體驗」模組！')">完成模組</button>
+                    <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「UI/UX 設計規範：從視覺到體驗」模組！')">完成模組</button>
                 </div>
             </div>
         </div>
@@ -844,8 +918,15 @@
         { id: 3, label: '視覺階層與認知負荷', time: '8 分鐘',  type: 'unit'  },
         { id: 4, label: '按鈕狀態與反饋實驗室', time: '8 分鐘',  type: 'unit'  },
         { id: 5, label: '實戰挑戰',       time: '135 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',              time: '4 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！費茲定律指出，目標越大、距離越近，操作速度越快。緊急停止按鈕必須設計得夠大且位於拇指可輕鬆觸及的區域，以確保緊急時能即時操作。' },        q2: { b: '正確！認知負荷指的是使用者理解與操作介面時大腦的負擔。好的 UX 設計會減少不必要的選項、使用一致的視覺語言，降低使用者的認知負荷。' },        q3: { b: '正確！視覺回饋是 UX 的核心。按鈕的即時狀態變化（顏色、陰影、大小）讓使用者感知到「系統正在回應」，在操控機器人等高風險場景中尤為重要。' },        q4: { b: '正確！Apple HIG 建議觸控目標至少為 44×44 pt，而 Google Material Design 建議 48×48 dp。這確保使用者能準確點擊，減少誤觸機率。' },
+    };
+
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -861,6 +942,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -954,7 +1036,56 @@
         }, 3000);
     }
 
-    /* ─── START ─── */
+    
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            document.querySelectorAll(`input[name="${qid}"]`).forEach(opt => {
+                opt.disabled = true;
+                if (opt.value === answer) opt.parentElement.classList.add('correct');
+                if (opt.checked && opt.value !== answer) opt.parentElement.classList.add('wrong');
+            });
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                feedbackEl.textContent = '✗ 不正確。' + QUIZ_EXPLANATIONS[qid][answer];
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        const pct = Math.round(correct / total * 100);
+        scoreEl.style.display = 'block';
+        scoreEl.innerHTML = `<span style="font-size:20px;">${pct >= 75 ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pct >= 75 ? '通過！繼續前往下一個單元。' : '建議回顧相關單元後再試一次。'}</div>`;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => el.classList.remove('correct','wrong'));
+        document.querySelectorAll('input[type=radio]').forEach(el => { el.checked = false; el.disabled = false; });
+        document.querySelectorAll('.quiz-feedback').forEach(el => { el.className = 'quiz-feedback'; el.textContent = ''; });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
+/* ─── START ─── */
     init();
 </script>
 

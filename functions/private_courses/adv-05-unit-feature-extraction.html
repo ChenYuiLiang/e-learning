@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>數位影像的特徵提取 - Vibe Coding Learn</title>
+    <title>數位影像的特徵提取 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -471,9 +473,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">進階課程 5 - 單元 1</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +487,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">數位影像的特徵提取</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">進階課程 5</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,7 +509,7 @@
                 <h1>數位影像的特徵提取</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">進階課程 5</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -553,15 +553,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>數位影像的特徵提取</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    影像不只是一堆像素，它蘊含了豐富的結構資訊。
+                    本模組將帶你學習如何透過<strong>邊緣偵測、輪廓檢索與幾何描述符</strong>，
+                    從雜亂的畫面中提取出具有物理意義的特徵——讓機器不只是「看到」，更能「理解」眼前的世界。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的無人車行駛到十字路口，前方同時出現了圓形停車標誌與矩形的地面引導線。
+                    車子該停下還是繼續？如果能從影像中提取出物體的形狀特徵（圓度、長寬比），
+                    就能讓系統自動判斷「這是標誌」還是「這是賽道」，做出正確的行為決策。
                 </div>
 
                 <h2>教學影片</h2>
@@ -575,7 +576,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -589,47 +590,115 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔍 1. 什麼是特徵？ (20 min)</h1>
-                
-                <p class="text-lg text-gray-600 mb-8 leading-relaxed">
-                        特徵是影像中具有<strong>「代表性」</strong>且<strong>「不隨旋轉、縮放、光照輕易改變」</strong>的資訊。
-                    </p><div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-<div class="bg-slate-50 p-6 rounded-xl border border-slate-100">
-<h4 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
-<span class="text-indigo-500">🟢</span> 低階特徵
-                            </h4>
-<p class="text-sm text-slate-600 leading-relaxed">
-                                顏色、紋理、邊緣（Edges）。這些是構成影像的最基本元素。
-                            </p>
-</div>
-<div class="bg-slate-50 p-6 rounded-xl border border-slate-100">
-<h4 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
-<span class="text-indigo-500">🟡</span> 中階特徵
-                            </h4>
-<p class="text-sm text-slate-600 leading-relaxed">
-                                形狀（如圓形、方形）、孔洞。開始具備物件的雛形。
-                            </p>
-</div>
-<div class="bg-slate-50 p-6 rounded-xl border border-slate-100">
-<h4 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
-<span class="text-indigo-500">🔴</span> 高階特徵
-                            </h4>
-<p class="text-sm text-slate-600 leading-relaxed">
-                                臉部器官、車牌、交通標誌。這與人類的認知概念直接掛鉤。
-                            </p>
-</div>
-</div><div class="mt-8 p-6 bg-amber-50 rounded-2xl border border-amber-100 flex flex-col md:flex-row items-center gap-6">
-<div class="text-4xl">💡</div>
-<div>
-<h4 class="font-bold text-amber-900">學習任務：尋找生活中的影像</h4>
-<p class="text-sm text-amber-800">思考：如果要辨識一張「信用卡」，你會提取哪些特徵？（如：卡號的凸起紋理、晶片的顏色、固定的長寬比）。</p>
-</div>
-</div>
+                <h1>什麼是特徵？</h1>
+
+                <p>
+                    在電腦視覺中，<strong>特徵 (Feature)</strong> 是影像中具有「代表性」且「不隨旋轉、縮放、光照輕易改變」的資訊。
+                    人類可以輕鬆地從一張照片中辨識出「那是一輛車」或「那是一個停車標誌」，
+                    但對電腦而言，影像只是一個龐大的數值矩陣。特徵提取的目的，就是從這片數字海洋中，篩選出具有物理意義的關鍵資訊。
+                </p>
+
+                <p>
+                    好的特徵必須具備<strong>不變性 (Invariance)</strong>——即便物體旋轉了角度、距離改變了遠近、光線明暗有所不同，
+                    提取出的特徵仍然能夠穩定地描述同一個物體。這種穩定性，在控制理論中稱為<strong>魯棒性 (Robustness)</strong>，
+                    是自動駕駛系統能否在真實世界中可靠運作的關鍵。
+                </p>
+
+                <h2>特徵的層級架構</h2>
+
+                <p>
+                    電腦視覺中的特徵可依據其抽象程度，分為三個層級。隨著層級上升，特徵從純粹的數學描述逐步過渡到人類可理解的語義概念：
+                </p>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>層級</th>
+                        <th>名稱</th>
+                        <th>範例</th>
+                        <th>說明</th>
+                    </tr>
+                    <tr>
+                        <td><strong>低階</strong></td>
+                        <td>Low-level Features</td>
+                        <td>顏色、紋理、邊緣 (Edges)</td>
+                        <td>構成影像的最基本元素，可透過數學濾波器直接計算。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>中階</strong></td>
+                        <td>Mid-level Features</td>
+                        <td>形狀（圓形、矩形）、孔洞</td>
+                        <td>由低階特徵組合而成，開始具備物件的雛形。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>高階</strong></td>
+                        <td>High-level Features</td>
+                        <td>臉部器官、車牌、交通標誌</td>
+                        <td>與人類的認知概念直接掛鉤，需要多種中階特徵的邏輯組合。</td>
+                    </tr>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        在本課程中，我們聚焦於<strong>低階與中階特徵</strong>的提取——特別是邊緣偵測 (Edge Detection) 與輪廓分析 (Contour Analysis)。
+                        這些技術不需要 GPU 或深度學習模型，適合在 ESP32 等嵌入式裝置的有限資源下即時執行。
+                    </div>
+                </div>
+
+                <h2>從像素到決策的處理流水線</h2>
+
+                <p>
+                    一張 320×240 的灰階影像包含 76,800 個像素值。如果直接將這些原始數據餵給控制系統，
+                    不僅運算量巨大，而且大多數像素是「背景雜訊」——它們不包含任何有用的導航資訊。
+                    特徵提取的本質就是<strong>資訊壓縮</strong>：將數萬個像素縮減為少數幾個有物理意義的數值（如圓度、面積、質心座標），
+                    讓控制邏輯能夠高效且準確地做出決策。
+                </p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>擷取影像</h4>
+                            <p>攝影機捕獲一幀原始像素矩陣 (Raw Frame)，通常為 RGB 或 YUV 格式。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>預處理 (Preprocessing)</h4>
+                            <p>灰階化、高斯模糊降噪、二值化 (Thresholding)，去除無關的顏色與高頻雜訊資訊。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>特徵提取 (Feature Extraction)</h4>
+                            <p>透過邊緣偵測與輪廓分析，取得物體的形狀、位置、大小等幾何描述符 (Descriptor)。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>決策與控制</h4>
+                            <p>根據特徵值（例如：圓度 > 0.85 判定為圓形標誌），觸發對應的車輛行為（停車、轉彎等）。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>思考練習</strong>
+                        如果要讓無人車辨識一張「信用卡」，你會提取哪些特徵？例如：固定的長寬比（約 1.586:1）、晶片的矩形輪廓、卡號區域的紋理特徵。
+                        試著列出至少三種不同層級的特徵，並思考哪些特徵在不同光線條件下仍然穩定。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -643,55 +712,137 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>✨ 2. 邊緣偵測的魔術 (25 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-<div class="space-y-6">
-<div class="p-6 bg-slate-900 rounded-2xl text-white">
-<h4 class="text-indigo-400 font-bold mb-2">數學原理</h4>
-<p class="text-sm text-slate-300 leading-relaxed">
-                                    邊緣發生在像素值<strong>「劇烈變化」</strong>的地方。透過計算<strong>梯度 (Gradient)</strong>，我們可以勾勒出物體的輪廓。
-                                </p>
-</div>
-<ul class="space-y-4 text-gray-600 leading-relaxed">
-<li class="flex gap-3">
-<span class="text-indigo-500 font-bold">●</span>
-<span><strong>Sobel 算子：</strong>理解水平與垂直方向的差分。</span>
-</li>
-<li class="flex gap-3">
-<span class="text-indigo-500 font-bold">●</span>
-<span><strong>Canny 算子：</strong>目前最流行的邊緣偵測演算法，包含降噪、尋找最強梯度、排除雜訊。</span>
-</li>
-</ul>
-</div>
-<div class="bg-indigo-50 p-6 rounded-2xl border border-indigo-100 flex flex-col justify-center">
-<h4 class="font-bold text-indigo-900 mb-4 flex items-center gap-2">
-<span>🛠️</span> 學習任務
-                            </h4>
-<p class="text-gray-700 text-sm leading-relaxed">
-                                觀察同一張照片經過邊緣處理後，如何從複雜背景中抽離出物體的「骨架」。
-                            </p>
-<div class="mt-6 flex justify-center">
-<div class="relative w-48 h-32 bg-slate-200 rounded-lg overflow-hidden border-2 border-indigo-300 shadow-inner group">
-<div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&amp;w=400&amp;auto=format&amp;fit=crop')] bg-cover opacity-100 transition-opacity duration-700 group-hover:opacity-0">
-</div>
-<div class="absolute inset-0 bg-slate-900 flex items-center justify-center opacity-0 transition-opacity duration-700 group-hover:opacity-100">
-<div class="w-full h-full border border-white/20 p-4">
-<div class="w-full h-full border border-white/40 rounded-full animate-pulse">
-</div>
-</div>
-</div>
-<div class="absolute bottom-2 right-2 bg-indigo-600 text-[10px] text-white px-2 py-1 rounded">
-                                        Hover to see Canny</div>
-</div>
-</div>
-</div>
-</div>
+                <h1>邊緣偵測的魔術</h1>
+
+                <p>
+                    邊緣是影像中像素值發生<strong>劇烈變化</strong>的地方。從數學的角度來看，邊緣就是影像亮度函數的「梯度極值」所在。
+                    人類視覺系統天生擅長識別邊緣——我們只需看到一條簡筆畫的輪廓線，就能立刻辨認出「那是一隻貓」。
+                    邊緣偵測讓電腦也能做到這一點：從雜亂的像素背景中，提取出物體的「骨架」結構。
+                </p>
+
+                <p>
+                    邊緣之所以重要，是因為它包含了影像中<strong>資訊密度最高</strong>的區域。
+                    一張影像的大部分像素屬於均勻的背景（低梯度），真正有意義的結構資訊集中在物體的邊界上。
+                    透過邊緣偵測，我們可以將原始影像的數據量壓縮 90% 以上，同時保留關鍵的形狀資訊。
+                </p>
+
+                <h2>梯度 (Gradient) 的數學基礎</h2>
+
+                <p>
+                    影像梯度描述的是「像素亮度在空間上的變化速率」。對於灰階影像，梯度可以分別在水平 (X) 與垂直 (Y) 方向上計算：
+                </p>
+
+                <ul>
+                    <li><strong>水平梯度 Gx</strong>：偵測垂直方向的邊緣（左右亮度差異）</li>
+                    <li><strong>垂直梯度 Gy</strong>：偵測水平方向的邊緣（上下亮度差異）</li>
+                    <li><strong>梯度幅值</strong>：<code>G = √(Gx² + Gy²)</code>，值越大代表邊緣越明顯</li>
+                </ul>
+
+                <h2>常見邊緣偵測演算法比較</h2>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>演算法</th>
+                        <th>原理</th>
+                        <th>優點</th>
+                        <th>缺點</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Sobel 算子</strong></td>
+                        <td>3×3 卷積核計算 X、Y 方向的一階差分</td>
+                        <td>計算快速，容易理解與實作</td>
+                        <td>對雜訊敏感，邊緣較粗</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Laplacian 算子</strong></td>
+                        <td>計算二階導數，偵測亮度突變</td>
+                        <td>方向無關性，同時偵測所有方向邊緣</td>
+                        <td>極度敏感於雜訊，常產生雙重邊緣</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Canny 算子</strong></td>
+                        <td>多階段：高斯降噪 → 梯度計算 → 非極大值抑制 → 雙門檻值</td>
+                        <td>邊緣細薄、連續性好、抗雜訊能力強</td>
+                        <td>計算成本較高，需調校兩個門檻值</td>
+                    </tr>
+                </table>
+
+                <h2>Canny 邊緣偵測的四個階段</h2>
+
+                <p>
+                    Canny 演算法是目前最廣泛使用的邊緣偵測方法，其核心分為四個處理階段：
+                </p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>高斯模糊 (Gaussian Blur)</h4>
+                            <p>使用高斯濾波器對影像進行平滑處理，消除高頻雜訊。這一步對最終結果影響極大——若省略，邊緣偵測會將雜訊誤判為邊緣。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>梯度計算 (Gradient Calculation)</h4>
+                            <p>透過 Sobel 算子計算每個像素的梯度幅值與方向，找出潛在的邊緣位置。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>非極大值抑制 (Non-Maximum Suppression)</h4>
+                            <p>沿梯度方向檢查每個像素，只保留局部最大值，將粗邊緣細化為單像素寬度的精確邊緣線。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>雙門檻值 (Double Threshold)</h4>
+                            <p>設定高門檻值與低門檻值：梯度高於高門檻的直接標記為邊緣；低於低門檻的直接丟棄；介於兩者之間的，只有當它與強邊緣相連時才保留。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>OpenCV.js 實作範例</h2>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 1. 轉為灰階</span><br>
+                    <span class="c-tag">cv</span><span class="c-white">.</span><span class="c-tag">cvtColor</span><span class="c-white">(src, gray, cv.COLOR_RGBA2GRAY);</span><br>
+                    <br>
+                    <span class="c-comment">// 2. 高斯模糊降噪（核心步驟！）</span><br>
+                    <span class="c-tag">cv</span><span class="c-white">.</span><span class="c-tag">GaussianBlur</span><span class="c-white">(gray, blurred,</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">new</span> <span class="c-tag">cv.Size</span><span class="c-white">(5, 5), 1.4);</span><br>
+                    <br>
+                    <span class="c-comment">// 3. Canny 邊緣偵測</span><br>
+                    <span class="c-tag">cv</span><span class="c-white">.</span><span class="c-tag">Canny</span><span class="c-white">(blurred, edges, 50, 150);</span><br>
+                    <span class="c-comment">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ↑低門檻  ↑高門檻</span>
+                </div>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>關鍵</strong>
+                        <strong>永遠在 Canny 之前進行高斯模糊。</strong>邊緣偵測對高頻雜訊極度敏感。
+                        如果省略模糊步驟，即使是攝影機的感光元件雜訊（Sensor Noise）都會被誤判為邊緣，
+                        導致輪廓檢索產生數百個無意義的碎片輪廓，嚴重拖慢後續運算。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>調校技巧</strong>
+                        Canny 的雙門檻值建議比例為 <strong>1:2</strong> 或 <strong>1:3</strong>（例如 50:150）。
+                        光線不足時需降低門檻值以捕捉較弱的邊緣；背景雜亂時則需提高門檻值以過濾無用邊緣。
+                        在作業中，你需要針對不同環境條件找到最佳的參數組合。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -705,35 +856,144 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>📐 3. 輪廓檢索與幾何特徵 (15 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-<div class="space-y-6">
-<p class="text-gray-600 leading-relaxed">
-<strong>從邊緣到輪廓：</strong>理解如何將相連的邊緣點串聯成一個封閉的「輪廓 (Contour)」。
-                            </p>
-<div class="p-6 bg-slate-50 rounded-2xl border border-slate-200">
-<h5 class="font-bold text-slate-800 mb-3 text-lg">矩 (Moments)</h5>
-<p class="text-sm text-slate-600">利用數學矩計算輪廓的<strong>面積、周長、圓度 (Roundness)</strong>。</p>
-</div>
-</div>
-<div class="bg-purple-50 p-8 rounded-3xl border border-purple-100">
-<h4 class="font-bold text-purple-900 mb-4 flex items-center gap-2 text-xl">
-<span>🎯</span> 預習任務：幾何判別
-                            </h4>
-<p class="text-gray-700 leading-relaxed mb-6">
-                                思考為什麼「圓度」可以用來區分畫面中的是「皮球」還是「磚塊」？
-                            </p>
-<div class="bg-white p-4 rounded-xl shadow-sm border border-purple-200">
-<code class="text-xs text-purple-700">Roundness = (4 * π * Area) / (Perimeter^2)</code>
-</div>
-</div>
-</div>
+                <h1>輪廓檢索與幾何特徵</h1>
+
+                <p>
+                    邊緣偵測告訴我們「哪裡有變化」，但它輸出的是一堆離散的邊緣像素點。
+                    <strong>輪廓檢索 (Contour Detection)</strong> 的任務是將這些相鄰的邊緣點串聯成有序的封閉曲線——也就是物體的「輪廓」。
+                    有了輪廓，我們就能計算物體的幾何特徵（面積、周長、圓度），
+                    將抽象的像素集合轉化為具有物理意義的<strong>幾何描述符 (Geometric Descriptor)</strong>。
+                </p>
+
+                <h2>從邊緣到輪廓</h2>
+
+                <p>
+                    OpenCV 的 <code>findContours()</code> 函式會遍歷二值化影像中的所有白色像素，
+                    將相鄰的像素串聯成一系列有序的座標點列表。每一個列表就代表一個獨立的輪廓。
+                    一張影像中可能同時存在數十個甚至上百個輪廓——包括目標物體和各種背景雜訊。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 使用 OpenCV.js 檢索輪廓</span><br>
+                    <span class="c-kw">let</span> <span class="c-attr">contours</span> <span class="c-white">=</span> <span class="c-kw">new</span> <span class="c-tag">cv.MatVector</span><span class="c-white">();</span><br>
+                    <span class="c-kw">let</span> <span class="c-attr">hierarchy</span> <span class="c-white">=</span> <span class="c-kw">new</span> <span class="c-tag">cv.Mat</span><span class="c-white">();</span><br>
+                    <br>
+                    <span class="c-tag">cv</span><span class="c-white">.</span><span class="c-tag">findContours</span><span class="c-white">(</span><br>
+                    <span class="c-white">&nbsp;&nbsp;edges,</span> <span class="c-comment">// Canny 輸出的邊緣圖</span><br>
+                    <span class="c-white">&nbsp;&nbsp;contours,</span> <span class="c-comment">// 輸出：輪廓點集合</span><br>
+                    <span class="c-white">&nbsp;&nbsp;hierarchy,</span> <span class="c-comment">// 輸出：輪廓層級關係</span><br>
+                    <span class="c-white">&nbsp;&nbsp;cv.RETR_EXTERNAL,</span> <span class="c-comment">// 只檢索最外層輪廓</span><br>
+                    <span class="c-white">&nbsp;&nbsp;cv.CHAIN_APPROX_SIMPLE</span> <span class="c-comment">// 壓縮直線段上的冗餘點</span><br>
+                    <span class="c-white">);</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>效能提示</strong>
+                        使用 <code>RETR_EXTERNAL</code> 模式只檢索最外層輪廓，可以大幅減少運算量。
+                        使用 <code>CHAIN_APPROX_SIMPLE</code> 則會壓縮直線段上的冗餘座標點——例如一條水平線只需儲存起點和終點，而非所有中間像素。
+                    </div>
+                </div>
+
+                <h2>幾何描述符 (Geometric Descriptors)</h2>
+
+                <p>
+                    取得輪廓後，可以透過<strong>影像矩 (Image Moments)</strong> 計算一系列幾何特徵值。
+                    這些數值能夠精確描述物體的形狀屬性，是後續分類決策的基礎：
+                </p>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>描述符</th>
+                        <th>公式 / API</th>
+                        <th>物理意義</th>
+                        <th>應用範例</th>
+                    </tr>
+                    <tr>
+                        <td><strong>面積 (Area)</strong></td>
+                        <td><code>cv.contourArea(c)</code></td>
+                        <td>輪廓所包圍的像素數量</td>
+                        <td>過濾雜訊小輪廓（面積 &lt; 100 即丟棄）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>周長 (Perimeter)</strong></td>
+                        <td><code>cv.arcLength(c, true)</code></td>
+                        <td>輪廓邊界的總長度</td>
+                        <td>配合面積計算圓度</td>
+                    </tr>
+                    <tr>
+                        <td><strong>圓度 (Roundness)</strong></td>
+                        <td><code>4π × Area / Perimeter²</code></td>
+                        <td>形狀接近圓形的程度（完美圓 = 1.0）</td>
+                        <td>區分圓形標誌 vs 矩形路標</td>
+                    </tr>
+                    <tr>
+                        <td><strong>長寬比 (Aspect Ratio)</strong></td>
+                        <td><code>width / height</code> of bounding rect</td>
+                        <td>外接矩形的寬高比</td>
+                        <td>區分橫向停車線 vs 直立標誌</td>
+                    </tr>
+                </table>
+
+                <h2>圓度公式與實作</h2>
+
+                <p>
+                    圓度 (Roundness) 是本單元最核心的幾何描述符。其數學定義利用了一個重要性質：
+                    <strong>在所有面積相等的封閉形狀中，圓形的周長最短。</strong>因此，圓度值越接近 1.0，形狀越接近完美的圓。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-kw">function</span> <span class="c-tag">calculateRoundness</span><span class="c-white">(contour) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">let</span> <span class="c-attr">area</span> <span class="c-white">= cv.contourArea(contour);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">let</span> <span class="c-attr">perimeter</span> <span class="c-white">= cv.arcLength(contour,</span> <span class="c-kw">true</span><span class="c-white">);</span><br>
+                    <br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(perimeter === 0)</span> <span class="c-kw">return</span> <span class="c-white">0;</span><br>
+                    <br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">let</span> <span class="c-attr">roundness</span> <span class="c-white">=</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;(4 * Math.PI * area) / (perimeter * perimeter);</span><br>
+                    <br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-white">roundness;</span> <span class="c-comment">// 完美圓 ≈ 1.0</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        圓度之所以適合用於自動駕駛場景，是因為它具備<strong>尺度不變性 (Scale Invariance)</strong>——
+                        無論圓形標誌距離攝影機是 50 公分還是 2 公尺，其圓度值始終接近 1.0。
+                        這種穩定性讓我們無需知道物體的實際距離，就能正確分類其形狀。
+                    </div>
+                </div>
+
+                <h2>輪廓篩選策略</h2>
+
+                <p>
+                    實務中，<code>findContours()</code> 通常會回傳大量輪廓，其中大部分是背景雜訊。
+                    有效的篩選策略是先用面積過濾掉小輪廓，再用幾何描述符進行分類：
+                </p>
+
+                <ol>
+                    <li><strong>面積門檻過濾</strong>：丟棄面積小於設定閾值（如 100 像素）的輪廓，排除雜訊碎片。</li>
+                    <li><strong>圓度分類</strong>：圓度 > 0.85 → 判定為圓形物體；圓度 < 0.5 → 判定為長條形物體。</li>
+                    <li><strong>長寬比輔助</strong>：搭配 bounding rect 的長寬比，進一步區分橫向線條與直立標誌。</li>
+                </ol>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        在嵌入式裝置上，對所有輪廓計算幾何特徵可能會消耗大量 CPU 時間。
+                        務必先用 <code>cv.contourArea()</code> 進行初步篩選，只對「有意義的」大輪廓執行後續的周長、圓度等計算，
+                        以確保控制迴路的即時性不受影響。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -812,16 +1072,113 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>請回答以下問題，測試你對本模組內容的理解程度。每題僅有一個正確答案。</p>
+
+                <form id="quiz-form" onsubmit="return false;" style="margin-top:24px;">
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">1. 在電腦視覺中，邊緣偵測的目的是什麼？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 壓縮影像檔案大小
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 找出影像中亮度劇烈變化的區域
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 提高影像解析度
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 將影像轉為灰階
+                        </label>
+                        <div id="fb-q1" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">2. 好的影像特徵 (Feature) 應具備什麼核心性質？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 檔案大小最小
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 不變性——不隨旋轉、縮放、光照改變
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 色彩最鮮豔
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 計算速度最快
+                        </label>
+                        <div id="fb-q2" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">3. 輪廓 (Contour) 在影像處理中描述的是什麼？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 影像的整體亮度分佈
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 物體邊界的封閉或開放曲線
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 像素的色彩直方圖
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 影像的壓縮格式
+                        </label>
+                        <div id="fb-q3" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">4. 圓度 (Circularity) 特徵主要用於判斷什麼？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 物體的顏色深淺
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 物體形狀接近圓形的程度
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 物體的移動速度
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 物體的紋理粗糙度
+                        </label>
+                        <div id="fb-q4" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="display:flex;gap:12px;margin-top:20px;">
+                        <button type="button" class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button type="button" class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                    </div>
+                    <div id="quiz-result" style="margin-top:16px;font-size:15px;font-weight:600;display:none;"></div>
+                </form>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -879,9 +1236,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「數位影像的特徵提取」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「數位影像的特徵提取」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -897,7 +1254,8 @@
         { id: 3, label: '邊緣偵測的魔術 (25 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '📐 3. 輪廓檢索與幾何特徵 (15 min)', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',     time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -917,6 +1275,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1018,8 +1377,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'B', q3: 'B', q4: 'B' };
+    const QUIZ_EXPLANATIONS = {
+        q1: '邊緣偵測透過計算像素梯度，找出影像中亮度發生劇烈變化的位置，這些位置通常對應物體的邊界。',
+        q2: '好的特徵應具備不變性（Invariance），即便物體旋轉、縮放或光線變化，提取的特徵仍能穩定描述同一物體。',
+        q3: '輪廓是連接邊緣像素所形成的曲線，描繪了物體的邊界形狀，是形狀分析與物體辨識的基礎。',
+        q4: '圓度 = 4π × 面積 / 周長²，值越接近 1 表示形狀越接近完美圓形，可用於區分圓形標誌與矩形賽道線。'
+    };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const fb = document.getElementById(`fb-${q}`);
+            if (!selected) {
+                fb.style.display = 'block';
+                fb.innerHTML = '<span style="color:#d13438;">⚠ 請選擇一個答案</span>';
+                continue;
+            }
+            fb.style.display = 'block';
+            if (selected.value === correct) {
+                score++;
+                fb.innerHTML = `<span style="color:#107c10;">✔ 正確！</span> ${QUIZ_EXPLANATIONS[q]}`;
+            } else {
+                fb.innerHTML = `<span style="color:#d13438;">✘ 不正確。正確答案是 ${correct}。</span> ${QUIZ_EXPLANATIONS[q]}`;
+            }
+        }
+        const result = document.getElementById('quiz-result');
+        result.style.display = 'block';
+        if (score === total) {
+            result.innerHTML = `<span style="color:#107c10;">🎉 滿分！你答對了全部 ${total} 題！</span>`;
+            markDone(6);
+        } else {
+            result.innerHTML = `<span style="color:#d13438;">你答對了 ${score} / ${total} 題。再試一次吧！</span>`;
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= Object.keys(QUIZ_ANSWERS).length; i++) {
+            const fb = document.getElementById(`fb-q${i}`);
+            if (fb) { fb.style.display = 'none'; fb.innerHTML = ''; }
+        }
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 05：電腦視覺基礎';
 </script>
 
 <!-- Define Resources -->

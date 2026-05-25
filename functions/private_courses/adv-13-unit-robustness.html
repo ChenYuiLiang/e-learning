@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>軟體健壯性 (Robustness) 與錯誤處理 - Vibe Coding Learn</title>
+    <title>軟體健壯性 (Robustness) 與錯誤處理 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 13 - 系統健壯性</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">軟體健壯性 (Robustness) 與錯誤處理</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 196 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 196 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 13</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>軟體健壯性 (Robustness) 與錯誤處理</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 13</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,15 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>軟體健壯性 (Robustness) 與錯誤處理</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    歡迎來到本模組！本單元聚焦於 <strong>軟體健壯性 (Robustness) 與錯誤處理</strong>。
+                    當你的機器人在高速行駛中突然遭遇藍牙斷線或接收到損毀封包，系統是優雅地安全停車，還是失控暴衝？
+                    這個模組將帶你從「功能能跑」升級到「絕對不壞」，建立防禦性編程、心跳守門狗與異常診斷的完整防護體系。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境設定</div>
+                    想像你的遙控車正以全速通過走廊，此時你的手機突然收到來電，藍牙瞬間被系統搶佔——車輛失去指令卻依然全速衝向牆壁。
+                    如果你的韌體沒有心跳偵測與自動煞車機制，這就是一場災難。請先觀看教學影片，了解如何為系統建立一套「永不暴衝」的安全防線。
                 </div>
 
                 <h2>教學影片</h2>
@@ -576,7 +576,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -591,52 +591,99 @@
                 </div>
 
                 <h1>🛡️ 1. 防禦性編程 (Defensive Programming)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                永遠假設外部輸入是不可信的。在執行核心硬體指令前，必須進行嚴格的「邊界檢查」與「格式驗證」，防止系統因單一錯誤封包而癱瘓。
-                            </p>
-<div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-justify">
-<h4 class="font-bold text-blue-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed text-center text-justify">
-                                    Safety Patterns</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify text-justify">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify text-left">輸入驗證 (Input
-                                                Validation)</strong>：檢查數值是否在合法硬體區間 (如 PWM 0-255)。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify">數值鉗位 (Clamping)</strong>：強制將溢位值拉回安全邊界，防止馬達反轉。
-                                        </div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify text-left"></span>
-<div><strong class="text-justify">故障隔離
-                                                (Sandboxing)</strong>：確保通訊模組的錯誤不應導致主控制迴圈鎖死。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors text-justify">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-center text-justify">
-                                Runtime Guard Logic</h4>
-<div class="relative z-10 space-y-4 text-justify">
-<div class="text-[9px] font-mono p-2 bg-red-900/20 border border-red-500/30 rounded italic text-red-300 text-justify text-left text-justify">
-                                    ILLEGAL_INPUT: "999,999" (Corruption)</div>
-<div class="text-blue-500 text-xl font-bold text-justify">⬇️ SHIELD ⬇️</div>
-<div class="text-[9px] font-mono p-2 bg-emerald-900/20 border border-emerald-500/30 rounded text-emerald-300 font-bold tracking-widest text-justify text-left text-justify">
-                                    CLAMPED_RESULT: 255 (Safe)</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest text-center text-justify">
-                                DATA RECOVERY FILTERING ACTIVE</p>
-</div>
-</div>
-                
+
+                <p>
+                    在嵌入式系統與物聯網裝置中，<strong>防禦性編程 (Defensive Programming)</strong> 是確保系統穩定運行的第一道防線。
+                    其核心理念非常直覺：<strong>永遠不要信任外部輸入</strong>。無論資料來自藍牙通訊、網頁介面或感測器讀數，
+                    在將其用於控制硬體（例如馬達 PWM 輸出）之前，都必須經過嚴格的驗證與清洗。
+                </p>
+
+                <p>
+                    在遙控車系統中，使用者透過 Web Dashboard 發送的指令經由藍牙傳輸到 ESP32。這條傳輸鏈路上的任何環節都可能產生異常——
+                    無線雜訊可能損毀封包內容、惡意使用者可能發送超出合理範圍的數值、甚至 JSON 解析程式本身也可能因格式錯誤而崩潰。
+                    防禦性編程的目標就是讓系統在面對這些「意外」時，仍能安全、可預測地運行，而非直接當機或做出危險動作。
+                </p>
+
+                <h2>三大防禦策略</h2>
+
+                <h3>1. 輸入驗證 (Input Validation)</h3>
+                <p>
+                    在使用任何外部數據之前，首先檢查其<strong>格式是否正確</strong>以及<strong>數值是否在合理範圍</strong>內。
+                    對於遙控車的馬達控制，PWM 訊號的合法範圍為 0–255。任何超出此範圍的數值（例如 999 或 -500）都應被視為無效輸入，
+                    系統應記錄警告並拒絕處理，而非盲目轉發到硬體。
+                </p>
+
+                <h3>2. 數值鉗位 (Clamping)</h3>
+                <p>
+                    有時候，直接丟棄無效輸入可能導致系統停擺（例如車子收不到任何速度指令而完全不動）。
+                    更優雅的做法是使用<strong>鉗位函數 (Clamping Function)</strong>，將超出範圍的數值強制「夾」回安全邊界。
+                    Arduino 提供了內建的 <code>constrain()</code> 函數，能將數值限制在指定的最小值與最大值之間。
+                </p>
+
+                <h3>3. 故障隔離 (Fault Isolation / Sandboxing)</h3>
+                <p>
+                    系統中的各個模組應盡可能彼此隔離，確保某一模組的故障不會「傳染」到其他模組。
+                    例如，藍牙通訊解析器的崩潰不應導致馬達控制迴圈被鎖死。
+                    透過將各功能封裝在獨立的函數中，並設置適當的超時機制與錯誤回傳碼，可以有效實現故障隔離。
+                </p>
+
+                <h2>實作範例：安全的指令處理函數</h2>
+
+                <p>以下程式碼展示了如何在 ESP32 韌體中實作一個具備防禦性的指令處理函數：</p>
+
+                <div class="ms-code">
+<span class="c-kw">void</span> <span class="c-tag">handleCommand</span><span class="c-white">(</span><span class="c-kw">String</span> <span class="c-attr">rawInput</span><span class="c-white">) {</span><br>
+&nbsp;&nbsp;<span class="c-comment">// Step 1: 格式驗證 — 確認輸入非空且為有效數字</span><br>
+&nbsp;&nbsp;<span class="c-kw">if</span> <span class="c-white">(rawInput.length() == </span><span class="c-val">0</span><span class="c-white">) {</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-tag">Serial</span><span class="c-white">.println(</span><span class="c-str">"[WARN] Empty input — ignored"</span><span class="c-white">);</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-kw">return</span><span class="c-white">;</span><br>
+&nbsp;&nbsp;<span class="c-white">}</span><br><br>
+&nbsp;&nbsp;<span class="c-kw">int</span> <span class="c-attr">value</span> <span class="c-white">= rawInput.</span><span class="c-tag">toInt</span><span class="c-white">();</span><br><br>
+&nbsp;&nbsp;<span class="c-comment">// Step 2: 數值鉗位 — 強制限制在 PWM 安全範圍</span><br>
+&nbsp;&nbsp;<span class="c-attr">value</span> <span class="c-white">= </span><span class="c-tag">constrain</span><span class="c-white">(value, </span><span class="c-val">0</span><span class="c-white">, </span><span class="c-val">255</span><span class="c-white">);</span><br><br>
+&nbsp;&nbsp;<span class="c-comment">// Step 3: 安全地應用到硬體</span><br>
+&nbsp;&nbsp;<span class="c-tag">analogWrite</span><span class="c-white">(MOTOR_PIN, value);</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        Arduino 的 <code>String.toInt()</code> 在無法解析時會回傳 0，這在某些場景下可能被誤解為合法輸入（例如「速度 = 0」）。
+                        在生產級韌體中，建議使用更嚴謹的解析函數（如 C 標準庫的 <code>strtol()</code>），
+                        並透過其回傳的 <code>endptr</code> 參數明確檢查解析是否成功。
+                    </div>
+                </div>
+
+                <h2>常見攻擊向量與防禦對照</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>異常輸入類型</th><th>未防禦時的後果</th><th>防禦策略</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>PWM 值 = <code>999</code></td><td>馬達驅動器過載，行為不可預測</td><td><code>constrain(val, 0, 255)</code> 鉗位</td></tr>
+                        <tr><td>PWM 值 = <code>-500</code></td><td>馬達可能反轉失控</td><td>取絕對值後鉗位至合法範圍</td></tr>
+                        <tr><td>輸入 = <code>"abc"</code></td><td><code>toInt()</code> 回傳 0，馬達意外停止</td><td>先驗證字串是否為有效數字</td></tr>
+                        <tr><td>損毀的 JSON 封包</td><td>解析器崩潰，主迴圈凍結</td><td>故障隔離 + 超時保護機制</td></tr>
+                        <tr><td>封包洪水攻擊 (Flood)</td><td>佇列溢位，記憶體耗盡</td><td>速率限制 (Rate Limiting) + 佇列上限</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>最佳實踐</strong>
+                        在韌體中加入「壓力測試模式」，讓系統接收隨機的非法輸入（超大數值、空字串、特殊字元等），
+                        驗證防禦邏輯的完備性。這正是本模組實作任務 13-1「非法數據壓力測試」的核心目標。
+                    </div>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -651,42 +698,87 @@
                 </div>
 
                 <h1>💓 2. 心跳機制與自動煞車 (Fail-safe)</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                若無線連線不幸中斷，車子必須在「一秒內」自動停止。這就是 Fail-safe：讓系統在失敗時，自動進入預定義的最安全狀態（通常是切斷馬達電力）。
-                            </p>
-<div class="bg-red-50 p-8 rounded-3xl border border-red-100 text-justify">
-<h4 class="text-red-900 font-bold mb-4 text-xs uppercase tracking-widest text-center text-justify text-justify">
-                                    Watchdog Timer Logic</h4>
-<div class="text-xl font-mono text-red-600 text-center text-justify text-justify">
-                                    \[if (millis() - last_heartbeat &gt; 1500ms)\]
-                                </div>
-<p class="text-[10px] text-slate-400 mt-4 italic font-light text-center text-justify text-justify text-justify">
-                                    執行 stopMotors() 煞車指令：為軟體異常加上物理保險絲</p>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-red-500/5 text-justify"></div>
-<h4 class="text-red-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-center text-justify">
-                                Connection Heartbeat</h4>
-<div class="flex items-center gap-4 relative z-10 text-justify">
-<div class="w-3 h-3 bg-red-500 rounded-full animate-ping text-justify"></div>
-<div class="text-xs text-red-400 font-bold uppercase tracking-tighter text-justify">LINK
-                                    INTERRUPTED</div>
-<div class="px-3 py-1 bg-white text-black text-[8px] font-bold rounded text-justify">
-                                    AUTO-BRAKE</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-8 font-mono tracking-widest uppercase text-center text-justify">
-                                SAFETY TRIP SYSTEM ENGAGED</p>
-</div>
-</div>
-                
+
+                <p>
+                    即使你的防禦性編程做得再完美，仍有一種致命的失敗模式無法僅靠輸入驗證來解決——<strong>通訊中斷</strong>。
+                    當遙控車正以全速行駛，而藍牙連線突然因為距離過遠、訊號干擾或手機來電而中斷時，
+                    車輛會繼續執行最後一次收到的指令：全速前進。這就是為什麼我們需要<strong>失效保護 (Fail-safe)</strong> 機制。
+                </p>
+
+                <p>
+                    Fail-safe 的核心理念是：<strong>當系統偵測到自身處於無法安全運行的狀態時，應自動進入預定義的最安全狀態</strong>。
+                    對於遙控車而言，最安全的狀態就是「停止所有馬達」。實現這個機制的關鍵技術就是<strong>心跳計時器 (Heartbeat Timer)</strong>，
+                    也常被稱為「看門狗 (Watchdog)」。
+                </p>
+
+                <h2>心跳機制的運作原理</h2>
+
+                <p>
+                    心跳機制的邏輯非常直覺：控制端（手機或 Web Dashboard）需要<strong>定期</strong>向車輛發送「心跳訊號」，
+                    證明連線仍然有效。車輛端則持續追蹤「上次收到有效訊息的時間」。一旦超過預設的逾時門檻（例如 1200 毫秒），
+                    系統就判定通訊已中斷，並立即觸發緊急停車程序。
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">unsigned long</span> <span class="c-attr">lastHeartbeat</span> <span class="c-white">= </span><span class="c-val">0</span><span class="c-white">;</span><br>
+<span class="c-kw">const unsigned long</span> <span class="c-attr">HEARTBEAT_TIMEOUT</span> <span class="c-white">= </span><span class="c-val">1200</span><span class="c-white">;</span> <span class="c-comment">// 1.2 秒</span><br>
+<span class="c-kw">bool</span> <span class="c-attr">safetyLocked</span> <span class="c-white">= </span><span class="c-kw">false</span><span class="c-white">;</span><br><br>
+<span class="c-kw">void</span> <span class="c-tag">checkHeartbeat</span><span class="c-white">() {</span><br>
+&nbsp;&nbsp;<span class="c-kw">if</span> <span class="c-white">(</span><span class="c-tag">millis</span><span class="c-white">() - lastHeartbeat > HEARTBEAT_TIMEOUT) {</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-tag">triggerEmergencyStop</span><span class="c-white">();</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-attr">safetyLocked</span> <span class="c-white">= </span><span class="c-kw">true</span><span class="c-white">;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-tag">Serial</span><span class="c-white">.println(</span><span class="c-str">"[SAFETY] Heartbeat lost — motors locked"</span><span class="c-white">);</span><br>
+&nbsp;&nbsp;<span class="c-white">}</span><br>
+<span class="c-white">}</span><br><br>
+<span class="c-kw">void</span> <span class="c-tag">triggerEmergencyStop</span><span class="c-white">() {</span><br>
+&nbsp;&nbsp;<span class="c-tag">analogWrite</span><span class="c-white">(MOTOR_L, </span><span class="c-val">0</span><span class="c-white">);</span><br>
+&nbsp;&nbsp;<span class="c-tag">analogWrite</span><span class="c-white">(MOTOR_R, </span><span class="c-val">0</span><span class="c-white">);</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>關鍵設計</strong>
+                        逾時門檻的選擇至關重要：設得太短（如 200ms），正常的網路抖動就會頻繁觸發誤報；
+                        設得太長（如 5 秒），車輛在真正斷線時會失控衝出太遠。建議值為 <strong>1000–1500 毫秒</strong>，
+                        並根據實際測試環境的藍牙品質進行微調。
+                    </div>
+                </div>
+
+                <h2>安全復歸：防止二次衝撞</h2>
+
+                <p>
+                    當通訊恢復時，系統不應立刻執行佇列中殘留的舊指令，否則可能因為「過時的全速前進指令」導致二次衝撞。
+                    正確的做法是引入一個<strong>手動解鎖 (Manual Unlock)</strong> 流程：
+                    連線恢復後，車輛仍保持鎖定狀態，操作者必須明確發送「解鎖」指令後才能恢復控制。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>系統狀態</th><th>條件</th><th>允許的操作</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>NORMAL</strong> 正常運行</td><td>心跳持續有效</td><td>接受所有控制指令</td></tr>
+                        <tr><td><strong>TIMEOUT</strong> 心跳逾時</td><td>超過 1200ms 無心跳</td><td>自動鎖定馬達，拒絕控制指令</td></tr>
+                        <tr><td><strong>SAFE_LOCK</strong> 安全鎖定</td><td>通訊恢復但尚未解鎖</td><td>僅接受「解鎖」指令</td></tr>
+                        <tr><td><strong>UNLOCKED</strong> 已解鎖</td><td>操作者確認解鎖</td><td>清除舊指令佇列，回到 NORMAL</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>測試方法</strong>
+                        驗證 Fail-safe 的最有效方式：讓車輛全速行駛，然後<strong>直接關閉手機的藍牙</strong>。
+                        觀察車輛是否能在 1.2 秒內自動煞停。錄製這段影片，就是實作任務 13-2 的核心交付物。
+                    </div>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -701,56 +793,94 @@
                 </div>
 
                 <h1>⚠️ 3. 異常狀態回報介面 (UX/DX)</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
-                                一個優秀的工業系統不應在出錯時保持「沈默」。UI 必須能讓操作者即時區分是通訊不良、電力負載過重還是內部組件失效。
-                            </p>
-<div class="bg-orange-500/10 p-8 rounded-3xl border border-orange-500/20 shadow-inner text-justify text-justify">
-<h4 class="font-bold text-orange-400 mb-4 text-xs uppercase tracking-widest text-center text-justify text-left">
-                                    Diagnostic UI Layers</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify text-justify">
-<li class="flex items-start gap-2 text-justify text-justify text-left text-justify">
-<span class="w-1.5 h-1.5 bg-orange-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">延遲度量
-                                                (Latency)</strong>：當連線延遲過高時變更配色，給予操作者視覺預警。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-justify text-left text-justify">
-<span class="w-1.5 h-1.5 bg-orange-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify text-justify">標準錯誤代碼</strong>：定義 E01
-                                            (通訊)、E02 (超載) 等異常類別機制。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-justify text-left text-justify">
-<span class="w-1.5 h-1.5 bg-orange-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">故障日誌紀錄</strong>：在本地端緩存最近 10
-                                            次的異常事件，協助遠端除錯。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-orange-600/10 p-10 rounded-3xl border border-orange-500/20 text-center relative overflow-hidden group text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-orange-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify">
-</div>
-<h4 class="text-orange-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center text-justify">
-                                Diagnostic Console</h4>
-<div class="w-full bg-slate-800 rounded-xl p-4 text-left font-mono text-justify">
-<div class="text-[8px] text-orange-400 mb-1 text-justify text-left text-justify">RSSI:
-                                    -85dBm (POOR SIGNAL)</div>
-<div class="text-[8px] text-red-500 mb-1 text-justify text-left text-justify">LATENCY:
-                                    540ms (LIMIT EXCEEDED)</div>
-<div class="text-[8px] text-slate-400 uppercase tracking-tighter text-justify text-left">
-                                    [SYS] TRIGGERING RECOVERY...</div>
-</div>
-<p class="text-[9px] text-slate-500 mt-6 font-mono uppercase text-center text-justify">
-                                Real-time Telemetry Active</p>
-</div>
-</div>
-                
+
+                <p>
+                    一個具備工業水準的控制系統，在發生異常時絕不能保持「沉默」。
+                    如果車子突然停下來，操作者需要在<strong>第一時間</strong>知道原因——
+                    是藍牙訊號太弱？是馬達電流過載？還是韌體內部發生了未預期的例外？
+                    <strong>異常狀態回報介面</strong>的目標就是讓系統的「健康狀況」對人類完全透明。
+                </p>
+
+                <p>
+                    這不僅是使用者體驗 (UX) 的問題，更是開發者體驗 (DX) 的核心需求。
+                    當你在除錯階段需要遠端診斷一台行為異常的車輛時，
+                    如果 Dashboard 能即時顯示 RSSI 訊號強度、指令延遲數值與最近的故障日誌，
+                    你就能在幾秒內定位問題根源，而不是盲目猜測。
+                </p>
+
+                <h2>三層診斷架構</h2>
+
+                <h3>1. 延遲度量 (Latency Monitoring)</h3>
+                <p>
+                    追蹤每個指令從發送到執行的往返時間 (Round-Trip Time, RTT)。
+                    當延遲超過警告門檻時，Dashboard 應改變顯示顏色，給予操作者視覺預警。
+                    正常延遲通常在 20–50ms，超過 200ms 就會明顯影響操控體驗。
+                </p>
+
+                <h3>2. 標準化錯誤代碼 (Error Code System)</h3>
+                <p>
+                    定義一套統一的錯誤分類機制，使不同類型的異常能被快速識別與處理。
+                    這對於多人協作的開發團隊尤其重要——每個人都能看懂錯誤代碼的含義，無需深入程式碼。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>錯誤代碼</th><th>分類</th><th>描述</th><th>嚴重程度</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>E01</code></td><td>通訊</td><td>藍牙連線中斷或心跳逾時</td><td style="color:var(--ms-red);">嚴重</td></tr>
+                        <tr><td><code>E02</code></td><td>硬體</td><td>馬達電流超過安全閾值</td><td style="color:var(--ms-red);">嚴重</td></tr>
+                        <tr><td><code>W01</code></td><td>通訊</td><td>RSSI 訊號低於 -80 dBm</td><td style="color:#ffaa44;">警告</td></tr>
+                        <tr><td><code>W02</code></td><td>效能</td><td>指令延遲超過 200ms</td><td style="color:#ffaa44;">警告</td></tr>
+                        <tr><td><code>I01</code></td><td>系統</td><td>安全鎖已觸發，等待解鎖</td><td style="color:var(--ms-blue);">資訊</td></tr>
+                    </tbody>
+                </table>
+
+                <h3>3. 故障日誌紀錄 (Fault Logging)</h3>
+                <p>
+                    在本地端維護一個循環緩衝區 (Circular Buffer)，記錄最近 10 次的異常事件，
+                    包含時間戳記、錯誤代碼與當時的系統狀態快照。這些日誌可透過 WebSocket 即時推送到 Dashboard，
+                    也可在重新連線後批次上傳，協助工程師進行事後分析。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 遙測封包結構：在回傳數據中加入診斷資訊</span><br>
+<span class="c-kw">void</span> <span class="c-tag">sendTelemetry</span><span class="c-white">() {</span><br>
+&nbsp;&nbsp;<span class="c-kw">String</span> <span class="c-attr">json</span> <span class="c-white">= </span><span class="c-str">"{"</span><span class="c-white">;</span><br>
+&nbsp;&nbsp;<span class="c-attr">json</span> <span class="c-white">+= </span><span class="c-str">"\"rssi\":"</span> <span class="c-white">+ </span><span class="c-tag">String</span><span class="c-white">(WiFi.RSSI()) + </span><span class="c-str">","</span><span class="c-white">;</span><br>
+&nbsp;&nbsp;<span class="c-attr">json</span> <span class="c-white">+= </span><span class="c-str">"\"latency\":"</span> <span class="c-white">+ </span><span class="c-tag">String</span><span class="c-white">(lastRTT) + </span><span class="c-str">","</span><span class="c-white">;</span><br>
+&nbsp;&nbsp;<span class="c-attr">json</span> <span class="c-white">+= </span><span class="c-str">"\"errCode\":\""</span> <span class="c-white">+ currentError + </span><span class="c-str">"\","</span><span class="c-white">;</span><br>
+&nbsp;&nbsp;<span class="c-attr">json</span> <span class="c-white">+= </span><span class="c-str">"\"uptime\":"</span> <span class="c-white">+ </span><span class="c-tag">String</span><span class="c-white">(</span><span class="c-tag">millis</span><span class="c-white">()) + </span><span class="c-str">"}"</span><span class="c-white">;</span><br>
+&nbsp;&nbsp;<span class="c-tag">ws</span><span class="c-white">.textAll(json);</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        前端 Dashboard 應根據 RSSI 與延遲數值動態改變顯示顏色：
+                        <strong>綠色</strong>（RSSI &gt; -60 dBm，延遲 &lt; 100ms）、
+                        <strong>黃色</strong>（RSSI -60 ~ -80 dBm，延遲 100–300ms）、
+                        <strong>紅色</strong>（RSSI &lt; -80 dBm 或延遲 &gt; 300ms）。
+                        這套三色預警系統能讓操作者在異常發生前就採取預防措施。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>進階技巧</strong>
+                        將故障日誌存入 ESP32 的 SPIFFS 或 LittleFS 檔案系統，即使重開機也不會遺失。
+                        這在實際部署中非常實用——當設備在遠端現場發生故障時，
+                        工程師可以在事後連線讀取「黑盒子」紀錄來還原事發經過。
+                    </div>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -829,16 +959,134 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>
+                    請回答以下問題，測試你對「<strong>系統穩健性</strong>」的理解程度。
+                    選擇完畢後點擊「送出答案」查看結果與解析。
+                </p>
+
+                <div id="quiz-container" style="margin:24px 0;">
+
+                    <div class="quiz-question" id="quiz-q0" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">1. 什麼是「防禦性程式設計（Defensive Programming）」的核心精神？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt0">
+                            <input type="radio" name="quiz-q0" value="0" style="accent-color:var(--ms-blue);">
+                            <span>預設所有輸入都可能有問題，主動加入檢查與保護</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt1">
+                            <input type="radio" name="quiz-q0" value="1" style="accent-color:var(--ms-blue);">
+                            <span>使用最新的程式語言</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt2">
+                            <input type="radio" name="quiz-q0" value="2" style="accent-color:var(--ms-blue);">
+                            <span>不撰寫任何註解</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt3">
+                            <input type="radio" name="quiz-q0" value="3" style="accent-color:var(--ms-blue);">
+                            <span>盡量減少程式碼行數</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp0" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q1" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">2. 看門狗計時器（Watchdog Timer）的主要功能是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt0">
+                            <input type="radio" name="quiz-q1" value="0" style="accent-color:var(--ms-blue);">
+                            <span>提高程式執行速度</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt1">
+                            <input type="radio" name="quiz-q1" value="1" style="accent-color:var(--ms-blue);">
+                            <span>偵測系統當機並自動重啟，避免永久卡死</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt2">
+                            <input type="radio" name="quiz-q1" value="2" style="accent-color:var(--ms-blue);">
+                            <span>管理記憶體配置</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt3">
+                            <input type="radio" name="quiz-q1" value="3" style="accent-color:var(--ms-blue);">
+                            <span>加密通訊資料</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp1" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q2" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">3. 在感測器資料處理中，「合理值範圍檢查」的目的是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt0">
+                            <input type="radio" name="quiz-q2" value="0" style="accent-color:var(--ms-blue);">
+                            <span>減少記憶體使用</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt1">
+                            <input type="radio" name="quiz-q2" value="1" style="accent-color:var(--ms-blue);">
+                            <span>過濾掉明顯超出物理可能的異常讀值，防止錯誤資料影響控制</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt2">
+                            <input type="radio" name="quiz-q2" value="2" style="accent-color:var(--ms-blue);">
+                            <span>加快通訊速度</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt3">
+                            <input type="radio" name="quiz-q2" value="3" style="accent-color:var(--ms-blue);">
+                            <span>簡化程式碼結構</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp2" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q3" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">4. 系統韌性設計中的「優雅降級（Graceful Degradation）」是什麼意思？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt0">
+                            <input type="radio" name="quiz-q3" value="0" style="accent-color:var(--ms-blue);">
+                            <span>系統故障時立即完全停機</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt1">
+                            <input type="radio" name="quiz-q3" value="1" style="accent-color:var(--ms-blue);">
+                            <span>即使部分功能失效，系統仍能以降低但安全的模式繼續運作</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt2">
+                            <input type="radio" name="quiz-q3" value="2" style="accent-color:var(--ms-blue);">
+                            <span>忽略所有錯誤繼續執行</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt3">
+                            <input type="radio" name="quiz-q3" value="3" style="accent-color:var(--ms-blue);">
+                            <span>將錯誤轉發給使用者處理</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp3" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">送出答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+
+                <div id="quiz-result" style="display:none; margin-top:20px; padding:16px 20px; border-radius:6px; font-weight:600;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -896,9 +1144,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「軟體健壯性 (Robustness) 與錯誤處理」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「軟體健壯性 (Robustness) 與錯誤處理」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -914,7 +1162,8 @@
         { id: 3, label: '💓 2. 心跳機制與自動煞車 (Fail-safe)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '️ 3. 異常狀態回報介面 (UX/DX)', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '160 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -934,6 +1183,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1035,8 +1285,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = [0, 1, 1, 1];
+    const QUIZ_EXPLANATIONS = ["防禦性程式設計假設「任何事都可能出錯」，透過輸入驗證、邊界檢查與錯誤處理來提高系統韌性。","看門狗是硬體計時器，程式必須定期「餵狗」（重置計時器），若未及時餵狗代表系統異常，將強制重啟。","感測器可能因硬體故障或干擾輸出不合理的值，範圍檢查能攔截這些異常，避免其進入控制迴路造成危險動作。","優雅降級讓系統在部分元件故障時，自動切換到安全的備援模式，而非直接全面崩潰。"];
+
+    function submitQuiz() {
+        let score = 0;
+        QUIZ_ANSWERS.forEach((ans, i) => {
+            const selected = document.querySelector(`input[name="quiz-q${i}"]:checked`);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            const qEl = document.getElementById(`quiz-q${i}`);
+            if (selected && parseInt(selected.value) === ans) {
+                score++;
+                qEl.style.borderColor = '#107c10';
+                expEl.style.background = '#dff6dd';
+                expEl.innerHTML = '<strong style="color:#107c10;">✓ 正確！</strong> ' + QUIZ_EXPLANATIONS[i];
+            } else {
+                qEl.style.borderColor = '#d13438';
+                expEl.style.background = '#fde7e9';
+                expEl.innerHTML = '<strong style="color:#d13438;">✗ 不正確。</strong> ' + QUIZ_EXPLANATIONS[i];
+            }
+            expEl.style.display = 'block';
+        });
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === QUIZ_ANSWERS.length) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.style.color = '#107c10';
+            resultEl.textContent = `🎉 滿分！你答對了全部 ${QUIZ_ANSWERS.length} 題！`;
+        } else {
+            resultEl.style.background = '#deecf9';
+            resultEl.style.color = '#005a9e';
+            resultEl.textContent = `你答對了 ${score} / ${QUIZ_ANSWERS.length} 題，請查看解析後再試一次。`;
+        }
+    }
+
+    function resetQuiz() {
+        QUIZ_ANSWERS.forEach((_, i) => {
+            const radios = document.querySelectorAll(`input[name="quiz-q${i}"]`);
+            radios.forEach(r => r.checked = false);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            expEl.style.display = 'none';
+            const qEl = document.getElementById(`quiz-q${i}`);
+            qEl.style.borderColor = '#e1dfdd';
+        });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 13：系統穩健性';
 </script>
 
 <!-- Define Resources -->

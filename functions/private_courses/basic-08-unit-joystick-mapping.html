@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>搖桿數據的本質：歸一化與映射 - Vibe Coding Learn</title>
+    <title>搖桿數據的本質：歸一化與映射 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -465,6 +467,37 @@
             .compare-grid { grid-template-columns: 1fr; }
         }
 
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
+            border: 1px solid #e1dfdd;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background .1s, border-color .1s;
+            font-size: 14px;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback {
+            display: none;
+            margin-top: 8px;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
+        .quiz-submit { margin-top: 16px; }
+
     </style>
 </head>
 
@@ -472,9 +505,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 8 - 控制數學</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +519,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">搖桿數據的本質：歸一化與映射</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 8</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +541,7 @@
                 <h1>搖桿數據的本質：歸一化與映射</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 8</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +585,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>搖桿數據的本質：歸一化與映射</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    網頁虛擬搖桿輸出的座標可能是像素值、百分比或任意範圍的數值，
+                    但馬達 PWM 需要的是 0–255 或 -100 到 +100 的標準化區間。
+                    「歸一化」與「映射」就是把原始搖桿數據轉換成驅動層能直接使用的值，是遙控系統最基礎的數學環節。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你在手機畫面上拖動搖桿，得到的是一組 (x, y) 像素偏移量，
+                    但 ESP32 那端需要的是 -100 到 +100 的速度百分比。
+                    如果不做歸一化，換一支不同解析度的手機，搖桿的「全力推到底」就會對應不同的馬達出力——本單元教你一勞永逸地解決這個問題。
                 </div>
 
                 <h2>教學影片</h2>
@@ -590,31 +622,117 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>📏 1. 什麼是歸一化 (Normalization)？</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tight">
-                                不同設備搖桿半徑不同。如果不歸一化，同樣滑動會產生不同速度。
-                            </p>
-<div class="p-6 rounded-2xl border border-blue-100 italic bg-blue-50 text-justify uppercase tracking-widest">
-<h4 class="font-bold text-blue-900 mb-2 text-xs uppercase tracking-widest leading-relaxed text-justify">
-                                    The Core Concept</h4>
-<p class="text-[10px] text-slate-500 font-light leading-relaxed text-left text-justify">
-                                    將物理量轉換為標準比例 <code>0.0 ~ 1.0</code>。代碼與硬體解析度完美解耦。
-                                </p>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center bg-slate-900 text-justify">
-<h4 class="font-bold text-slate-500 mb-8 uppercase tracking-widest text-[10px] text-justify">
-                                Normalization Formula</h4>
-<div class="text-2xl font-mono text-blue-400 mb-4 text-justify uppercase tracking-widest font-black">
-                                \[V_{norm} = \frac{Offset}{MaxRadius}\]
-                            </div>
-<p class="text-slate-500 italic text-[10px] text-justify uppercase tracking-tighter">Range:
-                                [-1.0, 1.0]</p>
-</div>
-</div>
+                <h1>什麼是歸一化 (Normalization)？</h1>
+
+                <p>
+                    在遙控系統中，搖桿產生的原始數據通常是<strong>像素偏移量</strong>——例如使用者在手機螢幕上拖動搖桿控件時，
+                    瀏覽器回報的是 <code>(deltaX, deltaY)</code>，單位是像素 (px)。問題在於：不同裝置的螢幕尺寸與解析度各不相同，
+                    同樣「推到底」的動作，在 iPhone SE 上可能只有 60px，在 iPad Pro 上卻可能超過 150px。
+                    如果直接把像素值送給馬達，同一套程式碼在不同裝置上的行為就會完全不一致。
+                </p>
+
+                <p>
+                    <strong>歸一化 (Normalization)</strong> 就是解決此問題的數學手段：將原始物理量除以其最大可能值，
+                    使輸出落在一個<strong>與裝置無關的標準區間</strong>內。以搖桿為例，我們將偏移量除以搖桿最大半徑，
+                    得到一個 <code>-1.0</code> 到 <code>+1.0</code> 的無因次量 (dimensionless value)。
+                    這個標準化比例才是後續所有運算——映射、死區、混控——的起點。
+                </p>
+
+                <h2>歸一化公式</h2>
+
+                <p>對搖桿的每一個軸 (X 或 Y)，歸一化計算如下：</p>
+
+                \[V_{norm} = \frac{\text{Offset}}{\text{MaxRadius}}\]
+
+                <p>
+                    其中 <code>Offset</code> 是搖桿控件在該軸上的位移量（帶正負號），<code>MaxRadius</code> 是搖桿可拖動的最大半徑。
+                    結果 \(V_{norm}\) 的範圍為 \([-1.0,\;1.0]\)：
+                </p>
+
+                <ul>
+                    <li><strong>+1.0</strong>：搖桿推到該軸的正向極限（例如 Y 軸全力前進）</li>
+                    <li><strong>0.0</strong>：搖桿位於中心（靜止）</li>
+                    <li><strong>-1.0</strong>：搖桿推到該軸的負向極限（例如 Y 軸全力後退）</li>
+                </ul>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        歸一化後的數值不帶任何物理單位——它只是一個「比例」。無論搖桿 UI 的設計半徑是 50px 還是 200px，
+                        歸一化後的 <code>0.5</code> 都代表「推到一半」，系統行為完全一致。這就是「與硬體解耦」的核心意義。
+                    </div>
+                </div>
+
+                <h2>程式碼實作</h2>
+
+                <p>以下是 JavaScript 中的典型歸一化函式，結合了 clamp 保護以防止溢出：</p>
+
+                <pre class="ms-code"><span class="c-comment">// 將搖桿原始偏移歸一化至 [-1.0, 1.0]</span>
+<span class="c-kw">function</span> <span class="c-tag">normalize</span><span class="c-white">(</span><span class="c-attr">offset</span><span class="c-white">,</span> <span class="c-attr">maxRadius</span><span class="c-white">) {</span>
+  <span class="c-kw">const</span> <span class="c-attr">raw</span> <span class="c-white">= offset / maxRadius;</span>
+  <span class="c-kw">return</span> <span class="c-tag">Math</span><span class="c-white">.max(-</span><span class="c-val">1.0</span><span class="c-white">,</span> <span class="c-tag">Math</span><span class="c-white">.min(</span><span class="c-val">1.0</span><span class="c-white">, raw));</span>
+<span class="c-white">}</span>
+
+<span class="c-comment">// 範例用法</span>
+<span class="c-kw">const</span> <span class="c-attr">maxR</span> <span class="c-white">=</span> <span class="c-val">120</span><span class="c-white">;</span>  <span class="c-comment">// 搖桿 UI 半徑 120px</span>
+<span class="c-kw">const</span> <span class="c-attr">normX</span> <span class="c-white">=</span> <span class="c-tag">normalize</span><span class="c-white">(</span><span class="c-val">78</span><span class="c-white">,  maxR);</span> <span class="c-comment">// → 0.65</span>
+<span class="c-kw">const</span> <span class="c-attr">normY</span> <span class="c-white">=</span> <span class="c-tag">normalize</span><span class="c-white">(</span><span class="c-val">-54</span><span class="c-white">, maxR);</span> <span class="c-comment">// → -0.45</span></pre>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        使用 <code>Math.max</code> 與 <code>Math.min</code> 的 clamp 技巧可以防止搖桿在邊界被拖出圓形區域時，
+                        數值超過 ±1.0 的安全上限。這種「防禦性計算」在控制系統中至關重要。
+                    </div>
+                </div>
+
+                <h2>跨裝置行為比較</h2>
+
+                <p>下表說明歸一化如何消除裝置差異，讓同一套控制邏輯適用於所有螢幕：</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>裝置</th>
+                            <th>搖桿半徑 (px)</th>
+                            <th>推到底偏移 (px)</th>
+                            <th>歸一化結果</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>iPhone SE</td>
+                            <td>60</td>
+                            <td>60</td>
+                            <td><code>1.0</code></td>
+                        </tr>
+                        <tr>
+                            <td>iPhone 15 Pro</td>
+                            <td>90</td>
+                            <td>90</td>
+                            <td><code>1.0</code></td>
+                        </tr>
+                        <tr>
+                            <td>iPad Pro</td>
+                            <td>150</td>
+                            <td>150</td>
+                            <td><code>1.0</code></td>
+                        </tr>
+                        <tr>
+                            <td>iPad Pro (半推)</td>
+                            <td>150</td>
+                            <td>75</td>
+                            <td><code>0.5</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>
+                    無論螢幕大小如何變化，歸一化後的 <code>1.0</code> 永遠代表「全力」，<code>0.5</code> 永遠代表「半力」。
+                    這就是後續所有映射計算的基石——沒有歸一化，就沒有跨裝置的一致性保證。
+                </p>
                 
             </div>
             <div class="unit-nav">
@@ -633,45 +751,104 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🗺️ 2. 數值映射 (Mapping)</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify uppercase tracking-widest">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tighter">
-                                歸一化值需轉換為硬體理解區間。「職人級」操縱感誕生關鍵。
-                            </p>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-justify uppercase tracking-widest font-black">
-<div class="p-6 rounded-2xl border border-indigo-100 bg-indigo-50 text-justify">
-<h4 class="font-bold text-indigo-900 mb-2 text-xs uppercase tracking-widest text-justify">
-                                        PWM Control</h4>
-<p class="text-slate-500 font-light text-[10px] text-justify uppercase tracking-widest">
-                                        0 ~ 1.0 映射為 0 ~ 255 馬達動力。</p>
-</div>
-<div class="p-6 rounded-2xl border border-purple-100 bg-purple-50 text-justify uppercase tracking-tighter">
-<h4 class="font-bold text-purple-900 mb-2 text-xs uppercase tracking-widest text-justify uppercase tracking-widest">
-                                        Servo Control</h4>
-<p class="text-slate-500 font-light text-[10px] text-justify uppercase tracking-widest">
-                                        -1.0 ~ 1.0 映射為 0 ~ 180 舵機。</p>
-</div>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 bg-slate-900 text-justify">
-<div class="flex items-center gap-3 mb-6">
-<span class="w-3 h-3 bg-red-400 rounded-full"></span>
-<span class="w-3 h-3 bg-amber-400 rounded-full"></span>
-<span class="w-3 h-3 bg-emerald-400 rounded-full"></span>
-<span class="ml-auto text-[10px] text-slate-500 font-mono tracking-widest text-justify uppercase tracking-widest font-black text-left">LINEAR
-                                    MAP (C++)</span>
-</div>
-<pre class="text-xs md:text-sm leading-relaxed overflow-x-auto text-indigo-300 font-mono text-justify uppercase tracking-widest font-black text-left">
-<span class="text-blue-400 text-justify">float</span> <span class="text-emerald-400 text-justify">lerp</span>(<span class="text-blue-400">float</span> x, <span class="text-blue-400">float</span> inMax, <span class="text-blue-400">float</span> outMax) {
-  <span class="text-purple-400 text-justify">return</span> (x / inMax) * outMax; 
-}
+                <h1>數值映射 (Mapping)</h1>
 
-<span class="text-slate-500 text-justify uppercase tracking-widest font-black">// 加入非線性曲線：</span>
-<span class="text-blue-400 text-justify uppercase tracking-widest">float</span> <span class="text-emerald-400 text-justify">expMap</span> = <span class="text-yellow-400 uppercase tracking-widest">pow</span>(v, <span class="text-amber-200">2.0</span>);</pre>
-</div>
-</div>
+                <p>
+                    歸一化給了我們一個統一的 <code>[-1.0, 1.0]</code> 區間，但這只是中間產物。真正驅動硬體的是具有物理意義的數值：
+                    馬達 PWM 需要 <code>0–255</code> 的整數、舵機需要 <code>0–180</code> 的角度、速度百分比需要 <code>-100</code> 到 <code>+100</code>。
+                    <strong>映射 (Mapping)</strong> 就是將歸一化後的標準比例，線性或非線性地轉換到目標硬體所需的數值區間。
+                </p>
+
+                <h2>線性映射公式</h2>
+
+                <p>最基本的映射是線性插值 (Linear Interpolation, lerp)。給定歸一化輸入 \(x \in [a_{in},\;b_{in}]\)，
+                要映射到目標區間 \([a_{out},\;b_{out}]\)，公式為：</p>
+
+                \[\text{output} = a_{out} + \frac{(x - a_{in})}{(b_{in} - a_{in})} \times (b_{out} - a_{out})\]
+
+                <p>在搖桿場景下，由於歸一化後輸入已經是 <code>[0, 1]</code> 或 <code>[-1, 1]</code>，公式可以簡化。
+                例如 <code>0 ~ 1.0</code> 映射到 <code>0 ~ 255</code> 只需 <code>output = x × 255</code>。</p>
+
+                <h2>常見映射目標</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>控制類型</th>
+                            <th>歸一化輸入</th>
+                            <th>目標範圍</th>
+                            <th>映射公式</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>馬達 PWM (單向)</td>
+                            <td><code>0.0 ~ 1.0</code></td>
+                            <td><code>0 ~ 255</code></td>
+                            <td><code>output = x × 255</code></td>
+                        </tr>
+                        <tr>
+                            <td>馬達 PWM (雙向)</td>
+                            <td><code>-1.0 ~ 1.0</code></td>
+                            <td><code>-255 ~ 255</code></td>
+                            <td><code>output = x × 255</code></td>
+                        </tr>
+                        <tr>
+                            <td>舵機角度</td>
+                            <td><code>-1.0 ~ 1.0</code></td>
+                            <td><code>0° ~ 180°</code></td>
+                            <td><code>output = (x + 1) × 90</code></td>
+                        </tr>
+                        <tr>
+                            <td>速度百分比</td>
+                            <td><code>-1.0 ~ 1.0</code></td>
+                            <td><code>-100% ~ 100%</code></td>
+                            <td><code>output = x × 100</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>程式碼實作</h2>
+
+                <p>以下範例展示了通用的線性映射函式，以及在搖桿場景中的典型用法：</p>
+
+                <pre class="ms-code"><span class="c-comment">// 通用線性映射</span>
+<span class="c-kw">function</span> <span class="c-tag">mapRange</span><span class="c-white">(</span><span class="c-attr">x</span><span class="c-white">,</span> <span class="c-attr">inMin</span><span class="c-white">,</span> <span class="c-attr">inMax</span><span class="c-white">,</span> <span class="c-attr">outMin</span><span class="c-white">,</span> <span class="c-attr">outMax</span><span class="c-white">) {</span>
+  <span class="c-kw">return</span> <span class="c-white">outMin + (x - inMin) / (inMax - inMin) * (outMax - outMin);</span>
+<span class="c-white">}</span>
+
+<span class="c-comment">// 搖桿 → 馬達 PWM</span>
+<span class="c-kw">const</span> <span class="c-attr">pwm</span> <span class="c-white">=</span> <span class="c-tag">mapRange</span><span class="c-white">(</span><span class="c-val">0.72</span><span class="c-white">,</span> <span class="c-val">0</span><span class="c-white">,</span> <span class="c-val">1</span><span class="c-white">,</span> <span class="c-val">0</span><span class="c-white">,</span> <span class="c-val">255</span><span class="c-white">);</span>   <span class="c-comment">// → 183.6</span>
+
+<span class="c-comment">// 搖桿 → 舵機角度</span>
+<span class="c-kw">const</span> <span class="c-attr">angle</span> <span class="c-white">=</span> <span class="c-tag">mapRange</span><span class="c-white">(</span><span class="c-val">-0.5</span><span class="c-white">,</span> <span class="c-val">-1</span><span class="c-white">,</span> <span class="c-val">1</span><span class="c-white">,</span> <span class="c-val">0</span><span class="c-white">,</span> <span class="c-val">180</span><span class="c-white">);</span> <span class="c-comment">// → 45°</span></pre>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        線性映射雖然簡單直觀，但它假設「搖桿推多少，出力就多少」。在實際操控中，
+                        這種等比例關係往往讓低速微調變得困難（稍微推一下就衝太快）。
+                        下一個單元將介紹「非線性映射」來解決這個問題。
+                    </div>
+                </div>
+
+                <h2>非線性映射預覽</h2>
+
+                <p>
+                    線性映射之外，我們可以在歸一化值上套用冪函數來改變響應曲線。
+                    例如 <code>output = pow(x, 2.0)</code> 會讓低速區域的斜率變平緩（更容易微調），
+                    而高速區域的斜率變陡峭（動力爆發更集中）。這就是「指數映射」的核心概念，也是打造「職人級」操控手感的數學秘密。
+                </p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        使用非線性映射時，務必確保端點閉合：當輸入為 <code>1.0</code> 時，輸出也必須精確到達 <code>1.0</code>。
+                        否則全力推搖桿時，馬達永遠無法達到 100% 出力。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -690,37 +867,107 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🌑 3. 死區 (Deadzone)</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify uppercase tracking-tighter">
-                                搖桿中央不一定是 0。如果不設死區，馬達會微弱共振抖動。
-                            </p>
-<div class="p-8 rounded-3xl border border-purple-500/20 shadow-inner bg-purple-500/10 text-justify uppercase tracking-widest font-black">
-<h4 class="font-bold text-purple-400 mb-4 text-xs uppercase tracking-widest text-justify">
-                                    Noise Suppression Loop</h4>
-<ol class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light list-decimal list-outside ml-4 text-justify">
-<li class="text-justify"><strong class="text-white text-justify">採樣數值</strong>：獲取歸一化座標。</li>
-<li class="text-justify"><strong class="text-white text-justify">閥值判定</strong>：檢查是否大於 10% 範圍。</li>
-<li class="text-justify"><strong class="text-white text-justify">數值切掉</strong>：小於閥值強制為 0。</li>
-<li class="text-justify"><strong class="text-white text-justify uppercase tracking-widest">縮放插值</strong>：確保起點平滑。
-                                    </li>
-</ol>
-</div>
-</div>
-<div class="lg:w-80 p-10 rounded-3xl border border-purple-500/20 text-center relative overflow-hidden group bg-purple-600/10 text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-purple-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-purple-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-justify uppercase tracking-widest font-black">
-                                Safe System</h4>
-<p class="text-slate-500 leading-relaxed font-light mb-8 italic text-[11px] text-justify uppercase tracking-tighter">
-                                "好的系統，靜止時應像冰塊安靜。"
-                            </p>
-<div class="inline-block px-8 py-3 bg-purple-500 text-white rounded-xl font-bold text-[10px] shadow-lg text-justify uppercase tracking-widest font-black">
-                                Activate Noise Filter</div>
-</div>
-</div>
+                <h1>死區 (Deadzone)</h1>
+
+                <p>
+                    理想中，搖桿放在中央時輸出應該是精確的 <code>0.0</code>。但現實並非如此——觸控螢幕的感測精度、
+                    使用者手指微微的顫抖、甚至搖桿 UI 控件的浮點運算誤差，都可能讓靜止狀態下的歸一化值出現
+                    <code>0.02</code>、<code>-0.03</code> 這類微小雜訊。如果這些雜訊直接被映射到馬達，
+                    車輛在「靜止」時會不斷發出微弱的嗡嗡聲甚至緩慢漂移，這在專業系統中是不可接受的。
+                </p>
+
+                <p>
+                    <strong>死區 (Deadzone)</strong> 就是為此設計的過濾機制：
+                    在搖桿中心的一小段區域內（通常為 5%–15%），強制將輸出設為零。
+                    只有當搖桿偏移超過這個閾值時，才開始輸出有效數值。
+                </p>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        單純地「把小於閾值的值設為 0」會造成一個跳躍：當搖桿離開死區邊界的瞬間，
+                        輸出值會從 <code>0.0</code> 突然跳到 <code>0.10</code>。這個不連續的「斷層」
+                        會讓馬達產生明顯的頓挫感。正確的做法是同時進行<strong>縮放補償</strong>。
+                    </div>
+                </div>
+
+                <h2>死區實作的四個步驟</h2>
+
+                <ol>
+                    <li><strong>取得歸一化值</strong>：從搖桿獲取 <code>[-1.0, 1.0]</code> 區間的原始歸一化座標</li>
+                    <li><strong>閾值判定</strong>：計算絕對值，檢查是否小於設定的死區門檻（例如 10%，即 <code>0.10</code>）</li>
+                    <li><strong>歸零處理</strong>：若在死區內，強制輸出為 <code>0.0</code></li>
+                    <li><strong>縮放補償</strong>：若超出死區，將有效範圍重新映射至 <code>[0.0, 1.0]</code>，確保起步平滑、端點閉合</li>
+                </ol>
+
+                <h2>程式碼實作</h2>
+
+                <p>以下函式實作了含縮放補償的死區過濾：</p>
+
+                <pre class="ms-code"><span class="c-comment">// 帶縮放補償的死區過濾</span>
+<span class="c-kw">function</span> <span class="c-tag">applyDeadzone</span><span class="c-white">(</span><span class="c-attr">value</span><span class="c-white">,</span> <span class="c-attr">threshold</span><span class="c-white">) {</span>
+  <span class="c-kw">const</span> <span class="c-attr">abs</span> <span class="c-white">=</span> <span class="c-tag">Math</span><span class="c-white">.abs(value);</span>
+  <span class="c-kw">if</span> <span class="c-white">(abs &lt; threshold)</span> <span class="c-kw">return</span> <span class="c-val">0.0</span><span class="c-white">;</span>
+
+  <span class="c-comment">// 重新映射：將 [threshold, 1.0] 壓縮到 [0.0, 1.0]</span>
+  <span class="c-kw">const</span> <span class="c-attr">scaled</span> <span class="c-white">= (abs - threshold) / (</span><span class="c-val">1.0</span> <span class="c-white">- threshold);</span>
+  <span class="c-kw">return</span> <span class="c-tag">Math</span><span class="c-white">.sign(value) * scaled;</span>
+<span class="c-white">}</span>
+
+<span class="c-comment">// 使用範例</span>
+<span class="c-tag">applyDeadzone</span><span class="c-white">(</span><span class="c-val">0.05</span><span class="c-white">,</span> <span class="c-val">0.10</span><span class="c-white">);</span>  <span class="c-comment">// → 0.0 (在死區內)</span>
+<span class="c-tag">applyDeadzone</span><span class="c-white">(</span><span class="c-val">0.55</span><span class="c-white">,</span> <span class="c-val">0.10</span><span class="c-white">);</span>  <span class="c-comment">// → 0.5 (超出死區)</span>
+<span class="c-tag">applyDeadzone</span><span class="c-white">(</span><span class="c-val">1.00</span><span class="c-white">,</span> <span class="c-val">0.10</span><span class="c-white">);</span>  <span class="c-comment">// → 1.0 (端點閉合)</span></pre>
+
+                <h2>有無死區的行為比較</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>歸一化輸入</th>
+                            <th>無死區輸出</th>
+                            <th>有死區輸出 (10%)</th>
+                            <th>馬達行為</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>0.03</code></td>
+                            <td><code>0.03</code></td>
+                            <td><code>0.0</code></td>
+                            <td>無死區：微弱抖動；有死區：完全靜止</td>
+                        </tr>
+                        <tr>
+                            <td><code>0.10</code></td>
+                            <td><code>0.10</code></td>
+                            <td><code>0.0</code></td>
+                            <td>死區邊界，剛好被過濾</td>
+                        </tr>
+                        <tr>
+                            <td><code>0.55</code></td>
+                            <td><code>0.55</code></td>
+                            <td><code>0.50</code></td>
+                            <td>縮放補償後平滑過渡</td>
+                        </tr>
+                        <tr>
+                            <td><code>1.00</code></td>
+                            <td><code>1.00</code></td>
+                            <td><code>1.00</code></td>
+                            <td>端點閉合，全力輸出不受影響</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        死區閾值的大小需要根據實際硬體來調校。觸控搖桿通常 5%–10% 就足夠；
+                        物理搖桿（如 RC 遙控器）因為機械結構老化，可能需要更大的死區。
+                        驗證方式很簡單：放開搖桿後，觀察 Serial Monitor 輸出是否穩定停在 <code>0.00</code>。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -804,16 +1051,82 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
-                    <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div class="unit-completed-badge" id="badge-6" style="display:none">
+                        <i class="fas fa-check"></i> 已完成
+                    </div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <!-- Q1 -->
+                    <div class="quiz-question" id="q1">
+                        <p>1. 搖桿歸一化的主要目的是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 將像素座標轉換為與裝置無關的標準比例 [-1.0, 1.0]</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 直接將搖桿偏移量傳送給馬達作為 PWM 值</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 將搖桿的物理半徑放大兩倍以提高精度</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="quiz-question" id="q2">
+                        <p>2. 若歸一化值為 0.72，使用線性映射到 PWM 範圍 [0, 255]，結果最接近多少？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 72</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 184</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 255</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="quiz-question" id="q3">
+                        <p>3. 死區 (Deadzone) 若不搭配「縮放補償」，會產生什麼問題？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 搖桿推到底時無法輸出最大值</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 離開死區邊界時輸出值會突然跳躍，馬達產生頓挫感</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 搖桿在中心時仍然會輸出微小數值</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="quiz-question" id="q4">
+                        <p>4. 死區閾值為 0.10 時，歸一化輸入 0.55 經過帶縮放補償的死區過濾後，輸出值為何？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 0.55</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 0.50</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 0.45</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" style="margin-left:8px; display:none;" id="quiz-reset-btn">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -871,9 +1184,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「搖桿數據的本質：歸一化與映射」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「搖桿數據的本質：歸一化與映射」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -889,8 +1202,17 @@
         { id: 3, label: '🗺️ 2. 數值映射 (Mapping)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🌑 3. 死區 (Deadzone)', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '4 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+
+    const QUIZ_ANSWERS = { q1: 'a', q2: 'b', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { a: '歸一化將原始像素偏移除以最大半徑，產生 [-1.0, 1.0] 的無因次量，確保不同裝置上的行為一致。' },
+        q2: { b: '線性映射公式為 output = x × 255，因此 0.72 × 255 ≈ 183.6，最接近 184。' },
+        q3: { b: '沒有縮放補償時，輸出在死區邊界會從 0.0 突然跳到閾值大小，造成不連續的頓挫感。' },
+        q4: { b: '縮放公式為 (|0.55| - 0.10) / (1.0 - 0.10) = 0.45 / 0.90 = 0.50，結果為 0.50。' },
+    };
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -909,6 +1231,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1010,8 +1333,74 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        let total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            const options = document.querySelectorAll(`input[name="${qid}"]`);
+
+            options.forEach(opt => {
+                opt.disabled = true;
+                const label = opt.parentElement;
+                if (opt.value === answer) label.classList.add('correct');
+                if (opt.checked && opt.value !== answer) label.classList.add('wrong');
+            });
+
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                const exp = QUIZ_EXPLANATIONS[qid][answer];
+                feedbackEl.textContent = '✗ 不正確。' + exp;
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        scoreEl.style.display = 'block';
+        const pct = Math.round(correct / total * 100);
+        const pass = pct >= 75;
+        scoreEl.innerHTML = `
+            <span style="font-size:20px;">${pass ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pass ? '通過！你已掌握本模組的核心概念。' : '建議回顧相關單元後再試一次。'}</div>
+        `;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => {
+            el.classList.remove('correct','wrong');
+        });
+        document.querySelectorAll('input[type=radio]').forEach(el => {
+            el.checked = false;
+            el.disabled = false;
+        });
+        document.querySelectorAll('.quiz-feedback').forEach(el => {
+            el.className = 'quiz-feedback';
+            el.textContent = '';
+        });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 08：搖桿數學模型';
 </script>
 
 <!-- Define Resources -->

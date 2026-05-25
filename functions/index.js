@@ -1206,7 +1206,7 @@ async function resolveStudentAssignmentAccess(db, uid, courseId, unitId, lessons
         const now = Date.now();
         const userRecord = await admin.auth().getUser(uid);
         const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
-        const isTrialCourse = !!(course && course.category === 'started' && ((now - new Date(userRecord.metadata.creationTime).getTime()) < THIRTY_DAYS_MS));
+        const isTrialCourse = !!(course && course.category === 'start' && ((now - new Date(userRecord.metadata.creationTime).getTime()) < THIRTY_DAYS_MS));
         if (isTrialCourse) {
             return { authorized: true, accessMode: 'trial_course', canonicalUnitId, effectiveCourseId, assignedTutorEmail, assignedPromotionCode, course };
         }

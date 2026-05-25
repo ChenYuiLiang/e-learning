@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>影像串流原理：MJPEG vs. H.264 - Vibe Coding Learn</title>
+    <title>影像串流原理：MJPEG vs. H.264 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -471,9 +473,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">進階課程 2 - 單元 1</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +487,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">影像串流原理：MJPEG vs. H.264</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">進階課程 2</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,13 +509,13 @@
                 <h1>影像串流原理：MJPEG vs. H.264</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">進階課程 2</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
                 </div>
 
-                <p></p>
+                <p>解析空間壓縮與時間預測兩大編碼哲學的物理代價，量化端到端延遲與頻寬佔用，設計情境感知的編碼切換策略。</p>
 
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
@@ -553,15 +553,14 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>影像串流原理：MJPEG vs. H.264</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    影像串流不只有一種做法——<strong>MJPEG 和 H.264 代表著兩種截然不同的壓縮哲學</strong>，各有其適用的場景與代價。
+                    選錯編碼方式，輕則浪費頻寬，重則導致無法接受的延遲或畫面殘影。
+                    本模組將帶你理解兩種串流架構的核心差異，讓你在設計物聯網影像系統時能做出有根據的技術決策。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你被指派為一個智慧監控專案選擇串流方案。主管要求「高畫質、低延遲、省頻寬」，但你很快發現這三者不可能同時達成。用 MJPEG 延遲極低但吃掉了大量頻寬；換成 H.264 頻寬省了十倍，卻在網路不穩時出現詭異的馬賽克殘影。你需要真正理解 I-Frame、P-Frame 的運作原理，才能向團隊解釋為什麼「沒有完美方案，只有最適合場景的權衡」。
                 </div>
 
                 <h2>教學影片</h2>
@@ -575,7 +574,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -589,48 +588,143 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🎞️ 1. MJPEG：簡單暴力的圖片連播 (20 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg leading-relaxed">
-<p>
-<strong>核心原理：</strong>將每一幀影像都視為獨立的 <strong>JPEG 圖片</strong>
-                                    進行壓縮，然後像「翻頁書」一樣快速傳送。這是一種典型的 <strong>空間壓縮 (Intra-frame)</strong>。
-                                </p>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
-<div class="bg-blue-50 p-6 rounded-xl border border-blue-100">
-<h4 class="font-bold text-blue-800 mb-2 flex items-center gap-2"><span>✨</span>
-                                            優點</h4>
-<ul class="text-sm text-blue-700 space-y-1 list-disc list-inside">
-<li>對 ESP32 負擔極小（只需 JPEG 硬體編碼器）</li>
-<li><strong>無延遲累積</strong></li>
-<li>編輯容易，每一格都是完整的圖</li>
-</ul>
-</div>
-<div class="bg-amber-50 p-6 rounded-xl border border-amber-100">
-<h4 class="font-bold text-amber-800 mb-2 flex items-center gap-2">
-<span>⚠️</span> 缺點
-                                        </h4>
-<ul class="text-sm text-amber-700 space-y-1 list-disc list-inside">
-<li><strong>極度消耗頻寬</strong></li>
-<li>每秒都在傳送重複的背景資訊</li>
-<li>缺乏時間軸優化</li>
-</ul>
-</div>
-</div>
-<div class="bg-indigo-50 p-6 rounded-xl border border-indigo-100">
-<h4 class="font-bold text-indigo-800 mb-3 flex items-center gap-2">
-<span>🔍</span> 學習任務
-                                    </h4>
-<p class="text-indigo-700">觀察 MJPEG 在網路不穩時的現象：</p>
-<p class="mt-2 text-sm italic text-indigo-600">思考：當網路開始「塞車」時，MJPEG
-                                        是會產生「殘影」，還是直接「掉幀（畫面卡住後跳到最新畫面）」？為什麼？</p>
-</div>
-</div>
+                <h1>MJPEG：簡單暴力的圖片連播</h1>
+
+                <p>
+                    MJPEG（Motion JPEG）是最直覺的影像串流方式：將攝影機捕捉到的每一幀畫面都<strong>獨立壓縮為一張 JPEG 圖片</strong>，然後透過 HTTP 的 <code>multipart/x-mixed-replace</code> 協定，以「接力」的方式不斷將新圖片推送到客戶端。你可以把它想像成一本「翻頁書」——每頁都是完整的圖，快速翻動就形成了影片效果。
+                </p>
+
+                <p>
+                    這種壓縮方式在技術上稱為<strong>畫面內壓縮（Intra-frame Compression）</strong>，意味著每一幀的壓縮只參考自己——不會去「偷看」前一幀或後一幀的資訊。這帶來了極大的簡潔性：任何一幀都能獨立解碼，不存在幀與幀之間的依賴關係。
+                </p>
+
+                <h2>MJPEG 的工作流程</h2>
+
+                <p>在 ESP32-CAM 的典型實作中，MJPEG 串流的整個生命週期可以拆解為三個階段：</p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>擷取與壓縮</h4>
+                            <p>攝影機感測器（如 OV2640）擷取原始影像後，由晶片內建的 JPEG 硬體編碼器將畫面壓縮為 JPEG 格式。<code>Quality</code> 參數（10–63）決定壓縮強度。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>封裝與傳送</h4>
+                            <p>壓縮後的 JPEG 資料以 HTTP multipart boundary 分隔，透過 Wi-Fi 以 TCP 連線送出。每一幀都帶有 <code>Content-Type: image/jpeg</code> 與 <code>Content-Length</code> 標頭。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>接收與顯示</h4>
+                            <p>瀏覽器的 <code>&lt;img&gt;</code> 標籤原生支援 MJPEG 串流——只需將 <code>src</code> 指向串流 URL，瀏覽器會自動刷新顯示每一幀新圖片。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>ESP32 上的 MJPEG 串流程式碼</h2>
+
+                <p>以下是 ESP32-CAM 建立 MJPEG 串流端點的核心邏輯：</p>
+
+                <div class="ms-code">
+<span class="c-comment">// 串流處理函式：持續推送 JPEG 幀</span>
+<span class="c-kw">esp_err_t</span> <span class="c-tag">stream_handler</span><span class="c-white">(</span><span class="c-kw">httpd_req_t</span> <span class="c-white">*req) {</span>
+    <span class="c-kw">camera_fb_t</span> <span class="c-white">*fb = </span><span class="c-kw">NULL</span><span class="c-white">;</span>
+    <span class="c-tag">httpd_resp_set_type</span><span class="c-white">(req, </span><span class="c-str">"multipart/x-mixed-replace;boundary=frame"</span><span class="c-white">);</span>
+
+    <span class="c-kw">while</span> <span class="c-white">(</span><span class="c-kw">true</span><span class="c-white">) {</span>
+        <span class="c-white">fb = </span><span class="c-tag">esp_camera_fb_get</span><span class="c-white">();  </span><span class="c-comment">// 取得一幀 JPEG</span>
+        <span class="c-kw">size_t</span> <span class="c-attr">hlen</span> <span class="c-white">= snprintf(buf, 128,</span>
+            <span class="c-str">"--frame\r\nContent-Type: image/jpeg\r\n"</span>
+            <span class="c-str">"Content-Length: %u\r\n\r\n"</span><span class="c-white">, fb-&gt;len);</span>
+        <span class="c-tag">httpd_resp_send_chunk</span><span class="c-white">(req, buf, hlen);</span>
+        <span class="c-tag">httpd_resp_send_chunk</span><span class="c-white">(req, (</span><span class="c-kw">char</span><span class="c-white"> *)fb-&gt;buf, fb-&gt;len);</span>
+        <span class="c-tag">esp_camera_fb_return</span><span class="c-white">(fb);</span>
+    <span class="c-white">}</span>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        ESP32-CAM 的 OV2640 感測器內建 JPEG 硬體編碼器，因此 MJPEG 串流幾乎不消耗 CPU 算力。這是 MJPEG 在資源受限的嵌入式設備上如此受歡迎的核心原因。
+                    </div>
+                </div>
+
+                <h2>MJPEG 的優勢與限制</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>特性</th>
+                            <th>表現</th>
+                            <th>說明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>編碼複雜度</td>
+                            <td><span class="check"><i class="fas fa-check-circle"></i></span> 極低</td>
+                            <td>僅需硬體 JPEG 編碼，ESP32 即可輕鬆處理</td>
+                        </tr>
+                        <tr>
+                            <td>延遲</td>
+                            <td><span class="check"><i class="fas fa-check-circle"></i></span> 極低</td>
+                            <td>無幀間依賴，不需緩衝區累積，編碼即送出</td>
+                        </tr>
+                        <tr>
+                            <td>隨機存取</td>
+                            <td><span class="check"><i class="fas fa-check-circle"></i></span> 完美</td>
+                            <td>每幀獨立，可隨時跳轉或截圖，無需等待關鍵幀</td>
+                        </tr>
+                        <tr>
+                            <td>頻寬效率</td>
+                            <td><span class="cross"><i class="fas fa-times-circle"></i></span> 極差</td>
+                            <td>不利用時間冗餘，每幀完整傳送所有像素資訊</td>
+                        </tr>
+                        <tr>
+                            <td>丟包影響</td>
+                            <td><span class="check"><i class="fas fa-check-circle"></i></span> 輕微</td>
+                            <td>最多掉一幀，下一幀立即恢復正常顯示</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        在 VGA（640×480）解析度、Quality=20 的設定下，單幀 JPEG 約為 30–50 KB。以 15 FPS 計算，MJPEG 串流需要約 <strong>3.6–6.0 Mbps</strong> 的頻寬——這已經接近 ESP32 在 2.4 GHz Wi-Fi 下的實際傳輸上限。
+                    </div>
+                </div>
+
+                <h2>丟包時的行為特徵</h2>
+
+                <p>
+                    MJPEG 在網路不穩時的行為非常好預測：由於每一幀都是獨立的完整圖片，當網路發生壅塞時，結果是<strong>整幀丟失（掉幀）</strong>而非畫面撕裂或殘影。觀看體驗是「畫面凍結一瞬間，然後直接跳到最新畫面」，不會出現 H.264 那種方塊殘影（Artifacts）。這種「乾淨的失敗模式」是 MJPEG 在即時遙控場景中被偏好的重要原因。
+                </p>
+
+                <p>
+                    反過來說，MJPEG 最大的致命傷在於<strong>頻寬浪費</strong>。以一個監控畫面為例：90% 的時間裡背景是靜止的，但 MJPEG 仍然會對每一幀完整重複編碼這些不變的像素。相較之下，H.264 的時間壓縮只需要傳送「變化的部分」，頻寬效率高出 10 倍以上。
+                </p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        在下一節的實戰挑戰中，你將實際測量不同 Quality 設定下的單幀大小，並計算在現有頻寬下 FPS 的理論上限。理解 MJPEG 的「暴力美學」，有助於你在後續評估 H.264 時做出更有依據的比較。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -644,44 +738,129 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🧠 2. H.264 (AVC)：聰明的變化預測 (30 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg leading-relaxed">
-<p>
-<strong>核心原理：</strong>不傳送整張圖片，只傳送「跟上一秒比起來哪裡動了」。這包含了 <strong>時間壓縮 (Inter-frame)</strong> 技術。
-                        </p>
-<div class="bg-slate-800 text-cyan-400 p-6 rounded-xl font-mono text-sm mb-6">
-<h4 class="text-white font-bold mb-2">關鍵概念：幀類型 (Frame Types)</h4>
-<ul class="space-y-2">
-<li><span class="bg-blue-900 px-2 rounded text-white mr-2">I-Frame</span> 關鍵幀：一張完整的
-                                    JPEG，是所有預測的基石。</li>
-<li><span class="bg-emerald-900 px-2 rounded text-white mr-2">P-Frame</span>
-                                    預測幀：只紀錄與前一幀的「差異」。</li>
-<li><span class="bg-purple-900 px-2 rounded text-white mr-2">B-Frame</span>
-                                    雙向幀：參考前後幀，壓縮率最高（但延遲也最高）。</li>
-</ul>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-<div>
-<h4 class="font-bold text-gray-800 mb-2">運動補償 (Motion Compensation)</h4>
-<p class="text-sm leading-relaxed text-gray-600">
-                                    編碼器會分析畫面中區塊的移動。例如車子往前開，編碼器會說：「把上一張圖的這個區塊，往左移動 5 像素」，而不是重新傳送整個車子的圖片。
-                                </p>
-</div>
-<div class="bg-cyan-50 p-6 rounded-xl border border-cyan-100">
-<h4 class="font-bold text-cyan-800 mb-2 flex items-center gap-2"><span>📊</span> 效能比較
-                                </h4>
-<p class="text-cyan-700 text-sm">
-                                    頻寬占用極低（約為 MJPEG 的 1/10），適合高畫質監控。但編解碼複雜，一旦丟包會產生明顯的「馬賽克殘影」。
-                                </p>
-</div>
-</div>
-</div>
+                <h1>H.264 (AVC)：聰明的變化預測</h1>
+
+                <p>
+                    H.264（又稱 AVC，Advanced Video Coding）採用了完全不同於 MJPEG 的壓縮哲學：<strong>不傳送整張圖片，只傳送「跟上一幀比起來，哪裡發生了變化」</strong>。這種技術稱為<strong>幀間壓縮（Inter-frame Compression）</strong>，它利用了影片中一個關鍵的物理事實——連續兩幀之間，通常有 90% 以上的像素是相同的。
+                </p>
+
+                <p>
+                    透過只編碼「差異」而非「全部」，H.264 可以將頻寬消耗壓縮到 MJPEG 的 1/10 甚至更低。但這種聰明的壓縮方式也帶來了代價：更高的計算需求、更複雜的解碼流程，以及一旦有幀遺失，錯誤會沿時間軸<strong>向後擴散</strong>。
+                </p>
+
+                <h2>幀類型（Frame Types）</h2>
+
+                <p>H.264 編碼器會將影片的每一幀標記為三種類型之一，每種類型承擔不同的角色：</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>幀類型</th>
+                            <th>全名</th>
+                            <th>壓縮方式</th>
+                            <th>大小</th>
+                            <th>說明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>I-Frame</strong></td>
+                            <td>Intra-coded Frame</td>
+                            <td>獨立壓縮（類似 JPEG）</td>
+                            <td>最大</td>
+                            <td>完整畫面，是所有預測的「基石」，又稱關鍵幀（Keyframe）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>P-Frame</strong></td>
+                            <td>Predicted Frame</td>
+                            <td>參考前一幀的差異</td>
+                            <td>中等</td>
+                            <td>只記錄「跟前一幀相比，哪些區塊移動了、哪些色彩變了」</td>
+                        </tr>
+                        <tr>
+                            <td><strong>B-Frame</strong></td>
+                            <td>Bi-directional Frame</td>
+                            <td>同時參考前後幀</td>
+                            <td>最小</td>
+                            <td>壓縮率最高，但需要緩衝未來的幀，增加解碼延遲</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        在 ESP32 等嵌入式設備的即時串流場景中，通常<strong>不會使用 B-Frame</strong>，因為 B-Frame 需要等待後續幀才能解碼，這會增加無法接受的延遲。ESP32 的 H.264 編碼器通常只產生 I-Frame 與 P-Frame 的組合。
+                    </div>
+                </div>
+
+                <h2>GOP 結構與運動補償</h2>
+
+                <p>
+                    一組連續的幀從 I-Frame 開始，到下一個 I-Frame 之前結束，這組幀的集合稱為<strong>GOP（Group of Pictures）</strong>。典型的 GOP 結構如：<code>I-P-P-P-P-P-P-P-P-P-I</code>，其中 GOP 長度為 10，表示每 10 幀插入一個關鍵幀。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// ESP32 H.264 GOP 設定範例</span>
+<span class="c-kw">typedef struct</span> <span class="c-white">{</span>
+    <span class="c-kw">int</span> <span class="c-attr">gop_size</span><span class="c-white">;        </span><span class="c-comment">// GOP 長度（兩個 I-Frame 之間的幀數）</span>
+    <span class="c-kw">int</span> <span class="c-attr">target_bitrate</span><span class="c-white">;  </span><span class="c-comment">// 目標位元率 (bps)</span>
+    <span class="c-kw">int</span> <span class="c-attr">fps</span><span class="c-white">;             </span><span class="c-comment">// 輸出幀率</span>
+<span class="c-white">} </span><span class="c-tag">h264_config_t</span><span class="c-white">;</span>
+
+<span class="c-comment">// GOP=10：每 10 幀送一個 I-Frame</span>
+<span class="c-comment">// GOP 越長 → 壓縮率越高 → 但丟包恢復越慢</span>
+<span class="c-tag">h264_config_t</span> <span class="c-attr">cfg</span> <span class="c-white">= { .gop_size = </span><span class="c-val">10</span><span class="c-white">, .target_bitrate = </span><span class="c-val">500000</span><span class="c-white">, .fps = </span><span class="c-val">15</span> <span class="c-white">};</span>
+                </div>
+
+                <p>
+                    <strong>運動補償（Motion Compensation）</strong>是 P-Frame 壓縮的核心機制。編碼器將畫面切成 16×16 像素的巨集區塊（Macroblock），然後分析每個區塊在前後幀之間的位移。例如，一輛車向右移動了 5 個像素，編碼器只需記錄「把這個區塊向右平移 5 像素」這條<strong>運動向量（Motion Vector）</strong>，而不是重新傳送整個車輛的像素資料。
+                </p>
+
+                <h2>H.264 vs MJPEG 效能對比</h2>
+
+                <div class="compare-grid">
+                    <div class="compare-card">
+                        <div class="compare-card-header" style="background:#deecf9;">
+                            <i class="fas fa-compress" style="color:#0078d4;"></i> H.264 (AVC)
+                        </div>
+                        <div class="compare-card-body">
+                            <ul style="margin:0; padding-left:18px;">
+                                <li>頻寬消耗僅為 MJPEG 的 1/10</li>
+                                <li>適合頻寬受限的長時間監控</li>
+                                <li>丟包時出現方塊殘影，需等待下個 I-Frame 恢復</li>
+                                <li>編碼需要較多 CPU/硬體資源</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="compare-card">
+                        <div class="compare-card-header" style="background:#dff6dd;">
+                            <i class="fas fa-images" style="color:#107c10;"></i> MJPEG
+                        </div>
+                        <div class="compare-card-body">
+                            <ul style="margin:0; padding-left:18px;">
+                                <li>頻寬消耗為 H.264 的 10 倍以上</li>
+                                <li>適合短距離、高頻寬的即時遙控</li>
+                                <li>丟包時只掉一幀，下一幀立即正常</li>
+                                <li>編碼極簡單，ESP32 硬體即可處理</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要：馬賽克殘影的成因</strong>
+                        當網路丟失了一個 P-Frame，解碼器缺少了「差異資料」，卻仍然以前一幀為基礎繼續預測後續幀。這導致畫面中出現殘留的方塊（Macroblock Artifacts），直到下一個 I-Frame 抵達才能完全「重置」畫面。GOP 設定越長（I-Frame 間隔越大），殘影持續的時間就越久。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -695,40 +874,146 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⏱️ 3. 延遲 (Latency) 的組成 (10 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg">
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-<div class="p-4 border-l-4 border-blue-500 bg-gray-50">
-<h4 class="font-bold mb-1">編碼延遲</h4>
-<p class="text-xs text-gray-500">硬體把像素變成封包的時間。</p>
-</div>
-<div class="p-4 border-l-4 border-indigo-500 bg-gray-50">
-<h4 class="font-bold mb-1">傳輸延遲</h4>
-<p class="text-xs text-gray-500">數據在網路上跑的時間 (Ping)。</p>
-</div>
-<div class="p-4 border-l-4 border-purple-500 bg-gray-50">
-<h4 class="font-bold mb-1">解碼/緩衝延遲</h4>
-<p class="text-xs text-gray-500">接收端解壓與等待播放的時間。</p>
-</div>
-</div>
-<div class="bg-amber-100 p-8 rounded-2xl border border-amber-200 mt-8">
-<h4 class="text-amber-900 font-bold text-xl mb-4 flex items-center gap-2">
-<span>🚀</span> 預習任務：最優化選擇
-                            </h4>
-<p class="text-amber-800 mb-4 text-lg">
-                                思考：對於「遙控賽車」來說，頻寬大小重要，還是端到端延遲 (End-to-End Latency) 重要？為什麼？
-                            </p>
-<div class="bg-white/50 p-4 rounded-lg text-sm text-amber-700 italic">
-                                提示：想像一下，如果你看到畫面中出現牆壁，但實際上的車子已經撞上去了...
-                            </div>
-</div>
-</div>
+                <h1>延遲 (Latency) 的組成</h1>
+
+                <p>
+                    在即時影像應用中，「延遲」是比「畫質」更致命的問題。你的遙控車畫面解析度再高，如果延遲超過 200 毫秒，操控者看到障礙物時車子早已撞上去了。理解延遲的組成，才能知道該從哪裡「砍」延遲、該犧牲什麼來換取即時性。
+                </p>
+
+                <h2>端到端延遲的三大組成</h2>
+
+                <p>
+                    從攝影機捕捉到光線，到使用者在螢幕上看到畫面，整段路徑的總延遲稱為<strong>端到端延遲（End-to-End Latency）</strong>。它由三個階段疊加而成：
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>延遲階段</th>
+                            <th>MJPEG 典型值</th>
+                            <th>H.264 典型值</th>
+                            <th>主要影響因素</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>編碼延遲</strong><br><span style="font-size:12px;color:#605e5c;">感測器擷取 → 壓縮完成</span></td>
+                            <td>10–30 ms</td>
+                            <td>30–100 ms</td>
+                            <td>編碼器硬體效能、幀大小、是否使用 B-Frame</td>
+                        </tr>
+                        <tr>
+                            <td><strong>傳輸延遲</strong><br><span style="font-size:12px;color:#605e5c;">封包從裝置到客戶端</span></td>
+                            <td>5–50 ms</td>
+                            <td>5–50 ms</td>
+                            <td>網路品質（Ping）、封包大小、壅塞程度</td>
+                        </tr>
+                        <tr>
+                            <td><strong>解碼 / 緩衝延遲</strong><br><span style="font-size:12px;color:#605e5c;">接收端解壓 → 顯示</span></td>
+                            <td>5–15 ms</td>
+                            <td>50–200 ms</td>
+                            <td>解碼器緩衝區大小、GOP 長度、播放器策略</td>
+                        </tr>
+                        <tr>
+                            <td><strong>端到端總計</strong></td>
+                            <td><strong>20–95 ms</strong></td>
+                            <td><strong>85–350 ms</strong></td>
+                            <td>—</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        H.264 的解碼延遲遠高於 MJPEG，因為解碼器需要<strong>緩衝多個幀</strong>才能開始解碼 P-Frame。特別是使用 B-Frame 時，解碼器必須等待「未來的幀」到達後才能回頭解碼，這會額外增加至少一個幀間隔（約 33–66 ms）的延遲。
+                    </div>
+                </div>
+
+                <h2>為什麼 MJPEG 天生低延遲？</h2>
+
+                <p>
+                    MJPEG 的每一幀都是<strong>獨立可解碼</strong>的——接收端拿到一幀 JPEG，立刻就能解碼顯示，不需要等待前面或後面的幀。沒有幀間依賴、沒有解碼緩衝區，這使得 MJPEG 的端到端延遲可以壓到<strong> 50 ms 以下</strong>，接近人類感知的即時極限。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// MJPEG 延遲路徑（極簡）</span>
+<span class="c-white">感測器擷取(10ms) → JPEG編碼(15ms) → TCP傳送(20ms) → 直接顯示(5ms)</span>
+<span class="c-comment">// 總計：約 50 ms</span>
+
+<span class="c-comment">// H.264 延遲路徑（含緩衝）</span>
+<span class="c-white">感測器擷取(10ms) → H.264編碼(50ms) → TCP傳送(20ms) → 緩衝2幀(66ms) → 解碼(20ms)</span>
+<span class="c-comment">// 總計：約 166 ms</span>
+                </div>
+
+                <h2>場景化延遲需求分析</h2>
+
+                <p>不同的應用場景對延遲的容忍度截然不同：</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>應用場景</th>
+                            <th>可接受延遲</th>
+                            <th>推薦編碼</th>
+                            <th>決策依據</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>遙控賽車 / FPV 飛行</td>
+                            <td>&lt; 100 ms</td>
+                            <td>MJPEG</td>
+                            <td>操控者需即時反應，延遲 = 碰撞風險</td>
+                        </tr>
+                        <tr>
+                            <td>遠端手術 / 精密操作</td>
+                            <td>&lt; 50 ms</td>
+                            <td>MJPEG（低解析度）</td>
+                            <td>毫秒級延遲攸關生命安全</td>
+                        </tr>
+                        <tr>
+                            <td>居家安防監控</td>
+                            <td>&lt; 2000 ms</td>
+                            <td>H.264</td>
+                            <td>頻寬與儲存成本優先，延遲容忍度高</td>
+                        </tr>
+                        <tr>
+                            <td>自動駕駛視覺避障</td>
+                            <td>&lt; 30 ms</td>
+                            <td>無壓縮 / MJPEG</td>
+                            <td>影像處理在本地端完成，不經網路傳輸</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        判斷「該選 MJPEG 還是 H.264」的簡易法則：<strong>如果延遲會造成物理傷害或操控失敗</strong>（如碰撞），選擇 MJPEG 並犧牲頻寬；如果系統<strong>只需要事後回放或長時間監控</strong>，選擇 H.264 並節省頻寬與儲存空間。
+                    </div>
+                </div>
+
+                <h2>測量端到端延遲的方法</h2>
+
+                <p>
+                    在實戰挑戰中，你將使用 <code>tools/latency_meter.html</code>——一個顯示高速計數器的網頁。方法是將攝影機對準運行中的計時器螢幕，然後同時拍下「原始螢幕上的數字」與「串流畫面上的數字」。兩者的差值就是端到端延遲。
+                </p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        記住：「沒有完美方案，只有最適合場景的權衡。」MJPEG 與 H.264 各有不可調和的物理限制，你的工程價值在於能根據需求做出有根據的技術選擇——這正是本模組希望你帶走的核心能力。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -807,16 +1092,113 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>請回答以下問題，測試你對本模組內容的理解程度。每題僅有一個正確答案。</p>
+
+                <form id="quiz-form" onsubmit="return false;" style="margin-top:24px;">
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">1. H.264 使用哪種壓縮技術來大幅提高壓縮率？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 只使用畫面內壓縮
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 幀間壓縮，利用相鄰幀的差異
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 無損壓縮 (Lossless)
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 音訊與視訊聯合壓縮
+                        </label>
+                        <div id="fb-q1" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">2. H.264 中的 I-Frame (關鍵幀) 具有什麼特性？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 只記錄與前一幀的差異
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 是完整的獨立幀，不依賴其他幀
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 用於音訊同步
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 體積最小的幀類型
+                        </label>
+                        <div id="fb-q2" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">3. 在 ESP32 等嵌入式裝置上，MJPEG 相比 H.264 的主要優勢是什麼？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 壓縮率更高
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 畫質更好
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 運算複雜度低，延遲極低
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 佔用頻寬更少
+                        </label>
+                        <div id="fb-q3" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">4. 當 H.264 串流中的 P-Frame 發生丟包時，會出現什麼現象？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 只有丟失的那一幀消失
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 出現馬賽克殘影，直到下一個 I-Frame
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 串流自動恢復
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 畫面完全黑屏
+                        </label>
+                        <div id="fb-q4" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="display:flex;gap:12px;margin-top:20px;">
+                        <button type="button" class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button type="button" class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                    </div>
+                    <div id="quiz-result" style="margin-top:16px;font-size:15px;font-weight:600;display:none;"></div>
+                </form>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -874,9 +1256,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「影像串流原理：MJPEG vs. H.264」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「影像串流原理：MJPEG vs. H.264」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -892,7 +1274,8 @@
         { id: 3, label: '🧠 2. H.264 (AVC)：聰明的變化預測 (30 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '️ 3. 延遲 (Latency) 的組成 (10 min)', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',     time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -912,6 +1295,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1013,8 +1397,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'B', q3: 'C', q4: 'B' };
+    const QUIZ_EXPLANATIONS = {
+        q1: 'H.264 利用幀間壓縮（Inter-frame），分析相鄰幀之間的差異，只傳送變化的部分，達到比 MJPEG 高 10 倍以上的壓縮率。',
+        q2: 'I-Frame 是完整且獨立編碼的關鍵幀，解碼時不需要參考其他幀，是錯誤恢復的基準點。',
+        q3: 'MJPEG 每幀獨立壓縮，不需記住前一幀，運算量遠低於 H.264，且任意一幀即可解碼，延遲極低。',
+        q4: 'P-Frame 依賴前一幀，丟失後會導致錯誤傳播，產生馬賽克殘影（Artifact），直到收到下一個 I-Frame 才恢復正常。'
+    };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const fb = document.getElementById(`fb-${q}`);
+            if (!selected) {
+                fb.style.display = 'block';
+                fb.innerHTML = '<span style="color:#d13438;">⚠ 請選擇一個答案</span>';
+                continue;
+            }
+            fb.style.display = 'block';
+            if (selected.value === correct) {
+                score++;
+                fb.innerHTML = `<span style="color:#107c10;">✔ 正確！</span> ${QUIZ_EXPLANATIONS[q]}`;
+            } else {
+                fb.innerHTML = `<span style="color:#d13438;">✘ 不正確。正確答案是 ${correct}。</span> ${QUIZ_EXPLANATIONS[q]}`;
+            }
+        }
+        const result = document.getElementById('quiz-result');
+        result.style.display = 'block';
+        if (score === total) {
+            result.innerHTML = `<span style="color:#107c10;">🎉 滿分！你答對了全部 ${total} 題！</span>`;
+            markDone(6);
+        } else {
+            result.innerHTML = `<span style="color:#d13438;">你答對了 ${score} / ${total} 題。再試一次吧！</span>`;
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= Object.keys(QUIZ_ANSWERS).length; i++) {
+            const fb = document.getElementById(`fb-q${i}`);
+            if (fb) { fb.style.display = 'none'; fb.innerHTML = ''; }
+        }
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 02：影像串流技術';
 </script>
 
 <!-- Define Resources -->

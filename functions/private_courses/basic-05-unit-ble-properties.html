@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLE 讀取、寫入與通知 (Properties) - Vibe Coding Learn</title>
+    <title>BLE 讀取、寫入與通知 (Properties) - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -471,9 +473,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 5 - 藍牙通訊進階</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +487,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">BLE 讀取、寫入與通知 (Properties)</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 5</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,7 +509,7 @@
                 <h1>BLE 讀取、寫入與通知 (Properties)</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 5</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -520,9 +520,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>📖 1. 讀取 (Read)：查詢</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>️ 2. 寫入 (Write)：下令</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>🔔 3. 通知 (Notify)：推播</strong> 的調校技巧與穩定性測試。</li>
+                    <li>能夠正確配置 GATT 特徵值的三種核心屬性（Read / Write / Notify），並為不同類型的數據選擇最適合的通訊模式。</li>
+                    <li>能夠比較「帶回應寫入」與「不帶回應寫入」的延遲差異，針對高頻即時控制（如搖桿）選用最佳寫入策略。</li>
+                    <li>能夠實作閾值過濾式智慧推播演算法（變動超過 10% 才觸發 Notify），量化證明封包數量的節省效果。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -553,15 +553,15 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>BLE 讀取、寫入與通知 (Properties)</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    GATT 特徵值的三種核心屬性——<strong>Read、Write、Notify</strong>——決定了數據的流向與觸發方式。
+                    本單元將帶你理解「主動查詢」與「被動推播」的效能差異，學會為不同類型的數據（靜態 ID、即時指令、高頻感測）
+                    配置最合適的屬性，並實作智慧推播演算法來大幅節省無線電頻寬與電力消耗。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的無人車遙測系統每 100ms 盲目推播一次感測器數值，即使車輛靜止不動，手機仍瘋狂接收封包，電池在半小時內耗盡。
+                    同時，搖桿控制因為使用了「帶回應寫入」而出現明顯延遲——你需要為不同場景選擇正確的 BLE 屬性策略。
                 </div>
 
                 <h2>教學影片</h2>
@@ -575,7 +575,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -589,36 +589,106 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>📖 1. 讀取 (Read)：查詢</h1>
-                
-                <div class="space-y-6 text-gray-600 text-justify">
-<p class="text-lg leading-relaxed font-light text-justify">
-<span class="font-bold text-blue-600 text-justify">定義：</span>客戶端主動索取數據。
-                                </p>
-<div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 shadow-sm text-justify">
-<h4 class="font-bold text-blue-800 mb-2 text-sm uppercase tracking-widest italic text-justify">
-                                        Pull Mechanism</h4>
-<p class="text-xs text-slate-600 leading-relaxed font-light text-justify">
-                                        手機詢問時才回傳。節能但實時性低。</p>
-</div>
-<div class="grid grid-cols-2 gap-4 text-justify">
-<div class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-justify">
-<h5 class="text-[10px] font-bold text-slate-400 mb-1 uppercase text-justify">
-                                            適合內容</h5>
-<p class="text-xs font-bold text-slate-800 text-justify">韌體版本、設備 ID</p>
-</div>
-<div class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-justify">
-<h5 class="text-[10px] font-bold text-slate-400 mb-1 uppercase text-justify">
-                                            頻率建議</h5>
-<p class="text-xs font-bold text-slate-800 text-justify">按需發起</p>
-</div>
-</div>
-</div>
+                <h1>讀取 (Read)：主動查詢機制</h1>
+
+                <p>
+                    <strong>Read</strong> 是 BLE 中最基本的數據獲取方式——由 Client（手機）主動向 Server（ESP32）發起請求，
+                    Server 收到後回傳當前的 Characteristic 值。這是一種典型的<strong>「拉取（Pull）」模式</strong>，
+                    只有在 Client 詢問時才會產生數據傳輸。
+                </p>
+
+                <p>
+                    Read 操作是<strong>同步且有確認的</strong>：Client 發送 Read Request，Server 回傳 Read Response，
+                    整個過程在一次連線事件中完成。這保證了 Client 一定能獲得數據，但也意味著每次查詢都需要一個完整的來回。
+                </p>
+
+                <h2>Read 的適用場景</h2>
+
+                <p>Read 屬性最適合以下類型的數據：</p>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>數據類型</th>
+                        <th>特性</th>
+                        <th>範例</th>
+                    </tr>
+                    <tr>
+                        <td>靜態識別資訊</td>
+                        <td>幾乎不變，查詢一次即可</td>
+                        <td>韌體版本、設備序號、學號</td>
+                    </tr>
+                    <tr>
+                        <td>低頻狀態</td>
+                        <td>偶爾變動，無即時性需求</td>
+                        <td>電池電量（每分鐘查一次足矣）</td>
+                    </tr>
+                    <tr>
+                        <td>配置參數</td>
+                        <td>用戶按需查閱當前設定</td>
+                        <td>當前運作模式、閾值設定</td>
+                    </tr>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        Read 操作不會產生任何「推播」行為——如果 Server 端的值發生了變化，Client 不會自動收到通知，必須再次主動發起 Read 才能獲得新值。若需要即時更新，應使用 Notify 屬性。
+                    </div>
+                </div>
+
+                <h2>ESP32 實作 Read 特徵值</h2>
+
+                <p>
+                    實作 Read 特徵值非常簡單——你只需要建立帶有 <code>PROPERTY_READ</code> 的 Characteristic，
+                    並透過 <code>setValue()</code> 設定其值。當手機發起 Read 請求時，BLE 協定棧會自動回傳該值：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 建立 Read-only 特徵值（例如：設備學號）</span><br>
+                    <span class="c-tag">BLECharacteristic</span> <span class="c-white">*pIDChar = pService-></span><span class="c-attr">createCharacteristic</span><span class="c-white">(</span><br>
+                    <span class="c-white">&nbsp;&nbsp;ID_CHAR_UUID,</span><br>
+                    <span class="c-white">&nbsp;&nbsp;BLECharacteristic::</span><span class="c-attr">PROPERTY_READ</span><br>
+                    <span class="c-white">);</span><br><br>
+                    <span class="c-comment">// 設定固定值（學號）</span><br>
+                    <span class="c-white">pIDChar-></span><span class="c-attr">setValue</span><span class="c-white">(</span><span class="c-str">"Student-07"</span><span class="c-white">);</span><br><br>
+                    <span class="c-comment">// 動態值範例：回傳 Uptime 秒數</span><br>
+                    <span class="c-tag">BLECharacteristic</span> <span class="c-white">*pUptimeChar = pService-></span><span class="c-attr">createCharacteristic</span><span class="c-white">(</span><br>
+                    <span class="c-white">&nbsp;&nbsp;UPTIME_CHAR_UUID,</span><br>
+                    <span class="c-white">&nbsp;&nbsp;BLECharacteristic::</span><span class="c-attr">PROPERTY_READ</span><br>
+                    <span class="c-white">);</span><br><br>
+                    <span class="c-comment">// 在 loop() 中持續更新值</span><br>
+                    <span class="c-kw">void</span> <span class="c-attr">loop</span><span class="c-white">() {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;String uptime = String(millis() / 1000);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;pUptimeChar-></span><span class="c-attr">setValue</span><span class="c-white">(uptime.c_str());</span><br>
+                    <span class="c-white">&nbsp;&nbsp;delay(1000);</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <h2>Read vs. Notify：何時用哪個？</h2>
+
+                <p>
+                    初學者常見的疑問是：既然 Notify 可以主動推播，為何還需要 Read？答案在於<strong>效率與場景匹配</strong>：
+                </p>
+
+                <ul>
+                    <li>如果 Client 只需要<strong>偶爾查詢一次</strong>（如開機讀取版本號），使用 Read 比維持 Notify 訂閱更節省資源。</li>
+                    <li>Read 不需要 <code>BLE2902</code> 描述符，實作更簡單。</li>
+                    <li>Read 保證每次都能取得最新值，而 Notify 可能因為錯過封包而遺漏更新。</li>
+                </ul>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        最佳實踐是為同一個感測 Characteristic 同時配置 Read + Notify 屬性。平時由 Notify 推播即時數據，但 Client 也能隨時 Read 獲取當前值——這在 App 重連或初始化時特別有用。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -632,52 +702,111 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>✍️ 2. 寫入 (Write)：下令</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify">手機推送資料。設計遙控指令的核心。
-                            </p>
-<div class="space-y-4 text-justify">
-<div class="p-6 rounded-2xl bg-orange-50 border border-orange-200 group hover:bg-orange-600 transition duration-500 text-justify">
-<h4 class="font-bold text-orange-800 group-hover:text-white flex items-center gap-2 text-sm uppercase tracking-widest text-justify">
-<span>🛡️</span> With Response (Safety)
-                                    </h4>
-<p class="text-xs text-slate-600 group-hover:text-orange-100 mt-2 font-light text-justify uppercase tracking-widest">
-                                        安全握手。收到後回傳 ACK。保證指令傳達。</p>
-</div>
-<div class="p-6 rounded-2xl bg-red-50 border border-red-200 group hover:bg-red-600 transition duration-500 text-justify">
-<h4 class="font-bold text-red-800 group-hover:text-white flex items-center gap-2 text-sm uppercase tracking-widest text-justify font-black">
-<span>⚡</span> No Response (Command)
-                                    </h4>
-<p class="text-xs text-slate-600 group-hover:text-red-100 mt-2 font-light text-justify uppercase tracking-tighter">
-                                        戰鬥高速。只管送，不等待。適合搖桿座標。</p>
-</div>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 bg-slate-900 text-justify">
-<div class="flex items-center gap-3 mb-6">
-<span class="w-3 h-3 bg-red-400 rounded-full"></span>
-<span class="w-3 h-3 bg-amber-400 rounded-full"></span>
-<span class="w-3 h-3 bg-emerald-400 rounded-full"></span>
-<span class="ml-auto text-[10px] text-slate-500 font-mono tracking-widest text-justify uppercase tracking-widest">ON_WRITE
-                                    CALLBACK</span>
-</div>
-<pre class="text-xs md:text-sm leading-relaxed overflow-x-auto text-orange-300 font-mono text-justify">
-<span class="text-blue-500 text-justify">void</span> <span class="text-emerald-400">onWrite</span>(BLECharacteristic *pC) {
-  std::string val = pC-&gt;<span class="text-blue-400">getValue</span>();
-  <span class="text-blue-500 text-justify">if</span> (val == <span class="text-amber-200 text-justify uppercase tracking-widest">"GO"</span>) {
-    <span class="text-slate-500 text-justify">// Trigger Motor logic immediately</span>
-    <span class="text-emerald-400">drive</span>(255);
-  }
-}</pre>
-</div>
-</div>
+                <h1>寫入 (Write)：控制指令下達</h1>
+
+                <p>
+                    <strong>Write</strong> 是 Client（手機）向 Server（ESP32）傳送數據的方式——在遙控車應用中，
+                    這就是手機下達「前進」「停止」「轉向」等控制指令的核心機制。Write 屬性是實現<strong>「遠端控制」</strong>的基礎。
+                </p>
+
+                <p>
+                    BLE 規範定義了兩種寫入模式，它們在可靠性與延遲之間存在取捨，開發者必須根據應用場景選擇最合適的模式。
+                </p>
+
+                <h2>兩種寫入模式比較</h2>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>模式</th>
+                        <th>Write With Response</th>
+                        <th>Write Without Response (Write Command)</th>
+                    </tr>
+                    <tr>
+                        <td><strong>確認機制</strong></td>
+                        <td>Server 回傳 ACK 確認收到</td>
+                        <td>Fire-and-forget，不等確認</td>
+                    </tr>
+                    <tr>
+                        <td><strong>可靠性</strong></td>
+                        <td>高（保證送達）</td>
+                        <td>較低（可能丟失）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>延遲</strong></td>
+                        <td>較高（需等待 ACK）</td>
+                        <td>極低（發出即完成）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>吞吐量</strong></td>
+                        <td>受限（每次需 2 個封包）</td>
+                        <td>高（每次僅 1 個封包）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>適用場景</strong></td>
+                        <td>韌體更新、關鍵模式切換</td>
+                        <td>搖桿座標、連續動作指令</td>
+                    </tr>
+                </table>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        對於即時遙控（如搖桿操控無人車），若誤用 Write With Response，每秒只能發送約 10–15 次指令（因為每次都要等 ACK）。改用 Write Without Response 後，可輕鬆達到每秒 50+ 次的更新頻率。
+                    </div>
+                </div>
+
+                <h2>onWrite 回呼實作</h2>
+
+                <p>
+                    當手機端寫入數據時，ESP32 透過 <code>BLECharacteristicCallbacks</code> 的 <code>onWrite</code> 方法接收指令。
+                    你需要在回呼中解析收到的 Byte Array，並轉換為有意義的動作：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-kw">class</span> <span class="c-tag">MotorCallbacks</span> <span class="c-white">:</span> <span class="c-kw">public</span> <span class="c-tag">BLECharacteristicCallbacks</span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">void</span> <span class="c-attr">onWrite</span><span class="c-white">(BLECharacteristic *pCharacteristic) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;std::string value = pCharacteristic-></span><span class="c-attr">getValue</span><span class="c-white">();</span><br><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(value.length() > 0) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(value == </span><span class="c-str">"GO"</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;digitalWrite(LED_PIN, HIGH);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;motorDrive(255);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} </span><span class="c-kw">else if</span> <span class="c-white">(value == </span><span class="c-str">"STOP"</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;digitalWrite(LED_PIN, LOW);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;motorDrive(0);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">};</span><br><br>
+                    <span class="c-comment">// 掛載回呼</span><br>
+                    <span class="c-white">pMotorChar-></span><span class="c-attr">setCallbacks</span><span class="c-white">(</span><span class="c-kw">new</span> <span class="c-tag">MotorCallbacks</span><span class="c-white">());</span>
+                </div>
+
+                <h2>數據編解碼注意事項</h2>
+
+                <p>
+                    BLE 傳輸的本質是<strong>原始位元組陣列（Byte Array）</strong>。當手機端發送字串 <code>"GO"</code> 時，
+                    ESP32 收到的是 ASCII 編碼 <code>[0x47, 0x4F]</code>。在處理數據時需注意：
+                </p>
+
+                <ul>
+                    <li>使用 <code>getValue()</code> 取得的是 <code>std::string</code>，可直接與字串比較</li>
+                    <li>若傳送數值型數據（如速度 0–255），建議直接傳送單一 Byte 而非字串，節省封包空間</li>
+                    <li>務必檢查 <code>value.length()</code> 避免處理空資料造成未定義行為</li>
+                </ul>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        設計指令協議時，建議保持簡潔明確。例如使用固定長度的命令格式 <code>[CMD_ID][PARAM1][PARAM2]</code>，這樣解析邏輯更穩健，也更容易擴充新指令。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -691,41 +820,114 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔔 3. 通知 (Notify)：推播</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify uppercase tracking-widest">
-<span class="font-bold text-emerald-400">訂閱機制：</span>手機訂閱。數據變動即主動推播。
-                            </p>
-<div class="p-8 rounded-3xl border border-emerald-500/20 shadow-inner bg-emerald-500/10 text-justify">
-<h4 class="font-bold text-emerald-400 mb-4 text-xs uppercase tracking-widest text-justify">
-                                    即時監控</h4>
-<ul class="grid grid-cols-2 gap-4 text-[11px] text-slate-400 font-light text-justify">
-<li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>超音波距離</li>
-<li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>陀螺儀角度</li>
-<li class="flex items-center gap-2 text-justify"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>主動警報</li>
-<li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>循跡誤差值</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 p-10 rounded-3xl border border-emerald-500/20 text-center relative overflow-hidden group bg-emerald-600/10 text-justify font-black">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-emerald-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-justify">
-                                Efficiency King</h4>
-<p class="text-slate-500 leading-relaxed font-light mb-8 italic text-[11px] text-justify uppercase tracking-tighter">
-                                "手機不再需要輪詢，電力消耗將大幅下降。"
-                            </p>
-<div class="inline-block px-8 py-3 bg-emerald-500 text-white rounded-xl font-bold text-[10px] shadow-lg cursor-pointer hover:bg-emerald-400 transition transform hover:scale-105 text-justify uppercase tracking-widest">
-                                pCharacteristic-&gt;notify();</div>
-</div>
-</div>
+                <h1>通知 (Notify)：即時推播機制</h1>
+
+                <p>
+                    <strong>Notify</strong> 是 BLE 中最強大的數據傳輸方式——由 Server（ESP32）在數據變化時<strong>主動推播</strong>給 Client（手機），
+                    不需要 Client 反覆詢問。這是一種典型的<strong>「推送（Push）」模式</strong>，也是實現即時遙測監控的靈魂機制。
+                </p>
+
+                <p>
+                    與 Read 的「手機問一次、設備答一次」不同，Notify 讓手機<strong>訂閱（Subscribe）</strong>特定 Characteristic 後，
+                    只要 Server 端的值發生變化，就會自動將新值推送到手機——無需手機再次發起請求。
+                </p>
+
+                <h2>Notify 的運作流程</h2>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>Client 訂閱通知</h4>
+                            <p>手機向 BLE2902 描述符寫入 <code>0x0001</code>，表示「我要訂閱此 Characteristic 的通知」。在 nRF Connect 中，這就是點擊向下箭頭圖示。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>Server 更新值並推播</h4>
+                            <p>ESP32 透過 <code>setValue()</code> 更新 Characteristic 的值，然後呼叫 <code>notify()</code> 將新值推送給已訂閱的 Client。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>Client 接收更新</h4>
+                            <p>手機的 App 在回呼函數中收到新值，即時更新 UI 顯示。整個過程無需手機輪詢。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>BLE2902 描述符：訂閱的鑰匙</h2>
+
+                <p>
+                    <code>BLE2902</code> 是<strong>Client Characteristic Configuration Descriptor (CCCD)</strong> 的簡稱，
+                    它是 Notify/Indicate 機制的核心基礎設施。沒有掛載 BLE2902 的 Characteristic，即使設定了 NOTIFY 屬性，手機也無法訂閱它。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 建立 Notify 特徵值</span><br>
+                    <span class="c-tag">BLECharacteristic</span> <span class="c-white">*pSensorChar = pService-></span><span class="c-attr">createCharacteristic</span><span class="c-white">(</span><br>
+                    <span class="c-white">&nbsp;&nbsp;SENSOR_CHAR_UUID,</span><br>
+                    <span class="c-white">&nbsp;&nbsp;BLECharacteristic::</span><span class="c-attr">PROPERTY_NOTIFY</span><br>
+                    <span class="c-white">);</span><br><br>
+                    <span class="c-comment">// 關鍵！必須掛載 BLE2902 描述符</span><br>
+                    <span class="c-white">pSensorChar-></span><span class="c-attr">addDescriptor</span><span class="c-white">(</span><span class="c-kw">new</span> <span class="c-tag">BLE2902</span><span class="c-white">());</span><br><br>
+                    <span class="c-comment">// 在 loop() 中定時推播感測數據</span><br>
+                    <span class="c-kw">void</span> <span class="c-attr">loop</span><span class="c-white">() {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(deviceConnected) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">int</span> <span class="c-white">sensorValue = analogRead(SENSOR_PIN);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;String data = String(sensorValue);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;pSensorChar-></span><span class="c-attr">setValue</span><span class="c-white">(data.c_str());</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;pSensorChar-></span><span class="c-attr">notify</span><span class="c-white">();</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;delay(500);</span> <span class="c-comment">// 每 500ms 推播一次</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        忘記加入 <code>pCharacteristic->addDescriptor(new BLE2902())</code> 是 BLE 開發中<strong>排名第一的常見錯誤</strong>。症狀是：nRF Connect 中 Notify 按鈕為灰色（不可點擊），或點擊後無任何反應。請務必在每個 Notify/Indicate 特徵值上都掛載此描述符。
+                    </div>
+                </div>
+
+                <h2>智慧推播：閾值過濾策略</h2>
+
+                <p>
+                    盲目地以固定間隔推播數據（如每 100ms 發送一次）會造成大量無效傳輸——當感測器數值沒有變化時，重複發送相同的值只是浪費電力與頻寬。
+                    工業級的做法是實作<strong>閾值過濾（Threshold Filter）</strong>：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-kw">int</span> <span class="c-attr">lastSentValue</span> <span class="c-white">= 0;</span><br>
+                    <span class="c-kw">const float</span> <span class="c-attr">THRESHOLD</span> <span class="c-white">= 0.10;</span> <span class="c-comment">// 變動 10% 才推播</span><br><br>
+                    <span class="c-kw">void</span> <span class="c-attr">loop</span><span class="c-white">() {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">int</span> <span class="c-white">current = analogRead(SENSOR_PIN);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">float</span> <span class="c-white">change = abs(current - lastSentValue) / (</span><span class="c-kw">float</span><span class="c-white">)max(lastSentValue, 1);</span><br><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(change >= THRESHOLD) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;pSensorChar-></span><span class="c-attr">setValue</span><span class="c-white">(String(current).c_str());</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;pSensorChar-></span><span class="c-attr">notify</span><span class="c-white">();</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;lastSentValue = current;</span> <span class="c-comment">// 更新基準值</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">&nbsp;&nbsp;delay(100);</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        注意 <code>lastSentValue</code> 必須記錄的是<strong>上一次實際發送出去的值</strong>，而非上一次取樣的值。若改用「與上一次取樣比較」，
+                        會產生「慢速飄移（Drift）」問題——每次微小變動都不超過閾值，但累積起來可能偏離很遠卻從未通知 Client。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -804,16 +1006,75 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
-
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: QUIZ ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <div class="quiz-question">
+                        <p>1. 為什麼建議同一個感測 Characteristic 同時配置 Read + Notify 兩種屬性？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 因為 BLE 規範強制要求至少兩種屬性</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 平時由 Notify 主動推播即時數據，但 Client 重連或初始化時也能透過 Read 主動查詢當前值</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 因為只有 Read 屬性無法傳輸數據</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>2. 對於即時遙控（如搖桿操控無人車），為什麼應使用「Write Without Response」而非「Write With Response」？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 因為 Write Without Response 更安全，不容易丟包</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 因為 Write With Response 需等待 ACK，每秒僅能發送約 10-15 次指令，延遲過高</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 因為 ESP32 不支援 Write With Response</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>3. 智慧推播（閾值過濾）中，lastSentValue 應該記錄的是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 上一次取樣的原始值</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 上一次實際發送出去的值</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 所有取樣值的平均值</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>4. 忘記加入 pCharacteristic->addDescriptor(new BLE2902()) 會出現什麼症狀？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> ESP32 無法啟動 BLE Server</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> nRF Connect 中 Notify 按鈕為灰色或點擊後無反應，手機無法訂閱通知</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 手機可以正常接收 Notify，但延遲增加</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -871,9 +1132,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「BLE 讀取、寫入與通知 (Properties)」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「BLE 讀取、寫入與通知 (Properties)」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -889,8 +1150,17 @@
         { id: 3, label: '️ 2. 寫入 (Write)：下令', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🔔 3. 通知 (Notify)：推播', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',              time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！Notify 提供即時推播，Read 則讓 Client 能隨時主動查詢當前值。兩者互補，特別在 App 重連或初始化場景中，Read 可立即獲得最新狀態。' },
+        q2: { b: '正確！Write With Response 每次需等待 Server 回傳 ACK，吞吐量受限。Write Without Response 不等確認，可輕鬆達到每秒 50+ 次更新頻率，適合高頻即時控制。' },
+        q3: { b: '正確！必須記錄上一次「實際發送」的值。若改用上一次取樣值比較，會產生「慢速飄移（Drift）」問題——每次微小變動不超閾值，但累積偏離很遠卻從未通知 Client。' },
+        q4: { b: '正確！BLE2902 是 Notify/Indicate 的必備描述符。缺少它時，手機端的 Notify 訂閱按鈕會呈灰色或無反應，這是 BLE 開發中排名第一的常見錯誤。' },
+    };
+
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -909,6 +1179,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1012,6 +1283,7 @@
 
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 05：BLE GATT 協定';
 </script>
 
 <!-- Define Resources -->

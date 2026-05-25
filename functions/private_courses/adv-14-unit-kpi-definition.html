@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>系統性能指標 (KPI) 定義 - Vibe Coding Learn</title>
+    <title>系統性能指標 (KPI) 定義 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 14 - 性能指標</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">系統性能指標 (KPI) 定義</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 14</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>系統性能指標 (KPI) 定義</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 14</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>系統性能指標 (KPI) 定義</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    歡迎來到本模組！本單元聚焦於 <strong>系統性能指標 (KPI) 定義</strong>。
+                    「系統跑得順不順」不能憑感覺判斷——延遲多少毫秒算可接受？封包丟失率到什麼程度控制會失效？
+                    本模組將教你建立精確的量化指標體系，從 RTT 延遲、抖動係數到 SLA 服務水準定義，用數據而非直覺來評估並優化你的控制系統。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境設定</div>
+                    你的團隊正在爭論系統到底「夠不夠快」。有人說操控很順，有人覺得有延遲感。問題在於——沒有人拿得出數據。
+                    當你在室內空曠環境測得平均 RTT 為 38ms，隔一面牆就飆升到 195ms，你才發現「安全邊際」遠比想像中窄。
+                    請先觀看教學影片，學會如何為你的系統撰寫一份具備工業說服力的性能規格書。
                 </div>
 
                 <h2>教學影片</h2>
@@ -576,7 +577,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -591,51 +592,141 @@
                 </div>
 
                 <h1>🎯 1. 性能指標 (KPI) 三大維度</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify text-justify">
-                                工程師不相信直覺，只相信證據。要評估一個控制系統的優劣，必須從時間、準繩度與穩定性三個面向進行精確量化。
-                            </p>
-<div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-justify">
-<h4 class="font-bold text-blue-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed text-center text-justify">
-                                    System Benchmarking Dimensions</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify text-justify">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify text-left">時間性 (Temporal)</strong>：延遲
-                                            (RTT/Latency) 是核心。超過 100ms 的迴路反饋即視為不可接受。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify">準確性 (Accuracy)</strong>：平均誤差值與抖動係數
-                                            (Jitter)。反映車輛行駛的軌跡平滑度。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify">可靠性 (Reliability)</strong>：通訊封包丟失率與控制失效自動復歸效率。
-                                        </div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors text-justify">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-center text-justify">
-                                Real-time Performance Scoring</h4>
-<div class="relative z-10 space-y-4 text-justify">
-<div class="text-[10px] font-mono p-2 bg-emerald-900/20 border border-emerald-500/30 rounded text-emerald-300 text-justify">
-                                    RTT LATENCY: 38ms (EXCELLENT)</div>
-<div class="text-[10px] font-mono p-2 bg-blue-900/20 border border-blue-500/30 rounded text-blue-300 uppercase tracking-widest text-justify">
-                                    SLA COMPLIANCE: 99.85% ACTIVE</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-8 font-mono tracking-widest text-center text-justify uppercase font-black">
-                                Performance Telemetry Analysis</p>
-</div>
-</div>
+
+                <p>
+                    工程師不相信直覺，只相信<strong>數據</strong>。當團隊在爭論系統「夠不夠快」時，如果沒有人拿得出精確的數字，這場討論就毫無意義。要科學地評估一個控制系統的優劣，必須從<strong>時間性（Temporal）</strong>、<strong>準確性（Accuracy）</strong>與<strong>可靠性（Reliability）</strong>三個維度進行量化分析。
+                </p>
+
+                <p>
+                    這三大維度構成了系統性能評估的完整框架。每個維度都有對應的量化指標與量測方法，讓你能夠用數據取代感覺，用證據取代猜測。
+                </p>
+
+                <h2>維度一：時間性（Temporal）— 延遲與回應速度</h2>
+
+                <p>
+                    在即時控制系統中，<strong>延遲（Latency）</strong>是最關鍵的 KPI。它直接決定了操作者的指令能否被即時執行。最常用的量測指標是 <strong>RTT（Round-Trip Time）</strong>——從前端發出指令到收到韌體回應的完整來回時間。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// RTT 量測的基本實作</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">t_send</span> <span class="c-white">= </span><span class="c-tag">performance</span><span class="c-white">.</span><span class="c-tag">now</span><span class="c-white">();</span><br>
+                    <span class="c-tag">sendPingToDevice</span><span class="c-white">();</span><br><br>
+                    <span class="c-comment">// 當收到 Pong 回應時</span><br>
+                    <span class="c-attr">onPongReceived</span> <span class="c-white">= () => {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">rtt</span> <span class="c-white">= </span><span class="c-tag">performance</span><span class="c-white">.</span><span class="c-tag">now</span><span class="c-white">() - </span><span class="c-attr">t_send</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">rttHistory</span><span class="c-white">.</span><span class="c-tag">push</span><span class="c-white">(</span><span class="c-attr">rtt</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">updateDashboard</span><span class="c-white">(</span><span class="c-attr">rtt</span><span class="c-white">);</span><br>
+                    <span class="c-white">};</span>
+                </div>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>延遲等級</th>
+                            <th>RTT 範圍</th>
+                            <th>控制體驗</th>
+                            <th>建議行動</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="color:#107c10;font-weight:600;">優秀</td>
+                            <td>&lt; 80 ms</td>
+                            <td>操控順暢，適合精確循跡與高速過彎</td>
+                            <td>正常操作</td>
+                        </tr>
+                        <tr>
+                            <td style="color:#ffaa44;font-weight:600;">警戒</td>
+                            <td>80 – 120 ms</td>
+                            <td>可感知的延遲，轉向反應變鈍</td>
+                            <td>降低操控強度，準備切換安全模式</td>
+                        </tr>
+                        <tr>
+                            <td style="color:#d13438;font-weight:600;">危險</td>
+                            <td>&gt; 120 ms</td>
+                            <td>控制明顯滯後，PID 震盪風險</td>
+                            <td>自動切換為安全停車模式</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>維度二：準確性（Accuracy）— 誤差與抖動</h2>
+
+                <p>
+                    即使延遲很低，如果數據傳輸的<strong>穩定性</strong>不足，控制品質依然會惡化。<strong>抖動係數（Jitter）</strong>衡量的是連續多次 RTT 量測之間的波動程度。高抖動意味著有時快有時慢，PID 控制器無法獲得穩定的回饋訊號，車輛軌跡就會出現不可預測的擺動。
+                </p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        抖動係數的計算方式為連續 RTT 差值的平均絕對值：<code>Jitter = Σ|RTT(i) - RTT(i-1)| / (n-1)</code>。理想值應低於 15ms。當 Jitter 超過 30ms 時，即使平均 RTT 在安全範圍內，控制品質也會顯著下降。
+                    </div>
+                </div>
+
+                <h2>維度三：可靠性（Reliability）— 封包丟失與自動復歸</h2>
+
+                <p>
+                    在無線通訊環境中，封包丟失是無法完全避免的。可靠性維度關注的是：<strong>封包丟失率</strong>（Packet Loss Rate）有多高？以及當丟失發生時，系統能否<strong>自動偵測並復歸</strong>？
+                </p>
+
+                <p>
+                    對於物聯網控制系統，可接受的封包丟失率通常要求低於 <strong>2%</strong>。超過 5% 時，即時控制將變得不可靠。系統應具備心跳偵測（Heartbeat）機制——如果連續 3 個心跳未收到回應，即判定為連線中斷並啟動安全程序。
+                </p>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        封包丟失率必須在「最嚴苛的環境」下量測，而非僅在理想條件下。室內空曠環境的丟失率可能僅 0.1%，但隔一面牆就可能飆升到 8%。產品規格書必須標註<strong>最差情況下的數值</strong>，這才是真正的安全邊際。
+                    </div>
+                </div>
+
+                <h2>三大維度的整合視角</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>KPI 維度</th>
+                            <th>核心指標</th>
+                            <th>量測工具</th>
+                            <th>合格基準</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>時間性</strong></td>
+                            <td>RTT 延遲（ms）</td>
+                            <td>Ping/Pong 時戳差</td>
+                            <td>&lt; 80 ms（均值）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>準確性</strong></td>
+                            <td>Jitter 抖動（ms）</td>
+                            <td>連續 RTT 差值分析</td>
+                            <td>&lt; 15 ms</td>
+                        </tr>
+                        <tr>
+                            <td><strong>可靠性</strong></td>
+                            <td>封包丟失率（%）</td>
+                            <td>心跳偵測統計</td>
+                            <td>&lt; 2%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在實作中，建議將這三大 KPI 整合到同一個即時儀表板上，搭配「紅黃綠」三色號誌燈，讓操控者在駕駛過程中能夠一眼掌握系統健康度。這正是作業 14-1 的核心目標。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -650,49 +741,139 @@
                 </div>
 
                 <h1>⚖️ 2. 指標權衡與服務水準協議 (SLA)</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                在硬體資源受限的邊緣環境下，高更新率 (FPS) 與低延遲 (Latency) 往往是矛盾的。我們必須定義「複合效能分數」來衡量特定任務下的綜合表現。
-                            </p>
-<div class="bg-cyan-50 p-8 rounded-3xl border border-cyan-100 text-center text-justify">
-<h4 class="text-cyan-900 font-bold mb-4 text-xs uppercase tracking-widest text-center text-justify text-justify">
-                                    System Optimization Equation</h4>
-<div class="text-xl font-mono text-cyan-600 text-justify">
-                                    \[Score_{System} = \alpha \cdot FPS + \beta \cdot \frac{1000}{Latency_{ms}}\]
-                                </div>
-<p class="text-[10px] text-slate-400 mt-6 italic font-light text-center text-justify">
-                                    平衡視覺導覽效率 (\(\alpha\)) 與控制反饋速度 (\(\beta\))</p>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-cyan-500/5 text-justify"></div>
-<h4 class="text-cyan-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-center text-justify">
-                                Edge Stress Mapping</h4>
-<div class="w-full space-y-4 px-10 relative z-10 text-justify">
-<div class="flex justify-between text-[8px] text-slate-400 text-justify"><span>Nominal
-                                        Link (BLE)</span> <span>
-                                        &lt; 40ms</span>
-</div>
-<div class="w-full bg-slate-800 h-1 rounded-full overflow-hidden text-justify">
-<div class="bg-emerald-500 h-full w-[15%] text-justify"></div>
-</div>
-<div class="flex justify-between text-[8px] text-slate-400 text-justify">
-<span>Interference Zone</span> <span>~ 195ms</span></div>
-<div class="w-full bg-slate-800 h-1 rounded-full overflow-hidden text-justify">
-<div class="bg-red-500 h-full w-[70%] animate-pulse text-justify"></div>
-</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-10 font-mono tracking-widest uppercase text-center text-justify">
-                                Boundary Compliance Check</p>
-</div>
-</div>
+
+                <p>
+                    在理想世界中，我們希望每個 KPI 都達到極致——延遲最低、準確度最高、可靠性 100%。但在硬體資源受限的<strong>邊緣運算環境</strong>下，這些目標之間往往存在不可調和的矛盾。例如，提高影像串流的更新率（FPS）會佔用更多通訊頻寬，導致控制指令的延遲增加。這就是為什麼我們需要定義<strong>服務水準協議（SLA, Service Level Agreement）</strong>——一份明確的性能規格書，定義系統在各種條件下「必須達到」和「容許偏離」的性能底線。
+                </p>
+
+                <h2>指標之間的權衡取捨（Trade-off）</h2>
+
+                <p>
+                    工程設計的本質是在限制條件下做出最佳取捨。以下是物聯網控制系統中最常見的三組性能衝突：
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>衝突項</th>
+                            <th>方向 A</th>
+                            <th>方向 B</th>
+                            <th>決策依據</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>頻寬分配</strong></td>
+                            <td>提高影像 FPS（視覺導航佳）</td>
+                            <td>降低控制延遲（即時操控佳）</td>
+                            <td>根據任務優先級動態分配</td>
+                        </tr>
+                        <tr>
+                            <td><strong>封包大小</strong></td>
+                            <td>完整 JSON（易除錯、可讀性佳）</td>
+                            <td>二進位壓縮（頻寬佔用小）</td>
+                            <td>開發階段用 JSON，上線切換二進位</td>
+                        </tr>
+                        <tr>
+                            <td><strong>重試策略</strong></td>
+                            <td>積極重試（可靠性高）</td>
+                            <td>放棄舊封包（即時性高）</td>
+                            <td>控制指令不重試，狀態回報可重試</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>複合效能分數（Composite Performance Score）</h2>
+
+                <p>
+                    為了在單一數值中捕捉多維度的性能表現，我們可以定義一個<strong>加權複合分數</strong>。透過調整權重參數 \(\alpha\) 與 \(\beta\)，可以針對不同的任務場景偏重不同的性能面向：
+                </p>
+
+                <p style="text-align:center; font-size:16px; margin:20px 0;">
+                    \[Score_{System} = \alpha \cdot FPS + \beta \cdot \frac{1000}{Latency_{ms}}\]
+                </p>
+
+                <p>
+                    其中 \(\alpha\) 代表視覺導航的權重，\(\beta\) 代表控制反饋速度的權重。例如，在循跡模式下，控制延遲比影像更重要，因此 \(\beta\) 應遠大於 \(\alpha\)；在遙控探索模式下，影像清晰度更關鍵，則 \(\alpha\) 權重提升。
+                </p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        複合分數的權重不應憑感覺設定。正確做法是：先收集不同權重配置下的實際操控評分（由操作者主觀評價），再透過迴歸分析找出最佳權重組合。這就是「數據驅動決策」的精神。
+                    </div>
+                </div>
+
+                <h2>撰寫服務水準協議（SLA）</h2>
+
+                <p>
+                    一份合格的 SLA 必須包含以下四個要素：<strong>指標定義</strong>、<strong>合格閾值</strong>、<strong>量測條件</strong>與<strong>違約處置</strong>。以下是一份適用於物聯網控制系統的 SLA 範例：
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>SLA 條款</th>
+                            <th>指標</th>
+                            <th>合格閾值</th>
+                            <th>量測條件</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>控制延遲</td>
+                            <td>RTT 均值</td>
+                            <td>≤ 80 ms（P95 ≤ 120 ms）</td>
+                            <td>室內空曠，距離 ≤ 5m</td>
+                        </tr>
+                        <tr>
+                            <td>延遲穩定性</td>
+                            <td>Jitter</td>
+                            <td>≤ 15 ms</td>
+                            <td>連續 200 筆取樣</td>
+                        </tr>
+                        <tr>
+                            <td>通訊可靠性</td>
+                            <td>封包丟失率</td>
+                            <td>≤ 2%</td>
+                            <td>10 分鐘持續通訊</td>
+                        </tr>
+                        <tr>
+                            <td>故障復歸</td>
+                            <td>重連時間</td>
+                            <td>≤ 3 秒</td>
+                            <td>模擬斷線後自動重連</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        SLA 中的「量測條件」欄位至關重要。如果你在 1 公尺距離內測得 RTT 為 38ms，卻宣稱系統「延遲低於 40ms」而不標註測試條件，這就是工程上的不誠實。真正有價值的 SLA 必須明確記錄環境參數——距離、障礙物數量、環境電磁干擾程度等。
+                    </div>
+                </div>
+
+                <h2>邊際壓力測試（Boundary Stress Test）</h2>
+
+                <p>
+                    SLA 的制定不能只基於「最佳條件」下的數據。你需要在越來越嚴苛的條件下測試，找出系統的<strong>性能崩潰點</strong>——也就是 KPI 從「合格」急遽惡化到「不可用」的臨界距離或臨界負載。
+                </p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        推薦測試三種場景：(1) 室內空曠（基準線）、(2) 隔一面混凝土牆、(3) 距離 10 公尺以上。你會發現 BLE 連線的 RTT 在穿牆後可能從 38ms 飆升到 195ms——這個數據差距，就是你系統的「安全邊際」。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -707,49 +888,137 @@
                 </div>
 
                 <h1>📈 3. 數據驅動優化 (Data-driven Dev)</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
-                                真正的優化絕不憑感覺。學會「量化改進比率 (%)」，並透過對應的對比實驗證明技術改進在邊際極端情況下的穩定性提升。
-                            </p>
-<div class="bg-cyan-500/10 p-8 rounded-3xl border border-cyan-500/20 shadow-inner text-justify text-justify">
-<h4 class="font-bold text-cyan-400 mb-4 text-xs uppercase tracking-widest text-center text-justify text-left">
-                                    Benchmarking Standard Operating Procedure</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify text-left text-justify">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">基準建立
-                                                (Baseline)</strong>：在未優化前進行多樣本取樣，建立穩定的統計基準。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">變因控制 (Variable
-                                                Control)</strong>：一次僅改動一個技術變量，確保優化效益可被追蹤溯源。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">收斂性驗證</strong>：確保優化後的性能在長時間運行下保持收斂，無內存洩漏或性能衰退。
-                                        </div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-cyan-600/10 p-10 rounded-3xl border border-cyan-500/20 text-center relative overflow-hidden group text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-cyan-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify">
-</div>
-<h4 class="text-cyan-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center text-justify">
-                                Gain Delta</h4>
-<div class="text-5xl font-bold text-white mb-2 text-justify">+48%</div>
-<div class="text-[10px] text-cyan-400 uppercase tracking-widest text-justify">Payload
-                                Efficiency</div>
-<p class="text-[11px] text-slate-500 mt-10 leading-relaxed font-light italic text-center text-justify text-left text-justify">
-                                "這不是運氣，這是精確計算與工程實驗後的必然結果。"
-                            </p>
-</div>
-</div>
+
+                <p>
+                    真正的工程優化絕不是憑感覺說「好像變快了」。<strong>數據驅動開發（Data-driven Development）</strong>要求你在每一次優化前後，都用精確的數據來量化改進幅度。這種方法論來自工業工程中的<strong>持續改善（Kaizen）</strong>理念——每一次微小的、可量化的改進，最終都會累積成巨大的性能飛躍。
+                </p>
+
+                <p>
+                    本單元將教你建立標準化的<strong>基準測試流程（Benchmarking SOP）</strong>，並學會計算優化的真實投資報酬率。
+                </p>
+
+                <h2>基準測試標準作業流程</h2>
+
+                <p>
+                    任何優化工作開始之前，你必須先建立一個可信賴的<strong>性能基準線（Baseline）</strong>。以下三個步驟構成了標準化的基準測試流程：
+                </p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>建立基準（Establish Baseline）</h4>
+                            <p>在未進行任何優化的原始狀態下，收集至少 <strong>200 筆</strong>以上的性能數據。記錄平均值、中位數、標準差與第 95 百分位數（P95）。單一樣本的數據毫無統計意義。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>控制變因（Control Variables）</h4>
+                            <p>一次只改動<strong>一個技術變量</strong>。例如，如果你同時更換了封包格式和通訊頻率，當性能改善時，你無法確定哪個變更才是真正的功臣。科學實驗的鐵則：單一變因。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>收斂性驗證（Convergence Check）</h4>
+                            <p>優化後的性能數據必須在長時間運行下保持穩定。如果 RTT 在前 5 分鐘很低但之後逐漸升高，可能存在記憶體洩漏（Memory Leak）或緩衝區堆積。持續運行至少 <strong>10 分鐘</strong>來驗證收斂性。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>計算優化的真實提升比率</h2>
+
+                <p>
+                    優化效益的量化使用<strong>改進比率（Delta Percentage）</strong>公式：
+                </p>
+
+                <p style="text-align:center; font-size:16px; margin:20px 0;">
+                    \[\Delta\% = \frac{Metric_{before} - Metric_{after}}{Metric_{before}} \times 100\%\]
+                </p>
+
+                <p>
+                    例如，如果優化前的平均 RTT 為 95ms，優化後降至 52ms，則改進比率為：
+                </p>
+
+                <p style="text-align:center; font-size:16px; margin:20px 0;">
+                    \[\Delta\% = \frac{95 - 52}{95} \times 100\% = 45.3\%\]
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 優化前後的基準對比範例</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">baseline</span> <span class="c-white">= { </span><span class="c-attr">avgRTT</span><span class="c-white">: </span><span class="c-val">95</span><span class="c-white">, </span><span class="c-attr">jitter</span><span class="c-white">: </span><span class="c-val">22</span><span class="c-white">, </span><span class="c-attr">lossRate</span><span class="c-white">: </span><span class="c-val">3.1</span> <span class="c-white">};</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">optimized</span> <span class="c-white">= { </span><span class="c-attr">avgRTT</span><span class="c-white">: </span><span class="c-val">52</span><span class="c-white">, </span><span class="c-attr">jitter</span><span class="c-white">: </span><span class="c-val">8</span><span class="c-white">, </span><span class="c-attr">lossRate</span><span class="c-white">: </span><span class="c-val">0.9</span> <span class="c-white">};</span><br><br>
+                    <span class="c-kw">const</span> <span class="c-attr">delta</span> <span class="c-white">= {};</span><br>
+                    <span class="c-kw">for</span> <span class="c-white">(</span><span class="c-kw">const</span> <span class="c-attr">key</span> <span class="c-kw">of</span> <span class="c-tag">Object</span><span class="c-white">.</span><span class="c-tag">keys</span><span class="c-white">(</span><span class="c-attr">baseline</span><span class="c-white">)) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">delta</span><span class="c-white">[</span><span class="c-attr">key</span><span class="c-white">] = ((</span><span class="c-attr">baseline</span><span class="c-white">[</span><span class="c-attr">key</span><span class="c-white">] - </span><span class="c-attr">optimized</span><span class="c-white">[</span><span class="c-attr">key</span><span class="c-white">]) / </span><span class="c-attr">baseline</span><span class="c-white">[</span><span class="c-attr">key</span><span class="c-white">] * </span><span class="c-val">100</span><span class="c-white">).</span><span class="c-tag">toFixed</span><span class="c-white">(</span><span class="c-val">1</span><span class="c-white">);</span><br>
+                    <span class="c-white">}</span><br>
+                    <span class="c-comment">// delta = { avgRTT: "45.3", jitter: "63.6", lossRate: "71.0" }</span>
+                </div>
+
+                <h2>常見的優化方向</h2>
+
+                <p>
+                    以下列出在物聯網控制系統中，效果最顯著的幾個優化方向及其預期效益：
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>優化方向</th>
+                            <th>具體做法</th>
+                            <th>預期 RTT 改進</th>
+                            <th>風險</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>封包壓縮</strong></td>
+                            <td>將 JSON 格式改為二進位協議</td>
+                            <td>-30% ~ -50%</td>
+                            <td>除錯難度增加</td>
+                        </tr>
+                        <tr>
+                            <td><strong>頻率優化</strong></td>
+                            <td>降低非必要數據的傳輸頻率</td>
+                            <td>-15% ~ -25%</td>
+                            <td>影像流暢度可能下降</td>
+                        </tr>
+                        <tr>
+                            <td><strong>處理管線化</strong></td>
+                            <td>將序列處理改為非同步管線</td>
+                            <td>-20% ~ -40%</td>
+                            <td>需處理競態條件</td>
+                        </tr>
+                        <tr>
+                            <td><strong>連線參數調整</strong></td>
+                            <td>調整 BLE Connection Interval</td>
+                            <td>-10% ~ -30%</td>
+                            <td>功耗可能增加</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        「過度優化」（Over-optimization）同樣危險。如果系統已經穩定在 40ms RTT 而 SLA 要求 80ms，那麼為了再降 5ms 而大幅重構封包格式是不划算的——工程時間的投資報酬率（ROI）為負。優化應該聚焦於「離 SLA 閾值最近的瓶頸」。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在提交優化報告時，不要只呈現「優化後的數字」——必須同時呈現基準線數據、優化後數據、改進比率以及測試環境參數。一份具備工業說服力的報告，讓讀者能夠<strong>獨立重現你的實驗</strong>。這正是「數據驅動」與「感覺驅動」之間的根本差異。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -828,16 +1097,134 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>
+                    請回答以下問題，測試你對「<strong>KPI 指標定義</strong>」的理解程度。
+                    選擇完畢後點擊「送出答案」查看結果與解析。
+                </p>
+
+                <div id="quiz-container" style="margin:24px 0;">
+
+                    <div class="quiz-question" id="quiz-q0" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">1. 在自走車專案中，「穩態誤差（Steady-State Error）」KPI 衡量的是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt0">
+                            <input type="radio" name="quiz-q0" value="0" style="accent-color:var(--ms-blue);">
+                            <span>系統啟動的速度</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt1">
+                            <input type="radio" name="quiz-q0" value="1" style="accent-color:var(--ms-blue);">
+                            <span>系統穩定後，實際值與目標值之間的持續偏差</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt2">
+                            <input type="radio" name="quiz-q0" value="2" style="accent-color:var(--ms-blue);">
+                            <span>程式碼的行數</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt3">
+                            <input type="radio" name="quiz-q0" value="3" style="accent-color:var(--ms-blue);">
+                            <span>電池的消耗速率</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp0" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q1" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">2. 為什麼 KPI 需要有明確的「可量測標準」？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt0">
+                            <input type="radio" name="quiz-q1" value="0" style="accent-color:var(--ms-blue);">
+                            <span>讓報告看起來更專業</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt1">
+                            <input type="radio" name="quiz-q1" value="1" style="accent-color:var(--ms-blue);">
+                            <span>使改善是否達標能被客觀驗證，避免主觀判斷</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt2">
+                            <input type="radio" name="quiz-q1" value="2" style="accent-color:var(--ms-blue);">
+                            <span>減少程式設計的工作量</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt3">
+                            <input type="radio" name="quiz-q1" value="3" style="accent-color:var(--ms-blue);">
+                            <span>讓硬體規格更容易選擇</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp1" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q2" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">3. 以下哪個是良好的 KPI 定義範例？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt0">
+                            <input type="radio" name="quiz-q2" value="0" style="accent-color:var(--ms-blue);">
+                            <span>讓車子跑快一點</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt1">
+                            <input type="radio" name="quiz-q2" value="1" style="accent-color:var(--ms-blue);">
+                            <span>直線行駛 2 公尺，橫向偏移量 ≤ 3 公分</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt2">
+                            <input type="radio" name="quiz-q2" value="2" style="accent-color:var(--ms-blue);">
+                            <span>程式碼沒有 Bug</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt3">
+                            <input type="radio" name="quiz-q2" value="3" style="accent-color:var(--ms-blue);">
+                            <span>系統運作良好</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp2" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q3" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">4. 設定「超調量（Overshoot）≤ 10%」這個 KPI 對系統設計有什麼幫助？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt0">
+                            <input type="radio" name="quiz-q3" value="0" style="accent-color:var(--ms-blue);">
+                            <span>限制了馬達的最大轉速</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt1">
+                            <input type="radio" name="quiz-q3" value="1" style="accent-color:var(--ms-blue);">
+                            <span>為 PID 調參提供明確的收斂品質目標</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt2">
+                            <input type="radio" name="quiz-q3" value="2" style="accent-color:var(--ms-blue);">
+                            <span>減少了感測器的需求</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt3">
+                            <input type="radio" name="quiz-q3" value="3" style="accent-color:var(--ms-blue);">
+                            <span>簡化了程式碼邏輯</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp3" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">送出答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+
+                <div id="quiz-result" style="display:none; margin-top:20px; padding:16px 20px; border-radius:6px; font-weight:600;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -895,9 +1282,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「系統性能指標 (KPI) 定義」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「系統性能指標 (KPI) 定義」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -913,7 +1300,8 @@
         { id: 3, label: '️ 2. 指標權衡與服務水準協議 (SLA)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '📈 3. 數據驅動優化 (Data-driven Dev)', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -933,6 +1321,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1034,8 +1423,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = [1, 1, 1, 1];
+    const QUIZ_EXPLANATIONS = ["穩態誤差是系統達到穩定後，輸出值與設定值之間殘留的差距，反映控制精度。","可量測的 KPI 讓團隊有共同的驗收標準，「改善了」不再是感覺，而是有數據佐證的事實。","好的 KPI 必須是 SMART 的：具體（Specific）、可量測（Measurable）、有明確的達標門檻。","超調量 KPI 直接約束了控制器的動態性能，讓工程師在調參時有明確的品質紅線可遵循。"];
+
+    function submitQuiz() {
+        let score = 0;
+        QUIZ_ANSWERS.forEach((ans, i) => {
+            const selected = document.querySelector(`input[name="quiz-q${i}"]:checked`);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            const qEl = document.getElementById(`quiz-q${i}`);
+            if (selected && parseInt(selected.value) === ans) {
+                score++;
+                qEl.style.borderColor = '#107c10';
+                expEl.style.background = '#dff6dd';
+                expEl.innerHTML = '<strong style="color:#107c10;">✓ 正確！</strong> ' + QUIZ_EXPLANATIONS[i];
+            } else {
+                qEl.style.borderColor = '#d13438';
+                expEl.style.background = '#fde7e9';
+                expEl.innerHTML = '<strong style="color:#d13438;">✗ 不正確。</strong> ' + QUIZ_EXPLANATIONS[i];
+            }
+            expEl.style.display = 'block';
+        });
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === QUIZ_ANSWERS.length) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.style.color = '#107c10';
+            resultEl.textContent = `🎉 滿分！你答對了全部 ${QUIZ_ANSWERS.length} 題！`;
+        } else {
+            resultEl.style.background = '#deecf9';
+            resultEl.style.color = '#005a9e';
+            resultEl.textContent = `你答對了 ${score} / ${QUIZ_ANSWERS.length} 題，請查看解析後再試一次。`;
+        }
+    }
+
+    function resetQuiz() {
+        QUIZ_ANSWERS.forEach((_, i) => {
+            const radios = document.querySelectorAll(`input[name="quiz-q${i}"]`);
+            radios.forEach(r => r.checked = false);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            expEl.style.display = 'none';
+            const qEl = document.getElementById(`quiz-q${i}`);
+            qEl.style.borderColor = '#e1dfdd';
+        });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 14：除錯的藝術';
 </script>
 
 <!-- Define Resources -->

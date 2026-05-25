@@ -1,19 +1,12 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyCO6Y6Pa7b7zbieJIErysaNF6-UqbT8KJw",
-    authDomain: "e-learning-942f7.firebaseapp.com",
-    projectId: "e-learning-942f7",
-    storageBucket: "e-learning-942f7.firebasestorage.app",
-    messagingSenderId: "878397058574",
-    appId: "1:878397058574:web:28aaa07a291ee3baab165f"
-};
+import { firebaseConfig, connectFirebaseEmulators } from "./firebase-local.js";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+connectFirebaseEmulators({ auth, db });
 
 const NAV_STATE_VERSION = "2026.05.13.FINAL_V9";
 
@@ -119,16 +112,16 @@ window.renderNav = function (rootPath = '.', options = {}) {
                             </button>
                             <div class="dropdown-menu absolute hidden bg-white/95 backdrop-blur-md shadow-2xl rounded-2xl py-3 w-56 mt-0 border border-slate-100 left-0 animate-in fade-in slide-in-from-top-2 duration-200">
                                 <a href="${resolve('prepare.html')}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
-                                    <i class="fa-solid fa-book-open text-xs opacity-40"></i> 課前準備
+                                    <i class="fa-solid fa-book-open text-xs opacity-40"></i> 準備課程
                                 </a>
-                                <a href="${resolve('started.html')}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
+                                <a href="${resolve('start.html')}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
                                     <i class="fa-solid fa-rocket text-xs opacity-40"></i> 入門課程
                                 </a>
                                 <a href="${resolve('basic.html')}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
-                                    <i class="fa-solid fa-code text-xs opacity-40"></i> 基礎實作
+                                    <i class="fa-solid fa-code text-xs opacity-40"></i> 基礎課程
                                 </a>
                                 <a href="${resolve('advanced.html')}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
-                                    <i class="fa-solid fa-microchip text-xs opacity-40"></i> 進階應用
+                                    <i class="fa-solid fa-microchip text-xs opacity-40"></i> 進階課程
                                 </a>
                             </div>
                         </div>
@@ -191,16 +184,16 @@ window.renderNav = function (rootPath = '.', options = {}) {
                     <span class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] px-1">學習路徑</span>
                     <div class="grid grid-cols-2 gap-3">
                         <a href="${resolve('prepare.html')}" class="flex items-center gap-2 py-3 px-4 bg-slate-50 rounded-2xl hover:bg-indigo-50 hover:text-indigo-700 transition-all text-sm">
-                            <i class="fa-solid fa-book-open text-xs opacity-50"></i> 課前準備
+                            <i class="fa-solid fa-book-open text-xs opacity-50"></i> 準備課程
                         </a>
-                        <a href="${resolve('started.html')}" class="flex items-center gap-2 py-3 px-4 bg-slate-50 rounded-2xl hover:bg-indigo-50 hover:text-indigo-700 transition-all text-sm">
+                        <a href="${resolve('start.html')}" class="flex items-center gap-2 py-3 px-4 bg-slate-50 rounded-2xl hover:bg-indigo-50 hover:text-indigo-700 transition-all text-sm">
                             <i class="fa-solid fa-rocket text-xs opacity-50"></i> 入門課程
                         </a>
                         <a href="${resolve('basic.html')}" class="flex items-center gap-2 py-3 px-4 bg-slate-50 rounded-2xl hover:bg-indigo-50 hover:text-indigo-700 transition-all text-sm">
-                            <i class="fa-solid fa-code text-xs opacity-50"></i> 基礎實作
+                            <i class="fa-solid fa-code text-xs opacity-50"></i> 基礎課程
                         </a>
                         <a href="${resolve('advanced.html')}" class="flex items-center gap-2 py-3 px-4 bg-slate-50 rounded-2xl hover:bg-indigo-50 hover:text-indigo-700 transition-all text-sm">
-                            <i class="fa-solid fa-microchip text-xs opacity-50"></i> 進階應用
+                            <i class="fa-solid fa-microchip text-xs opacity-50"></i> 進階課程
                         </a>
                     </div>
                 </div>

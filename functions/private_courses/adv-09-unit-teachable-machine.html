@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teachable Machine 快速建模實戰 - Vibe Coding Learn</title>
+    <title>Teachable Machine 快速建模實戰 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 9 - 模型實踐</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">Teachable Machine 快速建模實戰</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 9</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>Teachable Machine 快速建模實戰</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 9</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,12 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>Teachable Machine 快速建模實戰</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    本單元將帶你使用 Google 的 <strong>Teachable Machine</strong> 平台，以零程式碼的方式快速訓練影像、音訊或姿態分類模型。Teachable Machine 讓你在瀏覽器中就能完成資料收集、模型訓練與匯出，大幅降低了 AI 建模的入門門檻，特別適合在原型開發階段快速驗證想法的可行性。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    老師要求你在一週內完成一個「聲控家電」原型：對著麥克風說「開燈」、「關燈」、「開風扇」三種指令，系統能正確辨識並觸發對應裝置。你沒有 GPU 伺服器、不熟悉 TensorFlow 底層 API，但手邊有筆電麥克風和 Chrome 瀏覽器。Teachable Machine 正是為這種情境而生——從錄音到部署模型，全程只需要點滑鼠。讓我們開始動手吧。
                 </div>
 
                 <h2>教學影片</h2>
@@ -590,42 +587,80 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🎬 1. 機器學習三部曲 (20 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
-<div class="space-y-6">
-<p class="text-lg text-gray-600 leading-relaxed font-light">
-                                機器學習不再是黑盒子。透過 Teachable Machine，我們可以在瀏覽器中完成完整的訓練流程：從定義類別、標記樣本，到最終導出模型權重。
-                            </p>
-<div class="bg-indigo-50 p-6 rounded-2xl border border-indigo-100">
-<h4 class="font-bold text-indigo-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
-                                    Phase Workflow</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify">
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
-<div><strong>數據收集</strong>：手動建立多樣化樣本。必須包含「背景」類別以減少誤觸發機率。</div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
-<div><strong>超參數調整</strong>：理解紀元 (Epochs) 與批次大小 (Batch Size) 如何影響訓練震盪。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-indigo-500/5 group-hover:bg-indigo-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-justify">
-                                Loss Curve Monitor</h4>
-<div class="relative z-10 space-y-1">
-<div class="text-[10px] text-indigo-400 font-mono text-justify">Current Epoch: 45/50
-                                </div>
-<div class="w-full h-1 bg-slate-800 rounded">
-<div class="w-[90%] h-full bg-indigo-500"></div>
-</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic text-center">
-                                Supervised Learning Cycle</p>
-</div>
-</div>
+                <h1>機器學習三部曲</h1>
+
+                <p>
+                    所有監督式機器學習（Supervised Learning）專案都遵循相同的三階段流程：<strong>收集資料、訓練模型、部署推論</strong>。Google 的 Teachable Machine 將這三個階段全部封裝在瀏覽器介面中，讓你無需撰寫任何 Python 或安裝 GPU 驅動，就能完成一個可用的分類模型。
+                </p>
+
+                <h2>第一步：資料收集（Data Collection）</h2>
+                <p>
+                    機器學習的第一定律是 <strong>GIGO（Garbage In, Garbage Out）</strong>——模型的表現上限取決於訓練資料的品質。在 Teachable Machine 中，你需要為每個要辨識的類別提供足夠數量的樣本。
+                </p>
+                <ul>
+                    <li><strong>類別設計</strong>：除了目標類別（如「左轉」、「右轉」、「停止」），必須建立一個<strong>「背景 / 無動作」類別</strong>。這讓模型學會「什麼都不是」的狀態，大幅降低誤觸發率。</li>
+                    <li><strong>樣本數量</strong>：每個類別建議至少 50~200 個樣本。影像類型可直接用 Webcam 連續拍攝，音訊類型則錄製 2 秒短片段。</li>
+                    <li><strong>多樣性</strong>：確保樣本涵蓋不同角度、光線、距離與背景條件，避免模型學到與目標無關的環境特徵（如特定牆壁顏色）。</li>
+                </ul>
+
+                <h2>第二步：模型訓練（Training）</h2>
+                <p>
+                    點擊「訓練模型」後，Teachable Machine 會在你的瀏覽器中使用 TensorFlow.js 進行本地訓練。你可以調整以下超參數：
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>超參數</th>
+                            <th>說明</th>
+                            <th>建議值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Epochs</strong></td>
+                            <td>模型遍歷全部訓練資料的次數。太少學不夠，太多會過擬合。</td>
+                            <td>50~100</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Batch Size</strong></td>
+                            <td>每次權重更新使用的樣本數。較大值訓練更穩定，但佔更多記憶體。</td>
+                            <td>16~32</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Learning Rate</strong></td>
+                            <td>權重更新步幅。太大會震盪不收斂，太小收斂過慢。</td>
+                            <td>0.001 (預設)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        Teachable Machine 使用<strong>遷移學習（Transfer Learning）</strong>技術：它不從零訓練 CNN，而是在預訓練的 MobileNet 基礎上微調最後幾層。這就是為什麼只需要少量樣本（50 張）和短暫訓練（數十秒）就能獲得不錯結果的原因。
+                    </div>
+                </div>
+
+                <h2>第三步：即時預覽與驗證</h2>
+                <p>
+                    訓練完成後，Teachable Machine 會自動開啟即時預覽面板，顯示各類別的信心分數（Confidence Score，0~1 之間的機率值）。你應該測試以下情境來評估模型品質：
+                </p>
+                <ol>
+                    <li>正常條件下，目標類別的信心分數是否穩定高於 0.9？</li>
+                    <li>切換類別時，分數轉換是否迅速且乾淨（無殘留高分）？</li>
+                    <li>在「無動作」狀態下，背景類別是否能穩定拿到最高分？</li>
+                    <li>極端條件（遮蔽、遠距離、噪音）下表現如何？</li>
+                </ol>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        如果預覽時發現特定類別經常被誤判，不要急著增加 Epochs——更有效的做法是回到第一步，針對容易混淆的場景<strong>增加更多樣化的樣本</strong>。資料品質的改善永遠比調參數來得有效。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -644,40 +679,85 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🌈 2. 影像品質與多樣性 (20 min)</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify">
-                                樣本的<strong>魯棒性 (Robustness)</strong> 是模型能否在不同場景（如家裡 vs. 教室）穩定運作的關鍵。模型需要學習特徵的主體，而非背景中的光影。
-                            </p>
-<div class="bg-cyan-50 p-8 rounded-3xl border border-cyan-100 text-center text-justify">
-<h4 class="text-cyan-900 font-bold mb-4 text-xs uppercase tracking-widest text-justify">
-                                    Data Augmentation Logic</h4>
-<div class="grid grid-cols-3 gap-2 text-[10px] text-slate-600 font-mono text-justify">
-<div class="p-2 bg-white rounded border text-justify">MULTI-ANGLE</div>
-<div class="p-2 bg-white rounded border text-justify">LIGHTING</div>
-<div class="p-2 bg-white rounded border text-justify">DISTORTION</div>
-</div>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-cyan-500/5 text-justify"></div>
-<h4 class="text-cyan-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-justify">
-                                Real-time Confidence</h4>
-<div class="w-full px-8 space-y-4 relative z-10 text-justify">
-<div class="flex justify-between items-center text-[9px] text-slate-400">
-<span>CLASS: LEFT</span>
-<span class="text-cyan-400">98%</span>
-</div>
-<div class="h-1 bg-slate-800 rounded">
-<div class="w-[98%] h-full bg-cyan-500"></div>
-</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic text-center text-justify">
-                                Probabilistic Decision Output</p>
-</div>
-</div>
+                <h1>影像品質與多樣性</h1>
+
+                <p>
+                    機器學習模型的泛化能力（Generalization）取決於訓練資料能否涵蓋部署環境中的各種變異。一個在「書桌前方、日光燈下」訓練的手勢辨識模型，搬到「教室後方、窗戶逆光」環境時可能完全失靈——因為模型學到的不是「手的形狀」，而是「特定光影模式」。
+                </p>
+
+                <h2>影響模型魯棒性的關鍵因素</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>變異因素</th>
+                            <th>影響說明</th>
+                            <th>資料收集建議</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>光線條件</strong></td>
+                            <td>亮度與色溫改變會劇烈影響像素值分布</td>
+                            <td>在日光、燈光、陰影下各拍一組</td>
+                        </tr>
+                        <tr>
+                            <td><strong>拍攝角度</strong></td>
+                            <td>正面、側面、俯角看到的物體輪廓完全不同</td>
+                            <td>每個類別至少涵蓋 3 種角度</td>
+                        </tr>
+                        <tr>
+                            <td><strong>背景干擾</strong></td>
+                            <td>模型可能學到背景特徵而非目標物體</td>
+                            <td>在不同背景（桌面、地板、走廊）下收集</td>
+                        </tr>
+                        <tr>
+                            <td><strong>目標距離</strong></td>
+                            <td>遠近不同會改變物體在畫面中的比例</td>
+                            <td>近距（30cm）、中距（1m）、遠距（2m）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>操作者差異</strong></td>
+                            <td>不同人的手型、膚色、動作幅度皆不同</td>
+                            <td>請多位同學分別提供樣本</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>資料增強（Data Augmentation）</h2>
+                <p>
+                    當你無法在所有條件下親自拍攝時，<strong>資料增強</strong>是一種透過程式自動產生變異樣本的技術。Teachable Machine 內部已自動應用部分增強策略，但理解原理有助於你在更進階的 TensorFlow 專案中手動配置：
+                </p>
+                <ul>
+                    <li><strong>隨機翻轉（Flip）</strong>：水平鏡像，讓模型不偏好特定方向</li>
+                    <li><strong>隨機旋轉（Rotation）</strong>：±15° 範圍內旋轉，模擬相機傾斜</li>
+                    <li><strong>亮度/對比度擾動</strong>：模擬不同光源環境</li>
+                    <li><strong>隨機裁切（Crop）</strong>：讓模型適應目標不在正中央的情況</li>
+                </ul>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        並非所有增強都適合你的場景。對於手勢辨識，水平翻轉可能有害——「左轉」手勢翻轉後變成「右轉」，如果不加區分地增強會嚴重混淆模型。<strong>永遠根據你的具體任務語意來選擇增強策略。</strong>
+                    </div>
+                </div>
+
+                <h2>「背景噪音」類別的設計哲學</h2>
+                <p>
+                    在部署環境中，模型面對的絕大多數時間都是「什麼都沒發生」的狀態。如果訓練時沒有足夠的背景樣本，模型會傾向於「硬選」一個目標類別，導致持續的誤觸發（False Positive）。
+                </p>
+                <p>
+                    建議背景類別的樣本數量至少等於所有目標類別的總和，且涵蓋：空無一人的場景、有人走動但無做手勢、手放在桌上不動、以及各種與目標動作相似但不完全一致的「干擾動作」。
+                </p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        驗證模型時，用「混淆矩陣（Confusion Matrix）」來分析哪些類別最容易互相混淆。如果「左轉」經常被誤判為「背景」，代表「左轉」的樣本不夠多樣化或數量不足；如果「背景」經常被判為「停止」，則需要增加更多日常場景的背景樣本。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -696,48 +776,77 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔌 3. 實戰整合與導出</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
-                                訓練完成後，我們將模型以 TensorFlow.js 格式導出。透過 <code>model.json</code>，我們能在瀏覽器端直接運作本地推論，並將識別結果透過 Web
-                                BLE 橋接轉發。
-                            </p>
-<div class="bg-amber-500/10 p-8 rounded-3xl border border-amber-500/20 shadow-inner text-justify">
-<h4 class="font-bold text-amber-400 mb-4 text-xs uppercase tracking-widest text-center text-justify">
-                                    Software Stack</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify">
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">tf.js 加載</strong>：使用
-                                            <code>tmImage.load()</code> 加載遠端或本地權重文件。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mt-1 text-justify text-left"></span>
-<div><strong class="text-white text-justify text-left">指令映射</strong>：將 AI 的標籤
-                                            (Labels) 對應為控制協議（例如：看到「手勢 A」發送 <code>motor:1</code>）。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mt-1 text-justify text-left"></span>
-<div><strong class="text-white text-justify">推理速率</strong>：優化
-                                            <code>requestAnimationFrame</code> 迴圈，確保辨識不會拖慢網頁渲染。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-amber-600/10 p-10 rounded-3xl border border-amber-500/20 text-center relative overflow-hidden group text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-amber-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-amber-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">
-                                Export Artifacts</h4>
-<div class="text-[9px] font-mono text-slate-500 space-y-1 text-left">
-<div>↳ model.json</div>
-<div>↳ metadata.json</div>
-<div>↳ weights.bin</div>
-</div>
-<p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center text-justify">
-                                "AI 的價值來自於它如何與硬體連動，創造出直覺的互動體驗。"
-                            </p>
-</div>
-</div>
+                <h1>實戰整合與導出</h1>
+
+                <p>
+                    Teachable Machine 訓練完成的模型可以匯出為 <strong>TensorFlow.js</strong> 格式，直接在瀏覽器中執行推論——無需後端伺服器。匯出的檔案包含三部分：<code>model.json</code>（模型結構定義）、<code>metadata.json</code>（類別標籤映射）、<code>weights.bin</code>（量化後的權重資料）。這意味著你的整個 AI 推論管線可以完全在前端 JavaScript 中運作。
+                </p>
+
+                <h2>載入模型與啟動推論</h2>
+                <p>
+                    Teachable Machine 提供了專用的 JavaScript 函式庫 <code>@teachablemachine/image</code>，簡化了模型載入與相機整合的流程：
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 載入 Teachable Machine 匯出的影像模型</span><br>
+<span class="c-kw">const</span> <span class="c-attr">URL</span> <span class="c-white">= </span><span class="c-str">'./my-model/'</span><span class="c-white">;</span><br>
+<span class="c-kw">const</span> <span class="c-attr">modelURL</span> <span class="c-white">= URL + </span><span class="c-str">'model.json'</span><span class="c-white">;</span><br>
+<span class="c-kw">const</span> <span class="c-attr">metadataURL</span> <span class="c-white">= URL + </span><span class="c-str">'metadata.json'</span><span class="c-white">;</span><br><br>
+<span class="c-kw">const</span> <span class="c-attr">model</span> <span class="c-white">= </span><span class="c-kw">await</span> <span class="c-white">tmImage.load(modelURL, metadataURL);</span><br>
+<span class="c-kw">const</span> <span class="c-attr">maxPredictions</span> <span class="c-white">= model.getTotalClasses();</span><br><br>
+<span class="c-comment">// 持續推論迴圈</span><br>
+<span class="c-kw">async function</span> <span class="c-attr">predict</span><span class="c-white">() {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">prediction</span> <span class="c-white">= </span><span class="c-kw">await</span> <span class="c-white">model.predict(webcamCanvas);</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">for</span> <span class="c-white">(</span><span class="c-kw">let</span> <span class="c-white">i = 0; i &lt; maxPredictions; i++) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;console.log(prediction[i].className, prediction[i].probability);</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<span class="c-white">&nbsp;&nbsp;requestAnimationFrame(predict);</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>置信度閘門：防止誤觸發</h2>
+                <p>
+                    AI 模型的輸出是機率性的——它不會說「絕對是左轉」，而是說「左轉的機率 0.87、右轉 0.05、停止 0.03、背景 0.05」。在將預測結果轉為硬體控制指令時，必須實作<strong>置信度閘門（Confidence Gate）</strong>邏輯，避免在低信心或不穩定的預測下誤發指令：
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 連續幀穩定性檢查：同一類別連續 3 幀 &gt; 0.9 才發送</span><br>
+<span class="c-kw">let</span> <span class="c-attr">stableCount</span> <span class="c-white">= 0;</span><br>
+<span class="c-kw">let</span> <span class="c-attr">lastLabel</span> <span class="c-white">= </span><span class="c-str">''</span><span class="c-white">;</span><br><br>
+<span class="c-kw">function</span> <span class="c-attr">processPrediction</span><span class="c-white">(predictions) {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">top</span> <span class="c-white">= predictions.reduce((a, b) =&gt;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;a.probability &gt; b.probability ? a : b);</span><br><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(top.probability &gt; 0.9 &amp;&amp; top.className === lastLabel) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;stableCount++;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(stableCount &gt;= 3) sendCommand(top.className);</span><br>
+<span class="c-white">&nbsp;&nbsp;} </span><span class="c-kw">else</span> <span class="c-white">{</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;stableCount = (top.className === lastLabel) ? stableCount : 0;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;lastLabel = top.className;</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>推論速率控制</h2>
+                <p>
+                    如果使用 <code>requestAnimationFrame</code> 驅動推論迴圈，在 60Hz 螢幕上每秒會推論 60 次。對於 Teachable Machine 的輕量模型，單次推論約耗時 15~30ms，勉強跟得上——但這會佔用大量 CPU/GPU 資源，導致 UI 其他部分卡頓。建議將推論頻率限制在 <strong>10~15 FPS</strong>：
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 限制推論頻率為 ~12 FPS</span><br>
+<span class="c-kw">const</span> <span class="c-attr">INFERENCE_INTERVAL</span> <span class="c-white">= 80;</span> <span class="c-comment">// ms</span><br>
+<span class="c-white">setInterval(</span><span class="c-kw">async</span> <span class="c-white">() =&gt; {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">predictions</span> <span class="c-white">= </span><span class="c-kw">await</span> <span class="c-white">model.predict(canvas);</span><br>
+<span class="c-white">&nbsp;&nbsp;processPrediction(predictions);</span><br>
+<span class="c-white">}, INFERENCE_INTERVAL);</span>
+                </div>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        當所有類別的最高機率都低於 0.5 時，代表模型「看不懂」當前狀態。此時絕對不能隨意選擇一個類別——正確的做法是觸發<strong>失效保護（Fail-safe）</strong>機制，自動發送停止指令，確保硬體不會在 AI 困惑時做出危險動作。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -821,16 +930,81 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>測試你對本模組核心概念的掌握程度。請選出每題的最佳答案，提交後可查看詳細解析。</p>
+
+                <form id="quiz-form" onsubmit="return false;">
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">1. 機器學習的標準工作流程「三部曲」依序是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 部署 → 訓練 → 收集資料</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 收集資料 → 訓練模型 → 部署推論</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 訓練模型 → 收集資料 → 部署推論</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 部署推論 → 收集資料 → 訓練模型</label>
+                        <div id="exp-1" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">2. 訓練資料的「多樣性」為什麼重要？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 讓模型檔案更大</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 避免過擬合 (Overfitting)，提高模型在新環境中的泛化能力</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 加快訓練速度</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 減少記憶體使用量</label>
+                        <div id="exp-2" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">3. Teachable Machine 訓練完成後，模型可以導出為哪種前端適用的格式？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="A" style="margin-right:8px;"> A. PyTorch (.pt)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="B" style="margin-right:8px;"> B. TensorFlow.js (適用於瀏覽器)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="C" style="margin-right:8px;"> C. ONNX Runtime</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="D" style="margin-right:8px;"> D. CoreML (僅限 iOS)</label>
+                        <div id="exp-3" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">4. 在影像分類訓練中，每個類別的訓練樣本數量建議至少多少？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 1–5 張就夠了</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 10 張左右</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 建議至少 50 張以上，越多越好</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 必須超過 10,000 張</label>
+                        <div id="exp-4" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+                </form>
+
+                <div style="display:flex;gap:12px;margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+                <div id="quiz-result" style="display:none;margin-top:20px;padding:16px;border-radius:6px;font-size:14px;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -888,9 +1062,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「Teachable Machine 快速建模實戰」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「Teachable Machine 快速建模實戰」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -906,7 +1080,8 @@
         { id: 3, label: '🌈 2. 影像品質與多樣性 (20 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🔌 3. 實戰整合與導出', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -926,6 +1101,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1027,8 +1203,61 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'B', q3: 'B', q4: 'C' };
+    const QUIZ_EXPLANATIONS = { q1: '標準流程為：(1) 收集並標註訓練資料、(2) 使用資料訓練模型、(3) 將模型部署到目標平台進行推論。', q2: '如果訓練資料只包含單一角度、光照的樣本，模型只會「記住」那些特定條件，遇到新環境時準確率會大幅下降。', q3: 'Teachable Machine 主要支援導出 TensorFlow.js 格式，可以直接在瀏覽器中載入與執行推論，也支援 TFLite 格式。', q4: '樣本太少會導致模型嚴重過擬合。一般建議每個類別至少 50 張以上，且需涵蓋不同角度、光照與背景的變化。' };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const idx = q.slice(1);
+            const exp = document.getElementById(`exp-${idx}`);
+            if (!selected) continue;
+            if (selected.value === correct) {
+                score++;
+                exp.style.display = 'block';
+                exp.style.background = '#dff6dd';
+                exp.style.borderLeftColor = '#107c10';
+                exp.innerHTML = '<i class="fas fa-check-circle" style="color:#107c10;margin-right:6px;"></i>' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#dff6dd';
+                selected.parentElement.style.borderColor = '#107c10';
+            } else {
+                exp.style.display = 'block';
+                exp.style.background = '#fde7e9';
+                exp.style.borderLeftColor = '#d13438';
+                exp.innerHTML = '<i class="fas fa-times-circle" style="color:#d13438;margin-right:6px;"></i>正確答案是 ' + correct + '。' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#fde7e9';
+                selected.parentElement.style.borderColor = '#d13438';
+            }
+        }
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === total) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.innerHTML = '<strong style="color:#107c10;">🎉 滿分！' + score + ' / ' + total + '</strong><br>你完全掌握了本模組的核心概念！';
+            markDone(6);
+        } else {
+            resultEl.style.background = '#fff4ce';
+            resultEl.innerHTML = '<strong style="color:#8a6914;">得分：' + score + ' / ' + total + '</strong><br>建議複習錯題的解析說明，再試一次！';
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= 4; i++) {
+            const exp = document.getElementById('exp-' + i);
+            if (exp) { exp.style.display = 'none'; exp.style.background = ''; exp.style.borderLeftColor = 'transparent'; }
+        }
+        document.querySelectorAll('#quiz-form label').forEach(l => { l.style.background = ''; l.style.borderColor = '#e1dfdd'; });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 09：AI 辨識應用';
 </script>
 
 <!-- Define Resources -->

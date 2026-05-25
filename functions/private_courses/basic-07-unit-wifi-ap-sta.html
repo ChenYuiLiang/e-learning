@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP32 Wi-Fi 雙模式：AP vs. STA - Vibe Coding Learn</title>
+    <title>ESP32 Wi-Fi 雙模式：AP vs. STA - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -464,6 +466,37 @@
             .compare-grid { grid-template-columns: 1fr; }
         }
 
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
+            border: 1px solid #e1dfdd;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background .1s, border-color .1s;
+            font-size: 14px;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback {
+            display: none;
+            margin-top: 8px;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
+        .quiz-submit { margin-top: 16px; }
+
     </style>
 </head>
 
@@ -471,9 +504,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 7 - 網路通訊架構</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +518,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">ESP32 Wi-Fi 雙模式：AP vs. STA</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 7</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,7 +540,7 @@
                 <h1>ESP32 Wi-Fi 雙模式：AP vs. STA</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 7</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -520,9 +551,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>🗼 1. AP 模式：自立門戶</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>🏠 2. STA 模式：加入家族</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>混合備援：產品級配網</strong> 的調校技巧與穩定性測試。</li>
+                    <li>能夠區分 AP 模式與 STA 模式的運作差異，並根據應用場景（戶外直連 vs. 室內區網）選擇合適的 Wi-Fi 模式。</li>
+                    <li>能夠使用 <code>WiFi.onEvent()</code> 實作非阻塞的斷線偵測與自動重連邏輯，避免在 <code>loop()</code> 中使用 <code>delay()</code> 等待連線。</li>
+                    <li>能夠設計 AP + STA 雙模自動切換的配網備援機制，當 STA 連線失敗時自動降級為 AP 模式，並以 LED 閃爍頻率標示目前模式。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -553,15 +584,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>ESP32 Wi-Fi 雙模式：AP vs. STA</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    ESP32 同時支援 AP（存取點）與 STA（站台）兩種 Wi-Fi 角色，甚至能雙模並行。
+                    理解兩者的運作差異，是決定你的裝置「自建網路」還是「加入既有網路」的關鍵第一步，
+                    也直接影響後續 Web Server 和 OTA 更新的網路拓撲設計。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你正在設計一台遙控車：在家裡有路由器時，希望手機透過區網連線操控；
+                    但帶到戶外沒有 Wi-Fi 時，裝置需要自己開一個熱點讓手機直連。
+                    這兩種需求分別對應 STA 與 AP 模式——本單元將帶你搞清楚何時用哪一種、以及如何切換。
                 </div>
 
                 <h2>教學影片</h2>
@@ -589,45 +621,98 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🗼 1. AP 模式：自立門戶</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify">
-                                ESP32 自己當「基地台」。像迷你路由器，手機直接連到車子。
-                            </p>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-justify uppercase tracking-widest">
-<div class="p-6 rounded-2xl border border-emerald-100 bg-emerald-50 text-justify">
-<h4 class="font-bold text-emerald-800 mb-2 flex items-center gap-2 text-xs uppercase text-justify">
-<span>💪</span> 優點
-                                    </h4>
-<p class="text-[10px] text-slate-500 font-light leading-relaxed text-left text-justify">
-                                        去哪都能連。建立私有控制網段。</p>
-</div>
-<div class="p-6 rounded-2xl border border-rose-100 bg-rose-50 text-justify font-black">
-<h4 class="font-bold text-rose-800 mb-2 flex items-center gap-2 text-xs uppercase text-justify font-black text-left">
-<span>⚠️</span> 缺點
-                                    </h4>
-<p class="text-[10px] text-slate-500 font-light leading-relaxed text-justify">
-                                        通常無法上網。連線人數有上限。</p>
-</div>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 text-white bg-slate-900 text-justify uppercase tracking-widest font-black">
-<h4 class="font-bold text-slate-500 mb-6 uppercase tracking-widest text-[10px] text-justify">
-                                ESP32 Soft-AP Config</h4>
-<div class="space-y-4 text-justify uppercase tracking-tighter">
-<div class="p-4 rounded-xl border border-slate-700 font-mono text-xs bg-slate-800 text-justify uppercase tracking-widest font-black">
-<span class="text-blue-400 text-justify">WiFi</span>.<span class="text-emerald-400 text-justify">softAP</span>(<span class="text-amber-200">"VibeCar_01"</span>, <span class="text-amber-200">"12345678"</span>);<br/>
-<span class="text-blue-400 text-justify">IPAddress</span> <span class="text-emerald-400 text-justify">IP</span> = <span class="text-blue-400 text-justify uppercase tracking-widest">WiFi</span>.<span class="text-emerald-400 text-justify uppercase tracking-tighter">softAPIP</span>();
-                                </div>
-<p class="text-slate-400 font-light italic text-[11px] text-justify uppercase tracking-tighter">
-                                    預設 Gateway IP：192.168.4.1
-                                </p>
-</div>
-</div>
-</div>
-                
+                <h1>AP 模式：自立門戶</h1>
+
+                <p>
+                    當 ESP32 以 <strong>AP（Access Point，存取點）模式</strong>運作時，它會自己建立一個獨立的 Wi-Fi 網路，
+                    就像一台迷你無線路由器。任何裝置（手機、平板、電腦）都可以搜尋到這個網路並連入。
+                    在此模式下，ESP32 扮演「基地台」角色——它是網路的中心節點，負責分配 IP 位址給連入的客戶端。
+                </p>
+
+                <p>
+                    AP 模式最大的優勢是<strong>不依賴任何外部網路基礎設施</strong>。無論你身處有路由器的客廳，
+                    還是完全沒有 Wi-Fi 的戶外空地，ESP32 都能自行建立通訊通道。這使得 AP 模式非常適合
+                    「直連控制」場景——例如在公園裡用手機遙控車子，或在沒有網路的工廠環境中進行設備配對。
+                </p>
+
+                <h2>啟動 Soft-AP 的核心 API</h2>
+
+                <p>
+                    ESP32 的 Arduino 框架提供了 <code>WiFi.softAP()</code> 函式來啟動軟體存取點。
+                    以下是完整的初始化流程，包含 SSID 命名、密碼保護與基本網路配置：
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">#include</span> <span class="c-str">&lt;WiFi.h&gt;</span><br/>
+<br/>
+<span class="c-kw">const char</span><span class="c-white">* </span><span class="c-attr">ssid</span><span class="c-white"> = </span><span class="c-str">"MyCar_01"</span><span class="c-white">;</span><br/>
+<span class="c-kw">const char</span><span class="c-white">* </span><span class="c-attr">password</span><span class="c-white"> = </span><span class="c-str">"12345678"</span><span class="c-white">;</span><br/>
+<br/>
+<span class="c-kw">void</span> <span class="c-tag">setup</span><span class="c-white">() {</span><br/>
+<span class="c-white">&nbsp;&nbsp;Serial.begin(115200);</span><br/>
+<br/>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 啟動 Soft-AP：頻道 1、不隱藏 SSID、最多 4 台連線</span><br/>
+<span class="c-white">&nbsp;&nbsp;WiFi.</span><span class="c-tag">softAP</span><span class="c-white">(ssid, password, </span><span class="c-val">1</span><span class="c-white">, </span><span class="c-val">0</span><span class="c-white">, </span><span class="c-val">4</span><span class="c-white">);</span><br/>
+<br/>
+<span class="c-white">&nbsp;&nbsp;IPAddress IP = WiFi.</span><span class="c-tag">softAPIP</span><span class="c-white">();</span><br/>
+<span class="c-white">&nbsp;&nbsp;Serial.print(</span><span class="c-str">"AP IP: "</span><span class="c-white">);</span><br/>
+<span class="c-white">&nbsp;&nbsp;Serial.println(IP);&nbsp;&nbsp;</span><span class="c-comment">// 預設輸出 192.168.4.1</span><br/>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>softAP() 參數一覽</h2>
+
+                <p>
+                    <code>WiFi.softAP()</code> 的完整簽名包含五個參數，每個都有預設值。
+                    了解這些參數能幫助你針對不同應用場景進行精確調校：
+                </p>
+
+                <table class="ms-table">
+                    <tr><th>參數</th><th>型別</th><th>說明</th><th>預設值</th></tr>
+                    <tr><td><code>ssid</code></td><td><code>const char*</code></td><td>網路名稱，最長 32 字元</td><td>（必填）</td></tr>
+                    <tr><td><code>password</code></td><td><code>const char*</code></td><td>密碼（至少 8 字元），傳 <code>NULL</code> 為開放網路</td><td><code>NULL</code></td></tr>
+                    <tr><td><code>channel</code></td><td><code>int</code></td><td>Wi-Fi 頻道（1–13），避免與周圍路由器撞頻</td><td><code>1</code></td></tr>
+                    <tr><td><code>ssid_hidden</code></td><td><code>int</code></td><td>設為 <code>1</code> 則隱藏 SSID（需手動輸入名稱才能連入）</td><td><code>0</code></td></tr>
+                    <tr><td><code>max_connection</code></td><td><code>int</code></td><td>最大同時連線裝置數（ESP32 硬體上限為 10）</td><td><code>4</code></td></tr>
+                </table>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        AP 模式下 ESP32 預設<strong>無法連上網際網路</strong>。連入 AP 的裝置只能與 ESP32 本身通訊，
+                        無法瀏覽網頁或使用雲端服務。若需要同時存取外部網路，必須啟用 AP + STA 雙模式（第四單元將詳細說明）。
+                    </div>
+                </div>
+
+                <h2>DHCP 與 IP 分配機制</h2>
+
+                <p>
+                    ESP32 在 AP 模式下會自動啟動內建的 DHCP 伺服器，為每一台連入的客戶端自動分配 IP 位址。
+                    預設的子網路配置如下：
+                </p>
+
+                <ul>
+                    <li><strong>ESP32（閘道器）</strong>：<code>192.168.4.1</code></li>
+                    <li><strong>第一台連入裝置</strong>：<code>192.168.4.2</code></li>
+                    <li><strong>子網路遮罩</strong>：<code>255.255.255.0</code></li>
+                </ul>
+
+                <p>
+                    你可以透過 <code>WiFi.softAPConfig(local_ip, gateway, subnet)</code> 自訂 IP 網段。
+                    例如將 ESP32 設定為 <code>10.0.0.1</code>，這在需要避免與其他設備網段衝突時特別有用。
+                    搭配 <code>WiFi.softAPgetStationNum()</code> 可隨時查詢目前連入人數，適合製作連線狀態儀表板。
+                </p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        為你的 AP 取一個有辨識度的 SSID（如 <code>VibeCar_張三</code>），在多台 ESP32 同時運作的教室環境中，
+                        可以避免同學之間互相連到錯誤的裝置。建議在 SSID 中加入設備編號或姓名。
+                    </div>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
@@ -645,44 +730,101 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🏠 2. STA 模式：加入家族</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify uppercase tracking-widest">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tighter">
-                                ESP32 「加入」現有路由環境。成為區域網路一份子。
-                            </p>
-<div class="p-8 rounded-3xl border border-blue-100 shadow-sm transition hover:bg-blue-100 bg-blue-50 text-justify uppercase tracking-widest">
-<h4 class="font-bold text-blue-900 mb-4 text-xs uppercase tracking-widest italic text-justify text-left">
-                                    The Advantage</h4>
-<ul class="space-y-3 text-slate-600 font-light text-[11px] text-justify uppercase tracking-tighter font-black">
-<li class="flex items-center gap-2 text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span><strong class="text-blue-900 text-justify uppercase tracking-widest">長距控制</strong>：同
-                                        WiFi 下距離不再是問題。</li>
-<li class="flex items-center gap-2 text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span><strong class="text-blue-900 text-justify uppercase tracking-tighter">同步聯網</strong>：可同時與雲端交換數據。
-                                    </li>
-<li class="flex items-center gap-2 text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span><strong class="text-blue-900 text-justify uppercase tracking-widest">多機協作</strong>：可透過路由導向。
-                                    </li>
-</ul>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 bg-slate-900 text-justify">
-<div class="flex items-center gap-3 mb-6">
-<span class="w-3 h-3 bg-red-400 rounded-full"></span>
-<span class="w-3 h-3 bg-amber-400 rounded-full"></span>
-<span class="w-3 h-3 bg-emerald-400 rounded-full"></span>
-<span class="ml-auto text-[10px] text-slate-500 font-mono tracking-widest text-justify uppercase tracking-widest font-black">EVENT
-                                    LISTENER</span>
-</div>
-<pre class="text-xs md:text-sm leading-relaxed overflow-x-auto text-indigo-300 font-mono text-justify uppercase tracking-tighter font-black">
-<span class="text-slate-500 text-justify uppercase tracking-widest font-black">// 非阻塞連線監測：</span>
-<span class="text-blue-400 text-justify">WiFi</span>.<span class="text-emerald-400 text-justify">onEvent</span>([](<span class="text-blue-500 text-justify">WiFiEvent_t</span> event, <span class="text-blue-500 text-justify">WiFiEventInfo_t</span> info){
-  <span class="text-purple-400 text-justify">if</span> (event == <span class="text-amber-200 text-justify">SYSTEM_EVENT_STA_GOT_IP</span>) {
-    <span class="text-blue-400 text-justify uppercase tracking-widest">Serial</span>.<span class="text-blue-300 text-justify uppercase tracking-tighter">println</span>(<span class="text-amber-200">"已連入大家門！"</span>);
-  }
-});</pre>
-</div>
-</div>
-                
+                <h1>STA 模式：加入家族</h1>
+
+                <p>
+                    當 ESP32 以 <strong>STA（Station，站台）模式</strong>運作時，它會「加入」一個現有的 Wi-Fi 網路，
+                    就像你的手機連上家裡的路由器一樣。ESP32 不再是網路的中心，而是區域網路中的一個節點（Client），
+                    由路由器負責分配 IP 位址並轉發封包。
+                </p>
+
+                <p>
+                    STA 模式的核心優勢在於<strong>同時存取區網與網際網路</strong>。ESP32 不僅能被同一區網內的手機控制，
+                    還能主動與外部伺服器通訊——上傳感測器數據到雲端、接收 OTA 韌體更新、或與其他物聯網設備協作。
+                    這讓 STA 模式成為大多數室內物聯網應用的首選。
+                </p>
+
+                <h2>建立 STA 連線</h2>
+
+                <p>
+                    使用 <code>WiFi.begin()</code> 即可啟動 STA 連線。但在生產環境中，
+                    你<strong>絕不應該</strong>用 <code>while</code> 迴圈加 <code>delay()</code> 來等待連線完成——
+                    這會阻塞整個 <code>loop()</code>，導致馬達控制和感測器讀取全部停擺。
+                    正確的做法是使用<strong>事件驅動（Event-Driven）</strong>模式。
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">#include</span> <span class="c-str">&lt;WiFi.h&gt;</span><br/>
+<br/>
+<span class="c-kw">const char</span><span class="c-white">* </span><span class="c-attr">ssid</span><span class="c-white"> = </span><span class="c-str">"MyRouter"</span><span class="c-white">;</span><br/>
+<span class="c-kw">const char</span><span class="c-white">* </span><span class="c-attr">password</span><span class="c-white"> = </span><span class="c-str">"router_password"</span><span class="c-white">;</span><br/>
+<span class="c-kw">unsigned long</span><span class="c-white"> </span><span class="c-attr">lastReconnect</span><span class="c-white"> = 0;</span><br/>
+<br/>
+<span class="c-kw">void</span> <span class="c-tag">onWiFiEvent</span><span class="c-white">(WiFiEvent_t event) {</span><br/>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">switch</span><span class="c-white"> (event) {</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">case</span><span class="c-white"> ARDUINO_EVENT_WIFI_STA_GOT_IP:</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Serial.print(</span><span class="c-str">"已連線！IP: "</span><span class="c-white">);</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Serial.println(WiFi.localIP());</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">break</span><span class="c-white">;</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">case</span><span class="c-white"> ARDUINO_EVENT_WIFI_STA_DISCONNECTED:</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Serial.println(</span><span class="c-str">"斷線！等待重連..."</span><span class="c-white">);</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">break</span><span class="c-white">;</span><br/>
+<span class="c-white">&nbsp;&nbsp;}</span><br/>
+<span class="c-white">}</span><br/>
+<br/>
+<span class="c-kw">void</span> <span class="c-tag">setup</span><span class="c-white">() {</span><br/>
+<span class="c-white">&nbsp;&nbsp;Serial.begin(115200);</span><br/>
+<span class="c-white">&nbsp;&nbsp;WiFi.</span><span class="c-tag">onEvent</span><span class="c-white">(onWiFiEvent);</span><br/>
+<span class="c-white">&nbsp;&nbsp;WiFi.begin(ssid, password);</span><br/>
+<span class="c-white">}</span><br/>
+<br/>
+<span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span><br/>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 非阻塞重連：每 5 秒嘗試一次</span><br/>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (WiFi.status() != WL_CONNECTED</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&amp;&amp; millis() - lastReconnect > </span><span class="c-val">5000</span><span class="c-white">) {</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;WiFi.reconnect();</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;lastReconnect = millis();</span><br/>
+<span class="c-white">&nbsp;&nbsp;}</span><br/>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 馬達控制與感測器讀取正常運行，不受連線狀態影響</span><br/>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        <strong>禁止</strong>在 <code>loop()</code> 中使用 <code>while (!WiFi.isConnected()) { delay(500); }</code>
+                        等待連線。這種阻塞式寫法會讓整個系統停擺——馬達不會轉、感測器不會讀、LED 不會閃。
+                        務必使用 <code>millis()</code> 搭配非阻塞邏輯來實現重連。
+                    </div>
+                </div>
+
+                <h2>常見 Wi-Fi 事件</h2>
+
+                <p>
+                    <code>WiFi.onEvent()</code> 可以攔截多種連線狀態變化。
+                    以下是 STA 模式中最常使用的事件，理解它們是建立穩定連線的基礎：
+                </p>
+
+                <table class="ms-table">
+                    <tr><th>事件常數</th><th>觸發時機</th><th>典型處理</th></tr>
+                    <tr><td><code>WIFI_STA_START</code></td><td>STA 模式啟動</td><td>記錄日誌</td></tr>
+                    <tr><td><code>WIFI_STA_CONNECTED</code></td><td>已連上 AP（但尚未取得 IP）</td><td>顯示「連線中…」</td></tr>
+                    <tr><td><code>WIFI_STA_GOT_IP</code></td><td>DHCP 已分配 IP 位址</td><td>啟動 Web Server</td></tr>
+                    <tr><td><code>WIFI_STA_DISCONNECTED</code></td><td>連線中斷（AP 關閉或訊號消失）</td><td>觸發重連計時器</td></tr>
+                    <tr><td><code>WIFI_STA_LOST_IP</code></td><td>IP 租約過期</td><td>強制重新連線</td></tr>
+                </table>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        使用 <code>WiFi.RSSI()</code> 可以取得目前的訊號強度（單位為 dBm）。一般而言，
+                        <strong>-30 dBm</strong> 為極佳，<strong>-70 dBm</strong> 以下則可能導致頻繁斷線。
+                        你可以將 RSSI 數值顯示在 Web 儀表板上，幫助使用者判斷是否需要調整路由器位置。
+                    </div>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
@@ -700,40 +842,117 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚡ 3. 混合備援：產品級配網</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify uppercase tracking-tighter">
-                                AP + STA 雙模式經典應用。配網流程 (Provisioning)。
-                            </p>
-<div class="p-8 rounded-3xl border border-purple-500/20 shadow-inner bg-purple-500/10 text-justify uppercase tracking-widest font-black">
-<h4 class="font-bold text-purple-400 mb-4 text-xs uppercase tracking-widest text-justify">
-                                    Smart Provisioning Loop</h4>
-<ol class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light list-decimal list-outside ml-4 text-justify">
-<li class="text-justify"><strong class="text-white text-justify">啟動 AP</strong>：發出
-                                        SSID 讓手機連入。</li>
-<li class="text-justify"><strong class="text-white text-justify">傳輸密條</strong>：手機
-                                        Post 路由密碼給設備。</li>
-<li class="text-justify"><strong class="text-white text-justify">身分切換</strong>：關閉
-                                        AP，以 STA 加入網路。</li>
-<li class="text-justify"><strong class="text-white text-justify">Fallback</strong>：若失敗，退回 AP 模式。</li>
-</ol>
-</div>
-</div>
-<div class="lg:w-80 p-10 rounded-3xl border border-purple-500/20 text-center relative overflow-hidden group bg-purple-600/10 text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-purple-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-purple-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-justify uppercase tracking-widest font-black">
-                                Self-Healing System</h4>
-<p class="text-slate-500 leading-relaxed font-light mb-8 italic text-[11px] text-justify uppercase tracking-widest">
-                                "好產品不應陷入『斷線後拔插頭』困境。"
-                            </p>
-<div class="inline-block px-8 py-3 bg-purple-500 text-white rounded-xl font-bold text-[10px] shadow-lg text-justify uppercase tracking-widest font-black">
-                                Auto-Recovery Active</div>
-</div>
-</div>
-                
+                <h1>混合備援：產品級配網</h1>
+
+                <p>
+                    在真實產品中，ESP32 不可能永遠只用 AP 或只用 STA 單一模式。使用者家裡有 Wi-Fi 時，
+                    設備應自動連上路由器（STA）獲得最佳體驗；但如果帶到戶外或路由器故障時，設備必須能
+                    自動切換到 AP 模式，讓使用者依然能夠控制。這種<strong>「雙模自動切換」</strong>就是產品級配網（Provisioning）的核心概念。
+                </p>
+
+                <p>
+                    ESP32 原生支援 <code>WIFI_AP_STA</code> 雙模並行——也就是同時當存取點又當站台。
+                    但更常見的做法是根據連線狀態<strong>動態切換</strong>模式，搭配 LED 指示燈讓使用者一眼就能辨識目前狀態。
+                </p>
+
+                <h2>配網備援流程</h2>
+
+                <p>以下是一套經過實戰驗證的配網備援（Provisioning Fallback）流程：</p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>嘗試 STA 連線</h4>
+                            <p>開機後讀取儲存的 SSID/密碼，呼叫 <code>WiFi.begin()</code> 嘗試連線。設定逾時上限（如 15 秒）。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>逾時判定</h4>
+                            <p>若在逾時內未取得 IP，判定 STA 連線失敗。記錄失敗原因至 Serial 日誌。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>降級啟動 AP</h4>
+                            <p>自動切換至 <code>WiFi.softAP()</code>，開放管理介面。使用者可透過 <code>192.168.4.1</code> 重新設定 Wi-Fi 憑證。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>背景掃描與自動恢復</h4>
+                            <p>在 AP 模式下，定期以 <code>WiFi.scanNetworks()</code> 掃描周圍環境。一旦偵測到目標 SSID，自動切回 STA 模式。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>狀態機程式碼範例</h2>
+
+                <div class="ms-code">
+<span class="c-kw">enum</span> <span class="c-tag">WiFiState</span><span class="c-white"> { TRYING_STA, CONNECTED_STA, FALLBACK_AP };</span><br/>
+<span class="c-tag">WiFiState</span><span class="c-white"> </span><span class="c-attr">wifiState</span><span class="c-white"> = TRYING_STA;</span><br/>
+<span class="c-kw">unsigned long</span><span class="c-white"> </span><span class="c-attr">staTimeout</span><span class="c-white"> = </span><span class="c-val">15000</span><span class="c-white">;</span><br/>
+<span class="c-kw">unsigned long</span><span class="c-white"> </span><span class="c-attr">startTime</span><span class="c-white">;</span><br/>
+<br/>
+<span class="c-kw">void</span> <span class="c-tag">setup</span><span class="c-white">() {</span><br/>
+<span class="c-white">&nbsp;&nbsp;Serial.begin(115200);</span><br/>
+<span class="c-white">&nbsp;&nbsp;WiFi.begin(</span><span class="c-str">"MyRouter"</span><span class="c-white">, </span><span class="c-str">"password"</span><span class="c-white">);</span><br/>
+<span class="c-white">&nbsp;&nbsp;startTime = millis();</span><br/>
+<span class="c-white">}</span><br/>
+<br/>
+<span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span><br/>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">switch</span><span class="c-white"> (wifiState) {</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">case</span><span class="c-white"> TRYING_STA:</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (WiFi.status() == WL_CONNECTED) {</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wifiState = CONNECTED_STA;</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} </span><span class="c-kw">else if</span><span class="c-white"> (millis() - startTime > staTimeout) {</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WiFi.disconnect();</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WiFi.softAP(</span><span class="c-str">"MyCar_Setup"</span><span class="c-white">, </span><span class="c-str">"12345678"</span><span class="c-white">);</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wifiState = FALLBACK_AP;</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">break</span><span class="c-white">;</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">case</span><span class="c-white"> FALLBACK_AP:</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 定期掃描，嘗試恢復 STA</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">break</span><span class="c-white">;</span><br/>
+<span class="c-white">&nbsp;&nbsp;}</span><br/>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>LED 狀態指示設計</h2>
+
+                <p>
+                    好的產品不應該讓使用者猜測「設備現在到底在幹嘛」。透過 LED 閃爍頻率，
+                    使用者可以一眼判斷 ESP32 目前處於哪種通訊狀態：
+                </p>
+
+                <table class="ms-table">
+                    <tr><th>LED 行為</th><th>代表狀態</th><th>說明</th></tr>
+                    <tr><td>慢閃（每 1 秒一次）</td><td>STA 連線中</td><td>正在嘗試連接路由器</td></tr>
+                    <tr><td>恆亮</td><td>STA 已連線</td><td>成功加入區域網路</td></tr>
+                    <tr><td>快閃（每 200ms 一次）</td><td>AP 模式啟動</td><td>已降級，等待使用者連入設定</td></tr>
+                    <tr><td>熄滅</td><td>Wi-Fi 已關閉</td><td>省電模式或尚未初始化</td></tr>
+                </table>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        切換模式時務必先呼叫 <code>WiFi.disconnect()</code> 或 <code>WiFi.softAPdisconnect()</code> 關閉當前模式，
+                        再啟動新模式。若不清理舊連線狀態，ESP32 可能出現記憶體洩漏或連線異常。
+                        建議在每次切換時加入 <code>delay(100)</code> 讓底層 TCP/IP 堆疊完成清理。
+                    </div>
+                </div>
+
+                <p>
+                    掌握 AP + STA 雙模切換後，你的裝置就具備了「永不失聯」的通訊韌性。
+                    這正是商用物聯網產品（如智慧家電、工業感測器）的基本要求——
+                    使用者不應該因為路由器重開機就需要拔掉設備電源重插。
+                </p>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
@@ -816,16 +1035,82 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
-                    <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div class="unit-completed-badge" id="badge-6" style="display:none">
+                        <i class="fas fa-check"></i> 已完成
+                    </div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <!-- Q1 -->
+                    <div class="quiz-question" id="q1">
+                        <p>1. ESP32 在 AP 模式下，連入的裝置可以做什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 可以同時瀏覽網際網路與控制 ESP32</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 只能與 ESP32 本身通訊，無法瀏覽網際網路</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 可以存取區域網路中的所有設備</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="quiz-question" id="q2">
+                        <p>2. 在 STA 模式下，為什麼不應該在 loop() 中使用 while + delay() 等待 Wi-Fi 連線？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 因為 delay() 會導致編譯錯誤</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 因為這會阻塞整個主迴圈，導致馬達控制和感測器讀取全部停擺</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 因為 delay() 會使 Wi-Fi 連線速度變慢</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="quiz-question" id="q3">
+                        <p>3. WiFi.softAP() 的 password 參數若傳入 NULL，會發生什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> ESP32 啟動失敗並重啟</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 網路會使用預設密碼 "12345678"</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 建立一個無密碼保護的開放網路</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="quiz-question" id="q4">
+                        <p>4. 在產品級配網備援流程中，當 STA 連線逾時失敗後，系統應該如何處理？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 持續重試 STA 連線直到成功</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 自動降級啟動 AP 模式，讓使用者可透過 192.168.4.1 重新設定</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 關閉 Wi-Fi 功能進入省電模式</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" style="margin-left:8px; display:none;" id="quiz-reset-btn">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -883,9 +1168,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「ESP32 Wi-Fi 雙模式：AP vs. STA」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「ESP32 Wi-Fi 雙模式：AP vs. STA」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -901,8 +1186,17 @@
         { id: 3, label: '🏠 2. STA 模式：加入家族', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '混合備援：產品級配網', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '4 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'c', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: 'AP 模式下 ESP32 建立獨立網路，連入裝置只能與 ESP32 通訊，無法存取網際網路。需啟用 AP + STA 雙模式才能同時存取外部網路。' },
+        q2: { b: '阻塞式等待會讓整個 loop() 停擺，馬達、感測器、LED 等所有功能都會凍結。應使用 millis() 搭配非阻塞邏輯實現重連。' },
+        q3: { c: '將 password 設為 NULL 時，ESP32 會建立一個開放（無加密）的 Wi-Fi 網路，任何裝置無需密碼即可連入。' },
+        q4: { b: '產品級配網備援會自動切換至 AP 模式開放管理介面，使用者可透過預設 IP 重新設定 Wi-Fi 憑證，確保設備「永不失聯」。' },
+    };
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -921,6 +1215,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1022,8 +1317,74 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        let total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            const options = document.querySelectorAll(`input[name="${qid}"]`);
+
+            options.forEach(opt => {
+                opt.disabled = true;
+                const label = opt.parentElement;
+                if (opt.value === answer) label.classList.add('correct');
+                if (opt.checked && opt.value !== answer) label.classList.add('wrong');
+            });
+
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                const exp = QUIZ_EXPLANATIONS[qid][answer];
+                feedbackEl.textContent = '✗ 不正確。' + exp;
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        scoreEl.style.display = 'block';
+        const pct = Math.round(correct / total * 100);
+        const pass = pct >= 75;
+        scoreEl.innerHTML = `
+            <span style="font-size:20px;">${pass ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pass ? '通過！你已掌握本模組的核心概念。' : '建議回顧相關單元後再試一次。'}</div>
+        `;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => {
+            el.classList.remove('correct','wrong');
+        });
+        document.querySelectorAll('input[type=radio]').forEach(el => {
+            el.checked = false;
+            el.disabled = false;
+        });
+        document.querySelectorAll('.quiz-feedback').forEach(el => {
+            el.className = 'quiz-feedback';
+            el.textContent = '';
+        });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 07：WiFi 模式與 WebServer';
 </script>
 
 <!-- Define Resources -->

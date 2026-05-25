@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 識別原理：CNN 與語音特徵提取 - Vibe Coding Learn</title>
+    <title>AI 識別原理：CNN 與語音特徵提取 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 9 - AI 識別</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">AI 識別原理：CNN 與語音特徵提取</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 9</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>AI 識別原理：CNN 與語音特徵提取</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 9</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,12 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>AI 識別原理：CNN 與語音特徵提取</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    本單元揭示 <strong>卷積神經網路（CNN）如何應用於語音特徵提取與分類</strong>。語音訊號經過梅爾頻譜轉換後，會變成一張類似圖片的二維頻譜圖，此時 CNN 擅長的空間模式識別能力就能派上用場。你將了解從原始音訊到特徵圖的完整轉換流程，以及 CNN 如何在頻譜圖上學習到不同聲音的獨特指紋。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你正在為一台居家照護機器人開發語音喚醒功能：當使用者說出「小幫手」時機器人需要啟動，但環境中充斥著電視聲、冷氣運轉聲與家人交談聲。傳統的關鍵字比對根本無法勝任，你需要一個能從複雜背景噪音中「聽出」特定語音模式的 AI 模型。CNN 結合梅爾頻譜正是解決此問題的經典方案——讓我們來看看它是怎麼運作的。
                 </div>
 
                 <h2>教學影片</h2>
@@ -590,40 +587,96 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>👁️ 1. 卷積的魔術：CNN 如何「看」東西 (30 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
-<div class="space-y-6">
-<p class="text-lg text-gray-600 leading-relaxed font-light">
-                                卷積神經網路 (CNN) 模擬人類視覺皮層。它透過層層遞進的「濾鏡 (Filters)」提取影像特徵：從初步的邊緣、角落，進化到複雜的物體零件。
-                            </p>
-<div class="bg-indigo-50 p-6 rounded-2xl border border-indigo-100">
-<h4 class="font-bold text-indigo-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
-                                    Hierarchical Extraction</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
-<div><strong>卷積層 (Conv)</strong>：尋找特定空間模式，產生特徵圖 (Feature Map)。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
-<div><strong>池化層 (Pooling)</strong>：壓縮尺寸，強化最具代表性的訊號特徵。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-indigo-500/5 group-hover:bg-indigo-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-4 uppercase tracking-widest relative z-10">
-                                Neural Filter Visualization</h4>
-<div class="relative z-10 flex flex-wrap justify-center gap-2">
-<div class="w-10 h-10 border border-indigo-500/30 rounded bg-indigo-500/10"></div>
-<div class="w-10 h-10 border border-indigo-500/30 rounded bg-indigo-500/20"></div>
-<div class="w-10 h-10 border border-indigo-500/30 rounded bg-indigo-500/40"></div>
-</div>
-<p class="text-[9px] text-slate-500 mt-4 font-mono tracking-widest uppercase italic">Feature
-                                Invariance Transformation</p>
-</div>
-</div>
+                <h1>卷積的魔術：CNN 如何「看」東西</h1>
+
+                <p>
+                    卷積神經網路（Convolutional Neural Network, CNN）是深度學習中專門處理具有空間結構資料的架構。它的核心靈感來自生物視覺皮層中的感受野（Receptive Field）機制——不同的神經元對視野中不同區域的刺激做出反應，而 CNN 透過<strong>可學習的卷積核（Kernel）</strong>在輸入資料上滑動，自動提取由低階到高階的特徵表示。
+                </p>
+
+                <h2>卷積運算的數學本質</h2>
+                <p>
+                    卷積操作的核心是一個小型矩陣（通常為 3×3 或 5×5）在輸入影像上逐像素滑動，執行逐元素乘積並加總。對於一個輸入圖片 $I$ 與卷積核 $K$，輸出的特徵圖 $F$ 在位置 $(x, y)$ 的值為：
+                </p>
+                <p style="text-align:center; font-size:15px;">
+                    $F(x,y) = \sum_{i}\sum_{j} I(x+i,\; y+j) \cdot K(i,\; j) + b$
+                </p>
+                <p>
+                    其中 $b$ 是偏置項（bias）。不同的卷積核能偵測不同的空間模式：水平邊緣、垂直邊緣、對角線紋理等。以經典的 <strong>Sobel 算子</strong>為例：
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// Sobel 水平邊緣核 (Gx) 與垂直邊緣核 (Gy)</span><br>
+<span class="c-kw">const</span> <span class="c-attr">SOBEL_X</span> <span class="c-white">= [</span><br>
+<span class="c-white">&nbsp;&nbsp;[-1, 0, 1],</span><br>
+<span class="c-white">&nbsp;&nbsp;[-2, 0, 2],</span><br>
+<span class="c-white">&nbsp;&nbsp;[-1, 0, 1]</span><br>
+<span class="c-white">];</span><br><br>
+<span class="c-kw">const</span> <span class="c-attr">SOBEL_Y</span> <span class="c-white">= [</span><br>
+<span class="c-white">&nbsp;&nbsp;[-1, -2, -1],</span><br>
+<span class="c-white">&nbsp;&nbsp;[ 0,&nbsp; 0,&nbsp; 0],</span><br>
+<span class="c-white">&nbsp;&nbsp;[ 1,&nbsp; 2,&nbsp; 1]</span><br>
+<span class="c-white">];</span><br><br>
+<span class="c-comment">// 邊緣強度 = sqrt(Gx² + Gy²)</span><br>
+<span class="c-kw">let</span> <span class="c-attr">magnitude</span> <span class="c-white">= Math.sqrt(edgeX * edgeX + edgeY * edgeY);</span>
+                </div>
+
+                <h2>CNN 的層級架構</h2>
+                <p>
+                    一個典型的 CNN 由多個功能層堆疊而成，每一層負責不同層次的抽象特徵提取：
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>層類型</th>
+                            <th>功能說明</th>
+                            <th>輸出</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>卷積層 (Conv2D)</strong></td>
+                            <td>使用多組卷積核掃描輸入，提取局部空間特徵</td>
+                            <td>特徵圖 (Feature Maps)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>激活函數 (ReLU)</strong></td>
+                            <td>引入非線性：$f(x) = \max(0, x)$，讓網路能學習複雜模式</td>
+                            <td>稀疏化的特徵圖</td>
+                        </tr>
+                        <tr>
+                            <td><strong>池化層 (Pooling)</strong></td>
+                            <td>降低空間維度，保留最顯著特徵（常用 Max Pooling 2×2）</td>
+                            <td>壓縮後的特徵圖</td>
+                        </tr>
+                        <tr>
+                            <td><strong>全連接層 (Dense)</strong></td>
+                            <td>將高階特徵映射到分類標籤的機率分布</td>
+                            <td>類別機率向量</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        在語音辨識場景中，CNN 的輸入不是 RGB 彩色圖片，而是<strong>梅爾頻譜圖（Mel Spectrogram）</strong>——一張以時間為 X 軸、頻率為 Y 軸、能量為色彩深淺的二維「聲音圖片」。CNN 在這張圖上搜尋的不是物體邊緣，而是特定頻率模式隨時間的演變規律。
+                    </div>
+                </div>
+
+                <h2>從影像 CNN 到音訊 CNN</h2>
+                <p>
+                    傳統影像 CNN 掃描的是像素空間中的紋理與形狀，而語音 CNN 掃描的是時間-頻率空間中的聲學模式。兩者的數學運算完全相同——差別只在於輸入表示方式。這也是為什麼「先將音訊轉為頻譜圖，再餵入 CNN」是語音分類的黃金標準流程。
+                </p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        當你在 Teachable Machine 訓練語音模型時，背後正是將你的錄音片段轉為頻譜圖，再使用一個輕量 CNN 進行分類。理解這個流程，能幫助你在資料品質不佳時做出正確的除錯判斷。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -642,38 +695,87 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🎵 2. 聲音的指紋：語音特徵提取 (30 min)</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify">
-                                聲音是不規則的波。我們透過 <strong>傅立葉轉換 (FFT)</strong> 將其轉進頻域，再轉化為 <strong>MFCC
-                                    (梅爾頻率倒譜係數)</strong>，讓聲音數據看起像「圖片」，以便 CNN 進行分類。
-                            </p>
-<div class="bg-cyan-50 p-8 rounded-3xl border border-cyan-100 text-center text-justify">
-<h4 class="text-cyan-900 font-bold mb-4 text-xs uppercase tracking-widest">Acoustic
-                                    Synesthesia</h4>
-<div class="grid grid-cols-3 gap-2 text-[10px] text-slate-600 font-mono text-justify">
-<div class="p-2 bg-white rounded border">TIME WAVE</div>
-<span class="mt-2 text-justify">➔</span>
-<div class="p-2 bg-white rounded border text-justify">SPECTROGRAM</div>
-</div>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-cyan-500/5"></div>
-<h4 class="text-cyan-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-justify">
-                                Spectral Fingerprint</h4>
-<div class="w-full h-20 bg-gradient-to-t from-cyan-500/20 to-transparent flex items-end gap-1 px-4 relative z-10">
-<div class="w-full bg-cyan-500/40 h-1/2"></div>
-<div class="w-full bg-cyan-500/20 h-3/4"></div>
-<div class="w-full bg-cyan-500/60 h-1/4"></div>
-<div class="w-full bg-cyan-500/30 h-1/2"></div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic text-center">
-                                Frequency Domain Analysis Mode</p>
-</div>
-</div>
+                <h1>聲音的指紋：語音特徵提取</h1>
+
+                <p>
+                    人類聽覺系統能在嘈雜環境中瞬間辨識出熟悉的聲音——這仰賴的是大腦對<strong>頻率模式</strong>的高效解析。在 AI 語音辨識中，我們同樣需要將原始音訊波形轉換為一種能凸顯「聲學特徵」的表示形式，讓機器學習模型能從中找出規律。這個過程稱為<strong>特徵提取（Feature Extraction）</strong>。
+                </p>
+
+                <h2>從時域到頻域：傅立葉轉換</h2>
+                <p>
+                    原始音訊是一維的時間序列——振幅隨時間變化的波形。然而，同一段語音中可能同時包含多種頻率成分（基頻、泛音、噪音等）。<strong>快速傅立葉轉換（FFT）</strong>能將一段時間窗口內的音訊訊號分解為其組成頻率，產生<strong>頻譜（Spectrum）</strong>。
+                </p>
+                <p>
+                    實務上，我們對整段音訊使用滑動窗口（通常 25ms 窗口，10ms 步進），對每個窗口做 FFT，將所有窗口的頻譜沿時間軸排列，就得到了<strong>頻譜圖（Spectrogram）</strong>——一張 X 軸為時間、Y 軸為頻率、色彩表示能量強度的二維圖像。
+                </p>
+
+                <h2>梅爾頻率倒譜係數（MFCC）</h2>
+                <p>
+                    人耳對不同頻率的感知並非線性——我們對低頻差異非常敏感（能分辨 200Hz 和 300Hz），但對高頻差異不太敏感（難以區分 8000Hz 和 8100Hz）。<strong>梅爾刻度（Mel Scale）</strong>模擬了這種非線性感知，將線性頻率映射為人耳感知等距的尺度。
+                </p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>預加重 (Pre-emphasis)</h4>
+                            <p>對訊號施加高通濾波器 $y(t) = x(t) - \alpha \cdot x(t-1)$，補償高頻能量衰減。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>分幀加窗 (Framing &amp; Windowing)</h4>
+                            <p>將連續訊號切為 25ms 短幀，施加漢明窗（Hamming Window）以減少頻譜洩漏。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>FFT → 功率頻譜</h4>
+                            <p>對每幀計算 FFT，取其功率譜 $|X(k)|^2$。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>梅爾濾波器組 (Mel Filter Bank)</h4>
+                            <p>將功率譜通過一組三角帶通濾波器，轉換至梅爾刻度。通常使用 26~40 個濾波器。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">5</div>
+                        <div class="ms-step-body">
+                            <h4>對數壓縮 + DCT</h4>
+                            <p>取對數後進行離散餘弦轉換（DCT），取前 12~13 個係數即為 MFCC。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-code">
+<span class="c-comment">// 簡化的 MFCC 特徵提取流程（概念展示）</span><br>
+<span class="c-kw">function</span> <span class="c-attr">extractMFCC</span><span class="c-white">(audioBuffer, sampleRate) {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">frameSize</span> <span class="c-white">= Math.floor(sampleRate * 0.025);</span> <span class="c-comment">// 25ms</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">hopSize</span> <span class="c-white">= Math.floor(sampleRate * 0.010);</span>&nbsp;&nbsp; <span class="c-comment">// 10ms</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">frames</span> <span class="c-white">= splitIntoFrames(audioBuffer, frameSize, hopSize);</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">spectrogram</span> <span class="c-white">= frames.map(f =&gt; fft(applyHamming(f)));</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">melSpec</span> <span class="c-white">= applyMelFilterBank(spectrogram, 40);</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-white">dct(logCompress(melSpec)).slice(0, 13);</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>為什麼 MFCC 是語音辨識的黃金標準</h2>
+                <p>
+                    MFCC 的設計巧妙之處在於它同時達成了三個目標：(1) 透過梅爾刻度模擬人耳感知，保留對辨識最重要的頻率特徵；(2) 透過 DCT 去相關化，將高維頻譜壓縮為少數獨立係數；(3) 對說話者的音量變化具有魯棒性（因為取了對數）。這使得不同人說同一個詞，其 MFCC 模式高度相似，便於分類器學習。
+                </p>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        在嵌入式裝置（如 ESP32）上執行即時 MFCC 運算時，FFT 的計算量是主要瓶頸。建議使用定點數運算（Fixed-Point Arithmetic）或預編譯的查找表（LUT）來加速梅爾濾波器的運算，將單幀處理時間控制在 5ms 以內。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -692,44 +794,92 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>💾 3. 權重的推論：從雲端到邊緣</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center">
-<div class="flex-1 space-y-6">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify">
-                                AI 的「智慧」儲存在權重 (Weights) 中。我們在強大主機端訓練模型，但將經過「量化 (Quantization)」與優化後的精簡模型部署至邊緣設備 (Edge
-                                Inference)，實現本地零延遲反應。
-                            </p>
-<div class="bg-amber-500/10 p-8 rounded-3xl border border-amber-500/20 shadow-inner">
-<h4 class="font-bold text-amber-400 mb-4 text-xs uppercase tracking-widest text-center">
-                                    Optimization Dial</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mt-1"></span>
-<div><strong class="text-white">資料歸一化 (Normalization)</strong>：將影像像素或音訊振幅縮小至
-                                            $[0, 1]$，防止計算溢位。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mt-1"></span>
-<div><strong class="text-white">模型推論 (Inference)</strong>：ESP32 僅負責「輸入 $\times$
-                                            權重」的正向運算，無需巨大的學習成本。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mt-1"></span>
-<div><strong class="text-white">特徵工程</strong>：理解為何 Sobel 邊緣提取或 MFCC 是 AI
-                                            正確識別的關鍵前置作業。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-amber-600/10 p-10 rounded-3xl border border-amber-500/20 text-center relative overflow-hidden group">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-amber-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-amber-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">
-                                Edge AI Core</h4>
-<div class="text-5xl font-extrabold text-white mb-2">TFLite</div>
-<p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center">
-                                "讓 MCU 擁有人類的感官，而不僅僅是處理數字。"
-                            </p>
-</div>
-</div>
+                <h1>權重的推論：從雲端到邊緣</h1>
+
+                <p>
+                    深度學習模型的「智慧」全部編碼在其<strong>權重矩陣（Weights）</strong>之中。訓練過程是在高效能 GPU 上透過反向傳播演算法，花費數小時甚至數天調整數百萬個參數。然而，推論（Inference）——使用已訓練好的模型進行預測——只需要執行一次正向傳播，計算量遠小於訓練。這使得將模型部署到資源受限的<strong>邊緣裝置（Edge Device）</strong>成為可能。
+                </p>
+
+                <h2>雲端訓練 vs. 邊緣推論</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>面向</th>
+                            <th>雲端訓練</th>
+                            <th>邊緣推論 (ESP32)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>計算能力</td>
+                            <td>GPU/TPU，TFLOPS 等級</td>
+                            <td>單核 240MHz，MFLOPS 等級</td>
+                        </tr>
+                        <tr>
+                            <td>記憶體</td>
+                            <td>16~80 GB VRAM</td>
+                            <td>520 KB SRAM + 4~8 MB PSRAM</td>
+                        </tr>
+                        <tr>
+                            <td>延遲</td>
+                            <td>含網路往返 200~500ms</td>
+                            <td>本地推論 10~50ms</td>
+                        </tr>
+                        <tr>
+                            <td>隱私</td>
+                            <td>資料需上傳至雲端</td>
+                            <td>所有資料留在裝置端</td>
+                        </tr>
+                        <tr>
+                            <td>離線能力</td>
+                            <td>需要網路連線</td>
+                            <td>完全離線運作</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>模型量化（Quantization）</h2>
+                <p>
+                    直接將雲端訓練的模型（通常使用 32-bit 浮點數儲存權重）搬到 MCU 是不可行的——光模型大小就超出可用記憶體。<strong>量化</strong>是將浮點權重壓縮為 8-bit 整數（INT8）的技術，能將模型大小縮減約 4 倍，同時推論速度提升 2~3 倍，精度損失通常低於 1~2%。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// TensorFlow Lite 量化轉換流程（Python）</span><br>
+<span class="c-kw">import</span> <span class="c-white">tensorflow </span><span class="c-kw">as</span> <span class="c-white">tf</span><br><br>
+<span class="c-attr">converter</span> <span class="c-white">= tf.lite.TFLiteConverter.from_saved_model(</span><span class="c-str">'my_model/'</span><span class="c-white">)</span><br>
+<span class="c-attr">converter.optimizations</span> <span class="c-white">= [tf.lite.Optimize.DEFAULT]</span><br>
+<span class="c-attr">converter.target_spec.supported_types</span> <span class="c-white">= [tf.int8]</span><br>
+<span class="c-attr">tflite_model</span> <span class="c-white">= converter.convert()</span><br><br>
+<span class="c-comment"># 輸出：從 2.4 MB → 600 KB，可放入 ESP32 的 Flash</span>
+                </div>
+
+                <h2>TensorFlow Lite Micro 推論流程</h2>
+                <p>
+                    在 ESP32 上執行推論的完整流程包含四個階段：
+                </p>
+                <ol>
+                    <li><strong>載入模型</strong>：從 Flash 記憶體讀取 <code>.tflite</code> 量化模型的位元組陣列。</li>
+                    <li><strong>輸入歸一化</strong>：將感測器原始資料（如 MFCC 向量）縮放至模型期望的 $[0, 1]$ 或 $[-128, 127]$ 範圍。</li>
+                    <li><strong>正向傳播</strong>：呼叫 <code>interpreter-&gt;Invoke()</code> 執行所有層的矩陣乘法與激活函數計算。</li>
+                    <li><strong>輸出解碼</strong>：讀取輸出張量，找出最高機率的類別標籤及其信心分數。</li>
+                </ol>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        邊緣 AI 系統的安全性取決於推論延遲。對於語音喚醒（Keyword Spotting）場景，從麥克風收到音訊到輸出辨識結果，整體延遲必須控制在 <strong>200ms</strong> 以內，否則使用者會感知到明顯的「不靈敏」。在 ESP32-S3 上，典型的 KWS 模型推論時間約為 30~80ms，加上 MFCC 前處理約 15ms，仍有充裕的時間預算。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        如果你的模型在量化後精度下降過大，可嘗試<strong>量化感知訓練（QAT）</strong>——在訓練過程中就模擬量化誤差，讓模型學會適應低精度環境，通常能將精度差距縮小到 0.5% 以內。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -813,16 +963,81 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>測試你對本模組核心概念的掌握程度。請選出每題的最佳答案，提交後可查看詳細解析。</p>
+
+                <form id="quiz-form" onsubmit="return false;">
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">1. CNN（卷積神經網路）中卷積核 (Kernel) 的主要作用是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 壓縮資料大小</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 提取輸入資料的局部特徵</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 加密資料</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 增加影像解析度</label>
+                        <div id="exp-1" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">2. 語音特徵提取中最常使用的頻譜表示法是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 直方圖 (Histogram)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 梅爾頻譜圖 (Mel Spectrogram)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 散佈圖 (Scatter Plot)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 圓餅圖 (Pie Chart)</label>
+                        <div id="exp-2" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">3. 邊緣推論 (Edge Inference) 相比雲端推論的主要優勢是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 模型準確度更高</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 低延遲且不依賴網路連線</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 可以使用更大的模型</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 不需要任何計算資源</label>
+                        <div id="exp-3" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">4. CNN 中池化層 (Pooling Layer) 的主要作用是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 增加特徵圖的解析度</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 降低特徵圖的空間維度，減少計算量</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 新增更多顏色通道</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 加密神經網路的權重</label>
+                        <div id="exp-4" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+                </form>
+
+                <div style="display:flex;gap:12px;margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+                <div id="quiz-result" style="display:none;margin-top:20px;padding:16px;border-radius:6px;font-size:14px;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -880,9 +1095,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「AI 識別原理：CNN 與語音特徵提取」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「AI 識別原理：CNN 與語音特徵提取」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -898,7 +1113,8 @@
         { id: 3, label: '🎵 2. 聲音的指紋：語音特徵提取 (30 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '💾 3. 權重的推論：從雲端到邊緣', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -918,6 +1134,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1019,8 +1236,61 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'B', q3: 'B', q4: 'B' };
+    const QUIZ_EXPLANATIONS = { q1: '卷積核在輸入資料上滑動，透過加權運算提取局部特徵（如邊緣、紋理），淺層提取簡單特徵，深層組合出複雜特徵。', q2: '梅爾頻譜圖將聲音訊號轉換為以梅爾刻度為頻率軸的時頻圖，模擬人耳的非線性頻率感知，是語音 AI 最常用的輸入格式。', q3: '邊緣推論在本地裝置上直接執行模型，消除了資料上傳/下載的延遲，且在沒有網路的環境中也能正常運作。', q4: '池化層（如 Max Pooling）透過取區域最大值或平均值來降低特徵圖的尺寸，減少計算量同時增強特徵的平移不變性。' };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const idx = q.slice(1);
+            const exp = document.getElementById(`exp-${idx}`);
+            if (!selected) continue;
+            if (selected.value === correct) {
+                score++;
+                exp.style.display = 'block';
+                exp.style.background = '#dff6dd';
+                exp.style.borderLeftColor = '#107c10';
+                exp.innerHTML = '<i class="fas fa-check-circle" style="color:#107c10;margin-right:6px;"></i>' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#dff6dd';
+                selected.parentElement.style.borderColor = '#107c10';
+            } else {
+                exp.style.display = 'block';
+                exp.style.background = '#fde7e9';
+                exp.style.borderLeftColor = '#d13438';
+                exp.innerHTML = '<i class="fas fa-times-circle" style="color:#d13438;margin-right:6px;"></i>正確答案是 ' + correct + '。' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#fde7e9';
+                selected.parentElement.style.borderColor = '#d13438';
+            }
+        }
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === total) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.innerHTML = '<strong style="color:#107c10;">🎉 滿分！' + score + ' / ' + total + '</strong><br>你完全掌握了本模組的核心概念！';
+            markDone(6);
+        } else {
+            resultEl.style.background = '#fff4ce';
+            resultEl.innerHTML = '<strong style="color:#8a6914;">得分：' + score + ' / ' + total + '</strong><br>建議複習錯題的解析說明，再試一次！';
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= 4; i++) {
+            const exp = document.getElementById('exp-' + i);
+            if (exp) { exp.style.display = 'none'; exp.style.background = ''; exp.style.borderLeftColor = 'transparent'; }
+        }
+        document.querySelectorAll('#quiz-form label').forEach(l => { l.style.background = ''; l.style.borderColor = '#e1dfdd'; });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 09：AI 辨識應用';
 </script>
 
 <!-- Define Resources -->

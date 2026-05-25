@@ -38,19 +38,14 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
         import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-functions.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCO6Y6Pa7b7zbieJIErysaNF6-UqbT8KJw",
-            authDomain: "e-learning-942f7.firebaseapp.com",
-            projectId: "e-learning-942f7",
-            storageBucket: "e-learning-942f7.firebasestorage.app",
-            messagingSenderId: "878397058574",
-            appId: "1:878397058574:web:28aaa07a291ee3baab165f"
-        };
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+        import { firebaseConfig, connectFirebaseEmulators } from "./js/firebase-local.js";
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
         const functions = getFunctions(app, 'asia-east1');
+        connectFirebaseEmulators({ auth, db, functions });
 
         // Expose to window for course-shared.js?v=2026.04.05.FINAL_V6 vibeFetchLessons
         window.vibeApp = app;
@@ -249,7 +244,7 @@
 
         vibeFetchLessons()
             .then(data => {
-                renderLessons(data, 'started');
+                renderLessons(data, 'start');
             })
             .catch(error => console.error('資料讀取失敗:', error));
 

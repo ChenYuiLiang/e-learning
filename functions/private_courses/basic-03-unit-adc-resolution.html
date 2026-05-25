@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP32 ADC 解析度與對應 - Vibe Coding Learn</title>
+    <title>ESP32 ADC 解析度與對應 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 3 - 量化感知</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">ESP32 ADC 解析度與對應</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 191 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 3</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>ESP32 ADC 解析度與對應</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 3</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -521,9 +521,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>🌉 1. 類比與數位的橋樑：什麼是 ADC？</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>🪄 2. 數據映射：Map 函式的數學魔法</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>️ 3. ESP32 ADC 的真實面貌</strong> 的調校技巧與穩定性測試。</li>
+                    <li>能夠解釋 ADC 解析度的意義（10-bit vs 12-bit），並計算 ESP32 的 12-bit ADC 讀值與實際電壓之間的對應關係。</li>
+                    <li>能夠使用 <code>map()</code> 函式將 ADC 原始值轉換為有意義的工程單位（如 PWM 佔空比、電池百分比或轉向角度）。</li>
+                    <li>能夠識別 ESP32 ADC 的非線性死區與 ADC2/Wi-Fi 衝突問題，並實作移動平均濾波器消除讀值抖動。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -554,15 +554,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>ESP32 ADC 解析度與對應</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    真實世界是類比的——溫度、光線、搖桿角度都是連續變化的物理量，但微控制器只懂 0 與 1。
+                    ADC（類比數位轉換器）就是這座橋：它把 0～3.3V 的電壓轉換成數位數值，而「解析度」決定了這個轉換有多精細。
+                    搞懂 ADC 的位元數、參考電壓與數值映射邏輯，你才能準確地將感測器的原始讀數變成有意義的工程單位。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你用 ESP32 讀取一顆光敏電阻的數值，想根據亮度自動開關 LED。程式寫好了，<code>analogRead()</code> 回傳的值在 0～4095 之間跳動，
+                    但你卻不確定「2048」到底代表幾伏特？為什麼同一顆電阻在 Arduino Uno 上讀到 512，在 ESP32 上卻是 2048？
+                    這些疑問的答案都藏在 ADC 解析度與電壓映射的數學裡。
                 </div>
 
                 <h2>教學影片</h2>
@@ -576,7 +577,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -590,35 +591,92 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🌉 1. 類比與數位的橋樑：什麼是 ADC？</h1>
-                
-                <div class="space-y-6 text-gray-600">
-<p class="text-lg leading-relaxed text-justify">
-                                    世界是 <strong>類比 (Analog)</strong> 的。光線、溫度，都是平滑、連續的存在。
-                                </p>
-<p class="text-lg leading-relaxed text-justify">
-<strong>ADC</strong> 就像數位量尺，將 0V 到 3.3V 的電壓切成好幾格，來度量目前在哪個刻度上。
-                                </p>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
-<div class="p-6 bg-slate-50 border border-slate-200 rounded-2xl shadow-sm text-justify">
-<div class="text-xs text-slate-400 font-mono mb-2 uppercase tracking-widest">
-                                            10-bit</div>
-<div class="text-2xl font-bold text-slate-800 mb-1">1,024 Steps</div>
-<p class="text-xs text-slate-500 text-justify">Uno 典型精細度</p>
-</div>
-<div class="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl shadow-sm text-justify">
-<div class="text-xs text-emerald-500 font-mono mb-2 uppercase tracking-widest text-justify">
-                                            12-bit</div>
-<div class="text-2xl font-bold text-emerald-700 mb-1">4,096 Steps</div>
-<p class="text-xs text-emerald-600 text-justify">ESP32 預設解析度</p>
-</div>
-</div>
-</div>
+                <h1>類比與數位的橋樑：什麼是 ADC？</h1>
+
+                <p>
+                    世界是<strong>類比 (Analog)</strong> 的——溫度的高低、光線的強弱、聲音的大小，這些物理量都是連續且平滑地變化。然而，微控制器的核心是數位處理器，它只理解由 0 與 1 組成的離散數值。那麼，我們如何讓一個只懂「開」和「關」的晶片，去感知連續變化的真實世界呢？
+                </p>
+                <p>
+                    答案就是 <strong>ADC（Analog-to-Digital Converter，類比數位轉換器）</strong>。ADC 就像一把「數位量尺」，它會在某個瞬間對輸入的類比電壓進行取樣，然後將該電壓值量化為一個整數。這個整數的大小取決於兩個關鍵參數：<strong>參考電壓（Reference Voltage）</strong>與<strong>解析度（Resolution）</strong>。
+                </p>
+                <p>
+                    參考電壓決定了量尺的上限。ESP32 的 ADC 參考電壓預設為 3.3V，代表它能量測 0V 到 3.3V 之間的電壓。而解析度則決定了這把量尺被切成多少格——格數越多，量測越精細。
+                </p>
+
+                <h2>什麼是「位元數」與「解析度」？</h2>
+                <p>
+                    ADC 的解析度以「位元數（bit）」表示。N 位元的 ADC 能將電壓範圍切分成 2<sup>N</sup> 個等級。以下是常見微控制器的 ADC 解析度比較：
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>開發板</th>
+                            <th>ADC 位元數</th>
+                            <th>數值範圍</th>
+                            <th>最小可辨識電壓</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Arduino Uno (ATmega328P)</td>
+                            <td>10-bit</td>
+                            <td>0 ~ 1,023</td>
+                            <td>5V ÷ 1024 ≈ 4.88 mV</td>
+                        </tr>
+                        <tr>
+                            <td>ESP32</td>
+                            <td>12-bit</td>
+                            <td>0 ~ 4,095</td>
+                            <td>3.3V ÷ 4096 ≈ 0.81 mV</td>
+                        </tr>
+                        <tr>
+                            <td>STM32 (部分型號)</td>
+                            <td>16-bit</td>
+                            <td>0 ~ 65,535</td>
+                            <td>3.3V ÷ 65536 ≈ 0.05 mV</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        ESP32 的 ADC 預設為 12-bit 解析度，但你也可以透過 <code>analogReadResolution()</code> 函式將其調整為 9-bit、10-bit 或 11-bit。降低解析度可以加快轉換速度，但會犧牲精度。在大多數應用中，保持預設的 12-bit 是最佳選擇。
+                    </div>
+                </div>
+
+                <h2>電壓與數位讀值的換算</h2>
+                <p>
+                    理解了位元數之後，你就能計算出任何 ADC 讀值對應的實際電壓。公式非常簡單：
+                </p>
+                <p style="text-align:center; font-size:16px; margin:20px 0;">
+                    <strong>電壓 (V) = ADC 讀值 × (參考電壓 ÷ 2<sup>N</sup>)</strong>
+                </p>
+                <p>
+                    以 ESP32 為例，若 <code>analogRead()</code> 回傳 2048，代表的電壓為：2048 × (3.3 ÷ 4096) = <strong>1.65V</strong>，恰好是 3.3V 的一半。同理，讀值 4095 理論上對應 3.3V，而讀值 0 則對應 0V。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-kw">int</span> <span class="c-attr">adcValue</span> <span class="c-white">= analogRead(</span><span class="c-val">34</span><span class="c-white">);</span><br>
+                    <span class="c-kw">float</span> <span class="c-attr">voltage</span> <span class="c-white">= </span><span class="c-attr">adcValue</span><span class="c-white"> * (</span><span class="c-val">3.3</span> <span class="c-white">/ </span><span class="c-val">4096.0</span><span class="c-white">);</span><br>
+                    <span class="c-white">Serial.print(</span><span class="c-str">"電壓: "</span><span class="c-white">);</span><br>
+                    <span class="c-white">Serial.print(</span><span class="c-attr">voltage</span><span class="c-white">, </span><span class="c-val">2</span><span class="c-white">);</span><br>
+                    <span class="c-white">Serial.println(</span><span class="c-str">" V"</span><span class="c-white">);</span>
+                </div>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        為什麼同一顆光敏電阻在 Arduino Uno 上讀到 512，在 ESP32 上卻是 2048？因為兩者解析度不同！512 ÷ 1024 = 0.5，而 2048 ÷ 4096 = 0.5——它們都代表參考電壓的 50%，只是刻度尺精細度不同而已。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -632,51 +690,103 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🪄 2. 數據映射：Map 函式的數學魔法</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-<div class="space-y-8">
-<p class="text-gray-600 text-lg leading-relaxed text-justify">
-                                為什麼需要 Mapping？感測器讀到的是 <strong>0–4095</strong>，但馬達只需 <strong>0–255</strong>。我們需要「比例轉換器」。
-                            </p>
-<div class="bg-indigo-50 p-8 rounded-3xl border border-indigo-100 shadow-sm text-justify">
-<h4 class="font-bold text-indigo-900 mb-4 flex items-center gap-2">
-<span>∑</span> 線性變換公式
-                                </h4>
-<div class="bg-white p-6 rounded-2xl shadow-inner border border-indigo-200 text-center text-lg overflow-x-auto font-serif">
-                                    \[V_{out} = (V_{in} - In_{min}) \times \frac{(Out_{max} - Out_{min})}{(In_{max} -
-                                    In_{min})} + Out_{min}\]
-                                </div>
-</div>
-</div>
-<div class="bg-slate-900 p-10 rounded-3xl border border-slate-700 relative shadow-2xl overflow-hidden group text-justify">
-<div class="absolute top-0 right-0 p-4 font-mono text-[10px] text-slate-500 tracking-widest uppercase">
-                                mapping-logic</div>
-<h4 class="text-white font-bold mb-6 flex items-center gap-2">
-<span class="w-2 h-2 bg-indigo-400 rounded-full"></span>
-                                Arduino 語法實境應用
-                            </h4>
-<div class="space-y-6 text-justify">
-<div class="p-4 bg-white/5 rounded-2xl border border-white/10 text-justify">
-<p class="text-xs text-slate-400 mb-3 text-justify">// 將 12-bit 轉為 8-bit PWM</p>
-<code class="text-indigo-300 font-mono text-sm leading-none block text-justify">
-                                        int pwm = map(val, 0, 4095, 0, 255);
-                                    </code>
-</div>
-<div class="p-4 bg-white/5 rounded-2xl border border-white/10 text-justify">
-<p class="text-xs text-slate-400 mb-3 text-justify">// 將讀值轉為真實電量百分比</p>
-<code class="text-emerald-300 font-mono text-sm leading-none block text-justify">
-                                        float battery = map(val, 2800, 4000, 0, 100);
-                                    </code>
-</div>
-</div>
-</div>
-</div>
+                <h1>數據映射：Map 函式的數學魔法</h1>
+
+                <p>
+                    感測器讀到的原始 ADC 值（0–4095）對人類或周邊裝置來說毫無意義。馬達驅動器需要的是 0–255 的 PWM 佔空比；LCD 螢幕想顯示的是 0%–100% 的百分比；無人車的轉向邏輯需要的是 -90° 到 +90° 的角度值。<strong>數據映射（Mapping）</strong>就是把一組數值範圍按比例轉換到另一組數值範圍的過程。
+                </p>
+                <p>
+                    Arduino 生態系提供了一個現成的函式 <code>map()</code>，讓你不需要自己動手算數學。但理解它背後的數學原理，是真正掌握數據處理的關鍵。
+                </p>
+
+                <h2>線性變換公式</h2>
+                <p>
+                    <code>map()</code> 的本質是一條<strong>線性比例方程式</strong>。給定一個輸入值 <em>x</em>，從輸入範圍 [In<sub>min</sub>, In<sub>max</sub>] 映射到輸出範圍 [Out<sub>min</sub>, Out<sub>max</sub>]，公式如下：
+                </p>
+                <p style="text-align:center; font-size:16px; margin:20px 0;">
+                    <strong>y = (x − In<sub>min</sub>) × (Out<sub>max</sub> − Out<sub>min</sub>) ÷ (In<sub>max</sub> − In<sub>min</sub>) + Out<sub>min</sub></strong>
+                </p>
+                <p>
+                    這個公式做了三件事：先將輸入值歸零（減去起點），再按比例縮放（乘以目標範圍 ÷ 原始範圍），最後加上輸出的偏移量。讓我們以實際範例來說明。
+                </p>
+
+                <h2>常見的映射場景</h2>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>應用場景</th>
+                            <th>輸入範圍</th>
+                            <th>輸出範圍</th>
+                            <th>程式碼</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>12-bit ADC → 8-bit PWM</td>
+                            <td>0 ~ 4095</td>
+                            <td>0 ~ 255</td>
+                            <td><code>map(val, 0, 4095, 0, 255)</code></td>
+                        </tr>
+                        <tr>
+                            <td>電池電壓 → 百分比</td>
+                            <td>2800 ~ 4000</td>
+                            <td>0 ~ 100</td>
+                            <td><code>map(val, 2800, 4000, 0, 100)</code></td>
+                        </tr>
+                        <tr>
+                            <td>搖桿 → 轉向角度</td>
+                            <td>0 ~ 4095</td>
+                            <td>-90 ~ +90</td>
+                            <td><code>map(val, 0, 4095, -90, 90)</code></td>
+                        </tr>
+                        <tr>
+                            <td>反向映射（越轉越暗）</td>
+                            <td>0 ~ 4095</td>
+                            <td>255 ~ 0</td>
+                            <td><code>map(val, 0, 4095, 255, 0)</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>Arduino map() 實作範例</h2>
+                <p>
+                    以下是一個將旋鈕讀值轉換為 LED 亮度的完整範例。旋鈕連接到 GPIO 34（ADC1 通道），LED 連接到 GPIO 16（PWM 輸出）：
+                </p>
+                <div class="ms-code">
+                    <span class="c-kw">const int</span> <span class="c-attr">POT_PIN</span> <span class="c-white">= </span><span class="c-val">34</span><span class="c-white">;</span><br>
+                    <span class="c-kw">const int</span> <span class="c-attr">LED_PIN</span> <span class="c-white">= </span><span class="c-val">16</span><span class="c-white">;</span><br><br>
+                    <span class="c-kw">void</span> <span class="c-tag">setup</span><span class="c-white">() {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;pinMode(</span><span class="c-attr">LED_PIN</span><span class="c-white">, OUTPUT);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;Serial.begin(</span><span class="c-val">115200</span><span class="c-white">);</span><br>
+                    <span class="c-white">}</span><br><br>
+                    <span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">int</span> <span class="c-attr">raw</span> <span class="c-white">= analogRead(</span><span class="c-attr">POT_PIN</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">int</span> <span class="c-attr">pwm</span> <span class="c-white">= map(</span><span class="c-attr">raw</span><span class="c-white">, </span><span class="c-val">0</span><span class="c-white">, </span><span class="c-val">4095</span><span class="c-white">, </span><span class="c-val">0</span><span class="c-white">, </span><span class="c-val">255</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;analogWrite(</span><span class="c-attr">LED_PIN</span><span class="c-white">, </span><span class="c-attr">pwm</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;delay(</span><span class="c-val">50</span><span class="c-white">);</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        Arduino 的 <code>map()</code> 函式只進行<strong>整數運算</strong>，不支援浮點數。若你需要精確到小數的映射結果（例如電壓值），應自己用浮點數公式計算：<code>float v = (float)(raw - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;</code>
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        <code>map()</code> 不會自動限制輸出範圍。若輸入值超出預設範圍，輸出也會超出。你可以搭配 <code>constrain()</code> 函式來限制輸出：<code>int safe = constrain(map(val, 0, 4095, 0, 255), 0, 255);</code>
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -690,28 +800,98 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚠️ 3. ESP32 ADC 的真實面貌</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-justify">
-<div class="p-6 bg-slate-800/50 rounded-2xl border border-slate-700 hover:border-red-500/50 transition">
-<h4 class="font-bold text-red-400 mb-2 text-justify">非線性「死區」現象</h4>
-<p class="text-xs text-slate-400 leading-relaxed italic text-justify">
-                                        電壓接近 0V 與 3.3V 時，讀值變化會趨於平緩，精準量測需補償。
-                                    </p>
-</div>
-<div class="p-6 bg-slate-800/50 rounded-2xl border border-slate-700 hover:border-amber-500/50 transition text-justify">
-<h4 class="font-bold text-amber-400 text-justify uppercase tracking-widest">Wi-Fi &amp;
-                                        ADC2 衝突</h4>
-<p class="text-xs text-slate-400 leading-relaxed italic text-justify">
-                                        Wi-Fi 開啟時，ADC2 將被占用。通訊時務必選擇 ADC1 (GPIO 32-39)。
-                                    </p>
-</div>
-</div>
+                <h1>ESP32 ADC 的真實面貌</h1>
+
+                <p>
+                    理論上，ADC 應該將 0V 到 3.3V 的電壓完美地對應到 0 到 4095 的數位值。但在真實世界中，ESP32 的 ADC 存在幾個你必須了解的「不完美」——忽略它們可能導致感測器數據嚴重失真，讓你的專案在關鍵時刻出錯。
+                </p>
+
+                <h2>非線性「死區」現象</h2>
+                <p>
+                    ESP32 的 ADC 在電壓極低（接近 0V）與極高（接近 3.3V）的區間會表現出明顯的<strong>非線性行為</strong>。當實際電壓低於約 0.1V 時，ADC 讀值可能已經「黏」在 0 不動了；當電壓高於約 3.2V 時，讀值則提前飽和到 4095。這意味著你實際可用的「線性區」大約在 0.1V ~ 3.2V 之間。
+                </p>
+                <p>
+                    這個特性在精密量測時影響尤為顯著。例如，你若想用 ADC 偵測電池是否已經完全放電（接近 0V），可能會發現讀值在 0.1V 以下就不再變化了。解決方案之一是使用分壓電路將感測器的電壓範圍縮限在 ADC 的線性區內。
+                </p>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        <strong>絕對不要</strong>將超過 3.3V 的電壓直接接到 ESP32 的 ADC 引腳！ESP32 不像 Arduino Uno 那樣有 5V 容忍度，超壓可能會永久損壞晶片內部的 I/O 電路。若你需要量測 5V 訊號，必須先用分壓電阻將電壓降至 3.3V 以下。
+                    </div>
+                </div>
+
+                <h2>ADC2 與 Wi-Fi 的衝突</h2>
+                <p>
+                    ESP32 擁有兩組 ADC 模組：<strong>ADC1</strong>（GPIO 32–39）與 <strong>ADC2</strong>（GPIO 0, 2, 4, 12–15, 25–27）。ADC1 是專屬的類比輸入通道，任何時候都能使用。然而，ADC2 的控制權會被 Wi-Fi 驅動程式搶走——只要 Wi-Fi 功能處於啟動狀態（即使只是 Wi-Fi.begin() 還沒連上），ADC2 通道就完全無法使用。
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>ADC 模組</th>
+                            <th>可用引腳</th>
+                            <th>Wi-Fi 開啟時</th>
+                            <th>建議用途</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>ADC1</strong></td>
+                            <td>GPIO 32, 33, 34, 35, 36, 39</td>
+                            <td><i class="fas fa-check check"></i> 正常可用</td>
+                            <td>感測器、搖桿等主要類比輸入</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ADC2</strong></td>
+                            <td>GPIO 0, 2, 4, 12–15, 25–27</td>
+                            <td><i class="fas fa-times cross"></i> 無法使用</td>
+                            <td>僅在不需要 Wi-Fi 時使用</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-important">
+                    <i class="fas fa-exclamation-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        若你的專案需要同時使用 Wi-Fi 與類比感測器，<strong>必須將所有感測器接在 ADC1 的引腳上</strong>（GPIO 32–39）。這是 ESP32 IoT 開發中最常被忽略的陷阱之一。
+                    </div>
+                </div>
+
+                <h2>消除讀值抖動：移動平均濾波器</h2>
+                <p>
+                    即使你的電路完全正確，ADC 讀值仍會有 ±10 到 ±30 的微小跳動。這是因為 ESP32 內部的電源雜訊、環境電磁干擾以及 ADC 本身的量化誤差所致。對於需要穩定輸出的應用（如馬達控制或顯示面板），你需要用<strong>軟體濾波</strong>來平滑數據。
+                </p>
+                <p>
+                    最簡單且有效的方式是<strong>移動平均濾波器（Moving Average Filter）</strong>：維護一個固定長度的陣列，每次新增一筆讀值、丟棄最舊的一筆，然後取整個陣列的平均值作為輸出。
+                </p>
+                <div class="ms-code">
+                    <span class="c-kw">const int</span> <span class="c-attr">WINDOW</span> <span class="c-white">= </span><span class="c-val">10</span><span class="c-white">;</span><br>
+                    <span class="c-kw">int</span> <span class="c-attr">readings</span><span class="c-white">[</span><span class="c-attr">WINDOW</span><span class="c-white">];</span><br>
+                    <span class="c-kw">int</span> <span class="c-attr">index</span> <span class="c-white">= </span><span class="c-val">0</span><span class="c-white">;</span><br>
+                    <span class="c-kw">long</span> <span class="c-attr">total</span> <span class="c-white">= </span><span class="c-val">0</span><span class="c-white">;</span><br><br>
+                    <span class="c-kw">int</span> <span class="c-tag">smoothRead</span><span class="c-white">(</span><span class="c-kw">int</span> <span class="c-attr">pin</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">total</span> <span class="c-white">-= </span><span class="c-attr">readings</span><span class="c-white">[</span><span class="c-attr">index</span><span class="c-white">];</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">readings</span><span class="c-white">[</span><span class="c-attr">index</span><span class="c-white">] = analogRead(</span><span class="c-attr">pin</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">total</span> <span class="c-white">+= </span><span class="c-attr">readings</span><span class="c-white">[</span><span class="c-attr">index</span><span class="c-white">];</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">index</span> <span class="c-white">= (</span><span class="c-attr">index</span> <span class="c-white">+ </span><span class="c-val">1</span><span class="c-white">) % </span><span class="c-attr">WINDOW</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-attr">total</span> <span class="c-white">/ </span><span class="c-attr">WINDOW</span><span class="c-white">;</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        窗口大小（WINDOW）越大，輸出越穩定，但反應速度也越慢。一般感測器應用建議使用 10 次取樣；對於快速變化的搖桿輸入，可降為 4–5 次以保持即時性。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -790,16 +970,76 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <div class="quiz-question">
+                        <p>1. ESP32的12-bit ADC讀到2048時，對應的實際電壓約為多少？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 5.0V</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 1.65V</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 3.3V</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>2. 使用map()函式將搖桿ADC值（0~4095）轉換為轉向角度（-90°~+90°），正確的寫法是？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> map(val, 0, 255, -90, 90)</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> map(val, 0, 4095, -90, 90)</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> map(val, -90, 90, 0, 4095)</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>3. 當ESP32同時啟用Wi-Fi功能時，關於ADC的使用限制，以下哪個敘述正確？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 所有ADC通道都無法使用</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> ADC1（GPIO 32-39）正常可用，但ADC2通道會被Wi-Fi驅動程式佔用而無法使用</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> ADC的解析度會從12-bit降低為8-bit</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>4. 移動平均濾波器（Moving Average Filter）的窗口大小越大，會產生什麼效果？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 輸出越不穩定，跳動越劇烈</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 輸出越穩定平滑，但反應速度越慢</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> ADC的解析度會自動提升</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -857,9 +1097,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「ESP32 ADC 解析度與對應」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「ESP32 ADC 解析度與對應」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -875,8 +1115,16 @@
         { id: 3, label: '🪄 2. 數據映射：Map 函式的數學魔法', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '️ 3. ESP32 ADC 的真實面貌', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '150 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',              time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！電壓 = ADC讀值 × (參考電壓 ÷ 2^N) = 2048 × (3.3 ÷ 4096) = 1.65V，恰好是3.3V參考電壓的一半。' },
+        q2: { b: '正確！ESP32是12-bit ADC，讀值範圍為0~4095。map(val, 0, 4095, -90, 90)能正確將全範圍映射到±90°的轉向角度。' },
+        q3: { b: '正確！ADC2的控制權會被Wi-Fi驅動程式搶走。若專案需要同時使用Wi-Fi與類比感測器，必須將所有感測器接在ADC1（GPIO 32-39）上。' },
+        q4: { b: '正確！窗口越大，平均值越穩定平滑，但因為需要更多歷史資料才能反映新變化，反應速度也會相應變慢。一般感測器建議10次取樣。' },
+    };
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -895,6 +1143,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -996,8 +1245,38 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const fb = document.getElementById(`${q}-feedback`);
+            if (selected && selected.value === correct) {
+                score++;
+                if (fb) { fb.style.display = 'block'; fb.style.background = '#dff6dd'; fb.style.color = '#107c10'; fb.textContent = QUIZ_EXPLANATIONS[q][correct]; }
+            } else {
+                if (fb) { fb.style.display = 'block'; fb.style.background = '#fde7e9'; fb.style.color = '#d13438'; fb.textContent = selected ? '不正確，請再想想。正確答案是 ' + correct.toUpperCase() + '。' : '請選擇一個答案。'; }
+            }
+        }
+        const scoreEl = document.getElementById('quiz-score');
+        scoreEl.style.display = 'block';
+        scoreEl.textContent = `得分：${score} / ${total}`;
+        scoreEl.style.color = score === total ? '#107c10' : '#d13438';
+        if (score === total) markDone(6);
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+        document.querySelectorAll('.quiz-feedback').forEach(fb => fb.style.display = 'none');
+        document.getElementById('quiz-score').style.display = 'none';
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 03：IO 腳位對應';
 </script>
 
 <!-- Define Resources -->

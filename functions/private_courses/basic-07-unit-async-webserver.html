@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP32 Web Server 函式庫入門 - Vibe Coding Learn</title>
+    <title>ESP32 Web Server 函式庫入門 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -464,6 +466,37 @@
             .compare-grid { grid-template-columns: 1fr; }
         }
 
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
+            border: 1px solid #e1dfdd;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background .1s, border-color .1s;
+            font-size: 14px;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback {
+            display: none;
+            margin-top: 8px;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
+        .quiz-submit { margin-top: 16px; }
+
     </style>
 </head>
 
@@ -471,9 +504,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 7 - 網路通訊架構</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +518,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">ESP32 Web Server 函式庫入門</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 7</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,7 +540,7 @@
                 <h1>ESP32 Web Server 函式庫入門</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 7</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -520,9 +551,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>🛡️ 1. 非同步：網頁守門員</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>🗺️ 2. 路由與 Lambda 魔法</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>🎨 3. 範本引擎：內容與數據分離</strong> 的調校技巧與穩定性測試。</li>
+                    <li>能夠解釋非同步伺服器與同步伺服器的差異，並說明為何 ESPAsyncWebServer 不佔用 <code>loop()</code> 對即時控制系統至關重要。</li>
+                    <li>能夠使用 C++ Lambda 語法定義 <code>server.on()</code> 路由，實作 URL 參數解析並加入防禦性檢查（<code>hasParam</code>），對無效請求回傳 HTTP 400。</li>
+                    <li>能夠使用 Processor 佔位符機制（<code>%PLACEHOLDER%</code>）實現伺服器端範本引擎，將 HTML 結構與動態數據優雅分離。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -553,15 +584,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>ESP32 Web Server 函式庫入門</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    ESPAsyncWebServer 讓 ESP32 在處理網頁請求的同時不會阻塞主迴圈，
+                    這對即時控制類應用至關重要——你的馬達 PWM 更新與感測器讀取不該因為一個 HTTP 請求而卡住。
+                    本單元將帶你認識非同步伺服器的核心架構、路由設定與回應方式。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    假設你的 ESP32 同時要做三件事：每 20ms 更新馬達速度、每 100ms 讀取感測器、還要隨時回應手機送來的控制指令。
+                    如果用同步式 Web Server，一個請求就可能卡住整條 loop()。
+                    非同步架構把「等待網路 I/O」的時間還給主迴圈，讓三件事並行不悖。
                 </div>
 
                 <h2>教學影片</h2>
@@ -589,46 +621,88 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🛡️ 1. 非同步：網頁守門員</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify">
-                                通訊「即時性」至關重要。非同步則能各司其職。
-                            </p>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-justify">
-<div class="p-6 rounded-2xl border border-slate-200 shadow-sm bg-slate-50 text-justify uppercase tracking-widest">
-<h4 class="font-bold text-slate-800 mb-2 flex items-center gap-2 text-xs uppercase text-justify">
-<span>🐌</span> 同步 (Sync)
-                                    </h4>
-<p class="text-[10px] text-slate-500 font-light leading-relaxed text-justify">必須在
-                                        loop() 呼叫。忙碌時延遲。</p>
-</div>
-<div class="p-6 rounded-2xl border border-blue-100 shadow-sm bg-blue-50 text-justify uppercase tracking-widest">
-<h4 class="font-bold text-blue-800 mb-2 flex items-center gap-2 text-xs uppercase text-justify">
-<span>⚡</span> 非同步 (Async)
-                                    </h4>
-<p class="text-[10px] text-slate-500 font-light leading-relaxed text-justify border border-slate-100">
-                                        事件驅動。自動處理不佔 loop()。</p>
-</div>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 text-white bg-slate-900 text-justify">
-<h4 class="font-bold text-slate-500 mb-6 uppercase tracking-widest text-[10px] text-justify">
-                                Async Logic Analogy</h4>
-<div class="space-y-6 text-justify">
-<div class="flex items-center gap-4 text-justify">
-<span class="w-2.5 h-2.5 bg-blue-500 rounded-full animate-pulse"></span>
-<p class="text-[11px] text-slate-300 text-justify uppercase tracking-widest">
-                                        美食街領取號碼牌 (Callback)。櫃檯不需死等。</p>
-</div>
-<p class="text-slate-500 font-light leading-relaxed italic text-[11px] text-justify uppercase tracking-tighter">
-                                    "一邊 50Hz 控制馬達，一邊響應前端資料請求。"
-                                </p>
-</div>
-</div>
-</div>
-                
+                <h1>非同步：網頁守門員</h1>
+
+                <p>
+                    在 ESP32 上建立 Web Server 有兩條路線：<strong>同步（Synchronous）</strong>與<strong>非同步（Asynchronous）</strong>。
+                    兩者的根本差異在於「處理網路請求時，是否會佔用 <code>loop()</code> 函式的執行時間」。
+                    對於需要同時控制馬達、讀取感測器、又要回應網頁請求的即時系統而言，這個差異攸關生死。
+                </p>
+
+                <h2>同步 vs. 非同步：核心差異</h2>
+
+                <p>
+                    <strong>同步式 Web Server</strong>（如 Arduino 內建的 <code>WebServer.h</code>）
+                    需要你在 <code>loop()</code> 中呼叫 <code>server.handleClient()</code>。
+                    每次呼叫時，如果有請求進來，它會<strong>阻塞</strong>在那裡直到處理完畢。
+                    這意味著在處理一個 HTTP 請求的期間，你的馬達 PWM 不會更新、感測器不會讀取、
+                    LED 不會閃——整個系統「凍結」了。
+                </p>
+
+                <p>
+                    <strong>非同步式 Web Server</strong>（如 <code>ESPAsyncWebServer</code>）則完全不同。
+                    它在底層使用事件驅動機制——當有 HTTP 請求到達時，系統會自動觸發你預先註冊的回呼函式（Callback），
+                    處理完畢後立即釋放控制權。整個過程<strong>不佔用 <code>loop()</code></strong>，
+                    你的主迴圈可以專心做它該做的事。
+                </p>
+
+                <table class="ms-table">
+                    <tr><th>特性</th><th>同步式 WebServer.h</th><th>非同步式 ESPAsyncWebServer</th></tr>
+                    <tr><td>loop() 佔用</td><td>需呼叫 <code>handleClient()</code></td><td><strong>完全不佔用</strong></td></tr>
+                    <tr><td>並行處理</td><td>一次只能處理一個請求</td><td>可同時處理多個請求</td></tr>
+                    <tr><td>即時性影響</td><td>處理請求時，控制邏輯暫停</td><td><strong>控制邏輯不受影響</strong></td></tr>
+                    <tr><td>程式碼風格</td><td>輪詢式（Polling）</td><td>回呼式（Callback / Lambda）</td></tr>
+                    <tr><td>適用場景</td><td>簡單展示頁面</td><td><strong>即時控制系統、多客戶端</strong></td></tr>
+                </table>
+
+                <h2>安裝 ESPAsyncWebServer</h2>
+
+                <p>
+                    在 PlatformIO 中，你需要在 <code>platformio.ini</code> 加入兩個依賴套件：
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">; platformio.ini</span><br/>
+<span class="c-attr">lib_deps</span><span class="c-white"> =</span><br/>
+<span class="c-white">&nbsp;&nbsp;ESP Async WebServer</span><br/>
+<span class="c-white">&nbsp;&nbsp;AsyncTCP</span>
+                </div>
+
+                <p>
+                    然後在程式碼中引入標頭檔，建立伺服器實體並啟動：
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">#include</span> <span class="c-str">&lt;ESPAsyncWebServer.h&gt;</span><br/>
+<br/>
+<span class="c-tag">AsyncWebServer</span><span class="c-white"> </span><span class="c-attr">server</span><span class="c-white">(80);&nbsp;&nbsp;</span><span class="c-comment">// 監聽 Port 80</span><br/>
+<br/>
+<span class="c-kw">void</span> <span class="c-tag">setup</span><span class="c-white">() {</span><br/>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// ... WiFi 連線設定 ...</span><br/>
+<br/>
+<span class="c-white">&nbsp;&nbsp;server.</span><span class="c-tag">on</span><span class="c-white">(</span><span class="c-str">"/"</span><span class="c-white">, HTTP_GET, [](AsyncWebServerRequest *req) {</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;req-></span><span class="c-tag">send</span><span class="c-white">(200, </span><span class="c-str">"text/plain"</span><span class="c-white">, </span><span class="c-str">"ESP32 is alive!"</span><span class="c-white">);</span><br/>
+<span class="c-white">&nbsp;&nbsp;});</span><br/>
+<br/>
+<span class="c-white">&nbsp;&nbsp;server.</span><span class="c-tag">begin</span><span class="c-white">();</span><br/>
+<span class="c-white">}</span><br/>
+<br/>
+<span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span><br/>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 完全空的！Web Server 在背景自動運作</span><br/>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 這裡可以專心做馬達控制、感測器讀取</span><br/>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        雖然非同步伺服器不阻塞 <code>loop()</code>，但回呼函式本身仍然是在<strong>主執行緒</strong>中執行的。
+                        因此在回呼函式中<strong>絕不可以使用 <code>delay()</code></strong>，也不應該執行耗時超過數毫秒的操作。
+                        如需讀取慢速感測器，應提前將數值快取到全域變數中，在回呼中直接回傳快取值。
+                    </div>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
@@ -646,39 +720,93 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🗺️ 2. 路由與 Lambda 魔法</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify">
-                                利用 C++11 的 <strong>Lambda (匿名函式)</strong>。直接定義處理邏輯。
-                            </p>
-<div class="p-8 rounded-3xl border border-indigo-100 shadow-sm bg-indigo-50 text-justify uppercase tracking-widest">
-<h4 class="font-bold text-indigo-900 mb-4 text-xs uppercase tracking-widest italic text-justify">
-                                    Request Handling</h4>
-<ul class="space-y-3 text-slate-600 font-light text-[11px] text-justify uppercase tracking-tighter">
-<li class="flex items-center gap-2 text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span><strong class="text-indigo-900">路徑對應</strong>：對準特定功能區。</li>
-<li class="flex items-center gap-2 text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span><strong class="text-indigo-900 font-black">非阻塞回應</strong>：發送後立即釋放。</li>
-<li class="flex items-center gap-2 text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span><strong class="text-indigo-900 uppercase">參數捕獲</strong>：提取即時數值。</li>
-</ul>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 bg-slate-900 text-justify">
-<div class="flex items-center gap-3 mb-6">
-<span class="w-3 h-3 bg-red-400 rounded-full"></span>
-<span class="w-3 h-3 bg-amber-400 rounded-full"></span>
-<span class="w-3 h-3 bg-emerald-400 rounded-full"></span>
-<span class="ml-auto text-[10px] text-slate-500 font-mono tracking-widest text-justify uppercase tracking-widest">LAMBDA
-                                    SYNTAX</span>
-</div>
-<pre class="text-xs md:text-sm leading-relaxed overflow-x-auto text-blue-300 font-mono text-justify uppercase tracking-widest font-black">
-<span class="text-blue-500 text-justify">server</span>.<span class="text-emerald-400 text-justify">on</span>(<span class="text-amber-200">"/on"</span>, <span class="text-purple-400">HTTP_GET</span>, [](<span class="text-blue-400 text-justify">AsyncWebServerRequest</span> *req){
-  <span class="text-yellow-400 text-justify">digitalWrite</span>(LED, <span class="text-purple-400">HIGH</span>);
-  req-&gt;<span class="text-blue-400 text-justify uppercase tracking-widest">send</span>(200, <span class="text-amber-200 uppercase tracking-tighter">"text/plain"</span>, <span class="text-amber-200">"LED is ON"</span>);
-});</pre>
-</div>
-</div>
-                
+                <h1>路由與 Lambda 魔法</h1>
+
+                <p>
+                    <strong>路由（Route）</strong>是 Web Server 的靈魂——它定義了「什麼 URL 路徑 + 什麼 HTTP 方法」
+                    會觸發什麼處理邏輯。在 ESPAsyncWebServer 中，路由的定義使用了 C++11 的
+                    <strong>Lambda 表達式（匿名函式）</strong>，讓你可以用極簡的語法將路徑與處理邏輯綁定在一起。
+                </p>
+
+                <h2>server.on() 基本語法</h2>
+
+                <p>
+                    <code>server.on()</code> 接受三個參數：URL 路徑、HTTP 方法、以及一個 Lambda 處理函式。
+                    當有請求匹配路徑與方法時，對應的 Lambda 會被自動呼叫。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 根路徑 GET — 回傳首頁</span><br/>
+<span class="c-attr">server</span><span class="c-white">.</span><span class="c-tag">on</span><span class="c-white">(</span><span class="c-str">"/"</span><span class="c-white">, HTTP_GET,</span><br/>
+<span class="c-white">&nbsp;&nbsp;[](AsyncWebServerRequest *</span><span class="c-attr">request</span><span class="c-white">) {</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;request-></span><span class="c-tag">send</span><span class="c-white">(200, </span><span class="c-str">"text/html"</span><span class="c-white">, htmlPage);</span><br/>
+<span class="c-white">});</span><br/>
+<br/>
+<span class="c-comment">// 控制 LED — 帶 URL 參數</span><br/>
+<span class="c-attr">server</span><span class="c-white">.</span><span class="c-tag">on</span><span class="c-white">(</span><span class="c-str">"/set_led"</span><span class="c-white">, HTTP_GET,</span><br/>
+<span class="c-white">&nbsp;&nbsp;[](AsyncWebServerRequest *</span><span class="c-attr">request</span><span class="c-white">) {</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (request-></span><span class="c-tag">hasParam</span><span class="c-white">(</span><span class="c-str">"value"</span><span class="c-white">)) {</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">int</span><span class="c-white"> val = request->getParam(</span><span class="c-str">"value"</span><span class="c-white">)->value().toInt();</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;analogWrite(LED_PIN, constrain(val, 0, 255));</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;request-></span><span class="c-tag">send</span><span class="c-white">(200, </span><span class="c-str">"text/plain"</span><span class="c-white">, </span><span class="c-str">"LED set to "</span><span class="c-white"> + String(val));</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;} </span><span class="c-kw">else</span><span class="c-white"> {</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;request-></span><span class="c-tag">send</span><span class="c-white">(</span><span class="c-val">400</span><span class="c-white">, </span><span class="c-str">"text/plain"</span><span class="c-white">, </span><span class="c-str">"Missing 'value' param"</span><span class="c-white">);</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br/>
+<span class="c-white">});</span>
+                </div>
+
+                <h2>URL 參數解析</h2>
+
+                <p>
+                    當使用者存取 <code>/set_led?value=128</code> 時，<code>?</code> 之後的部分就是<strong>查詢參數（Query Parameter）</strong>。
+                    ESPAsyncWebServer 提供了便利的 API 來提取這些參數：
+                </p>
+
+                <table class="ms-table">
+                    <tr><th>API</th><th>功能</th><th>回傳值</th></tr>
+                    <tr><td><code>request->hasParam("key")</code></td><td>檢查參數是否存在</td><td><code>bool</code></td></tr>
+                    <tr><td><code>request->getParam("key")</code></td><td>取得參數物件</td><td><code>AsyncWebParameter*</code></td></tr>
+                    <tr><td><code>param->value()</code></td><td>取得參數值（字串）</td><td><code>String</code></td></tr>
+                    <tr><td><code>request->params()</code></td><td>取得參數總數</td><td><code>int</code></td></tr>
+                </table>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        <strong>永遠先檢查參數是否存在</strong>，再嘗試取值。如果直接呼叫
+                        <code>request->getParam("value")->value()</code> 而參數不存在，
+                        將會造成<strong>空指標存取（Null Pointer Dereference）</strong>，
+                        導致 ESP32 立即崩潰重啟。使用 <code>hasParam()</code> 是防禦性程式設計的基本功。
+                    </div>
+                </div>
+
+                <h2>處理 404 — 未匹配的路由</h2>
+
+                <p>
+                    當使用者存取一個你沒有定義的路徑時，ESPAsyncWebServer 允許你設定一個全域的
+                    「未匹配」處理器，回傳友善的 404 訊息，而不是讓客戶端看到連線逾時：
+                </p>
+
+                <div class="ms-code">
+<span class="c-attr">server</span><span class="c-white">.</span><span class="c-tag">onNotFound</span><span class="c-white">(</span><br/>
+<span class="c-white">&nbsp;&nbsp;[](AsyncWebServerRequest *</span><span class="c-attr">request</span><span class="c-white">) {</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;request-></span><span class="c-tag">send</span><span class="c-white">(</span><span class="c-val">404</span><span class="c-white">, </span><span class="c-str">"text/plain"</span><span class="c-white">,</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-str">"Not Found: "</span><span class="c-white"> + request->url());</span><br/>
+<span class="c-white">});</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        Lambda 中的 <code>[]</code> 是<strong>捕獲列表（Capture List）</strong>。
+                        若你需要在 Lambda 中存取外部變數，可以使用 <code>[&amp;]</code>（按參考捕獲所有外部變數）
+                        或 <code>[=]</code>（按值捕獲）。但在嵌入式環境中建議謹慎使用，
+                        因為捕獲過多變數可能增加堆疊使用量。
+                    </div>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
@@ -696,44 +824,104 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🎨 3. 範本引擎：內容與數據分離</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify uppercase tracking-tight">
-                                利用 <code>Processor</code> 佔位符。其實現優雅分離。
-                            </p>
-<div class="p-8 rounded-3xl border border-purple-500/20 shadow-inner bg-purple-500/10 text-justify uppercase tracking-widest">
-<h4 class="font-bold text-purple-400 mb-4 text-xs uppercase tracking-widest text-justify">
-                                    Server-side Rendering</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify">
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">R"rawliteral"</strong>：保留 HTML 縮排。
-                                        </div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span>
-<div><strong class="text-white">%PLACEHOLDER%</strong>：發送前替換數值。</div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">Processor
-                                                Callback</strong>：集中管理替換邏輯。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 p-10 rounded-3xl border border-purple-500/20 text-center relative overflow-hidden group bg-purple-600/10 text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-purple-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-purple-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-justify">
-                                Template Power</h4>
-<p class="text-slate-500 leading-relaxed font-light mb-8 italic text-[11px] text-justify uppercase tracking-tighter">
-                                "C++ 專通邏輯。網頁字串專注呈現。"
-                            </p>
-<div class="inline-block px-8 py-3 bg-purple-500 text-white rounded-xl font-bold text-[10px] shadow-lg text-justify uppercase tracking-widest">
-                                View Processor Handler</div>
-</div>
-</div>
-                
+                <h1>範本引擎：內容與數據分離</h1>
+
+                <p>
+                    隨著你的 ESP32 Web 介面越來越複雜，你會發現一個痛點：HTML 字串直接寫在 C++ 程式碼中，
+                    既難閱讀又難維護。更糟的是，如果你需要在 HTML 中顯示動態數據（如感測器即時數值），
+                    就得用大量的 <code>String</code> 拼接——又慢又耗記憶體。
+                </p>
+
+                <p>
+                    ESPAsyncWebServer 的 <strong>Processor 佔位符機制</strong>優雅地解決了這個問題。
+                    你可以在 HTML 字串中放入 <code>%PLACEHOLDER%</code> 標記，
+                    伺服器在回傳網頁時會自動呼叫你定義的 Processor 函式，將佔位符替換為真實數據。
+                    這就是嵌入式版本的<strong>伺服器端渲染（Server-Side Rendering, SSR）</strong>。
+                </p>
+
+                <h2>R"rawliteral" — 保持 HTML 原始格式</h2>
+
+                <p>
+                    C++ 的 <code>R"rawliteral(...)rawliteral"</code> 語法允許你在程式碼中直接嵌入多行字串，
+                    不需要跳脫引號或換行符號。這讓你的 HTML 模板能保持完整的排版格式，
+                    大幅提升可讀性：
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">const char</span><span class="c-white"> </span><span class="c-attr">htmlPage</span><span class="c-white">[] PROGMEM = R"rawliteral(</span><br/>
+<span class="c-str">&lt;!DOCTYPE html&gt;</span><br/>
+<span class="c-str">&lt;html&gt;</span><br/>
+<span class="c-str">&lt;body&gt;</span><br/>
+<span class="c-str">&nbsp;&nbsp;&lt;h1&gt;ESP32 Dashboard&lt;/h1&gt;</span><br/>
+<span class="c-str">&nbsp;&nbsp;&lt;p&gt;Uptime: &lt;strong&gt;</span><span class="c-val">%UPTIME%</span><span class="c-str">&lt;/strong&gt; seconds&lt;/p&gt;</span><br/>
+<span class="c-str">&nbsp;&nbsp;&lt;p&gt;Free Heap: &lt;strong&gt;</span><span class="c-val">%HEAP%</span><span class="c-str">&lt;/strong&gt; bytes&lt;/p&gt;</span><br/>
+<span class="c-str">&nbsp;&nbsp;&lt;p&gt;WiFi RSSI: &lt;strong&gt;</span><span class="c-val">%RSSI%</span><span class="c-str">&lt;/strong&gt; dBm&lt;/p&gt;</span><br/>
+<span class="c-str">&lt;/body&gt;</span><br/>
+<span class="c-str">&lt;/html&gt;</span><br/>
+<span class="c-white">)rawliteral";</span>
+                </div>
+
+                <h2>Processor 回呼函式</h2>
+
+                <p>
+                    接下來，定義一個 <code>processor</code> 函式。每當伺服器在 HTML 中遇到 <code>%...%</code> 標記時，
+                    就會呼叫這個函式，傳入佔位符名稱，並以回傳值替換之：
+                </p>
+
+                <div class="ms-code">
+<span class="c-tag">String</span> <span class="c-tag">processor</span><span class="c-white">(</span><span class="c-kw">const</span><span class="c-white"> String &amp;</span><span class="c-attr">var</span><span class="c-white">) {</span><br/>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (var == </span><span class="c-str">"UPTIME"</span><span class="c-white">)</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span><span class="c-white"> String(millis() / 1000);</span><br/>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (var == </span><span class="c-str">"HEAP"</span><span class="c-white">)</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span><span class="c-white"> String(ESP.getFreeHeap());</span><br/>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (var == </span><span class="c-str">"RSSI"</span><span class="c-white">)</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span><span class="c-white"> String(WiFi.RSSI());</span><br/>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">return</span><span class="c-white"> String();&nbsp;&nbsp;</span><span class="c-comment">// 未知佔位符回傳空字串</span><br/>
+<span class="c-white">}</span>
+                </div>
+
+                <p>
+                    最後，在路由中將 HTML 字串與 Processor 函式綁定：
+                </p>
+
+                <div class="ms-code">
+<span class="c-attr">server</span><span class="c-white">.</span><span class="c-tag">on</span><span class="c-white">(</span><span class="c-str">"/"</span><span class="c-white">, HTTP_GET,</span><br/>
+<span class="c-white">&nbsp;&nbsp;[](AsyncWebServerRequest *</span><span class="c-attr">request</span><span class="c-white">) {</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;request-></span><span class="c-tag">send_P</span><span class="c-white">(200, </span><span class="c-str">"text/html"</span><span class="c-white">, htmlPage, processor);</span><br/>
+<span class="c-white">});</span>
+                </div>
+
+                <h2>常用佔位符設計參考</h2>
+
+                <table class="ms-table">
+                    <tr><th>佔位符</th><th>Processor 中的回傳值</th><th>用途</th></tr>
+                    <tr><td><code>%UPTIME%</code></td><td><code>millis() / 1000</code></td><td>顯示系統運行秒數</td></tr>
+                    <tr><td><code>%HEAP%</code></td><td><code>ESP.getFreeHeap()</code></td><td>監測剩餘記憶體</td></tr>
+                    <tr><td><code>%RSSI%</code></td><td><code>WiFi.RSSI()</code></td><td>Wi-Fi 訊號強度</td></tr>
+                    <tr><td><code>%TEMP%</code></td><td>感測器讀值變數</td><td>溫度即時顯示</td></tr>
+                    <tr><td><code>%LED_STATE%</code></td><td><code>"ON"</code> 或 <code>"OFF"</code></td><td>LED 當前狀態</td></tr>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        使用 <code>send_P()</code>（注意結尾的 <code>_P</code>）可以直接從 <strong>PROGMEM（Flash 記憶體）</strong>讀取 HTML 字串，
+                        避免將整個網頁載入 RAM。當你的 HTML 超過 4KB 時，這個技巧能顯著節省寶貴的堆疊空間。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        佔位符名稱中<strong>不可以包含 <code>%</code> 字元本身</strong>。
+                        如果你的 HTML 中需要顯示百分比符號（如 CSS 的 <code>width: 50%</code>），
+                        Processor 可能會誤判。解決方法是使用 <code>%%</code>（兩個百分號）來跳脫，
+                        或將 CSS 移到 <code>&lt;style&gt;</code> 標籤外的獨立檔案中。
+                    </div>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
@@ -816,16 +1004,82 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
-                    <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div class="unit-completed-badge" id="badge-6" style="display:none">
+                        <i class="fas fa-check"></i> 已完成
+                    </div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <!-- Q1 -->
+                    <div class="quiz-question" id="q1">
+                        <p>1. ESPAsyncWebServer 相比同步式 WebServer.h，最關鍵的差異是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 支援更多的 HTTP 方法（如 PUT、DELETE）</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 不佔用 loop()，控制邏輯不受 HTTP 請求處理影響</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 可以同時連接更多的 Wi-Fi 客戶端</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="quiz-question" id="q2">
+                        <p>2. 在 ESPAsyncWebServer 的路由回呼函式中，為什麼不可以使用 delay()？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> delay() 在非同步模式下會被自動忽略</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 回呼函式仍在主執行緒中執行，delay() 會阻塞整個系統</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> delay() 會導致 Wi-Fi 連線中斷</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="quiz-question" id="q3">
+                        <p>3. 存取 /set_led 路由但未帶 value 參數時，若未使用 hasParam() 檢查就直接呼叫 getParam()，會發生什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> ESP32 會自動回傳 HTTP 404 錯誤</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> getParam() 會回傳空字串，程式繼續正常運行</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 造成空指標存取（Null Pointer Dereference），導致 ESP32 崩潰重啟</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="quiz-question" id="q4">
+                        <p>4. Processor 佔位符機制（%PLACEHOLDER%）的主要優勢是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 可以讓網頁自動定時刷新資料</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 將 HTML 結構與動態數據分離，避免在 C++ 中進行大量字串拼接</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 自動將資料加密後才嵌入 HTML</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" style="margin-left:8px; display:none;" id="quiz-reset-btn">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -883,9 +1137,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「ESP32 Web Server 函式庫入門」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「ESP32 Web Server 函式庫入門」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -901,8 +1155,17 @@
         { id: 3, label: '🗺️ 2. 路由與 Lambda 魔法', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🎨 3. 範本引擎：內容與數據分離', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '4 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'c', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '非同步伺服器使用事件驅動機制，HTTP 請求在背景處理，不佔用 loop()，讓馬達控制、感測器讀取等即時任務不受影響。' },
+        q2: { b: '雖然非同步伺服器不阻塞 loop()，但回呼函式本身仍在主執行緒中執行，使用 delay() 會阻塞所有操作，應將慢速數據提前快取。' },
+        q3: { c: '未做參數存在性檢查就直接取值會造成空指標存取，導致 ESP32 崩潰重啟。使用 hasParam() 是防禦性程式設計的基本功。' },
+        q4: { b: 'Processor 讓你在 HTML 中放入佔位符，伺服器回傳時自動替換為真實數據，實現嵌入式版本的伺服器端渲染（SSR），避免手動拼接字串。' },
+    };
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -921,6 +1184,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1022,8 +1286,74 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        let total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            const options = document.querySelectorAll(`input[name="${qid}"]`);
+
+            options.forEach(opt => {
+                opt.disabled = true;
+                const label = opt.parentElement;
+                if (opt.value === answer) label.classList.add('correct');
+                if (opt.checked && opt.value !== answer) label.classList.add('wrong');
+            });
+
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                const exp = QUIZ_EXPLANATIONS[qid][answer];
+                feedbackEl.textContent = '✗ 不正確。' + exp;
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        scoreEl.style.display = 'block';
+        const pct = Math.round(correct / total * 100);
+        const pass = pct >= 75;
+        scoreEl.innerHTML = `
+            <span style="font-size:20px;">${pass ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pass ? '通過！你已掌握本模組的核心概念。' : '建議回顧相關單元後再試一次。'}</div>
+        `;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => {
+            el.classList.remove('correct','wrong');
+        });
+        document.querySelectorAll('input[type=radio]').forEach(el => {
+            el.checked = false;
+            el.disabled = false;
+        });
+        document.querySelectorAll('.quiz-feedback').forEach(el => {
+            el.className = 'quiz-feedback';
+            el.textContent = '';
+        });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 07：WiFi 模式與 WebServer';
 </script>
 
 <!-- Define Resources -->

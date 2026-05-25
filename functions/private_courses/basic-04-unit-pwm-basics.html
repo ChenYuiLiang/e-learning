@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP32 PWM 基礎：占空比的魔法 - Vibe Coding Learn</title>
+    <title>ESP32 PWM 基礎：占空比的魔法 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 4 - 能量調變控制</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">ESP32 PWM 基礎：占空比的魔法</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 4</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>ESP32 PWM 基礎：占空比的魔法</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 4</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -521,9 +521,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>🌉 1. 數位轉類比：什麼是 PWM？</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>能量等效：平均電壓原理</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>🛠️ 3. ESP32 LEDC 控制核心</strong> 的調校技巧與穩定性測試。</li>
+                    <li>能夠解釋 PWM 的運作原理，利用平均電壓公式 \(V_{avg} = V_{max} \times Duty\%\) 計算不同占空比下的等效電壓輸出。</li>
+                    <li>能夠使用 ESP32 LEDC 模組配置 PWM 頻率與解析度，並理解頻率過低導致 LED 閃爍或馬達抽搐的原因。</li>
+                    <li>能夠實作 Gamma 校正呼吸燈補償人眼非線性感知，並撰寫 <code>smartDrive()</code> 函式克服馬達靜摩擦力的啟動死區。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -554,15 +554,14 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>ESP32 PWM 基礎：占空比的魔法</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    數位腳位只有 0 與 1，但透過 <strong>PWM（脈衝寬度調變）</strong>，我們能用極高頻的開關切換模擬出任意中間電壓。
+                    本單元將帶你從占空比公式出發，理解「寬度即能量」的物理本質，並學會用數學補償人眼感知與馬達摩擦力的非線性偏差。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你寫了一個呼吸燈程式，亮度從 0 線性遞增到 255，但肉眼看來「前半段幾乎沒變化，後半段突然爆亮」。
+                    同時，馬達在低速指令下完全不轉，只發出嗡嗡聲並開始發燙——這些都是因為你還不了解 PWM 背後的感知補償與死區問題。
                 </div>
 
                 <h2>教學影片</h2>
@@ -576,7 +575,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -590,39 +589,84 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🌉 1. 數位轉類比：什麼是 PWM？</h1>
+                <h1>數位轉類比：什麼是 PWM？</h1>
                 
-                <div class="space-y-6 text-gray-600">
-<p class="text-lg leading-relaxed text-justify">
-                                    電腦腳位本質數位的，只能輸出 0V 或 3.3V。透過 <strong>PWM</strong>，我們可以模擬中間值。
-                                </p>
-<p class="text-lg leading-relaxed font-light text-justify">
-                                    利用高頻切換開關，讓設備因物理慣性感受「平均能量」。
-                                </p>
-<div class="bg-purple-50 p-6 rounded-2xl border border-purple-100 mt-4 text-justify">
-<h4 class="font-bold text-purple-900 mb-4 text-sm uppercase tracking-widest text-justify">
-                                        占空比 (Duty Cycle)</h4>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-<div class="p-4 bg-white rounded-xl shadow-sm border border-purple-200 group hover:bg-purple-600 transition-colors duration-300 text-justify">
-<div class="text-xs text-purple-500 group-hover:text-purple-200 mb-1 text-justify">
-                                                25% Duty Cycle</div>
-<p class="text-xs text-slate-600 group-hover:text-white text-justify">像是
-                                                3.3V 的 1/4 強度。</p>
-</div>
-<div class="p-4 bg-white rounded-xl shadow-sm border border-purple-200 group hover:bg-purple-600 transition-colors duration-300 text-justify">
-<div class="text-xs text-purple-500 group-hover:text-purple-200 mb-1 text-justify">
-                                                75% Duty Cycle</div>
-<p class="text-xs text-slate-600 group-hover:text-white text-justify uppercase tracking-widest">
-                                                高電位占多數。</p>
-</div>
-</div>
-</div>
-</div>
+                <p>
+                    微控制器的 GPIO 腳位本質上是<strong>數位</strong>的——它只能輸出邏輯高電位（3.3V）或邏輯低電位（0V），不存在「中間值」。然而在實際應用中，我們經常需要控制 LED 的亮度、馬達的轉速、蜂鳴器的音量等「類比」特性。<strong>PWM（Pulse Width Modulation，脈衝寬度調變）</strong>正是解決這個矛盾的核心技術。
+                </p>
+
+                <p>
+                    PWM 的原理其實很直觀：透過極高頻率的開關切換（每秒數千甚至數萬次），讓輸出在 HIGH 與 LOW 之間快速交替。由於切換速度遠超過負載（LED、馬達）的物理響應時間，負載實際感受到的是一段時間內的<strong>平均功率</strong>，而非離散的脈衝。這就像電影膠卷——每秒 24 幀靜態畫面，在人眼中卻呈現為連續動態。
+                </p>
+
+                <h2>占空比（Duty Cycle）：寬度即能量</h2>
+
+                <p>
+                    在一個完整的 PWM 週期中，高電位所佔的時間比例稱為<strong>占空比（Duty Cycle）</strong>。占空比以百分比表示，直接決定了負載接收到的平均能量：
+                </p>
+
+                <ul>
+                    <li><strong>0% 占空比</strong>：腳位持續輸出 LOW，等效電壓為 0V，LED 熄滅、馬達停止。</li>
+                    <li><strong>25% 占空比</strong>：每個週期中有 1/4 時間為 HIGH，等效電壓約為 0.825V。</li>
+                    <li><strong>50% 占空比</strong>：HIGH 與 LOW 各佔一半，等效電壓為 1.65V。</li>
+                    <li><strong>75% 占空比</strong>：大部分時間維持 HIGH，等效電壓約為 2.475V。</li>
+                    <li><strong>100% 占空比</strong>：持續輸出 HIGH，等效電壓為滿幅 3.3V。</li>
+                </ul>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        PWM 並非真正的類比輸出——腳位電壓在任何瞬間仍然只有 0V 或 3.3V。它是透過「時間平均」的方式模擬中間值。如果你需要真正平滑的類比電壓輸出，需要外加 RC 低通濾波器或使用 DAC（數位類比轉換器）。
+                    </div>
+                </div>
+
+                <h2>頻率的角色</h2>
+
+                <p>
+                    PWM 頻率決定了每秒鐘產生多少個完整的脈衝週期。頻率的選擇直接影響控制品質：
+                </p>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>頻率範圍</th>
+                        <th>適用場景</th>
+                        <th>現象描述</th>
+                    </tr>
+                    <tr>
+                        <td>1–10 Hz</td>
+                        <td>教學觀察用</td>
+                        <td>肉眼可見 LED 閃爍，馬達明顯抽搐</td>
+                    </tr>
+                    <tr>
+                        <td>100–500 Hz</td>
+                        <td>低階伺服控制</td>
+                        <td>LED 有微閃感，馬達有輕微嗡鳴</td>
+                    </tr>
+                    <tr>
+                        <td>1–5 kHz</td>
+                        <td>LED 調光</td>
+                        <td>人眼無法察覺閃爍，適合照明應用</td>
+                    </tr>
+                    <tr>
+                        <td>15–25 kHz</td>
+                        <td>馬達驅動</td>
+                        <td>超越人耳聽覺範圍（20kHz），靜音運轉</td>
+                    </tr>
+                </table>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        選擇 PWM 頻率時的經驗法則：LED 使用 5kHz 以上避免視覺閃爍；馬達使用 20kHz 以上避免可聽見的嘯叫噪音。頻率越高，每個週期越短，硬體對占空比的解析精度也會隨之下降。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -636,43 +680,104 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚡ 2. 能量等效：平均電壓原理</h1>
+                <h1>能量等效：平均電壓原理</h1>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-<div class="space-y-8 text-justify">
-<div class="bg-blue-50 p-8 rounded-3xl border border-blue-100 text-justify">
-<h4 class="font-bold text-blue-900 mb-4 flex items-center gap-2 text-justify uppercase tracking-widest">
-<span>∑</span> 電壓等效公式
-                                </h4>
-<div class="bg-white p-6 rounded-2xl shadow-inner border border-blue-200 text-center text-2xl font-[Outfit] text-justify uppercase tracking-tighter">
-                                    \[V_{avg} = V_{max} \times \text{Duty Cycle}\]
-                                </div>
-</div>
-<p class="text-gray-600 leading-relaxed font-light text-justify">
-                                為什麼看不出閃爍？因為頻率超越了「視覺暫留」與物理慣性。
-                            </p>
-</div>
-<div class="p-8 rounded-3xl border border-slate-700 shadow-2xl overflow-hidden group bg-slate-900 text-justify">
-<h4 class="text-white font-bold mb-6 flex items-center gap-2 text-sm uppercase tracking-widest text-justify">
-<span class="w-2 h-2 bg-emerald-500 rounded-full animate-ping text-justify"></span>
-                                Oscilloscope Visual
-                            </h4>
-<div class="aspect-video rounded-2xl p-6 border border-white/5 shadow-inner bg-black/50 text-justify">
-<svg class="w-full h-auto text-justify" viewbox="0 0 200 100">
-<path class="group-hover:stroke-emerald-400 transition-colors" d="M 0 80 L 10 80 L 10 20 L 30 20 L 30 80 L 50 80 L 50 20 L 70 20 L 70 80 L 90 80 L 90 20 L 110 20 L 110 80 L 130 80" fill="none" stroke="#22c55e" stroke-width="2"></path>
-<line stroke="#475569" stroke-dasharray="4,4" x1="0" x2="200" y1="50" y2="50"></line>
-<text class="opacity-50" fill="#22c55e" font-family="monospace" font-size="6" x="5" y="12">50% DUTY @ 5kHz</text>
-</svg>
-</div>
-<p class="text-center text-slate-500 mt-6 italic text-[10px] text-justify uppercase tracking-widest">
-                                方波寬度定義輸出能量</p>
-</div>
-</div>
+                <p>
+                    理解 PWM 如何模擬類比電壓的關鍵在於<strong>平均電壓公式</strong>。當 PWM 頻率夠高時，負載感受到的等效直流電壓可以用以下公式精確計算：
+                </p>
+
+                <p style="text-align:center; font-size:18px; margin:24px 0; font-weight:600;">
+                    \[V_{avg} = V_{max} \times \text{Duty Cycle}\]
+                </p>
+
+                <p>
+                    其中 \(V_{max}\) 是 GPIO 的高電位電壓（ESP32 為 3.3V），Duty Cycle 是占空比（0 到 1 之間的小數）。例如，當占空比為 60% 時：
+                </p>
+
+                <p style="text-align:center; margin:16px 0;">
+                    \[V_{avg} = 3.3V \times 0.6 = 1.98V\]
+                </p>
+
+                <p>
+                    這個公式的物理含義非常直觀：在一個完整週期 \(T\) 中，高電位持續時間為 \(T_{on}\)，那麼負載接收到的能量正比於 \(T_{on}/T\)，也就是占空比本身。這就是為什麼 PWM 常被稱為「能量調變」——我們透過控制時間寬度來控制能量傳遞。
+                </p>
+
+                <h2>為什麼看不到閃爍？</h2>
+
+                <p>
+                    你可能會好奇：既然 LED 不斷在亮與滅之間切換，為什麼我們看不到閃爍？答案在於兩個物理現象：
+                </p>
+
+                <ul>
+                    <li><strong>視覺暫留（Persistence of Vision）</strong>：人眼對光的變化反應時間約為 16ms（約 60Hz），當 PWM 頻率超過此閾值，大腦會自動將脈衝「平滑化」為連續亮度。</li>
+                    <li><strong>物理慣性</strong>：馬達轉子具有機械慣性，即使供電瞬間中斷，轉子不會立刻停止。只要脈衝間隔夠短（頻率夠高），轉速便能維持穩定。</li>
+                </ul>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        如果將 PWM 頻率設得太低（例如 1Hz），LED 會像閃光燈一樣明顯閃爍，馬達則會出現「抽搐」現象——轉一下停一下，不僅無法穩定運作，還可能因為頻繁啟停產生過大電流而損壞驅動電路。在作業 4-1 中你將親眼觀察這個現象。
+                    </div>
+                </div>
+
+                <h2>實測驗證：占空比對照表</h2>
+
+                <p>
+                    以下是在 ESP32（\(V_{max} = 3.3V\)）上設定不同占空比時的理論平均電壓值。你可以在實作中使用三用電表的 DC 電壓檔來驗證：
+                </p>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>占空比 (Duty %)</th>
+                        <th>計算式</th>
+                        <th>等效電壓 (V)</th>
+                        <th>LED 表現</th>
+                    </tr>
+                    <tr>
+                        <td>0%</td>
+                        <td><code>3.3 × 0.00</code></td>
+                        <td>0 V</td>
+                        <td>完全熄滅</td>
+                    </tr>
+                    <tr>
+                        <td>25%</td>
+                        <td><code>3.3 × 0.25</code></td>
+                        <td>0.825 V</td>
+                        <td>微弱亮光</td>
+                    </tr>
+                    <tr>
+                        <td>50%</td>
+                        <td><code>3.3 × 0.50</code></td>
+                        <td>1.65 V</td>
+                        <td>中等亮度</td>
+                    </tr>
+                    <tr>
+                        <td>75%</td>
+                        <td><code>3.3 × 0.75</code></td>
+                        <td>2.475 V</td>
+                        <td>明亮</td>
+                    </tr>
+                    <tr>
+                        <td>100%</td>
+                        <td><code>3.3 × 1.00</code></td>
+                        <td>3.3 V</td>
+                        <td>最大亮度</td>
+                    </tr>
+                </table>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        使用三用電表量測 PWM 輸出時，請切換到 DC 電壓模式。電表內部的 RC 濾波會自動將高頻脈衝平均化，顯示的讀數就是理論計算的 \(V_{avg}\)。如果使用示波器，你則能看到完整的方波波形，直接觀察占空比的變化。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -686,28 +791,103 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🛠️ 3. ESP32 LEDC 控制核心</h1>
+                <h1>ESP32 LEDC 控制核心</h1>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-justify">
-<div class="p-6 bg-white/5 rounded-2xl border border-white/10 hover:border-purple-500/50 transition duration-300 text-justify">
-<h4 class="font-bold text-purple-400 mb-2 text-justify">解析度 (Resolution)</h4>
-<p class="text-xs text-slate-400 leading-relaxed font-light text-justify">
-                                        精細度。8-bit 可分 256 階。
-                                    </p>
-</div>
-<div class="p-6 bg-white/5 rounded-2xl border border-white/10 hover:border-indigo-500/50 transition duration-300 text-justify">
-<h4 class="font-bold text-indigo-400 text-justify uppercase tracking-widest">PWM 頻率
-                                        (Frequency)</h4>
-<p class="text-xs text-slate-400 leading-relaxed font-light text-justify">
-                                        LED 建議 5000Hz；馬達一般 1k~20kHz。
-                                    </p>
-</div>
-</div>
+                <p>
+                    ESP32 內建的 <strong>LEDC（LED Control）</strong>模組是專為 PWM 輸出設計的硬體外設。與 Arduino 的 <code>analogWrite()</code> 不同，LEDC 提供完整的硬體 Timer 支援，讓你能精確控制頻率與解析度，並同時管理最多 16 路獨立的 PWM 頻道。
+                </p>
+
+                <p>
+                    LEDC 的核心運作可以用三個層級來理解：<strong>Timer（定時器）</strong>負責產生時鐘基準，決定 PWM 頻率；<strong>Channel（頻道）</strong>負責設定各路輸出的占空比；<strong>GPIO（腳位）</strong>則是最終輸出方波的物理引腳。一個 Timer 可以服務多個 Channel，但共用 Timer 的所有 Channel 必須使用相同的頻率。
+                </p>
+
+                <h2>解析度（Resolution）：精細度的代價</h2>
+
+                <p>
+                    解析度決定了占空比能被分割成多少個離散階層。ESP32 支援 1-bit 到 20-bit 的解析度：
+                </p>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>解析度</th>
+                        <th>階層數</th>
+                        <th>最大值</th>
+                        <th>適用場景</th>
+                    </tr>
+                    <tr>
+                        <td>8-bit</td>
+                        <td>256 階</td>
+                        <td><code>255</code></td>
+                        <td>一般 LED 調光、簡單馬達控制</td>
+                    </tr>
+                    <tr>
+                        <td>10-bit</td>
+                        <td>1024 階</td>
+                        <td><code>1023</code></td>
+                        <td>精細馬達速度控制</td>
+                    </tr>
+                    <tr>
+                        <td>12-bit</td>
+                        <td>4096 階</td>
+                        <td><code>4095</code></td>
+                        <td>伺服馬達、高精度定位</td>
+                    </tr>
+                    <tr>
+                        <td>16-bit</td>
+                        <td>65536 階</td>
+                        <td><code>65535</code></td>
+                        <td>專業照明、科學儀器</td>
+                    </tr>
+                </table>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        解析度與頻率之間存在硬體限制的權衡關係（Trade-off）。ESP32 的 PWM 時鐘源為 80MHz，最大可用頻率公式為：<code>freq_max = 80,000,000 / 2^resolution</code>。例如 8-bit 解析度下最高支援約 312.5kHz，而 16-bit 解析度下最高僅約 1.2kHz。選擇解析度時需同時考慮目標頻率的需求。
+                    </div>
+                </div>
+
+                <h2>PWM 頻率的選擇策略</h2>
+
+                <p>
+                    頻率的選擇取決於被控制的負載類型。以下是常見的工程實踐建議：
+                </p>
+
+                <ul>
+                    <li><strong>LED 調光</strong>：建議 5kHz 以上。人眼對 100Hz 以下的閃爍最為敏感；相機拍攝時建議提高到 25kHz 以避免「捲簾快門條紋」。</li>
+                    <li><strong>直流馬達</strong>：建議 15–25kHz。低於 15kHz 會產生可聽見的「嘯叫聲」（因為馬達線圈在音頻範圍內振動）；高於 25kHz 則完全靜音。</li>
+                    <li><strong>蜂鳴器/音效</strong>：根據目標音高調整頻率（如 A4 音 = 440Hz），占空比固定 50% 以獲得最大音量。</li>
+                </ul>
+
+                <div class="ms-code">
+<span class="c-comment">// ESP32 LEDC 初始化三步驟（預覽）</span><br>
+<span class="c-kw">const int</span> <span class="c-attr">PWM_CHANNEL</span> <span class="c-white">= 0;</span><br>
+<span class="c-kw">const int</span> <span class="c-attr">PWM_FREQ</span> <span class="c-white">= 5000;</span>  <span class="c-comment">// 5kHz</span><br>
+<span class="c-kw">const int</span> <span class="c-attr">PWM_RESOLUTION</span> <span class="c-white">= 8;</span> <span class="c-comment">// 8-bit (0~255)</span><br>
+<br>
+<span class="c-kw">void</span> <span class="c-tag">setup</span><span class="c-white">() {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">ledcSetup</span><span class="c-white">(</span><span class="c-attr">PWM_CHANNEL</span><span class="c-white">,</span> <span class="c-attr">PWM_FREQ</span><span class="c-white">,</span> <span class="c-attr">PWM_RESOLUTION</span><span class="c-white">);</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">ledcAttachPin</span><span class="c-white">(14,</span> <span class="c-attr">PWM_CHANNEL</span><span class="c-white">);</span><br>
+<span class="c-white">}</span><br>
+<br>
+<span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">ledcWrite</span><span class="c-white">(</span><span class="c-attr">PWM_CHANNEL</span><span class="c-white">, 128);</span> <span class="c-comment">// 50% 占空比</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在下一個單元中，你將深入學習 <code>ledcSetup</code>、<code>ledcAttachPin</code>、<code>ledcWrite</code> 這三個 API 的完整用法，以及如何規劃多路 PWM 資源分配。此處先建立概念即可。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -786,16 +966,75 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
-
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: QUIZ ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <div class="quiz-question">
+                        <p>1. PWM 的全名是什麼？它的核心原理為何？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> Pulse Width Modulation；透過改變電阻值來調整電壓</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> Pulse Width Modulation；透過高頻開關切換，以時間平均模擬類比電壓</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> Power Width Management；透過軟體降壓來節省電力</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>2. 若 ESP32 的 GPIO 高電位為 3.3V，占空比設定為 75%，則等效平均電壓約為多少？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 1.65V</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 2.475V</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 3.3V</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>3. 為什麼馬達驅動建議使用 20kHz 以上的 PWM 頻率？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 因為馬達在低頻下無法轉動</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 因為超過 20kHz 可避免人耳聽見的嘯叫噪音</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 因為 ESP32 硬體只支援 20kHz 以上的頻率</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>4. 在 ESP32 LEDC 模組中，8-bit 解析度的占空比最大值為何？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 256</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 255</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 1023</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -853,9 +1092,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「ESP32 PWM 基礎：占空比的魔法」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「ESP32 PWM 基礎：占空比的魔法」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -871,8 +1110,17 @@
         { id: 3, label: '能量等效：平均電壓原理', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🛠️ 3. ESP32 LEDC 控制核心', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',              time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！PWM 全名為 Pulse Width Modulation（脈衝寬度調變），原理是透過極高頻率的 HIGH/LOW 切換，讓負載感受到時間平均後的等效電壓。' },
+        q2: { b: '正確！根據公式 Vavg = Vmax × Duty%，3.3V × 0.75 = 2.475V。' },
+        q3: { b: '正確！人耳的聽覺上限約為 20kHz，當 PWM 頻率超過此範圍，馬達線圈的振動不會產生可聽見的噪音，實現靜音運轉。' },
+        q4: { b: '正確！8-bit 解析度表示 2^8 = 256 個階層，數值範圍為 0～255，因此最大值為 255。' },
+    };
+
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -891,6 +1139,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -994,6 +1243,7 @@
 
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 04：PWM 馬達控制';
 </script>
 
 <!-- Define Resources -->

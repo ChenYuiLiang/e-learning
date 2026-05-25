@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>視覺追蹤控制策略：P 控制 - Vibe Coding Learn</title>
+    <title>視覺追蹤控制策略：P 控制 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 8 - P 控制</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">視覺追蹤控制策略：P 控制</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 8</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>視覺追蹤控制策略：P 控制</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 8</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,12 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>視覺追蹤控制策略：P 控制</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    本單元將教你實作視覺追蹤中最基礎也最實用的控制演算法——<strong>比例控制（P Control）</strong>。P 控制的核心思想是：修正力道與偏差量成正比。當目標偏離畫面中心越多，馬達轉動越快；接近中心時則自動減速。掌握 Kp 增益的調校方法，是實現平滑追蹤的第一步。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的攝影機雲台需要自動追蹤一顆移動中的紅色球體。若直接用「偵測到偏左就全速左轉」的邏輯，雲台會劇烈抖動、來回擺盪而永遠無法穩定對準目標。但如果轉動速度與偏差成比例——偏得多就轉快、偏得少就轉慢——動作立刻變得平滑。這個簡單卻強大的原理就是 P 控制，本單元將教你從數學公式到程式實作完整走一遍。
                 </div>
 
                 <h2>教學影片</h2>
@@ -590,40 +587,101 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🧠 1. 什麼是比例控制 (P-Control)？ (20 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
-<div class="space-y-6">
-<p class="text-lg text-gray-600 leading-relaxed font-light">
-                                比例控制 (Proportional Control) 是回饋控制最基礎的形式。核心哲學是「修正力道與偏差成正比」。誤差越劇烈，系統反擊的力道就越猛。
-                            </p>
-<div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-<h4 class="font-bold text-blue-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
-                                    Control Philosophy</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span>
-<div><strong>線性映射</strong>：透過 $Kp$ (Gain) 將物理世界的偏差轉換為馬達的電氣指令。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span>
-<div><strong>負回饋循環</strong>：不斷測量誤差並施加修正力，直到目標對齊「零誤差」中心。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10">
-                                Mathematical Core</h4>
-<div class="relative z-10 py-6">
-<div class="text-4xl font-mono text-blue-400">U(t) = K<sub>p</sub> × e(t)</div>
-<div class="text-[8px] text-slate-500 mt-4 font-mono tracking-widest">Output = Gain ×
-                                    Error</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-2 font-mono tracking-widest uppercase italic">The
-                                Proportional Response Law</p>
-</div>
-</div>
+                <h1>什麼是比例控制 (P-Control)？</h1>
+
+                <p>
+                    比例控制（Proportional Control）是自動控制理論中最基礎、最直覺的控制策略。它的核心法則極為簡潔：<strong>控制輸出與誤差成正比</strong>。用白話來說——偏得多就修正多，偏得少就修正少，完全對齊就不動。這個看似簡單的原理，卻是所有進階控制演算法（PI、PID）的根基。
+                </p>
+
+                <h2>數學公式</h2>
+                <p>
+                    P 控制器的輸出由一個單一的乘法運算決定：
+                </p>
+                <p style="text-align:center; font-size:18px; margin:20px 0;">
+                    \( U(t) = K_p \times e(t) \)
+                </p>
+                <p>
+                    其中：
+                </p>
+                <ul>
+                    <li>\( U(t) \) — 控制輸出（馬達的 PWM 修正量）</li>
+                    <li>\( K_p \) — 比例增益常數（由工程師調校）</li>
+                    <li>\( e(t) \) — 當前時刻的誤差（目標位置 − 實際位置）</li>
+                </ul>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>負回饋原理</strong>
+                        控制系統的關鍵在於「負回饋」——修正方向永遠與誤差方向相反。誤差為正（目標在右）→ 輸出正值（向右轉）→ 車體靠近目標 → 誤差縮小 → 輸出減小 → 趨向穩定。這個自我修正的循環就是閉迴路控制的本質。
+                    </div>
+                </div>
+
+                <h2>程式實作</h2>
+                <div class="ms-code">
+                    <span class="c-comment">// P 控制器核心實作</span><br>
+                    <span class="c-kw">function</span> <span class="c-tag">pControl</span><span class="c-white">(error, Kp) {</span><br>
+                    <span class="c-white">    </span><span class="c-kw">let</span> <span class="c-attr">output</span> <span class="c-white">= Kp * error;</span><br><br>
+                    <span class="c-white">    </span><span class="c-comment">// 限幅保護：防止 PWM 超出硬體範圍</span><br>
+                    <span class="c-white">    output = Math.max(-255, Math.min(255, output));</span><br><br>
+                    <span class="c-white">    </span><span class="c-kw">return</span> <span class="c-white">output;</span><br>
+                    <span class="c-white">}</span><br><br>
+                    <span class="c-comment">// 使用範例：每幀迴圈中呼叫</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">Kp</span> <span class="c-white">= 200;</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">error</span> <span class="c-white">= getNormalizedError(targetX, canvasWidth);</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">steering</span> <span class="c-white">= pControl(error, Kp);</span> <span class="c-comment">// 範圍: [-255, +255]</span>
+                </div>
+
+                <h2>視覺追蹤中的 P 控制流程</h2>
+                <p>
+                    將 P 控制應用於視覺追蹤的完整回饋迴路如下：
+                </p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>影像擷取</h4>
+                            <p>攝影機以 30 FPS 擷取當前幀，送入影像處理管線。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>目標偵測</h4>
+                            <p>HSV 過濾或 AI 模型找出目標物的質心座標 \((x, y)\)。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>誤差計算</h4>
+                            <p>正規化誤差 = (targetX − centerX) / centerX → 範圍 [-1, +1]。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>P 控制運算</h4>
+                            <p>steering = Kp × error，並執行限幅。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">5</div>
+                        <div class="ms-step-body">
+                            <h4>馬達輸出</h4>
+                            <p>左輪 = baseSpeed + steering，右輪 = baseSpeed − steering，驅動差速轉向。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>關鍵理解</strong>
+                        P 控制的「智慧」來自於它的自適應特性：離目標越遠，轉得越快；越接近，轉得越慢。這自然地產生了一個「減速靠近」的效果，遠比簡單的「開/關」控制（Bang-Bang）平滑得多。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -642,38 +700,67 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🎛️ 2. 比例增益 Kp 的行為特徵 (30 min)</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-<div class="space-y-8">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify">
-                                $K_p$ 決定了系統的「個性」。增益過高會導致系統過度反應而產生震盪 (Oscillation)；增益過低則反應遲鈍，導致車體在彎道中衝出軌跡。
-                            </p>
-<div class="bg-emerald-50 p-8 rounded-3xl border border-emerald-100 text-center">
-<h4 class="text-emerald-900 font-bold mb-4 text-xs uppercase tracking-widest">Stability
-                                    Profile</h4>
-<div class="grid grid-cols-2 gap-4 text-[10px] text-slate-600 font-mono">
-<div class="p-3 bg-white rounded border border-amber-200">SMALL Kp: Slow Convergence
-                                    </div>
-<div class="p-3 bg-white rounded border border-red-200">LARGE Kp: Unstable
-                                        Oscillation</div>
-</div>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-emerald-500/5"></div>
-<h4 class="text-emerald-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10">
-                                Waveform Simulation</h4>
-<div class="w-full relative z-10 h-24 flex items-center justify-center">
-<svg class="w-full h-full" viewbox="0 0 200 100">
-<path class="animate-pulse" d="M 0 50 Q 25 10 50 50 Q 75 90 100 50 Q 125 10 150 50 Q 175 90 200 50" fill="none" stroke="#10b981" stroke-dasharray="4" stroke-width="2"></path>
-<line stroke="#374151" stroke-width="0.5" x1="0" x2="200" y1="50" y2="50"></line>
-</svg>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic text-center">
-                                Limit Cycle &amp; Critical Stability</p>
-</div>
-</div>
+                <h1>比例增益 Kp 的行為特徵</h1>
+
+                <p>
+                    \(K_p\) 是 P 控制器中唯一需要調校的參數，但它對系統行為的影響是決定性的。\(K_p\) 本質上定義了系統的「反應靈敏度」——同樣大小的誤差，不同的 \(K_p\) 會產生截然不同的修正力道與動態行為。
+                </p>
+
+                <h2>Kp 對系統行為的影響</h2>
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>Kp 範圍</th><th>系統行為</th><th>時間響應特徵</th><th>適用場景</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>過小（如 50）</td><td>反應遲鈍，收斂極慢</td><td>上升時間長，無超調</td><td>不適用（無法追蹤移動物體）</td></tr>
+                        <tr><td>適中（如 150–250）</td><td>快速收斂，輕微超調</td><td>上升時間短，1–2 次震盪後穩定</td><td>正常追蹤模式</td></tr>
+                        <tr><td>過大（如 500+）</td><td>劇烈震盪，永不收斂</td><td>持續等幅震盪（極限環）</td><td>不適用（系統失控）</td></tr>
+                        <tr><td>臨界值</td><td>恰好在穩定邊界</td><td>等幅正弦震盪</td><td>用於 Ziegler-Nichols 調校法</td></tr>
+                    </tbody>
+                </table>
+
+                <h2>震盪的物理成因</h2>
+                <p>
+                    為什麼 \(K_p\) 過大會導致震盪？這是因為系統存在<strong>時間延遲</strong>。從攝影機擷取影像、處理辨識、到馬達實際轉動，整個流程需要 30–100ms。在這段延遲期間，車體仍在以舊指令移動。當 \(K_p\) 很大時，系統會「過度修正」——當馬達反應過來時，車體已經衝過了目標點，誤差反號，於是又往反方向猛修正，形成來回擺盪。
+                </p>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>工程風險</strong>
+                        持續震盪不僅無法追蹤目標，還會快速消耗電池、磨損機械結構、產生過大的電流突波。在實際硬體上測試時，應先從小的 \(K_p\) 開始，逐步增大，並隨時準備手動斷電。
+                    </div>
+                </div>
+
+                <h2>臨界增益法（Ziegler-Nichols 簡化版）</h2>
+                <p>
+                    尋找最佳 \(K_p\) 的經典方法之一：
+                </p>
+                <ol>
+                    <li>將 \(K_p\) 設為很小的值，觀察系統是否能追上目標。</li>
+                    <li>逐步增大 \(K_p\)，直到系統開始出現<strong>持續等幅震盪</strong>。此時的 \(K_p\) 稱為「臨界增益」\(K_u\)。</li>
+                    <li>最終使用的 \(K_p\) 設定為 \(K_u\) 的 50–60%，確保系統在穩定區間內運作。</li>
+                </ol>
+
+                <div class="ms-code">
+                    <span class="c-comment">// Kp 調校實驗流程</span><br>
+                    <span class="c-kw">let</span> <span class="c-attr">Kp</span> <span class="c-white">= 50;</span>  <span class="c-comment">// 從保守值開始</span><br><br>
+                    <span class="c-comment">// 逐步增大直到觀察到等幅震盪</span><br>
+                    <span class="c-comment">// Kp = 100 → 收斂正常</span><br>
+                    <span class="c-comment">// Kp = 200 → 輕微超調，仍可收斂</span><br>
+                    <span class="c-comment">// Kp = 350 → 持續震盪！→ 這就是 Ku</span><br><br>
+                    <span class="c-comment">// 最終設定</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">Ku</span> <span class="c-white">= 350;</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">Kp_final</span> <span class="c-white">= Ku * 0.5;</span> <span class="c-comment">// = 175，留有安全餘量</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>實務經驗</strong>
+                        在虛擬模擬環境中找到的 \(K_p\) 值，部署到實體車輛時通常需要降低 20–30%。因為真實世界有更多未建模的干擾因素（地面不平、輪胎打滑、電池電壓下降等）。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -692,43 +779,73 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>📉 3. 穩態誤差 (Steady-State Error)</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center">
-<div class="flex-1 space-y-6">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify">
-                                P 控制的原生缺陷：當誤差極小時，修正力量也會趨於零，導致其無法克服物理阻力（如地面摩擦）。這使得系統永遠「差一點點」無法對準中心，這就是穩態誤差。
-                            </p>
-<div class="bg-cyan-500/10 p-8 rounded-3xl border border-cyan-500/20 shadow-inner">
-<h4 class="font-bold text-cyan-400 mb-4 text-xs uppercase tracking-widest text-center">
-                                    Physical Reality Check</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-1"></span>
-<div><strong class="text-white">阻力平衡點</strong>：當馬達輸出力道等同於摩擦力時，車體便會停止修正，儘管誤差依然存在。
-                                        </div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-1"></span>
-<div><strong class="text-white">系統延遲 (Lag)</strong>：單純的 P
-                                            控制難以應對快速移動目標，容易造成追蹤軌跡的整體偏移。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-1"></span>
-<div><strong class="text-white">積分預告
-                                                (I-Preview)</strong>：理解為消除此誤差，未來我們需要能「累積偏差」的 Integral 控制器。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-cyan-600/10 p-10 rounded-3xl border border-cyan-500/20 text-center relative overflow-hidden group">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-cyan-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-cyan-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">
-                                System Gap</h4>
-<div class="text-5xl font-extrabold text-white mb-2">Δ≠0</div>
-<p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center">
-                                "誤差是推動力，但微小的誤差推不動沉重的現實。"
-                            </p>
-</div>
-</div>
+                <h1>穩態誤差 (Steady-State Error)</h1>
+
+                <p>
+                    P 控制雖然直覺有效，但它有一個<strong>根本性的限制</strong>：當誤差極小時，控制輸出 \(U = K_p \times e\) 也會變得極小，可能小到無法克服系統中的物理阻力（摩擦力、重力分量、馬達死區電壓等）。結果就是系統在「接近」目標後停住，留下一個永遠無法消除的殘餘偏差——這就是<strong>穩態誤差（Steady-State Error）</strong>。
+                </p>
+
+                <h2>穩態誤差的物理成因</h2>
+                <p>
+                    考慮以下場景：目標物靜止，車體正在追蹤。隨著車體接近目標，誤差逐漸縮小。當誤差小到某個值時：
+                </p>
+                <p style="text-align:center; font-size:15px; margin:16px 0;">
+                    \( K_p \times e_{ss} = F_{friction} \)
+                </p>
+                <p>
+                    此時控制輸出恰好等於摩擦力，車體達到力平衡而停止移動——但誤差 \(e_{ss}\) 並不為零。增大 \(K_p\) 可以縮小穩態誤差，但會犧牲穩定性（更容易震盪）。這就是 P 控制無法完美解決的權衡困境。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 穩態誤差的數學推導</span><br>
+                    <span class="c-comment">// 在力平衡狀態下：</span><br>
+                    <span class="c-attr">e_ss</span> <span class="c-white">= F_friction / Kp</span><br><br>
+                    <span class="c-comment">// 範例計算：</span><br>
+                    <span class="c-comment">// 若摩擦力等效為 PWM 20，Kp = 200</span><br>
+                    <span class="c-attr">e_ss</span> <span class="c-white">= 20 / 200 = 0.1</span> <span class="c-comment">// 正規化誤差 10%</span><br>
+                    <span class="c-comment">// 對於 320px 寬的畫面 → 殘餘偏移 = 16 像素</span>
+                </div>
+
+                <h2>穩態誤差的實際觀察</h2>
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>Kp 值</th><th>理論穩態誤差</th><th>對應像素偏移 (320px)</th><th>追蹤品質</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>100</td><td>0.20 (20%)</td><td>32 px</td><td>明顯偏離，不可接受</td></tr>
+                        <tr><td>200</td><td>0.10 (10%)</td><td>16 px</td><td>尚可接受</td></tr>
+                        <tr><td>400</td><td>0.05 (5%)</td><td>8 px</td><td>較為精確，但已接近震盪邊界</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>核心缺陷</strong>
+                        P 控制<strong>在理論上不可能將穩態誤差完全歸零</strong>（除非 \(K_p → ∞\)，此時系統必然不穩定）。這不是程式的 Bug，而是比例控制的數學本質決定的。
+                    </div>
+                </div>
+
+                <h2>解決方案預告：積分控制 (I Control)</h2>
+                <p>
+                    要徹底消除穩態誤差，需要一個能夠「記住過去累積偏差」的機制。當系統偏離目標一段時間時，即使瞬間誤差很小，累積值持續增大，最終能產生足夠的修正力道克服摩擦力。這就是 PID 控制中 <strong>I（Integral，積分）項</strong>的角色：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// PI 控制器概念（下一階段將完整實作）</span><br>
+                    <span class="c-attr">integral</span> <span class="c-white">+= error * dt;</span>  <span class="c-comment">// 持續累加誤差</span><br>
+                    <span class="c-attr">output</span> <span class="c-white">= Kp * error + Ki * integral;</span><br><br>
+                    <span class="c-comment">// 即使 error 很小，integral 持續增長</span><br>
+                    <span class="c-comment">// 最終 Ki * integral 足以克服摩擦力 → e_ss = 0</span>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>學習路線</strong>
+                        本單元的重點是讓你深刻「體驗」穩態誤差的存在與其不可避免性。在後續的 PID 模組中，你將學會如何用積分項消除它，以及用微分項 (D) 抑制震盪。完整的 PID 控制器才是工業級追蹤系統的標配。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -812,16 +929,81 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>測試你對本模組核心概念的掌握程度。請選出每題的最佳答案，提交後可查看詳細解析。</p>
+
+                <form id="quiz-form" onsubmit="return false;">
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">1. 比例控制 (P-Control) 的輸出公式是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="A" style="margin-right:8px;"> A. output = Kp + error</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="B" style="margin-right:8px;"> B. output = Kp × error</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="C" style="margin-right:8px;"> C. output = Kp / error</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="D" style="margin-right:8px;"> D. output = Kp - error</label>
+                        <div id="exp-1" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">2. Kp 值設定過大會造成什麼問題？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 系統完全不動</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 系統反應遲緩</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 系統產生震盪 (Oscillation) 甚至不穩定</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 系統自動關閉</label>
+                        <div id="exp-2" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">3. 純 P 控制器無法消除的問題是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 瞬態誤差</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 穩態誤差 (Steady-State Error)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 超調 (Overshoot)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 系統震盪</label>
+                        <div id="exp-3" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">4. Kp 值設定過小會造成什麼現象？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 系統劇烈震盪</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 反應遲緩、修正力道不足，需要很長時間才能接近目標</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 系統超調嚴重</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 系統立即到達目標</label>
+                        <div id="exp-4" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+                </form>
+
+                <div style="display:flex;gap:12px;margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+                <div id="quiz-result" style="display:none;margin-top:20px;padding:16px;border-radius:6px;font-size:14px;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -879,9 +1061,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「視覺追蹤控制策略：P 控制」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「視覺追蹤控制策略：P 控制」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -897,7 +1079,8 @@
         { id: 3, label: '🎛️ 2. 比例增益 Kp 的行為特徵 (30 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '📉 3. 穩態誤差 (Steady-State Error)', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -917,6 +1100,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1018,8 +1202,61 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'C', q3: 'B', q4: 'B' };
+    const QUIZ_EXPLANATIONS = { q1: 'P 控制的核心公式：輸出 = Kp × 誤差。Kp（比例增益）決定了系統對誤差的反應強度。', q2: 'Kp 過大會讓系統對誤差過度反應，產生超調 (Overshoot)，如果阻尼不足甚至會持續震盪，導致系統不穩定。', q3: '純 P 控制器在誤差趨近於零時，輸出也趨近於零，無法產生足夠的修正力來消除持續性的小偏差（穩態誤差）。', q4: 'Kp 太小意味著系統對誤差的反應力度不夠，糾正速度緩慢，在循跡場景中表現為車子轉彎「拖泥帶水」。' };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const idx = q.slice(1);
+            const exp = document.getElementById(`exp-${idx}`);
+            if (!selected) continue;
+            if (selected.value === correct) {
+                score++;
+                exp.style.display = 'block';
+                exp.style.background = '#dff6dd';
+                exp.style.borderLeftColor = '#107c10';
+                exp.innerHTML = '<i class="fas fa-check-circle" style="color:#107c10;margin-right:6px;"></i>' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#dff6dd';
+                selected.parentElement.style.borderColor = '#107c10';
+            } else {
+                exp.style.display = 'block';
+                exp.style.background = '#fde7e9';
+                exp.style.borderLeftColor = '#d13438';
+                exp.innerHTML = '<i class="fas fa-times-circle" style="color:#d13438;margin-right:6px;"></i>正確答案是 ' + correct + '。' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#fde7e9';
+                selected.parentElement.style.borderColor = '#d13438';
+            }
+        }
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === total) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.innerHTML = '<strong style="color:#107c10;">🎉 滿分！' + score + ' / ' + total + '</strong><br>你完全掌握了本模組的核心概念！';
+            markDone(6);
+        } else {
+            resultEl.style.background = '#fff4ce';
+            resultEl.innerHTML = '<strong style="color:#8a6914;">得分：' + score + ' / ' + total + '</strong><br>建議複習錯題的解析說明，再試一次！';
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= 4; i++) {
+            const exp = document.getElementById('exp-' + i);
+            if (exp) { exp.style.display = 'none'; exp.style.background = ''; exp.style.borderLeftColor = 'transparent'; }
+        }
+        document.querySelectorAll('#quiz-form label').forEach(l => { l.style.background = ''; l.style.borderColor = '#e1dfdd'; });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 08：影像處理實務';
 </script>
 
 <!-- Define Resources -->

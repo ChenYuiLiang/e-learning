@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>數據流與取樣率 (Sampling Rate) - Vibe Coding Learn</title>
+    <title>數據流與取樣率 (Sampling Rate) - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -61,6 +61,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -84,6 +85,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -467,6 +469,37 @@
             .compare-grid { grid-template-columns: 1fr; }
         }
 
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
+            border: 1px solid #e1dfdd;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background .1s, border-color .1s;
+            font-size: 14px;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback {
+            display: none;
+            margin-top: 8px;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
+        .quiz-submit { margin-top: 16px; }
+
     </style>
 </head>
 
@@ -474,9 +507,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 9 - 數據通訊</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -486,25 +521,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">數據流與取樣率 (Sampling Rate)</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 9</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -523,9 +554,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>📡 1. 什麼是取樣率 (Sampling Rate)？</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>️ 2. 瓶頸：頻寬與延遲</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>🌀 3. 滑動濾波與節流</strong> 的調校技巧與穩定性測試。</li>
+                    <li>能夠解釋取樣率對控制品質的影響，透過實驗找出兼顧操控流暢度與通訊頻寬的「黃金頻率」，並理解 Nyquist 定理的實務意義。</li>
+                    <li>能夠實作滑動平均濾波（Moving Average）的循環緩衝區（FIFO Buffer），權衡不同 Buffer 長度對訊號平滑度與反應延遲的取捨。</li>
+                    <li>能夠設計通訊節流（Throttling）機制限制發送頻率上限，並透過壓縮 JSON Key 名稱降低封包大小以防止通訊擁塞。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -556,15 +587,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>數據流與取樣率 (Sampling Rate)</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    取樣率決定了系統「看世界的解析度」——取樣太慢，快速變化的訊號會被遺漏；取樣太快，則浪費 CPU 資源與頻寬。
+                    在物聯網控制迴路中，選擇正確的取樣頻率直接影響控制品質、通訊負載與電池壽命。
+                    本單元帶你理解 Nyquist 定理的實務意義，並學會根據應用場景決定最佳取樣週期。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的遙控車每秒傳送 100 筆感測器數據給手機儀表板，但 BLE 頻寬只夠穩定傳 20 筆。
+                    結果封包堆積、延遲暴增，車子反應變遲鈍。
+                    降低取樣率到 50Hz 並搭配簡單的均值濾波後，數據量減半、延遲降低，控制反而更流暢——取樣率不是越高越好。
                 </div>
 
                 <h2>教學影片</h2>
@@ -592,38 +624,105 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>📡 1. 什麼是取樣率 (Sampling Rate)？</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tight">
-                                每秒讀取次數 (Hz)。衡量控制精準度的核心。
-                            </p>
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-justify uppercase tracking-widest leading-relaxed">
-<div class="p-4 rounded-xl border border-slate-100 shadow-sm bg-slate-50 text-justify">
-<p class="text-slate-800 font-bold mb-1 text-[10px] text-justify">1 Hz</p>
-<p class="text-red-500 italic text-[9px] text-justify">頓挫嚴重。無法穩定。</p>
-</div>
-<div class="p-4 rounded-xl border border-blue-100 shadow-sm bg-blue-50 text-justify">
-<p class="text-blue-800 font-bold mb-1 text-[10px] text-justify">20 Hz</p>
-<p class="text-blue-500 italic text-[9px] text-justify">基本遙控感。低速巡航。</p>
-</div>
-<div class="p-4 rounded-xl border border-emerald-100 shadow-sm bg-emerald-50 text-justify">
-<p class="text-emerald-800 font-bold mb-1 text-[10px] text-justify">50+ Hz</p>
-<p class="text-emerald-500 italic text-[9px] text-justify">專業響應。絲般順滑。</p>
-</div>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center bg-slate-900 text-justify uppercase tracking-widest font-black">
-<h4 class="font-bold text-slate-500 mb-6 uppercase tracking-widest text-[10px] text-justify">
-                                Discrete Control Theory</h4>
-<p class="text-slate-400 font-light mb-4 text-[11px] text-justify uppercase tracking-widest font-black">
-                                "頻率越高，修正越及時。"</p>
-<div class="w-full h-1.5 rounded-full overflow-hidden bg-slate-800 text-justify">
-<div class="w-4/5 h-full bg-blue-500 animate-[pulse_1s_infinite] text-justify"></div>
-</div>
-</div>
-</div>
+                <h1>什麼是取樣率 (Sampling Rate)？</h1>
+
+                <p>取樣率（Sampling Rate）是指系統<strong>每秒讀取感測器數據的次數</strong>，單位為赫茲（Hz）。例如 50 Hz 代表每秒讀取 50 次，每次間隔 20 毫秒。取樣率直接決定了你的控制系統「看世界」的解析度——取樣越密集，對現實變化的追蹤就越精確。</p>
+
+                <p>在數位控制系統中，物理世界是連續的，但處理器只能在離散的時間點讀取數據。兩次取樣之間發生的變化，系統完全無從得知。這就是為什麼取樣率對控制品質如此重要。</p>
+
+                <h2>Nyquist 取樣定理</h2>
+
+                <p>奈奎斯特-夏農取樣定理（Nyquist-Shannon Sampling Theorem）是數位訊號處理的基石：</p>
+
+                <p style="text-align:center; font-size:18px; margin:20px 0;">
+                    <code>f<sub>sample</sub> &ge; 2 &times; f<sub>max</sub></code>
+                </p>
+
+                <p>要忠實還原一個訊號，取樣頻率必須至少是訊號最高頻率成分的<strong>兩倍</strong>。若違反此條件，就會產生<strong>混疊（Aliasing）</strong>——高頻訊號被誤判為低頻，導致控制系統做出錯誤的修正。</p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>實務經驗法則</strong>
+                        理論上 2 倍就足夠，但實務中建議取樣頻率為目標訊號頻率的 <strong>5~10 倍</strong>。例如遙控車的方向盤操作頻率約 2~5 Hz，取樣率設為 20~50 Hz 就能獲得流暢的操控體驗。
+                    </div>
+                </div>
+
+                <h2>取樣率對操控體驗的影響</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>取樣率</th>
+                            <th>間隔 (ms)</th>
+                            <th>操控手感</th>
+                            <th>適用場景</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1 Hz</td>
+                            <td>1000</td>
+                            <td>嚴重頓挫，幾乎無法控制</td>
+                            <td>環境溫度監測</td>
+                        </tr>
+                        <tr>
+                            <td>5 Hz</td>
+                            <td>200</td>
+                            <td>明顯延遲感，方向操控困難</td>
+                            <td>低速巡邏（不推薦用於操控）</td>
+                        </tr>
+                        <tr>
+                            <td>20 Hz</td>
+                            <td>50</td>
+                            <td>基本可操控，低速行駛尚可</td>
+                            <td>簡單遙控車、慢速機器人</td>
+                        </tr>
+                        <tr>
+                            <td>50 Hz</td>
+                            <td>20</td>
+                            <td>流暢自然，專業操控感</td>
+                            <td>競速車、無人機、工業機器人</td>
+                        </tr>
+                        <tr>
+                            <td>100+ Hz</td>
+                            <td>&le;10</td>
+                            <td>極致響應（但頻寬壓力大）</td>
+                            <td>高速 PID、自平衡系統</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>ESP32 上的取樣率實作</h2>
+
+                <p>使用 <code>millis()</code> 或硬體定時器控制取樣間隔：</p>
+
+                <div class="ms-code">
+<span class="c-kw">const unsigned long</span> <span class="c-attr">SAMPLE_INTERVAL</span> <span class="c-white">= </span><span class="c-val">20</span><span class="c-white">;  </span><span class="c-comment">// 50 Hz = 每 20ms 取樣一次</span>
+<span class="c-kw">unsigned long</span> <span class="c-attr">lastSample</span> <span class="c-white">= </span><span class="c-val">0</span><span class="c-white">;</span>
+<span class="c-white"></span>
+<span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span>
+<span class="c-white">    </span><span class="c-kw">unsigned long</span> <span class="c-attr">now</span> <span class="c-white">= </span><span class="c-tag">millis</span><span class="c-white">();</span>
+<span class="c-white"></span>
+<span class="c-white">    </span><span class="c-kw">if</span> <span class="c-white">(now - lastSample >= SAMPLE_INTERVAL) {</span>
+<span class="c-white">        lastSample = now;</span>
+<span class="c-white"></span>
+<span class="c-white">        </span><span class="c-kw">int</span> <span class="c-attr">sensorValue</span> <span class="c-white">= </span><span class="c-tag">analogRead</span><span class="c-white">(SENSOR_PIN);</span>
+<span class="c-white">        processSample(sensorValue);</span>
+<span class="c-white">    }</span>
+<span class="c-white"></span>
+<span class="c-white">    </span><span class="c-comment">// 不取樣時可處理通訊等其他任務</span>
+<span class="c-white">    handleCommunication();</span>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>取樣率不是越高越好</strong>
+                        過高的取樣率會帶來三大問題：(1) CPU 被大量 ADC 讀取佔用，無暇處理其他任務；(2) 通訊頻寬被數據灌滿導致擁塞；(3) 電池壽命因高頻運算而縮短。選擇取樣率時，必須在「解析度」和「資源成本」之間取得平衡。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -642,33 +741,115 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚠️ 2. 瓶頸：頻寬與延遲</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify uppercase tracking-widest">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tighter">
-                                取樣率受限於硬體（藍牙 MTU、解析 JSON 時間）。
-                            </p>
-<div class="p-8 rounded-3xl border border-amber-100 text-center bg-amber-50 text-justify uppercase tracking-widest font-black">
-<h4 class="text-amber-900 font-bold mb-4 text-xs uppercase tracking-widest text-justify">
-                                    Golden Rule</h4>
-<div class="text-xl font-mono text-amber-600 text-justify uppercase tracking-widest font-black text-center">
-                                    \[Hz \times PacketSize &lt; Bandwidth\] </div>
-<p class="text-slate-400 mt-4 italic font-light text-[10px] text-justify uppercase tracking-tighter">
-                                            優化：壓縮 JSON Key 名稱。</p>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 flex items-center justify-center bg-slate-900 text-justify uppercase tracking-widest font-black text-left">
-<div class="mermaid text-justify">
-                                    graph TD
-                                    A[App Cmd] --&gt;|Hz| B{BT Channel}
-                                    B --&gt;|BW Limit| C[ESP32 Buffer]
-                                    C --&gt;|Parse| D[Motor Execution]
-                                    style B fill:#451a03,stroke:#9a3412,color:#fff
-                                    style D fill:#064e3b,stroke:#059669,color:#fff
-                                </div>
-</div>
-</div>
+                <h1>瓶頸：頻寬與延遲</h1>
+
+                <p>即使你的感測器能以 1000 Hz 產生數據，通訊鏈路也不一定吞得下。在物聯網系統中，<strong>有效取樣率</strong>受限於整條數據管線中最慢的一環——這就是瓶頸（Bottleneck）。理解瓶頸在哪裡，才能設計出高效且穩定的數據流架構。</p>
+
+                <h2>數據管線的瓶頸分析</h2>
+
+                <p>從感測器讀取到控制執行，數據經過以下階段：</p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>感測器讀取（ADC 轉換）</h4>
+                            <p>ESP32 SAR ADC 每次轉換約 10~20 μs，理論上可達 100 kHz 取樣率——通常不是瓶頸。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>數據封裝（JSON 序列化）</h4>
+                            <p>將數據打包為 JSON 字串需要字串操作時間，一個包含 5 個欄位的 JSON 約花 50~200 μs。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>通訊傳輸（BLE / WiFi）</h4>
+                            <p>BLE 4.2 的有效吞吐量約 <strong>2~6 KB/s</strong>（受 MTU、連線間隔影響）。這通常是最大的瓶頸所在。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>接收端解析與執行</h4>
+                            <p>手機 App 或接收端需要解析 JSON 並更新 UI，高頻數據可能導致 UI 卡頓。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>頻寬計算公式</h2>
+
+                <p>判斷通訊是否會擁塞的核心公式：</p>
+
+                <p style="text-align:center; font-size:18px; margin:20px 0;">
+                    <code>發送頻率 (Hz) &times; 封包大小 (Bytes) &le; 可用頻寬 (Bytes/s)</code>
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>通訊方式</th>
+                            <th>典型有效頻寬</th>
+                            <th>50Hz 時可容許封包大小</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>BLE 4.2 (預設 MTU)</td>
+                            <td>~2,000 Bytes/s</td>
+                            <td>40 Bytes</td>
+                        </tr>
+                        <tr>
+                            <td>BLE 5.0 (大 MTU)</td>
+                            <td>~6,000 Bytes/s</td>
+                            <td>120 Bytes</td>
+                        </tr>
+                        <tr>
+                            <td>WiFi UDP</td>
+                            <td>~50,000 Bytes/s</td>
+                            <td>1,000 Bytes</td>
+                        </tr>
+                        <tr>
+                            <td>Serial (115200 baud)</td>
+                            <td>~11,520 Bytes/s</td>
+                            <td>230 Bytes</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>超出頻寬的後果</strong>
+                        當數據產生速度超過傳輸速度時，緩衝區會逐漸填滿。最終結果是：(1) 封包被丟棄導致數據遺失、(2) 延遲持續累積導致控制滯後、(3) 緩衝區溢位導致 ESP32 當機重啟。
+                    </div>
+                </div>
+
+                <h2>封包瘦身策略</h2>
+
+                <p>在頻寬有限的情況下，縮小每個封包的大小可以有效提高可用頻率。以下是常見的優化手段：</p>
+
+                <div class="ms-code">
+<span class="c-comment">// ❌ 冗長的 JSON（67 Bytes）</span>
+<span class="c-str">{"linear_velocity":1.23,"angular_velocity":0.45,"battery":78}</span>
+<span class="c-white"></span>
+<span class="c-comment">// ✅ 壓縮 Key 名稱（25 Bytes，節省 63%）</span>
+<span class="c-str">{"v":1.23,"w":0.45,"b":78}</span>
+<span class="c-white"></span>
+<span class="c-comment">// ✅✅ 二進位協定（12 Bytes，節省 82%）</span>
+<span class="c-comment">// [0xAA][float v][float w][uint16 bat][checksum]</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>延遲 vs 頻寬的權衡</strong>
+                        降低發送頻率可以減少頻寬壓力，但會增加控制延遲。最佳策略是同時做到：(1) 壓縮封包大小、(2) 只在數值有顯著變化時才發送（差值觸發）、(3) 設定合理的頻率上限（Throttling）。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -687,44 +868,131 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🌀 3. 滑動濾波與節流</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify uppercase tracking-tighter">
-                                取樣頻率需與物理動作匹配。使用「滑動平均」平滑噪聲。
-                            </p>
-<div class="p-8 rounded-3xl border border-pink-500/20 shadow-inner bg-pink-500/10 text-justify uppercase tracking-widest font-black">
-<h4 class="font-bold text-pink-400 mb-4 text-xs uppercase tracking-widest text-justify">
-                                    Signal Processing</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify uppercase tracking-widest">
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-pink-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">混疊
-                                                (Aliasing)</strong>：取樣太慢導致方向轉向誤判。</div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-pink-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">滑動平均 (SMA)</strong>：利用 Buffer
-                                            取均值，消除毛刺噪聲。</div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-pink-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">節流
-                                                (Throttling)</strong>：確保發送頻率封頂，防止緩衝區溢位。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 p-10 rounded-3xl border border-pink-500/20 text-center relative overflow-hidden group bg-pink-600/10 text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-pink-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify">
-</div>
-<h4 class="text-pink-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-justify uppercase tracking-widest font-black">
-                                Bandwidth Optimization</h4>
-<p class="text-slate-500 leading-relaxed font-light mb-8 italic text-[11px] text-justify uppercase tracking-tighter font-black">
-                                "發送適量資訊，賦予最大執行價值。"
-                            </p>
-<div class="inline-block px-8 py-3 bg-pink-500 text-white rounded-xl font-bold text-[10px] shadow-lg text-justify uppercase tracking-widest font-black">
-                                Start Stream Lab</div>
-</div>
-</div>
+                <h1>滑動濾波與節流</h1>
+
+                <p>真實世界的感測器數據往往帶有雜訊（Noise）——ADC 的量化誤差、電磁干擾、機械振動都會在讀數中產生毛刺。直接使用原始數據進行控制，會導致馬達輸出抖動、轉向不穩。<strong>數位濾波</strong>是解決這個問題的關鍵技術。</p>
+
+                <p>同時，即使感測器能高頻產生數據，通訊鏈路的頻寬是有限的。<strong>節流（Throttling）</strong>機制確保發送頻率不超過通訊能力的上限，防止緩衝區溢位和系統崩潰。</p>
+
+                <h2>滑動平均濾波 (Simple Moving Average, SMA)</h2>
+
+                <p>滑動平均是最基本也最實用的數位濾波器。它維護一個固定長度的<strong>循環緩衝區（FIFO Buffer）</strong>，每次讀取新值時覆蓋最舊的值，然後計算整個緩衝區的平均值作為輸出。</p>
+
+                <div class="ms-code">
+<span class="c-kw">const int</span> <span class="c-attr">BUFFER_SIZE</span> <span class="c-white">= </span><span class="c-val">12</span><span class="c-white">;</span>
+<span class="c-kw">int</span> <span class="c-attr">buffer</span><span class="c-white">[BUFFER_SIZE];</span>
+<span class="c-kw">int</span> <span class="c-attr">bufIndex</span> <span class="c-white">= </span><span class="c-val">0</span><span class="c-white">;</span>
+<span class="c-kw">long</span> <span class="c-attr">bufSum</span> <span class="c-white">= </span><span class="c-val">0</span><span class="c-white">;</span>
+<span class="c-kw">bool</span> <span class="c-attr">bufFull</span> <span class="c-white">= </span><span class="c-val">false</span><span class="c-white">;</span>
+<span class="c-white"></span>
+<span class="c-kw">int</span> <span class="c-tag">addSample</span><span class="c-white">(</span><span class="c-kw">int</span> <span class="c-attr">newValue</span><span class="c-white">) {</span>
+<span class="c-white">    bufSum -= buffer[bufIndex];     </span><span class="c-comment">// 減去即將被覆蓋的舊值</span>
+<span class="c-white">    buffer[bufIndex] = newValue;    </span><span class="c-comment">// 寫入新值</span>
+<span class="c-white">    bufSum += newValue;             </span><span class="c-comment">// 加上新值</span>
+<span class="c-white">    bufIndex = (bufIndex + </span><span class="c-val">1</span><span class="c-white">) % BUFFER_SIZE;</span>
+<span class="c-white"></span>
+<span class="c-white">    </span><span class="c-kw">if</span> <span class="c-white">(bufIndex == </span><span class="c-val">0</span><span class="c-white">) bufFull = </span><span class="c-val">true</span><span class="c-white">;</span>
+<span class="c-white">    </span><span class="c-kw">int</span> <span class="c-attr">count</span> <span class="c-white">= bufFull ? BUFFER_SIZE : bufIndex;</span>
+<span class="c-white">    </span><span class="c-kw">return</span> <span class="c-white">bufSum / count;          </span><span class="c-comment">// 回傳平均值</span>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>O(1) 效率</strong>
+                        注意上面的實作使用「累加和」技巧：每次只加減一個值，不需要遍歷整個陣列重新求和。無論 Buffer 多長，每次更新都是常數時間 O(1)——這對即時系統非常重要。
+                    </div>
+                </div>
+
+                <h2>Buffer 長度的取捨</h2>
+
+                <p>Buffer 長度是「平滑度」與「反應延遲」之間的拉鋸：</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>Buffer 長度</th>
+                            <th>降噪效果</th>
+                            <th>反應延遲</th>
+                            <th>適用場景</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>4</td>
+                            <td>輕微平滑</td>
+                            <td>極低（4 個取樣週期）</td>
+                            <td>需要快速反應的控制迴圈</td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>有效消除毛刺</td>
+                            <td>中等</td>
+                            <td>一般遙控系統（推薦起始值）</td>
+                        </tr>
+                        <tr>
+                            <td>32</td>
+                            <td>非常平穩</td>
+                            <td>明顯遲滯</td>
+                            <td>儀表板顯示、非即時監測</td>
+                        </tr>
+                        <tr>
+                            <td>64+</td>
+                            <td>極度平穩</td>
+                            <td>嚴重遲滯</td>
+                            <td>長期趨勢分析（不適合控制）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>過度濾波的危險</strong>
+                        在即時控制系統中，Buffer 過長會導致系統「反應遲鈍」。例如自平衡車使用 64 點的滑動平均，當它開始傾斜時，濾波後的數值要等到大量新讀數進入才會反映真實角度——此時修正已經太遲，車子可能已經倒了。
+                    </div>
+                </div>
+
+                <h2>通訊節流 (Throttling)</h2>
+
+                <p>節流的目的是：<strong>無論感測器取樣多快，對外發送的頻率不超過通訊能力上限</strong>。感測器可以高頻取樣並進行濾波，但只在固定間隔才將結果發送出去。</p>
+
+                <div class="ms-code">
+<span class="c-kw">const unsigned long</span> <span class="c-attr">MIN_SEND_INTERVAL</span> <span class="c-white">= </span><span class="c-val">20</span><span class="c-white">; </span><span class="c-comment">// 最高 50Hz 發送</span>
+<span class="c-kw">unsigned long</span> <span class="c-attr">lastSendTime</span> <span class="c-white">= </span><span class="c-val">0</span><span class="c-white">;</span>
+<span class="c-white"></span>
+<span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span>
+<span class="c-white">    </span><span class="c-comment">// 高頻取樣 + 濾波（每次 loop 都執行）</span>
+<span class="c-white">    </span><span class="c-kw">int</span> <span class="c-attr">raw</span> <span class="c-white">= </span><span class="c-tag">analogRead</span><span class="c-white">(SENSOR_PIN);</span>
+<span class="c-white">    </span><span class="c-kw">int</span> <span class="c-attr">filtered</span> <span class="c-white">= addSample(raw);</span>
+<span class="c-white"></span>
+<span class="c-white">    </span><span class="c-comment">// 節流發送：不超過頻率上限</span>
+<span class="c-white">    </span><span class="c-kw">unsigned long</span> <span class="c-attr">now</span> <span class="c-white">= </span><span class="c-tag">millis</span><span class="c-white">();</span>
+<span class="c-white">    </span><span class="c-kw">if</span> <span class="c-white">(now - lastSendTime >= MIN_SEND_INTERVAL) {</span>
+<span class="c-white">        lastSendTime = now;</span>
+<span class="c-white">        sendData(filtered);  </span><span class="c-comment">// 只發送濾波後的值</span>
+<span class="c-white">    }</span>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>整體架構：取樣 → 濾波 → 節流</h2>
+
+                <p>一個設計良好的數據流系統，會將三個層次解耦：</p>
+
+                <ol>
+                    <li><strong>取樣層</strong>：以適當頻率讀取感測器（如 100 Hz），由定時器或 millis 控制。</li>
+                    <li><strong>濾波層</strong>：每筆取樣都送入滑動平均 Buffer，即時產生平滑的輸出值。</li>
+                    <li><strong>發送層</strong>：以通訊頻寬允許的最高頻率（如 50 Hz）將濾波結果發送出去。</li>
+                </ol>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>進階優化：差值觸發 (Dead-band)</strong>
+                        除了固定頻率發送外，還可以加入「差值觸發」機制：只有當新值與上次發送的值差距超過閾值時才發送。靜止狀態下幾乎不佔頻寬，動態變化時才密集傳輸——這對電池供電的物聯網裝置尤其有價值。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -808,16 +1076,82 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
-                    <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div class="unit-completed-badge" id="badge-6" style="display:none">
+                        <i class="fas fa-check"></i> 已完成
+                    </div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <!-- Q1 -->
+                    <div class="quiz-question" id="q1">
+                        <p>1. 根據 Nyquist 取樣定理，要忠實還原一個最高頻率為 10 Hz 的訊號，取樣頻率至少需要多少？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 10 Hz</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 20 Hz</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 5 Hz</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="quiz-question" id="q2">
+                        <p>2. 當數據發送速度超過 BLE 通訊頻寬上限時，最可能發生什麼問題？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 數據會自動壓縮以適應頻寬</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 封包堆積導致延遲累積，甚至緩衝區溢位造成系統重啟</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> BLE 會自動提升傳輸速率以匹配發送速度</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="quiz-question" id="q3">
+                        <p>3. 滑動平均濾波 (Moving Average) 中，增加 Buffer 長度會帶來什麼取捨？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 降噪效果更好，但反應延遲也更大</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 降噪效果更好，同時反應速度也更快</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 降噪效果不變，但記憶體使用量減少</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="quiz-question" id="q4">
+                        <p>4. 通訊節流 (Throttling) 機制的主要目的是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 提高感測器的 ADC 取樣精度</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 限制對外發送的頻率上限，防止通訊擁塞</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 增加 JSON 封包中可攜帶的資料欄位數量</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" style="margin-left:8px; display:none;" id="quiz-reset-btn">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -875,9 +1209,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「數據流與取樣率 (Sampling Rate)」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「數據流與取樣率 (Sampling Rate)」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -893,8 +1227,17 @@
         { id: 3, label: '️ 2. 瓶頸：頻寬與延遲', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🌀 3. 滑動濾波與節流', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '4 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'a', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '根據 Nyquist 定理，取樣頻率必須至少是訊號最高頻率的兩倍（2 × 10 Hz = 20 Hz），否則會產生混疊（Aliasing）。' },
+        q2: { b: '當發送速度超過頻寬，緩衝區會逐漸填滿，導致封包丟棄、延遲累積，最終可能緩衝區溢位使 ESP32 重啟。' },
+        q3: { a: 'Buffer 越長，越多取樣點參與平均，降噪效果越好；但濾波後的輸出需要更多新數據才能反映真實變化，因此反應延遲也越大。' },
+        q4: { b: '節流機制確保無論感測器取樣多快，對外發送頻率不超過通訊能力上限，防止緩衝區溢位和系統崩潰。' },
+    };
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -913,6 +1256,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1014,8 +1358,74 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        let total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            const options = document.querySelectorAll(`input[name="${qid}"]`);
+
+            options.forEach(opt => {
+                opt.disabled = true;
+                const label = opt.parentElement;
+                if (opt.value === answer) label.classList.add('correct');
+                if (opt.checked && opt.value !== answer) label.classList.add('wrong');
+            });
+
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                const exp = QUIZ_EXPLANATIONS[qid][answer];
+                feedbackEl.textContent = '✗ 不正確。' + exp;
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        scoreEl.style.display = 'block';
+        const pct = Math.round(correct / total * 100);
+        const pass = pct >= 75;
+        scoreEl.innerHTML = `
+            <span style="font-size:20px;">${pass ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pass ? '通過！你已掌握本模組的核心概念。' : '建議回顧相關單元後再試一次。'}</div>
+        `;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => {
+            el.classList.remove('correct','wrong');
+        });
+        document.querySelectorAll('input[type=radio]').forEach(el => {
+            el.checked = false;
+            el.disabled = false;
+        });
+        document.querySelectorAll('.quiz-feedback').forEach(el => {
+            el.className = 'quiz-feedback';
+            el.textContent = '';
+        });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 09：多工處理';
 </script>
 
 <!-- Define Resources -->

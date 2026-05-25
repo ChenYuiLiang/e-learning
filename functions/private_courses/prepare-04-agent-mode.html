@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VS Code 安裝與基礎配置 - Vibe Coding Learn</title>
+    <title>AI 代理人與 Vibe Coding 實戰 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -79,6 +79,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -274,9 +275,6 @@
         }
         .ms-table td { padding: 9px 14px; border: 1px solid #e1dfdd; vertical-align: top; }
         .ms-table tr:nth-child(even) td { background: #faf9f8; }
-        .ms-table .check { color: var(--ms-green); font-size: 16px; }
-        .ms-table .cross { color: #8a8886; font-size: 16px; }
-        .ms-table .partial { color: #ffaa44; font-size: 16px; }
 
         /* Checklist */
         .ms-checklist { list-style: none; padding: 0; margin: 12px 0; }
@@ -300,56 +298,6 @@
             box-shadow: 0 2px 8px rgba(0,0,0,.12); aspect-ratio: 16/9;
         }
         .ms-video-embed iframe { width: 100%; height: 100%; display: block; border: 0; }
-
-        /* Keyboard shortcut */
-        kbd {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 28px;
-            height: 26px;
-            padding: 0 6px;
-            background: #fff;
-            border: 1px solid #c8c6c4;
-            border-bottom: 3px solid #8a8886;
-            border-radius: 4px;
-            font-family: 'Consolas', monospace;
-            font-size: 13px;
-            font-weight: 700;
-            color: #323130;
-            box-shadow: 0 1px 2px rgba(0,0,0,.08);
-        }
-
-        /* Extensions Cards */
-        .compare-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin: 20px 0;
-        }
-        .compare-card {
-            border: 1px solid #e1dfdd;
-            border-radius: 6px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        .compare-card-header {
-            padding: 12px 14px;
-            font-weight: 600;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .compare-card-header i { font-size: 18px; }
-        .compare-card-body {
-            padding: 14px;
-            font-size: 13px;
-            color: #605e5c;
-            line-height: 1.5;
-            flex-grow: 1;
-        }
 
         /* Lab card */
         .ms-lab-card {
@@ -423,6 +371,7 @@
         .ms-tag { background: #f3f2f1; color: #323130; font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: 500; }
         .ms-tag.blue { background: #deecf9; color: var(--ms-blue-dark); }
         .ms-tag.green { background: #dff6dd; color: #107c10; }
+        .ms-tag.purple { background: #f3e8ff; color: #6b21a8; }
         .unit-card-list { margin: 20px 0; }
         .unit-card {
             display: flex; align-items: center; gap: 14px;
@@ -479,12 +428,22 @@
         .achievement-text h3 { margin: 0 0 4px; font-size: 18px; }
         .achievement-text p { margin: 0; font-size: 14px; opacity: .9; }
 
+        /* Code block */
+        .ms-code-block {
+            background: #1e1e1e; color: #d4d4d4; padding: 16px 20px;
+            border-radius: 4px; font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px; margin: 16px 0; overflow-x: auto; line-height: 1.6;
+        }
+        .ms-code-block .comment { color: #6a9955; }
+        .ms-code-block .key { color: #9cdcfe; }
+        .ms-code-block .value { color: #ce9178; }
+        .ms-code-block .bool { color: #569cd6; }
+
         @media (max-width: 768px) {
             .ms-sidebar { display: none; }
             .unit-content { padding: 20px 16px 40px; }
             .unit-nav { padding: 16px; }
             .ms-breadcrumb { padding: 8px 16px; }
-            .compare-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -493,9 +452,9 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">開發者課程</span>
+    <a href="/prepare.html" target="_top" class="nav-label">準備課程</a>
 </nav>
 
 <div class="ms-layout">
@@ -504,8 +463,8 @@
     <aside class="ms-sidebar">
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
-            <div class="module-title">VS Code 安裝與基礎配置</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 48 分鐘 · 6 個單元</div>
+            <div class="module-title">AI 代理人與 Vibe Coding 實戰</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 45 分鐘 · 6 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
@@ -519,47 +478,39 @@
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">開發者課程</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
             <div class="unit-content">
-                <h1>VS Code 安裝與基礎配置</h1>
+                <h1>AI 代理人與 Vibe Coding 實戰</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
                     <span class="ms-tag">6 個單元</span>
                     <span class="ms-tag green">初學者</span>
-                    <span class="ms-tag blue">開發者</span>
-                    <span class="ms-tag blue">本機環境</span>
+                    <span class="ms-tag purple">AI Agent</span>
+                    <span class="ms-tag blue">Vibe Coding</span>
                 </div>
 
                 <p>
-                    工欲善其事，必先利其器。雖然雲端開發環境（如 github.dev、Codespaces）非常便利，
-                    但如果你要進行離線開發、或是連接實體硬體設備（如 ESP32、感測器、馬達等），
-                    你仍需要在電腦上安裝一套完整的 VS Code 本地環境。
-                </p>
-                <p>
-                    本模組將引導你完成 VS Code 本機端的下載、安裝、中文化配置與必備擴充套件，
-                    並設定 GitHub 帳號同步，讓你的開發偏好設定永不遺失。
+                    AI 已不再只是程式碼補齊工具。在 2026 年，AI Agent 能自主規劃、執行、測試並修正錯誤，
+                    成為你的「自主程式設計師」。本模組將帶你認識 AI 代理人的核心概念，
+                    學會使用 Copilot Agent Mode、MCP 協議整合外部工具，以及透過 <code>AGENTS.md</code> 自訂 Agent 行為。
                 </p>
 
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>成功下載並安裝 <strong>Visual Studio Code (VS Code) 桌面版</strong>。</li>
-                    <li>安裝 <strong>Chinese (Traditional) Language Pack</strong> 完成介面中文化。</li>
-                    <li>配置 <strong>Prettier</strong>、<strong>Material Icon Theme</strong> 與 <strong>Error Lens</strong> 等必備擴充套件。</li>
-                    <li>掌握 <strong>GitHub Settings Sync</strong>，實現設定的跨裝置備份與同步。</li>
+                    <li>理解 <strong>AI Agent</strong> 與傳統 AI 補全的根本差異。</li>
+                    <li>使用 VS Code 中的 <strong>Copilot Agent Mode</strong> 完成跨檔案的自主任務。</li>
+                    <li>透過 <strong>MCP (Model Context Protocol)</strong> 讓 Agent 存取外部工具與資料。</li>
+                    <li>撰寫 <strong>AGENTS.md</strong> 自訂專案級別的 AI 工作規範。</li>
                 </ul>
 
                 <h2>必要條件</h2>
                 <ul>
-                    <li>電腦一台（支援 Windows, macOS 或 Linux）</li>
-                    <li>可上網的網路連線，用於下載安裝檔與套件</li>
+                    <li>已安裝 VS Code 桌面版（建議完成模組 03）</li>
+                    <li>擁有 GitHub Copilot 訂閱（免費版亦可）</li>
                 </ul>
 
                 <h2>本模組單元</h2>
@@ -576,120 +527,123 @@
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-1" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
-                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
                 </div>
 
-                <h1>簡介</h1>
+                <h1>簡介：The Agentic Era</h1>
 
                 <p>
-                    在現代的 Vibe Coding 模式中，AI 能幫你寫出大量程式碼，但要將這些程式碼在真實硬體上編譯、執行、除錯，
-                    依然需要一個穩定、高度客製化的「指揮中心」。而這個中心就是本地端的 Visual Studio Code。
+                    在過去，AI 只能在你打字的游標旁悄悄補全幾行程式碼。但現在，AI Agent 的時代已經來臨。
+                    它不只能寫程式碼，還能自主規劃方案、跨多個檔案修改、執行終端機命令、
+                    讀取編譯錯誤並自動修復——直到任務完成。
                 </p>
 
                 <div class="ms-scenario">
                     <div class="ms-scenario-label">情境</div>
-                    小華使用 Codespaces 寫好了一個 ESP32 網頁控制的程式碼。但當他要把程式碼燒錄到手邊的開發板時，
-                    他發現網頁瀏覽器無法直接存取本機的序列埠（Serial Port），也無法直接插上 USB 燒錄。
-                    老師點醒他：「雲端虛擬機在天邊，你的開發板在手邊。這時你需要將代碼同步回本機，用本地安裝的 VS Code 開發。」
+                    小明接到一個緊急任務：「把整個專案的 REST API 改成 GraphQL」。
+                    以前他得逐個檔案手動修改，花上一整天。但現在他只需在 Agent Mode 中輸入這句話，
+                    AI Agent 就會列出計畫、逐步修改每個檔案、執行測試、修正錯誤，他只需要審核最終結果。
                 </div>
 
-                <p>
-                    本地 VS Code 的優勢在於：它可以完全控制你的電腦資源、直接使用終端機執行任意編譯工具鏈，
-                    並且可以通過 USB 與藍牙與你的硬體直接溝通。這是瀏覽器網頁版目前難以做到的。
-                    本單元將引導你在 15 分鐘內，搭建起這套強大的本地開發環境。
-                </p>
+                <h2>傳統 AI vs. AI Agent</h2>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>特性</th>
+                            <th>傳統 Copilot</th>
+                            <th>Copilot Agent Mode</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>範圍</td><td>單一檔案、當前游標</td><td><strong>整個 Workspace</strong></td></tr>
+                        <tr><td>執行</td><td>只會寫程式碼</td><td><strong>能執行指令、跑測試</strong></td></tr>
+                        <tr><td>修正</td><td>等你發現錯誤</td><td><strong>看見報錯後自動修復</strong></td></tr>
+                        <tr><td>主動性</td><td>被動補全</td><td><strong>主動規劃方案</strong></td></tr>
+                    </tbody>
+                </table>
 
                 <h2>教學影片</h2>
                 <div class="ms-video-embed">
-                    <iframe src="https://www.youtube.com/embed/Z3t_Y41Ji4Y"
-                        title="VS Code 本地安裝與基礎配置教學" allowfullscreen
+                    <iframe src="https://www.youtube.com/embed/U7cF4RRQ5VI"
+                        title="AI 代理人與 Vibe Coding 實戰教學" allowfullscreen
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
                     </iframe>
                 </div>
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 5</span>
+                <span class="unit-page-indicator">1 / 6</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 2: 安裝與中文化 ══════════ -->
+        <!-- ══════════ PAGE 2: Agent Mode 操作 ══════════ -->
         <div class="ms-unit-page" id="page-2">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-2" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
-                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 8 分鐘</div>
                 </div>
 
-                <h1>安裝與中文化</h1>
+                <h1>使用 Copilot Agent Mode</h1>
 
                 <p>
-                    打地基的時間到了！我們將循序漸進完成編輯器主體的部署，並設定好親切的繁體中文介面。
+                    這是最直接的 AI Agent 結合方式。在 VS Code 中，你可以將 Copilot 切換到 <strong>Agent Mode</strong>。
+                    它是一個「自主程式設計師」，可以跨多個檔案進行修改、執行終端機命令、讀取編譯錯誤並自動修復。
                 </p>
 
-                <h2>安裝步驟</h2>
+                <h2>操作流程</h2>
                 <div class="ms-steps">
                     <div class="ms-step">
                         <div class="ms-step-num">1</div>
                         <div class="ms-step-body">
-                            <h4>下載 VS Code</h4>
-                            <p>前往官方網站 <a href="https://code.visualstudio.com" target="_blank">code.visualstudio.com</a>，點擊下載適用於你作業系統（Windows/macOS/Linux）的安裝包。</p>
+                            <h4>進入 Chat 視窗</h4>
+                            <p>打開 Copilot Chat，快捷鍵為 <code>Ctrl+Alt+I</code>（Mac 為 <code>Cmd+Alt+I</code>）。</p>
                         </div>
                     </div>
                     <div class="ms-step">
                         <div class="ms-step-num">2</div>
                         <div class="ms-step-body">
-                            <h4>執行安裝程序</h4>
-                            <p>執行安裝檔，並依指示完成安裝。</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="ms-warning">
-                    <i class="fas fa-exclamation-triangle note-icon"></i>
-                    <div class="note-body">
-                        <strong>Windows 用戶關鍵設定</strong>
-                        安裝時的「選取其他工作」步驟，務必勾選 <strong>「加入 '開啟以程式碼編輯' 動作到 Windows 檔案總管內容功能表」</strong> (Add "Open with Code")。
-                        這讓你能在任何資料夾直接按右鍵開啟專案，開發效率大幅提升！
-                    </div>
-                </div>
-
-                <h2>繁體中文介面設定</h2>
-                <div class="ms-steps">
-                    <div class="ms-step">
-                        <div class="ms-step-num">1</div>
-                        <div class="ms-step-body">
-                            <h4>打開 Extensions 控制面板</h4>
-                            <p>開啟安裝好的 VS Code。點擊左側工具欄最下方的四個方塊圖示 (Extensions) ，或按快捷鍵 <kbd>Ctrl+Shift+X</kbd> (Mac 為 <kbd>Cmd+Shift+X</kbd>)。</p>
-                        </div>
-                    </div>
-                    <div class="ms-step">
-                        <div class="ms-step-num">2</div>
-                        <div class="ms-step-body">
-                            <h4>搜尋與安裝中文包</h4>
-                            <p>在搜尋框輸入 <strong>Chinese</strong>，找到名為 <strong>"Chinese (Traditional) Language Pack"</strong> (由 Microsoft 官方發行) 的擴充套件，點擊 <strong>Install</strong> 安裝。</p>
+                            <h4>切換模式</h4>
+                            <p>在 Chat 頂部的下拉選單中選擇 <strong>"Agent"</strong> 模式。</p>
                         </div>
                     </div>
                     <div class="ms-step">
                         <div class="ms-step-num">3</div>
                         <div class="ms-step-body">
-                            <h4>重啟套用</h4>
-                            <p>安裝完成後，右下角會彈出重啟提示，點擊 <strong>Restart</strong>。重啟後介面將切換為繁體中文。</p>
+                            <h4>下達任務</h4>
+                            <p>輸入高階指令。例如：「幫我把這個專案的 API 從 REST 改成 GraphQL」。</p>
                         </div>
                     </div>
                 </div>
 
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>自主迴圈 (Agentic Loop)</strong>
+                        Agent 會先列出計畫 (Plan)，獲得你同意後開始修改檔案、跑測試、看到錯誤後自動修正，直到任務完成。
+                        這就是所謂的「自主回饋機制」。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        你可以隨時在 Agent 的執行過程中按下「停止」按鈕，審查目前的修改狀態，再決定是否讓 Agent 繼續。
+                        養成審核的習慣，是 Vibe Coding 的核心能力之一。
+                    </div>
+                </div>
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 5</span>
+                <span class="unit-page-indicator">2 / 6</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 3: 必備擴充套件 ══════════ -->
+        <!-- ══════════ PAGE 3: MCP 與 AGENTS.md ══════════ -->
         <div class="ms-unit-page" id="page-3">
             <div class="unit-content">
                 <div class="unit-status-bar">
@@ -698,69 +652,58 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 8 分鐘</div>
                 </div>
 
-                <h1>必備擴充套件推薦</h1>
+                <h1>MCP 協議與自訂 Agent 指令</h1>
 
+                <h2>MCP (Model Context Protocol)</h2>
                 <p>
-                    VS Code 本身是一台輕快的骨架，但加上適合的外掛 (Extensions) 後，它將成為你的神兵利器。
-                    以下是我們強烈建議每位網頁與物聯網開發者立刻裝上的三個基本擴充套件。
+                    你可以透過 MCP 協議，讓 AI Agent 擁有「手和腳」，去存取外部工具或私有數據。
+                    這讓 Agent 不再受限於你本地的程式碼，還能查詢 Jira、搜尋 Google、讀取資料庫等等。
                 </p>
 
-                <h2>擴充套件介紹</h2>
+                <h3>應用場景</h3>
+                <ul>
+                    <li>自動查詢 <strong>Jira / GitHub Issues</strong></li>
+                    <li>搜尋 <strong>Google 即時資訊</strong></li>
+                    <li>讀取電腦本地的特定 <strong>資料庫</strong></li>
+                </ul>
 
-                <div class="compare-grid">
-                    <!-- Prettier -->
-                    <div class="compare-card">
-                        <div class="compare-card-header" style="background:#eef6ff; color:var(--ms-blue-dark);">
-                            <i class="fas fa-magic"></i> Prettier
-                        </div>
-                        <div class="compare-card-body">
-                            <strong>代碼格式化（Code Formatter）</strong>
-                            <p style="margin-top:8px;">
-                                自動幫你把縮排亂掉、括號對齊錯誤的程式碼排版整齊。在存檔瞬间（可設定 format on save），讓混亂一秒歸零。
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Material Icon Theme -->
-                    <div class="compare-card">
-                        <div class="compare-card-header" style="background:#dff6dd; color:#107c10;">
-                            <i class="fas fa-folder-open"></i> Material Icon Theme
-                        </div>
-                        <div class="compare-card-body">
-                            <strong>檔案標誌美化（File Icons）</strong>
-                            <p style="margin-top:8px;">
-                                讓檔案樹列表出現漂亮、易辨識的標誌與圖示。HTML 檔案顯示 HTML 圖標，JavaScript 檔案顯示 JS 圖標，方便快速定位檔案類型。
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Error Lens -->
-                    <div class="compare-card">
-                        <div class="compare-card-header" style="background:#fde7e9; color:var(--ms-red);">
-                            <i class="fas fa-bug"></i> Error Lens
-                        </div>
-                        <div class="compare-card-body">
-                            <strong>即時除錯反饋（Instant Debug）</strong>
-                            <p style="margin-top:8px;">
-                                直接把代碼中的錯誤、警告以及語法警告提示，以高亮色彩直接顯示在出錯程式碼的行尾，不用將滑鼠移上去懸停，除錯效率提升 200%。
-                            </p>
-                        </div>
-                    </div>
+                <h3>設定方式</h3>
+                <div class="ms-code-block">
+                    <span class="comment">// 在 VS Code 設定中開啟 MCP</span><br>
+                    <span class="key">"chat.mcp.enabled"</span>: <span class="bool">true</span><br><br>
+                    <span class="comment">// 連接 MCP 伺服器，賦予 API 呼叫能力</span>
                 </div>
+
+                <h2>自訂 Agent 指令 (AGENTS.md)</h2>
+                <p>
+                    如果你希望 Agent 在你的 Workspace 中遵循特定的架構或風格，你可以「調教」它。
+                    在專案根目錄建立一個 <code>AGENTS.md</code> 檔案，寫入你的團隊規範。
+                </p>
 
                 <div class="ms-tip">
                     <i class="fas fa-lightbulb note-icon"></i>
                     <div class="note-body">
-                        <strong>自動存檔排版設定</strong>
-                        安裝 Prettier 後，建議進入 VS Code 設定（<kbd>Ctrl+,</kbd>），搜尋 <code>format on save</code> 並將其勾選。
-                        如此一來，每次存檔時 VS Code 都會自動以 Prettier 標準幫你重新排版！
+                        <strong>範例指示</strong>
+                        <ul style="margin-top:8px; padding-left:20px;">
+                            <li>所有 API 必須使用 TypeScript 定義介面</li>
+                            <li>所有組件必須使用 Tailwind CSS 進行樣式設定</li>
+                            <li>測試必須使用 Jest 且覆蓋率需大於 80%</li>
+                        </ul>
                     </div>
                 </div>
 
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        <code>AGENTS.md</code> 的規則越明確、越具體，Agent 的遵循效果越好。
+                        避免模糊的描述，例如「寫好的程式碼」，應改為具體的標準，如「所有導出的函數必須包含 JSDoc 註解」。
+                    </div>
+                </div>
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 5</span>
+                <span class="unit-page-indicator">3 / 6</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -774,56 +717,63 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 15 分鐘</div>
                 </div>
 
-                <h1>實作練習：本地開發環境與同步</h1>
+                <h1>實作練習：AI Agent 實戰任務</h1>
 
                 <p>
-                    請動手完成以下兩項本地端配置任務，這將為你未來的程式開發與 AI 協作打下最穩固的基礎。
+                    請動手完成以下三項 Agent 實戰任務，體驗從「寫程式碼」到「引導 Agent」的思維轉變。
                 </p>
 
                 <div class="lab-cards-group">
                     <!-- Task 1 -->
-                    <div class="ms-lab-card" onclick="openSubmissionModal('vscode-setup-task-1', '安裝 GitHub Copilot')">
-                        <div class="ms-lab-badge"><i class="fas fa-robot"></i>&nbsp; 作業 1</div>
-                        <span class="ms-lab-time"><i class="far fa-clock"></i> 約 10 分鐘</span>
-                        <h3>安裝 GitHub Copilot</h3>
+                    <div class="ms-lab-card" onclick="openSubmissionModal('ai-agent-task-1-1', '作業 1-1: VS Code Agent 實戰')">
+                        <div class="ms-lab-badge"><i class="fas fa-bolt"></i>&nbsp; 作業 1</div>
+                        <span class="ms-lab-time"><i class="far fa-clock"></i> 約 15 分鐘</span>
+                        <h3>VS Code Agent 實戰：全自動代碼重構</h3>
                         <p style="font-size:14px; color:#323130; margin-bottom:14px;">
-                            讓 AI 成為你的副駕駛，體驗結對編程（Pair Programming）的強大威力。
+                            啟動 Agent Mode 修正一個已知 Bug，並截圖 Plan 與修正過程。
                         </p>
                         <ul class="ms-checklist">
-                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>點擊左側 Extensions 圖示或按 <kbd>Ctrl+Shift+X</kbd></span></li>
-                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>搜尋 <strong>GitHub Copilot</strong> 並點擊安裝 (Install)</span></li>
-                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>點擊右下角的登入通知，點選 "Allow" 登入 GitHub 帳號以獲取授權</span></li>
-                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>確認 VS Code 右下角狀態列出現 Copilot 小圖示（無斜線標示），即可開始使用</span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>打開 Copilot Chat 並切換至 <strong>Agent Mode</strong></span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>輸入指令讓 Agent 自主規劃重構 <code>src/legacy-service.js</code></span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>將 Agent 產出的 <strong>Plan (計畫清單)</strong> 複製到 <code>PLAN_LOG.md</code></span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>截圖 Agent 自動修正的過程</span></li>
                         </ul>
-                        <div class="ms-note" style="margin-top:12px;">
-                            <i class="fas fa-info-circle note-icon"></i>
-                            <div class="note-body">
-                                <strong>小提示</strong>
-                                GitHub Copilot 對於學生或符合特定資格的開發者提供免費試用；若無訂閱，也可以先安裝，之後再進行啟用。
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Task 2 -->
-                    <div class="ms-lab-card" onclick="openSubmissionModal('vscode-setup-task-2', '作業 2-2: Git 帳號同步')">
-                        <div class="ms-lab-badge"><i class="fas fa-sync"></i>&nbsp; 作業 2</div>
+                    <div class="ms-lab-card" onclick="openSubmissionModal('ai-agent-task-1-2', '作業 1-2: 自定義指令調教')">
+                        <div class="ms-lab-badge"><i class="fas fa-gear"></i>&nbsp; 作業 2</div>
                         <span class="ms-lab-time"><i class="far fa-clock"></i> 約 10 分鐘</span>
-                        <h3>Git 帳號設定同步</h3>
+                        <h3>自定義指令調教 (AGENTS.md)</h3>
                         <p style="font-size:14px; color:#323130; margin-bottom:14px;">
-                            設定 Settings Sync，讓你的編輯器外掛、快捷鍵、主題跟著帳號走。
+                            撰寫 <code>AGENTS.md</code> 並要求 Agent 遵循特定風格重構一段代碼。
                         </p>
                         <ul class="ms-checklist">
-                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>點擊 VS Code 左下角的人頭 👤 帳戶圖示</span></li>
-                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>點擊 <strong>"開啟設定同步... (Turn on Settings Sync...)"</strong></span></li>
-                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>在跳出的選單中點擊 "Sign in & Turn on"，並選擇使用 GitHub 帳號登入</span></li>
-                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>於瀏覽器完成 GitHub 授權後，確認 VS Code 左下角頭像顯示已登入，啟用同步狀態</span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>在專案根目錄建立 <code>AGENTS.md</code></span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>加入至少一條具體的開發規則</span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>讓 Agent 依據規則修改程式碼，觀察是否遵循你的規範</span></li>
+                        </ul>
+                    </div>
+
+                    <!-- Task 3 -->
+                    <div class="ms-lab-card" onclick="openSubmissionModal('ai-agent-task-1-3', '作業 1-3: MCP 外部工具整合')">
+                        <div class="ms-lab-badge"><i class="fas fa-plug"></i>&nbsp; 作業 3</div>
+                        <span class="ms-lab-time"><i class="far fa-clock"></i> 約 15 分鐘</span>
+                        <h3>MCP 外部工具整合</h3>
+                        <p style="font-size:14px; color:#323130; margin-bottom:14px;">
+                            成功連接一個 MCP Server 並展示 Agent 呼叫外部工具的結果。
+                        </p>
+                        <ul class="ms-checklist">
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>在 VS Code 設定中啟用 <code>chat.mcp.enabled</code></span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>參考 <code>MCP_GUIDE.md</code> 串接一個 MCP Server</span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>截圖展示 Copilot Chat 中的 <strong>Tool Call</strong> 圖示</span></li>
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 5</span>
+                <span class="unit-page-indicator">4 / 6</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -834,7 +784,7 @@
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-5" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
-                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
                 </div>
 
                 <h1>知識測驗</h1>
@@ -843,34 +793,34 @@
                 <div id="quiz-form">
 
                     <div class="quiz-question">
-                        <p>1. Windows 用戶在安裝 VS Code 本地版時，建議勾選哪一個關鍵設定以提升專案開啟效率？</p>
-                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 啟用精簡模式介面</label>
-                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 將「開啟以程式碼編輯」動作加入檔案總管內容功能表 (Add "Open with Code")</label>
-                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 關閉所有背景網路傳輸</label>
+                        <p>1. Copilot Agent Mode 與傳統 Copilot 的最大差異是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 傳統 Copilot 不支援 Python 語言</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> Agent Mode 能跨檔案修改、執行命令並自動修正錯誤</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> Agent Mode 只能在 GitHub 網頁版使用</label>
                         <div class="quiz-feedback" id="q1-feedback"></div>
                     </div>
 
                     <div class="quiz-question">
-                        <p>2. 若要讓程式碼在存檔瞬間自動進行排版，讓混亂程式碼自動變整齊，需要安裝哪一個擴充套件？</p>
-                        <label class="quiz-option"><input type="radio" name="q2" value="a"> Error Lens</label>
-                        <label class="quiz-option"><input type="radio" name="q2" value="b"> Chinese Language Pack</label>
-                        <label class="quiz-option"><input type="radio" name="q2" value="c"> Prettier - Code Formatter</label>
+                        <p>2. MCP (Model Context Protocol) 的主要用途是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 加密程式碼以防止他人讀取</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 讓 AI Agent 能存取外部工具與資料</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 將程式碼自動部署到雲端伺服器</label>
                         <div class="quiz-feedback" id="q2-feedback"></div>
                     </div>
 
                     <div class="quiz-question">
-                        <p>3. 啟用 VS Code 本地端的「設定同步 (Settings Sync)」主要的優點是什麼？</p>
-                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 可以將本地程式碼自動發布至網頁伺服器</label>
-                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 加快電腦運行速度並清除硬碟快取</label>
-                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 讓你的主題、外掛與快捷鍵設定備份在雲端，換電腦時無縫同步</label>
+                        <p>3. 在專案中建立 <code>AGENTS.md</code> 檔案的主要目的是？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 記錄專案的版本歷史</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 定義專案級別的 AI Agent 工作規範</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 自動產生 API 文件</label>
                         <div class="quiz-feedback" id="q3-feedback"></div>
                     </div>
 
                     <div class="quiz-question">
-                        <p>4. 本地安裝的 VS Code 桌面版比起網頁版（github.dev）最關鍵的優勢是什麼？</p>
-                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 桌面版完全免費使用，網頁版需要收費</label>
-                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 桌面版才支援安裝繁體中文介面</label>
-                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 桌面版擁有本地終端機可執行與編譯程式，且可直接連接 USB / 藍牙等硬體通訊</label>
+                        <p>4. 什麼是 Agentic Loop（自主迴圈）？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 一種永不停止的無限迴圈 Bug</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> Agent 規劃 → 執行 → 偵錯 → 修正的循環機制</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> VS Code 的自動存檔功能</label>
                         <div class="quiz-feedback" id="q4-feedback"></div>
                     </div>
 
@@ -883,7 +833,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 5</span>
+                <span class="unit-page-indicator">5 / 6</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -894,58 +844,58 @@
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
-                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
                 </div>
 
                 <h1>摘要與資源</h1>
 
                 <p>
-                    恭喜！你已經成功完成了本地端開發環境的安裝與配置。
-                    現在不論是面對一般的網頁開發、AI 協作、還是複雜的硬體（如 ESP32、無人車晶片）燒錄與除錯，你的電腦都已成為具備強大擴充性的代碼指揮中心。
+                    恭喜！你已經完成了 AI 代理人與 Vibe Coding 實戰模組。
+                    在 2026 年，一名優秀的工程師已不只是「寫程式碼的人」，更是一位優秀的「AI 代理人主管」。
+                    你現在已經掌握了指揮 AI Agent 的核心能力。
                 </p>
 
                 <div class="ms-achievement">
-                    <div class="achievement-icon">🛠️</div>
+                    <div class="achievement-icon">🤖</div>
                     <div class="achievement-text">
-                        <h3>恭喜！你已完成本地環境架設</h3>
-                        <p>現在你的電腦已經是一個功能強大、擁有 AI 增強與設定同步的開發者基地。</p>
+                        <h3>恭喜！你已掌握 AI Agent 核心技能</h3>
+                        <p>從 Agent Mode 操作、MCP 整合到 AGENTS.md 規範定義，你已具備引導 AI 自主完成任務的能力。</p>
                     </div>
                 </div>
 
                 <h2>完成本模組後，你已學會：</h2>
                 <ul>
-                    <li>如何在不同作業系統上下載並完成 <strong>VS Code 桌面版</strong> 的正確安裝。</li>
-                    <li>如何安裝擴充套件，並成功套用 <strong>繁體中文化</strong> 介面。</li>
-                    <li>配置 <strong>Prettier</strong> 進行程式碼自動格式化排版。</li>
-                    <li>整合 <strong>Material Icon Theme</strong> 與 <strong>Error Lens</strong> 提升程式碼結構辨識與即時除錯回饋效率。</li>
-                    <li>開啟 <strong>Settings Sync (設定同步)</strong>，確保你的所有個人化設定跟著 GitHub 帳號走。</li>
+                    <li>理解 <strong>AI Agent</strong> 的自主迴圈 (Agentic Loop) 工作機制。</li>
+                    <li>使用 <strong>Copilot Agent Mode</strong> 完成跨檔案的自動重構與除錯。</li>
+                    <li>透過 <strong>MCP 協議</strong> 擴展 Agent 的外部感知能力。</li>
+                    <li>撰寫 <strong>AGENTS.md</strong> 確保 Agent 在團隊協作中行為一致。</li>
                 </ul>
 
                 <h2>延伸學習資源</h2>
 
-                <a href="https://www.youtube.com/watch?v=Z3t_Y41Ji4Y" target="_blank" class="ms-resource-link">
+                <a href="https://www.youtube.com/watch?v=U7cF4RRQ5VI" target="_blank" class="ms-resource-link">
                     <i class="fab fa-youtube" style="color:#ff0000;"></i>
                     <div>
                         <div style="font-weight:600;">課程教學影片</div>
-                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">YouTube — VS Code 本地安裝與配置示範</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">YouTube — AI 代理人與 Vibe Coding 實戰示範</div>
                     </div>
                     <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
                 </a>
 
-                <a href="https://docs.google.com/document/d/1yjmiikdeBpduR4xHXlho4LZqTN2Mv_NNHwZijz0dEkQ/edit?usp=sharing" target="_blank" class="ms-resource-link">
+                <a href="https://docs.google.com/document/d/1GQqGRkPu8K1m12oQWyXLNb0XHywEAcyQabCz2tCBH0k/edit?usp=sharing" target="_blank" class="ms-resource-link">
                     <i class="fas fa-file-alt"></i>
                     <div>
                         <div style="font-weight:600;">課程官方講義</div>
-                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">Google Docs — 詳細本地配置步驟圖文說明</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">Google Docs — Agent Mode 與 MCP 詳細操作指南</div>
                     </div>
                     <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
                 </a>
 
-                <a href="https://code.visualstudio.com/docs" target="_blank" class="ms-resource-link">
+                <a href="https://code.visualstudio.com/docs/copilot/chat/chat-agent-mode" target="_blank" class="ms-resource-link">
                     <i class="fas fa-book"></i>
                     <div>
-                        <div style="font-weight:600;">VS Code 官方文件</div>
-                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">code.visualstudio.com — 最權威的功能介紹與快捷鍵指南</div>
+                        <div style="font-weight:600;">VS Code Agent Mode 官方文件</div>
+                        <div style="font-size:12px; color:#605e5c; margin-top:2px;">code.visualstudio.com — Agent Mode 完整功能介紹</div>
                     </div>
                     <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
                 </a>
@@ -953,7 +903,7 @@
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「VS Code 安裝與基礎配置」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「AI 代理人與 Vibe Coding 實戰」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -964,20 +914,20 @@
     /* ─── DATA ─── */
     const UNITS = [
         { id: 0, label: '課程總覽',              time: '',        type: 'index' },
-        { id: 1, label: '簡介',                  time: '3 分鐘',  type: 'unit'  },
-        { id: 2, label: '安裝與中文化',          time: '10 分鐘', type: 'unit'  },
-        { id: 3, label: '必備外掛推薦',          time: '8 分鐘',  type: 'unit'  },
+        { id: 1, label: '簡介：The Agentic Era', time: '5 分鐘',  type: 'unit'  },
+        { id: 2, label: 'Copilot Agent Mode',    time: '8 分鐘',  type: 'unit'  },
+        { id: 3, label: 'MCP 與 AGENTS.md',      time: '8 分鐘',  type: 'unit'  },
         { id: 4, label: '實作練習',              time: '15 分鐘', type: 'lab'   },
-        { id: 5, label: '知識測驗',              time: '4 分鐘',  type: 'quiz'  },
-        { id: 6, label: '摘要與資源',            time: '3 分鐘',  type: 'unit'  },
+        { id: 5, label: '知識測驗',              time: '5 分鐘',  type: 'quiz'  },
+        { id: 6, label: '摘要與資源',            time: '4 分鐘',  type: 'unit'  },
     ];
 
-    const QUIZ_ANSWERS = { q1: 'b', q2: 'c', q3: 'c', q4: 'c' };
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'b' };
     const QUIZ_EXPLANATIONS = {
-        q1: { b: '正確！勾選此項目可以讓我們直接在資料夾上按右鍵選擇「使用 VS Code 開啟」，大幅提升日常開發效率。' },
-        q2: { c: '正確！Prettier 是最主流的程式碼排版工具，能一鍵將代碼自動排版為標準格式。' },
-        q3: { c: '正確！Settings Sync 能將你的編輯器設定備份至 GitHub，在多部電腦之間無縫同步。' },
-        q4: { c: '正確！網頁版沒有本地終端機，亦無法直接讀取本機 USB/藍牙與硬體通訊；本地 VS Code 才能發揮完整的編譯與硬體控制能力。' },
+        q1: { b: '正確！Agent Mode 最大的突破在於能跨檔案工作、執行終端機命令，並在偵測到錯誤時自動修正。' },
+        q2: { b: '正確！MCP 讓 AI Agent 能存取 Jira、Google Search、資料庫等外部工具與資料。' },
+        q3: { b: '正確！AGENTS.md 讓你定義專案級別的 AI 工作規範，確保 Agent 在團隊中行為一致。' },
+        q4: { b: '正確！Agentic Loop 是 Agent 「規劃 → 執行 → 偵錯 → 修正」的自主循環機制。' },
     };
 
     let currentUnit = 0;
@@ -1128,163 +1078,75 @@
 
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;
 </script>
 
     <!-- Define Resources -->
     <script>
         window.RESOURCES = {
-            video: "https://www.youtube.com/embed/Z3t_Y41Ji4Y",
-            doc: "https://docs.google.com/document/d/1yjmiikdeBpduR4xHXlho4LZqTN2Mv_NNHwZijz0dEkQ/edit?usp=sharing"
+            video: "https://www.youtube.com/embed/U7cF4RRQ5VI",
+            doc: "https://docs.google.com/document/d/1GQqGRkPu8K1m12oQWyXLNb0XHywEAcyQabCz2tCBH0k/edit?usp=sharing"
         };
     </script>
-    <script src="/js/course-shared.js?v=2026.05.21.V21.DISABLE_UNIFIED_SUPPORT_HUB"></script>
+    <script src="/js/course-shared.js?v=2026.05.25.V21.MS_LEARN_FORMAT"></script>
 
     <!-- Assignment Guide (Hidden) -->
     <section id="assignment-guide" style="display: none;">
-<div class="markdown-heading"><h1 class="heading-element">🚀 單元 01：VS Code 本地安裝與開發環境配置</h1><a id="user-content--單元-01vs-code-本地安裝與開發環境配置" class="anchor" aria-label="Permalink: 🚀 單元 01：VS Code 本地安裝與開發環境配置" href="#-單元-01vs-code-本地安裝與開發環境配置"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<p>歡迎來到你的第一個開發者任務！在本單元中，我們將一起完成開發環境的架設。工欲善其事，必先利其器。擁有一個順手的編輯器是成為優秀開發者的第一步。</p>
+<div class="markdown-heading"><h1 class="heading-element">02-unit-agent-mode (AI 代理人與 Vibe Coding 實戰)</h1><a id="user-content-02-unit-agent-mode-ai-代理人與-vibe-coding-實戰" class="anchor" aria-label="Permalink: 02-unit-agent-mode (AI 代理人與 Vibe Coding 實戰)" href="#02-unit-agent-mode-ai-代理人與-vibe-coding-實戰"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<p>本程式庫是專為「AI 代理人與 Vibe Coding」單元設計的實戰作業環境。在 2026 年，開發的核心能力已從單純的編碼轉向「引導自主代理 (Agent Guidance)」。你將學習如何指揮 AI Agent 完成複雜的重構、設定團隊規範，並整合外部工具。</p>
 <div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2><a id="user-content--學習目標" class="anchor" aria-label="Permalink: 🎯 學習目標" href="#-學習目標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<ul>
-<li>成功安裝並配置 <strong>Visual Studio Code (VS Code)</strong>。</li>
-<li>掌握 <strong>GitHub Setting Sync</strong>，讓你的設定跟著帳號走。</li>
-<li>學會使用 <strong>Live Server</strong> 進行網頁即時預覽。</li>
-<li>練習透過 <strong>Git</strong> 提交你的第一份環境檢查報告。</li>
-</ul>
-<hr>
-<div class="markdown-heading"><h2 class="heading-element">🛠️ 操作步驟</h2><a id="user-content-️-操作步驟" class="anchor" aria-label="Permalink: 🛠️ 操作步驟" href="#️-操作步驟"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h3 class="heading-element">1. 安裝與初始化</h3><a id="user-content-1-安裝與初始化" class="anchor" aria-label="Permalink: 1. 安裝與初始化" href="#1-安裝與初始化"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<p>如果您尚未安裝 VS Code，請至 <a href="https://code.visualstudio.com/" rel="nofollow">官網</a> 下載並安裝。
-開啟本資料夾後，您會看到右下角跳出「建議安裝外掛」的提示，請點選 <strong>「全部安裝 (Install All)」</strong>。</p>
-<blockquote>
-<p>[!TIP]
-我們推薦安裝：<code>Chinese (Traditional) Language Pack</code> (中文化) 與 <code>Live Server</code> (網頁預覽)。</p>
-</blockquote>
-<div class="markdown-heading"><h3 class="heading-element">2. 設定同步 (Settings Sync)</h3><a id="user-content-2-設定同步-settings-sync" class="anchor" aria-label="Permalink: 2. 設定同步 (Settings Sync)" href="#2-設定同步-settings-sync"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<p>點擊 VS Code 左下角的 <strong>「人頭圖示」</strong>，選擇 <strong>「開啟設定同步 (Turn on Settings Sync...)」</strong>，並使用您的 <strong>GitHub 帳號</strong> 登入。
-這能確保未來不論換到哪台電腦，您的偏好設定都能自動套用。</p>
-<div class="markdown-heading"><h3 class="heading-element">3. 環境測試 (Live Server)</h3><a id="user-content-3-環境測試-live-server" class="anchor" aria-label="Permalink: 3. 環境測試 (Live Server)" href="#3-環境測試-live-server"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ol>
-<li>在左側檔案瀏覽器點擊 <code>index.html</code>。</li>
-<li>點擊編輯器右下角的 <strong>「Go Live」</strong> 按鈕。</li>
-<li>您的預設瀏覽器應會自動開啟，並顯示「環境測試成功！」的字樣。</li>
+<li>掌握 AI Agent 的 <strong>"Plan-Execute"</strong> 工作流程。</li>
+<li>學習透過 <code>AGENTS.md</code> 定義專案級別的 AI 工作規範。</li>
+<li>實踐 MCP (Model Context Protocol) 整合，擴展 AI 的外部感知能力。</li>
 </ol>
-<hr>
-<div class="markdown-heading"><h2 class="heading-element">📝 繳交任務</h2><a id="user-content--繳交任務" class="anchor" aria-label="Permalink: 📝 繳交任務" href="#-繳交任務"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<p>請完成以下兩項任務，以證明您的環境已準備就緒：</p>
-<div class="markdown-heading"><h3 class="heading-element">任務 1：全視窗截圖 (<code>setup-ui.png</code>)</h3><a id="user-content-任務-1全視窗截圖-setup-uipng" class="anchor" aria-label="Permalink: 任務 1：全視窗截圖 (setup-ui.png)" href="#任務-1全視窗截圖-setup-uipng"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<p>截下一張 <strong>VS Code 的全視窗截圖</strong>。</p>
+<div class="markdown-heading"><h2 class="heading-element">🛠️ 環境準備</h2><a id="user-content-️-環境準備" class="anchor" aria-label="Permalink: 🛠️ 環境準備" href="#️-環境準備"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
-<li>
-<strong>必須包含</strong>：左側導覽列、下方的狀態列、以及左下角已登入的人頭圖示。</li>
-<li>
-<strong>檔案命名</strong>：<code>setup-ui.png</code>。</li>
-<li>
-<strong>存檔路徑</strong>：直接放入專案根目錄。</li>
+<li><strong>GitHub Copilot 訂閱</strong>：請確保你的 VS Code 已更新至支援 <strong>Agent Mode</strong> 的版本。</li>
+<li><strong>VS Code 擴充功能</strong>：安裝最新版的 GitHub Copilot 與 GitHub Copilot Chat。</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">任務 2：網頁預覽截圖 (<code>html-preview.png</code>)</h3><a id="user-content-任務-2網頁預覽截圖-html-previewpng" class="anchor" aria-label="Permalink: 任務 2：網頁預覽截圖 (html-preview.png)" href="#任務-2網頁預覽截圖-html-previewpng"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<p>截下一張包含 <strong>「VS Code 編輯器」</strong> 與 <strong>「瀏覽器預覽畫面」</strong> 並排的圖片。</p>
+<div class="markdown-heading"><h2 class="heading-element">📝 作業任務</h2><a id="user-content--作業任務" class="anchor" aria-label="Permalink: 📝 作業任務" href="#-作業任務"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">任務 1：全自動代碼重構 (Agent Refactoring)</h3><a id="user-content-任務-1全自動代碼重構-agent-refactoring" class="anchor" aria-label="Permalink: 任務 1：全自動代碼重構 (Agent Refactoring)" href="#任務-1全自動代碼重構-agent-refactoring"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
-<li>
-<strong>檔案命名</strong>：<code>html-preview.png</code>。</li>
-<li>
-<strong>存檔路徑</strong>：直接放入專案根目錄。</li>
+<li><strong>背景</strong>：<code>src/legacy-service.js</code> 是一段結構混亂的舊代碼。</li>
+<li><strong>任務</strong>：開啟 Copilot Agent Mode，指令 AI 進行重構。要求 Agent 遵循「職責分離」原則，將 UI 邏輯與業務邏輯拆分。</li>
+<li><strong>要求</strong>：在重構前，讓 Agent 產出 <strong>"Plan" (計畫清單)</strong>，並將其複製到 <code>PLAN_LOG.md</code>。</li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">任務 3：填寫檢查清單</h3><a id="user-content-任務-3填寫檢查清單" class="anchor" aria-label="Permalink: 任務 3：填寫檢查清單" href="#任務-3填寫檢查清單"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<p>開啟 <a href="env-check.md"><code>env-check.md</code></a>，將您的進度打勾 <code>[x]</code>，並確認截圖已正確顯示。</p>
-<hr>
-<div class="markdown-heading"><h2 class="heading-element">🚀 提交方式</h2><a id="user-content--提交方式" class="anchor" aria-label="Permalink: 🚀 提交方式" href="#-提交方式"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<p>當您完成上述步驟後，請在終端機 (Terminal) 輸入以下指令：</p>
-<div class="highlight highlight-source-shell"><pre>git add <span class="pl-c1">.</span>
-git commit -m <span class="pl-s"><span class="pl-pds">"</span>feat: complete vscode environment setup<span class="pl-pds">"</span></span>
-git push</pre></div>
-<p>最後，請回到 GitHub 程式庫頁面並點擊 <strong>「Create Pull Request」</strong>，這將通知導師進行檢核。</p>
-<hr>
-<blockquote>
-<p>[!IMPORTANT]
-如果在啟動 Live Server 時遇到 <code>Port 5500 is already in use</code> 錯誤，請嘗試重啟 VS Code 或在設定中更改 Live Server 的 Port。</p>
-</blockquote>
+<div class="markdown-heading"><h3 class="heading-element">任務 2：定義團隊規範 (Custom Instructions)</h3><a id="user-content-任務-2定義團隊規範-custom-instructions" class="anchor" aria-label="Permalink: 任務 2：定義團隊規範 (Custom Instructions)" href="#任務-2定義團隊規範-custom-instructions"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<ul>
+<li><strong>背景</strong>：為了確保團隊協作中 AI 的行為一致，我們需要建立 <code>AGENTS.md</code>。</li>
+<li><strong>任務</strong>：編輯本程式庫根目錄下的 <code>AGENTS.md</code>，至少加入一條具體的開發規則。</li>
+<li><strong>驗證</strong>：完成後，嘗試讓 Agent 修改 <code>src/legacy-service.js</code>，觀察它是否會自動遵循你的新規則。</li>
+</ul>
+<div class="markdown-heading"><h3 class="heading-element">任務 3：MCP 外部工具整合</h3><a id="user-content-任務-3mcp-外部工具整合" class="anchor" aria-label="Permalink: 任務 3：MCP 外部工具整合" href="#任務-3mcp-外部工具整合"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<ul>
+<li><strong>背景</strong>：AI 需要更多外部資訊來協助開發。</li>
+<li><strong>任務</strong>：參考 <code>MCP_GUIDE.md</code> 串接一個 MCP Server。</li>
+<li><strong>回傳</strong>：提交一張截圖 <code>mcp-proof.png</code>，展示 Copilot Chat 視窗中出現了 <strong>「Tool Call」</strong> 的圖示。</li>
+</ul>
 
     </section>
 
     <!-- Tutor Guide (Hidden) -->
     <section id="tutor-guide" style="display: none;">
-<p>針對 <strong><code>01-unit-vscode-setup</code> (VS Code 本地安裝與配置)</strong> 單元，由於重點在於「軟體環境安裝」，在 GitHub Classroom 的部署上需要結合「圖片證明」與「設定檔測試」。</p>
-<p>以下是針對本單元作業 (Assignments) 的部署建議：</p>
-<div class="markdown-heading"><h3 class="heading-element">1. 範本程式庫 (Template Repo) 的關鍵配置</h3><a id="user-content-1-範本程式庫-template-repo-的關鍵配置" class="anchor" aria-label="Permalink: 1. 範本程式庫 (Template Repo) 的關鍵配置" href="#1-範本程式庫-template-repo-的關鍵配置"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<p>為了讓學生一打開程式庫就能「接收到安裝建議」，強烈建議在範本中加入以下設定：</p>
+<p>針對 <strong><code>02-unit-agent-mode</code> (AI 代理人與 Vibe Coding 實戰)</strong> 單元，這是一個代表 2026 年最新開發維度的單元，重點不在於「撰寫單行代碼」，而在於「<strong>引導自主代理 (Agent Guidance)</strong>」。</p>
+<div class="markdown-heading"><h3 class="heading-element">1. 核心設置與工具要求</h3><a id="user-content-1-核心設置與工具要求" class="anchor" aria-label="Permalink: 1. 核心設置與工具要求" href="#1-核心設置與工具要求"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
-<li>
-<strong>📂 <code>.vscode/extensions.json</code></strong>：這是 VS Code 的「推薦外掛」功能。
+<li><strong>軟體要求</strong>：學員必須擁有 <strong>GitHub Copilot 訂閱</strong>。</li>
+<li><strong>範本程式庫配置</strong>：
 <ul>
-<li>內容包含：<code>ritwickdey.liveserver</code> 與 <code>ms-ceintl.vscode-language-pack-zh-hant</code>。</li>
-<li>
-<em>效果</em>：當學生 Clone 並開啟資料夾，右下角會自動跳出「此程式庫建議安裝外掛」的提示，大幅降低學生搜尋的時間。</li>
-</ul>
-</li>
-<li>
-<strong>📂 <code>index.html</code></strong>：放一個簡單常用的 HTML 範例。
-<ul>
-<li>
-<em>效果</em>：這能用來測試 VS Code 是否已正確啟動。如果安裝成功，學生可以使用 Live Server 預覽網頁內容。</li>
+<li><strong>📂 <code>src/legacy-service.js</code></strong>：故意放入結構混亂的舊代碼，供學員重構。</li>
+<li><strong>📂 <code>AGENTS.md</code></strong>：預置 TODO 的 Markdown 檔案，引導學員定義規範。</li>
+<li><strong>📂 <code>MCP_GUIDE.md</code></strong>：提供常用 MCP Server 連接清單。</li>
 </ul>
 </li>
 </ul>
-<div class="markdown-heading"><h3 class="heading-element">2. 作業任務部署細節</h3><a id="user-content-2-作業任務部署細節" class="anchor" aria-label="Permalink: 2. 作業任務部署細節" href="#2-作業任務部署細節"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<div class="markdown-heading"><h4 class="heading-element">任務 1：中文化與同步測試 (L10N &amp; Sync)</h4><a id="user-content-任務-1中文化與同步測試-l10n--sync" class="anchor" aria-label="Permalink: 任務 1：中文化與同步測試 (L10N &amp; Sync)" href="#任務-1中文化與同步測試-l10n--sync"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
+<div class="markdown-heading"><h3 class="heading-element">2. 教育者評估指標</h3><a id="user-content-2-教育者評估指標" class="anchor" aria-label="Permalink: 2. 教育者評估指標" href="#2-教育者評估指標"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
 <ul>
-<li>
-<strong>驗證方式</strong>：<strong>螢幕截圖法</strong>。
-<ul>
-<li>要求學生將當前 VS Code 的全視窗截圖，命名為 <code>setup-ui.png</code> 放入程式庫。</li>
-<li>導師檢核點：介面是否為中文？左下角人頭圖示是否顯示登入？</li>
+<li>[ ] <strong>Prompt 品質</strong>：學員對 Agent 下達的指令是否清晰？</li>
+<li>[ ] <strong>約束力檢測</strong>：<code>AGENTS.md</code> 規則是否有效？</li>
+<li>[ ] <strong>自主修正意識</strong>：學員是否學會讓 Agent 讀取日誌自行修復？</li>
 </ul>
-</li>
-<li>
-<strong>自動化檢核自學 (Autograding)</strong>：
-<ul>
-<li>設置一個 Action 檢查 <code>setup-ui.png</code> 檔案是否存在。</li>
-</ul>
-</li>
-</ul>
-<div class="markdown-heading"><h4 class="heading-element">任務 2：網頁開發環境測試 (Live Server)</h4><a id="user-content-任務-2網頁開發環境測試-live-server" class="anchor" aria-label="Permalink: 任務 2：網頁開發環境測試 (Live Server)" href="#任務-2網頁開發環境測試-live-server"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<ul>
-<li>
-<strong>驗證方式</strong>：<strong>報告更新法</strong>。
-<ul>
-<li>提供一個 <code>env-check.md</code> 檢核表。</li>
-<li>要求學生在成功使用 Live Server 開啟網頁後，截下一張含有 <strong>「VS Code 編輯器」</strong> 與 <strong>「瀏覽器預覽畫面」</strong> 的圖片 <code>html-preview.png</code>。</li>
-<li>將圖片嵌入 <code>env-check.md</code> 中並 Push。</li>
-</ul>
-</li>
-</ul>
-<hr>
-<div class="markdown-heading"><h3 class="heading-element">3. 給導師的翻轉教室策略 (Flipped Strategy)</h3><a id="user-content-3-給導師的翻轉教室策略-flipped-strategy" class="anchor" aria-label="Permalink: 3. 給導師的翻轉教室策略 (Flipped Strategy)" href="#3-給導師的翻轉教室策略-flipped-strategy"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<ul>
-<li>
-<strong>自動化回饋 (Feedback PR)</strong>：
-<ul>
-<li>利用 Classroom 的自動建立 PR 功能。</li>
-<li>導師若看到學生截圖中的 PIO 狀態列顯示 <code>Loading...</code> 或錯誤提示，可直接在截圖處留言指導。</li>
-</ul>
-</li>
-<li>
-<strong>解決「大檔案下載」痛點</strong>：
-<ul>
-<li>由於 PlatformIO 第一次啟動會下載約 500MB 的組件，在課堂上可能會發生網路擁塞。</li>
-<li>
-<strong>部署建議</strong>：在 README 中提早釋出下載連結，讓學員在「課前」就先完成下載動作，課中專注於 Sync 邏輯與介面操作。</li>
-</ul>
-</li>
-</ul>
-<div class="markdown-heading"><h3 class="heading-element">📁 推薦範本結構 (GitHub Classroom Template)：</h3><a id="user-content--推薦範本結構-github-classroom-template" class="anchor" aria-label="Permalink: 📁 推薦範本結構 (GitHub Classroom Template)：" href="#-推薦範本結構-github-classroom-template"><span aria-hidden="true" class="octicon octicon-link"></span></a></div>
-<pre lang="text"><code>.
-├── .vscode/
-│   └── extensions.json    # 引導學生一鍵安裝所有必備外掛
-├── index.html             # 測試環境用的 HTML 範例
-├── env-check.md           # 學生需填寫的環境檢查清單
-└── README.md              # 作業提交指南與截圖上傳說明
-</code></pre>
-<p>透過這種方式，您不僅能驗證學生是否「裝好了」，更能確保他們學會了如何<strong>透過 Git 提交開發環境報告</strong>，這對未來的協作開發是非常好的開端。</p>
 
     </section>
 

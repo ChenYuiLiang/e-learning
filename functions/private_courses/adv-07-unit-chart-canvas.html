@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chart.js 與 Canvas 即時繪圖原理 - Vibe Coding Learn</title>
+    <title>Chart.js 與 Canvas 即時繪圖原理 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 7 - 數據視覺化</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">Chart.js 與 Canvas 即時繪圖原理</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 7</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>Chart.js 與 Canvas 即時繪圖原理</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 7</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,12 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>Chart.js 與 Canvas 即時繪圖原理</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    本單元將帶你深入理解 <strong>Chart.js 與 HTML5 Canvas 的即時繪圖機制</strong>。當物聯網裝置持續傳送感測數據時，如何在網頁上以流暢的圖表呈現即時趨勢，是前端開發者必備的核心能力。你將學會 Canvas 的逐幀渲染原理、Chart.js 的資料更新策略，以及如何在高頻數據流下維持穩定的繪圖效能。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    想像你正在開發一個智慧溫室監控儀表板：五組溫濕度感測器每秒回傳數據，主管希望在同一畫面上同時顯示折線圖與即時數值，且頁面不能因為資料量過大而卡頓。你該如何選擇繪圖策略、控制重繪頻率，才能兼顧視覺流暢度與瀏覽器效能？帶著這個問題，讓我們開始學習。
                 </div>
 
                 <h2>教學影片</h2>
@@ -590,43 +587,147 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🖌️ 1. 渲染原理：畫布 vs. 物件 (25 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
-<div class="space-y-6">
-<p class="text-lg text-gray-600 leading-relaxed font-light">
-                                Canvas 是一塊即時畫布，你必須手動下指令「抹除再重繪」。而 Chart.js 則是基於 Canvas 的高度封裝，讓你專注於數據本身而非座標計算。
-                            </p>
-<div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-<h4 class="font-bold text-blue-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
-                                    Comparison Architecture</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span>
-<div><strong>低階 Canvas</strong>：極致性能，適合處理數萬個頻繁跳動的像素點。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span>
-<div><strong>高階 Chart.js</strong>：高度語意化，自動處理座標軸、縮放與適應性佈局。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10">
-                                Real-time Oscilloscope</h4>
-<div class="relative z-10 flex flex-col items-center gap-2">
-<div class="w-48 h-20 border border-blue-500/30 rounded flex items-end px-2 pb-2 gap-1">
-<div class="w-2 bg-blue-500 h-[30%] animate-pulse"></div>
-<div class="w-2 bg-blue-500 h-[60%] animate-pulse delay-75"></div>
-<div class="w-2 bg-blue-500 h-[45%] animate-pulse delay-150"></div>
-<div class="w-2 bg-blue-500 h-[80%] animate-pulse delay-300"></div>
-</div>
-<div class="text-[9px] text-blue-400 mt-2 font-mono tracking-widest uppercase">Telemetry
-                                    Stream: 60FPS</div>
-</div>
-</div>
-</div>
+                <h1>渲染原理：畫布 vs. 物件</h1>
+
+                <p>
+                    在即時數據視覺化的世界中，有兩種截然不同的繪圖模型：<strong>即時模式 (Immediate Mode)</strong> 與<strong>保留模式 (Retained Mode)</strong>。理解這兩者的差異，是開發高效能圖表的基礎。
+                </p>
+
+                <h2>即時模式：HTML5 Canvas API</h2>
+
+                <p>
+                    HTML5 的 <code>&lt;canvas&gt;</code> 元素是一塊「像素畫布」，採用即時模式渲染。這意味著每一幀的繪圖都是一次性的：你必須手動清除畫布 (<code>clearRect</code>)，然後重新繪製所有內容。Canvas 本身不會記住你畫了什麼——一旦像素被描繪到畫布上，它就變成了靜態的點陣圖。
+                </p>
+
+                <p>
+                    這種模式的優勢在於<strong>極致的控制力與性能</strong>。由於沒有物件管理的額外負擔，Canvas 可以輕鬆處理數萬個數據點的高頻渲染，非常適合示波器、頻譜分析器等需要像素級控制的應用場景。
+                </p>
+
+                <h3>Canvas 繪圖基本流程</h3>
+
+                <div class="ms-code">
+<span class="c-comment">// 取得 Canvas 繪圖上下文</span><br>
+<span class="c-kw">const</span> <span class="c-attr">canvas</span> <span class="c-white">= document.getElementById(</span><span class="c-str">'myCanvas'</span><span class="c-white">);</span><br>
+<span class="c-kw">const</span> <span class="c-attr">ctx</span> <span class="c-white">= canvas.getContext(</span><span class="c-str">'2d'</span><span class="c-white">);</span><br>
+<br>
+<span class="c-kw">function</span> <span class="c-attr">draw</span><span class="c-white">(data) {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 步驟 1：清除整個畫布</span><br>
+<span class="c-white">&nbsp;&nbsp;ctx.clearRect(0, 0, canvas.width, canvas.height);</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 步驟 2：開始新路徑並設定樣式</span><br>
+<span class="c-white">&nbsp;&nbsp;ctx.beginPath();</span><br>
+<span class="c-white">&nbsp;&nbsp;ctx.strokeStyle = </span><span class="c-str">'#0078d4'</span><span class="c-white">;</span><br>
+<span class="c-white">&nbsp;&nbsp;ctx.lineWidth = 2;</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 步驟 3：逐點繪製折線（注意 Y 軸翻轉）</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">for</span> <span class="c-white">(</span><span class="c-kw">let</span> <span class="c-attr">i</span> <span class="c-white">= 0; i &lt; data.length; i++) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">x</span> <span class="c-white">= (i / data.length) * canvas.width;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">y</span> <span class="c-white">= canvas.height - (data[i] / 255 * canvas.height);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 步驟 4：將路徑描繪到畫布</span><br>
+<span class="c-white">&nbsp;&nbsp;ctx.stroke();</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>保留模式：Chart.js 抽象層</h2>
+
+                <p>
+                    Chart.js 是一個建構在 Canvas 之上的圖表函式庫，採用保留模式的設計理念。你只需要宣告「資料是什麼」和「圖表長什麼樣」，Chart.js 會自動處理座標軸的計算、刻度的排列、圖例的繪製，以及響應式的尺寸調整。
+                </p>
+
+                <p>
+                    當資料發生變化時，你只需更新資料陣列並呼叫 <code>chart.update()</code>，Chart.js 會自動計算差異並重新渲染——開發者完全不需要操心像素座標的換算。
+                </p>
+
+                <h3>Chart.js 初始化範例</h3>
+
+                <div class="ms-code">
+<span class="c-kw">const</span> <span class="c-attr">chart</span> <span class="c-white">= </span><span class="c-kw">new</span> <span class="c-tag">Chart</span><span class="c-white">(ctx, {</span><br>
+<span class="c-white">&nbsp;&nbsp;type: </span><span class="c-str">'line'</span><span class="c-white">,</span><br>
+<span class="c-white">&nbsp;&nbsp;data: {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;labels: timeLabels,</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;datasets: [{</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;label: </span><span class="c-str">'溫度 (°C)'</span><span class="c-white">,</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data: sensorData,</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;borderColor: </span><span class="c-str">'#0078d4'</span><span class="c-white">,</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tension: 0.3</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}]</span><br>
+<span class="c-white">&nbsp;&nbsp;},</span><br>
+<span class="c-white">&nbsp;&nbsp;options: {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;animation: </span><span class="c-kw">false</span><span class="c-white">,</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;scales: {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y: { min: 0, max: 100 }</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<span class="c-white">});</span>
+                </div>
+
+                <h2>兩種模式比較</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>比較項目</th>
+                            <th>Canvas API（即時模式）</th>
+                            <th>Chart.js（保留模式）</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>抽象層級</td>
+                            <td>低階——直接操作像素與路徑</td>
+                            <td>高階——宣告資料即可繪圖</td>
+                        </tr>
+                        <tr>
+                            <td>座標計算</td>
+                            <td>開發者手動換算</td>
+                            <td>自動處理座標軸與刻度</td>
+                        </tr>
+                        <tr>
+                            <td>響應式佈局</td>
+                            <td>需自行監聽 resize 事件</td>
+                            <td>內建自動縮放</td>
+                        </tr>
+                        <tr>
+                            <td>渲染性能</td>
+                            <td>極高，適合 &gt;10,000 點</td>
+                            <td>中高，適合 ≤2,000 點</td>
+                        </tr>
+                        <tr>
+                            <td>互動功能</td>
+                            <td>需自行實作 hit-testing</td>
+                            <td>內建 Tooltip、Legend、Zoom</td>
+                        </tr>
+                        <tr>
+                            <td>學習曲線</td>
+                            <td>較陡——需理解圖形學基礎</td>
+                            <td>較平緩——查閱 API 文件即可</td>
+                        </tr>
+                        <tr>
+                            <td>適用場景</td>
+                            <td>示波器、遊戲、粒子系統</td>
+                            <td>儀表板、報表、監控面板</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        在物聯網即時監控的場景中，大多數開發者會優先選擇 Chart.js，因為它能以最少的程式碼實現專業級的圖表。只有當數據點數量極大（例如每秒 100+ 筆且需同時顯示上千點）或需要自訂繪圖效果時，才需要回歸原生 Canvas API。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>效能提示</strong>
+                        使用 Chart.js 時，務必將 <code>animation</code> 設為 <code>false</code>，或在呼叫 <code>chart.update('none')</code> 時傳入 <code>'none'</code> 參數。在即時數據流的場景下，每次資料更新的過場動畫不僅沒有意義，還會嚴重拖慢渲染速度，導致數據顯示延遲。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -645,38 +746,128 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔄 2. 滑動窗口 (Sliding Window) 數據緩衝 (25 min)</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-<div class="space-y-8">
-<p class="text-lg text-gray-600 leading-relaxed font-light">
-                                瀏覽器無法同時顯示無限量的數據點。使用滑動窗口，保持緩衝區長度恆定，同步執行 <code>push()</code> 與 <code>shift()</code>
-                                以實現平滑滾動。
-                            </p>
-<div class="bg-indigo-50 p-8 rounded-3xl border border-indigo-100 text-center">
-<h4 class="text-indigo-900 font-bold mb-4 text-xs uppercase tracking-widest">Buffer
-                                    Lifecycle</h4>
-<div class="flex justify-center items-center gap-4 text-[10px] text-slate-500 font-mono">
-<div class="px-3 py-1 bg-slate-100 rounded border">OLD DATA</div>
-<div class="text-indigo-500">→ [ 12, 18, 22, ... ] →</div>
-<div class="px-3 py-1 bg-indigo-500 text-white rounded border border-indigo-600">NEW
-                                        DATA</div>
-</div>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-indigo-500/5"></div>
-<h4 class="text-indigo-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10">
-                                Memory Safe Queue</h4>
-<div class="w-full space-y-2 px-10 relative z-10 font-mono text-[9px]">
-<div class="text-emerald-500">buffer.push(raw_data);</div>
-<div class="text-emerald-500">if (buffer.length &gt; limit) buffer.shift();</div>
-<div class="text-indigo-400 mt-2">chart.update('none');</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic">
-                                Deterministic Performance O(1)</p>
-</div>
-</div>
+                <h1>滑動窗口 (Sliding Window) 數據緩衝</h1>
+
+                <p>
+                    當感測器持續傳送數據時，資料量會隨時間線性增長。如果將所有歷史數據都保留在陣列中並餵給圖表，瀏覽器的記憶體用量與渲染時間都會不斷攀升，最終導致頁面凍結甚至崩潰。
+                </p>
+
+                <p>
+                    <strong>滑動窗口 (Sliding Window)</strong> 是一種經典的緩衝策略：維持一個固定長度的陣列，每當新數據抵達時，將它推入陣列尾端 (<code>push</code>)，同時移除最舊的數據 (<code>shift</code>)。這樣一來，陣列長度始終恆定，記憶體用量穩定可控，圖表也能呈現出自然的「向右滾動」效果。
+                </p>
+
+                <h2>核心實作模式</h2>
+
+                <p>
+                    滑動窗口的實作只需三行核心程式碼。以下範例展示如何將此模式整合到 Chart.js 的即時更新流程中：
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">const</span> <span class="c-attr">BUFFER_SIZE</span> <span class="c-white">= 50;</span><br>
+<span class="c-kw">const</span> <span class="c-attr">dataBuffer</span> <span class="c-white">= [];</span><br>
+<span class="c-kw">const</span> <span class="c-attr">labelBuffer</span> <span class="c-white">= [];</span><br>
+<br>
+<span class="c-kw">function</span> <span class="c-attr">updateBuffer</span><span class="c-white">(newValue) {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 1. 將新數據推入尾端</span><br>
+<span class="c-white">&nbsp;&nbsp;dataBuffer.push(newValue);</span><br>
+<span class="c-white">&nbsp;&nbsp;labelBuffer.push(</span><span class="c-kw">new</span> <span class="c-tag">Date</span><span class="c-white">().toLocaleTimeString());</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 2. 若超過上限，移除最舊的一筆</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(dataBuffer.length &gt; BUFFER_SIZE) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;dataBuffer.shift();</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;labelBuffer.shift();</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 3. 通知 Chart.js 重繪（關閉動畫）</span><br>
+<span class="c-white">&nbsp;&nbsp;chart.update(</span><span class="c-str">'none'</span><span class="c-white">);</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>記憶體洩漏警告</strong>
+                        如果忘記呼叫 <code>shift()</code>，陣列會無限增長。在長時間運行的物聯網儀表板中（例如 24 小時不間斷監控），每秒 10 筆數據累計一天就是 864,000 筆。這不僅會耗盡瀏覽器的可用記憶體，Chart.js 在處理如此龐大的資料集時，每次 <code>update()</code> 的渲染時間也會從毫秒級退化到秒級。
+                    </div>
+                </div>
+
+                <h2>緩衝區大小與效能關係</h2>
+
+                <p>
+                    選擇合適的緩衝區大小 (<code>BUFFER_SIZE</code>) 是一項需要權衡的設計決策。太小會損失歷史上下文，太大則增加渲染負擔。下表列出常見的緩衝區大小及其對應的性能特徵：
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>緩衝區大小</th>
+                            <th>可見時間跨度 (10Hz)</th>
+                            <th>記憶體用量</th>
+                            <th>Chart.js 渲染延遲</th>
+                            <th>適用場景</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>20</td>
+                            <td>2 秒</td>
+                            <td>極低</td>
+                            <td>&lt; 1ms</td>
+                            <td>嵌入式小元件、即時數值監控</td>
+                        </tr>
+                        <tr>
+                            <td>50</td>
+                            <td>5 秒</td>
+                            <td>低</td>
+                            <td>1–2ms</td>
+                            <td>馬達 PWM 波形、PID 調校</td>
+                        </tr>
+                        <tr>
+                            <td>200</td>
+                            <td>20 秒</td>
+                            <td>中</td>
+                            <td>3–8ms</td>
+                            <td>環境感測趨勢、溫濕度走勢</td>
+                        </tr>
+                        <tr>
+                            <td>500</td>
+                            <td>50 秒</td>
+                            <td>中高</td>
+                            <td>8–15ms</td>
+                            <td>長期趨勢分析（需注意 CPU）</td>
+                        </tr>
+                        <tr>
+                            <td>1000+</td>
+                            <td>&gt;100 秒</td>
+                            <td>高</td>
+                            <td>&gt;20ms</td>
+                            <td>不建議——考慮降採樣或分頁</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>完整整合範例</h2>
+
+                <p>
+                    以下展示一個完整的 WebSocket 即時數據接收與滑動窗口更新的流程：
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">const</span> <span class="c-attr">ws</span> <span class="c-white">= </span><span class="c-kw">new</span> <span class="c-tag">WebSocket</span><span class="c-white">(</span><span class="c-str">'ws://esp32.local/sensor'</span><span class="c-white">);</span><br>
+<br>
+<span class="c-white">ws.onmessage = (event) =&gt; {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">sensorValue</span> <span class="c-white">= JSON.parse(event.data).temperature;</span><br>
+<span class="c-white">&nbsp;&nbsp;updateBuffer(sensorValue);</span><br>
+<span class="c-white">};</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>設計提示</strong>
+                        緩衝區大小的選擇取決於兩個因素：<strong>數據頻率</strong>與<strong>使用者需要觀察的時間範圍</strong>。公式為：<code>BUFFER_SIZE = 數據頻率 (Hz) × 期望顯示秒數</code>。例如，若感測器每秒送 10 筆數據，而使用者需要看到最近 5 秒的趨勢，則 <code>BUFFER_SIZE = 10 × 5 = 50</code>。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -695,45 +886,154 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚡ 3. 更新頻率與視覺感知</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center">
-<div class="flex-1 space-y-6">
-<p class="text-slate-400 font-light leading-relaxed text-lg">
-                                人眼難以感知超過 60Hz 的數值跳變。學習如何使用 <code>requestAnimationFrame</code> 配合螢幕刷新率，並關閉不必要的圖形動畫以減少 CPU
-                                負載。
-                            </p>
-<div class="bg-purple-500/10 p-8 rounded-3xl border border-purple-500/20 shadow-inner">
-<h4 class="font-bold text-purple-400 mb-4 text-xs uppercase tracking-widest text-center">
-                                    Efficiency Checklist</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span>
-<div><strong class="text-white">停用動畫 (Animation:
-                                                false)</strong>：在即時圖表中，過度動畫會造成渲染卡頓與數據延遲。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span>
-<div><strong class="text-white">分組更新 (Batching)</strong>：如果數據爆量，則每 5-10 筆數據才刷新一次
-                                            UI。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span>
-<div><strong class="text-white">滾動軸優化</strong>：固定 X 軸的顯示跨度，維持視覺上的連續性。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-purple-600/10 p-10 rounded-3xl border border-purple-500/20 text-center relative overflow-hidden group">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-purple-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-purple-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">
-                                Performance Dial</h4>
-<div class="text-5xl font-bold text-white mb-2">60<span class="text-sm font-light text-slate-500 ml-1">fps</span></div>
-<div class="text-[10px] text-purple-400 uppercase tracking-widest tracking-tighter">Zero-Lag
-                                Rendering</div>
-<p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center text-justify">
-                                "圖表應該是輔助開發的工具，而不應該成為系統的瓶頸。"
-                            </p>
-</div>
-</div>
+                <h1>更新頻率與視覺感知</h1>
+
+                <p>
+                    人類視覺系統對畫面更新的感知存在生理上限。研究顯示，大多數人能流暢感知的畫面更新頻率約為 <strong>60 幀/秒 (60fps)</strong>，對應約 16.67 毫秒的幀間隔。超過這個頻率的數值跳動，人眼幾乎無法分辨。因此，在即時圖表的設計中，盲目追求超高更新率不僅沒有視覺上的改善，反而會白白消耗 CPU 資源。
+                </p>
+
+                <p>
+                    在瀏覽器環境中，控制畫面更新頻率主要有兩種方式：<code>setInterval</code> 計時器與 <code>requestAnimationFrame</code> API。兩者的設計理念與效能表現有著本質差異。
+                </p>
+
+                <h2>setInterval vs requestAnimationFrame</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>比較項目</th>
+                            <th>setInterval</th>
+                            <th>requestAnimationFrame</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>觸發機制</td>
+                            <td>固定時間間隔觸發回呼</td>
+                            <td>由瀏覽器在下一次重繪前觸發</td>
+                        </tr>
+                        <tr>
+                            <td>與螢幕刷新同步</td>
+                            <td>否——可能在兩幀之間觸發，導致畫面撕裂</td>
+                            <td>是——與顯示器垂直同步 (vsync)</td>
+                        </tr>
+                        <tr>
+                            <td>背景分頁行為</td>
+                            <td>持續執行，浪費 CPU</td>
+                            <td>自動暫停，節省資源</td>
+                        </tr>
+                        <tr>
+                            <td>精確度</td>
+                            <td>受事件迴圈延遲影響，最小間隔 4ms</td>
+                            <td>由瀏覽器優化調度，精確對齊 vsync</td>
+                        </tr>
+                        <tr>
+                            <td>效能影響</td>
+                            <td>容易造成任務堆積與卡頓</td>
+                            <td>瀏覽器自動節流，確保流暢</td>
+                        </tr>
+                        <tr>
+                            <td>適用情境</td>
+                            <td>非視覺定時任務（輪詢、心跳）</td>
+                            <td>所有涉及畫面更新的渲染迴圈</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>使用 requestAnimationFrame 的渲染迴圈</h2>
+
+                <p>
+                    以下範例展示如何使用 <code>requestAnimationFrame</code> 建立一個與螢幕刷新率同步的渲染迴圈，用於驅動原生 Canvas 的即時波形繪製：
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">let</span> <span class="c-attr">animationId</span><span class="c-white">;</span><br>
+<br>
+<span class="c-kw">function</span> <span class="c-attr">renderLoop</span><span class="c-white">() {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 清除畫布</span><br>
+<span class="c-white">&nbsp;&nbsp;ctx.clearRect(0, 0, canvas.width, canvas.height);</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 繪製波形</span><br>
+<span class="c-white">&nbsp;&nbsp;ctx.beginPath();</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">for</span> <span class="c-white">(</span><span class="c-kw">let</span> <span class="c-attr">i</span> <span class="c-white">= 0; i &lt; dataBuffer.length; i++) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">x</span> <span class="c-white">= (i / dataBuffer.length) * canvas.width;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">y</span> <span class="c-white">= canvas.height - (dataBuffer[i] / 255 * canvas.height);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<span class="c-white">&nbsp;&nbsp;ctx.strokeStyle = </span><span class="c-str">'#0078d4'</span><span class="c-white">;</span><br>
+<span class="c-white">&nbsp;&nbsp;ctx.stroke();</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 排程下一幀——瀏覽器會自動對齊螢幕刷新率</span><br>
+<span class="c-white">&nbsp;&nbsp;animationId = requestAnimationFrame(renderLoop);</span><br>
+<span class="c-white">}</span><br>
+<br>
+<span class="c-comment">// 啟動渲染迴圈</span><br>
+<span class="c-white">renderLoop();</span><br>
+<br>
+<span class="c-comment">// 需要停止時：cancelAnimationFrame(animationId);</span>
+                </div>
+
+                <h2>Chart.js 關閉動畫</h2>
+
+                <p>
+                    Chart.js 預設會為每次 <code>update()</code> 加上平滑的過場動畫——在靜態報表中這能提升視覺體驗，但在即時數據流的場景下卻是災難性的。當數據以 10Hz 或更高頻率湧入時，上一次的動畫還沒播完，下一筆數據就已經到達，導致動畫佇列堆積、畫面嚴重延遲。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 方法一：在建立圖表時全域關閉動畫</span><br>
+<span class="c-kw">const</span> <span class="c-attr">chart</span> <span class="c-white">= </span><span class="c-kw">new</span> <span class="c-tag">Chart</span><span class="c-white">(ctx, {</span><br>
+<span class="c-white">&nbsp;&nbsp;type: </span><span class="c-str">'line'</span><span class="c-white">,</span><br>
+<span class="c-white">&nbsp;&nbsp;data: { </span><span class="c-comment">/* ... */</span><span class="c-white"> },</span><br>
+<span class="c-white">&nbsp;&nbsp;options: {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;animation: </span><span class="c-kw">false</span><span class="c-white">,</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;responsive: </span><span class="c-kw">true</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<span class="c-white">});</span><br>
+<br>
+<span class="c-comment">// 方法二：在每次更新時指定不使用動畫</span><br>
+<span class="c-white">chart.update(</span><span class="c-str">'none'</span><span class="c-white">);</span>
+                </div>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        在即時圖表中，<code>animation: false</code> 不是「優化建議」，而是<strong>必要設定</strong>。如果你的圖表每秒更新超過 2 次，卻沒有關閉動畫，使用者看到的圖表將永遠落後於實際數據，失去「即時」的意義。這是從「做網頁」跨入「做工程系統」的關鍵認知轉變。
+                    </div>
+                </div>
+
+                <h2>分組更新 (Batching) 策略</h2>
+
+                <p>
+                    在極高頻的數據流中（例如每秒 100 筆以上），即使關閉了動畫，逐筆呼叫 <code>chart.update()</code> 仍然可能造成 CPU 瓶頸。更有效的做法是將多筆數據蒐集到批次中，再一次性更新圖表：
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">let</span> <span class="c-attr">pendingData</span> <span class="c-white">= [];</span><br>
+<span class="c-kw">let</span> <span class="c-attr">rafScheduled</span> <span class="c-white">= </span><span class="c-kw">false</span><span class="c-white">;</span><br>
+<br>
+<span class="c-kw">function</span> <span class="c-attr">onSensorData</span><span class="c-white">(value) {</span><br>
+<span class="c-white">&nbsp;&nbsp;pendingData.push(value);</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(!rafScheduled) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;rafScheduled = </span><span class="c-kw">true</span><span class="c-white">;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;requestAnimationFrame(() =&gt; {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pendingData.forEach(v =&gt; updateBuffer(v));</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pendingData = [];</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;chart.update(</span><span class="c-str">'none'</span><span class="c-white">);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rafScheduled = </span><span class="c-kw">false</span><span class="c-white">;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;});</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>效能提示</strong>
+                        分組更新結合 <code>requestAnimationFrame</code> 是最佳實踐：無論感測器數據以多快的速度湧入，畫面最多只在每次螢幕重繪時更新一次（通常為 60fps）。這種模式下，100Hz 的數據流與 1000Hz 的數據流對 CPU 的渲染負擔幾乎相同，因為所有數據都被合併到每 16.67ms 的單次重繪中。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -817,16 +1117,81 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>測試你對本模組核心概念的掌握程度。請選出每題的最佳答案，提交後可查看詳細解析。</p>
+
+                <form id="quiz-form" onsubmit="return false;">
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">1. HTML5 Canvas 的渲染方式屬於以下哪一種？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 向量式渲染 (Vector-based)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 點陣式渲染 (Pixel-based / Immediate Mode)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 伺服器端渲染 (SSR)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 串流式渲染 (Streaming)</label>
+                        <div id="exp-1" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">2. 滑動窗口 (Sliding Window) 數據緩衝的主要作用是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 增加影像解析度</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 維持固定資料量，移除最舊的資料並加入最新的資料</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 加密傳輸資料</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 壓縮影像檔案大小</label>
+                        <div id="exp-2" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">3. 在即時圖表更新中，為什麼不建議更新頻率超過 60fps？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 瀏覽器不支援超過 60fps</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 人眼無法分辨超過 60fps 的差異，多餘的更新浪費 CPU 資源</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 圖表庫的授權限制</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 超過 60fps 會導致資料遺失</label>
+                        <div id="exp-3" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">4. Chart.js 使用的底層繪圖技術是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="A" style="margin-right:8px;"> A. SVG 向量圖形</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="B" style="margin-right:8px;"> B. HTML5 Canvas 2D API</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="C" style="margin-right:8px;"> C. WebGL 3D 加速</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="D" style="margin-right:8px;"> D. CSS 動畫</label>
+                        <div id="exp-4" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+                </form>
+
+                <div style="display:flex;gap:12px;margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+                <div id="quiz-result" style="display:none;margin-top:20px;padding:16px;border-radius:6px;font-size:14px;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -884,9 +1249,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「Chart.js 與 Canvas 即時繪圖原理」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「Chart.js 與 Canvas 即時繪圖原理」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -902,7 +1267,8 @@
         { id: 3, label: '🔄 2. 滑動窗口 (Sliding Window) 數據緩衝 (25 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '更新頻率與視覺感知', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -922,6 +1288,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1023,8 +1390,61 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'B', q3: 'B', q4: 'B' };
+    const QUIZ_EXPLANATIONS = { q1: 'Canvas 採用即時模式 (Immediate Mode) 的點陣式渲染，直接操作像素緩衝區，繪製完成後不保留物件狀態。', q2: '滑動窗口限制圖表顯示的資料點數量，當新資料到來時推入陣列尾端、移除首端最舊的資料，確保記憶體使用穩定。', q3: '多數顯示器刷新率為 60Hz，超過此頻率的更新不會帶來視覺提升，反而消耗大量 CPU/GPU 資源，造成效能瓶頸。', q4: 'Chart.js 基於 HTML5 Canvas 2D API 繪製圖表，利用 Canvas 的像素渲染能力來高效繪製折線圖、柱狀圖等。' };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const idx = q.slice(1);
+            const exp = document.getElementById(`exp-${idx}`);
+            if (!selected) continue;
+            if (selected.value === correct) {
+                score++;
+                exp.style.display = 'block';
+                exp.style.background = '#dff6dd';
+                exp.style.borderLeftColor = '#107c10';
+                exp.innerHTML = '<i class="fas fa-check-circle" style="color:#107c10;margin-right:6px;"></i>' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#dff6dd';
+                selected.parentElement.style.borderColor = '#107c10';
+            } else {
+                exp.style.display = 'block';
+                exp.style.background = '#fde7e9';
+                exp.style.borderLeftColor = '#d13438';
+                exp.innerHTML = '<i class="fas fa-times-circle" style="color:#d13438;margin-right:6px;"></i>正確答案是 ' + correct + '。' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#fde7e9';
+                selected.parentElement.style.borderColor = '#d13438';
+            }
+        }
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === total) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.innerHTML = '<strong style="color:#107c10;">🎉 滿分！' + score + ' / ' + total + '</strong><br>你完全掌握了本模組的核心概念！';
+            markDone(6);
+        } else {
+            resultEl.style.background = '#fff4ce';
+            resultEl.innerHTML = '<strong style="color:#8a6914;">得分：' + score + ' / ' + total + '</strong><br>建議複習錯題的解析說明，再試一次！';
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= 4; i++) {
+            const exp = document.getElementById('exp-' + i);
+            if (exp) { exp.style.display = 'none'; exp.style.background = ''; exp.style.borderLeftColor = 'transparent'; }
+        }
+        document.querySelectorAll('#quiz-form label').forEach(l => { l.style.background = ''; l.style.borderColor = '#e1dfdd'; });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 07：UI 框架設計';
 </script>
 
 <!-- Define Resources -->

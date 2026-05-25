@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>數位控制：上拉電阻與按鈕抖動 - Vibe Coding Learn</title>
+    <title>數位控制：上拉電阻與按鈕抖動 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -76,6 +76,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -99,6 +100,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -489,9 +491,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 3 - 訊號穩定性</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -501,25 +505,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">數位控制：上拉電阻與按鈕抖動</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 171 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 176 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 3</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -527,7 +527,7 @@
                 <h1>數位控制：上拉電阻與按鈕抖動</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 3</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -538,9 +538,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>📡 1. 消失的邏輯：為什麼需要上拉電阻？</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>📉 2. 物理現實：機械彈跳 (Debounce)</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>️ 3. 軟體去抖：時間過濾術</strong> 的調校技巧與穩定性測試。</li>
+                    <li>能夠解釋 GPIO 浮空狀態（Floating）的成因與危害，並正確使用 <code>INPUT_PULLUP</code> 模式消除不穩定讀值。</li>
+                    <li>能夠辨識按鈕機械彈跳（Bouncing）現象，量化記錄一次按壓產生的「連發」次數。</li>
+                    <li>能夠使用 <code>millis()</code> 實作非阻塞式（Non-blocking）軟體去彈跳邏輯，確保每次按壓僅觸發一次有效事件且不阻塞背景任務。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -571,15 +571,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>數位控制：上拉電阻與按鈕抖動</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    按鈕看似簡單——按下去就是 LOW，放開就是 HIGH——但現實遠比這複雜。
+                    沒有上拉電阻，GPIO 腳位在按鈕未按時會處於「浮動」狀態，讀到的值完全隨機；而機械按鈕在按壓瞬間會產生數十次的金屬彈跳，讓微控制器誤以為你連按了好幾下。
+                    本單元教你用硬體（電阻）與軟體（時間過濾）兩道防線，讓每一次按壓都被正確且唯一地識別。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你做了一個計數器：每按一次按鈕，LCD 上的數字加 1。但實際測試時，輕輕按一下數字卻跳了 3～5 次。
+                    你確認程式邏輯沒問題——問題出在硬體層：按鈕的金屬觸片在接觸瞬間會快速彈跳數十次，每次彈跳都被 GPIO 讀為一次狀態變化。
+                    這就是為什麼你需要「防彈跳」技術，無論是外接電容還是軟體延遲濾波，都能讓一次物理按壓只產生一次有效事件。
                 </div>
 
                 <h2>教學影片</h2>
@@ -593,7 +594,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -607,34 +608,89 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>📡 1. 消失的邏輯：為什麼需要上拉電阻？</h1>
-                
-                <p class="text-gray-500 mb-10 text-lg font-light leading-relaxed text-justify">
-                                在電子世界中，「沒有接線」不代表讀值是「零」。
-                            </p><div class="space-y-6">
-<div class="bg-gray-50 p-6 rounded-2xl border-l-[6px] border-amber-400 group hover:shadow-md transition text-justify">
-<h3 class="font-bold text-gray-800 mb-2 text-justify uppercase tracking-widest">浮空狀態
-                                        (Floating)</h3>
-<p class="text-sm text-gray-600 leading-relaxed font-light text-justify">
-                                        未與確定的電壓相連時，像天線一樣吸收雜訊。讀值在 0 與 1 間瘋狂跳動。
-                                    </p>
-</div>
-<div class="bg-emerald-50 p-6 rounded-2xl border-l-[6px] border-emerald-500 group hover:shadow-md transition text-justify">
-<h3 class="font-bold text-emerald-800 mb-2 text-justify uppercase tracking-tighter">
-                                        解決方案：INPUT_PULLUP</h3>
-<p class="text-sm text-gray-600 leading-relaxed font-light text-justify">
-                                        透過內部上拉電阻穩定拉至 3.3V (HIGH)。按下按鈕才拉至接地 (LOW)。
-                                    </p>
-<div class="mt-4 p-3 bg-white/50 rounded-lg font-mono text-xs text-emerald-700 text-justify">
-                                        pinMode(PIN, INPUT_PULLUP);
-                                    </div>
-</div>
-</div>
+                <h1>消失的邏輯：為什麼需要上拉電阻？</h1>
+
+                <p>
+                    在電子世界中，「沒有接線」不代表讀值是「零」。當你把一個 GPIO 引腳設為輸入模式，卻不連接任何電路時，這支引腳就處於<strong>浮空狀態（Floating State）</strong>。浮空的引腳就像一根暴露在空氣中的天線，會不斷拾取環境中的電磁雜訊——你的手靠近它、附近的馬達旋轉、甚至日光燈的電源頻率，都會讓它的讀值在 HIGH 和 LOW 之間瘋狂跳動。
+                </p>
+                <p>
+                    這不是程式的 Bug，而是物理法則。在數位電路中，每一個輸入引腳都必須被明確地連接到一個確定的電位——要嘛是 HIGH（3.3V），要嘛是 LOW（GND）。浮空是工程師最不想看到的狀態，因為它代表「不確定性」，而不確定性在控制系統中是致命的。
+                </p>
+
+                <h2>什麼是上拉電阻？</h2>
+                <p>
+                    <strong>上拉電阻（Pull-up Resistor）</strong>是一顆連接在引腳與電源（VCC / 3.3V）之間的電阻。它的作用是在按鈕未被按下時，將引腳「拉」到穩定的 HIGH 狀態。當按鈕被按下，引腳透過按鈕直接接地（GND），因為接地路徑的電阻遠低於上拉電阻，所以引腳被拉到 LOW。這就形成了一個明確的邏輯：未按 = HIGH，按下 = LOW。
+                </p>
+                <p>
+                    相反地，<strong>下拉電阻（Pull-down Resistor）</strong>是連接在引腳與 GND 之間。未按時引腳為 LOW，按下後透過電源路徑讀為 HIGH。兩種方式都能消除浮空問題。
+                </p>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        使用上拉電阻時，按鈕的邏輯是<strong>反向的（Active Low / 負邏輯）</strong>：按下按鈕讀到 LOW，放開時讀到 HIGH。初學者常因此困惑，但這是業界最常見的按鈕接法，因為它最穩定且最省線路。
+                    </div>
+                </div>
+
+                <h2>ESP32 的內部上拉電阻</h2>
+                <p>
+                    好消息是：你不一定需要外接一顆實體電阻。ESP32（以及大多數現代微控制器）在晶片內部已經整合了上拉電阻（約 45kΩ）。你只需在程式中將引腳設為 <code>INPUT_PULLUP</code> 模式，內部上拉電阻就會自動啟用：
+                </p>
+                <div class="ms-code">
+                    <span class="c-kw">const int</span> <span class="c-attr">BUTTON_PIN</span> <span class="c-white">= </span><span class="c-val">14</span><span class="c-white">;</span><br><br>
+                    <span class="c-kw">void</span> <span class="c-tag">setup</span><span class="c-white">() {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;pinMode(</span><span class="c-attr">BUTTON_PIN</span><span class="c-white">, </span><span class="c-val">INPUT_PULLUP</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;Serial.begin(</span><span class="c-val">115200</span><span class="c-white">);</span><br>
+                    <span class="c-white">}</span><br><br>
+                    <span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">int</span> <span class="c-attr">state</span> <span class="c-white">= digitalRead(</span><span class="c-attr">BUTTON_PIN</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;Serial.println(</span><span class="c-attr">state</span><span class="c-white">);</span> <span class="c-comment">// 未按: 1, 按下: 0</span><br>
+                    <span class="c-white">&nbsp;&nbsp;delay(</span><span class="c-val">100</span><span class="c-white">);</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <h2>INPUT vs INPUT_PULLUP 比較</h2>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>模式</th>
+                            <th>引腳未連接時</th>
+                            <th>按鈕未按時</th>
+                            <th>按鈕按下時</th>
+                            <th>適用情境</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>INPUT</code></td>
+                            <td>浮空（不確定）</td>
+                            <td>需外接電阻</td>
+                            <td>取決於電路</td>
+                            <td>有外部上/下拉電阻時</td>
+                        </tr>
+                        <tr>
+                            <td><code>INPUT_PULLUP</code></td>
+                            <td>穩定 HIGH</td>
+                            <td>HIGH (3.3V)</td>
+                            <td>LOW (GND)</td>
+                            <td>按鈕、開關（推薦）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        ESP32 的 GPIO 34–39 是<strong>僅限輸入引腳</strong>，它們沒有內部上拉電阻。若你將按鈕接在這些引腳上，必須外接一顆 10kΩ 的上拉（或下拉）電阻，否則仍會出現浮空問題。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -648,49 +704,86 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>📉 2. 物理現實：機械彈跳 (Debounce)</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-<div class="space-y-6">
-<p class="text-gray-600 text-lg leading-relaxed font-light text-justify">
-                                按鍵接觸一瞬間並非完美「0 到 1」，而是快速開合。
-                            </p>
-<div class="bg-slate-900 p-8 rounded-3xl text-emerald-400 font-mono text-sm relative overflow-hidden group border border-slate-700 shadow-inner text-justify">
-<div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-emerald-500 to-transparent">
-</div>
-<h4 class="text-slate-500 uppercase tracking-widest text-[10px] mb-6 text-justify">
-                                    Oscilloscope View</h4>
-<p class="leading-relaxed text-justify">
-<span class="text-slate-600">// 可能讀到：</span><br/>
-                                    11111<span class="text-red-500">01011001</span>00000000<br/>
-<span class="text-slate-500">^ 此抖動區間會被誤判。</span>
-</p>
-</div>
-</div>
-<div class="bg-amber-50 p-10 rounded-3xl border border-amber-100 flex flex-col justify-center shadow-sm text-justify">
-<h4 class="text-amber-800 font-bold mb-6 flex items-center gap-2 text-justify uppercase tracking-widest">
-<span class="text-2xl text-justify">🔍</span> 誰也會抖動？
-                            </h4>
-<p class="text-gray-600 text-sm leading-relaxed mb-8 text-justify">
-                                所有「機械接觸點」都需要進行去抖處理。
-                            </p>
-<div class="grid grid-cols-2 gap-4 text-justify">
-<div class="bg-white p-4 rounded-xl shadow-sm text-center text-xs font-bold text-amber-900 border border-amber-200 text-justify">
-                                    極限開關</div>
-<div class="bg-white p-4 rounded-xl shadow-sm text-center text-xs font-bold text-amber-900 border border-amber-200 text-justify uppercase tracking-widest">
-                                    磁簧開關</div>
-<div class="bg-white p-4 rounded-xl shadow-sm text-center text-xs font-bold text-amber-900 border border-amber-200 text-justify">
-                                    繼電器回傳</div>
-<div class="bg-white p-4 rounded-xl shadow-sm text-center text-xs font-bold text-amber-900 border border-amber-200 text-justify uppercase tracking-tighter">
-                                    彈簧傾斜儀</div>
-</div>
-</div>
-</div>
+                <h1>物理現實：機械彈跳 (Debounce)</h1>
+
+                <p>
+                    解決了浮空問題之後，你滿懷信心地寫了一個按鈕計數器：每按一下，數字加 1。程式邏輯完美——但實測時，輕輕按一下數字卻跳了 3 到 8 次。這不是程式的錯，而是<strong>機械彈跳（Mechanical Bouncing）</strong>的物理現象。
+                </p>
+                <p>
+                    按鈕的金屬觸片並不是瞬間從「斷開」變成「接通」。在按壓的那一瞬間（通常持續 1～50 毫秒），觸片會像彈簧一樣快速地彈跳數次，產生一連串的開合訊號。用示波器觀察，波形看起來就像這樣：
+                </p>
+                <div class="ms-code">
+                    <span class="c-comment">// 示波器觀察到的訊號時序（理想 vs 真實）</span><br><br>
+                    <span class="c-attr">理想:</span> <span class="c-white">111111111</span><span class="c-kw">0000000000</span><br>
+                    <span class="c-attr">真實:</span> <span class="c-white">111111</span><span class="c-str">01011001</span><span class="c-kw">0000000000</span><br>
+                    <span class="c-comment">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;^^^^^^^^</span><br>
+                    <span class="c-comment">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;彈跳區間（約 5~50ms）</span>
+                </div>
+                <p>
+                    在那段「彈跳區間」裡，微控制器以微秒級的速度不斷讀取引腳狀態，每次狀態從 HIGH 跳到 LOW 或從 LOW 跳到 HIGH，都會被程式判定為一次「事件」。這就是為什麼一次物理按壓會產生多次計數的原因。
+                </p>
+
+                <h2>誰也會抖動？</h2>
+                <p>
+                    機械彈跳不是按鈕的專利。<strong>所有具有機械接觸點的元件</strong>都會產生彈跳，只是程度與持續時間不同：
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>元件類型</th>
+                            <th>典型彈跳時間</th>
+                            <th>常見應用</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>觸控按鈕 (Tact Switch)</td>
+                            <td>5 ~ 20 ms</td>
+                            <td>面板操作、模式切換</td>
+                        </tr>
+                        <tr>
+                            <td>極限開關 (Limit Switch)</td>
+                            <td>1 ~ 10 ms</td>
+                            <td>3D 列印機歸零、機械臂到位偵測</td>
+                        </tr>
+                        <tr>
+                            <td>磁簧開關 (Reed Switch)</td>
+                            <td>0.5 ~ 5 ms</td>
+                            <td>門窗感測器、轉速計</td>
+                        </tr>
+                        <tr>
+                            <td>繼電器 (Relay)</td>
+                            <td>1 ~ 5 ms</td>
+                            <td>電源控制、工業自動化</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>硬體去彈跳 vs 軟體去彈跳</h2>
+                <p>
+                    去彈跳有兩種主要途徑：<strong>硬體方式</strong>（在按鈕兩端並聯一顆 0.1μF 的電容，利用 RC 充放電延遲來「吸收」彈跳）和<strong>軟體方式</strong>（在程式中用時間過濾邏輯忽略彈跳期間的訊號變化）。
+                </p>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        硬體去彈跳（電容濾波）的優點是完全不佔用 CPU 時間，缺點是需要額外的元件與電路空間。軟體去彈跳不需任何額外硬體，但需要良好的程式設計。在學習階段，我們以軟體方式為主——它更靈活，也能讓你深刻理解「時間過濾」的演算法思維。
+                    </div>
+                </div>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        不要忽視機械彈跳！在工業場景中，一次按壓被判讀為多次觸發，可能導致繼電器誤切、計數器失準、甚至機器人做出危險動作。去彈跳不是可選的優化，而是必要的安全措施。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -704,34 +797,127 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⏱️ 3. 軟體去抖：時間過濾術</h1>
-                
-                <p class="text-slate-400 font-light leading-relaxed text-justify">
-                                透過演算法來「等待穩定」。
-                            </p><div class="space-y-4 text-justify">
-<div class="flex items-center gap-6 p-4 bg-white/5 rounded-2xl border border-white/10 group hover:border-blue-500/50 transition text-justify">
-<div class="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center font-bold text-lg shrink-0 text-justify">
-                                        1</div>
-<p class="text-xs text-slate-300 text-justify uppercase tracking-widest">Edge
-                                        Catching：偵測電位改變瞬間。</p>
-</div>
-<div class="flex items-center gap-6 p-4 bg-white/5 rounded-2xl border border-white/10 group hover:border-blue-500/50 transition text-justify">
-<div class="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center font-bold text-lg shrink-0 text-justify">
-                                        2</div>
-<p class="text-xs text-slate-300 text-justify uppercase tracking-tighter">Wait
-                                        Epoch：忽略 20~50 ms 波動。</p>
-</div>
-<div class="flex items-center gap-6 p-4 bg-white/5 rounded-2xl border border-white/10 group hover:border-blue-500/50 transition">
-<div class="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center font-bold text-lg shrink-0 text-justify">
-                                        3</div>
-<p class="text-xs text-slate-300 text-justify">Double Confirm：再次確認狀態穩定才判定有效。</p>
-</div>
-</div>
+                <h1>軟體去抖：時間過濾術</h1>
+
+                <p>
+                    軟體去彈跳的核心思想非常直覺：<strong>當偵測到按鈕狀態改變時，不要立即信任它，而是等待一段時間（通常 20~50 毫秒），確認狀態穩定不再跳動後，才判定為一次有效的按壓事件。</strong>
+                </p>
+                <p>
+                    這個演算法可以拆解為三個步驟：
+                </p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>邊緣偵測（Edge Detection）</h4>
+                            <p>在每次 <code>loop()</code> 迴圈中讀取按鈕當前狀態，並與「上一次確認的穩定狀態」比較。如果不同，代表可能發生了按壓或釋放事件——但也可能只是彈跳雜訊。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>等待穩定（Debounce Delay）</h4>
+                            <p>記錄狀態首次改變的時間戳。在接下來的 20~50 毫秒內，持續讀取引腳狀態但不做任何動作。這段等待時間會讓所有的機械彈跳自然消退。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>確認有效（Double Confirm）</h4>
+                            <p>等待時間結束後，再次讀取引腳狀態。若狀態確實與之前不同，才正式更新為新的穩定狀態，並觸發對應的事件處理。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>為什麼不用 delay()？</h2>
+                <p>
+                    很多初學者的第一反應是：「偵測到按壓後，直接 <code>delay(50)</code> 等一下不就好了？」這樣做確實能解決彈跳問題，但會帶來一個嚴重的副作用——<strong>程式在 delay() 期間什麼都不能做</strong>。如果你的系統同時需要控制馬達、讀取感測器、或更新顯示器，<code>delay()</code> 會讓這些背景任務全部停擺。
+                </p>
+                <p>
+                    專業的做法是使用 <code>millis()</code> 函式進行<strong>非阻塞式計時（Non-blocking Timing）</strong>。<code>millis()</code> 會回傳自程式啟動以來經過的毫秒數，你只要記錄「上次狀態改變的時間」，然後在每次 <code>loop()</code> 中檢查是否已經過了足夠的等待時間即可，完全不會阻塞其他程式邏輯。
+                </p>
+
+                <h2>完整的非阻塞去彈跳程式碼</h2>
+                <div class="ms-code">
+                    <span class="c-kw">const int</span> <span class="c-attr">BTN</span> <span class="c-white">= </span><span class="c-val">14</span><span class="c-white">;</span><br>
+                    <span class="c-kw">const int</span> <span class="c-attr">LED</span> <span class="c-white">= </span><span class="c-val">2</span><span class="c-white">;</span><br>
+                    <span class="c-kw">const unsigned long</span> <span class="c-attr">DEBOUNCE_MS</span> <span class="c-white">= </span><span class="c-val">50</span><span class="c-white">;</span><br><br>
+                    <span class="c-kw">int</span> <span class="c-attr">lastStable</span> <span class="c-white">= HIGH;</span><br>
+                    <span class="c-kw">int</span> <span class="c-attr">lastReading</span> <span class="c-white">= HIGH;</span><br>
+                    <span class="c-kw">unsigned long</span> <span class="c-attr">lastChangeTime</span> <span class="c-white">= </span><span class="c-val">0</span><span class="c-white">;</span><br>
+                    <span class="c-kw">bool</span> <span class="c-attr">ledOn</span> <span class="c-white">= </span><span class="c-val">false</span><span class="c-white">;</span><br><br>
+                    <span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">int</span> <span class="c-attr">reading</span> <span class="c-white">= digitalRead(</span><span class="c-attr">BTN</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(</span><span class="c-attr">reading</span> <span class="c-white">!= </span><span class="c-attr">lastReading</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-attr">lastChangeTime</span> <span class="c-white">= millis();</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(millis() - </span><span class="c-attr">lastChangeTime</span> <span class="c-white">> </span><span class="c-attr">DEBOUNCE_MS</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(</span><span class="c-attr">reading</span> <span class="c-white">!= </span><span class="c-attr">lastStable</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-attr">lastStable</span> <span class="c-white">= </span><span class="c-attr">reading</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(</span><span class="c-attr">lastStable</span> <span class="c-white">== LOW) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-attr">ledOn</span> <span class="c-white">= !</span><span class="c-attr">ledOn</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;digitalWrite(</span><span class="c-attr">LED</span><span class="c-white">, </span><span class="c-attr">ledOn</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">lastReading</span> <span class="c-white">= </span><span class="c-attr">reading</span><span class="c-white">;</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        <code>DEBOUNCE_MS</code> 的最佳值取決於你使用的按鈕品質。廉價的觸控按鈕可能需要 50ms，高品質的工業開關可能只需 10ms。你可以透過實驗（記錄一次按壓產生的彈跳次數與持續時間）來找到最佳值。
+                    </div>
+                </div>
+
+                <h2>delay() vs millis() 比較</h2>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>特性</th>
+                            <th>delay() 阻塞式</th>
+                            <th>millis() 非阻塞式</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>等待期間 CPU 狀態</td>
+                            <td>完全停止，不執行任何程式</td>
+                            <td>持續運行 loop()，可處理其他任務</td>
+                        </tr>
+                        <tr>
+                            <td>適合多工系統</td>
+                            <td><i class="fas fa-times cross"></i> 不適合</td>
+                            <td><i class="fas fa-check check"></i> 完美支援</td>
+                        </tr>
+                        <tr>
+                            <td>程式碼複雜度</td>
+                            <td>簡單（一行即可）</td>
+                            <td>需要額外的狀態變數</td>
+                        </tr>
+                        <tr>
+                            <td>專業等級</td>
+                            <td>教學示範用</td>
+                            <td>工業級生產品質</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-important">
+                    <i class="fas fa-exclamation-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        在專業韌體開發中，<strong>全程禁止在 <code>loop()</code> 中使用 <code>delay()</code></strong> 是一條鐵律。當你的系統需要同時處理按鈕偵測、馬達控制、感測器讀取與無線通訊時，任何一個 <code>delay()</code> 都會讓其他任務的反應時間劣化。從現在開始，養成使用 <code>millis()</code> 的習慣。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -810,16 +996,100 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 隨堂測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>隨堂測驗</h1>
+
+                <p>測試你對上拉電阻、浮空狀態、機械彈跳與非阻塞去彈跳的理解程度。</p>
+
+                <div id="quiz-form">
+                    <div style="margin-bottom:24px; padding:20px; background:#faf9f8; border-radius:6px; border:1px solid #e1dfdd;">
+                        <p style="font-weight:600; margin-bottom:12px;">Q1: 當GPIO引腳設為INPUT模式且未連接任何電路時，會處於什麼狀態？</p>
+                        <label style="display:block; padding:8px 12px; margin:4px 0; cursor:pointer; border-radius:4px; transition:background .1s;">
+                            <input type="radio" name="q1" value="a" style="margin-right:8px;"> a) 穩定的LOW（0V）
+                        </label>
+                        <label style="display:block; padding:8px 12px; margin:4px 0; cursor:pointer; border-radius:4px; transition:background .1s;">
+                            <input type="radio" name="q1" value="b" style="margin-right:8px;"> b) 穩定的HIGH（3.3V）
+                        </label>
+                        <label style="display:block; padding:8px 12px; margin:4px 0; cursor:pointer; border-radius:4px; transition:background .1s;">
+                            <input type="radio" name="q1" value="c" style="margin-right:8px;"> c) 浮空狀態，讀值會因環境電磁雜訊而隨機跳動
+                        </label>
+                        <div class="quiz-feedback" id="fb-q1" style="display:none; margin-top:8px; padding:8px 12px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+
+                    <div style="margin-bottom:24px; padding:20px; background:#faf9f8; border-radius:6px; border:1px solid #e1dfdd;">
+                        <p style="font-weight:600; margin-bottom:12px;">Q2: 使用INPUT_PULLUP模式時，按鈕的邏輯行為是？</p>
+                        <label style="display:block; padding:8px 12px; margin:4px 0; cursor:pointer; border-radius:4px; transition:background .1s;">
+                            <input type="radio" name="q2" value="a" style="margin-right:8px;"> a) 按下讀到HIGH，放開讀到LOW
+                        </label>
+                        <label style="display:block; padding:8px 12px; margin:4px 0; cursor:pointer; border-radius:4px; transition:background .1s;">
+                            <input type="radio" name="q2" value="b" style="margin-right:8px;"> b) 按下讀到LOW，放開讀到HIGH（負邏輯/Active Low）
+                        </label>
+                        <label style="display:block; padding:8px 12px; margin:4px 0; cursor:pointer; border-radius:4px; transition:background .1s;">
+                            <input type="radio" name="q2" value="c" style="margin-right:8px;"> c) 無論按下或放開都讀到HIGH
+                        </label>
+                        <div class="quiz-feedback" id="fb-q2" style="display:none; margin-top:8px; padding:8px 12px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+
+                    <div style="margin-bottom:24px; padding:20px; background:#faf9f8; border-radius:6px; border:1px solid #e1dfdd;">
+                        <p style="font-weight:600; margin-bottom:12px;">Q3: 機械彈跳（Bouncing）發生的原因與持續時間大約是？</p>
+                        <label style="display:block; padding:8px 12px; margin:4px 0; cursor:pointer; border-radius:4px; transition:background .1s;">
+                            <input type="radio" name="q3" value="a" style="margin-right:8px;"> a) 程式碼的迴圈執行太快導致，持續約1秒
+                        </label>
+                        <label style="display:block; padding:8px 12px; margin:4px 0; cursor:pointer; border-radius:4px; transition:background .1s;">
+                            <input type="radio" name="q3" value="b" style="margin-right:8px;"> b) 按鈕金屬觸片在接觸瞬間快速彈跳，持續約5~50毫秒
+                        </label>
+                        <label style="display:block; padding:8px 12px; margin:4px 0; cursor:pointer; border-radius:4px; transition:background .1s;">
+                            <input type="radio" name="q3" value="c" style="margin-right:8px;"> c) ESP32的GPIO驅動電路不穩定導致，持續約1分鐘
+                        </label>
+                        <div class="quiz-feedback" id="fb-q3" style="display:none; margin-top:8px; padding:8px 12px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+
+                    <div style="margin-bottom:24px; padding:20px; background:#faf9f8; border-radius:6px; border:1px solid #e1dfdd;">
+                        <p style="font-weight:600; margin-bottom:12px;">Q4: 為什麼專業韌體開發中禁止在loop()中使用delay()進行去彈跳？</p>
+                        <label style="display:block; padding:8px 12px; margin:4px 0; cursor:pointer; border-radius:4px; transition:background .1s;">
+                            <input type="radio" name="q4" value="a" style="margin-right:8px;"> a) delay()會讓ESP32的時鐘頻率降低
+                        </label>
+                        <label style="display:block; padding:8px 12px; margin:4px 0; cursor:pointer; border-radius:4px; transition:background .1s;">
+                            <input type="radio" name="q4" value="b" style="margin-right:8px;"> b) delay()期間程式完全停止，無法處理馬達控制、感測器讀取等其他背景任務
+                        </label>
+                        <label style="display:block; padding:8px 12px; margin:4px 0; cursor:pointer; border-radius:4px; transition:background .1s;">
+                            <input type="radio" name="q4" value="c" style="margin-right:8px;"> c) delay()只能設定整秒的延遲，無法精確到毫秒
+                        </label>
+                        <div class="quiz-feedback" id="fb-q4" style="display:none; margin-top:8px; padding:8px 12px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+
+                    <div style="display:flex; gap:12px; margin-top:20px;">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                    </div>
+                    <div id="quiz-result" style="display:none; margin-top:16px; padding:16px; border-radius:6px; font-weight:600;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -877,9 +1147,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「數位控制：上拉電阻與按鈕抖動」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「數位控制：上拉電阻與按鈕抖動」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -895,7 +1165,8 @@
         { id: 3, label: '📉 2. 物理現實：機械彈跳 (Debounce)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '️ 3. 軟體去抖：時間過濾術', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '135 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '隨堂測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -915,6 +1186,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1016,8 +1288,64 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'c', q2: 'b', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: '正確！浮空引腳就像暴露在空氣中的天線，會不斷拾取環境電磁雜訊，讀值在HIGH和LOW之間隨機跳動。這是物理法則，不是程式Bug。',
+        q2: '正確！使用上拉電阻時，未按按鈕時引腳被拉至HIGH；按下時透過按鈕接地讀到LOW。這種負邏輯（Active Low）是業界最常見的按鈕接法。',
+        q3: '正確！按鈕的金屬觸片在按壓瞬間會像彈簧一樣快速彈跳數次，產生5~50毫秒的開合訊號，讓微控制器誤判為多次按壓。',
+        q4: '正確！delay()是阻塞式等待，期間CPU完全停止執行。在需要同時處理按鈕、馬達、感測器的系統中，應使用millis()進行非阻塞式計時。'
+    };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const fb = document.getElementById(`fb-${q}`);
+            if (!selected) {
+                fb.style.display = 'block';
+                fb.style.background = '#fff4ce';
+                fb.style.color = '#8a6914';
+                fb.textContent = '請選擇一個答案。';
+                continue;
+            }
+            if (selected.value === correct) {
+                score++;
+                fb.style.display = 'block';
+                fb.style.background = '#dff6dd';
+                fb.style.color = '#107c10';
+                fb.textContent = QUIZ_EXPLANATIONS[q];
+            } else {
+                fb.style.display = 'block';
+                fb.style.background = '#fde7e9';
+                fb.style.color = '#d13438';
+                fb.textContent = '不正確，請再想想。正確答案是 ' + correct.toUpperCase() + '。';
+            }
+        }
+        const result = document.getElementById('quiz-result');
+        result.style.display = 'block';
+        if (score === total) {
+            result.style.background = '#dff6dd';
+            result.style.color = '#107c10';
+            result.textContent = `🎉 滿分！${score} / ${total} — 你已完全掌握本單元核心概念！`;
+            markDone(6);
+        } else {
+            result.style.background = '#fff4ce';
+            result.style.color = '#8a6914';
+            result.textContent = `得分：${score} / ${total} — 再複習一下錯誤的題目吧！`;
+        }
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('#quiz-form input[type="radio"]').forEach(r => r.checked = false);
+        document.querySelectorAll('.quiz-feedback').forEach(fb => fb.style.display = 'none');
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 03：IO 腳位對應';
 </script>
 
 <!-- Define Resources -->

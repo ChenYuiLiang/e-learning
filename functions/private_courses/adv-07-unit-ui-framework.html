@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UI 框架與元件化設計 - Vibe Coding Learn</title>
+    <title>UI 框架與元件化設計 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 7 - UI 框架</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">UI 框架與元件化設計</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 7</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>UI 框架與元件化設計</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 7</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,12 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>UI 框架與元件化設計</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    本單元將介紹 <strong>UI 框架的核心概念與元件化設計模式</strong>。當你的物聯網儀表板從「一頁式原型」成長為包含數十種控制面板與圖表的完整應用時，缺乏結構化的 UI 架構會讓程式碼迅速失控。透過學習元件拆分、狀態管理與資料流設計，你將能建構出可維護、可擴展的前端系統。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你接手了一個智慧家庭控制面板專案：畫面上有燈光開關、空調溫度滑桿、窗簾百分比、能源用量圖表等十多個區塊，且每個區塊的邏輯與樣式都混在同一份超過 2000 行的 HTML 檔案中。每次修改一個按鈕的行為，都可能意外影響其他區塊。如何將這份混亂的程式碼重構為獨立、可複用的元件？本單元將帶你找到答案。
                 </div>
 
                 <h2>教學影片</h2>
@@ -590,43 +587,109 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🧱 1. 什麼是元件化設計 (Component-Based Design)？ (25 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
-<div class="space-y-6">
-<p class="text-lg text-gray-600 leading-relaxed font-light">
-                                將複雜的網頁視為樂高積木。每個元件（如「馬達狀態列」）應完全封裝自己的 HTML 結構、CSS 樣式與狀態邏輯，實現「高內聚、低耦合」。
-                            </p>
-<div class="bg-emerald-50 p-6 rounded-2xl border border-emerald-100">
-<h4 class="font-bold text-emerald-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
-                                    Design Pattern</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
-<div><strong>原子元件 (Atoms)</strong>：按鈕、輸入框、標籤。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
-<div><strong>組件 (Organisms)</strong>：導覽欄、遙測儀表盤、通訊面板。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-emerald-500/5 group-hover:bg-emerald-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10">
-                                Interface Decomposition</h4>
-<div class="relative z-10 flex flex-wrap justify-center gap-2">
-<div class="px-3 py-1 bg-emerald-500/20 border border-emerald-500/30 rounded text-[9px] text-emerald-400">
-                                    Header.js</div>
-<div class="px-3 py-1 bg-blue-500/20 border border-blue-500/30 rounded text-[9px] text-blue-400">
-                                    Gauge.js</div>
-<div class="px-3 py-1 bg-purple-500/20 border border-purple-500/30 rounded text-[9px] text-purple-400">
-                                    Joystick.js</div>
-</div>
-<div class="mt-4 text-[9px] text-slate-500 font-mono italic">"Build once, deploy
-                                everywhere."</div>
-</div>
-</div>
+                <h1>什麼是元件化設計 (Component-Based Design)？</h1>
+
+                <p>
+                    元件化設計 (Component-Based Design) 是現代前端開發的基石思維。它的核心理念是：<strong>將複雜的使用者介面拆解為一系列獨立、可複用的元件</strong>，每個元件封裝自己的 HTML 結構、CSS 樣式與 JavaScript 邏輯。這就像用樂高積木蓋房子——每一塊積木都有明確的形狀與用途，組合在一起便能構成複雜的建築。
+                </p>
+
+                <p>
+                    在物聯網 (IoT) 儀表板的情境中，你可能需要同時顯示馬達轉速儀表、電池電量條、藍牙連線狀態指示燈、搖桿控制面板等多種 UI 區塊。如果所有邏輯都寫在同一份檔案中，任何一處小改動都可能引發連鎖錯誤。元件化設計正是解決這類「義大利麵程式碼 (Spaghetti Code)」問題的關鍵方法論。
+                </p>
+
+                <div class="ms-scenario">
+                    <div class="ms-scenario-label">情境</div>
+                    想像你接手了一份超過 2000 行的 <code>index.html</code> 檔案。裡面混雜著燈光開關的 DOM 操作、空調溫度滑桿的事件監聽、窗簾百分比的計算邏輯，以及能源用量圖表的繪圖程式碼。當你想修改溫度滑桿的樣式時，卻意外觸發了燈光開關的 bug。這就是「低內聚、高耦合」程式碼的典型災難場景。元件化設計的目標，就是讓你再也不必面對這種困境。
+                </div>
+
+                <h2>Atomic Design：從原子到頁面</h2>
+
+                <p>
+                    Brad Frost 提出的 <strong>Atomic Design</strong> 方法論，為元件化設計提供了一套清晰的層級架構。它借用化學的概念，將 UI 元件從最小單位（原子）逐步組合為完整頁面。這套分類方式特別適合物聯網儀表板的開發——你可以從最基本的按鈕與指示燈開始，一路組裝到完整的遙控介面。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>層級</th>
+                            <th>定義</th>
+                            <th>IoT 儀表板範例</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>原子 (Atoms)</strong></td>
+                            <td>最小的 UI 單位，無法再拆分。</td>
+                            <td>按鈕、LED 指示燈、數值標籤、輸入框</td>
+                        </tr>
+                        <tr>
+                            <td><strong>分子 (Molecules)</strong></td>
+                            <td>數個原子組成的功能群組。</td>
+                            <td>搜尋列（輸入框＋按鈕）、帶標籤的滑桿</td>
+                        </tr>
+                        <tr>
+                            <td><strong>組織體 (Organisms)</strong></td>
+                            <td>由分子和原子構成的複雜 UI 區塊。</td>
+                            <td>導覽列、遙測儀表盤面板、藍牙通訊控制面板</td>
+                        </tr>
+                        <tr>
+                            <td><strong>模板 (Templates)</strong></td>
+                            <td>定義頁面的骨架佈局，尚無真實資料。</td>
+                            <td>儀表板的三欄 Grid 結構、行動版單欄排版</td>
+                        </tr>
+                        <tr>
+                            <td><strong>頁面 (Pages)</strong></td>
+                            <td>模板填入真實內容後的最終呈現。</td>
+                            <td>即時馬達遙控介面、設備監控首頁</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>封裝：元件的自給自足</h2>
+
+                <p>
+                    一個良好的元件必須做到<strong>封裝 (Encapsulation)</strong>：它的內部實作細節對外部完全隱藏。外部程式碼不需要知道元件內部使用了哪些 DOM 節點或 CSS 類別，只需透過定義好的介面（Props 與 Events）與之互動。以下是一個簡化的 <code>BaseComponent</code> 基類範例，展示元件封裝的基本骨架：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-kw">class</span> <span class="c-tag">BaseComponent</span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">constructor</span><span class="c-white">(</span><span class="c-attr">container</span><span class="c-white">,</span> <span class="c-attr">props</span> <span class="c-white">=</span> <span class="c-white">{}) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">this</span><span class="c-white">.</span><span class="c-attr">container</span> <span class="c-white">=</span> <span class="c-attr">container</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">this</span><span class="c-white">.</span><span class="c-attr">props</span> <span class="c-white">=</span> <span class="c-white">{ ...</span><span class="c-attr">props</span> <span class="c-white">};</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">this</span><span class="c-white">.</span><span class="c-tag">render</span><span class="c-white">();</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 子類別必須覆寫此方法</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">render</span><span class="c-white">() {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">throw new</span> <span class="c-tag">Error</span><span class="c-white">(</span><span class="c-str">'render() must be implemented'</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 更新 Props 並重新渲染</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">updateProps</span><span class="c-white">(</span><span class="c-attr">newProps</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">this</span><span class="c-white">.</span><span class="c-attr">props</span> <span class="c-white">= { ...</span><span class="c-kw">this</span><span class="c-white">.</span><span class="c-attr">props</span><span class="c-white">, ...</span><span class="c-attr">newProps</span> <span class="c-white">};</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">this</span><span class="c-white">.</span><span class="c-tag">render</span><span class="c-white">();</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 發送自定義事件</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">emit</span><span class="c-white">(</span><span class="c-attr">eventName</span><span class="c-white">,</span> <span class="c-attr">detail</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">this</span><span class="c-white">.</span><span class="c-attr">container</span><span class="c-white">.</span><span class="c-tag">dispatchEvent</span><span class="c-white">(</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">new</span> <span class="c-tag">CustomEvent</span><span class="c-white">(</span><span class="c-attr">eventName</span><span class="c-white">, {</span> <span class="c-attr">detail</span><span class="c-white">,</span> <span class="c-attr">bubbles</span><span class="c-white">:</span> <span class="c-kw">true</span> <span class="c-white">})</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <p>
+                    透過這個基類，所有子元件（如 <code>Gauge</code>、<code>Joystick</code>）只需繼承 <code>BaseComponent</code> 並實作自己的 <code>render()</code> 方法，即可獲得統一的 Props 管理與事件發送能力。這確保了整個元件體系的一致性與可預測性。
+                </p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>高內聚、低耦合 (High Cohesion, Low Coupling)</strong>
+                        這是軟體工程中最重要的設計原則之一。<strong>高內聚</strong>意味著一個元件內部的所有程式碼都緊密服務於同一個目的（例如 <code>Gauge.js</code> 只負責數值顯示）；<strong>低耦合</strong>意味著元件之間的依賴關係降到最低，修改一個元件不會連帶影響其他元件。當你的每個元件都達到這兩項指標時，整個系統將變得容易理解、測試與維護。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -645,47 +708,105 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔌 2. 資料傳遞：Props 與 Events (25 min)</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-<div class="space-y-8">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify">
-                                元件之間通訊的橋樑。父元件透過 <strong>Props</strong> 注入數據（如藍牙連線狀態），而子元件透過 <strong>Events</strong>
-                                向外發出通知（如搖桿座標變更）。
-                            </p>
-<div class="bg-blue-50 p-8 rounded-3xl border border-blue-100 text-center">
-<h4 class="text-blue-900 font-bold mb-4 text-xs uppercase tracking-widest">
-                                    Unidirectional Data Flow</h4>
-<div class="flex justify-center items-center gap-6 text-[11px] text-slate-500 font-mono">
-<div class="flex flex-col items-center gap-1">
-<div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center text-white">
-                                            PARENT</div>
-<div class="text-blue-500 animate-bounce">↓ Props</div>
-<div class="w-10 h-10 border border-blue-200 rounded-lg flex items-center justify-center italic">
-                                            Child</div>
-</div>
-<div class="flex flex-col items-center gap-1">
-<div class="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center text-white">
-                                            PARENT</div>
-<div class="text-indigo-500 animate-pulse">↑ Events</div>
-<div class="w-10 h-10 border border-indigo-200 rounded-lg flex items-center justify-center italic">
-                                            Child</div>
-</div>
-</div>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-blue-500/5"></div>
-<h4 class="text-blue-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10">
-                                Data Pipeline Diagram</h4>
-<div class="w-full space-y-2 px-10 relative z-10 font-mono text-[9px] text-slate-400">
-<div>&lt;Gauge value={85} color="red" /&gt;</div>
-<div class="text-emerald-500 mt-2">onJoystickMove( (x, y) =&gt; sendBLE(x, y) );</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic text-center">
-                                Decoupled Architecture O(1) Reasoning</p>
-</div>
-</div>
+                <h1>資料傳遞：Props 與 Events</h1>
+
+                <p>
+                    當介面被拆分為獨立的元件後，一個關鍵問題隨之而來：<strong>元件之間如何溝通？</strong>答案是遵循「單向資料流 (Unidirectional Data Flow)」原則——資料永遠只朝一個方向流動。父元件透過 <strong>Props</strong> 將資料向下傳遞給子元件，而子元件則透過 <strong>Events</strong> 將使用者互動或狀態變化向上通知父元件。
+                </p>
+
+                <p>
+                    這個模式可以簡單記為：<strong>「Props 向下流、Events 向上冒」</strong>。它確保了資料來源的唯一性——任何一筆資料的「真實來源 (Single Source of Truth)」永遠只存在於父元件中，子元件僅負責接收並呈現。這種架構讓你的應用程式在規模擴大時依然容易推理與除錯。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>特性</th>
+                            <th>Props（屬性）</th>
+                            <th>Events（事件）</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>方向</strong></td>
+                            <td>父元件 → 子元件（向下）</td>
+                            <td>子元件 → 父元件（向上）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>用途</strong></td>
+                            <td>注入資料與配置（數值、標籤、顏色等）</td>
+                            <td>通知互動結果（座標變更、按鈕點擊等）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>可修改性</strong></td>
+                            <td>子元件<strong>不可</strong>直接修改 Props</td>
+                            <td>父元件決定如何回應事件</td>
+                        </tr>
+                        <tr>
+                            <td><strong>IoT 範例</strong></td>
+                            <td><code>&lt;Gauge value={85} label="電池" /&gt;</code></td>
+                            <td><code>joystick:move → { x: 0.5, y: -0.3 }</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>類比</strong></td>
+                            <td>父母給孩子的指示與資源</td>
+                            <td>孩子向父母回報現場狀況</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>透過 Props 驅動元件渲染</h2>
+
+                <p>
+                    以一個數值儀表 <code>Gauge</code> 元件為例，父元件在初始化時傳入 <code>label</code>、<code>value</code> 與 <code>color</code> 三個 Props。當感測器回傳新數據時，父元件呼叫 <code>updateProps()</code> 即可自動觸發重新渲染，完全不需要手動操作 DOM：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 父元件：初始化 Gauge 並傳入 Props</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">batteryGauge</span> <span class="c-white">=</span> <span class="c-kw">new</span> <span class="c-tag">Gauge</span><span class="c-white">(</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">document</span><span class="c-white">.</span><span class="c-tag">getElementById</span><span class="c-white">(</span><span class="c-str">'battery-slot'</span><span class="c-white">),</span><br>
+                    <span class="c-white">&nbsp;&nbsp;{</span> <span class="c-attr">label</span><span class="c-white">:</span> <span class="c-str">'電池電量'</span><span class="c-white">,</span> <span class="c-attr">value</span><span class="c-white">:</span> <span class="c-val">85</span><span class="c-white">,</span> <span class="c-attr">color</span><span class="c-white">:</span> <span class="c-str">'green'</span> <span class="c-white">}</span><br>
+                    <span class="c-white">);</span><br>
+                    <br>
+                    <span class="c-comment">// 當感測器回傳新數據時，更新 Props</span><br>
+                    <span class="c-attr">batteryGauge</span><span class="c-white">.</span><span class="c-tag">updateProps</span><span class="c-white">({</span> <span class="c-attr">value</span><span class="c-white">:</span> <span class="c-val">15</span><span class="c-white">,</span> <span class="c-attr">color</span><span class="c-white">:</span> <span class="c-str">'red'</span> <span class="c-white">});</span><br>
+                    <span class="c-comment">// Gauge 自動重新渲染，顯示警示紅色</span>
+                </div>
+
+                <h2>透過 CustomEvent 發送事件</h2>
+
+                <p>
+                    當子元件偵測到使用者互動（例如搖桿被拖動），它不應該直接呼叫業務邏輯，而是透過 <code>CustomEvent</code> 將資訊「冒泡」給父元件，由父元件決定後續行為。以下是搖桿元件發射事件的範例：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// Joystick.js — 子元件內部</span><br>
+                    <span class="c-tag">handleMove</span><span class="c-white">(</span><span class="c-attr">x</span><span class="c-white">,</span> <span class="c-attr">y</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">this</span><span class="c-white">.</span><span class="c-tag">emit</span><span class="c-white">(</span><span class="c-str">'joystick:move'</span><span class="c-white">, {</span> <span class="c-attr">x</span><span class="c-white">,</span> <span class="c-attr">y</span> <span class="c-white">});</span><br>
+                    <span class="c-white">}</span><br>
+                    <br>
+                    <span class="c-comment">// app.js — 父元件監聯事件</span><br>
+                    <span class="c-attr">joystickEl</span><span class="c-white">.</span><span class="c-tag">addEventListener</span><span class="c-white">(</span><span class="c-str">'joystick:move'</span><span class="c-white">,</span> <span class="c-white">(</span><span class="c-attr">e</span><span class="c-white">) => {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-white">{</span> <span class="c-attr">x</span><span class="c-white">,</span> <span class="c-attr">y</span> <span class="c-white">} =</span> <span class="c-attr">e</span><span class="c-white">.</span><span class="c-attr">detail</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">ble</span><span class="c-white">.</span><span class="c-tag">send</span><span class="c-white">(</span><span class="c-tag">packCommand</span><span class="c-white">(</span><span class="c-attr">x</span><span class="c-white">,</span> <span class="c-attr">y</span><span class="c-white">));</span> <span class="c-comment">// 業務邏輯只在父元件中</span><br>
+                    <span class="c-white">});</span>
+                </div>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要：禁止在子元件中放置業務邏輯</strong>
+                        永遠不要在子元件（如 <code>Joystick.js</code>）內部撰寫 <code>ble.send()</code>、API 呼叫或資料庫寫入等業務邏輯。子元件的職責僅限於「視覺呈現」與「使用者互動偵測」。所有業務決策都應由父元件（或應用層）在接收到事件後處理。違反此原則會導致元件無法在不同專案中複用，並使測試變得困難。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示：善用 CustomEvent 實現鬆耦合架構</strong>
+                        <code>CustomEvent</code> 是瀏覽器原生的事件機制，不需要引入任何第三方函式庫。透過 <code>bubbles: true</code> 設定，事件會沿 DOM 樹向上冒泡，父元件可以在任意層級攔截處理。這種模式與 React 的回呼 Props 和 Vue 的 <code>$emit</code> 在概念上完全一致，掌握它等於掌握了所有主流框架的通訊基礎。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -704,44 +825,117 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚡ 3. 響應式佈局與遙測視覺化</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center">
-<div class="flex-1 space-y-6">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify">
-                                使用 CSS Grid 與 Flexbox 打造「數據驅動 (Data-Driven)」的儀表板。當資料狀態 (State) 變更時，介面應自動響應，無需手動操作 DOM
-                                節點。
-                            </p>
-<div class="bg-purple-500/10 p-8 rounded-3xl border border-purple-500/20 shadow-inner">
-<h4 class="font-bold text-purple-400 mb-4 text-xs uppercase tracking-widest text-center">
-                                    Layout Efficiency</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span>
-<div><strong class="text-white">單向更新流</strong>：告別
-                                            <code>document.getElementById</code>，擁抱狀態同步。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span>
-<div><strong class="text-white">響應式網格 (Responsive
-                                                Grid)</strong>：在大螢幕顯示全儀表，在手機端自動切換為縱向控制欄。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span>
-<div><strong class="text-white">元件生命週期</strong>：理解元件何時「掛載
-                                            (Mount)」與「卸載」，防止藍牙回調造成的內存洩漏。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-purple-600/10 p-10 rounded-3xl border border-purple-500/20 text-center relative overflow-hidden group">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-purple-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-purple-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">
-                                Reactive Core</h4>
-<div class="text-5xl font-extrabold text-white mb-2">GUI</div>
-<p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center">
-                                "讓 UI 成為數據的鏡像，而不是手動編輯的產物。"
-                            </p>
-</div>
-</div>
+                <h1>響應式佈局與遙測視覺化</h1>
+
+                <p>
+                    物聯網儀表板必須在各種螢幕尺寸上都能正常運作——從實驗室的 27 吋桌上型螢幕，到口袋中的手機。<strong>CSS Grid</strong> 與 <strong>Flexbox</strong> 是實現響應式佈局的兩大核心工具。CSS Grid 負責定義整體的二維網格結構（列與欄），而 Flexbox 則適合處理單一方向的排列（例如按鈕列或導覽欄）。兩者搭配使用，可以輕鬆打造適配多種裝置的專業級儀表板。
+                </p>
+
+                <p>
+                    除了佈局，「<strong>數據驅動 (Data-Driven)</strong>」的 UI 思維同樣關鍵。傳統做法中，開發者手動透過 <code>document.getElementById()</code> 逐一操作 DOM 節點來更新畫面。而在元件化架構中，我們追求的是<strong>讓 UI 成為資料狀態的鏡像</strong>——當狀態改變時，介面自動重新渲染，無需手動干預。
+                </p>
+
+                <h2>使用 CSS Grid 建構儀表板佈局</h2>
+
+                <p>
+                    以下範例展示如何使用 CSS Grid 搭配 <code>@media</code> 查詢，讓同一組元件在桌機上顯示為三欄佈局，在平板上切換為兩欄，而在手機上自動堆疊為單欄：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">/* dashboard.css */</span><br>
+                    <span class="c-tag">.dashboard-grid</span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">display</span><span class="c-white">:</span> <span class="c-val">grid</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">grid-template-columns</span><span class="c-white">:</span> <span class="c-val">repeat(3, 1fr)</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">gap</span><span class="c-white">:</span> <span class="c-val">16px</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">padding</span><span class="c-white">:</span> <span class="c-val">20px</span><span class="c-white">;</span><br>
+                    <span class="c-white">}</span><br>
+                    <br>
+                    <span class="c-comment">/* 平板：兩欄 */</span><br>
+                    <span class="c-kw">@media</span> <span class="c-white">(</span><span class="c-attr">max-width</span><span class="c-white">:</span> <span class="c-val">1024px</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">.dashboard-grid</span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-attr">grid-template-columns</span><span class="c-white">:</span> <span class="c-val">repeat(2, 1fr)</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">}</span><br>
+                    <br>
+                    <span class="c-comment">/* 手機：單欄堆疊 */</span><br>
+                    <span class="c-kw">@media</span> <span class="c-white">(</span><span class="c-attr">max-width</span><span class="c-white">:</span> <span class="c-val">600px</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">.dashboard-grid</span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-attr">grid-template-columns</span><span class="c-white">:</span> <span class="c-val">1fr</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>斷點名稱</th>
+                            <th>寬度範圍</th>
+                            <th>Grid 欄數</th>
+                            <th>適用裝置</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Desktop</strong></td>
+                            <td>&gt; 1024px</td>
+                            <td>3 欄</td>
+                            <td>桌上型電腦、大螢幕</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tablet</strong></td>
+                            <td>601px – 1024px</td>
+                            <td>2 欄</td>
+                            <td>平板、小型筆電</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mobile</strong></td>
+                            <td>≤ 600px</td>
+                            <td>1 欄</td>
+                            <td>手機</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>狀態驅動的 UI 切換</h2>
+
+                <p>
+                    在 IoT 應用中，裝置的連線狀態會直接影響介面的視覺呈現。一種常見的做法是：當藍牙連線成功時，為 <code>&lt;body&gt;</code> 加上 <code>.is-connected</code> 類別，然後透過 CSS 變數讓所有子元件自動從「離線灰階」切換為「上線彩色」主題。這就是所謂的「狀態驅動 UI (State-Driven UI)」——UI 的外觀完全由資料狀態決定。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">/* 預設離線狀態：灰階主題 */</span><br>
+                    <span class="c-tag">:root</span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">--gauge-color</span><span class="c-white">:</span> <span class="c-val">#8a8886</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">--panel-bg</span><span class="c-white">:</span> <span class="c-val">#f3f2f1</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">--status-text</span><span class="c-white">:</span> <span class="c-str">'Disconnected'</span><span class="c-white">;</span><br>
+                    <span class="c-white">}</span><br>
+                    <br>
+                    <span class="c-comment">/* 連線成功：彩色主題 */</span><br>
+                    <span class="c-tag">body.is-connected</span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">--gauge-color</span><span class="c-white">:</span> <span class="c-val">#107c10</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">--panel-bg</span><span class="c-white">:</span> <span class="c-val">#dff6dd</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">--status-text</span><span class="c-white">:</span> <span class="c-str">'Connected'</span><span class="c-white">;</span><br>
+                    <span class="c-white">}</span><br>
+                    <br>
+                    <span class="c-comment">/* JavaScript：切換連線狀態 */</span><br>
+                    <span class="c-attr">document</span><span class="c-white">.</span><span class="c-attr">body</span><span class="c-white">.</span><span class="c-attr">classList</span><span class="c-white">.</span><span class="c-tag">toggle</span><span class="c-white">(</span><span class="c-str">'is-connected'</span><span class="c-white">,</span> <span class="c-attr">isConnected</span><span class="c-white">);</span>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>元件生命週期：掛載與卸載</strong>
+                        每個元件都有生命週期——它在何時被「掛載 (Mount)」到 DOM 中，又在何時被「卸載 (Unmount)」移除。理解生命週期至關重要，因為它決定了你何時應該初始化資源（例如建立 BLE 連線監聽器），以及何時必須清理資源以防止記憶體洩漏。在 React 中這對應 <code>useEffect</code> 的清理函數，在原生 JavaScript 中則需要你手動管理。
+                    </div>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告：務必在元件卸載時清除事件監聽器</strong>
+                        如果你在元件掛載時註冊了 BLE 回呼函數（例如 <code>ble.on('data', this.handleData)</code>），卻忘記在元件卸載時呼叫 <code>ble.off('data', this.handleData)</code> 來移除它，這個監聽器會持續存在於記憶體中。每次元件重新掛載都會新增一個監聽器，最終導致嚴重的記憶體洩漏與重複執行問題。請務必在 <code>destroy()</code> 或 <code>unmount()</code> 方法中清理所有外部資源。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -825,16 +1019,81 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>測試你對本模組核心概念的掌握程度。請選出每題的最佳答案，提交後可查看詳細解析。</p>
+
+                <form id="quiz-form" onsubmit="return false;">
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">1. 元件化設計 (Component-Based Design) 的核心原則不包含以下哪項？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 封裝 (Encapsulation)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 複用 (Reusability)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 獨立 (Independence)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 全域變數共享 (Global Variable Sharing)</label>
+                        <div id="exp-1" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">2. Props 的資料流方向是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 子組件 → 父組件</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 父組件 → 子組件（單向下傳）</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 任意方向自由流動</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 只在同級組件之間流動</label>
+                        <div id="exp-2" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">3. 子組件想要通知父組件狀態變化時，應該使用什麼機制？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 直接修改父組件的變數</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 透過 Events（自定義事件）向上回報</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 使用全域變數</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 透過 localStorage 傳遞</label>
+                        <div id="exp-3" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">4. 響應式佈局 (Responsive Layout) 最常使用的 CSS 技術是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="A" style="margin-right:8px;"> A. HTML Tables</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="B" style="margin-right:8px;"> B. Flexbox 與 CSS Grid</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="C" style="margin-right:8px;"> C. HTML Frames</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="D" style="margin-right:8px;"> D. CSS float</label>
+                        <div id="exp-4" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+                </form>
+
+                <div style="display:flex;gap:12px;margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+                <div id="quiz-result" style="display:none;margin-top:20px;padding:16px;border-radius:6px;font-size:14px;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -892,9 +1151,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「UI 框架與元件化設計」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「UI 框架與元件化設計」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -910,7 +1169,8 @@
         { id: 3, label: '🔌 2. 資料傳遞：Props 與 Events (25 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '響應式佈局與遙測視覺化', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -930,6 +1190,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1031,8 +1292,61 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'D', q2: 'B', q3: 'B', q4: 'B' };
+    const QUIZ_EXPLANATIONS = { q1: '元件化設計強調封裝、複用與獨立。全域變數共享恰恰違反了封裝原則，會導致元件之間產生不必要的耦合。', q2: 'Props 實現「單向資料流」——由父組件向下傳遞配置與資料給子組件，子組件不應直接修改 Props 的值。', q3: '子組件透過觸發自定義事件 (Events / Emit) 將資訊向上傳遞給父組件，維持單向資料流的架構完整性。', q4: 'Flexbox 適合一維佈局（行或列），CSS Grid 適合二維佈局（行列並行），兩者是現代響應式設計的主流方案。' };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const idx = q.slice(1);
+            const exp = document.getElementById(`exp-${idx}`);
+            if (!selected) continue;
+            if (selected.value === correct) {
+                score++;
+                exp.style.display = 'block';
+                exp.style.background = '#dff6dd';
+                exp.style.borderLeftColor = '#107c10';
+                exp.innerHTML = '<i class="fas fa-check-circle" style="color:#107c10;margin-right:6px;"></i>' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#dff6dd';
+                selected.parentElement.style.borderColor = '#107c10';
+            } else {
+                exp.style.display = 'block';
+                exp.style.background = '#fde7e9';
+                exp.style.borderLeftColor = '#d13438';
+                exp.innerHTML = '<i class="fas fa-times-circle" style="color:#d13438;margin-right:6px;"></i>正確答案是 ' + correct + '。' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#fde7e9';
+                selected.parentElement.style.borderColor = '#d13438';
+            }
+        }
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === total) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.innerHTML = '<strong style="color:#107c10;">🎉 滿分！' + score + ' / ' + total + '</strong><br>你完全掌握了本模組的核心概念！';
+            markDone(6);
+        } else {
+            resultEl.style.background = '#fff4ce';
+            resultEl.innerHTML = '<strong style="color:#8a6914;">得分：' + score + ' / ' + total + '</strong><br>建議複習錯題的解析說明，再試一次！';
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= 4; i++) {
+            const exp = document.getElementById('exp-' + i);
+            if (exp) { exp.style.display = 'none'; exp.style.background = ''; exp.style.borderLeftColor = 'transparent'; }
+        }
+        document.querySelectorAll('#quiz-form label').forEach(l => { l.style.background = ''; l.style.borderColor = '#e1dfdd'; });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 07：UI 框架設計';
 </script>
 
 <!-- Define Resources -->

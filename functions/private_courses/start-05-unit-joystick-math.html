@@ -326,6 +326,22 @@
         .unit-card-name { font-size: 15px; font-weight: 500; }
         .unit-card-time { font-size: 12px; color: #605e5c; margin-top: 2px; }
         .unit-card-arrow { color: #c8c6c4; font-size: 14px; }
+    
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 10px 14px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; cursor: pointer; transition: background .1s, border-color .1s; font-size: 14px;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback { display: none; margin-top: 8px; padding: 10px 14px; border-radius: 4px; font-size: 13px; font-weight: 500; }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
     </style>
 </head>
 <body>
@@ -356,7 +372,7 @@
                 <div class="progress-bar-bg">
                     <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
                 </div>
-                <div class="progress-text" id="progress-text">0 / 5 已完成</div>
+                <div class="progress-text" id="progress-text">0 / 6 已完成</div>
             </div>
         </div>
 
@@ -610,12 +626,67 @@
                     <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一單元 &nbsp;›</button>
                 </div>
             </div>
+        <!-- ══════════ PAGE 5: QUIZ ══════════ -->
+        <div class="ms-unit-page" id="page-5">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-5" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
+                </div>
 
-            <!-- PAGE: 摘要與資源 (5) -->
-            <div class="ms-unit-page" id="page-5">
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <div class="quiz-question">
+                        <p>1. 在搖桿數學中，如何計算操控頭到圓心的距離？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 使用 <code>Math.abs(dx) + Math.abs(dy)</code> 計算曼哈頓距離</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 使用勾股定理 <code>Math.sqrt(dx*dx + dy*dy)</code> 計算歐幾里得距離</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 使用 <code>Math.max(Math.abs(dx), Math.abs(dy))</code> 計算切比雪夫距離</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>2. 「圓形限位（Clamping）」的作用是什麼？當操控頭被拖出底盤範圍時，系統應如何處理？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 直接忽略超出範圍的觸控事件</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 將操控頭的位置限制在底盤半徑內，使用比例縮放公式 <code>(R/d) * dx</code> 將座標投影回圓周上</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 讓操控頭自由移動，不設任何限制</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>3. <code>Math.atan2(dy, dx)</code> 相比 <code>Math.atan(dy/dx)</code> 的主要優勢是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> <code>atan2</code> 的計算速度更快</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> <code>atan2</code> 能正確區分四個象限（360度），且不會因為 dx 為 0 而產生除零錯誤</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> <code>atan2</code> 回傳的單位是角度而非弧度</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>4. 搖桿的「推力百分比（Power）」是如何歸一化到 0~100% 的？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 直接使用觸控點的螢幕座標除以螢幕寬度</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 將操控頭到圓心的距離除以底盤半徑，再用 <code>Math.min()</code> 限制最大值為 1.0</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 使用 CSS 的 <code>transform: scale()</code> 自動計算</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">5 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+<div class="ms-unit-page" id="page-6">
                 <div class="unit-content">
                     <div class="unit-status-bar">
-                        <div class="unit-completed-badge" id="badge-5" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-completed-badge" id="badge-6" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
                         <div class="unit-time-badge"><i class="far fa-clock"></i> 5 分鐘</div>
                     </div>
                     <h1>本單元摘要與學習資源</h1>
@@ -645,8 +716,8 @@
                     </div>
                 </div>
                 <div class="unit-nav">
-                    <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                    <button class="nav-btn-next" onclick="markDone(5)">完成本單元 &nbsp;✓</button>
+                    <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-next" onclick="markDone(6)">完成本單元 &nbsp;✓</button>
                 </div>
             </div>
 
@@ -662,8 +733,15 @@
             { id: 2, label: '勾股定理與歐幾里得距離', time: '20 分鐘', type: 'unit' },
             { id: 3, label: '限位邏輯：半徑的限制', time: '20 分鐘', type: 'unit' },
             { id: 4, label: '教室實戰',       time: '135 分鐘', type: 'lab'   },
-            { id: 5, label: '摘要與資源',     time: '5 分鐘',  type: 'unit'  },
+            { id: 5, label: '知識測驗',              time: '4 分鐘',  type: 'quiz'  },
+            { id: 6, label: '摘要與資源',     time: '5 分鐘',  type: 'unit'  },
         ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！歐幾里得距離（勾股定理）能精確計算二維平面上兩點之間的直線距離。在搖桿中，<code>dx</code> 和 <code>dy</code> 分別為操控頭到圓心的水平與垂直偏移量。' },        q2: { b: '正確！當手指超出底盤範圍時，操控頭應被「鉗制」在圓周邊界上。透過 <code>(R/d)</code> 比例縮放，操控頭會沿著手指方向停在圓周上，既保留方向資訊又限制最大推力。' },        q3: { b: '正確！<code>Math.atan()</code> 只能回傳 -90° 到 90° 的範圍，無法區分第二、三象限。<code>Math.atan2(dy, dx)</code> 能回傳完整的 -π 到 π 範圍，且自動處理 dx=0 的邊界情況。' },        q4: { b: '正確！推力計算公式為 <code>Power = Math.min(distance / R, 1.0)</code>。距離越遠推力越大，但透過 <code>Math.min()</code> 確保不會超過 100%。' },
+    };
+
 
         let currentUnit = 0;
         let doneSet = new Set();
@@ -678,7 +756,9 @@
         function buildSidebar() {
             const nav = document.getElementById('sidebar-nav');
             nav.innerHTML = UNITS.map(u => {
-                const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>' : '';
+                const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                              : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
+                              : '';
                 return `
                 <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
                     <div class="unit-icon" id="icon-${u.id}">${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div>
@@ -766,7 +846,56 @@
             el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
         }
 
-        /* ─── START ─── */
+        
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            document.querySelectorAll(`input[name="${qid}"]`).forEach(opt => {
+                opt.disabled = true;
+                if (opt.value === answer) opt.parentElement.classList.add('correct');
+                if (opt.checked && opt.value !== answer) opt.parentElement.classList.add('wrong');
+            });
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                feedbackEl.textContent = '✗ 不正確。' + QUIZ_EXPLANATIONS[qid][answer];
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        const pct = Math.round(correct / total * 100);
+        scoreEl.style.display = 'block';
+        scoreEl.innerHTML = `<span style="font-size:20px;">${pct >= 75 ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pct >= 75 ? '通過！繼續前往下一個單元。' : '建議回顧相關單元後再試一次。'}</div>`;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => el.classList.remove('correct','wrong'));
+        document.querySelectorAll('input[type=radio]').forEach(el => { el.checked = false; el.disabled = false; });
+        document.querySelectorAll('.quiz-feedback').forEach(el => { el.className = 'quiz-feedback'; el.textContent = ''; });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
+/* ─── START ─── */
         init();
 
         // --- Math Canvas Logic ---

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>網路頻寬與幀率 (FPS) 的數學關係 - Vibe Coding Learn</title>
+    <title>網路頻寬與幀率 (FPS) 的數學關係 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -471,9 +473,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">進階課程 2 - 單元 3</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +487,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">網路頻寬與幀率 (FPS) 的數學關係</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">進階課程 2</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,13 +509,13 @@
                 <h1>網路頻寬與幀率 (FPS) 的數學關係</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">進階課程 2</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
                 </div>
 
-                <p></p>
+                <p>用數學公式拆解解析度、壓縮率與頻寬的三角博弈，實作 ABR 動態擁塞控制演算法，在受限的無線網路中榨取極致流暢度。</p>
 
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
@@ -553,15 +553,14 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>網路頻寬與幀率 (FPS) 的數學關係</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    「為什麼我的串流只有 3 FPS？」——這個問題的答案通常不在程式碼裡，而在<strong>一條簡單的數學公式</strong>中。
+                    頻寬、解析度、壓縮率與幀率之間存在嚴格的物理約束關係，掌握這些數學工具能讓你在動手寫程式之前就準確預測系統的效能上限。
+                    本模組將教你用位元率公式計算最大可達 FPS，並學會在解析度與流暢度之間做出量化決策。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的 ESP32-CAM 專案在 QVGA（320×240）解析度下跑得很順暢，達到 25 FPS。但客戶要求升級到 VGA（640×480）以看清車牌號碼。你改了一行設定，FPS 立刻從 25 暴跌到 3，畫面卡成投影片。「解析度只放大了一級，怎麼差這麼多？」你需要用數學來解釋這個現象，並算出在現有頻寬下，能達到的最佳解析度與 FPS 組合。
                 </div>
 
                 <h2>教學影片</h2>
@@ -575,7 +574,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -589,39 +588,127 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔢 1. 影像容量的數學拆解 (20 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg leading-relaxed">
-<p>
-<strong>原始數據量 (Raw Data)：</strong>一張未壓縮影像的大小取決於解析度與每個像素佔用的位元組。
-                                </p>
-<div class="bg-slate-800 text-blue-400 p-6 rounded-xl font-mono text-center my-6">
-<h4 class="text-white font-bold mb-2">核心公式</h4>
-<p class="text-2xl">Width × Height × Bytes_per_pixel</p>
-</div>
-<div class="bg-blue-50 p-6 rounded-xl border border-blue-100">
-<h4 class="font-bold text-blue-800 mb-2 flex items-center gap-2"><span>💡</span> 範例
-                                    </h4>
-<p class="text-sm text-blue-700">
-                                        $160 \times 120$ 的 8-bit 灰階影像 $= 19,200$ Bytes ($\approx 19$ KB)。<br/>
-<strong>FPS 的乘法效應：</strong>當你每秒要傳送 20 張圖時，數據量會瞬間放大 20 倍！
-                                    </p>
-</div>
-<div class="bg-indigo-50 p-6 rounded-xl border border-indigo-100">
-<h4 class="font-bold text-indigo-800 mb-3 flex items-center gap-2">
-<span>🔍</span> 學習任務
-                                    </h4>
-<p class="text-indigo-700">
-                                        計算解析度從 $160 \times 120$ 提升到 $640 \times 480$ 時，所需的頻寬會增加幾倍？<br/>
-<span class="text-sm italic text-indigo-600">（提示：長寬各加 4 倍，總面積增加多少倍？）</span>
-</p>
-</div>
-</div>
+                <h1>影像容量的數學拆解</h1>
+
+                <p>
+                    在開始優化影像串流之前，你必須先理解一個基本問題：<strong>一張影像到底佔了多少資料量？</strong>
+                    這個問題的答案取決於三個變數：解析度（寬 × 高）、每像素的色彩深度（Bytes per Pixel），以及壓縮方式。掌握這些數學關係，你就能在動手寫程式之前精準預測系統的效能上限。
+                </p>
+
+                <h2>原始影像大小公式</h2>
+
+                <p>
+                    一張<strong>未壓縮</strong>的影像，其資料量可以用一條簡單的公式計算：
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 原始影像大小公式</span>
+<span class="c-attr">Raw_Size</span> <span class="c-white">=</span> <span class="c-attr">Width</span> <span class="c-white">×</span> <span class="c-attr">Height</span> <span class="c-white">×</span> <span class="c-attr">Bytes_per_Pixel</span>
+
+<span class="c-comment">// 範例：QVGA RGB 影像</span>
+<span class="c-val">320</span> <span class="c-white">×</span> <span class="c-val">240</span> <span class="c-white">×</span> <span class="c-val">3</span> <span class="c-white">=</span> <span class="c-val">230,400</span> <span class="c-white">Bytes ≈</span> <span class="c-val">225 KB</span>
+
+<span class="c-comment">// 範例：VGA RGB 影像</span>
+<span class="c-val">640</span> <span class="c-white">×</span> <span class="c-val">480</span> <span class="c-white">×</span> <span class="c-val">3</span> <span class="c-white">=</span> <span class="c-val">921,600</span> <span class="c-white">Bytes ≈</span> <span class="c-val">900 KB</span>
+                </div>
+
+                <p>
+                    注意：RGB 全彩影像每像素佔 3 Bytes（R、G、B 各 1 Byte），灰階影像每像素僅佔 1 Byte。ESP32-CAM 常用的 YUV422 格式則為每像素 2 Bytes。選擇不同的色彩空間，資料量會有顯著差異。
+                </p>
+
+                <h2>常見解析度的資料量對比</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>解析度名稱</th>
+                            <th>尺寸 (px)</th>
+                            <th>總像素數</th>
+                            <th>RGB 原始大小</th>
+                            <th>灰階原始大小</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>QQVGA</td>
+                            <td>160 × 120</td>
+                            <td>19,200</td>
+                            <td>56 KB</td>
+                            <td>19 KB</td>
+                        </tr>
+                        <tr>
+                            <td>QVGA</td>
+                            <td>320 × 240</td>
+                            <td>76,800</td>
+                            <td>225 KB</td>
+                            <td>75 KB</td>
+                        </tr>
+                        <tr>
+                            <td>VGA</td>
+                            <td>640 × 480</td>
+                            <td>307,200</td>
+                            <td>900 KB</td>
+                            <td>300 KB</td>
+                        </tr>
+                        <tr>
+                            <td>SVGA</td>
+                            <td>800 × 600</td>
+                            <td>480,000</td>
+                            <td>1.37 MB</td>
+                            <td>469 KB</td>
+                        </tr>
+                        <tr>
+                            <td>HD (720p)</td>
+                            <td>1280 × 720</td>
+                            <td>921,600</td>
+                            <td>2.64 MB</td>
+                            <td>900 KB</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        從 QVGA 升級到 VGA，解析度的長寬各放大 2 倍，但<strong>總像素數放大了 4 倍</strong>（2 × 2 = 4）。這就是為什麼「只是把解析度調高一級」就讓 FPS 暴跌的根本原因——資料量是以<strong>面積（二次方）</strong>成長的。
+                    </div>
+                </div>
+
+                <h2>FPS 的乘法效應</h2>
+
+                <p>
+                    影像串流不是傳送一張圖，而是<strong>每秒傳送數十張</strong>。因此，串流所需的原始資料頻寬為：
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 原始串流頻寬公式</span>
+<span class="c-attr">Raw_Bandwidth</span> <span class="c-white">=</span> <span class="c-attr">Width</span> <span class="c-white">×</span> <span class="c-attr">Height</span> <span class="c-white">×</span> <span class="c-attr">Bytes_per_Pixel</span> <span class="c-white">×</span> <span class="c-attr">FPS</span>
+
+<span class="c-comment">// 範例：VGA RGB @ 15 FPS (未壓縮)</span>
+<span class="c-val">640</span> <span class="c-white">×</span> <span class="c-val">480</span> <span class="c-white">×</span> <span class="c-val">3</span> <span class="c-white">×</span> <span class="c-val">15</span> <span class="c-white">=</span> <span class="c-val">13,824,000</span> <span class="c-white">Bytes/s ≈</span> <span class="c-val">105 Mbps</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        VGA 解析度在未壓縮的情況下，15 FPS 就需要 105 Mbps 的頻寬！ESP32 的 Wi-Fi 實際吞吐量約為 2–5 Mbps，這意味著<strong>壓縮是絕對必要的</strong>——沒有壓縮，串流根本不可能運作。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        想驗證這些計算？在 ESP32 的串流程式中，你可以用 <code>fb-&gt;len</code> 取得每幀壓縮後的實際位元組數。將它除以原始大小，就能得到「真實壓縮率」——這個數字會隨畫面內容而大幅變動。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -635,29 +722,115 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🗜️ 2. 壓縮率 (Compression Ratio) 的變數 (20 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg leading-relaxed">
-<p>
-<strong>JPEG 壓縮的影響：</strong>壓縮不是固定的。複雜的畫面（如森林）比簡單的畫面（如白牆）產生的 JPEG 檔案更大。
-                        </p>
-<div class="bg-slate-800 text-cyan-400 p-6 rounded-xl font-mono text-center mb-6">
-<h4 class="text-white font-bold mb-2">位元率 (Bitrate) 公式</h4>
-<p class="text-2xl">Bitrate (bps) = 平均幀大小 (Bytes) × 8 × FPS</p>
-</div>
-<div class="bg-cyan-50 p-6 rounded-xl border border-cyan-100">
-<h4 class="font-bold text-cyan-800 mb-2 flex items-center gap-2"><span>📊</span> 學習任務
-                            </h4>
-<p class="text-cyan-700">
-                                理解為什麼在相同的 Wi-Fi 頻寬下，降低解析度可以換取更高的 FPS（流暢度）。
-                            </p>
-</div>
-</div>
+                <h1>壓縮率 (Compression Ratio) 的變數</h1>
+
+                <p>
+                    上一節計算的是<strong>未壓縮</strong>的原始資料量，但實際串流中，每一幀都經過了 JPEG 壓縮。壓縮率並非一個固定數字——它會隨著<strong>畫面內容的複雜度</strong>和<strong>Quality 參數</strong>而劇烈變動。理解這些變數，是精準預測串流頻寬的關鍵。
+                </p>
+
+                <h2>JPEG 壓縮的物理本質</h2>
+
+                <p>
+                    JPEG 壓縮的核心是<strong>離散餘弦變換（DCT）</strong>，它將 8×8 像素的區塊從「空間域」轉換到「頻率域」，然後丟棄人眼不敏感的高頻細節。Quality 參數控制的就是「丟掉多少高頻成分」——Quality 越低，丟得越多，檔案越小，但畫質也越差。
+                </p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        JPEG 的壓縮是<strong>有損的（Lossy）</strong>——被丟掉的高頻資訊無法復原。這就是為什麼反覆儲存 JPEG 會讓畫質越來越差。但在即時串流中，每一幀都是從原始感測器資料重新壓縮的，不存在「反覆壓縮」的問題。
+                    </div>
+                </div>
+
+                <h2>影響壓縮率的兩大變數</h2>
+
+                <h3>變數一：Quality 參數</h3>
+
+                <p>ESP32-CAM 的 JPEG Quality 參數範圍通常是 10（最高壓縮）到 63（最低壓縮）。以下是在 VGA 解析度下的實測數據參考：</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>Quality</th>
+                            <th>平均幀大小</th>
+                            <th>壓縮率（vs 原始）</th>
+                            <th>畫質感受</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>10</td>
+                            <td>~8 KB</td>
+                            <td>~112:1</td>
+                            <td>嚴重馬賽克，僅能辨識大輪廓</td>
+                        </tr>
+                        <tr>
+                            <td>20</td>
+                            <td>~15 KB</td>
+                            <td>~60:1</td>
+                            <td>細節模糊但可用於偵測</td>
+                        </tr>
+                        <tr>
+                            <td>40</td>
+                            <td>~35 KB</td>
+                            <td>~26:1</td>
+                            <td>良好平衡，適合多數應用</td>
+                        </tr>
+                        <tr>
+                            <td>63</td>
+                            <td>~80 KB</td>
+                            <td>~11:1</td>
+                            <td>高畫質，但頻寬消耗大幅增加</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>變數二：畫面內容複雜度</h3>
+
+                <p>
+                    即使 Quality 參數相同，不同的畫面內容也會產生截然不同的檔案大小。<strong>高頻細節越多（如樹葉、草地、碎石），壓縮後的檔案就越大</strong>；反之，大面積的單色區域（如白牆、天空）壓縮後檔案很小。
+                </p>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        這意味著你不能假設「每幀都是 X KB」來計算頻寬！在實際部署時，你必須用<strong>最壞情況（最複雜的場景）</strong>來評估頻寬需求，否則一旦畫面變複雜，FPS 就會突然暴跌。
+                    </div>
+                </div>
+
+                <h2>位元率 (Bitrate) 公式</h2>
+
+                <p>
+                    有了平均幀大小，就能計算串流的位元率（Bitrate）——這是衡量串流佔用多少網路頻寬的標準指標：
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 位元率公式</span>
+<span class="c-attr">Bitrate (bps)</span> <span class="c-white">=</span> <span class="c-attr">平均幀大小 (Bytes)</span> <span class="c-white">×</span> <span class="c-val">8</span> <span class="c-white">×</span> <span class="c-attr">FPS</span>
+
+<span class="c-comment">// 範例：VGA, Quality=20, 15 FPS</span>
+<span class="c-val">15,000</span> <span class="c-white">Bytes ×</span> <span class="c-val">8</span> <span class="c-white">×</span> <span class="c-val">15</span> <span class="c-white">=</span> <span class="c-val">1,800,000</span> <span class="c-white">bps =</span> <span class="c-val">1.8 Mbps</span>
+
+<span class="c-comment">// 反向推導：已知頻寬求最大 FPS</span>
+<span class="c-attr">Max FPS</span> <span class="c-white">=</span> <span class="c-attr">可用頻寬 (bps)</span> <span class="c-white">÷ (</span><span class="c-attr">平均幀大小</span> <span class="c-white">×</span> <span class="c-val">8</span><span class="c-white">)</span>
+
+<span class="c-comment">// 範例：2 Mbps 頻寬下的最大 FPS</span>
+<span class="c-val">2,000,000</span> <span class="c-white">÷ (</span><span class="c-val">15,000</span> <span class="c-white">×</span> <span class="c-val">8</span><span class="c-white">) ≈</span> <span class="c-val">16.7 FPS</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在相同的 Wi-Fi 頻寬下，<strong>降低解析度</strong>可以換取<strong>更高的 FPS</strong>。例如從 VGA 降到 QVGA，幀大小減少約 4 倍，FPS 就能提升近 4 倍。這就是「解析度 vs 流暢度」的核心取捨——你無法同時擁有兩者，必須根據應用場景做出選擇。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -671,42 +844,139 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚖️ 3. 延遲與頻寬的權衡 (20 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg">
-<p>
-<strong>網路瓶頸：</strong>如果頻寬只有 2Mbps，但你的影像數據流是 5Mbps，會發生什麼事？（提示：封包堆積、延遲增加、連線斷開）。
-                        </p>
-<div class="bg-amber-100 p-8 rounded-2xl border border-amber-200 mt-8">
-<h4 class="text-amber-900 font-bold text-xl mb-4 flex items-center gap-2">
-<span>🚀</span> 預習任務：思考與設定
-                            </h4>
-<div class="space-y-4">
-<p class="text-amber-800 text-lg">
-                                    思考對於「自動導航」的無人車，是「高解析度但每秒 2 幀」比較好，還是「低解析度但每秒 30 幀」比較好？
-                                </p>
-<hr class="border-amber-200"/>
-<p class="text-amber-800 font-medium">
-                                    線上任務：如果要達成 30 FPS 且不卡頓，在 2.4GHz Wi-Fi 環境下，影像品質應該如何設定？
-                                </p>
-</div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-<div class="p-6 bg-slate-50 rounded-xl border border-slate-200">
-<h4 class="font-bold text-slate-800 mb-2">關鍵概念</h4>
-<p class="text-sm text-slate-600">解析度、品質 (Quality) 與數據量的平衡。</p>
-</div>
-<div class="p-6 bg-slate-50 rounded-xl border border-slate-200">
-<h4 class="font-bold text-slate-800 mb-2">計算公式</h4>
-<p class="text-sm text-slate-600">FPS × 單張圖片大小 = 所需頻寬</p>
-</div>
-</div>
-</div>
+                <h1>延遲與頻寬的權衡</h1>
+
+                <p>
+                    當你的影像串流產生的資料量超過了網路的可用頻寬，會發生什麼事？答案不是「畫面變模糊」那麼簡單——而是引發一連串的<strong>連鎖崩潰</strong>：封包在傳送佇列中堆積、延遲急劇上升、TCP 重傳機制介入導致更多壅塞，最終可能導致連線完全斷開。理解這個物理極限，是設計穩定串流系統的前提。
+                </p>
+
+                <h2>頻寬瓶頸的物理現象</h2>
+
+                <p>
+                    網路頻寬就像水管的直徑——你灌入的水量（資料量）不能超過水管的容量。當超量時，多餘的水會在入口堆積，形成「壅塞佇列」。對應到串流系統，現象如下：
+                </p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>封包堆積</h4>
+                            <p>編碼器產出的資料速率超過網路傳輸速率，封包開始在傳送緩衝區中排隊等待。佇列越長，每個封包的等待時間（延遲）就越久。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>延遲飆升</h4>
+                            <p>當佇列深度超過 200–500 ms 時，使用者感受到「畫面嚴重落後」。對遙控應用而言，操控變得完全無法預測。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>連線崩潰</h4>
+                            <p>TCP 偵測到丟包後觸發重傳，而重傳的封包又加劇了壅塞。在最壞的情況下，系統進入「壅塞崩潰（Congestion Collapse）」，有效吞吐量趨近於零。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        ESP32 的 2.4 GHz Wi-Fi 在理想條件下的理論傳輸速率為 72 Mbps，但<strong>實際可用吞吐量通常只有 2–5 Mbps</strong>。這是因為 Wi-Fi 協定的開銷（標頭、ACK、退避機制）、環境干擾、以及多裝置競爭等因素。你的頻寬計算必須以「實測值」而非「理論值」為依據。
+                    </div>
+                </div>
+
+                <h2>解析度 vs 流暢度：不可能三角</h2>
+
+                <p>
+                    在固定的頻寬下，你面對的是一個<strong>不可能三角</strong>——解析度、畫質（Quality）、流暢度（FPS）三者最多只能同時滿足兩個。提升任何一項，必然要犧牲另一項：
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>策略</th>
+                            <th>解析度</th>
+                            <th>Quality</th>
+                            <th>FPS</th>
+                            <th>適用場景</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>高解析度 + 高品質</td>
+                            <td>VGA</td>
+                            <td>40</td>
+                            <td>2–5</td>
+                            <td>靜態監控截圖（不需要動態）</td>
+                        </tr>
+                        <tr>
+                            <td>高解析度 + 高流暢度</td>
+                            <td>VGA</td>
+                            <td>10</td>
+                            <td>10–15</td>
+                            <td>動態監控（接受畫質損失）</td>
+                        </tr>
+                        <tr>
+                            <td>低解析度 + 高流暢度</td>
+                            <td>QVGA</td>
+                            <td>20</td>
+                            <td>25–30</td>
+                            <td>遙控車、FPV 飛行（流暢優先）</td>
+                        </tr>
+                        <tr>
+                            <td>極低解析度 + 極高流暢度</td>
+                            <td>QQVGA</td>
+                            <td>20</td>
+                            <td>30+</td>
+                            <td>AI 視覺避障（資料量最小）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>ABR 動態擁塞控制概念</h2>
+
+                <p>
+                    Netflix 和 YouTube 使用的<strong>ABR（Adaptive Bitrate）</strong>技術，其核心思想很簡單：<strong>偵測到 FPS 下降時，自動降低解析度或品質，讓串流保持流暢</strong>。反之，當網路恢復時，再逐步提升品質。這種「自我調節」的機制可以避免壅塞崩潰。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// ABR 擁塞控制的虛擬碼</span>
+<span class="c-kw">if</span> <span class="c-white">(連續 3 秒 FPS &lt; 5) {</span>
+    <span class="c-white">current_resolution = </span><span class="c-tag">降一級</span><span class="c-white">(current_resolution);</span>
+    <span class="c-tag">更新攝影機設定</span><span class="c-white">();</span>
+    <span class="c-tag">log</span><span class="c-white">(</span><span class="c-str">"⚠ 偵測到壅塞，降級至"</span><span class="c-white">, current_resolution);</span>
+<span class="c-white">}</span>
+
+<span class="c-kw">if</span> <span class="c-white">(連續 10 秒 FPS &gt; 20 &amp;&amp; current_resolution &lt; 最高級) {</span>
+    <span class="c-white">current_resolution = </span><span class="c-tag">升一級</span><span class="c-white">(current_resolution);</span>
+    <span class="c-tag">更新攝影機設定</span><span class="c-white">();</span>
+    <span class="c-tag">log</span><span class="c-white">(</span><span class="c-str">"✓ 網路恢復，升級至"</span><span class="c-white">, current_resolution);</span>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        注意升級條件比降級條件更嚴格（10 秒 vs 3 秒）——這種「不對稱閾值」設計稱為<strong>遲滯（Hysteresis）</strong>。它可以避免解析度在臨界點來回跳動（Resolution Flickering），讓使用者看到穩定的畫面品質。
+                    </div>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        在實戰挑戰中，你將親手實作這套 ABR 邏輯，並在模擬弱網環境下測試它的自癒能力。思考：對於自動導航的無人車，究竟是「高解析度但每秒 2 幀」好，還是「低解析度但每秒 30 幀」好？答案取決於 AI 模型需要多少細節——而你的 ABR 邏輯必須做出即時判斷。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -785,16 +1055,113 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>請回答以下問題，測試你對本模組內容的理解程度。每題僅有一個正確答案。</p>
+
+                <form id="quiz-form" onsubmit="return false;" style="margin-top:24px;">
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">1. 從 QVGA (320×240) 升級到 VGA (640×480)，總像素數增加了幾倍？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 2 倍
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 4 倍
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 8 倍
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 16 倍
+                        </label>
+                        <div id="fb-q1" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">2. 在固定頻寬下，最大可達 FPS 的計算公式為何？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="A" style="margin-right:8px;"> A. FPS = 頻寬 × 每幀資料量
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="B" style="margin-right:8px;"> B. FPS = 頻寬 / 每幀資料量
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="C" style="margin-right:8px;"> C. FPS = 每幀資料量 / 頻寬
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="D" style="margin-right:8px;"> D. FPS = 解析度 × 壓縮率
+                        </label>
+                        <div id="fb-q2" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">3. 一張 QVGA (320×240) RGB565 格式的原始影像大小約為？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 約 38 KB
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 約 75 KB
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 約 150 KB
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 約 300 KB
+                        </label>
+                        <div id="fb-q3" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">4. 壓縮率 (Compression Ratio) 的定義為何？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 壓縮後大小 / 原始大小
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 原始大小 / 壓縮後大小
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 原始大小 − 壓縮後大小
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 壓縮後大小 × 100%
+                        </label>
+                        <div id="fb-q4" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="display:flex;gap:12px;margin-top:20px;">
+                        <button type="button" class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button type="button" class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                    </div>
+                    <div id="quiz-result" style="margin-top:16px;font-size:15px;font-weight:600;display:none;"></div>
+                </form>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -852,9 +1219,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「網路頻寬與幀率 (FPS) 的數學關係」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「網路頻寬與幀率 (FPS) 的數學關係」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -870,7 +1237,8 @@
         { id: 3, label: '🗜️ 2. 壓縮率 (Compression Ratio) 的變數 (20 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '️ 3. 延遲與頻寬的權衡 (20 min)', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',     time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -890,6 +1258,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -991,8 +1360,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'B', q3: 'C', q4: 'B' };
+    const QUIZ_EXPLANATIONS = {
+        q1: 'QVGA = 76,800 像素，VGA = 307,200 像素。寬和高各放大 2 倍，總像素數為 2×2 = 4 倍。',
+        q2: '最大 FPS = 可用頻寬 (bits/s) / 每幀大小 (bits)。頻寬固定時，每幀越大，FPS 越低。',
+        q3: '320 × 240 × 2 bytes (RGB565) = 153,600 bytes ≈ 150 KB。',
+        q4: '壓縮率 CR = 原始大小 / 壓縮後大小。CR 越大表示壓縮效果越好。例如 CR=10 表示壓縮到原來的 1/10。'
+    };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const fb = document.getElementById(`fb-${q}`);
+            if (!selected) {
+                fb.style.display = 'block';
+                fb.innerHTML = '<span style="color:#d13438;">⚠ 請選擇一個答案</span>';
+                continue;
+            }
+            fb.style.display = 'block';
+            if (selected.value === correct) {
+                score++;
+                fb.innerHTML = `<span style="color:#107c10;">✔ 正確！</span> ${QUIZ_EXPLANATIONS[q]}`;
+            } else {
+                fb.innerHTML = `<span style="color:#d13438;">✘ 不正確。正確答案是 ${correct}。</span> ${QUIZ_EXPLANATIONS[q]}`;
+            }
+        }
+        const result = document.getElementById('quiz-result');
+        result.style.display = 'block';
+        if (score === total) {
+            result.innerHTML = `<span style="color:#107c10;">🎉 滿分！你答對了全部 ${total} 題！</span>`;
+            markDone(6);
+        } else {
+            result.innerHTML = `<span style="color:#d13438;">你答對了 ${score} / ${total} 題。再試一次吧！</span>`;
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= Object.keys(QUIZ_ANSWERS).length; i++) {
+            const fb = document.getElementById(`fb-q${i}`);
+            if (fb) { fb.style.display = 'none'; fb.innerHTML = ''; }
+        }
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 02：影像串流技術';
 </script>
 
 <!-- Define Resources -->

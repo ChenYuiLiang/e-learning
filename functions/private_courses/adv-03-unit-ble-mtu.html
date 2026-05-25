@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MTU 與分段傳輸：破除傳輸邊界 - Vibe Coding Learn</title>
+    <title>MTU 與分段傳輸：破除傳輸邊界 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -471,9 +473,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">進階課程 3 - 單元 3</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +487,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">MTU 與分段傳輸：破除傳輸邊界</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">進階課程 3</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,13 +509,13 @@
                 <h1>MTU 與分段傳輸：破除傳輸邊界</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">進階課程 3</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
                 </div>
 
-                <p></p>
+                <p>突破 BLE 20 位元組的物理封鎖線，掌握軟體分段與終止符重組的藝術，讓大型 JSON 數據在狹窄的無線通道中完整穿越。</p>
 
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
@@ -553,15 +553,14 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>MTU 與分段傳輸：破除傳輸邊界</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    BLE 預設的 MTU 只有區區 20 Bytes 可用載荷——這意味著一段稍微複雜的 JSON 指令就會被<strong>無聲地截斷</strong>，導致接收端解析失敗。
+                    理解 MTU 的物理限制與分段傳輸策略，是讓你的藍牙通訊從「偶爾能動」變成「穩定可靠」的關鍵一步。
+                    本模組將教你如何交涉更大的 MTU，以及當交涉失敗時如何在軟體層實作可靠的分段與重組機制。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你透過 BLE 從網頁發送一段 JSON 控制指令 <code>{"cmd":"move","speed":80,"angle":45,"mode":"auto"}</code> 給 ESP32，但 ESP32 那端只收到 <code>{"cmd":"move","speed</code> 就斷了，後面全部消失。你反覆檢查程式碼，傳送端明明送出了完整字串，為什麼接收端永遠只拿到前 20 個字元？這個「幽靈截斷」的元凶，正是 BLE 協議的 MTU 限制。
                 </div>
 
                 <h2>教學影片</h2>
@@ -575,7 +574,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -589,42 +588,134 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>📏 1. 什麼是 MTU (Maximum Transmission Unit)？ (20 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg leading-relaxed">
-<p>
-<strong>核心定義：</strong>通訊鏈路中單個封包所能承載的最大位元組數。MTU 決定了你一次「對話」能講多少個字。
-                                </p>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-8">
-<div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-<h4 class="font-bold text-blue-800 mb-2">BLE 的物理限制</h4>
-<p class="text-sm">
-                                            傳統 BLE 預設 MTU 通常只有 <strong>23 Bytes</strong>。扣除 3 Bytes 的 L2CAP
-                                            標頭後，實際可用的數據載荷僅約 <strong>20 Bytes</strong>。
-                                        </p>
-</div>
-<div class="bg-indigo-50 p-6 rounded-2xl border border-indigo-100">
-<h4 class="font-bold text-indigo-800 mb-2">生活比喻：電梯限重</h4>
-<p class="text-sm">
-                                            MTU 就像一台電梯的載重限制。如果你有一台<strong>鋼琴</strong>（大的 JSON
-                                            數據）要送上樓，你不能直接塞進去，必須先將其<strong>拆解成零件</strong>分別運送。
-                                        </p>
-</div>
-</div>
-<div class="bg-amber-50 p-6 rounded-xl border border-amber-100 mt-8">
-<h4 class="font-bold text-amber-800 mb-2 flex items-center gap-2">
-<span>🤔</span> 常見問題
-                                    </h4>
-<p class="text-amber-700 text-sm italic">
-                                        「為什麼我發送一段 JSON 字串，ESP32 只收到前面的一小段？」—— 這通常就是因為長度超過了 MTU，導致後續數據被直接丟棄。
-                                    </p>
-</div>
-</div>
+                <h1>什麼是 MTU (Maximum Transmission Unit)？</h1>
+
+                <p>
+                    <strong>MTU（Maximum Transmission Unit，最大傳輸單元）</strong>是指在通訊鏈路中，單一封包（Packet）所能承載的最大位元組數。在 BLE（Bluetooth Low Energy）協議中，MTU 直接決定了每一次無線傳輸可以攜帶多少有效數據——超過此限制的部分將被<strong>無聲地截斷</strong>，而不會產生任何錯誤提示。
+                </p>
+
+                <h2>BLE 封包結構解析</h2>
+
+                <p>
+                    要理解 MTU 的限制，首先必須了解 BLE 封包的分層結構。一個 BLE 數據封包由多層協議標頭（Header）層層包裹，每一層都會「吃掉」一部分空間，最終留給應用層的有效載荷（Payload）其實非常有限。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>層級</th>
+                            <th>協議</th>
+                            <th>佔用空間</th>
+                            <th>說明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>鏈路層</td>
+                            <td>BLE Link Layer</td>
+                            <td>依實作而定</td>
+                            <td>無線電封包框架與位址資訊</td>
+                        </tr>
+                        <tr>
+                            <td>邏輯鏈路層</td>
+                            <td>L2CAP</td>
+                            <td>4 Bytes</td>
+                            <td>封包長度 + 通道 ID (CID)</td>
+                        </tr>
+                        <tr>
+                            <td>屬性協議層</td>
+                            <td>ATT（Attribute Protocol）</td>
+                            <td>3 Bytes</td>
+                            <td>操作碼 (Opcode) + 屬性控制碼 (Handle)</td>
+                        </tr>
+                        <tr>
+                            <td>應用層</td>
+                            <td>你的 JSON 數據</td>
+                            <td><strong>20 Bytes（預設）</strong></td>
+                            <td>實際可用的有效載荷空間</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        BLE 4.0/4.1 的預設 ATT MTU 為 23 Bytes。扣除 3 Bytes 的 ATT 標頭後，留給應用數據的空間恰好是 <code>23 - 3 = 20 Bytes</code>。這就是為什麼你的 JSON 字串一旦超過 20 個字元就會被截斷。
+                    </div>
+                </div>
+
+                <h2>生活比喻：電梯限重</h2>
+
+                <p>
+                    MTU 就像一台電梯的載重限制。假設你需要將一台鋼琴（一段大型 JSON 數據）送到 10 樓，但電梯最多只能承載 20 公斤。你有兩個選擇：向管委會申請換一台更大的貨梯（<strong>MTU 交涉</strong>），或者先把鋼琴拆成零件分批運送（<strong>軟體分段</strong>）。兩種策略各有適用場景，而最穩健的做法是——兩者同時實作。
+                </p>
+
+                <h2>實際案例：被截斷的 JSON</h2>
+
+                <p>以下範例展示了一段常見的無人車控制指令如何被 MTU 限制無聲截斷：</p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 原始 JSON 指令（49 Bytes）</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">cmd</span> <span class="c-white">=</span> <span class="c-str">'{"cmd":"move","speed":80,"angle":45,"mode":"auto"}'</span><span class="c-white">;</span><br><br>
+                    <span class="c-comment">// ESP32 在預設 MTU (20 Bytes) 下實際收到的內容</span><br>
+                    <span class="c-comment">// → '{"cmd":"move","spee'  （只有前 20 個字元）</span><br><br>
+                    <span class="c-comment">// JSON.parse() 嘗試解析 → 直接拋出 SyntaxError！</span>
+                </div>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        BLE 的截斷行為是<strong>靜默的</strong>（Silent Truncation）——發送端不會收到任何錯誤回報，接收端也不會知道數據不完整。這使得問題極難排查，因為程式碼看起來完全正確，但接收端總是只拿到殘缺的片段。
+                    </div>
+                </div>
+
+                <h2>不同情境下的 MTU 範圍</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>情境</th>
+                            <th>ATT MTU</th>
+                            <th>有效載荷</th>
+                            <th>適用場景</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>BLE 4.0 預設</td>
+                            <td>23 Bytes</td>
+                            <td>20 Bytes</td>
+                            <td>短指令、單一數值傳送</td>
+                        </tr>
+                        <tr>
+                            <td>交涉後（iOS 常見）</td>
+                            <td>185 Bytes</td>
+                            <td>182 Bytes</td>
+                            <td>中型 JSON 封包傳輸</td>
+                        </tr>
+                        <tr>
+                            <td>交涉後（Android / BLE 5.0+）</td>
+                            <td>517 Bytes</td>
+                            <td>514 Bytes</td>
+                            <td>大型封包、高效率傳輸</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        即使你的裝置支援 MTU 交涉，也應該<strong>同時實作軟體分段機制</strong>作為最終防禦策略。因為交涉結果取決於雙方硬體的共同上限，你無法保證每台手機都能協商到理想的 MTU 值。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -638,46 +729,139 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚙️ 2. 分段傳輸與 MTU 交涉 (25 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg leading-relaxed">
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-<div class="space-y-4">
-<h4 class="font-bold text-slate-800 flex items-center gap-2">
-<span class="text-blue-500">🤝</span> 1. MTU 交涉 (Negotiation)
-                                </h4>
-<p class="text-sm">
-                                    在連線建立後，客戶端可以請求提升 MTU 限額（例如提升至 247 Bytes）。這就像是打電話給管委會，請求更換一台更大的貨梯。
-                                </p>
-<p class="text-sm text-slate-500">
-                                    注意：這取決於手機硬體與 ESP32 藍牙棧的共同支援。
-                                </p>
-</div>
-<div class="space-y-4">
-<h4 class="font-bold text-slate-800 flex items-center gap-2">
-<span class="text-indigo-500">🧩</span> 2. 軟體分段 (Software Segmentation)
-                                </h4>
-<p class="text-sm">
-                                    在程式碼層面將大字串切割成數個小塊（Chunks），逐一發送，並在接收端重新組裝。這是最保險的做法，不依賴硬體交涉。
-                                </p>
-</div>
-</div>
-<div class="bg-slate-800 text-blue-300 p-8 rounded-2xl font-mono mt-8">
-<h4 class="text-white font-bold mb-4 border-b border-slate-700 pb-2 flex items-center gap-2">
-<span>🎯</span> 學習任務：計算練習
-                            </h4>
-<p class="text-sm leading-relaxed">
-                                測量一段標準的無人車狀態 JSON：<br/>
-<code class="text-yellow-400">{"x":102,"y":-45,"v":120,"b":85}</code> (長度約 35 Bytes)<br/>
-                                計算在 20 Bytes MTU 限制下，它需要被切成幾份才能成功傳輸？
-                            </p>
-</div>
-</div>
+                <h1>分段傳輸與 MTU 交涉</h1>
+
+                <p>
+                    當你的數據長度超過 MTU 限制時，有兩個主要策略可以確保完整傳輸：<strong>MTU 交涉（Negotiation）</strong>向硬體請求更大的封包空間，以及<strong>軟體分段（Software Segmentation）</strong>在應用層將數據手動切片。實務上，最穩健的架構是兩者並行——交涉提升效率，分段保證容錯。
+                </p>
+
+                <h2>策略一：MTU 交涉（Negotiation）</h2>
+
+                <p>
+                    在 BLE 連線建立後，客戶端可以向伺服器端發送 <strong>Exchange MTU Request</strong>，請求提升雙方的 MTU 上限。最終的 MTU 值由雙方各自支援的最大值中取<strong>較小的那個</strong>決定。例如，若手機支援 512 Bytes、ESP32 支援 247 Bytes，則最終協商結果為 247 Bytes。
+                </p>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        Web Bluetooth API 目前<strong>不提供</strong>直接呼叫 <code>requestMTU()</code> 的方法。MTU 交涉通常由瀏覽器在連線時自動完成。在 Android 上，BLE 堆疊會嘗試交涉至最大 517 Bytes；在 iOS 上，通常協商到 185 Bytes 左右。
+                    </div>
+                </div>
+
+                <h3>各平台交涉結果差異</h3>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>平台</th>
+                            <th>典型協商結果</th>
+                            <th>有效載荷</th>
+                            <th>是否可手動控制</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Android（Chrome）</td>
+                            <td>517 Bytes</td>
+                            <td>~514 Bytes</td>
+                            <td>自動（系統控制）</td>
+                        </tr>
+                        <tr>
+                            <td>iOS（Safari / Bluefy）</td>
+                            <td>185 Bytes</td>
+                            <td>~182 Bytes</td>
+                            <td>自動（系統控制）</td>
+                        </tr>
+                        <tr>
+                            <td>Windows（Chrome）</td>
+                            <td>變動</td>
+                            <td>變動</td>
+                            <td>依藍牙驅動而定</td>
+                        </tr>
+                        <tr>
+                            <td>ESP32（Arduino BLE）</td>
+                            <td>最高 517 Bytes</td>
+                            <td>~514 Bytes</td>
+                            <td>可透過 <code>pServer-&gt;setMTU()</code> 設定</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>策略二：軟體分段（Software Segmentation）</h2>
+
+                <p>
+                    軟體分段是最可靠的策略，完全不依賴硬體交涉結果。核心思想是：在發送端將長字串依照 MTU 大小切割為多個小片段（Chunks），逐一發送；在接收端將片段累積到緩衝區，收齊後再重組還原。
+                </p>
+
+                <h3>分段演算法實作</h3>
+
+                <div class="ms-code">
+                    <span class="c-kw">function</span> <span class="c-tag">fragmentData</span><span class="c-white">(</span><span class="c-attr">text</span><span class="c-white">,</span> <span class="c-attr">mtu</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">chunks</span> <span class="c-white">= [];</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">for</span> <span class="c-white">(</span><span class="c-kw">let</span> <span class="c-attr">i</span> <span class="c-white">= 0; i &lt; text.length; i += mtu) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;chunks.</span><span class="c-tag">push</span><span class="c-white">(text.</span><span class="c-tag">substring</span><span class="c-white">(i, i + mtu));</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-white">chunks;</span><br>
+                    <span class="c-white">}</span><br><br>
+                    <span class="c-comment">// 範例：將 JSON 切成 20 Bytes 的片段</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">json</span> <span class="c-white">=</span> <span class="c-str">'{"cmd":"move","speed":80,"angle":45}'</span><span class="c-white">;</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">parts</span> <span class="c-white">= </span><span class="c-tag">fragmentData</span><span class="c-white">(json, 20);</span><br>
+                    <span class="c-comment">// → ['{"cmd":"move","spee', 'd":80,"angle":45}']</span>
+                </div>
+
+                <h3>逐片發送流程</h3>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>切割數據</h4>
+                            <p>使用 <code>fragmentData()</code> 將完整 JSON 字串依照 MTU 大小切割為字串陣列。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>逐片寫入 Characteristic</h4>
+                            <p>使用 <code>for...of</code> 迴圈逐一呼叫 <code>characteristic.writeValue()</code>，每次送出一個片段。兩次寫入之間建議加入短暫延遲（如 20ms）以避免 BLE 堆疊溢位。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>追加終止符</h4>
+                            <p>在最後一個片段的末尾加上約定的終止符號（如 <code>\n</code>），讓接收端知道一筆完整的數據已傳送完畢。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-important">
+                    <i class="fas fa-exclamation-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        即使 MTU 交涉成功，仍<strong>強烈建議</strong>同時實作軟體分段邏輯。不同品牌的手機、不同版本的作業系統、甚至不同的藍牙晶片，都可能導致協商結果不一致。軟體分段是你的「最終防禦線」。
+                    </div>
+                </div>
+
+                <h2>計算練習</h2>
+
+                <p>
+                    假設無人車需要傳送以下狀態 JSON：<code>{"x":102,"y":-45,"v":120,"b":85}</code>（長度為 35 Bytes）。在預設 MTU = 20 Bytes 的限制下，需要切成 <strong>⌈35 ÷ 20⌉ = 2 個片段</strong>才能完成傳輸。如果再加上終止符 <code>\n</code>（+1 Byte = 36 Bytes），仍然是 2 個片段（第一片 20 Bytes，第二片 16 Bytes）。
+                </p>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        片段數量的計算公式為 <code>Math.ceil(data.length / mtu)</code>。在規劃 BLE 通訊協議時，片段越多意味著傳輸延遲越高（每個片段需要一次完整的 BLE 寫入交易），因此縮短 JSON 長度同樣是提升效率的關鍵。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -691,31 +875,116 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🏁 3. 數據完整性與終止符 (15 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg">
-<p>
-<strong>標記結尾：</strong>接收方收到零散的零件時，該如何知道「鋼琴」已經送完了，可以開始組裝了？
-                        </p>
-<div class="bg-blue-900 text-blue-100 p-8 rounded-2xl shadow-inner mt-8">
-<h4 class="text-white font-bold text-xl mb-4 flex items-center gap-2">
-<span>🚀</span> 預習任務：終止符的重要性
-                            </h4>
-<p class="text-blue-200">
-                                思考在字串末端加入特定符號（如 <code>\n</code> 或 <code>#</code>）作為「結尾符」的重要性。
-                            </p>
-<ul class="list-disc list-inside mt-4 text-sm text-blue-300 space-y-2">
-<li>接收方持續將片段累加到 Buffer。</li>
-<li>直到看見終止符，才觸發 <code>JSON.parse()</code>。</li>
-<li>這樣能避免解析到「殘缺不全」的 JSON 導致程式崩潰。</li>
-</ul>
-</div>
-</div>
+                <h1>數據完整性與終止符</h1>
+
+                <p>
+                    當數據被切成多個片段分批發送後，接收端面臨一個關鍵問題：<strong>如何判斷所有片段已經全部到齊？</strong>接收端既不知道原始數據有多長，也不知道總共會收到幾個片段。此時，<strong>終止符（Terminator）</strong>就是解決這個問題的核心機制——它就像一封信的最後一頁蓋上「全文完」的印章。
+                </p>
+
+                <h2>終止符的運作原理</h2>
+
+                <p>
+                    終止符是發送端與接收端事先約定的特殊字元，附加在完整數據的末尾。接收端持續將收到的片段累加到緩衝區（Buffer），<strong>直到偵測到終止符</strong>，才認定數據已完整並觸發解析動作。未見到終止符之前，所有片段都只是暫存，不會嘗試解析。
+                </p>
+
+                <h3>常見的終止符選擇</h3>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>終止符</th>
+                            <th>字元表示</th>
+                            <th>優點</th>
+                            <th>注意事項</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>換行符</td>
+                            <td><code>\n</code></td>
+                            <td>通用性高，Serial Monitor 友善</td>
+                            <td>JSON 內部不應包含裸換行符</td>
+                        </tr>
+                        <tr>
+                            <td>空字元</td>
+                            <td><code>\0</code></td>
+                            <td>C 語言字串的天然邊界</td>
+                            <td>部分 JS 函式庫可能忽略此字元</td>
+                        </tr>
+                        <tr>
+                            <td>井號</td>
+                            <td><code>#</code></td>
+                            <td>可見字元，方便人工除錯</td>
+                            <td>需確保 JSON 數據本體不含此字元</td>
+                        </tr>
+                        <tr>
+                            <td>自訂封包頭</td>
+                            <td><code>LEN:DATA</code></td>
+                            <td>支援長度預告，可提前分配記憶體</td>
+                            <td>實作較複雜，需額外解析邏輯</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        對於 JSON 數據傳輸，推薦使用 <code>\n</code>（換行符）作為終止符。因為合法的 JSON 字串內部不會出現裸換行（換行必須以 <code>\\n</code> 跳脫序列表示），所以不會造成誤判。
+                    </div>
+                </div>
+
+                <h2>緩衝區重組實作</h2>
+
+                <p>接收端的重組器需要維護一個字串緩衝區，持續累積收到的片段，偵測到終止符後才觸發解析：</p>
+
+                <div class="ms-code">
+                    <span class="c-kw">let</span> <span class="c-attr">buffer</span> <span class="c-white">= </span><span class="c-str">''</span><span class="c-white">;</span><br><br>
+                    <span class="c-kw">function</span> <span class="c-tag">onDataReceived</span><span class="c-white">(</span><span class="c-attr">chunk</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;buffer += chunk;</span><br><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(buffer.</span><span class="c-tag">includes</span><span class="c-white">(</span><span class="c-str">'\n'</span><span class="c-white">)) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">complete</span> <span class="c-white">= buffer.</span><span class="c-tag">split</span><span class="c-white">(</span><span class="c-str">'\n'</span><span class="c-white">)[0];</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">try</span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">data</span> <span class="c-white">= JSON.</span><span class="c-tag">parse</span><span class="c-white">(complete);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.</span><span class="c-tag">log</span><span class="c-white">(</span><span class="c-str">'解析成功:'</span><span class="c-white">, data);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;} </span><span class="c-kw">catch</span> <span class="c-white">(e) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.</span><span class="c-tag">warn</span><span class="c-white">(</span><span class="c-str">'JSON 解析失敗:'</span><span class="c-white">, e.message);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;buffer = </span><span class="c-str">''</span><span class="c-white">;</span> <span class="c-comment">// 無論成敗，都重置緩衝區</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        <code>JSON.parse()</code> <strong>必須</strong>包裹在 <code>try-catch</code> 中。在分段傳輸的場景下，封包遺失是常態——如果某個片段因無線干擾而丟棄，拼湊出的字串將是殘缺的 JSON，直接呼叫 <code>JSON.parse()</code> 會拋出 <code>SyntaxError</code>，可能導致整個應用程式崩潰。
+                    </div>
+                </div>
+
+                <h2>生產環境的安全機制</h2>
+
+                <p>在正式部署的系統中，重組器還需要額外的防護措施：</p>
+
+                <ul>
+                    <li><strong>最大長度限制：</strong>設定 Buffer 的最大容量（例如 4096 Bytes），超過時自動清空並記錄警告，防止惡意或錯誤數據導致記憶體溢出（OOM）。</li>
+                    <li><strong>超時機制：</strong>如果一段時間內（例如 5 秒）都沒有收到終止符，自動丟棄 Buffer 中的殘餘數據，避免過期片段干擾後續傳輸。</li>
+                    <li><strong>每次解析後歸零：</strong>無論解析成功或失敗，Buffer 都必須在處理後清空，確保下一筆數據從乾淨的狀態開始累積。</li>
+                </ul>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        在 ESP32 韌體端，Arduino 的 <code>String</code> 類型會自動處理字串拼接，但要注意 ESP32 的可用 RAM 僅約 320 KB。如果 Buffer 無限成長而未設上限，很容易導致堆記憶體耗盡、觸發看門狗（Watchdog），造成裝置自動重啟。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -794,16 +1063,113 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>請回答以下問題，測試你對本模組內容的理解程度。每題僅有一個正確答案。</p>
+
+                <form id="quiz-form" onsubmit="return false;" style="margin-top:24px;">
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">1. BLE 4.0 預設的 ATT MTU 大小為多少 Bytes？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 20 Bytes
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 23 Bytes
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 128 Bytes
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 512 Bytes
+                        </label>
+                        <div id="fb-q1" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">2. 當 BLE 傳輸的數據超過 MTU 限制時會發生什麼？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 自動分段傳輸
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 產生錯誤碼並中止連線
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 超出部分被無聲截斷
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 系統自動壓縮數據
+                        </label>
+                        <div id="fb-q2" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">3. BLE MTU 交涉 (MTU Negotiation) 的目的是什麼？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 加密傳輸通道
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 協商更大的單次傳輸容量
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 降低傳輸頻率
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 設定連線密碼
+                        </label>
+                        <div id="fb-q3" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">4. 在軟體層分段傳輸中，終止符 (Delimiter) 的作用是什麼？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 加速數據傳輸
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 壓縮每個分段的大小
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 標記完整數據的結尾，讓接收端知道何時重組
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 驗證每個分段的校驗碼
+                        </label>
+                        <div id="fb-q4" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="display:flex;gap:12px;margin-top:20px;">
+                        <button type="button" class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button type="button" class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                    </div>
+                    <div id="quiz-result" style="margin-top:16px;font-size:15px;font-weight:600;display:none;"></div>
+                </form>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -861,9 +1227,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「MTU 與分段傳輸：破除傳輸邊界」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「MTU 與分段傳輸：破除傳輸邊界」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -879,7 +1245,8 @@
         { id: 3, label: '️ 2. 分段傳輸與 MTU 交涉 (25 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🏁 3. 數據完整性與終止符 (15 min)', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',     time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -899,6 +1266,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1000,8 +1368,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'C', q3: 'B', q4: 'C' };
+    const QUIZ_EXPLANATIONS = {
+        q1: 'BLE 4.0 預設 ATT MTU 為 23 Bytes，扣除 3 Bytes ATT 標頭後，有效載荷僅剩 20 Bytes。',
+        q2: 'BLE 不會自動分段，超過 MTU 的部分會被無聲截斷（silently truncated），不會產生任何錯誤提示。',
+        q3: 'MTU 交涉讓主從機協商一個更大的 MTU（如 512 Bytes），以便單次傳輸更多數據，減少分段需求。',
+        q4: '終止符（如換行符 \n）標記一筆完整數據的結尾，接收端據此判斷何時將所有分段拼接後進行解析。'
+    };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const fb = document.getElementById(`fb-${q}`);
+            if (!selected) {
+                fb.style.display = 'block';
+                fb.innerHTML = '<span style="color:#d13438;">⚠ 請選擇一個答案</span>';
+                continue;
+            }
+            fb.style.display = 'block';
+            if (selected.value === correct) {
+                score++;
+                fb.innerHTML = `<span style="color:#107c10;">✔ 正確！</span> ${QUIZ_EXPLANATIONS[q]}`;
+            } else {
+                fb.innerHTML = `<span style="color:#d13438;">✘ 不正確。正確答案是 ${correct}。</span> ${QUIZ_EXPLANATIONS[q]}`;
+            }
+        }
+        const result = document.getElementById('quiz-result');
+        result.style.display = 'block';
+        if (score === total) {
+            result.innerHTML = `<span style="color:#107c10;">🎉 滿分！你答對了全部 ${total} 題！</span>`;
+            markDone(6);
+        } else {
+            result.innerHTML = `<span style="color:#d13438;">你答對了 ${score} / ${total} 題。再試一次吧！</span>`;
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= Object.keys(QUIZ_ANSWERS).length; i++) {
+            const fb = document.getElementById(`fb-q${i}`);
+            if (fb) { fb.style.display = 'none'; fb.innerHTML = ''; }
+        }
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 03：BLE 進階通訊';
 </script>
 
 <!-- Define Resources -->

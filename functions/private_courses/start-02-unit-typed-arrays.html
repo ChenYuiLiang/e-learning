@@ -453,6 +453,22 @@
             .ms-breadcrumb { padding: 8px 16px; }
             .compare-grid { grid-template-columns: 1fr; }
         }
+    
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 10px 14px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; cursor: pointer; transition: background .1s, border-color .1s; font-size: 14px;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback { display: none; margin-top: 8px; padding: 10px 14px; border-radius: 4px; font-size: 13px; font-weight: 500; }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
     </style>
 </head>
 <body>
@@ -475,7 +491,7 @@
 <div class="progress-bar-bg">
 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
 </div>
-<div class="progress-text" id="progress-text">0 / 5 已完成</div>
+<div class="progress-text" id="progress-text">0 / 6 已完成</div>
 </div>
 </aside>
 <!-- MAIN -->
@@ -545,7 +561,7 @@
 </div>
 <div class="unit-nav">
 <button class="nav-btn-prev" onclick="goToUnit(0)">‹  總覽</button>
-<span class="unit-page-indicator">1 / 5</span>
+<span class="unit-page-indicator">1 / 6</span>
 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元  ›</button>
 </div>
 </div>
@@ -611,7 +627,7 @@
 </div>
 <div class="unit-nav">
 <button class="nav-btn-prev" onclick="goToUnit(1)">‹  上一個單元</button>
-<span class="unit-page-indicator">2 / 5</span>
+<span class="unit-page-indicator">2 / 6</span>
 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元  ›</button>
 </div>
 </div>
@@ -700,7 +716,7 @@
 </div>
 <div class="unit-nav">
 <button class="nav-btn-prev" onclick="goToUnit(2)">‹  上一個單元</button>
-<span class="unit-page-indicator">3 / 5</span>
+<span class="unit-page-indicator">3 / 6</span>
 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元  ›</button>
 </div>
 </div>
@@ -798,15 +814,73 @@
 </div>
 <div class="unit-nav">
 <button class="nav-btn-prev" onclick="goToUnit(3)">‹  上一個單元</button>
-<span class="unit-page-indicator">4 / 5</span>
+<span class="unit-page-indicator">4 / 6</span>
 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元  ›</button>
 </div>
 </div>
 <!-- ══════════ PAGE 5: 摘要與資源 ══════════ -->
-<div class="ms-unit-page" id="page-5">
+
+        <!-- ══════════ PAGE 5: QUIZ ══════════ -->
+        <div class="ms-unit-page" id="page-5">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-5" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <div class="quiz-question">
+                        <p>1. 相比 JSON 字串傳輸，使用 <code>Uint8Array</code> 二進制格式的最大優勢是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 程式碼更容易閱讀與除錯</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 傳輸的資料量更小，頻寬效率更高</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 所有瀏覽器都原生支援二進制格式解析</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>2. <code>ArrayBuffer</code> 在 JavaScript 中扮演什麼角色？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 一個可直接讀寫的陣列，類似普通的 JavaScript Array</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 一塊固定大小的原始記憶體緩衝區，必須透過 View 才能存取資料</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 用於將字串轉換為數字的解析工具</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>3. 什麼是「位元組順序（Byte Order / Endianness）」？為什麼在跨裝置通訊時需要特別注意？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 指的是資料排序演算法的選擇，影響搜尋效率</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 指多位元組數值在記憶體中的排列方式，不同硬體平台可能採用不同順序</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 指 JavaScript 陣列元素的索引起始值是 0 還是 1</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>4. 使用 <code>DataView</code> 相比 <code>Uint8Array</code> 的主要優勢是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> DataView 的執行速度更快</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> DataView 可以指定位元組順序（Endianness），並存取不同型別的數值</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> DataView 佔用的記憶體更少</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">5 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+<div class="ms-unit-page" id="page-6">
 <div class="unit-content">
 <div class="unit-status-bar">
-<div class="unit-completed-badge" id="badge-5" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+<div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
 <div></div>
 <div class="unit-time-badge"><i class="far fa-clock"></i>  15 分鐘</div>
 </div>
@@ -865,9 +939,9 @@
 </a>
 </div>
 <div class="unit-nav">
-<button class="nav-btn-prev" onclick="goToUnit(4)">‹  上一個單元</button>
+<button class="nav-btn-prev" onclick="goToUnit(5)">‹  上一個單元</button>
 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-<button class="ms-btn" onclick="markDone(5); alert('🎉 恭喜完成「數據解析與類型化陣列」模組！')">完成模組</button>
+<button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「數據解析與類型化陣列」模組！')">完成模組</button>
 </div>
 </div>
 <footer style="background:#faf9f8; border-top:1px solid #e1dfdd; padding:24px 40px; text-align:center; font-size:12px; color:#605e5c; margin-top:40px;">
@@ -883,8 +957,15 @@
         { id: 2, label: '傳輸效率大對決',  time: '30 分鐘',  type: 'unit'  },
         { id: 3, label: 'ArrayBuffer 與位元組順序', time: '60 分鐘',  type: 'unit'  },
         { id: 4, label: '實戰封裝與解碼',   time: '165 分鐘', type: 'lab'   },
-        { id: 5, label: '摘要與資源',      time: '15 分鐘',  type: 'unit'  },
+        { id: 5, label: '知識測驗',              time: '4 分鐘',  type: 'quiz'  },
+        { id: 6, label: '摘要與資源',      time: '15 分鐘',  type: 'unit'  },
     ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！以搖桿座標為例，JSON 字串需要 17 bytes，而二進制只需 2 bytes，資料量減少約 88%，在低頻寬的 BLE 環境中優勢極為明顯。' },        q2: { b: '正確！<code>ArrayBuffer</code> 是一塊純粹的二進制記憶體空間，本身不提供讀寫方法。必須搭配 <code>DataView</code> 或 TypedArray（如 <code>Uint8Array</code>）才能對資料進行操作。' },        q3: { b: '正確！Big-Endian 將高位位元組放在前面，Little-Endian 則相反。ESP32 使用 Little-Endian，而網路傳輸慣例為 Big-Endian，若不統一會導致數值解讀錯誤。' },        q4: { b: '正確！<code>DataView</code> 提供 <code>getUint16()</code>、<code>getFloat32()</code> 等方法，且每次呼叫都能指定是否使用 Little-Endian，非常適合解析結構化的二進制封包。' },
+    };
+
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -916,6 +997,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1134,6 +1216,55 @@
     };
 
     // Trigger Init
+
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            document.querySelectorAll(`input[name="${qid}"]`).forEach(opt => {
+                opt.disabled = true;
+                if (opt.value === answer) opt.parentElement.classList.add('correct');
+                if (opt.checked && opt.value !== answer) opt.parentElement.classList.add('wrong');
+            });
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                feedbackEl.textContent = '✗ 不正確。' + QUIZ_EXPLANATIONS[qid][answer];
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        const pct = Math.round(correct / total * 100);
+        scoreEl.style.display = 'block';
+        scoreEl.innerHTML = `<span style="font-size:20px;">${pct >= 75 ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pct >= 75 ? '通過！繼續前往下一個單元。' : '建議回顧相關單元後再試一次。'}</div>`;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => el.classList.remove('correct','wrong'));
+        document.querySelectorAll('input[type=radio]').forEach(el => { el.checked = false; el.disabled = false; });
+        document.querySelectorAll('.quiz-feedback').forEach(el => { el.className = 'quiz-feedback'; el.textContent = ''; });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
     init();
 </script>
 <script src="/js/course-shared.js?v=2026.05.22.V27.START_UNITS_LAYOUT_UPGRADE"></script>

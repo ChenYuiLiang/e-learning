@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>網頁端模式控制介面設計 - Vibe Coding Learn</title>
+    <title>網頁端模式控制介面設計 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -457,6 +459,37 @@
         .achievement-text h3 { margin: 0 0 4px; font-size: 18px; }
         .achievement-text p { margin: 0; font-size: 14px; opacity: .9; }
 
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
+            border: 1px solid #e1dfdd;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background .1s, border-color .1s;
+            font-size: 14px;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback {
+            display: none;
+            margin-top: 8px;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
+        .quiz-submit { margin-top: 16px; }
+
         @media (max-width: 768px) {
             .ms-sidebar { display: none; }
             .unit-content { padding: 20px 16px 40px; }
@@ -472,9 +505,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 10 - 使用者介面</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +519,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">網頁端模式控制介面設計</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 10</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +541,7 @@
                 <h1>網頁端模式控制介面設計</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 10</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -521,9 +552,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>🖱️ 1. 模式切換的 UI 邏輯</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>📱 2. 佈局與觸控安全</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>🚨 3. 雙向同步與警報</strong> 的調校技巧與穩定性測試。</li>
+                    <li>能夠設計具備視覺層級區分的模式切換介面，使用 CSS 狀態類別實現高對比高亮效果，並在自動駕駛模式下鎖死搖桿區域防止誤觸。</li>
+                    <li>能夠實作雙向狀態同步機制——持續監聽硬體心跳報文，當面板顯示與實體狀態不符時自動校正 UI，確保「眼見即真實」。</li>
+                    <li>能夠開發 E-Stop 緊急停機介面，整合滿版紅色遮罩、<code>navigator.vibrate()</code> 觸覺回饋，以及「長按 2 秒解鎖」安全機制防止誤觸恢復。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -554,15 +585,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>網頁端模式控制介面設計</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    當你的裝置具備多種運行模式（手動、自動、校正…），使用者需要一個直覺的介面來切換與監控狀態。
+                    好的控制介面不只是「按鈕能按」，還要即時反映裝置狀態、防止誤操作、並在不同模式間提供清晰的視覺回饋。
+                    本單元教你設計一套與 FSM 連動的網頁控制面板，讓前端 UI 與硬體狀態始終同步。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的車子有「手動遙控」和「自動循線」兩種模式，網頁上需要一個切換開關。
+                    但如果切換瞬間車子正在高速行駛，直接跳到自動模式可能造成危險。
+                    良好的 UI 設計會在切換前顯示確認提示、切換中顯示過渡動畫、切換後更新所有相關控件的可用狀態——讓使用者隨時知道車子「現在在做什麼」。
                 </div>
 
                 <h2>教學影片</h2>
@@ -590,40 +622,116 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🖱️ 1. 模式切換的 UI 邏輯</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tight">
-                                區分「互斥模式」與「功能開關」。組件決定直覺程度。
-                            </p>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-justify uppercase tracking-widest leading-relaxed">
-<div class="p-4 rounded-xl border border-blue-100 shadow-sm bg-blue-50 text-justify">
-<h4 class="font-bold text-blue-800 mb-1 text-[10px] text-justify uppercase tracking-widest">
-                                        Segmented</h4>
-<p class="text-slate-500 text-[9px] text-justify uppercase tracking-tighter">
-                                        適合互斥模式。高對比高亮。</p>
-</div>
-<div class="p-4 rounded-xl border border-indigo-100 shadow-sm bg-indigo-50 text-justify uppercase tracking-tighter">
-<h4 class="font-bold text-indigo-800 mb-1 text-[10px] text-justify uppercase tracking-widest">
-                                        Toggle</h4>
-<p class="text-slate-500 text-[9px] text-justify uppercase tracking-widest font-black">
-                                        適合單項功能啟用。直覺且省空間。</p>
-</div>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center bg-slate-900 text-justify uppercase tracking-widest font-black">
-<h4 class="font-bold text-slate-500 mb-6 uppercase tracking-widest text-[10px] text-justify">
-                                Visual Feedback States</h4>
-<div class="flex items-center justify-around gap-2 text-justify">
-<div class="px-6 py-2 rounded-full border border-slate-700 text-[10px] text-slate-500 text-justify">
-                                    Manual</div>
-<div class="text-blue-500 scale-150 text-justify">↔</div>
-<div class="px-6 py-2 rounded-full shadow-[0_0_15px_rgba(37,99,235,0.5)] bg-blue-600 text-[10px] font-bold text-justify">
-                                    Auto-Pilot</div>
-</div>
-</div>
-</div>
+                <h1>模式切換的 UI 邏輯</h1>
+
+                <p>
+                    當你的機器人具備多種運行模式（手動遙控、自動循線、緊急停止），使用者需要一個<strong>直覺且防錯</strong>的介面來切換。UI 組件的選擇不是美學問題——它直接決定使用者能否在壓力下（車子正高速行駛）迅速、正確地操作。
+                </p>
+
+                <p>
+                    模式切換介面的核心設計原則是「<strong>互斥性可視化</strong>」：系統在任何時刻只能處於一種模式，UI 必須清楚地表達「現在是哪個模式」以及「其他模式是什麼」。這與 FSM 的確定性概念一致——一個狀態，一種行為。
+                </p>
+
+                <h2>UI 組件選型</h2>
+
+                <p>不同的操作場景適合不同的 UI 組件。以下是常見的模式切換組件比較：</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>組件類型</th>
+                            <th>適用場景</th>
+                            <th>優點</th>
+                            <th>缺點</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>分段控制 (Segmented)</strong></td>
+                            <td>2–4 個互斥模式</td>
+                            <td>所有選項一目了然，高對比高亮</td>
+                            <td>佔用橫向空間較大</td>
+                        </tr>
+                        <tr>
+                            <td><strong>切換開關 (Toggle)</strong></td>
+                            <td>單一功能啟用/停用</td>
+                            <td>極省空間，操作直覺</td>
+                            <td>不適合三選一以上的情境</td>
+                        </tr>
+                        <tr>
+                            <td><strong>下拉選單 (Dropdown)</strong></td>
+                            <td>5 個以上模式</td>
+                            <td>節省空間，支援多選項</td>
+                            <td>需額外點擊展開，不直覺</td>
+                        </tr>
+                        <tr>
+                            <td><strong>大型按鈕組 (Button Group)</strong></td>
+                            <td>觸控螢幕 / 移動裝置</td>
+                            <td>觸控友善，不易誤按</td>
+                            <td>佔用大量畫面空間</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        對於遙控車的三模式系統（Manual / Auto / E-Stop），推薦使用<strong>分段控制</strong>組件。它讓所有模式平行陳列，使用者在晃動環境中也能一眼看出當前狀態並快速切換。
+                    </div>
+                </div>
+
+                <h2>CSS 狀態類別實作</h2>
+
+                <p>
+                    使用 CSS 類別來管理模式的視覺狀態，是最乾淨也最易維護的做法。每個模式對應一個狀態類別，透過 JavaScript 動態切換：
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">/* CSS：模式狀態類別 */</span><br>
+<span class="c-kw">.mode-btn</span> <span class="c-white">{</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;padding: 12px 24px;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;border: 2px solid #e1dfdd;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;background: #fff;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;color: #605e5c;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;transition: all 0.2s ease;</span><br>
+<span class="c-white">}</span><br>
+<br>
+<span class="c-kw">.mode-btn.active-manual</span> <span class="c-white">{</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;background: #0078d4;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;border-color: #0078d4;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;color: #fff;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;box-shadow: 0 0 12px rgba(0, 120, 212, 0.4);</span><br>
+<span class="c-white">}</span><br>
+<br>
+<span class="c-kw">.mode-btn.active-auto</span> <span class="c-white">{</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;background: #107c10;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;border-color: #107c10;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;color: #fff;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;box-shadow: 0 0 12px rgba(16, 124, 16, 0.4);</span><br>
+<span class="c-white">}</span><br>
+<br>
+<span class="c-comment">/* 自動模式下鎖死搖桿區域 */</span><br>
+<span class="c-kw">.joystick-zone.locked</span> <span class="c-white">{</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;pointer-events: none;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;opacity: 0.3;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;filter: grayscale(1);</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>權限隔離：鎖死衝突控件</h2>
+
+                <p>
+                    當系統進入自動駕駛模式時，手動遙控的搖桿區域必須被<strong>邏輯鎖定</strong>——不只是視覺上變灰，而是真正地以 <code>pointer-events: none</code> 阻止任何觸碰事件。這防止了使用者在自動模式下不小心碰到搖桿而發送衝突指令。
+                </p>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        僅使用 <code>opacity: 0.3</code> 做視覺提示是不夠的！必須同時加上 <code>pointer-events: none</code> 才能真正阻止互動。在觸控螢幕上，使用者可能在專注觀察車輛時無意間碰到灰色區域。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -642,35 +750,113 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>📱 2. 佈局與觸控安全</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tighter">
-                                晃動中操作按鈕需大。自動行駛中隔離搖桿誤觸。
-                            </p>
-<div class="p-8 rounded-3xl border border-emerald-100 bg-emerald-50 text-justify uppercase tracking-widest font-black">
-<h4 class="text-emerald-900 font-bold mb-4 text-xs uppercase tracking-widest text-justify">
-                                    Safety Guidelines</h4>
-<ul class="text-emerald-700 space-y-2 font-medium text-[10px] text-justify uppercase tracking-tighter bg-emerald-50">
-<li>❌ 避免關鍵鈕緊鄰搖桿。</li>
-<li>✅ 自動模式鎖死搖桿 API。</li>
-<li>✅ 最小尺寸大於 48dp。</li>
-</ul>
-</div>
-</div>
-<div class="p-10 rounded-3xl shadow-2xl border border-slate-700 text-center relative overflow-hidden group bg-slate-900 text-justify">
-<div class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent text-justify">
-</div>
-<h4 class="text-emerald-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-justify uppercase tracking-widest font-black">
-                                UX Engineering</h4>
-<p class="text-slate-500 leading-relaxed font-light mb-8 italic text-[11px] text-justify uppercase tracking-widest font-black">
-                                "權限隔離是物理安全的第一道防禦。"
-                            </p>
-<div class="inline-block px-8 py-3 border border-emerald-500 text-emerald-500 rounded-xl font-bold text-[10px] hover:bg-emerald-500 hover:text-white transition-all shadow-lg text-justify uppercase tracking-widest font-black">
-                                Authority Shield: Active</div>
-</div>
-</div>
+                <h1>佈局與觸控安全</h1>
+
+                <p>
+                    遙控車的操作場景通常不是在安靜的辦公桌前——使用者可能正站在戶外、手持手機、看著遠處的車輛。在這種<strong>晃動且注意力分散</strong>的環境下，UI 佈局的設計直接影響操作安全性。一個按鈕太小、太靠近搖桿、或沒有足夠的間距，都可能在關鍵時刻導致誤操作。
+                </p>
+
+                <p>
+                    觸控安全設計的核心思想來自工業控制系統的 HMI（Human-Machine Interface）標準：關鍵操作必須有物理隔離、尺寸足夠大、且具備防誤觸機制。
+                </p>
+
+                <h2>觸控目標尺寸規範</h2>
+
+                <p>根據各大平台的 HIG（Human Interface Guidelines），觸控按鈕的最小尺寸如下：</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>平台標準</th>
+                            <th>最小觸控目標</th>
+                            <th>推薦間距</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Apple HIG</td>
+                            <td>44 × 44 pt</td>
+                            <td>8 pt</td>
+                        </tr>
+                        <tr>
+                            <td>Material Design</td>
+                            <td>48 × 48 dp</td>
+                            <td>8 dp</td>
+                        </tr>
+                        <tr>
+                            <td>WCAG 2.5.5 (AAA)</td>
+                            <td>44 × 44 CSS px</td>
+                            <td>—</td>
+                        </tr>
+                        <tr>
+                            <td><strong>遙控車建議</strong></td>
+                            <td><strong>56 × 56 dp 以上</strong></td>
+                            <td><strong>16 dp 以上</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        在晃動環境中操作時，使用者的手指精確度會大幅下降。建議將遙控車控制面板的關鍵按鈕尺寸設為 <strong>56dp 以上</strong>，並確保相鄰按鈕之間有至少 <strong>16dp</strong> 的空白區域。
+                    </div>
+                </div>
+
+                <h2>佈局安全原則</h2>
+
+                <p>以下是控制面板佈局的五大安全原則：</p>
+
+                <ul>
+                    <li><strong>空間隔離</strong>：E-Stop 按鈕必須遠離日常操作區域（搖桿、模式切換），避免手指滑動時誤觸。</li>
+                    <li><strong>功能分區</strong>：將介面分為「控制區」（搖桿、方向鍵）和「系統區」（模式切換、E-Stop），以不同背景色區分。</li>
+                    <li><strong>上下文鎖定</strong>：自動模式下，手動控制區必須完全鎖死（<code>pointer-events: none</code>）。</li>
+                    <li><strong>危險操作確認</strong>：E-Stop 之外的關鍵操作（如切換模式），建議在高速行駛時加上確認對話框。</li>
+                    <li><strong>單手可達</strong>：最常用的控制元素應放在拇指自然觸及的範圍內。</li>
+                </ul>
+
+                <div class="ms-code">
+<span class="c-comment">/* 佈局範例：功能分區 CSS */</span><br>
+<span class="c-kw">.control-panel</span> <span class="c-white">{</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;display: grid;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;grid-template-rows: auto 1fr auto;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;height: 100vh;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;gap: 16px;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;padding: 16px;</span><br>
+<span class="c-white">}</span><br>
+<br>
+<span class="c-comment">/* 頂部：系統狀態與模式切換 */</span><br>
+<span class="c-kw">.system-zone</span> <span class="c-white">{</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;background: #f3f2f1;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;border-radius: 8px;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;padding: 12px;</span><br>
+<span class="c-white">}</span><br>
+<br>
+<span class="c-comment">/* 中部：搖桿操控區 */</span><br>
+<span class="c-kw">.joystick-zone</span> <span class="c-white">{</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;display: flex;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;align-items: center;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;justify-content: center;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;min-height: 200px;</span><br>
+<span class="c-white">}</span><br>
+<br>
+<span class="c-comment">/* 底部：E-Stop 獨立區域 — 遠離搖桿 */</span><br>
+<span class="c-kw">.emergency-zone</span> <span class="c-white">{</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;display: flex;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;justify-content: center;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;padding: 24px 0;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;border-top: 2px solid #d13438;</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        絕對不要將 E-Stop 按鈕放在搖桿旁邊！在緊張的遙控場景中，使用者的手指可能因為緊張而滑動，若 E-Stop 離搖桿太近，可能在不該停的時候意外觸發緊急停止——或者更糟，在該停的時候因為害怕誤觸而猶豫不按。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -689,39 +875,106 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🚨 3. 雙向同步與警報</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify uppercase tracking-tighter">
-                                反映實體狀態。E-Stop 按鈕整合視覺與震動警告。
-                            </p>
-<div class="p-8 rounded-3xl border border-amber-500/20 shadow-inner bg-amber-500/10 text-justify uppercase tracking-widest font-black">
-<h4 class="font-bold text-amber-400 mb-4 text-xs uppercase tracking-widest text-justify">
-                                    Haptic &amp; Vision</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify uppercase tracking-widest">
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">自動校正</strong>：網頁按鈕強置跳回實體狀態。</div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">全域遮罩</strong>：紅色 Overlay 阻止非安全操作。
-                                        </div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">震動回饋</strong>：利用 Vibrate API
-                                            提供物理脈衝。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-96 text-center text-justify uppercase tracking-widest font-black">
-<div class="w-48 h-48 rounded-full border-8 border-red-500/20 p-2 mx-auto cursor-pointer group active:scale-95 transition-all text-justify uppercase tracking-widest font-black" onclick="navigator.vibrate &amp;&amp; navigator.vibrate([100, 30, 200])">
-<div class="w-full h-full rounded-full bg-red-600 flex items-center justify-center font-bold text-white shadow-[0_0_30px_rgba(220,38,38,0.5)] group-hover:bg-red-500 text-justify font-black">
-                                    E-STOP
-                                </div>
-</div>
-</div>
-</div>
+                <h1>雙向同步與警報</h1>
+
+                <p>
+                    控制面板的最終目標是成為硬體的「忠實鏡像」——它不能有自己的「意見」，只能反映裝置的真實物理狀態。這需要<strong>雙向狀態同步</strong>：硬體定期發送心跳報文告知當前狀態，面板持續監聽並自動校正顯示。當出現嚴重異常時，面板還必須透過多感官（視覺 + 觸覺）警報來確保使用者注意到。
+                </p>
+
+                <h2>心跳監聽與自動校正</h2>
+
+                <p>
+                    硬體每隔固定時間（建議 200ms）主動推送當前狀態的 NOTIFY 封包。前端收到後，比對面板顯示是否一致。若不一致（例如硬體因故障跳回 IDLE，但面板還顯示 AUTO），UI 必須<strong>立即自動修正</strong>，不需使用者介入。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 心跳監聽與自動校正邏輯</span><br>
+<span class="c-kw">function</span> <span class="c-attr">onHeartbeat</span><span class="c-white">(packet) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-white">hardwareMode = packet.current_mode;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-white">displayedMode = getDisplayedMode();</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(hardwareMode !== displayedMode) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.warn(</span><span class="c-str">`狀態不一致！面板:${displayedMode} 硬體:${hardwareMode}`</span><span class="c-white">);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;forceUpdateUI(hardwareMode);</span> <span class="c-comment">// 強制校正</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 重設斷線計時器</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;resetDisconnectTimer();</span><br>
+<span class="c-white">}</span><br>
+<br>
+<span class="c-comment">// 超過 2 秒無心跳 → 顯示斷線警報</span><br>
+<span class="c-kw">function</span> <span class="c-attr">onDisconnectTimeout</span><span class="c-white">() {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;showConnectionLostOverlay();</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;lockAllControls();</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>E-Stop 緊急停機介面</h2>
+
+                <p>
+                    E-Stop（Emergency Stop）是控制面板中優先權最高的元素。當觸發 E-Stop 時，系統必須透過<strong>多維度感官警報</strong>確保使用者意識到緊急狀態：
+                </p>
+
+                <ul>
+                    <li><strong>視覺警報</strong>：滿版紅色半透明遮罩覆蓋整個面板，封鎖所有正常控制路徑。</li>
+                    <li><strong>觸覺回饋</strong>：呼叫 <code>navigator.vibrate([200, 100, 200])</code> 產生緊急脈衝震動。</li>
+                    <li><strong>文字提示</strong>：遮罩上顯示大字「緊急停止已觸發」與解鎖指示。</li>
+                </ul>
+
+                <div class="ms-code">
+<span class="c-comment">// E-Stop 觸發邏輯</span><br>
+<span class="c-kw">function</span> <span class="c-attr">triggerEStop</span><span class="c-white">() {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 1. 發送緊急停止指令（最高優先級）</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;sendCriticalCommand({ cmd: </span><span class="c-str">'EMERGENCY_STOP'</span><span class="c-white"> });</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 2. 視覺警報：紅色全域遮罩</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById(</span><span class="c-str">'estop-overlay'</span><span class="c-white">).style.display = </span><span class="c-str">'flex'</span><span class="c-white">;</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 3. 觸覺回饋：震動警報脈衝</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(navigator.vibrate) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;navigator.vibrate([200, 100, 200, 100, 200]);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 4. 鎖定所有控制元素</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;lockAllControls();</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        E-Stop 的解除必須設計<strong>防誤觸機制</strong>。推薦實作「長按 2 秒」解鎖：使用者必須持續按住解鎖按鈕超過 2000ms 才能撤銷緊急停止。嚴禁單擊解除——防止使用者在慌亂中反覆點擊而意外恢復。
+                    </div>
+                </div>
+
+                <h2>長按解鎖實作</h2>
+
+                <div class="ms-code">
+<span class="c-kw">let</span> <span class="c-attr">holdTimer</span> <span class="c-white">= </span><span class="c-kw">null</span><span class="c-white">;</span><br>
+<span class="c-kw">const</span> <span class="c-white">UNLOCK_DURATION = 2000;</span> <span class="c-comment">// 2 秒</span><br>
+<br>
+<span class="c-attr">unlockBtn</span><span class="c-white">.addEventListener(</span><span class="c-str">'pointerdown'</span><span class="c-white">, () => {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;holdTimer = setTimeout(() => {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;releaseEStop();</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;navigator.vibrate &amp;&amp; navigator.vibrate(50);</span> <span class="c-comment">// 確認回饋</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}, UNLOCK_DURATION);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;startProgressRing();</span> <span class="c-comment">// 顯示環形倒數</span><br>
+<span class="c-white">});</span><br>
+<br>
+<span class="c-attr">unlockBtn</span><span class="c-white">.addEventListener(</span><span class="c-str">'pointerup'</span><span class="c-white">, () => {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;clearTimeout(holdTimer);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;resetProgressRing();</span> <span class="c-comment">// 中途放手 → 取消</span><br>
+<span class="c-white">});</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        長按過程中建議顯示一個環形進度條（Progress Ring），讓使用者清楚知道「還需要按多久」。這比純粹等待 2 秒不給任何回饋的體驗好得多——使用者能確信操作正在進行中。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -805,16 +1058,82 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
-                    <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div class="unit-completed-badge" id="badge-6" style="display:none">
+                        <i class="fas fa-check"></i> 已完成
+                    </div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <!-- Q1 -->
+                    <div class="quiz-question" id="q1">
+                        <p>1. 對於遙控車的三模式系統（Manual / Auto / E-Stop），推薦使用哪種 UI 組件進行模式切換？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 下拉選單（Dropdown）</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 分段控制（Segmented Control）</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 切換開關（Toggle）</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="quiz-question" id="q2">
+                        <p>2. 當系統進入自動駕駛模式時，為什麼必須對搖桿區域加上 <code>pointer-events: none</code>？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 為了節省系統運算資源</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 為了讓介面看起來更美觀</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 為了真正阻止觸碰事件，防止使用者誤觸發送衝突指令</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="quiz-question" id="q3">
+                        <p>3. E-Stop 緊急停機的解除為什麼建議使用「長按 2 秒」而非單擊？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 長按解鎖可以節省電池電量</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 防止使用者在慌亂中反覆點擊而意外恢復正常運行</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 瀏覽器不支援單擊事件</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="quiz-question" id="q4">
+                        <p>4. 心跳監聽機制在控制面板中的主要作用是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 測量網路傳輸速度</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 持續確認硬體狀態，當面板顯示與實體不符時自動校正 UI</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 定期重新配對藍芽裝置</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" style="margin-left:8px; display:none;" id="quiz-reset-btn">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -872,9 +1191,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「網頁端模式控制介面設計」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「網頁端模式控制介面設計」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -890,8 +1209,17 @@
         { id: 3, label: '📱 2. 佈局與觸控安全', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🚨 3. 雙向同步與警報', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '4 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'c', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '分段控制讓所有模式平行陳列，使用者在晃動環境中也能一眼看出當前狀態並快速切換，最適合 2–4 個互斥模式的場景。' },
+        q2: { c: '僅使用 opacity 做視覺提示不夠，必須同時加上 pointer-events: none 才能真正阻止觸碰事件，防止在自動模式下誤觸搖桿發送衝突指令。' },
+        q3: { b: '長按解鎖機制（需持續按住 2 秒）可防止使用者在慌亂中反覆點擊而意外解除緊急停止狀態，確保恢復操作是經過深思熟慮的。' },
+        q4: { b: '硬體定期推送心跳報文，前端持續監聽並比對面板顯示是否一致。若不一致則自動校正 UI，確保面板始終反映裝置的真實物理狀態。' },
+    };
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -910,6 +1238,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1011,8 +1340,74 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        let total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            const options = document.querySelectorAll(`input[name="${qid}"]`);
+
+            options.forEach(opt => {
+                opt.disabled = true;
+                const label = opt.parentElement;
+                if (opt.value === answer) label.classList.add('correct');
+                if (opt.checked && opt.value !== answer) label.classList.add('wrong');
+            });
+
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                const exp = QUIZ_EXPLANATIONS[qid][answer];
+                feedbackEl.textContent = '✗ 不正確。' + exp;
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        scoreEl.style.display = 'block';
+        const pct = Math.round(correct / total * 100);
+        const pass = pct >= 75;
+        scoreEl.innerHTML = `
+            <span style="font-size:20px;">${pass ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pass ? '通過！你已掌握本模組的核心概念。' : '建議回顧相關單元後再試一次。'}</div>
+        `;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => {
+            el.classList.remove('correct','wrong');
+        });
+        document.querySelectorAll('input[type=radio]').forEach(el => {
+            el.checked = false;
+            el.disabled = false;
+        });
+        document.querySelectorAll('.quiz-feedback').forEach(el => {
+            el.className = 'quiz-feedback';
+            el.textContent = '';
+        });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 10：有限狀態機';
 </script>
 
 <!-- Define Resources -->

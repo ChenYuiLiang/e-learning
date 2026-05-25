@@ -524,7 +524,7 @@
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 5 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
         </div>
     </aside>
 
@@ -620,7 +620,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 5</span>
+                <span class="unit-page-indicator">1 / 6</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -690,7 +690,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 5</span>
+                <span class="unit-page-indicator">2 / 6</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -768,7 +768,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 5</span>
+                <span class="unit-page-indicator">3 / 6</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -860,16 +860,74 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 5</span>
+                <span class="unit-page-indicator">4 / 6</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
         <!-- ══════════ PAGE 5: 摘要與資源 ══════════ -->
+        
+        <!-- ══════════ PAGE 5: QUIZ ══════════ -->
         <div class="ms-unit-page" id="page-5">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-5" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <div class="quiz-question">
+                        <p>1. 在 Flexbox 佈局中，<code>display: flex</code> 應該設定在哪個元素上？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 需要被排列的子元素上</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 包裹所有子元素的父容器上</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 頁面的 <code>&lt;body&gt;</code> 標籤上</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>2. Flexbox 的預設主軸方向（Main Axis）是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 由上到下（垂直方向）</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 由左到右（水平方向）</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 依照 HTML 原始碼的書寫順序</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>3. 若要讓 Flex 容器中的子元素在交叉軸（Cross Axis）上垂直置中，應使用哪個屬性？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> <code>justify-content: center</code></label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> <code>align-items: center</code></label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> <code>flex-wrap: wrap</code></label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>4. 在行動裝置的遙控器介面中，使用 Flexbox 而非固定像素定位的主要優點是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 可以讓網頁載入速度更快</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 能自動適應不同螢幕尺寸，確保按鈕不會跑版或重疊</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 可以同時支援觸控與滑鼠操作</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">5 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+<div class="ms-unit-page" id="page-6">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -939,9 +997,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(5); alert('🎉 恭喜完成「CSS Flexbox：遙控器排版的神器」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「CSS Flexbox：遙控器排版的神器」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -956,8 +1014,15 @@
         { id: 2, label: '容器與軸線',     time: '8 分鐘',  type: 'unit'  },
         { id: 3, label: '對齊三劍客',     time: '10 分鐘',  type: 'unit'  },
         { id: 4, label: '實戰挑戰',       time: '155 分鐘', type: 'lab'   },
-        { id: 5, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 5, label: '知識測驗',              time: '4 分鐘',  type: 'quiz'  },
+        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！<code>display: flex</code> 必須設定在父容器（Flex Container）上，其直接子元素才會成為 Flex Items 並依照彈性盒模型進行排列。' },        q2: { b: '正確！Flexbox 的預設 <code>flex-direction</code> 為 <code>row</code>，主軸方向為水平（由左到右）。若需改為垂直方向，可設定 <code>flex-direction: column</code>。' },        q3: { b: '正確！<code>align-items</code> 控制交叉軸上的對齊方式，設為 <code>center</code> 可讓子元素垂直置中。而 <code>justify-content</code> 控制的是主軸方向。' },        q4: { b: '正確！Flexbox 是響應式佈局的核心工具，能讓 UI 元素根據可用空間自動調整大小與間距，在不同手機螢幕上都維持良好的佈局結構。' },
+    };
+
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -973,6 +1038,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1056,7 +1122,56 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
-    /* ─── START ─── */
+    
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            document.querySelectorAll(`input[name="${qid}"]`).forEach(opt => {
+                opt.disabled = true;
+                if (opt.value === answer) opt.parentElement.classList.add('correct');
+                if (opt.checked && opt.value !== answer) opt.parentElement.classList.add('wrong');
+            });
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                feedbackEl.textContent = '✗ 不正確。' + QUIZ_EXPLANATIONS[qid][answer];
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        const pct = Math.round(correct / total * 100);
+        scoreEl.style.display = 'block';
+        scoreEl.innerHTML = `<span style="font-size:20px;">${pct >= 75 ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pct >= 75 ? '通過！繼續前往下一個單元。' : '建議回顧相關單元後再試一次。'}</div>`;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => el.classList.remove('correct','wrong'));
+        document.querySelectorAll('input[type=radio]').forEach(el => { el.checked = false; el.disabled = false; });
+        document.querySelectorAll('.quiz-feedback').forEach(el => { el.className = 'quiz-feedback'; el.textContent = ''; });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
+/* ─── START ─── */
     init();
 </script>
 

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CORS 與安全性基礎 - Vibe Coding Learn</title>
+    <title>CORS 與安全性基礎 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -471,9 +473,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 6 - 網路安全</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +487,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">CORS 與安全性基礎</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 171 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 171 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 6</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,7 +509,7 @@
                 <h1>CORS 與安全性基礎</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 6</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -520,9 +520,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>🛑 1. 什麼是 CORS？</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>🙋‍️ 2. 預檢請求：敲門機制</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>🔐 3. 硬體安全防禦</strong> 的調校技巧與穩定性測試。</li>
+                    <li>能夠解釋同源政策（Same-Origin Policy）的三個判定要素（協議、網域、埠），並使用瀏覽器 DevTools 定位 CORS 報錯原因。</li>
+                    <li>能夠說明 OPTIONS 預檢請求的觸發條件與運作流程，並判斷何時瀏覽器會自動發送 Preflight。</li>
+                    <li>能夠在 ESP32 伺服器端實作 <code>Access-Control-Allow-Origin</code> 等 CORS 標頭注入，並正確處理 OPTIONS 請求以解決跨域封鎖。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -553,15 +553,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>CORS 與安全性基礎</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    當網頁嘗試存取不同網域的資源時，瀏覽器會啟動 <strong>CORS（跨來源資源共用）</strong> 安全機制進行攔截。
+                    本單元將帶你理解同源政策（Same-Origin Policy）的判定邏輯、預檢請求（OPTIONS Preflight）的敲門機制，
+                    以及如何在 ESP32 伺服器端正確注入安全標頭，從根本上解決跨域封鎖問題。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你開發了一個漂亮的遙控介面網頁，在瀏覽器中打開後點擊「連線」按鈕，Console 卻跳出一整片紅字：
+                    「Access to fetch at 'http://192.168.4.1' has been blocked by CORS policy」。
+                    ESP32 端明明收到了請求，但瀏覽器卻拒絕讀取回應——你需要從伺服器端配置正確的安全標頭來打通這道隱形牆。
                 </div>
 
                 <h2>教學影片</h2>
@@ -575,7 +576,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -589,41 +590,96 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🛑 1. 什麼是 CORS？</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify uppercase tracking-widest leading-relaxed">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tighter">
-                                決定是否允許網頁讀取跨網域資料防禦機制。
-                            </p>
-<div class="p-8 rounded-3xl border border-amber-100 shadow-sm bg-amber-50 text-justify uppercase tracking-widest font-black leading-relaxed">
-<h4 class="font-bold text-amber-900 mb-2 text-xs uppercase tracking-widest italic text-justify font-black">
-                                    Same-Origin Policy</h4>
-<p class="text-amber-800 font-light leading-relaxed text-justify text-[11px] uppercase tracking-tighter font-black">
-                                    防止網站偷隱私。禁止網域 A 讀取 B。
-                                </p>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 text-white bg-slate-900 text-justify uppercase tracking-widest font-black">
-<h4 class="font-bold text-slate-500 mb-6 uppercase tracking-widest text-[10px] text-justify font-black">
-                                Origin Matching</h4>
-<div class="space-y-4 text-justify font-black">
-<div class="flex items-center justify-between p-3 rounded-xl bg-slate-800 border border-slate-700 group text-justify font-black">
-<span class="font-mono text-slate-400 group-hover:text-blue-300 text-[10px] text-justify font-black text-left">vibe.car/a.js<br/>vibe.car/b.js</span>
-<span class="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded font-bold text-emerald-400 uppercase text-[9px] text-justify font-black border border-slate-100">Same</span>
-</div>
-<div class="flex items-center justify-between p-3 rounded-xl bg-slate-800 border border-slate-700 group text-justify font-black">
-<span class="font-mono text-slate-400 group-hover:text-amber-300 text-[10px] text-justify font-black text-left">https://vibe.car<br/>http://vibe.car</span>
-<span class="px-3 py-1 bg-red-500/10 border border-red-500/20 rounded font-bold text-red-400 uppercase text-[9px] text-justify font-black border border-slate-100">Cross</span>
-</div>
-</div>
-</div>
-</div>
+                <h1>什麼是 CORS？</h1>
+
+                <p>
+                    <strong>CORS（Cross-Origin Resource Sharing，跨來源資源共用）</strong>是一套由瀏覽器執行的安全機制，
+                    用來控制「網頁是否被允許讀取來自不同來源（Origin）的資源」。當你在 <code>localhost</code> 的網頁中
+                    嘗試用 <code>fetch()</code> 連接 ESP32 的 IP 位址時，瀏覽器會先檢查 CORS 規則——如果伺服器沒有回傳正確的授權標頭，
+                    瀏覽器就會直接封鎖這次請求，即使 ESP32 端已經正確處理並回傳了數據。
+                </p>
+
+                <h2>同源政策（Same-Origin Policy）</h2>
+                <p>
+                    要理解 CORS，首先要認識它的基礎——<strong>同源政策（SOP）</strong>。這是瀏覽器最重要的安全防線之一，
+                    規定網頁腳本只能讀取<strong>同源</strong>的資源。所謂「來源（Origin）」由三個要素組成：
+                </p>
+                <ul>
+                    <li><strong>協議（Protocol）</strong>：<code>http</code> 或 <code>https</code></li>
+                    <li><strong>網域（Host）</strong>：<code>example.com</code> 或 <code>192.168.4.1</code></li>
+                    <li><strong>埠號（Port）</strong>：<code>80</code>、<code>443</code>、<code>3000</code> 等</li>
+                </ul>
+                <p>只要三個要素中<strong>任何一個不同</strong>，就會被判定為「跨來源（Cross-Origin）」，觸發 CORS 機制。</p>
+
+                <h2>來源比對實例</h2>
+                <p>以下表格列出常見的來源比對情境，幫助你快速判斷哪些情況會觸發 CORS：</p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>來源 A（網頁所在）</th>
+                            <th>來源 B（請求目標）</th>
+                            <th style="width:15%">結果</th>
+                            <th>原因</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>http://vibe.car/a.js</code></td>
+                            <td><code>http://vibe.car/b.js</code></td>
+                            <td><span class="check"><i class="fas fa-check-circle"></i></span> 同源</td>
+                            <td>協議、網域、埠號皆相同</td>
+                        </tr>
+                        <tr>
+                            <td><code>https://vibe.car</code></td>
+                            <td><code>http://vibe.car</code></td>
+                            <td><span class="cross"><i class="fas fa-times-circle"></i></span> 跨域</td>
+                            <td>協議不同（https vs http）</td>
+                        </tr>
+                        <tr>
+                            <td><code>http://localhost:3000</code></td>
+                            <td><code>http://192.168.4.1</code></td>
+                            <td><span class="cross"><i class="fas fa-times-circle"></i></span> 跨域</td>
+                            <td>網域不同（localhost vs IP）</td>
+                        </tr>
+                        <tr>
+                            <td><code>http://vibe.car:80</code></td>
+                            <td><code>http://vibe.car:8080</code></td>
+                            <td><span class="cross"><i class="fas fa-times-circle"></i></span> 跨域</td>
+                            <td>埠號不同（80 vs 8080）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        CORS 限制是<strong>瀏覽器端</strong>的行為。像 Postman、curl 或 ESP32 自身發出的請求不會受 CORS 影響。
+                        這就是為什麼「同樣的 API，Postman 能用但瀏覽器不行」——問題不在伺服器，而在瀏覽器的安全策略。
+                    </div>
+                </div>
+
+                <h2>為什麼需要同源政策？</h2>
+                <p>
+                    同源政策的存在是為了保護使用者。想像以下場景：你登入了銀行網站 <code>bank.com</code>，
+                    然後不小心打開了一個惡意網站 <code>evil.com</code>。如果沒有同源政策，<code>evil.com</code> 的 JavaScript
+                    就能直接讀取你在 <code>bank.com</code> 上的登入狀態、帳戶餘額，甚至發起轉帳請求。
+                    同源政策正是阻止這種「跨站資料竊取」的第一道防線。
+                </p>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        在開發 ESP32 控制面板時，你的網頁（通常在 <code>localhost</code> 或從檔案系統開啟）與 ESP32 伺服器（<code>http://192.168.x.x</code>）
+                        天生就是<strong>不同來源</strong>。如果不在 ESP32 端配置 CORS 標頭，瀏覽器將會封鎖所有的 API 請求。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -637,54 +693,113 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🙋‍♂️ 2. 預檢請求：敲門機制</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify uppercase tracking-widest">
-<div class="space-y-8 text-justify font-black">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tighter">
-                                複雜請求時，發送 OPTIONS 敲門。
-                            </p>
-<div class="grid grid-cols-2 gap-4 text-justify font-black border border-slate-100">
-<div class="p-5 rounded-2xl border border-indigo-100 bg-indigo-50 text-justify font-black uppercase tracking-widest">
-<h5 class="text-[10px] font-bold text-indigo-400 mb-2 uppercase tracking-widest italic text-justify font-black">
-                                        The Knock</h5>
-<p class="text-xs font-bold text-indigo-900 mb-1 text-justify font-black">OPTIONS 方法
-                                    </p>
-<p class="text-[10px] text-slate-500 font-light leading-relaxed text-justify uppercase tracking-widest">
-                                        詢問：「准許入內？」</p>
-</div>
-<div class="p-5 rounded-2xl border border-blue-100 bg-blue-50 text-justify font-black uppercase tracking-tighter">
-<h5 class="text-[10px] font-bold text-blue-400 mb-2 uppercase tracking-widest italic text-justify font-black">
-                                        The Ticket</h5>
-<p class="text-xs font-bold text-blue-900 mb-1 text-justify uppercase tracking-widest font-black">
-                                        Allow-Origin</p>
-<p class="text-[10px] text-slate-500 font-light leading-relaxed text-justify uppercase tracking-widest">
-                                        伺服器回傳合規標頭。</p>
-</div>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 bg-slate-900 text-justify uppercase tracking-widest font-black text-left">
-<div class="flex items-center gap-3 mb-6 text-justify font-black">
-<span class="w-3 h-3 bg-red-400 rounded-full text-justify font-black"></span>
-<span class="w-3 h-3 bg-amber-400 rounded-full text-justify font-black"></span>
-<span class="w-3 h-3 bg-emerald-400 rounded-full text-justify font-black"></span>
-<span class="ml-auto text-slate-500 font-mono tracking-widest text-justify uppercase tracking-widest font-black text-[10px]">ESP32
-                                    CONFIG</span>
-</div>
-<pre class="leading-relaxed overflow-x-auto text-blue-300 font-mono text-justify uppercase tracking-widest font-black text-[11px] border border-slate-700">
-DefaultHeaders::Instance().addHeader(
-  "Access-Control-Allow-Origin", "*"
-);
-DefaultHeaders::Instance().addHeader(
-  "Access-Control-Allow-Methods", "GET,POST,OPTIONS"
-);</pre>
-</div>
-</div>
+                <h1>預檢請求：敲門機制</h1>
+
+                <p>
+                    當瀏覽器偵測到一個跨域請求屬於「複雜請求」時，不會直接發送，而是會先自動發送一個 <strong>OPTIONS 預檢請求（Preflight Request）</strong>
+                    來「敲門」——詢問伺服器：「我可以用這個方法、帶這些標頭來存取你的資源嗎？」只有伺服器回應「准許」之後，
+                    瀏覽器才會發送真正的請求。這就是 CORS 的核心安全機制。
+                </p>
+
+                <h2>簡單請求 vs 複雜請求</h2>
+                <p>
+                    瀏覽器會根據請求的內容自動判斷它是「簡單請求」還是「複雜請求」。只有複雜請求才會觸發預檢：
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th style="width:15%">類型</th>
+                            <th>條件</th>
+                            <th style="width:18%">是否預檢</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>簡單請求</strong></td>
+                            <td>方法為 GET/HEAD/POST，且只使用 <code>Accept</code>、<code>Content-Language</code>、<code>Content-Type</code>（僅限 <code>text/plain</code>、<code>multipart/form-data</code>、<code>application/x-www-form-urlencoded</code>）等安全標頭</td>
+                            <td>否，直接發送</td>
+                        </tr>
+                        <tr>
+                            <td><strong>複雜請求</strong></td>
+                            <td>使用 PUT/DELETE 方法，或帶有自訂標頭，或 <code>Content-Type</code> 為 <code>application/json</code></td>
+                            <td><strong>是，先預檢</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        在物聯網開發中，當你的網頁透過 <code>fetch()</code> 發送帶有 <code>Content-Type: application/json</code> 標頭的 POST 請求到 ESP32 時，
+                        這會被視為<strong>複雜請求</strong>，瀏覽器會自動先發送 OPTIONS 預檢。如果 ESP32 沒有正確處理 OPTIONS 請求，
+                        你真正的 POST 請求永遠不會送出。
+                    </div>
+                </div>
+
+                <h2>預檢流程詳解</h2>
+                <p>完整的預檢流程分為以下步驟：</p>
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>瀏覽器自動發送 OPTIONS 請求</h4>
+                            <p>瀏覽器攔截你的 <code>fetch()</code> 呼叫，先發送一個 <code>OPTIONS</code> 方法的請求到目標伺服器，附帶 <code>Access-Control-Request-Method</code> 和 <code>Access-Control-Request-Headers</code> 標頭。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>伺服器回傳授權標頭</h4>
+                            <p>伺服器收到 OPTIONS 後，回傳 <code>Access-Control-Allow-Origin</code>、<code>Access-Control-Allow-Methods</code>、<code>Access-Control-Allow-Headers</code> 等標頭，告知瀏覽器哪些操作被允許。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>瀏覽器驗證並發送實際請求</h4>
+                            <p>瀏覽器比對伺服器的回應，若符合規範，才會發送你原本的 POST/PUT 請求。若不符合，瀏覽器會直接封鎖並在 Console 顯示紅字錯誤。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>在 ESP32 上配置 CORS 標頭</h2>
+                <p>
+                    使用 <code>ESPAsyncWebServer</code> 函式庫時，你可以透過 <code>DefaultHeaders</code> 全域注入 CORS 標頭，
+                    讓所有回應都自動攜帶授權資訊：
+                </p>
+                <div class="ms-code">
+                    <span class="c-comment">// 在 setup() 中，於 server.begin() 之前配置</span><br>
+                    <span class="c-tag">DefaultHeaders</span><span class="c-white">::</span><span class="c-kw">Instance</span><span class="c-white">().</span><span class="c-kw">addHeader</span><span class="c-white">(</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-str">"Access-Control-Allow-Origin"</span><span class="c-white">,</span> <span class="c-str">"*"</span><br>
+                    <span class="c-white">);</span><br>
+                    <span class="c-tag">DefaultHeaders</span><span class="c-white">::</span><span class="c-kw">Instance</span><span class="c-white">().</span><span class="c-kw">addHeader</span><span class="c-white">(</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-str">"Access-Control-Allow-Methods"</span><span class="c-white">,</span> <span class="c-str">"GET,POST,OPTIONS"</span><br>
+                    <span class="c-white">);</span><br>
+                    <span class="c-tag">DefaultHeaders</span><span class="c-white">::</span><span class="c-kw">Instance</span><span class="c-white">().</span><span class="c-kw">addHeader</span><span class="c-white">(</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-str">"Access-Control-Allow-Headers"</span><span class="c-white">,</span> <span class="c-str">"Content-Type"</span><br>
+                    <span class="c-white">);</span><br><br>
+                    <span class="c-comment">// 處理 OPTIONS 預檢請求</span><br>
+                    <span class="c-attr">server</span><span class="c-white">.</span><span class="c-kw">on</span><span class="c-white">(</span><span class="c-str">"/*"</span><span class="c-white">,</span> <span class="c-tag">HTTP_OPTIONS</span><span class="c-white">,</span><br>
+                    <span class="c-white">&nbsp;&nbsp;[](</span><span class="c-tag">AsyncWebServerRequest</span><span class="c-white"> *</span><span class="c-attr">req</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-attr">req</span><span class="c-white">-></span><span class="c-kw">send</span><span class="c-white">(</span><span class="c-val">204</span><span class="c-white">);</span>
+                    <span class="c-comment"> // 204 No Content</span><br>
+                    <span class="c-white">});</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        你可以在瀏覽器 DevTools 的 <strong>Network</strong> 面板中觀察預檢請求。成功的預檢會顯示為一個獨立的 <code>OPTIONS</code> 請求，
+                        狀態碼為 <code>204</code> 或 <code>200</code>，緊接著才是你真正的 <code>POST</code> 或 <code>GET</code> 請求。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -698,49 +813,124 @@ DefaultHeaders::Instance().addHeader(
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔐 3. 硬體安全防禦</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify uppercase tracking-widest leading-relaxed">
-<div class="flex-1 space-y-6 text-justify font-black">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify font-black uppercase tracking-widest">
-                                合規通訊。防禦性編程。
-                            </p>
-<div class="p-8 rounded-3xl border border-emerald-500/20 shadow-inner bg-emerald-500/10 text-justify uppercase tracking-widest font-black text-left">
-<h4 class="font-bold text-emerald-400 mb-4 text-xs uppercase tracking-widest text-justify font-black">
-                                    Defense Strategy</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify uppercase tracking-widest font-black">
-<li class="flex items-start gap-2 text-justify font-black"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify font-black">權限最小化</strong>：不使用萬用符號。只開放必要。
-                                        </div>
-</li>
-<li class="flex items-start gap-2 text-justify font-black"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify font-black">指令啟動</strong>：雜湊效驗防止竄改。
-                                        </div>
-</li>
-<li class="flex items-start gap-2 text-justify font-black"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify font-black">資料遮蔽</strong>：敏感資訊封裝
-                                            Body。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 p-10 rounded-3xl border border-red-500/20 text-center relative overflow-hidden group bg-red-600/10 text-justify font-black">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-red-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify font-black">
-</div>
-<h4 class="text-red-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-justify font-black uppercase tracking-widest">
-                                Warning Zone</h4>
-<p class="text-slate-500 leading-relaxed font-light mb-8 italic text-[11px] text-justify uppercase tracking-widest font-black border border-slate-700">
-                                "CORS 保護使用者，後端仍需驗證。"
-                            </p>
-<div class="inline-block px-8 py-3 bg-red-500 text-white rounded-xl font-bold text-[10px] shadow-lg text-justify uppercase tracking-widest font-black">
-                                HTTP 403 Forbidden</div>
-</div>
-</div>
+                <h1>硬體安全防禦</h1>
+
+                <p>
+                    正確配置 CORS 標頭只是第一步。在真實的物聯網部署環境中，你的 ESP32 可能直接暴露在區域網路甚至公共網路中，
+                    任何知道 IP 位址的人都可以嘗試發送請求。因此，<strong>CORS 只是前端瀏覽器的防線，後端（ESP32）自身也需要建立額外的安全機制</strong>。
+                </p>
+
+                <h2>CORS 的安全邊界</h2>
+                <p>
+                    一個常見的誤解是：「只要設好 CORS，我的 ESP32 就安全了。」事實上，CORS 只保護<strong>瀏覽器中的使用者</strong>，
+                    防止惡意網站透過瀏覽器發送未授權的跨域請求。但以下情況<strong>不受 CORS 保護</strong>：
+                </p>
+                <ul>
+                    <li>使用 Postman、curl 等工具直接發送的請求（繞過瀏覽器）</li>
+                    <li>其他 ESP32 或物聯網設備發送的請求</li>
+                    <li>伺服器端的程式碼（Node.js、Python 後端）發送的請求</li>
+                </ul>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        CORS 不是伺服器的安全機制，而是<strong>瀏覽器的安全機制</strong>。千萬不要依賴 CORS 來保護你的 API。
+                        即使設置了嚴格的 <code>Access-Control-Allow-Origin</code>，攻擊者仍然可以用非瀏覽器工具直接存取你的 ESP32 端點。
+                    </div>
+                </div>
+
+                <h2>防禦性設計原則</h2>
+                <p>
+                    在部署物聯網設備時，你應該遵循以下安全設計原則，在 CORS 之外建立多層防禦：
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th style="width:22%">原則</th>
+                            <th>說明</th>
+                            <th style="width:30%">ESP32 實作方式</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>權限最小化</strong></td>
+                            <td>不使用萬用符號 <code>*</code>，只開放必要的來源與方法</td>
+                            <td>指定具體的 Origin，如 <code>http://192.168.4.2</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>輸入驗證</strong></td>
+                            <td>驗證所有傳入的參數，防止注入攻擊</td>
+                            <td>檢查 JSON 欄位的型別與範圍</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Token 認證</strong></td>
+                            <td>要求請求攜帶密鑰或令牌，驗證發送者身分</td>
+                            <td>在 Header 中加入自訂的 API Key</td>
+                        </tr>
+                        <tr>
+                            <td><strong>資料遮蔽</strong></td>
+                            <td>敏感資訊封裝在 Body 中，不放在 URL</td>
+                            <td>使用 POST + JSON Body 傳送密碼與設定</td>
+                        </tr>
+                        <tr>
+                            <td><strong>速率限制</strong></td>
+                            <td>限制單位時間內的請求次數，防止暴力攻擊</td>
+                            <td>用 <code>millis()</code> 追蹤請求頻率</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>安全配置範例：限定來源</h2>
+                <p>
+                    在開發階段，使用 <code>*</code> 萬用符號可以讓任何來源的網頁存取你的 ESP32，方便快速測試。
+                    但在正式部署時，你應該將 Origin 限定為特定的控制台網頁位址：
+                </p>
+                <div class="ms-code">
+                    <span class="c-comment">// 開發環境：允許所有來源（方便測試）</span><br>
+                    <span class="c-tag">DefaultHeaders</span><span class="c-white">::</span><span class="c-kw">Instance</span><span class="c-white">().</span><span class="c-kw">addHeader</span><span class="c-white">(</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-str">"Access-Control-Allow-Origin"</span><span class="c-white">,</span> <span class="c-str">"*"</span><br>
+                    <span class="c-white">);</span><br><br>
+                    <span class="c-comment">// 正式環境：只允許特定來源</span><br>
+                    <span class="c-tag">DefaultHeaders</span><span class="c-white">::</span><span class="c-kw">Instance</span><span class="c-white">().</span><span class="c-kw">addHeader</span><span class="c-white">(</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-str">"Access-Control-Allow-Origin"</span><span class="c-white">,</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-str">"http://192.168.4.2"</span>
+                    <span class="c-comment"> // 只有控制台 IP 可存取</span><br>
+                    <span class="c-white">);</span>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        當你使用特定 Origin 取代 <code>*</code> 時，如果需要支援多個來源，你需要在程式碼中動態判斷請求的 <code>Origin</code> 標頭，
+                        並根據白名單回傳對應的值。因為 <code>Access-Control-Allow-Origin</code> 標頭只能設定<strong>一個值</strong>或 <code>*</code>。
+                    </div>
+                </div>
+
+                <h2>CORS 安全檢核清單</h2>
+                <p>在部署你的 ESP32 物聯網專案前，請確認以下安全項目：</p>
+                <ul class="ms-checklist">
+                    <li><div class="check-box" onclick="toggleCheck(this)"></div> <code>Access-Control-Allow-Origin</code> 已從 <code>*</code> 改為特定 Origin</li>
+                    <li><div class="check-box" onclick="toggleCheck(this)"></div> <code>Access-Control-Allow-Methods</code> 只開放實際需要的 HTTP 方法</li>
+                    <li><div class="check-box" onclick="toggleCheck(this)"></div> ESP32 端有處理 <code>OPTIONS</code> 預檢請求並回傳 <code>204</code></li>
+                    <li><div class="check-box" onclick="toggleCheck(this)"></div> 敏感操作（如韌體更新、重啟）已加入 Token 驗證</li>
+                    <li><div class="check-box" onclick="toggleCheck(this)"></div> 所有傳入的參數都有進行型別與範圍驗證</li>
+                </ul>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在開發期間，你可以使用瀏覽器的 CORS 繞過插件（如 <code>Allow CORS</code>）來暫時跳過限制，加速測試。
+                        但請務必記住，這只是開發時的權宜之計——正式上線前，一定要從 ESP32 端正確配置 CORS 標頭，而非依賴使用者安裝插件。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -819,16 +1009,75 @@ DefaultHeaders::Instance().addHeader(
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
-
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: QUIZ ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <div class="quiz-question">
+                        <p>1. 同源政策（Same-Origin Policy）判定「同源」的三個要素為何？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 使用者帳號、裝置類型、瀏覽器版本</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 協議（Protocol）、網域（Host）、埠號（Port）</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> IP 位址、MAC 位址、作業系統</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>2. 當網頁發送帶有 Content-Type: application/json 的 POST 請求到 ESP32 時，瀏覽器會先做什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 直接發送 POST 請求</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 自動先發送 OPTIONS 預檢請求（Preflight），確認伺服器允許後才發送真正的 POST</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 顯示安全警告，要求使用者手動確認</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>3. CORS 保護的對象是什麼？以下哪種情況不受 CORS 限制？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 瀏覽器中的 JavaScript 發出的 fetch 請求</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 使用 Postman 或 curl 直接發送的請求</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 兩者都受 CORS 限制</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>4. 在 ESP32 上使用 ESPAsyncWebServer 處理 CORS 時，為什麼必須實作 OPTIONS 請求的處理？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 因為 OPTIONS 是 ESP32 重啟的觸發信號</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 因為瀏覽器發送複雜請求前會先發 OPTIONS 預檢，若 ESP32 不回應，真正的請求永遠不會送出</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 因為 OPTIONS 用來傳輸加密金鑰</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -886,9 +1135,9 @@ DefaultHeaders::Instance().addHeader(
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「CORS 與安全性基礎」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「CORS 與安全性基礎」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -904,8 +1153,17 @@ DefaultHeaders::Instance().addHeader(
         { id: 3, label: '🙋‍️ 2. 預檢請求：敲門機制', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🔐 3. 硬體安全防禦', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '135 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',              time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！只要協議（http/https）、網域（如 localhost vs 192.168.4.1）、埠號（如 80 vs 8080）中任一不同，就會被判定為跨來源，觸發 CORS 機制。' },
+        q2: { b: '正確！Content-Type 為 application/json 的 POST 屬於「複雜請求」，瀏覽器會先自動發送 OPTIONS 預檢，只有伺服器回應正確的授權標頭後才會發送實際請求。' },
+        q3: { b: '正確！CORS 是瀏覽器端的安全機制，只限制瀏覽器中的 JavaScript 請求。Postman、curl、其他 ESP32 或後端程式發出的請求完全不受 CORS 影響。' },
+        q4: { b: '正確！如果 ESP32 沒有正確處理 OPTIONS 並回傳 CORS 授權標頭（如 Access-Control-Allow-Origin），瀏覽器會封鎖所有後續的跨域請求。' },
+    };
+
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -924,6 +1182,7 @@ DefaultHeaders::Instance().addHeader(
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1027,6 +1286,7 @@ DefaultHeaders::Instance().addHeader(
 
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 06：HTTP 與 Web 通訊';
 </script>
 
 <!-- Define Resources -->

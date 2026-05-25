@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>質心計算與視覺誤差 - Vibe Coding Learn</title>
+    <title>質心計算與視覺誤差 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -471,9 +473,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">進階課程 5 - 單元 2</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +487,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">質心計算與視覺誤差</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">進階課程 5</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,13 +509,13 @@
                 <h1>質心計算與視覺誤差</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">進階課程 5</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
                 </div>
 
-                <p></p>
+                <p>將混亂的像素化為精準座標，掌握質心加權平均公式與誤差正規化技巧，建立從視覺感知到導航控制的數學橋樑。</p>
 
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
@@ -553,15 +553,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>質心計算與視覺誤差</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    攝影機看到的是成千上萬個像素，但控制系統需要的只是一個精確的座標。
+                    本模組將教你運用<strong>加權平均公式計算物體質心</strong>，並將質心偏移量正規化為通用的導航誤差訊號，
+                    建立起從「視覺感知」到「馬達控制」的數學橋樑。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的循跡車已經能偵測到黑色賽道線了，但它完全不知道線在畫面的左邊還是右邊。
+                    你需要從二值化後的像素矩陣中「提煉」出一個代表位置的數字，
+                    然後告訴馬達：「目標偏右 30%，請左轉修正。」這就是質心與誤差的核心任務。
                 </div>
 
                 <h2>教學影片</h2>
@@ -575,7 +576,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -589,62 +590,116 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚖️ 1. 質心的數學本質 (20 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-<div class="space-y-6">
-<p class="text-lg text-gray-600 leading-relaxed">
-<strong>物理直覺：</strong>想像影像中所有被偵測到的「目標像素（如：黑色循跡線）」都是等重的小球，質心就是這群小球的平均位置。
-                            </p>
-<div class="bg-slate-900 border-l-4 border-emerald-500 p-6 rounded-r-xl">
-<h4 class="text-emerald-400 font-bold mb-4 uppercase tracking-wider text-xs">計算公式</h4>
-<div class="space-y-4 text-white font-mono text-sm">
-<p>$\bar{x} = \frac{\sum x_i}{N}$</p>
-<p>$\bar{y} = \frac{\sum y_i}{N}$</p>
-<p class="text-slate-400 text-xs mt-2">$N$ 是目標像素總點數</p>
-</div>
-</div>
-</div>
-<div class="bg-emerald-50 p-6 rounded-2xl border border-emerald-100">
-<h4 class="font-bold text-emerald-900 mb-4 flex items-center gap-2">
-<span>🎨</span> 學習任務：手算練習
-                            </h4>
-<p class="text-gray-700 text-sm leading-relaxed mb-6">
-                                在一個 $4 \times 4$ 的方格中繪製一個 <strong>L 型物體</strong>（如下圖），練習手動計算其質心座標。
-                            </p>
-<div class="flex justify-center mb-4">
-<div class="grid grid-cols-4 gap-1 bg-white p-2 border border-emerald-200 shadow-sm">
-<!-- Row 0 -->
-<div class="w-8 h-8 border border-gray-100 bg-emerald-500"></div>
-<div class="w-8 h-8 border border-gray-100"></div>
-<div class="w-8 h-8 border border-gray-100"></div>
-<div class="w-8 h-8 border border-gray-100"></div>
-<!-- Row 1 -->
-<div class="w-8 h-8 border border-gray-100 bg-emerald-500"></div>
-<div class="w-8 h-8 border border-gray-100"></div>
-<div class="w-8 h-8 border border-gray-100"></div>
-<div class="w-8 h-8 border border-gray-100"></div>
-<!-- Row 2 -->
-<div class="w-8 h-8 border border-gray-100 bg-emerald-500"></div>
-<div class="w-8 h-8 border border-gray-100 bg-emerald-500"></div>
-<div class="w-8 h-8 border border-gray-100"></div>
-<div class="w-8 h-8 border border-gray-100"></div>
-<!-- Row 3 -->
-<div class="w-8 h-8 border border-gray-100"></div>
-<div class="w-8 h-8 border border-gray-100"></div>
-<div class="w-8 h-8 border border-gray-100"></div>
-<div class="w-8 h-8 border border-gray-100"></div>
-</div>
-</div>
-<p class="text-xs text-center text-emerald-600 font-bold">思考：$(\bar{x}, \bar{y})$ 會在哪個位置？
-                            </p>
-</div>
-</div>
+                <h1>質心的數學本質</h1>
+
+                <p>
+                    <strong>質心 (Centroid)</strong> 是一組數據點的「加權平均位置」。在影像處理中，
+                    想像所有被偵測到的目標像素（例如：黑色循跡線上的白色像素）都是等重的小球，
+                    質心就是這群小球的平衡點——如果你把一片標記了所有目標像素的薄板放在指尖上，
+                    能讓它保持水平的那個支撐點，就是質心。
+                </p>
+
+                <p>
+                    對循跡車而言，質心的 X 座標直接反映了「目標線在畫面中的水平位置」。
+                    這個單一數值取代了成千上萬個像素，成為控制系統唯一需要的導航輸入。
+                    從數萬個像素到一個座標——這就是質心計算的核心價值。
+                </p>
+
+                <h2>質心計算公式</h2>
+
+                <p>
+                    給定二值化影像中所有目標像素的座標 <code>(x₁, y₁), (x₂, y₂), ..., (xₙ, yₙ)</code>，質心座標的計算公式為：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 質心公式（加權平均）</span><br>
+                    <span class="c-attr">centroid_x</span> <span class="c-white">= (x₁ + x₂ + ... + xₙ) /</span> <span class="c-attr">N</span><br>
+                    <span class="c-attr">centroid_y</span> <span class="c-white">= (y₁ + y₂ + ... + yₙ) /</span> <span class="c-attr">N</span><br>
+                    <br>
+                    <span class="c-comment">// 其中 N = 目標像素的總點數</span>
+                </div>
+
+                <p>
+                    這個公式在數學上等價於求所有目標像素在 X 軸與 Y 軸上的<strong>算術平均</strong>。
+                    當目標物體偏向畫面右側時，大多數像素的 X 座標較大，質心自然偏右；反之亦然。
+                </p>
+
+                <h2>程式碼實作</h2>
+
+                <p>
+                    以下是在 JavaScript 中遍歷二值化影像矩陣、計算質心的標準實作模式：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-kw">function</span> <span class="c-tag">calculateCentroid</span><span class="c-white">(</span><span class="c-attr">binaryData</span><span class="c-white">,</span> <span class="c-attr">width</span><span class="c-white">,</span> <span class="c-attr">height</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">let</span> <span class="c-attr">sumX</span> <span class="c-white">= 0,</span> <span class="c-attr">sumY</span> <span class="c-white">= 0,</span> <span class="c-attr">count</span> <span class="c-white">= 0;</span><br>
+                    <br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">for</span> <span class="c-white">(</span><span class="c-kw">let</span> <span class="c-attr">y</span> <span class="c-white">= 0; y &lt; height; y++) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">for</span> <span class="c-white">(</span><span class="c-kw">let</span> <span class="c-attr">x</span> <span class="c-white">= 0; x &lt; width; x++) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(binaryData[y * width + x] > 128) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sumX += x;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sumY += y;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;count++;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 安全防護：避免除以零</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(count === 0)</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-white">{ x: width / 2, y: height / 2 };</span><br>
+                    <br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-white">{ x: sumX / count, y: sumY / count };</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        當畫面中<strong>完全沒有目標像素</strong>（<code>count === 0</code>）時，若直接執行除法將產生 <code>NaN</code>，
+                        可能導致下游控制邏輯崩潰甚至讓馬達失控。務必在計算前加入零點數防護，回傳影像中心點作為安全預設值。
+                    </div>
+                </div>
+
+                <h2>手算練習：L 型物體的質心</h2>
+
+                <p>
+                    假設一個 4×4 的方格中有一個 L 型物體，目標像素座標分別為：
+                    <code>(0,0)</code>、<code>(0,1)</code>、<code>(0,2)</code>、<code>(1,2)</code>，共 4 個像素。
+                </p>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>座標軸</th>
+                        <th>總和</th>
+                        <th>平均（質心）</th>
+                    </tr>
+                    <tr>
+                        <td>X 軸</td>
+                        <td>0 + 0 + 0 + 1 = 1</td>
+                        <td>1 / 4 = <strong>0.25</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Y 軸</td>
+                        <td>0 + 1 + 2 + 2 = 5</td>
+                        <td>5 / 4 = <strong>1.25</strong></td>
+                    </tr>
+                </table>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        質心座標 (0.25, 1.25) 並不落在任何一個像素上——這是正常的。質心是一個數學上的連續值，
+                        它代表的是物體的「重心平衡點」，而非某個特定像素的位置。在後續的誤差計算中，
+                        我們只需要質心的 X 座標來判斷偏移方向。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -658,49 +713,114 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>📏 2. 視覺誤差 (Visual Error) 的定義 (20 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-<div class="space-y-6">
-<ul class="space-y-4 text-gray-600 leading-relaxed">
-<li class="flex gap-3">
-<span class="text-blue-500 font-bold">●</span>
-<span><strong>參考基準點：</strong>影像中心點。例如 $320$ 寬影像，中心是 $160$。</span>
-</li>
-<li class="flex gap-3">
-<span class="text-blue-500 font-bold">●</span>
-<span><strong>誤差公式：</strong>$Error = \bar{x} - Center_{image}$</span>
-</li>
-</ul>
-<div class="grid grid-cols-2 gap-4">
-<div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
-<div class="text-blue-600 font-bold mb-1">$Error &gt; 0$</div>
-<p class="text-xs text-blue-800">目標偏右，車子需要<strong>右轉修正</strong>。</p>
-</div>
-<div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100">
-<div class="text-indigo-600 font-bold mb-1">$Error &lt; 0$</div>
-<p class="text-xs text-indigo-800">目標偏左，車子需要<strong>左轉修正</strong>。</p>
-</div>
-</div>
-</div>
-<div class="bg-slate-900 p-8 rounded-3xl flex flex-col justify-center items-center text-center">
-<div class="relative w-full h-24 bg-white/5 rounded-lg border border-white/10 mb-6 flex items-center justify-center">
-<div class="absolute inset-y-0 left-1/2 w-0.5 bg-blue-500/50 dashed"></div>
-<div class="w-4 h-4 rounded-full bg-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.8)] absolute" style="left: 75%;"></div>
-<div class="absolute top-2 left-1/2 -translate-x-1/2 text-[10px] text-blue-300">
-                                        CENTER (160)</div>
-<div class="absolute bottom-2 left-[75%] -translate-x-1/2 text-[10px] text-emerald-300">
-                                        CENTROID (240)</div>
-</div>
-<h4 class="font-bold text-white mb-2">思考任務</h4>
-<p class="text-sm text-slate-400">若目標物體完全消失（總點數 $N=0$），程式應如何避免「除以零」的崩潰？</p>
-</div>
-</div>
+                <h1>視覺誤差 (Visual Error) 的定義</h1>
+
+                <p>
+                    有了質心座標，下一步是回答一個關鍵問題：<strong>目標偏離了畫面中心多遠、往哪個方向？</strong>
+                    這就是「視覺誤差 (Visual Error)」的定義——它是質心位置與參考基準點（通常是影像中心）之間的有方向距離。
+                </p>
+
+                <p>
+                    視覺誤差是連接「感知」與「控制」的數學橋樑。它將攝影機看到的空間資訊，
+                    轉譯為一個帶有正負號的數值——正值代表目標偏右，負值代表偏左，零代表完美對齊。
+                    馬達控制系統只需要這一個數字，就能決定「該往哪轉、轉多少」。
+                </p>
+
+                <h2>誤差計算公式</h2>
+
+                <p>
+                    以水平方向為例，假設影像寬度為 <code>W</code> 像素，影像中心點的 X 座標為 <code>W / 2</code>：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 視覺誤差計算</span><br>
+                    <span class="c-kw">let</span> <span class="c-attr">imageCenter</span> <span class="c-white">= width / 2;</span> <span class="c-comment">// 例如：320 / 2 = 160</span><br>
+                    <span class="c-kw">let</span> <span class="c-attr">error</span> <span class="c-white">= centroidX - imageCenter;</span><br>
+                    <br>
+                    <span class="c-comment">// error &gt; 0 → 目標偏右 → 車子需右轉修正</span><br>
+                    <span class="c-comment">// error &lt; 0 → 目標偏左 → 車子需左轉修正</span><br>
+                    <span class="c-comment">// error = 0 → 完美對齊 → 直行</span>
+                </div>
+
+                <h2>誤差的正負號與物理意義</h2>
+
+                <p>
+                    誤差的<strong>正負號</strong>決定了修正方向，<strong>絕對值</strong>決定了修正力道。
+                    以下表格列出不同場景下的誤差值與對應行為：
+                </p>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>質心位置 (centroidX)</th>
+                        <th>影像中心</th>
+                        <th>誤差 (Error)</th>
+                        <th>物理意義</th>
+                    </tr>
+                    <tr>
+                        <td>240</td>
+                        <td>160</td>
+                        <td><strong>+80</strong></td>
+                        <td>目標大幅偏右，需要強力右轉修正</td>
+                    </tr>
+                    <tr>
+                        <td>170</td>
+                        <td>160</td>
+                        <td><strong>+10</strong></td>
+                        <td>目標微偏右，輕微修正即可</td>
+                    </tr>
+                    <tr>
+                        <td>160</td>
+                        <td>160</td>
+                        <td><strong>0</strong></td>
+                        <td>完美對齊，保持直行</td>
+                    </tr>
+                    <tr>
+                        <td>80</td>
+                        <td>160</td>
+                        <td><strong>−80</strong></td>
+                        <td>目標大幅偏左，需要強力左轉修正</td>
+                    </tr>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        上述誤差值的單位是「像素」。在 320 像素寬的影像中，最大誤差為 ±160 像素。
+                        但不同解析度的攝影機會產生不同範圍的數值，這會導致同一套控制參數在不同裝置上表現不一致。
+                        解決方案就是下一單元要學習的<strong>正規化 (Normalization)</strong>。
+                    </div>
+                </div>
+
+                <h2>邊界情況的防護</h2>
+
+                <p>
+                    在實際運作中，有幾種特殊情況需要特別處理：
+                </p>
+
+                <ul>
+                    <li><strong>目標消失 (N = 0)</strong>：畫面中完全沒有目標像素。若直接計算質心會產生除以零錯誤。
+                        建議回傳誤差 0（保持直行）或使用上一幀的誤差值。</li>
+                    <li><strong>多目標干擾</strong>：背景雜訊產生了非目標的像素群，拉偏了質心。
+                        可透過「最小像素門檻」過濾：當 <code>N &lt; 10</code> 時視為雜訊，不更新質心。</li>
+                    <li><strong>目標跨越邊界</strong>：目標物體部分超出畫面。此時質心會被拉向可見部分，
+                        誤差可能比實際偏移量小。</li>
+                </ul>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        當 <code>N = 0</code> 時，切勿讓車輛保持上一次的轉向指令——這會導致車輛「盲衝」出賽道。
+                        安全的做法是將誤差歸零並降低車速，或觸發 Failsafe 停車機制。
+                        這個觀念將在閉迴路控制單元中深入探討。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -714,46 +834,104 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔄 3. 數據正規化 (Normalization) (20 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-<div class="space-y-6">
-<p class="text-gray-600 leading-relaxed">
-<strong>核心概念：</strong>將誤差縮放到 $[-1, 1]$ 區間。
-                            </p>
-<p class="text-sm text-gray-500 italic bg-gray-50 p-4 rounded-xl">
-                                "這樣無論影像解析度是 160 還是 1280，控制邏輯都能通用，這就是演算法的抽象化。"
-                            </p>
-<div class="p-6 bg-purple-50 rounded-2xl border border-purple-100">
-<h5 class="font-bold text-purple-900 mb-3 flex items-center gap-2">
-<span>🌐</span> 線上任務：預習「視野分區」
-                                </h5>
-<p class="text-sm text-gray-700 leading-relaxed">
-                                    思考如何將 $160 \times 120$ 的影像切成<strong>上、中、下</strong>三段，來預測前方的彎道變化？
-                                </p>
-</div>
-</div>
-<div class="flex flex-col justify-center">
-<div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-<h4 class="font-bold text-slate-800 mb-4">預習觀察</h4>
-<ul class="space-y-3 text-sm text-slate-600">
-<li class="flex items-center gap-2">
-<span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
-<span>觀察不同解析度下，同一個物體偏離程度的數值變化。</span>
-</li>
-<li class="flex items-center gap-2">
-<span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
-<span>定義誤差值 $e$ (Error) 的物理意義。</span>
-</li>
-</ul>
-</div>
-</div>
-</div>
+                <h1>數據正規化 (Normalization)</h1>
+
+                <p>
+                    上一單元計算出的視覺誤差是以「像素」為單位的原始值。
+                    問題在於：同一個物體在 320 像素寬的影像中最大誤差為 ±160，但在 640 像素寬的影像中最大誤差為 ±320。
+                    如果控制參數（<code>Kp</code>）是針對特定解析度調校的，更換攝影機或調整解析度後就會完全失效。
+                </p>
+
+                <p>
+                    <strong>正規化 (Normalization)</strong> 解決了這個問題：將誤差縮放到 <code>[-1.0, 1.0]</code> 的標準區間。
+                    正規化後，<code>-1.0</code> 代表目標在畫面最左邊，<code>+1.0</code> 代表最右邊，<code>0</code> 代表正中央——
+                    無論攝影機解析度是 160 還是 1280，這套控制邏輯都能通用。這就是演算法的<strong>抽象化</strong>。
+                </p>
+
+                <h2>正規化公式</h2>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 正規化：將像素誤差縮放到 [-1.0, 1.0]</span><br>
+                    <span class="c-kw">let</span> <span class="c-attr">halfWidth</span> <span class="c-white">= width / 2;</span><br>
+                    <span class="c-kw">let</span> <span class="c-attr">rawError</span> <span class="c-white">= centroidX - halfWidth;</span><br>
+                    <span class="c-kw">let</span> <span class="c-attr">normalizedError</span> <span class="c-white">= rawError / halfWidth;</span><br>
+                    <br>
+                    <span class="c-comment">// 範例（320px 寬影像）：</span><br>
+                    <span class="c-comment">// centroidX = 240 → rawError = 80 → normalized = 0.5</span><br>
+                    <span class="c-comment">// centroidX = 80  → rawError = -80 → normalized = -0.5</span><br>
+                    <span class="c-comment">// centroidX = 160 → rawError = 0   → normalized = 0.0</span>
+                </div>
+
+                <p>
+                    正規化的數學本質是<strong>線性映射</strong>：將原始值域 <code>[0, W]</code> 映射到 <code>[-1.0, 1.0]</code>。
+                    這保證了誤差與偏移量之間的線性關係——目標偏離一倍，正規化誤差也精確翻倍。
+                </p>
+
+                <h2>死區 (Deadzone) 機制</h2>
+
+                <p>
+                    在現實環境中，即使車輛已經對齊賽道中心，質心仍會因為攝影機抖動、光影變化而產生微小的來回跳動。
+                    如果控制器對這些微小波動都做出反應，馬達將不停地左右微調，造成不必要的能耗與機械磨損——甚至使車身輕微蛇行。
+                </p>
+
+                <p>
+                    <strong>死區 (Deadzone)</strong> 是解決這個問題的工程策略：
+                    當正規化誤差的絕對值小於一個設定的門檻值時，直接將誤差歸零，不觸發修正。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-kw">function</span> <span class="c-tag">normalizeError</span><span class="c-white">(centroidX, width, deadzone) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">let</span> <span class="c-attr">halfWidth</span> <span class="c-white">= width / 2;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">let</span> <span class="c-attr">rawError</span> <span class="c-white">= centroidX - halfWidth;</span><br>
+                    <br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 死區判定：微小偏移不觸發修正</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(Math.abs(rawError) &lt; deadzone)</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-white">0;</span><br>
+                    <br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-white">rawError / halfWidth;</span><br>
+                    <span class="c-white">}</span><br>
+                    <br>
+                    <span class="c-comment">// 使用範例：deadzone = 5 像素</span><br>
+                    <span class="c-kw">let</span> <span class="c-attr">error</span> <span class="c-white">= normalizeError(163, 320, 5);</span><br>
+                    <span class="c-comment">// rawError = 3, |3| &lt; 5 → 回傳 0（不修正）</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        死區大小需要仔細權衡：設太大會讓車輛在偏離中心較多時仍不修正（反應遲鈍）；
+                        設太小則無法有效抑制抖動。典型的起始值是 <strong>3–8 像素</strong>，
+                        實際值需根據攝影機的雜訊程度與賽道寬度進行調校。
+                    </div>
+                </div>
+
+                <h2>ROI（感興趣區域）進階優化</h2>
+
+                <p>
+                    正規化解決了解析度依賴問題，但還有一個進階技巧可以大幅提升循跡穩定性：
+                    <strong>ROI (Region of Interest)</strong>。不掃描整張影像，而是只計算畫面特定區域的質心。
+                </p>
+
+                <ul>
+                    <li><strong>下半部 ROI</strong>：只掃描影像下半部（靠近車輛的區域），減少遠處雜訊干擾，質心更穩定。</li>
+                    <li><strong>多區域 ROI</strong>：將影像分為上、中、下三段分別計算質心，上段可預測前方彎道走向。</li>
+                    <li><strong>動態 ROI</strong>：根據上一幀的質心位置，動態調整下一幀的掃描區域，進一步減少運算量。</li>
+                </ul>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在作業中，嘗試將 160×120 的影像分為上下兩半，分別計算質心。觀察上半部質心是否能提前預測即將到來的彎道方向。
+                        這個技巧在進階賽道中可以顯著提升車輛的過彎流暢度。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -832,16 +1010,113 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>請回答以下問題，測試你對本模組內容的理解程度。每題僅有一個正確答案。</p>
+
+                <form id="quiz-form" onsubmit="return false;" style="margin-top:24px;">
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">1. 影像中質心 (Centroid) 的計算方式為何？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 取影像四個角落座標的平均
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 所有目標像素座標的加權平均
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 影像中最亮像素的座標
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 影像中心點的固定座標
+                        </label>
+                        <div id="fb-q1" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">2. 視覺誤差 (Visual Error) 的基本計算方式為何？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 目標大小除以畫面寬度
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 質心位置減去設定點 (Set-point) 位置
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 畫面中心的像素值
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 前後兩幀質心的距離差
+                        </label>
+                        <div id="fb-q2" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">3. 正規化 (Normalization) 誤差值的目的是什麼？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 增加計算精度
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 將誤差映射到與解析度無關的通用範圍（如 -1 到 1）
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 壓縮誤差值以節省頻寬
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 消除誤差中的雜訊
+                        </label>
+                        <div id="fb-q3" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">4. 在循跡車應用中，質心的 X 座標代表什麼物理意義？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 車速的大小
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 賽道線在畫面中的水平位置
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 攝影機的拍攝角度
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 環境光線的強度
+                        </label>
+                        <div id="fb-q4" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="display:flex;gap:12px;margin-top:20px;">
+                        <button type="button" class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button type="button" class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                    </div>
+                    <div id="quiz-result" style="margin-top:16px;font-size:15px;font-weight:600;display:none;"></div>
+                </form>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -899,9 +1174,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「質心計算與視覺誤差」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「質心計算與視覺誤差」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -917,7 +1192,8 @@
         { id: 3, label: '📏 2. 視覺誤差 (Visual Error) 的定義 (20 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🔄 3. 數據正規化 (Normalization) (20 min)', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '150 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',     time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -937,6 +1213,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1038,8 +1315,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'B', q3: 'B', q4: 'B' };
+    const QUIZ_EXPLANATIONS = {
+        q1: '質心是所有目標像素座標的加權平均位置，將成千上萬的像素資訊壓縮為一個代表性的位置數值。',
+        q2: '誤差 = 質心位置 − 設定點位置。正值表示目標偏右（需左轉修正），負值表示偏左（需右轉修正）。',
+        q3: '正規化將像素級的誤差值映射到 [-1, 1] 等標準範圍，使控制邏輯與解析度解耦，更換攝影機時無需重新調參。',
+        q4: '質心 X 座標反映賽道線在畫面中的水平位置，取代了成千上萬的像素資訊，成為控制系統唯一需要的導航輸入。'
+    };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const fb = document.getElementById(`fb-${q}`);
+            if (!selected) {
+                fb.style.display = 'block';
+                fb.innerHTML = '<span style="color:#d13438;">⚠ 請選擇一個答案</span>';
+                continue;
+            }
+            fb.style.display = 'block';
+            if (selected.value === correct) {
+                score++;
+                fb.innerHTML = `<span style="color:#107c10;">✔ 正確！</span> ${QUIZ_EXPLANATIONS[q]}`;
+            } else {
+                fb.innerHTML = `<span style="color:#d13438;">✘ 不正確。正確答案是 ${correct}。</span> ${QUIZ_EXPLANATIONS[q]}`;
+            }
+        }
+        const result = document.getElementById('quiz-result');
+        result.style.display = 'block';
+        if (score === total) {
+            result.innerHTML = `<span style="color:#107c10;">🎉 滿分！你答對了全部 ${total} 題！</span>`;
+            markDone(6);
+        } else {
+            result.innerHTML = `<span style="color:#d13438;">你答對了 ${score} / ${total} 題。再試一次吧！</span>`;
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= Object.keys(QUIZ_ANSWERS).length; i++) {
+            const fb = document.getElementById(`fb-q${i}`);
+            if (fb) { fb.style.display = 'none'; fb.innerHTML = ''; }
+        }
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 05：電腦視覺基礎';
 </script>
 
 <!-- Define Resources -->

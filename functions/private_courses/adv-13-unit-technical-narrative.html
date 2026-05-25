@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>視覺敘事：如何展示技術專案 - Vibe Coding Learn</title>
+    <title>視覺敘事：如何展示技術專案 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 13 - 技術敘事</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">視覺敘事：如何展示技術專案</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 13</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>視覺敘事：如何展示技術專案</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 13</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,15 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>視覺敘事：如何展示技術專案</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    歡迎來到本模組！本單元聚焦於 <strong>視覺敘事：如何展示技術專案</strong>。
+                    你花了數週打造的精密控制系統，如果只用一句「我做了一台遙控車」來介紹，那所有的技術深度都將被埋沒。
+                    本模組將教你運用「英雄之旅」敘事框架、專業架構圖與子母畫面 Demo 影片，把你的工程實力轉化為一份令面試官或評審一眼驚艷的技術作品集。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境設定</div>
+                    想像你正站在科展評審面前，只有 60 秒的時間。你的車子能自動循跡、延遲低於 40ms、還具備斷線自癒能力——但如果你只是低頭念代碼，評審只會記住「又一台遙控車」。
+                    如何在極短時間內用視覺證據與故事張力讓技術被「看見」？請先觀看教學影片，掌握技術佈道的核心策略。
                 </div>
 
                 <h2>教學影片</h2>
@@ -576,7 +576,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -591,59 +591,85 @@
                 </div>
 
                 <h1>📖 1. 英雄之旅：技術敘事的骨架</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                別只說 "I made a car"，試著講一個關於「克服極限」的故事。面試官只有 30 秒能被你吸引，你需要一套具備邏輯與張力的敘事框架。
-                            </p>
-<div class="bg-violet-50 p-6 rounded-2xl border border-violet-100 text-justify">
-<h4 class="font-bold text-violet-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed text-center text-justify">
-                                    Narrative Structure</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify text-justify">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-violet-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify text-left">挑戰 (The
-                                                Problem)</strong>：為什麼要做這個專案？它解決了什麼現實痛點。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-violet-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify">掙扎 (The
-                                                Struggle)</strong>：開發中遇到了什麼障礙（延遲、崩潰、雜訊）？</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-violet-500 rounded-full mt-1 text-justify text-left"></span>
-<div><strong class="text-justify">突破 (The Solution)</strong>：你用了什麼黑科技（PID, FSM,
-                                            Protocol）解決它。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-violet-500/5 group-hover:bg-violet-500/10 transition-colors text-justify">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-center text-justify">
-                                Story Arc Visualization</h4>
-<div class="relative z-10 flex flex-col items-center gap-2 text-justify">
-<div class="flex items-end gap-1 h-20 text-justify">
-<div class="w-4 bg-slate-700 h-8 text-justify"></div>
-<div class="w-4 bg-violet-500 h-16 animate-pulse text-justify"></div>
-<div class="w-4 bg-slate-700 h-12 text-justify"></div>
-<div class="w-4 bg-emerald-500 h-20 text-justify"></div>
-</div>
-<div class="flex justify-between w-full text-[7px] text-slate-500 font-mono tracking-tighter text-justify">
-<span>IDEATION</span>
-<span>STUCK</span>
-<span>PIVOT</span>
-<span>SUCCESS</span>
-</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest text-center text-justify uppercase font-black">
-                                Emotional Engagement Graph</p>
-</div>
-</div>
-                
+
+                <p>
+                    你花了數週打造的精密控制系統，實作了 PID 演算法、二進位通訊協議和斷線自癒機制——
+                    但如果你只用一句「我做了一台遙控車」來介紹，所有的技術深度都將被埋沒。
+                    在科展、面試或開源社群中，<strong>技術的價值不在於它有多複雜，而在於它能被多少人理解</strong>。
+                    這就是技術敘事 (Technical Narrative) 的力量。
+                </p>
+
+                <p>
+                    好萊塢編劇大師 Joseph Campbell 提出的「英雄之旅 (Hero's Journey)」是人類最古老且最有效的敘事框架。
+                    它的結構——<strong>平凡世界 → 遭遇挑戰 → 歷經掙扎 → 獲得突破 → 帶著成果回歸</strong>——
+                    同樣適用於技術專案的展示。你的專案就是一場英雄之旅，而你就是那位克服技術挑戰的英雄。
+                </p>
+
+                <h2>技術敘事的三幕結構</h2>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>挑戰 (The Problem)</h4>
+                            <p>清楚定義你要解決的問題與痛點。不是「我想做一台遙控車」，而是「如何在 BLE 頻寬僅 20 bytes/packet 的限制下，實現低於 40ms 延遲的即時控制？」越具體、越有技術張力的問題描述，越能吸引專業聽眾的注意。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>掙扎 (The Struggle)</h4>
+                            <p>誠實展示開發中遇到的障礙與失敗。例如：「初版使用 JSON 協議，導致控制延遲高達 200ms，車子轉彎時像在水中移動。」「第一次斷線測試時，車子直接撞牆。」這些掙扎讓你的故事有了人性與張力。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>突破 (The Solution)</h4>
+                            <p>展示你的解決方案與成果數據。「透過自訂二進位協議，將封包從 42 bytes 壓縮到 2 bytes，延遲降低到 35ms，更新率提升 5 倍。」用具體的數字證明你的方案有效——這才是技術人的說服力。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>弱敘事 vs. 強敘事的差異</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>面向</th><th style="color:var(--ms-red);">弱敘事</th><th style="color:var(--ms-green);">強敘事</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>專案簡介</td><td>「我做了一台藍牙遙控車」</td><td>「我打造了一套延遲 &lt;40ms 的即時控制系統」</td></tr>
+                        <tr><td>技術描述</td><td>「我用了 PID」</td><td>「PID 讓循跡誤差從 ±15cm 收斂到 ±2cm」</td></tr>
+                        <tr><td>挑戰描述</td><td>「遇到一些困難」</td><td>「JSON 封包佔滿 BLE 頻寬，更新率僅 12Hz」</td></tr>
+                        <tr><td>成果展示</td><td>「車子可以動了」</td><td>「斷線 1.2s 內自動煞停，0 次失控紀錄」</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>30 秒法則</strong>
+                        無論是科展評審、面試官還是 GitHub 訪客，他們通常只會給你 <strong>30 秒</strong>的注意力。
+                        你的 README 第一段、影片前 10 秒、口頭簡報的開場白，都必須在這段時間內傳達出最核心的技術亮點與成果。
+                        如果 30 秒內無法吸引他們，後面的內容再精彩也無濟於事。
+                    </div>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>適應受眾</strong>
+                        面對不同受眾時，敘事的重點應有所調整：對<strong>技術面試官</strong>著重演算法與架構決策；
+                        對<strong>科展評審</strong>強調問題解決過程與實驗數據；
+                        對<strong>非技術受眾</strong>則用類比和視覺化來取代專業術語。
+                        同一個專案，可以有三種不同的敘事版本。
+                    </div>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -658,48 +684,95 @@
                 </div>
 
                 <h1>🎨 2. 邏輯視覺化：讓代碼「被看見」</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                看不見的代碼很難被外部欣賞。利用流程圖、架構圖與子母畫面展示，將抽象的邏輯轉化為直觀的「視覺證據」，增強說服力。
-                            </p>
-<div class="bg-pink-50 p-8 rounded-3xl border border-pink-100 text-justify">
-<h4 class="text-pink-900 font-bold mb-4 text-xs uppercase tracking-widest text-center text-justify text-justify">
-                                    Visual Assets Checklist</h4>
-<ul class="text-[10px] text-slate-500 text-left space-y-2 text-justify">
-<li class="flex items-center gap-2 italic text-justify text-left"><span class="w-1 h-1 bg-pink-400 rounded-full"></span> 系統架構圖 (Architecture
-                                        Diagrams)</li>
-<li class="flex items-center gap-2 italic text-justify text-left"><span class="w-1 h-1 bg-pink-400 rounded-full"></span> 指令/數據封包格式圖 (Protocol Specs)
-                                    </li>
-<li class="flex items-center gap-2 italic text-justify text-left"><span class="w-1 h-1 bg-pink-400 rounded-full"></span> PID 誤差修正實測波形 (Waveform
-                                        Proof)</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-pink-500/5 text-justify"></div>
-<h4 class="text-pink-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-center text-justify">
-                                Data Flow Mapping</h4>
-<div class="relative z-10 flex gap-4 items-center text-justify">
-<div class="p-2 border border-slate-600 rounded text-[8px] text-justify">ESP32 CORE
-                                </div>
-<div class="text-pink-500 animate-[bounce_1s_infinite] text-justify">→</div>
-<div class="p-2 border border-slate-600 rounded text-[8px] text-justify text-left">BLE
-                                    MESH</div>
-<div class="text-pink-500 animate-[bounce_1s_infinite] text-justify text-left">→</div>
-<div class="p-2 bg-pink-600 rounded text-[8px] font-bold shadow-[0_0_15px_rgba(236,72,153,0.5)] text-justify">
-                                    DASHBOARD UI</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-8 font-mono tracking-widest uppercase text-center text-justify">
-                                Transparent Logic Path</p>
-</div>
-</div>
-                
+
+                <p>
+                    程式碼是抽象的——它住在文字編輯器裡，看不見、摸不著。
+                    但你用程式碼建構的<strong>邏輯、架構與數據流</strong>，卻可以透過視覺化手段被「看見」。
+                    一張精心繪製的架構圖，往往比一千行程式碼更能讓人理解你的系統設計。
+                    這就是為什麼頂尖的技術文件和開源專案的 README，幾乎都會包含架構圖、流程圖和性能圖表。
+                </p>
+
+                <p>
+                    視覺化不僅是展示工具，更是<strong>思考工具</strong>。
+                    當你試圖用圖表描繪系統架構時，你會被迫釐清每個模組之間的關係、數據如何流動、
+                    哪些是關鍵路徑。這個過程本身就是一次深度的架構審視。
+                </p>
+
+                <h2>三類核心視覺資產</h2>
+
+                <h3>1. 系統架構圖 (Architecture Diagram)</h3>
+                <p>
+                    展示系統中所有主要模組及其連接方式。對於遙控車專案，應涵蓋三個層次：
+                    <strong>物理層</strong>（ESP32、馬達、感測器）、
+                    <strong>通訊層</strong>（BLE/WebSocket 協議）、以及
+                    <strong>介面層</strong>（Web Dashboard）。
+                    讓觀看者能在 10 秒內理解數據是如何從搖桿流向馬達的。
+                </p>
+
+                <h3>2. 通訊協議規格圖 (Protocol Specification)</h3>
+                <p>
+                    用圖表展示封包格式、欄位定義與編解碼流程。
+                    這不僅幫助他人理解你的設計，也是團隊協作時不可或缺的文件。
+                </p>
+
+                <h3>3. 性能實測波形 (Performance Waveform)</h3>
+                <p>
+                    用截圖或 GIF 展示 Dashboard 上的即時波形——PID 修正過程、延遲分佈、更新率曲線。
+                    這些是你技術實力的<strong>視覺證據</strong>，比任何文字描述都更有說服力。
+                </p>
+
+                <h2>使用 Mermaid 繪製架構圖</h2>
+
+                <p>
+                    <a href="https://mermaid.js.org/">Mermaid</a> 是一個基於文字描述的圖表語法，
+                    可以直接嵌入 Markdown 文件中，GitHub 會自動渲染為圖表。
+                    這意味著你的架構圖可以和程式碼一起被版本控制，無需額外的設計工具。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">```mermaid</span><br>
+<span class="c-kw">graph LR</span><br>
+&nbsp;&nbsp;<span class="c-attr">A</span><span class="c-white">[📱 Web Dashboard] -->|WebSocket| </span><span class="c-attr">B</span><span class="c-white">[🌐 ESP32 Server]</span><br>
+&nbsp;&nbsp;<span class="c-attr">B</span><span class="c-white"> -->|PWM Signal| </span><span class="c-attr">C</span><span class="c-white">[⚙️ Motor Driver]</span><br>
+&nbsp;&nbsp;<span class="c-attr">C</span><span class="c-white"> -->|Encoder Feedback| </span><span class="c-attr">B</span><br>
+&nbsp;&nbsp;<span class="c-attr">B</span><span class="c-white"> -->|Telemetry JSON| </span><span class="c-attr">A</span><br>
+<span class="c-comment">```</span>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>視覺工具比較</strong>
+                        <strong>Mermaid</strong> 適合快速繪製流程圖與架構圖，且可嵌入 Markdown；
+                        <strong>Excalidraw</strong> 適合手繪風格的概念圖，視覺親和力高；
+                        <strong>Figma / draw.io</strong> 適合需要精確排版的專業級視覺資產。
+                        建議 README 使用 Mermaid，作品集使用 Figma 導出的高解析度圖片。
+                    </div>
+                </div>
+
+                <h2>視覺資產檢查清單</h2>
+
+                <ul class="ms-checklist">
+                    <li><div class="check-box" onclick="toggleCheck(this)"></div> 系統架構圖——標註物理層、通訊層與介面層</li>
+                    <li><div class="check-box" onclick="toggleCheck(this)"></div> 通訊封包格式圖——展示 JSON vs 精簡協議的結構</li>
+                    <li><div class="check-box" onclick="toggleCheck(this)"></div> PID 修正波形截圖——優化前 vs 優化後的對比</li>
+                    <li><div class="check-box" onclick="toggleCheck(this)"></div> 性能對比表格——延遲、更新率、穩定性的量化數據</li>
+                    <li><div class="check-box" onclick="toggleCheck(this)"></div> Dashboard 操控 GIF——展示即時控制的流暢度</li>
+                </ul>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>10 秒測試</strong>
+                        完成架構圖後，找一個不了解你專案的同學看 10 秒鐘，然後問他：「數據是怎麼從手機到馬達的？」
+                        如果他能大致說出來，你的圖就成功了。如果不能，代表圖表還需要簡化或加上更清楚的標註。
+                    </div>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -714,54 +787,92 @@
                 </div>
 
                 <h1>🎬 3. 實機演示與電梯簡報</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
-                                沒影片就沒真相 (Pics or it didn't happen)。錄製子母畫面 (PiP) 同步展示代碼邏輯與硬體動態，展現系統的毫秒級響應實力。
-                            </p>
-<div class="bg-violet-500/10 p-8 rounded-3xl border border-violet-500/20 shadow-inner text-justify text-justify">
-<h4 class="font-bold text-violet-400 mb-4 text-xs uppercase tracking-widest text-center text-justify text-left">
-                                    Master Demo Strategies</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify text-left">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-violet-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">子母畫面 (PiP)</strong>：左側放
-                                            Dashboard，右側放車子實際動態，證明低延遲控制。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-violet-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify text-justify">極限挑戰演示</strong>：拍攝馬達精確停靠或高速過彎的慢動作鏡頭，展現穩定度。
-                                        </div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-violet-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">30 秒原則</strong>：別錄太長！在影片前 10
-                                            秒內就要讓觀眾看到最炸裂的功能。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-violet-600/10 p-10 rounded-3xl border border-violet-500/20 text-center relative overflow-hidden group text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-violet-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify">
-</div>
-<h4 class="text-violet-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center text-justify">
-                                Professional Showcase</h4>
-<div class="w-full h-40 bg-black/60 rounded-xl relative overflow-hidden border border-slate-700 text-justify">
-<div class="absolute top-2 left-2 w-12 h-20 bg-slate-800 border border-slate-700 rounded text-[5px] p-1 text-justify text-left">
-                                    DASHBOARD</div>
-<div class="absolute inset-0 flex items-center justify-center text-justify">
-<div class="w-4 h-4 bg-slate-500 rounded-full animate-ping text-justify"></div>
-</div>
-<div class="absolute bottom-2 right-2 text-[8px] bg-red-600 px-1 rounded text-justify">●
-                                    REC</div>
-</div>
-<p class="text-[9px] text-slate-500 mt-6 font-mono uppercase tracking-widest text-center text-justify">
-                                Layout: Reality Sync Flow</p>
-</div>
-</div>
-                
+
+                <p>
+                    在科技業有句話：<strong>「Pics or it didn't happen」</strong>（沒有影片就等於沒發生）。
+                    無論你的系統有多精密，如果沒有一段展示影片，觀看者就無法感受到那種「指尖滑動搖桿，車子即時回應」的魔力。
+                    一段精心錄製的 Demo 影片，是你技術作品集中最具感染力的資產。
+                </p>
+
+                <p>
+                    專業的 Demo 影片不是隨手拿手機拍攝就好。它需要經過<strong>腳本設計</strong>、<strong>畫面構圖</strong>
+                    和<strong>敘事節奏</strong>的安排，讓觀看者在 60 秒內就能理解你做了什麼、為什麼厲害、以及你克服了哪些挑戰。
+                    其中，<strong>子母畫面 (Picture-in-Picture, PiP)</strong> 是展示軟硬體整合專案的黃金格式——
+                    同一個畫面中同時呈現 Dashboard 的數據動態和車體的實際運動，證明兩者的同步性。
+                </p>
+
+                <h2>60 秒電梯簡報結構</h2>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>0–10 秒：炸裂開場 (The Hook)</h4>
+                            <p>直接展示最令人驚豔的功能。例如：車子在全速行駛時突然斷線，然後在 1 秒內自動煞停。這個畫面比任何介紹語都有衝擊力。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>10–30 秒：技術亮點 (The Substance)</h4>
+                            <p>用 PiP 畫面展示 2–3 個核心技術特點。例如：Dashboard 上的延遲數字穩定在 35ms；PID 波形顯示精確的誤差修正曲線；協議壓縮讓更新率從 12Hz 飆升到 60Hz。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>30–50 秒：挑戰故事 (The Story)</h4>
+                            <p>用旁白簡述開發過程中最大的挑戰與突破。「初版使用 JSON 協議，控制延遲高達 200ms。透過自訂二進位協議，延遲降低了 83%。」</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>50–60 秒：收尾呼籲 (The Close)</h4>
+                            <p>總結專案的技術規格並引導觀看者到 GitHub 查看完整程式碼與文件。「完整原始碼與架構文件請見 GitHub，歡迎 Star 與 Fork。」</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>影片製作注意事項</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>項目</th><th style="color:var(--ms-green);">建議做法</th><th style="color:var(--ms-red);">避免做法</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>片長</td><td>60–90 秒，精準不拖沓</td><td>超過 3 分鐘，觀眾會跳離</td></tr>
+                        <tr><td>開場</td><td>前 5 秒展示最驚豔的功能</td><td>用 30 秒介紹自己和背景</td></tr>
+                        <tr><td>畫面</td><td>PiP 同時展示軟體 + 硬體</td><td>只拍車子或只錄螢幕</td></tr>
+                        <tr><td>音訊</td><td>清晰的技術旁白 + 字幕</td><td>背景噪音或無聲影片</td></tr>
+                        <tr><td>數據</td><td>畫面上標註關鍵數值</td><td>只有定性描述（「很快」「很穩」）</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>常見失誤</strong>
+                        最常見的 Demo 影片錯誤是<strong>錄太長</strong>和<strong>沒有重點</strong>。
+                        在錄製前先寫好 60 秒的逐句腳本，精確到每 10 秒要展示什麼內容。
+                        用手機的慢動作模式拍攝精確停靠或高速過彎的瞬間，能大幅提升影片的專業感。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>PiP 錄製工具</strong>
+                        macOS 可使用 <strong>OBS Studio</strong>（免費）建立子母畫面佈局：
+                        將螢幕擷取（Dashboard）設為主畫面，手機相機透過 <strong>Camo</strong> 或 <strong>EpocCam</strong>
+                        串流作為子畫面。錄完後用 iMovie 或 DaVinci Resolve 進行簡單剪輯與字幕添加。
+                    </div>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -840,16 +951,134 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>
+                    請回答以下問題，測試你對「<strong>技術敘事</strong>」的理解程度。
+                    選擇完畢後點擊「送出答案」查看結果與解析。
+                </p>
+
+                <div id="quiz-container" style="margin:24px 0;">
+
+                    <div class="quiz-question" id="quiz-q0" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">1. 技術文件中的「問題陳述（Problem Statement）」應該包含什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt0">
+                            <input type="radio" name="quiz-q0" value="0" style="accent-color:var(--ms-blue);">
+                            <span>完整的程式碼</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt1">
+                            <input type="radio" name="quiz-q0" value="1" style="accent-color:var(--ms-blue);">
+                            <span>現況痛點、目標狀態、以及為什麼現在需要解決</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt2">
+                            <input type="radio" name="quiz-q0" value="2" style="accent-color:var(--ms-blue);">
+                            <span>所有參考文獻</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt3">
+                            <input type="radio" name="quiz-q0" value="3" style="accent-color:var(--ms-blue);">
+                            <span>詳細的時程規劃</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp0" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q1" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">2. 撰寫技術報告時，「先結論、後細節」的寫作結構稱為什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt0">
+                            <input type="radio" name="quiz-q1" value="0" style="accent-color:var(--ms-blue);">
+                            <span>倒金字塔結構</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt1">
+                            <input type="radio" name="quiz-q1" value="1" style="accent-color:var(--ms-blue);">
+                            <span>時間順序法</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt2">
+                            <input type="radio" name="quiz-q1" value="2" style="accent-color:var(--ms-blue);">
+                            <span>因果分析法</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt3">
+                            <input type="radio" name="quiz-q1" value="3" style="accent-color:var(--ms-blue);">
+                            <span>比較對照法</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp1" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q2" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">3. 在技術簡報中，展示實驗數據時最重要的原則是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt0">
+                            <input type="radio" name="quiz-q2" value="0" style="accent-color:var(--ms-blue);">
+                            <span>使用越多顏色越好</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt1">
+                            <input type="radio" name="quiz-q2" value="1" style="accent-color:var(--ms-blue);">
+                            <span>數據必須可重現，並清楚標示測試條件與誤差範圍</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt2">
+                            <input type="radio" name="quiz-q2" value="2" style="accent-color:var(--ms-blue);">
+                            <span>只呈現最好的結果</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt3">
+                            <input type="radio" name="quiz-q2" value="3" style="accent-color:var(--ms-blue);">
+                            <span>用最複雜的圖表</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp2" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q3" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">4. 在 GitHub 上撰寫 Pull Request 描述時，最佳實踐是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt0">
+                            <input type="radio" name="quiz-q3" value="0" style="accent-color:var(--ms-blue);">
+                            <span>只寫「修了一些 bug」</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt1">
+                            <input type="radio" name="quiz-q3" value="1" style="accent-color:var(--ms-blue);">
+                            <span>說明改了什麼、為什麼要改、如何測試、有什麼影響</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt2">
+                            <input type="radio" name="quiz-q3" value="2" style="accent-color:var(--ms-blue);">
+                            <span>複製貼上所有修改的程式碼</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt3">
+                            <input type="radio" name="quiz-q3" value="3" style="accent-color:var(--ms-blue);">
+                            <span>不寫描述，直接合併</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp3" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">送出答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+
+                <div id="quiz-result" style="display:none; margin-top:20px; padding:16px 20px; border-radius:6px; font-weight:600;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -907,9 +1136,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「視覺敘事：如何展示技術專案」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「視覺敘事：如何展示技術專案」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -925,7 +1154,8 @@
         { id: 3, label: '🎨 2. 邏輯視覺化：讓代碼「被看見」', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🎬 3. 實機演示與電梯簡報', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -945,6 +1175,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1046,8 +1277,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = [1, 0, 1, 1];
+    const QUIZ_EXPLANATIONS = ["問題陳述要讓讀者快速理解：目前的問題是什麼、期望達到什麼效果、以及為何此刻必須行動。","倒金字塔結構將最重要的結論放在最前面，讓忙碌的讀者能快速掌握重點，有興趣再深入細節。","科學報告要求數據的可重現性與完整性，必須交代實驗環境、方法與不確定性，讓他人能驗證。","好的 PR 描述讓審查者快速理解變更的目的、範圍與驗證方式，大幅提升程式碼審查效率。"];
+
+    function submitQuiz() {
+        let score = 0;
+        QUIZ_ANSWERS.forEach((ans, i) => {
+            const selected = document.querySelector(`input[name="quiz-q${i}"]:checked`);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            const qEl = document.getElementById(`quiz-q${i}`);
+            if (selected && parseInt(selected.value) === ans) {
+                score++;
+                qEl.style.borderColor = '#107c10';
+                expEl.style.background = '#dff6dd';
+                expEl.innerHTML = '<strong style="color:#107c10;">✓ 正確！</strong> ' + QUIZ_EXPLANATIONS[i];
+            } else {
+                qEl.style.borderColor = '#d13438';
+                expEl.style.background = '#fde7e9';
+                expEl.innerHTML = '<strong style="color:#d13438;">✗ 不正確。</strong> ' + QUIZ_EXPLANATIONS[i];
+            }
+            expEl.style.display = 'block';
+        });
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === QUIZ_ANSWERS.length) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.style.color = '#107c10';
+            resultEl.textContent = `🎉 滿分！你答對了全部 ${QUIZ_ANSWERS.length} 題！`;
+        } else {
+            resultEl.style.background = '#deecf9';
+            resultEl.style.color = '#005a9e';
+            resultEl.textContent = `你答對了 ${score} / ${QUIZ_ANSWERS.length} 題，請查看解析後再試一次。`;
+        }
+    }
+
+    function resetQuiz() {
+        QUIZ_ANSWERS.forEach((_, i) => {
+            const radios = document.querySelectorAll(`input[name="quiz-q${i}"]`);
+            radios.forEach(r => r.checked = false);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            expEl.style.display = 'none';
+            const qEl = document.getElementById(`quiz-q${i}`);
+            qEl.style.borderColor = '#e1dfdd';
+        });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 13：系統穩健性';
 </script>
 
 <!-- Define Resources -->

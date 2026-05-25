@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLE Notify 機制深論：「拉」到「推」 - Vibe Coding Learn</title>
+    <title>BLE Notify 機制深論：「拉」到「推」 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -471,9 +473,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">進階課程 3 - 單元 1</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +487,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">BLE Notify 機制深論：「拉」到「推」</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">進階課程 3</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,13 +509,13 @@
                 <h1>BLE Notify 機制深論：「拉」到「推」</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">進階課程 3</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
                 </div>
 
-                <p></p>
+                <p>從低效的輪詢模式蛻變為事件驅動的主動推送架構，深入 CCCD 訂閱握手機制與變動觸發優化，打造省電且低延遲的即時通訊。</p>
 
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
@@ -553,15 +553,14 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>BLE Notify 機制深論：「拉」到「推」</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    如果你的網頁每 100 毫秒就發一次 BLE Read 去問「現在感測器數據是多少？」，不僅浪費無線電資源，還會產生不可預期的延遲。
+                    <strong>BLE Notify 機制</strong>讓裝置在數據變化時主動推送，實現真正的事件驅動通訊——低延遲、省電、零輪詢開銷。
+                    本模組將帶你理解 Notify 的訂閱流程（CCCD）與 MTU 限制，掌握建構即時響應系統的核心通訊模式。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的無人車網頁控制台需要即時顯示陀螺儀數據。最初你用 <code>setInterval</code> 每 200ms 呼叫一次 BLE Read，結果畫面更新又慢又不穩定，而且手機電量消耗飛快。學長告訴你：「用 Notify 啊，讓 ESP32 主動推給你。」但你寫了 <code>startNotifications()</code> 卻什麼事都沒發生——原來是少了 CCCD 訂閱這一步「握手」。本模組將幫你徹底搞懂 Notify 的完整生命週期。
                 </div>
 
                 <h2>教學影片</h2>
@@ -575,7 +574,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -589,40 +588,105 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔄 1. 觀念翻轉：「我要數據」到「有數據通知我」 (25 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg leading-relaxed">
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-<div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
-<h4 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
-<span class="text-xl">📥</span> Read (拉 - Pull)
-                                        </h4>
-<p class="text-sm">客戶端（網頁）定時發送請求問：「現在座標是多少？」。</p>
-<p class="text-sm text-red-600 mt-2 font-medium">代價：即使數據沒變，也要消耗無線電頻寬，產生大量無效通訊。
-                                        </p>
-</div>
-<div class="bg-indigo-50 p-6 rounded-2xl border border-indigo-200">
-<h4 class="font-bold text-indigo-800 mb-3 flex items-center gap-2">
-<span class="text-xl">📤</span> Notify (推 - Push)
-                                        </h4>
-<p class="text-sm">客戶端先「訂閱 (Subscribe)」某個特徵值，當數值改變時，ESP32 主動推送封包。</p>
-<p class="text-sm text-green-700 mt-2 font-medium">優勢：低延遲、省電、僅在必要時占用頻寬。</p>
-</div>
-</div>
-<div class="bg-amber-50 p-6 rounded-xl border border-amber-100 mt-8">
-<h4 class="font-bold text-amber-800 mb-2 flex items-center gap-2">
-<span>🤔</span> 思考任務
-                                    </h4>
-<p class="text-amber-700">
-                                        思考為什麼「按鈕按下」或「感測器警報」絕對應該使用 Notify 而 Read？
-                                    </p>
-</div>
-</div>
+                <h1>觀念翻轉：「我要數據」到「有數據通知我」</h1>
+
+                <p>
+                    在 BLE 通訊中，數據的傳遞方式可以分為兩種截然不同的模型：<strong>Read（拉取）</strong>與 <strong>Notify（推送）</strong>。這兩者的差異不僅影響延遲與功耗，更決定了你的物聯網應用架構是「笨重的輪詢」還是「優雅的事件驅動」。
+                </p>
+
+                <h2>Read（拉取模型）：我要數據</h2>
+
+                <p>
+                    在 Read 模式下，客戶端（網頁）必須<strong>主動發起請求</strong>才能取得感測器數據。典型做法是使用 <code>setInterval()</code> 定時呼叫 <code>characteristic.readValue()</code>——即使感測器數據毫無變化，每次都會佔用一次完整的 BLE 請求-回應交易（Request-Response Transaction）。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// ❌ Read 模式：每 200ms 輪詢一次</span><br>
+                    <span class="c-tag">setInterval</span><span class="c-white">(</span><span class="c-kw">async</span> <span class="c-white">() =&gt; {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">val</span> <span class="c-white">= </span><span class="c-kw">await</span> <span class="c-white">characteristic.</span><span class="c-tag">readValue</span><span class="c-white">();</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">updateUI</span><span class="c-white">(val);</span> <span class="c-comment">// 即使數據沒變也要處理</span><br>
+                    <span class="c-white">}, 200);</span>
+                </div>
+
+                <h2>Notify（推送模型）：有數據通知我</h2>
+
+                <p>
+                    在 Notify 模式下，客戶端只需<strong>訂閱一次</strong>，之後由 ESP32 在數據變化時主動推送封包。網頁端透過事件監聽器（Event Listener）接收更新，完全無需輪詢。這種模式消除了無效通訊，實現了真正的事件驅動架構。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// ✅ Notify 模式：訂閱後被動接收</span><br>
+                    <span class="c-kw">await</span> <span class="c-white">characteristic.</span><span class="c-tag">startNotifications</span><span class="c-white">();</span><br>
+                    <span class="c-white">characteristic.</span><span class="c-tag">addEventListener</span><span class="c-white">(</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-str">'characteristicvaluechanged'</span><span class="c-white">,</span><br>
+                    <span class="c-white">&nbsp;&nbsp;(</span><span class="c-attr">event</span><span class="c-white">) =&gt; </span><span class="c-tag">updateUI</span><span class="c-white">(event.target.value)</span><br>
+                    <span class="c-white">);</span>
+                </div>
+
+                <h2>效能對比</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>比較項目</th>
+                            <th>Read（拉取）</th>
+                            <th>Notify（推送）</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>數據取得方式</td>
+                            <td>客戶端定時主動請求</td>
+                            <td>伺服端主動推送</td>
+                        </tr>
+                        <tr>
+                            <td>延遲</td>
+                            <td>取決於輪詢間隔（如 200ms）</td>
+                            <td>接近即時（&lt; 30ms）</td>
+                        </tr>
+                        <tr>
+                            <td>功耗</td>
+                            <td>高（持續無線電交易）</td>
+                            <td>低（僅變化時傳送）</td>
+                        </tr>
+                        <tr>
+                            <td>無效通訊</td>
+                            <td>大量（數據未變仍要請求）</td>
+                            <td>零（無變化 = 無封包）</td>
+                        </tr>
+                        <tr>
+                            <td>BLE 頻寬佔用</td>
+                            <td>每次請求 = 2 個封包（Req + Rsp）</td>
+                            <td>每次通知 = 1 個封包</td>
+                        </tr>
+                        <tr>
+                            <td>適合場景</td>
+                            <td>低頻、按需讀取（如設定值）</td>
+                            <td>高頻即時數據（如感測器串流）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        使用 <code>setInterval</code> + <code>readValue()</code> 來模擬即時更新，會在手機端造成嚴重的電池消耗。實測顯示，以 100ms 間隔持續輪詢 BLE Characteristic，手機藍牙模組功耗可達純 Notify 模式的 <strong>5~8 倍</strong>。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        任何「瞬時事件」（如按鈕按下、碰撞偵測、感測器警報）都應該使用 Notify，因為 Read 模式的輪詢間隔會產生不可預期的延遲，可能錯過短暫的事件觸發窗口。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -636,34 +700,119 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚙️ 2. CCCD 與 MTU 的核心限制 (20 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg leading-relaxed">
-<div class="bg-slate-800 text-indigo-300 p-8 rounded-2xl font-mono mb-8">
-<h4 class="text-white font-bold mb-4 border-b border-slate-700 pb-2">CCCD (Client
-                                Characteristic Configuration Descriptor)</h4>
-<p class="text-sm leading-relaxed mb-4">
-                                Notify 不是預設開啟的。網頁端必須寫入一個特殊的描述符（CCCD），告訴 ESP32：「我已經準備好接收通知了」。沒有這個「握手」，Notify 就不會運作。
-                            </p>
-<h4 class="text-white font-bold mb-4 border-b border-slate-700 pb-2 mt-6">MTU (Maximum
-                                Transmission Unit)</h4>
-<p class="text-sm leading-relaxed">
-                                單個 Notify 封包的大小限制（預設通常為 20-23 Bytes），這決定了我們 JSON 數據打包的上限。如要傳大數據，就必須「切片」。
-                            </p>
-</div>
-<div class="bg-indigo-50 p-6 rounded-xl border border-indigo-100">
-<h4 class="font-bold text-indigo-800 mb-2 flex items-center gap-2"><span>🎯</span> 學習目標</h4>
-<ul class="list-disc list-inside text-indigo-700 space-y-1">
-<li>繪製 BLE 通訊中的客戶端與服務端互動流程圖。</li>
-<li>理解 Client 訂閱 CCCD 的完整過程。</li>
-</ul>
-</div>
-</div>
+                <h1>CCCD 與 MTU 的核心限制</h1>
+
+                <p>
+                    Notify 機制並不是「開箱即用」的——它需要客戶端主動完成一個<strong>訂閱握手</strong>流程。這個握手的核心就是 <strong>CCCD（Client Characteristic Configuration Descriptor）</strong>。同時，每個 Notify 封包的大小也受 MTU 限制，這決定了單次推送能攜帶多少數據。
+                </p>
+
+                <h2>CCCD 是什麼？</h2>
+
+                <p>
+                    CCCD 是 BLE GATT 規範中定義的一個特殊描述符（Descriptor），UUID 為 <code>0x2902</code>。它附屬在每個支援 Notify 的 Characteristic 底下，用來記錄客戶端的「訂閱偏好」。只有當客戶端向 CCCD 寫入正確的值後，伺服器端（ESP32）才會開始向該客戶端發送通知。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>CCCD 值（16-bit）</th>
+                            <th>二進位</th>
+                            <th>含義</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>0x0000</code></td>
+                            <td><code>00000000 00000000</code></td>
+                            <td>關閉通知與指示（預設值）</td>
+                        </tr>
+                        <tr>
+                            <td><code>0x0001</code></td>
+                            <td><code>00000000 00000001</code></td>
+                            <td>啟用 <strong>Notification</strong>（不需確認）</td>
+                        </tr>
+                        <tr>
+                            <td><code>0x0002</code></td>
+                            <td><code>00000000 00000010</code></td>
+                            <td>啟用 <strong>Indication</strong>（需要確認回覆）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        <strong>Notify</strong> 與 <strong>Indicate</strong> 的差異在於：Notify 是「發射後不管」（Fire-and-Forget），伺服器不會等待客戶端回覆確認；而 Indicate 則要求客戶端回傳 ACK 確認收到。對於高頻感測器數據，Notify 更適合；對於關鍵控制指令，Indicate 更可靠。
+                    </div>
+                </div>
+
+                <h2>訂閱握手流程</h2>
+
+                <p>以下是 Web Bluetooth 啟用 Notify 的完整步驟：</p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>取得 Characteristic 參考</h4>
+                            <p>透過 <code>service.getCharacteristic(uuid)</code> 取得目標特徵值物件。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>呼叫 startNotifications()</h4>
+                            <p>此方法會自動向 CCCD 寫入 <code>0x0001</code>，完成訂閱握手。這是關鍵的「啟動開關」。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>註冊事件監聽器</h4>
+                            <p>透過 <code>addEventListener('characteristicvaluechanged', handler)</code> 接收後續的推送數據。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 完整的 Notify 訂閱流程</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">characteristic</span> <span class="c-white">= </span><span class="c-kw">await</span> <span class="c-white">service.</span><span class="c-tag">getCharacteristic</span><span class="c-white">(TX_UUID);</span><br><br>
+                    <span class="c-comment">// 步驟 1: 啟動通知（自動寫入 CCCD = 0x0001）</span><br>
+                    <span class="c-kw">await</span> <span class="c-white">characteristic.</span><span class="c-tag">startNotifications</span><span class="c-white">();</span><br><br>
+                    <span class="c-comment">// 步驟 2: 註冊事件監聽器</span><br>
+                    <span class="c-white">characteristic.</span><span class="c-tag">addEventListener</span><span class="c-white">(</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-str">'characteristicvaluechanged'</span><span class="c-white">,</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">handleNotification</span><br>
+                    <span class="c-white">);</span>
+                </div>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        如果你只呼叫了 <code>addEventListener()</code> 而忘記呼叫 <code>startNotifications()</code>，ESP32 端的 <code>notify()</code> 會被靜默忽略——因為 CCCD 仍為 <code>0x0000</code>（關閉狀態），伺服器不會向該客戶端發送任何通知封包。
+                    </div>
+                </div>
+
+                <h2>MTU 對 Notify 封包的限制</h2>
+
+                <p>
+                    每個 Notify 封包的最大數據量同樣受 ATT MTU 限制。在預設 MTU = 23 Bytes 的環境下，單次 Notify 最多只能攜帶 <strong>20 Bytes</strong> 的有效數據（扣除 3 Bytes ATT 標頭）。如果 ESP32 端呼叫 <code>notify()</code> 發送超過此限制的數據，超出部分將被靜默截斷。
+                </p>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        若要透過 Notify 推送大型 JSON 數據，必須在 ESP32 韌體端實作分段發送邏輯——將長字串切成多個 Notify 封包依序發出，並在前端的事件處理器中進行緩衝區重組。此流程與前一單元的 MTU 分段傳輸概念相同。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -677,31 +826,106 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚡ 3. 事件驅動的程式流程 (15 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg">
-<p>
-<strong>阻監聽：</strong>觀察 Web Bluetooth API 中的 <code>characteristicvaluechanged</code>
-                            事件。這與傳統的 <code>setInterval</code> 獲取數據有何本質上的不同？
-                        </p>
-<div class="bg-blue-900 text-blue-100 p-8 rounded-2xl shadow-inner mt-8">
-<h4 class="text-white font-bold text-xl mb-4 flex items-center gap-2">
-<span>🚀</span> 預習任務：代碼觀察
-                            </h4>
-<pre class="bg-black/30 p-4 rounded-lg text-sm font-mono overflow-x-auto text-blue-300">
-characteristic.startNotifications().then(_ =&gt; {
-  characteristic.addEventListener('characteristicvaluechanged', handleNotifications);
-});</pre>
-<p class="mt-4 text-blue-200">
-                                當 ESP32 端呼叫 <code>notify()</code> 時，JS 端的呼函式會「立即」被喚醒。
-                            </p>
-</div>
-</div>
+                <h1>事件驅動的程式流程</h1>
+
+                <p>
+                    BLE Notify 的核心價值在於將程式架構從「定時輪詢」轉變為<strong>事件驅動（Event-Driven）</strong>。在這種模式下，你的程式碼不再主動詢問數據，而是註冊一個回呼函式（Callback），當 ESP32 端觸發 <code>notify()</code> 時，瀏覽器會自動喚醒你的處理函式。這與 DOM 事件（如 <code>click</code>、<code>input</code>）的運作方式完全一致。
+                </p>
+
+                <h2>characteristicvaluechanged 事件</h2>
+
+                <p>
+                    Web Bluetooth API 提供了 <code>characteristicvaluechanged</code> 事件，每當 ESP32 端透過 <code>notify()</code> 推送新數據時，此事件就會被觸發。事件物件的 <code>event.target.value</code> 屬性包含接收到的原始位元組數據（型別為 <code>DataView</code>）。
+                </p>
+
+                <h3>完整的事件處理流程</h3>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 步驟 1: 啟動 Notify 並註冊監聽器</span><br>
+                    <span class="c-kw">async function</span> <span class="c-tag">subscribeToSensor</span><span class="c-white">(characteristic) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">await</span> <span class="c-white">characteristic.</span><span class="c-tag">startNotifications</span><span class="c-white">();</span><br>
+                    <span class="c-white">&nbsp;&nbsp;characteristic.</span><span class="c-tag">addEventListener</span><span class="c-white">(</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-str">'characteristicvaluechanged'</span><span class="c-white">,</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">handleNotification</span><br>
+                    <span class="c-white">&nbsp;&nbsp;);</span><br>
+                    <span class="c-white">}</span><br><br>
+                    <span class="c-comment">// 步驟 2: 處理收到的 Notify 數據</span><br>
+                    <span class="c-kw">function</span> <span class="c-tag">handleNotification</span><span class="c-white">(</span><span class="c-attr">event</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">decoder</span> <span class="c-white">= </span><span class="c-kw">new</span> <span class="c-tag">TextDecoder</span><span class="c-white">();</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">text</span> <span class="c-white">= decoder.</span><span class="c-tag">decode</span><span class="c-white">(event.target.value);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;console.</span><span class="c-tag">log</span><span class="c-white">(</span><span class="c-str">'收到推送:'</span><span class="c-white">, text);</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <h2>DataView 與文字解碼</h2>
+
+                <p>
+                    <code>event.target.value</code> 回傳的是 <code>DataView</code> 物件（原始位元組緩衝區），而非直接的字串。你需要使用 <code>TextDecoder</code> 將其轉換為可讀的 UTF-8 文字。如果 ESP32 端發送的是 JSON 字串，解碼後就可以直接傳入 <code>JSON.parse()</code>。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>DataView 方法</th>
+                            <th>用途</th>
+                            <th>適用場景</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>TextDecoder.decode()</code></td>
+                            <td>將位元組轉為 UTF-8 字串</td>
+                            <td>接收 JSON 文字數據</td>
+                        </tr>
+                        <tr>
+                            <td><code>getUint8(offset)</code></td>
+                            <td>讀取指定位置的單一位元組</td>
+                            <td>接收二進位感測器數據</td>
+                        </tr>
+                        <tr>
+                            <td><code>getInt16(offset, true)</code></td>
+                            <td>讀取 16-bit 有號整數（Little-Endian）</td>
+                            <td>讀取加速度計原始值</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        如果 ESP32 端以高頻率發送 Notify（例如每 20ms 一次），前端的事件處理器也會以同樣的頻率被觸發。如果 <code>handleNotification</code> 內包含耗時的 DOM 操作或 <code>JSON.parse()</code>，可能導致介面渲染卡頓。建議使用 <code>requestAnimationFrame</code> 或節流（Throttle）機制來控制 UI 更新頻率。
+                    </div>
+                </div>
+
+                <h2>資源清理：避免記憶體洩漏</h2>
+
+                <p>
+                    當使用者離開頁面或中斷 BLE 連線時，務必清除事件監聽器並停止通知訂閱，否則會造成記憶體洩漏或幽靈回呼（Ghost Callback）：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-kw">async function</span> <span class="c-tag">cleanup</span><span class="c-white">(characteristic) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;characteristic.</span><span class="c-tag">removeEventListener</span><span class="c-white">(</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-str">'characteristicvaluechanged'</span><span class="c-white">,</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">handleNotification</span><br>
+                    <span class="c-white">&nbsp;&nbsp;);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">await</span> <span class="c-white">characteristic.</span><span class="c-tag">stopNotifications</span><span class="c-white">();</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        良好的資源管理習慣：在呼叫 <code>startNotifications()</code> 之前，先檢查 <code>characteristic.properties.notify</code> 是否為 <code>true</code>。如果該 Characteristic 不支援 Notify 屬性，呼叫將會拋出錯誤。這種防禦性檢查展現了專業的函式庫開發思維。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -780,16 +1004,113 @@ characteristic.startNotifications().then(_ =&gt; {
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>請回答以下問題，測試你對本模組內容的理解程度。每題僅有一個正確答案。</p>
+
+                <form id="quiz-form" onsubmit="return false;" style="margin-top:24px;">
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">1. BLE Notify 與 Read 模式的根本差異是什麼？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="A" style="margin-right:8px;"> A. Notify 速度更慢但更穩定
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="B" style="margin-right:8px;"> B. Notify 是裝置主動推送，Read 是客戶端主動拉取
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="C" style="margin-right:8px;"> C. Read 不需要建立連線
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="D" style="margin-right:8px;"> D. Notify 需要 Wi-Fi 輔助
+                        </label>
+                        <div id="fb-q1" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">2. CCCD (Client Characteristic Configuration Descriptor) 的功能是什麼？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 設定 BLE 連線密碼
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 控制客戶端是否訂閱 Notify/Indicate 推送
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 定義 BLE 服務的 UUID
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 調整傳輸功率
+                        </label>
+                        <div id="fb-q2" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">3. BLE Notify 相比 Read 輪詢的主要優勢有哪些？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 壓縮率更高
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 低延遲、省電、零輪詢開銷
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 支援更大的 MTU
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 可同時連接更多裝置
+                        </label>
+                        <div id="fb-q3" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">4. 呼叫 <code>startNotifications()</code> 前必須完成什麼前置步驟？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 重置 BLE 模組
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 設定 MTU 為最大值
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 寫入 CCCD 以啟用通知訂閱
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 先呼叫 <code>readValue()</code> 一次
+                        </label>
+                        <div id="fb-q4" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="display:flex;gap:12px;margin-top:20px;">
+                        <button type="button" class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button type="button" class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                    </div>
+                    <div id="quiz-result" style="margin-top:16px;font-size:15px;font-weight:600;display:none;"></div>
+                </form>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -847,9 +1168,9 @@ characteristic.startNotifications().then(_ =&gt; {
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「BLE Notify 機制深論：「拉」到「推」」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「BLE Notify 機制深論：「拉」到「推」」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -865,7 +1186,8 @@ characteristic.startNotifications().then(_ =&gt; {
         { id: 3, label: '️ 2. CCCD 與 MTU 的核心限制 (20 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '事件驅動的程式流程 (15 min)', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',     time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -885,6 +1207,7 @@ characteristic.startNotifications().then(_ =&gt; {
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -986,8 +1309,57 @@ characteristic.startNotifications().then(_ =&gt; {
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'B', q3: 'B', q4: 'C' };
+    const QUIZ_EXPLANATIONS = {
+        q1: 'Read 是客戶端發起的拉取模型（Pull），而 Notify 是裝置端數據變化時主動推送（Push），實現真正的事件驅動通訊。',
+        q2: 'CCCD 是一個特殊的描述符，客戶端寫入 0x0001 啟用 Notification，寫入 0x0000 關閉，是訂閱推送的「開關」。',
+        q3: 'Notify 只在數據變化時才傳輸，避免了無效的輪詢請求，大幅降低延遲與功耗。',
+        q4: 'startNotifications() 會自動寫入 CCCD 訂閱描述符。若在未支援的特徵上呼叫，則不會收到任何通知。'
+    };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const fb = document.getElementById(`fb-${q}`);
+            if (!selected) {
+                fb.style.display = 'block';
+                fb.innerHTML = '<span style="color:#d13438;">⚠ 請選擇一個答案</span>';
+                continue;
+            }
+            fb.style.display = 'block';
+            if (selected.value === correct) {
+                score++;
+                fb.innerHTML = `<span style="color:#107c10;">✔ 正確！</span> ${QUIZ_EXPLANATIONS[q]}`;
+            } else {
+                fb.innerHTML = `<span style="color:#d13438;">✘ 不正確。正確答案是 ${correct}。</span> ${QUIZ_EXPLANATIONS[q]}`;
+            }
+        }
+        const result = document.getElementById('quiz-result');
+        result.style.display = 'block';
+        if (score === total) {
+            result.innerHTML = `<span style="color:#107c10;">🎉 滿分！你答對了全部 ${total} 題！</span>`;
+            markDone(6);
+        } else {
+            result.innerHTML = `<span style="color:#d13438;">你答對了 ${score} / ${total} 題。再試一次吧！</span>`;
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= Object.keys(QUIZ_ANSWERS).length; i++) {
+            const fb = document.getElementById(`fb-q${i}`);
+            if (fb) { fb.style.display = 'none'; fb.innerHTML = ''; }
+        }
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 03：BLE 進階通訊';
 </script>
 
 <!-- Define Resources -->

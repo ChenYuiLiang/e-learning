@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP32-S3 感測器介面與 PSRAM - Vibe Coding Learn</title>
+    <title>ESP32-S3 感測器介面與 PSRAM - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">進階課程 1 - 單元 1</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">ESP32-S3 感測器介面與 PSRAM</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">進階課程 1</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>ESP32-S3 感測器介面與 PSRAM</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">進階課程 1</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,14 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>ESP32-S3 感測器介面與 PSRAM</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    當你想在 ESP32 上跑攝影機或 AI 模型時，第一個撞上的牆往往不是程式邏輯，而是<strong>記憶體不夠用</strong>。
+                    ESP32-S3 的 PSRAM 與 DMA 機制正是為此而生——理解它們的運作原理，才能讓你的邊緣運算專案從「勉強能動」進化為「穩定高效」。
+                    本模組將帶你深入 S3 的記憶體分層架構與感測器介面，為後續的影像串流與 AI 推論打下硬體基礎。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你正在為無人車專案開發即時影像辨識功能。程式碼編譯成功了，但一執行 <code>esp_camera_init()</code> 就觸發記憶體不足的 Panic，序列埠瘋狂噴出 <code>PSRAM not found</code> 錯誤。你開始懷疑：PSRAM 到底是什麼？為什麼普通的 <code>malloc()</code> 拿不到那麼大的空間？這些問題的答案，正是本模組要解開的核心謎題。
                 </div>
 
                 <h2>教學影片</h2>
@@ -576,7 +575,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -590,27 +589,128 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🚀 1. ESP32-S3：為 AI 與影像而生 (20 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg">
-<p><strong>硬體升級：</strong>了解 S3 的雙核心架構以及專為向量運算設計的指令集（加速卷積運算），這使其成為邊緣 AI 的理想選擇。</p>
-<p><strong>感測器介面：</strong>認識常用於攝影機的 DVP (Digital Video Port) 介面 與用於顯示器的 LCD 介面。</p>
-<div class="bg-purple-50 p-6 rounded-xl border border-purple-100 relative">
-<h4 class="font-bold text-purple-800 mb-2 flex items-center gap-2">
-<span>🔍</span> 學習任務
-                                    </h4>
-<ul class="list-disc list-inside space-y-2 text-purple-700 text-base">
-<li>查閱 ESP32-S3 的腳位圖 (Pinout)。</li>
-<li>找出哪些腳位是與攝影機通訊固定的。</li>
-<li>找出哪些是可以彈性挪作他用的（如 I2C/SPI）。</li>
-</ul>
-</div>
-</div>
+                <h1>ESP32-S3：為 AI 與影像而生</h1>
+
+                <p>
+                    ESP32-S3 是樂鑫 (Espressif) 針對 <strong>AIoT（人工智慧物聯網）</strong> 場景所設計的旗艦級微控制器。與前代 ESP32 相比，S3 最關鍵的升級在於：它內建了專為向量運算設計的硬體加速指令集，並原生支援高速外部記憶體與攝影機介面。這使得它不再只是一顆「連上 Wi-Fi 的 MCU」，而是一台真正能在邊緣端執行影像辨識與 AI 推論的微型電腦。
+                </p>
+
+                <h2>雙核心 Xtensa LX7 架構</h2>
+                <p>
+                    ESP32-S3 搭載兩顆 Xtensa LX7 核心，主頻最高可達 240 MHz。在典型的攝影機串流應用中，開發者通常會將兩顆核心做 <strong>任務分工</strong>：一顆核心專責處理 Wi-Fi 協議棧與 HTTP 串流推送，另一顆核心則負責影像擷取與 AI 推論。這種分工模式能避免無線通訊中斷導致的幀延遲，是即時影像系統穩定運作的關鍵。
+                </p>
+                <p>
+                    更重要的是，LX7 核心內建了 <strong>向量擴展指令 (PIE — Processor Instruction Extensions)</strong>，可在單一指令週期內完成多筆乘法-累加運算 (MAC)。對於卷積神經網路 (CNN) 中大量的矩陣乘法，這能帶來 2～3 倍的加速效果，讓 S3 能在不依賴外部加速晶片的情況下執行輕量級 AI 模型。
+                </p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        ESP32-S3 的向量指令主要針對 8-bit 與 16-bit 整數運算做了優化。若你的 AI 模型使用 float32 權重，需先透過 TensorFlow Lite 的量化工具轉換為 int8 格式，才能真正發揮硬體加速的效果。
+                    </div>
+                </div>
+
+                <h2>ESP32 家族硬體規格比較</h2>
+                <p>以下表格比較了常見的三款 ESP32 晶片在影像處理能力上的差異：</p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>規格</th>
+                            <th>ESP32（經典版）</th>
+                            <th>ESP32-S2</th>
+                            <th>ESP32-S3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>CPU 核心</td>
+                            <td>雙核 LX6 @ 240 MHz</td>
+                            <td>單核 LX7 @ 240 MHz</td>
+                            <td>雙核 LX7 @ 240 MHz</td>
+                        </tr>
+                        <tr>
+                            <td>向量加速指令</td>
+                            <td><span class="cross"><i class="fas fa-times"></i></span></td>
+                            <td><span class="cross"><i class="fas fa-times"></i></span></td>
+                            <td><span class="check"><i class="fas fa-check"></i></span></td>
+                        </tr>
+                        <tr>
+                            <td>PSRAM 介面</td>
+                            <td>SPI（最高 4 MB）</td>
+                            <td>SPI/QSPI（最高 8 MB）</td>
+                            <td>OPI（最高 16 MB）</td>
+                        </tr>
+                        <tr>
+                            <td>DVP 攝影機介面</td>
+                            <td><span class="check"><i class="fas fa-check"></i></span></td>
+                            <td><span class="check"><i class="fas fa-check"></i></span></td>
+                            <td><span class="check"><i class="fas fa-check"></i></span></td>
+                        </tr>
+                        <tr>
+                            <td>USB OTG</td>
+                            <td><span class="cross"><i class="fas fa-times"></i></span></td>
+                            <td><span class="check"><i class="fas fa-check"></i></span></td>
+                            <td><span class="check"><i class="fas fa-check"></i></span></td>
+                        </tr>
+                        <tr>
+                            <td>適合影像 AI</td>
+                            <td>勉強可用</td>
+                            <td>有限</td>
+                            <td><strong>最佳選擇</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>感測器介面：DVP 與 SCCB</h2>
+                <p>
+                    ESP32-S3 透過 <strong>DVP（Digital Video Port）</strong> 介面與攝影機模組通訊。DVP 是一種並列式 (Parallel) 資料傳輸協定，使用 8 至 16 條資料線同時傳輸像素，搭配 <code>PCLK</code>（像素時鐘）、<code>VSYNC</code>（垂直同步）與 <code>HREF</code>（水平參考）三條控制線來界定每一幀的邊界。
+                </p>
+                <p>
+                    攝影機模組的暫存器設定（如解析度、曝光值、白平衡）則透過 <strong>SCCB（Serial Camera Control Bus）</strong> 協定進行控制。SCCB 本質上是 I2C 的子集，使用兩條線（<code>SIOD</code> 資料線與 <code>SIOC</code> 時鐘線）與感測器溝通。以常見的 OV2640 感測器為例，其 SCCB 從裝置位址為 <code>0x30</code>。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 典型的 ESP32-S3 攝影機腳位配置 (以 ESP32-S3-CAM 為例)</span><br>
+<span class="c-kw">#define</span> <span class="c-attr">CAM_PIN_PWDN</span>   <span class="c-val">-1</span>     <span class="c-comment">// 電源控制 (部分模組無此腳位)</span><br>
+<span class="c-kw">#define</span> <span class="c-attr">CAM_PIN_XCLK</span>   <span class="c-val">15</span>     <span class="c-comment">// 主時鐘輸出 (通常設為 20 MHz)</span><br>
+<span class="c-kw">#define</span> <span class="c-attr">CAM_PIN_SIOD</span>   <span class="c-val">4</span>      <span class="c-comment">// SCCB 資料線 (I2C SDA)</span><br>
+<span class="c-kw">#define</span> <span class="c-attr">CAM_PIN_SIOC</span>   <span class="c-val">5</span>      <span class="c-comment">// SCCB 時鐘線 (I2C SCL)</span><br>
+<br>
+<span class="c-kw">#define</span> <span class="c-attr">CAM_PIN_D7</span>     <span class="c-val">16</span>     <span class="c-comment">// 資料線 D7 (MSB)</span><br>
+<span class="c-kw">#define</span> <span class="c-attr">CAM_PIN_D6</span>     <span class="c-val">17</span><br>
+<span class="c-kw">#define</span> <span class="c-attr">CAM_PIN_D5</span>     <span class="c-val">18</span><br>
+<span class="c-kw">#define</span> <span class="c-attr">CAM_PIN_D4</span>     <span class="c-val">12</span><br>
+<span class="c-kw">#define</span> <span class="c-attr">CAM_PIN_D3</span>     <span class="c-val">10</span><br>
+<span class="c-kw">#define</span> <span class="c-attr">CAM_PIN_D2</span>     <span class="c-val">8</span><br>
+<span class="c-kw">#define</span> <span class="c-attr">CAM_PIN_D1</span>     <span class="c-val">9</span><br>
+<span class="c-kw">#define</span> <span class="c-attr">CAM_PIN_D0</span>     <span class="c-val">11</span>     <span class="c-comment">// 資料線 D0 (LSB)</span><br>
+<br>
+<span class="c-kw">#define</span> <span class="c-attr">CAM_PIN_VSYNC</span>  <span class="c-val">6</span>      <span class="c-comment">// 垂直同步信號</span><br>
+<span class="c-kw">#define</span> <span class="c-attr">CAM_PIN_HREF</span>   <span class="c-val">7</span>      <span class="c-comment">// 水平參考信號</span><br>
+<span class="c-kw">#define</span> <span class="c-attr">CAM_PIN_PCLK</span>   <span class="c-val">13</span>     <span class="c-comment">// 像素時鐘</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在選購 ESP32-S3 開發板時，注意確認板載攝影機連接器的腳位定義。不同廠商的開發板（如 Freenove、LILYGO、Seeed XIAO）使用的 GPIO 映射可能完全不同。務必查閱對應開發板的電路圖 (Schematic)，而非直接套用網路範例程式的腳位定義。
+                    </div>
+                </div>
+
+                <h2>腳位的分類：固定 vs. 彈性</h2>
+                <p>
+                    ESP32-S3 的 GPIO 可透過 IO MUX 與 GPIO Matrix 機制靈活映射功能。然而在攝影機應用中，以下腳位通常是<strong>固定占用</strong>的：DVP 的 8 條資料線（D0–D7）、<code>PCLK</code>、<code>VSYNC</code>、<code>HREF</code>，以及 SCCB 的 <code>SIOD</code>/<code>SIOC</code> 共 13 支腳位。加上 <code>XCLK</code> 主時鐘輸出，總計需要 <strong>14 支 GPIO</strong>。
+                </p>
+                <p>
+                    剩餘的 GPIO 則可彈性用於其他外接裝置，例如：透過 I2C 連接 IMU 慣性感測器（陀螺儀/加速度計）、透過 SPI 驅動 TFT 螢幕、或使用 UART 與 GPS 模組通訊。在設計無人車或機器人系統時，合理規劃這些「可用腳位」是硬體架構設計的核心挑戰之一。
+                </p>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -624,48 +724,148 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🧠 2. 記憶體魔術：什麼是 PSRAM？ (25 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg">
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-<div>
-<h4 class="font-bold text-gray-800 mb-2">內部 SRAM 的極限</h4>
-<p class="text-sm leading-relaxed mb-4">
-                                    ESP32 的內部記憶體只有幾百 KB，連一張未壓縮的 VGA 彩色圖片（$640 \times 480 \times 2 \text{ bytes} \approx
-                                    600 \text{ KB}$）都裝不下。這限制了高解析度影像的處理能力。
-                                </p>
-<h4 class="font-bold text-gray-800 mb-2">PSRAM (Pseudo Static RAM)</h4>
-<p class="text-sm leading-relaxed">
-                                    透過外部串列介面 (SPI/QSPI/OPI) 擴充的數 MB 空間。就像是電腦的 RAM 條，讓 MCU 也能處理大數據。
-                                </p>
-</div>
-<div class="bg-blue-50 p-6 rounded-xl border border-blue-100 flex flex-col justify-center">
-<h4 class="font-bold text-blue-800 mb-3 flex items-center gap-2">
-<span>⚖️</span> 分配策略
-                                </h4>
-<ul class="space-y-3 text-blue-700 text-sm">
-<li class="flex items-start gap-2">
-<span class="bg-blue-200 text-blue-800 text-xs px-2 py-0.5 rounded mt-0.5">SRAM</span>
-<span>速度快、適合頻繁計算 (Stack, Global Variables)</span>
-</li>
-<li class="flex items-start gap-2">
-<span class="bg-cyan-200 text-cyan-800 text-xs px-2 py-0.5 rounded mt-0.5">PSRAM</span>
-<span>空間大、適合存放影像框緩衝 (Frame Buffer)、AI 模型權重</span>
-</li>
-</ul>
-<div class="mt-4 pt-4 border-t border-blue-200">
-<h5 class="font-bold text-blue-800 mb-1">學習任務</h5>
-<p class="text-xs text-blue-600">比較「動態記憶體配置 (malloc)」與「PSRAM 專用配置 (ps_malloc)」的差異。
-                                    </p>
-</div>
-</div>
-</div>
-</div>
+                <h1>記憶體魔術：什麼是 PSRAM？</h1>
+
+                <p>
+                    在嵌入式影像處理中，記憶體是最珍貴的資源。ESP32-S3 的內部 SRAM 僅有約 <strong>512 KB</strong>，扣除系統核心、Wi-Fi 協議棧與 FreeRTOS 所需的空間後，真正可供應用程式使用的可能只剩 <strong>200～300 KB</strong>。然而，一張未壓縮的 VGA 彩色影像（640×480 像素，RGB565 格式）就需要約 614 KB——這已經超出了可用的內部記憶體。PSRAM 正是解決這個瓶頸的關鍵技術。
+                </p>
+
+                <h2>內部 SRAM 的物理極限</h2>
+                <p>
+                    讓我們用簡單的數學來理解這個問題。以下公式計算一張未壓縮影像佔用的記憶體大小：
+                </p>
+                <p style="text-align:center; margin:16px 0; font-size:15px;">
+                    Buffer 大小 = 寬度 × 高度 × 每像素位元組數
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>解析度</th>
+                            <th>像素數</th>
+                            <th>RGB565 大小</th>
+                            <th>內部 SRAM 能否容納？</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>QQVGA (160×120)</td>
+                            <td>19,200</td>
+                            <td>~38 KB</td>
+                            <td><span class="check"><i class="fas fa-check"></i></span> 可以</td>
+                        </tr>
+                        <tr>
+                            <td>QVGA (320×240)</td>
+                            <td>76,800</td>
+                            <td>~150 KB</td>
+                            <td><span class="check"><i class="fas fa-check"></i></span> 勉強</td>
+                        </tr>
+                        <tr>
+                            <td>VGA (640×480)</td>
+                            <td>307,200</td>
+                            <td>~614 KB</td>
+                            <td><span class="cross"><i class="fas fa-times"></i></span> 不可能</td>
+                        </tr>
+                        <tr>
+                            <td>HD (1280×720)</td>
+                            <td>921,600</td>
+                            <td>~1.8 MB</td>
+                            <td><span class="cross"><i class="fas fa-times"></i></span> 完全不可能</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>
+                    從表格可以清楚看出，如果想要在 VGA 以上的解析度工作（這是大多數影像辨識的基本需求），就<strong>必須</strong>使用外部記憶體。
+                </p>
+
+                <h2>PSRAM：外掛的記憶體魔法</h2>
+                <p>
+                    <strong>PSRAM（Pseudo Static RAM，虛擬靜態隨機存取記憶體）</strong> 是一種透過串列介面掛載在 MCU 外部的記憶體晶片。它的內部結構其實是 DRAM（動態記憶體），但封裝了自動刷新電路，對外表現得像 SRAM 一樣簡單易用——因此得名「Pseudo（虛擬的）」Static RAM。
+                </p>
+                <p>
+                    ESP32-S3 支援透過 <strong>Octal SPI (OPI)</strong> 介面連接最高 <strong>16 MB</strong> 的 PSRAM。OPI 使用 8 條資料線並列傳輸，時鐘頻率可達 80 MHz，理論頻寬約為 <strong>80 MB/s</strong>。這比前代 ESP32 的 4-bit SPI PSRAM 快了數倍。
+                </p>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        PSRAM 雖然空間大，但存取速度約為內部 SRAM 的 <strong>1/5 ～ 1/10</strong>。因此，頻繁存取的小型資料（如迴圈計數器、區域變數）應放在內部 SRAM，而大型且循序存取的資料（如影像緩衝區、AI 模型權重）才適合放在 PSRAM。搞錯配置策略會嚴重拖慢程式效能。
+                    </div>
+                </div>
+
+                <h2>記憶體配置 API 對比</h2>
+                <p>
+                    ESP-IDF 提供了多種記憶體配置函數，你必須根據資料的特性選擇正確的 API。標準的 <code>malloc()</code> 只會從內部 SRAM 分配空間，當空間不足時會直接返回 <code>NULL</code>，即使 PSRAM 還有好幾 MB 的空間也不會去使用。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// ❌ 錯誤示範：malloc() 無法分配 PSRAM</span><br>
+<span class="c-kw">uint8_t</span><span class="c-white">* </span><span class="c-attr">buf</span><span class="c-white"> = (</span><span class="c-kw">uint8_t</span><span class="c-white">*)</span><span class="c-tag">malloc</span><span class="c-white">(614400);  </span><span class="c-comment">// VGA RGB565 需要 ~600KB</span><br>
+<span class="c-comment">// buf == NULL (內部 SRAM 空間不足)</span><br>
+<br>
+<span class="c-comment">// ✅ 正確做法：使用 heap_caps_malloc 指定 SPIRAM</span><br>
+<span class="c-kw">uint8_t</span><span class="c-white">* </span><span class="c-attr">buf</span><span class="c-white"> = (</span><span class="c-kw">uint8_t</span><span class="c-white">*)</span><span class="c-tag">heap_caps_malloc</span><span class="c-white">(614400, </span><span class="c-attr">MALLOC_CAP_SPIRAM</span><span class="c-white">);</span><br>
+<span class="c-kw">if</span><span class="c-white"> (buf == </span><span class="c-val">NULL</span><span class="c-white">) {</span><br>
+<span class="c-white">    </span><span class="c-tag">ESP_LOGE</span><span class="c-white">(TAG, </span><span class="c-str">"PSRAM 配置失敗！請確認 PSRAM 已啟用"</span><span class="c-white">);</span><br>
+<span class="c-white">}</span><br>
+<br>
+<span class="c-comment">// ✅ 簡便寫法：ps_malloc() 是 heap_caps_malloc 的封裝</span><br>
+<span class="c-kw">uint8_t</span><span class="c-white">* </span><span class="c-attr">buf2</span><span class="c-white"> = (</span><span class="c-kw">uint8_t</span><span class="c-white">*)</span><span class="c-tag">ps_malloc</span><span class="c-white">(614400);</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在分配大型緩衝區之前，務必先呼叫 <code>heap_caps_get_free_size(MALLOC_CAP_SPIRAM)</code> 檢查剩餘可用空間。這個習慣能避免因記憶體不足而導致的 panic 重啟——這是 ESP32 攝影機專案中最常見的錯誤之一。
+                    </div>
+                </div>
+
+                <h2>SRAM 與 PSRAM 的分工策略</h2>
+                <p>
+                    理想的記憶體分配策略是根據「存取頻率」與「資料大小」來決定存放位置：
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>資料類型</th>
+                            <th>建議位置</th>
+                            <th>理由</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>堆疊 (Stack)、區域變數</td>
+                            <td><strong>內部 SRAM</strong></td>
+                            <td>極高頻率的隨機存取</td>
+                        </tr>
+                        <tr>
+                            <td>FreeRTOS Task 堆疊</td>
+                            <td><strong>內部 SRAM</strong></td>
+                            <td>任務切換需要極低延遲</td>
+                        </tr>
+                        <tr>
+                            <td>影像幀緩衝區 (Frame Buffer)</td>
+                            <td><strong>PSRAM</strong></td>
+                            <td>數百 KB 的大型循序存取</td>
+                        </tr>
+                        <tr>
+                            <td>AI 模型權重 (.tflite)</td>
+                            <td><strong>PSRAM</strong></td>
+                            <td>一次載入、循序讀取</td>
+                        </tr>
+                        <tr>
+                            <td>DMA 傳輸緩衝區</td>
+                            <td><strong>內部 SRAM</strong></td>
+                            <td>DMA 控制器需要特定的記憶體對齊</td>
+                        </tr>
+                    </tbody>
+                </table>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -679,41 +879,113 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚡ 3. 高速傳輸的幕後推手：DMA (15 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg">
-<p><strong>DMA (Direct Memory Access)：</strong>讓感測器數據直接搬進記憶體，不需要 CPU 介入。這釋放了 CPU
-                            去處理更重要的邏輯（如導航控制）。</p>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-<div class="bg-emerald-50 p-6 rounded-xl border border-emerald-100">
-<h4 class="font-bold text-emerald-800 mb-3 flex items-center gap-2">
-<span>🔑</span> 關鍵概念
-                                </h4>
-<ul class="list-disc list-inside space-y-2 text-emerald-700 text-sm">
-<li>認識 <strong>DVP 介面</strong> 與 <strong>SCCB 協議</strong> (類似 I2C)。</li>
-<li>理解為何影像處理必須開啟 PSRAM。</li>
-<li>影像數據量計算：為什麼 640x480 的原始 RGB 數據會擠爆記憶體？</li>
-</ul>
-</div>
-<div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
-<h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
-<span>🌐</span> 線上任務
-                                </h4>
-<p class="text-sm text-gray-600 mb-4">
-                                    閱讀 ESP32-S3-CAM 引腳定義圖，找出負責影像傳輸的數據線與時鐘線。
-                                </p>
-<h5 class="font-bold text-gray-800 mb-2 text-sm">🧠 預習思考</h5>
-<p class="text-sm text-gray-600 italic">
-                                    若攝影機每秒產生 10MB 的數據，如果全部由 CPU 搬運，對我們的「無人車控制邏輯」會產生什麼影響？
-                                </p>
-</div>
-</div>
-</div>
+                <h1>高速傳輸的幕後推手：DMA</h1>
+
+                <p>
+                    在攝影機串流應用中，影像感測器每秒會產生數 MB 的原始像素資料。如果每一個位元組都需要 CPU 親自搬運（從周邊暫存器讀出，再寫入記憶體），CPU 將被完全佔滿，毫無餘裕處理 Wi-Fi 通訊、馬達控制或 AI 推論。<strong>DMA（Direct Memory Access，直接記憶體存取）</strong> 就是為了解決這個瓶頸而生的硬體機制。
+                </p>
+
+                <h2>DMA 的運作原理</h2>
+                <p>
+                    DMA 控制器是一個獨立於 CPU 的硬體單元，能在<strong>不佔用 CPU 的情況下</strong>自動將資料從一個記憶體位址搬運到另一個位址，或從周邊設備搬到記憶體。CPU 只需要下達一次搬運指令（設定來源位址、目標位址與長度），DMA 控制器就會接手完成整個傳輸，傳輸結束後再透過中斷通知 CPU。
+                </p>
+                <p>
+                    在 ESP32-S3 的攝影機驅動中，DMA 的工作流程如下：
+                </p>
+                <ol>
+                    <li>攝影機感測器透過 DVP 介面，在每個 <code>PCLK</code> 上升緣輸出一個像素。</li>
+                    <li>DMA 控制器自動將像素資料搬入預先配置的<strong>環形緩衝區 (Ring Buffer)</strong>。</li>
+                    <li>當一整幀影像的 <code>VSYNC</code> 信號觸發時，DMA 通知 CPU：「一幀完整影像已就緒」。</li>
+                    <li>CPU 此時才介入，將幀資料進行 JPEG 壓縮或傳送至網路。</li>
+                </ol>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        ESP32-S3 的 DMA 控制器使用<strong>鏈結描述符 (Linked List Descriptors)</strong> 來管理多段不連續的記憶體區塊。ESP-IDF 的攝影機驅動會自動建立這些描述符鏈——你通常不需要手動操作，但理解這個機制有助於排查「幀損毀」或「DMA 溢出」的錯誤。
+                    </div>
+                </div>
+
+                <h2>有無 DMA 的效能對比</h2>
+                <p>
+                    以下數據模擬了 VGA 解析度（640×480）、RGB565 格式、30 FPS 的影像傳輸場景，比較 CPU 手動搬運（Polling）與 DMA 自動搬運的差異：
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>指標</th>
+                            <th>CPU Polling 模式</th>
+                            <th>DMA 模式</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>每幀資料搬運時間</td>
+                            <td>~8 ms（CPU 全速搬運）</td>
+                            <td>~8 ms（DMA 硬體搬運）</td>
+                        </tr>
+                        <tr>
+                            <td>搬運期間 CPU 占用率</td>
+                            <td><strong>100%</strong></td>
+                            <td><strong>&lt; 1%</strong></td>
+                        </tr>
+                        <tr>
+                            <td>同時可執行其他任務</td>
+                            <td><span class="cross"><i class="fas fa-times"></i></span> 不行</td>
+                            <td><span class="check"><i class="fas fa-check"></i></span> Wi-Fi / AI / 控制邏輯</td>
+                        </tr>
+                        <tr>
+                            <td>30 FPS 下的每秒 CPU 成本</td>
+                            <td>~240 ms（佔去一顆核心的 24%）</td>
+                            <td>~0.3 ms（僅中斷處理）</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>
+                    可以看出，DMA 不是讓搬運速度變快，而是讓 <strong>CPU 完全解放</strong>。在 30 FPS 的串流中，CPU Polling 模式每秒浪費約 240 ms 在純粹的資料搬運上；而 DMA 模式下，這些時間可以用來執行 AI 推論或處理控制邏輯。
+                </p>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        DMA 緩衝區必須分配在<strong>內部 SRAM 的 DMA 可存取區域</strong>。並非所有記憶體位址都支援 DMA 存取——特別是 PSRAM 的部分區段可能不在 DMA 可達範圍內。使用 <code>heap_caps_malloc(size, MALLOC_CAP_DMA)</code> 確保分配的記憶體符合 DMA 對齊與位址限制。
+                    </div>
+                </div>
+
+                <h2>匯流排競爭：DMA 與 PSRAM 的潛在衝突</h2>
+                <p>
+                    ESP32-S3 的 DMA 控制器與 PSRAM 控制器共享部分<strong>內部匯流排頻寬</strong>。當攝影機 DMA 正在高速搬運像素資料的同時，如果 CPU 也正在大量讀寫 PSRAM（例如執行 AI 推論），兩者可能產生匯流排競爭，導致影像出現雜訊或 I2C 通訊逾時。
+                </p>
+                <p>
+                    這種現象在 PSRAM 設定為 <strong>80 MHz Octal SPI</strong> 時特別明顯——因為更高的時鐘頻率意味著匯流排被佔用的時間更密集。一種常見的解決方案是將 PSRAM 頻率降至 <strong>40 MHz</strong>，犧牲部分頻寬來換取更乾淨的影像信號與更穩定的 I2C 通訊。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// platformio.ini 中的關鍵配置</span><br>
+<span class="c-white">[env:esp32-s3-cam]</span><br>
+<span class="c-attr">platform</span><span class="c-white"> = espressif32</span><br>
+<span class="c-attr">board</span><span class="c-white"> = esp32-s3-devkitc-1</span><br>
+<span class="c-attr">framework</span><span class="c-white"> = arduino</span><br>
+<span class="c-attr">board_build.arduino.memory_type</span><span class="c-white"> = </span><span class="c-str">qio_opi</span><span class="c-comment">  ; OPI PSRAM 模式</span><br>
+<span class="c-attr">build_flags</span><span class="c-white"> =</span><br>
+<span class="c-white">    </span><span class="c-kw">-DBOARD_HAS_PSRAM</span><br>
+<span class="c-white">    </span><span class="c-kw">-DCONFIG_SPIRAM_SPEED_80M</span><span class="c-comment">  ; 或 40M 以降低匯流排干擾</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        如果你在高解析度串流時發現影像偶爾出現橫向的彩色雜訊線條（通常是紫色或綠色的），這很可能是 DMA 與 PSRAM 匯流排競爭所造成的。嘗試降低 PSRAM 頻率或減少解析度，觀察問題是否改善。這是在作業「感測器與 PSRAM 聯動除錯」中需要深入探索的議題。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -792,16 +1064,113 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>請回答以下問題，測試你對本模組內容的理解程度。每題僅有一個正確答案。</p>
+
+                <form id="quiz-form" onsubmit="return false;" style="margin-top:24px;">
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">1. ESP32-S3 的 PSRAM 透過什麼介面連接，最高支援多少容量？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="A" style="margin-right:8px;"> A. SPI 介面，最高 4 MB
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="B" style="margin-right:8px;"> B. QSPI 介面，最高 8 MB
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="C" style="margin-right:8px;"> C. Octal SPI (OPI) 介面，最高 16 MB
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="D" style="margin-right:8px;"> D. I2C 介面，最高 32 MB
+                        </label>
+                        <div id="fb-q1" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">2. 為什麼標準的 <code>malloc()</code> 無法分配 PSRAM 記憶體？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="A" style="margin-right:8px;"> A. PSRAM 不支援動態配置
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="B" style="margin-right:8px;"> B. <code>malloc()</code> 只從內部 SRAM 分配空間
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 需要先呼叫 <code>psram_init()</code>
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="D" style="margin-right:8px;"> D. PSRAM 只能在編譯時靜態配置
+                        </label>
+                        <div id="fb-q2" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">3. DMA 在攝影機串流中的主要優勢是什麼？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 讓資料傳輸速度加倍
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 自動進行 JPEG 壓縮
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 不佔用 CPU 即可自動搬運資料
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 增加可用記憶體容量
+                        </label>
+                        <div id="fb-q3" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">4. 一張 VGA (640×480) RGB565 格式的未壓縮影像約需多少記憶體？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 約 150 KB
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 約 300 KB
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 約 614 KB
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 約 1.8 MB
+                        </label>
+                        <div id="fb-q4" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="display:flex;gap:12px;margin-top:20px;">
+                        <button type="button" class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button type="button" class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                    </div>
+                    <div id="quiz-result" style="margin-top:16px;font-size:15px;font-weight:600;display:none;"></div>
+                </form>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -859,9 +1228,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「ESP32-S3 感測器介面與 PSRAM」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「ESP32-S3 感測器介面與 PSRAM」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -877,7 +1246,8 @@
         { id: 3, label: '🧠 2. 記憶體魔術：什麼是 PSRAM？ (25 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '高速傳輸的幕後推手：DMA (15 min)', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',     time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -897,6 +1267,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -998,8 +1369,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'C', q2: 'B', q3: 'C', q4: 'C' };
+    const QUIZ_EXPLANATIONS = {
+        q1: 'ESP32-S3 支援透過 Octal SPI (OPI) 介面連接最高 16 MB 的 PSRAM，使用 8 條資料線並列傳輸，理論頻寬約 80 MB/s。',
+        q2: '標準的 malloc() 只會從內部 SRAM 分配空間。需使用 heap_caps_malloc(size, MALLOC_CAP_SPIRAM) 或 ps_malloc() 來配置 PSRAM。',
+        q3: 'DMA 的核心價值不是讓搬運更快，而是讓 CPU 完全解放——DMA 控制器在不佔用 CPU 的情況下自動搬運資料。',
+        q4: '640 × 480 × 2 bytes (RGB565 每像素 2 bytes) = 614,400 bytes ≈ 614 KB，遠超 ESP32-S3 可用的內部 SRAM。'
+    };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const fb = document.getElementById(`fb-${q}`);
+            if (!selected) {
+                fb.style.display = 'block';
+                fb.innerHTML = '<span style="color:#d13438;">⚠ 請選擇一個答案</span>';
+                continue;
+            }
+            fb.style.display = 'block';
+            if (selected.value === correct) {
+                score++;
+                fb.innerHTML = `<span style="color:#107c10;">✔ 正確！</span> ${QUIZ_EXPLANATIONS[q]}`;
+            } else {
+                fb.innerHTML = `<span style="color:#d13438;">✘ 不正確。正確答案是 ${correct}。</span> ${QUIZ_EXPLANATIONS[q]}`;
+            }
+        }
+        const result = document.getElementById('quiz-result');
+        result.style.display = 'block';
+        if (score === total) {
+            result.innerHTML = `<span style="color:#107c10;">🎉 滿分！你答對了全部 ${total} 題！</span>`;
+            markDone(6);
+        } else {
+            result.innerHTML = `<span style="color:#d13438;">你答對了 ${score} / ${total} 題。再試一次吧！</span>`;
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= Object.keys(QUIZ_ANSWERS).length; i++) {
+            const fb = document.getElementById(`fb-q${i}`);
+            if (fb) { fb.style.display = 'none'; fb.innerHTML = ''; }
+        }
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 01：ESP32-S3 攝影機';
 </script>
 
 <!-- Define Resources -->

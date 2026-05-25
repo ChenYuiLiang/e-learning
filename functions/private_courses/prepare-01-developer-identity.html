@@ -82,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -676,12 +677,12 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand">
-        <i class="fas fa-graduation-cap"></i>
-        Vibe Coding Learn
+    <a href="/" target="_top" class="brand">
+        <i class="fas fa-rocket"></i>
+        Vibe Coding
     </a>
     <div class="divider"></div>
-    <span class="nav-label">開發者課程</span>
+    <a href="/prepare.html" target="_top" class="nav-label">準備課程</a>
 </nav>
 
 <div class="ms-layout">
@@ -708,13 +709,7 @@
     <main class="ms-content" id="main-content">
 
         <!-- BREADCRUMB -->
-        <div class="ms-breadcrumb" id="breadcrumb">
-            <a href="#">Vibe Coding</a>
-            <span>›</span>
-            <a href="#">開發者課程</a>
-            <span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════════════════════════════════════════════════════
              PAGE 0 : MODULE INDEX
@@ -1874,6 +1869,7 @@
 
     /* ───── START ───── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;
 </script>
 
 

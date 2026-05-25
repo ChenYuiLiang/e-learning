@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>差速轉換數學：Unicycle Model - Vibe Coding Learn</title>
+    <title>差速轉換數學：Unicycle Model - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -465,6 +467,37 @@
             .compare-grid { grid-template-columns: 1fr; }
         }
 
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
+            border: 1px solid #e1dfdd;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background .1s, border-color .1s;
+            font-size: 14px;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback {
+            display: none;
+            margin-top: 8px;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
+        .quiz-submit { margin-top: 16px; }
+
     </style>
 </head>
 
@@ -472,9 +505,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 8 - 運動學轉換</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +519,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">差速轉換數學：Unicycle Model</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 8</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +541,7 @@
                 <h1>差速轉換數學：Unicycle Model</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 8</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -521,9 +552,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>🚲 1. 什麼是 Unicycle Model？</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>️ 2. 差速驅動與混控公式</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>🛑 3. 飽和處理：限幅思維</strong> 的調校技巧與穩定性測試。</li>
+                    <li>能夠解釋 Unicycle Model 如何將線速度 \(v\) 與角速度 \(\omega\) 轉換為左右馬達轉速（\(L = v - \omega\)、\(R = v + \omega\)），並驗證原地自旋的對稱性。</li>
+                    <li>能夠實作等比例飽和縮放演算法（使用 <code>max(|L|, |R|, 1.0)</code> 作為分母），解決全速行駛時因裁切（Clipping）導致的轉向失效問題。</li>
+                    <li>能夠引入轉向靈敏度係數 \(K\)，根據不同地表摩擦力（地毯、磁磚）調校出最佳操控手感，並以量化數據說明參數選擇。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -554,15 +585,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>差速轉換數學：Unicycle Model</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    搖桿給出的是「前進速度 v」與「轉向角速度 ω」，但雙馬達差速車需要的是左右輪各自的轉速。
+                    Unicycle Model 正是這座橋樑——用一條簡潔的線性公式，將 (v, ω) 轉換為 (v_L, v_R)，
+                    讓操控者只需思考「方向」與「速度」，不必手動分配左右馬達出力。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你把搖桿往右前方推了 45°——直覺上車子應該一邊前進、一邊右轉。
+                    但要讓左輪快一點、右輪慢一點，具體差多少？差速公式怎麼寫？
+                    Unicycle Model 用 v 和 ω 兩個參數優雅地解決了這個問題，本單元帶你推導並實作這套轉換。
                 </div>
 
                 <h2>教學影片</h2>
@@ -590,43 +622,84 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🚲 1. 什麼是 Unicycle Model？</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tight">
-                                將機器人簡化為一個運動點。我們控制兩個宏觀參數：
-                            </p>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-justify uppercase tracking-widest font-black">
-<div class="p-6 rounded-2xl border border-blue-100 bg-blue-50 text-justify">
-<h4 class="font-bold text-blue-800 mb-2 border-b border-blue-200 pb-2 text-xs uppercase italic tracking-widest text-justify uppercase tracking-widest">
-<span class="text-lg text-justify uppercase tracking-tighter">v</span> 線速度
-                                        (Linear)
-                                    </h4>
-<p class="text-slate-500 font-light leading-relaxed text-[10px] text-justify uppercase tracking-widest">
-                                        代表整體前進速度。搖桿 Y 軸。</p>
-</div>
-<div class="p-6 rounded-2xl border border-indigo-100 shadow-sm bg-indigo-50 text-justify uppercase tracking-tighter">
-<h4 class="font-bold text-indigo-800 mb-2 border-b border-indigo-200 pb-2 text-xs uppercase italic tracking-widest text-justify">
-<span class="text-lg text-justify">ω</span> 角速度 (Angular)
-                                    </h4>
-<p class="text-slate-500 font-light leading-relaxed text-[10px] text-justify">
-                                        代表轉向速度。搖桿 X 軸。</p>
-</div>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center bg-slate-900 text-justify uppercase tracking-widest font-black">
-<h4 class="font-bold text-slate-500 mb-6 uppercase tracking-widest text-[10px] text-justify">
-                                Velocity Decomposition</h4>
-<div class="space-y-4 text-justify">
-<p class="text-slate-300 text-[11px] text-justify uppercase tracking-widest font-black">
-                                    建立直覺操控基礎：將「去哪」與「怎麼轉」解耦。</p>
-<div class="p-4 rounded-xl border border-slate-700 italic text-blue-400 bg-slate-800 text-[9px] text-justify uppercase tracking-tighter">
-                                    MotorMix = f(v, ω)
-                                </div>
-</div>
-</div>
-</div>
+                <h1>什麼是 Unicycle Model？</h1>
+
+                <p>
+                    在機器人學中，<strong>Unicycle Model（獨輪車模型）</strong>是一種經典的運動學抽象——
+                    它將一台擁有兩個馬達的差速車簡化為一個在平面上移動的「質點」。這個質點只需要兩個參數就能完整描述其運動狀態：
+                    <strong>線速度 \(v\)</strong>（前進或後退的速度）和 <strong>角速度 \(\omega\)</strong>（旋轉的速度）。
+                </p>
+
+                <p>
+                    為什麼要做這層抽象？因為人類的直覺是「我要往哪走」和「我要怎麼轉」，
+                    而不是「左輪要轉多快」和「右輪要轉多快」。Unicycle Model 讓操控者只需思考方向與速度，
+                    底層的左右馬達分配交給數學公式自動完成。
+                </p>
+
+                <h2>兩個核心參數</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>參數</th>
+                            <th>符號</th>
+                            <th>物理意義</th>
+                            <th>搖桿對應</th>
+                            <th>正值方向</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>線速度</strong></td>
+                            <td>\(v\)</td>
+                            <td>機器人整體前進/後退速度</td>
+                            <td>搖桿 Y 軸</td>
+                            <td>向前為正</td>
+                        </tr>
+                        <tr>
+                            <td><strong>角速度</strong></td>
+                            <td>\(\omega\)</td>
+                            <td>機器人旋轉/轉向速度</td>
+                            <td>搖桿 X 軸</td>
+                            <td>向右為正（順時針）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>
+                    在歸一化的搖桿系統中，\(v\) 和 \(\omega\) 的範圍都是 <code>[-1.0, 1.0]</code>。
+                    搖桿推到最上方時 \(v = 1.0\)（全速前進），推到最右邊時 \(\omega = 1.0\)（全速右轉）。
+                    這兩個值的組合描述了機器人所有可能的運動狀態——直線、轉彎、原地旋轉。
+                </p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        Unicycle Model 的名稱來自於「獨輪車」——它假設機器人只有一個接觸點與地面互動，
+                        就像騎獨輪車的人一樣。這種簡化讓運動學公式非常優雅，但要記住它是一個近似模型，
+                        實際的雙輪差速車在高速轉彎時會有滑動等非理想行為。
+                    </div>
+                </div>
+
+                <h2>從搖桿到運動意圖</h2>
+
+                <p>
+                    搖桿的二維座標天然對應了 Unicycle Model 的兩個參數：Y 軸控制「去哪」（前進/後退），
+                    X 軸控制「怎麼轉」（左轉/右轉）。這種映射讓操控非常直覺——推搖桿的方向就是車子要去的方向。
+                    接下來的問題是：如何把 \((v, \omega)\) 這對高階指令，拆解成左右馬達各自的轉速？
+                    這就是下一節「差速驅動與混控公式」的核心課題。
+                </p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在實作中，建議先將搖桿的 X/Y 原始像素偏移做歸一化（上一個單元的技術），
+                        再直接作為 \(\omega\) 和 \(v\) 使用。這樣整條數據處理管線就是：
+                        <code>原始像素 → 歸一化 → (v, ω) → 左右馬達轉速</code>。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -645,48 +718,118 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚙️ 2. 差速驅動與混控公式</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify uppercase tracking-widest">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tighter">
-                                左右兩輪獨立驅動。轉向必須在輪間產生「速度差」。
-                            </p>
-<div class="space-y-4 text-justify">
-<div class="p-8 rounded-3xl border border-slate-100 flex items-center gap-8 shadow-inner bg-slate-50 text-justify uppercase tracking-widest font-black">
-<div class="text-center text-justify">
-<div class="text-2xl font-mono text-blue-500 text-justify">\[L = v - \omega\]
-                                        </div>
-<span class="text-slate-400 uppercase font-bold tracking-widest text-[9px] text-justify">Left
-                                            Motor</span>
-</div>
-<div class="w-px h-12 bg-slate-200 text-justify"></div>
-<div class="text-center text-justify">
-<div class="text-2xl font-mono text-indigo-500 text-justify font-black uppercase tracking-tighter">
-                                            \[R = v + \omega\]</div>
-<span class="text-slate-400 uppercase font-bold tracking-widest text-[9px] text-justify font-black uppercase tracking-widest">Right
-                                            Motor</span>
-</div>
-</div>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 bg-slate-900 text-justify">
-<div class="flex items-center gap-3 mb-6">
-<span class="w-3 h-3 bg-red-400 rounded-full"></span>
-<span class="w-3 h-3 bg-amber-400 rounded-full"></span>
-<span class="w-3 h-3 bg-emerald-400 rounded-full"></span>
-<span class="ml-auto text-[10px] text-slate-500 font-mono tracking-widest uppercase text-justify">MIXER
-                                    LOGIC (C++)</span>
-</div>
-<pre class="text-xs md:text-sm leading-relaxed overflow-x-auto text-blue-300 font-mono text-justify uppercase tracking-widest font-black text-left">
-<span class="text-blue-500 text-justify uppercase tracking-widest">void</span> <span class="text-emerald-400 text-justify">applyMix</span>(<span class="text-blue-400">float</span> v, <span class="text-blue-400">float</span> w) {
-  <span class="text-blue-400 text-justify uppercase tracking-widest">float</span> left = v - w;
-  <span class="text-blue-400 text-justify uppercase tracking-widest font-black">float</span> right = v + w;
-  <span class="text-yellow-400 text-justify uppercase tracking-widest">motorL</span>.<span class="text-blue-400 uppercase tracking-widest">setSpeed</span>(left * <span class="text-amber-200">255</span>);
-  <span class="text-yellow-400 text-justify uppercase tracking-widest">motorR</span>.<span class="text-blue-400 uppercase tracking-widest">setSpeed</span>(right * <span class="text-amber-200 uppercase tracking-tighter">255</span>);
-}</pre>
-</div>
-</div>
+                <h1>差速驅動與混控公式</h1>
+
+                <p>
+                    差速驅動 (Differential Drive) 是雙馬達機器人最常見的驅動方式：左右兩輪各自由獨立的馬達控制，
+                    透過兩輪之間的<strong>速度差</strong>來實現轉向。當左右輪轉速相同時，車子直行；
+                    當左輪比右輪快時，車子向右偏轉；反之則向左。
+                </p>
+
+                <p>
+                    Unicycle Model 的核心公式將 \((v, \omega)\) 轉換為左右馬達的個別轉速：
+                </p>
+
+                \[L = v - \omega\]
+                \[R = v + \omega\]
+
+                <p>
+                    其中 \(L\) 是左輪轉速，\(R\) 是右輪轉速，\(v\) 是線速度（前進/後退），
+                    \(\omega\) 是角速度（轉向）。當 \(\omega > 0\)（向右轉）時，右輪減速、左輪加速，
+                    產生向右的轉彎效果。
+                </p>
+
+                <h2>典型輸入與輸出對照</h2>
+
+                <p>下表展示了不同搖桿指令下，混控公式的運算結果：</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>操作意圖</th>
+                            <th>\(v\)</th>
+                            <th>\(\omega\)</th>
+                            <th>左輪 \(L\)</th>
+                            <th>右輪 \(R\)</th>
+                            <th>車輛行為</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>全速前進</td>
+                            <td><code>1.0</code></td>
+                            <td><code>0.0</code></td>
+                            <td><code>1.0</code></td>
+                            <td><code>1.0</code></td>
+                            <td>直線前進</td>
+                        </tr>
+                        <tr>
+                            <td>全速後退</td>
+                            <td><code>-1.0</code></td>
+                            <td><code>0.0</code></td>
+                            <td><code>-1.0</code></td>
+                            <td><code>-1.0</code></td>
+                            <td>直線倒退</td>
+                        </tr>
+                        <tr>
+                            <td>原地右旋</td>
+                            <td><code>0.0</code></td>
+                            <td><code>1.0</code></td>
+                            <td><code>-1.0</code></td>
+                            <td><code>1.0</code></td>
+                            <td>坦克式順時針旋轉</td>
+                        </tr>
+                        <tr>
+                            <td>原地左旋</td>
+                            <td><code>0.0</code></td>
+                            <td><code>-1.0</code></td>
+                            <td><code>1.0</code></td>
+                            <td><code>-1.0</code></td>
+                            <td>坦克式逆時針旋轉</td>
+                        </tr>
+                        <tr>
+                            <td>前進 + 右轉</td>
+                            <td><code>0.8</code></td>
+                            <td><code>0.3</code></td>
+                            <td><code>0.5</code></td>
+                            <td><code>1.1</code></td>
+                            <td>前進中的右弧線（注意溢出）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        注意最後一列：當 \(v = 0.8\) 且 \(\omega = 0.3\) 時，右輪算出 <code>1.1</code>，
+                        超出了馬達的最大轉速範圍 <code>[-1.0, 1.0]</code>。這就是「飽和溢出」問題，
+                        下一節將介紹如何用等比例縮放來解決。
+                    </div>
+                </div>
+
+                <h2>程式碼實作</h2>
+
+                <p>以下是混控公式的基礎 C++ 實作，適用於 ESP32 開發板：</p>
+
+                <pre class="ms-code"><span class="c-comment">// Unicycle Model 混控器</span>
+<span class="c-kw">void</span> <span class="c-tag">applyMix</span><span class="c-white">(</span><span class="c-kw">float</span> <span class="c-attr">v</span><span class="c-white">,</span> <span class="c-kw">float</span> <span class="c-attr">omega</span><span class="c-white">) {</span>
+  <span class="c-kw">float</span> <span class="c-attr">left</span>  <span class="c-white">= v - omega;</span>
+  <span class="c-kw">float</span> <span class="c-attr">right</span> <span class="c-white">= v + omega;</span>
+
+  <span class="c-comment">// 將 [-1.0, 1.0] 映射到 PWM [0, 255] + 方向</span>
+  <span class="c-tag">motorL</span><span class="c-white">.setSpeed(left  * </span><span class="c-val">255</span><span class="c-white">);</span>
+  <span class="c-tag">motorR</span><span class="c-white">.setSpeed(right * </span><span class="c-val">255</span><span class="c-white">);</span>
+<span class="c-white">}</span></pre>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        驗證混控邏輯最簡單的方法是測試「原地旋轉」：輸入 \(v = 0,\;\omega \neq 0\)，
+                        檢查左右輪的轉速是否大小相等、方向相反。如果不對稱，說明公式或馬達接線有誤。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -705,43 +848,108 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🛑 3. 飽和處理：限幅思維</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify uppercase tracking-tighter">
-                                若馬達已最大，直接裁切 (Clipping) 導至轉向失靈。
-                            </p>
-<div class="p-8 rounded-3xl border border-purple-500/20 shadow-inner bg-purple-500/10 text-justify uppercase tracking-widest font-black">
-<h4 class="font-bold text-purple-400 mb-4 text-xs uppercase tracking-widest text-justify">
-                                    Normalizing Mixers</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify uppercase tracking-widest">
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">等比例縮放</strong>：溢出時同步縮小兩輪，保留轉向比。
-                                        </div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">防裁切機制</strong>：全速行駛仍能順滑蛇行。</div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span>
-<div><strong class="text-white">飽和度判定</strong>：使用
-                                            <code>max(|L|, |R|, 1.0)</code> 作分母。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 p-10 rounded-3xl border border-purple-500/20 text-center relative overflow-hidden group bg-purple-600/10 text-justify uppercase tracking-widest font-black">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-purple-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify">
-</div>
-<h4 class="text-purple-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-justify">
-                                Robust Control</h4>
-<p class="text-slate-500 leading-relaxed font-light mb-8 italic text-[11px] text-justify uppercase tracking-tighter font-black">
-                                "比例大於絕對值。在極限保留轉向意圖。"
-                            </p>
-<div class="inline-block px-8 py-3 bg-purple-500 text-white rounded-xl font-bold text-[10px] shadow-lg text-justify uppercase tracking-widest">
-                                Run Saturation Lab</div>
-</div>
-</div>
+                <h1>飽和處理：限幅思維</h1>
+
+                <p>
+                    上一節的混控公式 \(L = v - \omega\)、\(R = v + \omega\) 有一個隱藏的陷阱：
+                    當線速度和角速度都很大時（例如全速前進同時急轉彎），計算出的左右輪轉速可能超過馬達的物理極限
+                    <code>[-1.0, 1.0]</code>。這就是<strong>飽和溢出 (Saturation Overflow)</strong> 問題。
+                </p>
+
+                <h2>為什麼不能直接裁切？</h2>
+
+                <p>
+                    最直覺的做法是把超出範圍的值「裁切」到 ±1.0（Clipping）。但這會破壞左右輪之間的<strong>速度比例</strong>，
+                    導致轉向意圖喪失。以下例子說明了這個問題：
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>處理方式</th>
+                            <th>原始 L</th>
+                            <th>原始 R</th>
+                            <th>處理後 L</th>
+                            <th>處理後 R</th>
+                            <th>轉向比 (R-L)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>無處理</td>
+                            <td><code>0.5</code></td>
+                            <td><code>1.3</code></td>
+                            <td>—</td>
+                            <td>—</td>
+                            <td><code>0.8</code></td>
+                        </tr>
+                        <tr>
+                            <td>直接裁切</td>
+                            <td><code>0.5</code></td>
+                            <td><code>1.3</code></td>
+                            <td><code>0.5</code></td>
+                            <td><code>1.0</code></td>
+                            <td><code>0.5</code> (被壓縮!)</td>
+                        </tr>
+                        <tr>
+                            <td>等比例縮放</td>
+                            <td><code>0.5</code></td>
+                            <td><code>1.3</code></td>
+                            <td><code>0.385</code></td>
+                            <td><code>1.0</code></td>
+                            <td><code>0.615</code> (比例保留)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>
+                    直接裁切讓轉向比從 <code>0.8</code> 被壓縮到 <code>0.5</code>——車子在全速行駛時「轉不動」了。
+                    這就是所謂的<strong>控制鎖死 (Control Lock)</strong>，在實際操控中會讓駕駛者感覺車子不聽使喚。
+                </p>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        等比例縮放的核心理念是：<strong>寧可犧牲整體速度，也要保留轉向意圖</strong>。
+                        這是一個專業的工程取捨——在極限動力下，「能轉彎」比「全速直行」更重要。
+                    </div>
+                </div>
+
+                <h2>等比例縮放演算法</h2>
+
+                <p>演算法的關鍵在於使用 <code>max(|L|, |R|, 1.0)</code> 作為縮放分母：</p>
+
+                <ol>
+                    <li>計算原始的 \(L = v - \omega\) 和 \(R = v + \omega\)</li>
+                    <li>找出兩者絕對值的最大值：<code>scale = max(|L|, |R|, 1.0)</code></li>
+                    <li>如果 <code>scale > 1.0</code>（有溢出），將 L 和 R 同時除以 <code>scale</code></li>
+                    <li>如果 <code>scale ≤ 1.0</code>（無溢出），保持原值不變</li>
+                </ol>
+
+                <pre class="ms-code"><span class="c-comment">// 帶飽和保護的混控器</span>
+<span class="c-kw">void</span> <span class="c-tag">mixWithSaturation</span><span class="c-white">(</span><span class="c-kw">float</span> <span class="c-attr">v</span><span class="c-white">,</span> <span class="c-kw">float</span> <span class="c-attr">omega</span><span class="c-white">) {</span>
+  <span class="c-kw">float</span> <span class="c-attr">left</span>  <span class="c-white">= v - omega;</span>
+  <span class="c-kw">float</span> <span class="c-attr">right</span> <span class="c-white">= v + omega;</span>
+
+  <span class="c-comment">// 等比例縮放：保護轉向比例</span>
+  <span class="c-kw">float</span> <span class="c-attr">scale</span> <span class="c-white">=</span> <span class="c-tag">max</span><span class="c-white">(</span><span class="c-tag">max</span><span class="c-white">(</span><span class="c-tag">fabs</span><span class="c-white">(left),</span> <span class="c-tag">fabs</span><span class="c-white">(right)),</span> <span class="c-val">1.0f</span><span class="c-white">);</span>
+  <span class="c-white">left  /= scale;</span>
+  <span class="c-white">right /= scale;</span>
+
+  <span class="c-tag">motorL</span><span class="c-white">.setSpeed(left  * </span><span class="c-val">255</span><span class="c-white">);</span>
+  <span class="c-tag">motorR</span><span class="c-white">.setSpeed(right * </span><span class="c-val">255</span><span class="c-white">);</span>
+<span class="c-white">}</span></pre>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        分母中的 <code>1.0</code> 確保了在沒有溢出時不會進行不必要的縮放。
+                        這是一個精巧的設計：<code>max(|L|, |R|, 1.0)</code> 在正常情況下等於 <code>1.0</code>（不改變數值），
+                        只有在溢出時才大於 <code>1.0</code>（啟動縮放）。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -825,16 +1033,82 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
-                    <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div class="unit-completed-badge" id="badge-6" style="display:none">
+                        <i class="fas fa-check"></i> 已完成
+                    </div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <!-- Q1 -->
+                    <div class="quiz-question" id="q1">
+                        <p>1. 在 Unicycle Model 中，搖桿 Y 軸對應的物理量是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 角速度 ω（控制旋轉方向）</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 線速度 v（控制前進/後退速度）</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 左輪轉速 L（直接驅動左馬達）</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="quiz-question" id="q2">
+                        <p>2. 根據混控公式 L = v - ω、R = v + ω，當 v = 0 且 ω = 1.0 時，車輛會如何運動？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 全速直線前進</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 原地順時針旋轉（左輪反轉、右輪正轉）</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 向右弧線前進</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="quiz-question" id="q3">
+                        <p>3. 當 v = 0.8、ω = 0.3 時，直接裁切 (Clipping) 會造成什麼問題？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 馬達完全停止運轉</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 左右輪速度比例被破壞，導致轉向意圖喪失</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 兩輪同時達到最大轉速，車輛直線加速</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="quiz-question" id="q4">
+                        <p>4. 等比例縮放演算法中，為什麼分母使用 max(|L|, |R|, 1.0) 而非 max(|L|, |R|)？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 為了在沒有溢出時不進行不必要的縮放</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 為了讓縮放後的值永遠大於 1.0</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 為了防止除以零的錯誤</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" style="margin-left:8px; display:none;" id="quiz-reset-btn">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -892,9 +1166,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「差速轉換數學：Unicycle Model」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「差速轉換數學：Unicycle Model」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -910,8 +1184,17 @@
         { id: 3, label: '️ 2. 差速驅動與混控公式', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🛑 3. 飽和處理：限幅思維', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '4 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'a' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '搖桿 Y 軸對應線速度 v，控制機器人整體的前進或後退速度；X 軸則對應角速度 ω。' },
+        q2: { b: '當 v = 0 且 ω = 1.0 時，L = 0 - 1 = -1.0，R = 0 + 1 = 1.0，左輪反轉、右輪正轉，產生原地順時針旋轉。' },
+        q3: { b: '直接裁切會把 R = 1.3 壓到 1.0 但保留 L = 0.5，破壞了原始的速度比例，使轉向意圖被壓縮。' },
+        q4: { a: '加入 1.0 作為分母下限，確保在沒有溢出（|L| 和 |R| 都 ≤ 1.0）時，scale = 1.0，不會進行不必要的縮放。' },
+    };
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -930,6 +1213,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1031,8 +1315,74 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        let total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            const options = document.querySelectorAll(`input[name="${qid}"]`);
+
+            options.forEach(opt => {
+                opt.disabled = true;
+                const label = opt.parentElement;
+                if (opt.value === answer) label.classList.add('correct');
+                if (opt.checked && opt.value !== answer) label.classList.add('wrong');
+            });
+
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                const exp = QUIZ_EXPLANATIONS[qid][answer];
+                feedbackEl.textContent = '✗ 不正確。' + exp;
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        scoreEl.style.display = 'block';
+        const pct = Math.round(correct / total * 100);
+        const pass = pct >= 75;
+        scoreEl.innerHTML = `
+            <span style="font-size:20px;">${pass ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pass ? '通過！你已掌握本模組的核心概念。' : '建議回顧相關單元後再試一次。'}</div>
+        `;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => {
+            el.classList.remove('correct','wrong');
+        });
+        document.querySelectorAll('input[type=radio]').forEach(el => {
+            el.checked = false;
+            el.disabled = false;
+        });
+        document.querySelectorAll('.quiz-feedback').forEach(el => {
+            el.className = 'quiz-feedback';
+            el.textContent = '';
+        });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 08：搖桿數學模型';
 </script>
 
 <!-- Define Resources -->

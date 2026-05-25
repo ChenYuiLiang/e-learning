@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>前端資料緩衝與流控 (Debouncing) - Vibe Coding Learn</title>
+    <title>前端資料緩衝與流控 (Debouncing) - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 9 - 流控優化</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">前端資料緩衝與流控 (Debouncing)</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 9</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>前端資料緩衝與流控 (Debouncing)</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 9</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,12 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>前端資料緩衝與流控 (Debouncing)</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    本單元聚焦於 <strong>前端資料緩衝與流量控制策略</strong>，包括 Debounce、Throttle 與 Ring Buffer 等關鍵技術。當感測器以極高頻率推送數據時，若前端逐筆處理將造成 UI 凍結與記憶體暴漲。學會在資料進入渲染管線之前進行緩衝與節流，是打造流暢即時應用的必備技能。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的麥克風模組每 20 毫秒就透過 WebSocket 傳送一段音訊特徵向量給前端頁面進行即時分類顯示。在低階手機上，瀏覽器每秒收到 50 筆資料後 UI 開始嚴重掉幀，甚至出現 Out of Memory 警告。你需要一種機制在不丟失關鍵訊息的前提下，控制資料進入渲染迴圈的速率。Debounce 和 Throttle 哪個更適合這個場景？本單元教你做出正確選擇。
                 </div>
 
                 <h2>教學影片</h2>
@@ -590,41 +587,80 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🚧 1. 為什麼需要流控？ (20 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
-<div class="space-y-6">
-<p class="text-lg text-gray-600 leading-relaxed font-light">
-                                在即時控制中「傳越多越準」是誤區。未經過濾的高頻訊號會堵塞 ESP32 的藍牙緩衝區，導致嚴重的封包排隊 (Queuing Delay)，讓你的操控產生顯著的「延遲感」。
-                            </p>
-<div class="bg-yellow-50 p-6 rounded-2xl border border-yellow-100">
-<h4 class="font-bold text-yellow-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
-                                    Congestion Theory</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-yellow-500 rounded-full mt-1"></span>
-<div><strong>頻寬瓶頸</strong>：無線連結的吞吐量有限，必須精打細算。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-yellow-500 rounded-full mt-1"></span>
-<div><strong>資料噪音</strong>：手指的生理顫抖不需要傳送給馬達，這只會浪費資源。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-yellow-500/5 group-hover:bg-yellow-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10">
-                                Packet Buffer Status</h4>
-<div class="relative z-10 space-y-2 px-10">
-<div class="h-2 bg-slate-800 rounded-full overflow-hidden">
-<div class="h-full bg-red-500 w-[95%] animate-pulse"></div>
-</div>
-<div class="text-[8px] text-red-400 font-mono">WARNING: BUFFER OVERFLOW (95%)</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic">Latency
-                                &amp; Congestion Simulation</p>
-</div>
-</div>
+                <h1>為什麼需要流控？</h1>
+
+                <p>
+                    初學者常有一個直覺迷思：「傳送越多資料，控制就越精準」。事實恰好相反——在無線通訊環境中，未經節制的高頻資料傳輸會迅速填滿通道緩衝區，導致<strong>排隊延遲（Queuing Delay）</strong>急劇上升。當你的搖桿每 10ms 送出一筆位置資料，但 BLE 連線每 30ms 才能消化一筆時，後方的封包開始堆積，使用者感受到的是操控「越來越遲鈍」。
+                </p>
+
+                <h2>頻寬瓶頸與壅塞理論</h2>
+                <p>
+                    任何通訊通道都有其理論最大吞吐量（Throughput）。以 BLE 4.2 為例，在 ATT MTU 為 23 bytes、連線間隔（Connection Interval）為 7.5ms 的最佳條件下，實際有效吞吐量約為 <strong>305 kbps</strong>。然而現實環境中因封包重傳、協議開銷與干擾，實測吞吐量常常只有理論值的 30~50%。
+                </p>
+                <p>
+                    當傳入速率（Input Rate）持續超過通道消化速率（Drain Rate），緩衝區使用率就會線性增長。根據<strong>利特爾定律（Little's Law）</strong>：
+                </p>
+                <p style="text-align:center; font-size:15px;">
+                    $L = \lambda \cdot W$
+                </p>
+                <p>
+                    其中 $L$ 是佇列中的平均封包數、$\lambda$ 是封包到達率、$W$ 是平均等待時間。當 $\lambda$ 增加而服務速率不變，$W$ 必然上升——這就是「傳越多，延遲越高」的數學證明。
+                </p>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        ESP32 的 BLE 堆疊（NimBLE / Bluedroid）內部維護一個有限的傳送佇列（通常 8~16 筆）。當佇列滿載時，後續的 <code>write()</code> 呼叫會被直接丟棄或阻塞，導致資料遺失或程式凍結。流控不是「錦上添花」，而是系統穩定的<strong>基本要求</strong>。
+                    </div>
+                </div>
+
+                <h2>前端事件風暴的真實案例</h2>
+                <p>
+                    瀏覽器中的 UI 事件觸發頻率遠超一般預期：
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>事件來源</th>
+                            <th>典型觸發頻率</th>
+                            <th>5 秒內產生的事件數</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>input</code> (Slider 拖動)</td>
+                            <td>60~120 次/秒</td>
+                            <td>300~600 筆</td>
+                        </tr>
+                        <tr>
+                            <td><code>mousemove</code></td>
+                            <td>60~144 次/秒</td>
+                            <td>300~720 筆</td>
+                        </tr>
+                        <tr>
+                            <td><code>keydown</code> (長按)</td>
+                            <td>30 次/秒</td>
+                            <td>150 筆</td>
+                        </tr>
+                        <tr>
+                            <td>WebSocket 感測器推送</td>
+                            <td>50 次/秒</td>
+                            <td>250 筆</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>
+                    如果每一筆事件都直接觸發 BLE 寫入，通道會在數百毫秒內壅塞。流控技術的核心目標就是：<strong>在不犧牲操控即時性的前提下，將傳輸頻率降至通道能舒適消化的範圍</strong>。
+                </p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        在 AI 語音辨識場景中，流控同樣重要。如果 WebSocket 每 20ms 推送一段 MFCC 特徵向量到前端做即時分類顯示，但 UI 渲染來不及消化，就會出現掉幀甚至記憶體耗盡。本單元的技術同樣適用於音訊串流的流量管理。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -643,33 +679,88 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚔️ 2. 兩大技術武器 (30 min)</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 text-justify">
-<div class="bg-blue-50 p-10 rounded-3xl border border-blue-100 text-center">
-<h3 class="text-2xl font-bold text-blue-800 mb-4">防抖 (Debouncing)</h3>
-<p class="text-xs text-blue-600 mb-6 font-light">「等到停下來才執行一次」</p>
-<div class="flex justify-center gap-2">
-<div class="w-2 h-2 rounded-full bg-blue-300"></div>
-<div class="w-2 h-2 rounded-full bg-blue-300"></div>
-<div class="w-2 h-2 rounded-full bg-blue-300"></div>
-<div class="w-4 h-4 rounded-full bg-blue-600"></div>
-</div>
-<p class="mt-8 text-[9px] text-slate-400 uppercase tracking-widest italic">Ideal for: Config
-                                Changes</p>
-</div>
-<div class="bg-cyan-50 p-10 rounded-3xl border border-cyan-100 text-center">
-<h3 class="text-2xl font-bold text-cyan-800 mb-4">節流 (Throttling)</h3>
-<p class="text-xs text-cyan-600 mb-6 font-light">「不管多頻繁，每隔固定時間才放行」</p>
-<div class="flex justify-center gap-8">
-<div class="w-4 h-4 rounded-full bg-cyan-600"></div>
-<div class="w-4 h-4 rounded-full bg-cyan-600"></div>
-<div class="w-4 h-4 rounded-full bg-cyan-600"></div>
-</div>
-<p class="mt-8 text-[9px] text-slate-400 uppercase tracking-widest italic text-center">Ideal
-                                for: Joystick Data</p>
-</div>
-</div>
+                <h1>兩大技術武器</h1>
+
+                <p>
+                    流控領域有兩種經典策略：<strong>防抖（Debounce）</strong>與<strong>節流（Throttle）</strong>。雖然兩者都用於限制函式的執行頻率，但它們的觸發時機與適用場景截然不同。選擇錯誤的策略不僅無法解決問題，甚至可能引發更嚴重的操控異常。
+                </p>
+
+                <h2>防抖 Debounce：「等到停下來才執行」</h2>
+                <p>
+                    防抖的核心邏輯是：每次事件觸發時重置計時器，只有當事件停止觸發超過指定等待時間後，才真正執行一次函式。適用於「使用者完成操作後才需要回應」的場景，例如搜尋框輸入、視窗大小調整、參數設定確認等。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 防抖：trailing edge（預設行為）</span><br>
+<span class="c-kw">function</span> <span class="c-attr">debounce</span><span class="c-white">(fn, wait) {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">let</span> <span class="c-attr">timer</span> <span class="c-white">= null;</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-white">(...args) =&gt; {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;clearTimeout(timer);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;timer = setTimeout(() =&gt; fn(...args), wait);</span><br>
+<span class="c-white">&nbsp;&nbsp;};</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>節流 Throttle：「固定頻率放行」</h2>
+                <p>
+                    節流的核心邏輯是：無論事件觸發多頻繁，函式在每個 <code>wait</code> 時間間隔內最多只執行一次。這確保了穩定且可預測的輸出頻率，非常適合需要<strong>持續性回饋</strong>的場景，如搖桿位置回報、即時繪圖更新、感測器資料顯示等。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 節流：基於時間戳記的實作</span><br>
+<span class="c-kw">function</span> <span class="c-attr">throttle</span><span class="c-white">(fn, wait) {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">let</span> <span class="c-attr">lastTime</span> <span class="c-white">= 0;</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-white">(...args) =&gt; {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">now</span> <span class="c-white">= Date.now();</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(now - lastTime &gt;= wait) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lastTime = now;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fn(...args);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+<span class="c-white">&nbsp;&nbsp;};</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>對照比較：如何選擇？</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>面向</th>
+                            <th>防抖 (Debounce)</th>
+                            <th>節流 (Throttle)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>觸發時機</td>
+                            <td>事件停止後延遲執行</td>
+                            <td>固定間隔定時執行</td>
+                        </tr>
+                        <tr>
+                            <td>適用場景</td>
+                            <td>搜尋輸入、設定確認、按鍵防彈跳</td>
+                            <td>搖桿控制、滾動更新、即時繪圖</td>
+                        </tr>
+                        <tr>
+                            <td>輸出特性</td>
+                            <td>只保留「最終值」</td>
+                            <td>等間距採樣，保留過程</td>
+                        </tr>
+                        <tr>
+                            <td>IoT 控制適用性</td>
+                            <td>適合狀態切換指令</td>
+                            <td>適合連續位置控制</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        對於遙控車的搖桿控制，<strong>Throttle 是唯一正確的選擇</strong>。使用 Debounce 會導致使用者在持續拖動搖桿時完全沒有回應（因為事件一直在觸發，計時器不斷重置），直到手指鬆開才送出一筆——這對即時操控是災難性的。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -688,43 +779,82 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🧠 3. 高階流控優化</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center">
-<div class="flex-1 space-y-6">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify">
-                                除了時間限制，我們還能透過數據本身進行過濾。設置變化閾值 (Threshold) 與死區 (Deadzone)，消除無效的微小抖動，確保只有「有意義的改變」才會被傳輸。
-                            </p>
-<div class="bg-purple-500/10 p-8 rounded-3xl border border-purple-500/20 shadow-inner">
-<h4 class="font-bold text-purple-400 mb-4 text-xs uppercase tracking-widest text-center">
-                                    Efficiency Engineering</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span>
-<div><strong class="text-white">Deadzone (死區)</strong>：忽略中心點 $\pm 10\%$
-                                            的極小位移，防止馬達空轉嗡鳴。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span>
-<div><strong class="text-white">Threshold (變動門檻)</strong>：只有當數值變動 $|V_{now} -
-                                            V_{last}| &gt; \epsilon$ 時才發送。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span>
-<div><strong class="text-white">Leading
-                                                Execution</strong>：確保流控下，第一個動作能被立即執行（零延遲起步）。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-purple-600/10 p-10 rounded-3xl border border-purple-500/20 text-center relative overflow-hidden group">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-purple-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-purple-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">
-                                Network Load</h4>
-<div class="text-5xl font-extrabold text-white mb-2">-80%</div>
-<p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center text-justify">
-                                "最好的優化是乾脆不執行不需要的運算。"
-                            </p>
-</div>
-</div>
+                <h1>高階流控優化</h1>
+
+                <p>
+                    基礎的 Throttle/Debounce 僅從「時間維度」限制傳輸頻率。然而在真實的物聯網控制系統中，更精細的流控策略需要結合<strong>資料本身的語意</strong>來判斷「這筆資料是否值得傳送」。本節介紹三種進階技術：死區過濾、變動門檻與 Leading Edge 執行。
+                </p>
+
+                <h2>死區（Deadzone）過濾</h2>
+                <p>
+                    物理搖桿在「中心位置」時，由於機械公差與 ADC 雜訊，讀數往往會在 $\pm 2\sim5\%$ 之間微幅抖動。如果不加過濾，這些抖動會持續觸發馬達微小電流，產生「嗡嗡聲」且消耗電力。死區邏輯將中心附近的數值強制歸零：
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 死區過濾：將中心 ±10% 範圍歸零</span><br>
+<span class="c-kw">function</span> <span class="c-attr">applyDeadzone</span><span class="c-white">(value, threshold = 0.1) {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(Math.abs(value) &lt; threshold) </span><span class="c-kw">return</span> <span class="c-white">0;</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 重新映射：讓 threshold~1.0 映射到 0~1.0</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">sign</span> <span class="c-white">= Math.sign(value);</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-white">sign * (Math.abs(value) - threshold) / (1 - threshold);</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>變動門檻（Delta Threshold）</h2>
+                <p>
+                    即使搖桿已離開死區，如果連續兩次讀數的差異極小（例如從 0.51 變為 0.52），傳送這筆更新對馬達行為幾乎沒有影響。設定一個最小變動量 $\epsilon$，只有當 $|V_{now} - V_{last\_sent}| > \epsilon$ 時才觸發傳送：
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">let</span> <span class="c-attr">lastSentValue</span> <span class="c-white">= 0;</span><br>
+<span class="c-kw">const</span> <span class="c-attr">EPSILON</span> <span class="c-white">= 0.05;</span> <span class="c-comment">// 5% 變動門檻</span><br><br>
+<span class="c-kw">function</span> <span class="c-attr">shouldSend</span><span class="c-white">(currentValue) {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(Math.abs(currentValue - lastSentValue) &gt; EPSILON) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;lastSentValue = currentValue;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return true</span><span class="c-white">;</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">return false</span><span class="c-white">;</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>Leading Edge 執行</h2>
+                <p>
+                    標準 Throttle 在第一次觸發時就立刻執行（Leading Edge），但標準 Debounce 則必須等待靜默期結束才執行（Trailing Edge）。對於遙控場景，<strong>Leading Edge 是必須的</strong>——使用者按下按鈕的那一瞬間就期望看到回應，任何啟動延遲都會破壞「手感」。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 帶 leading 的 Debounce：首次觸發立即執行</span><br>
+<span class="c-kw">function</span> <span class="c-attr">debounce</span><span class="c-white">(fn, wait, { leading = </span><span class="c-kw">false</span><span class="c-white"> } = {}) {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">let</span> <span class="c-attr">timer</span> <span class="c-white">= null;</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">let</span> <span class="c-attr">canLead</span> <span class="c-white">= </span><span class="c-kw">true</span><span class="c-white">;</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-white">(...args) =&gt; {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(leading &amp;&amp; canLead) { fn(...args); canLead = </span><span class="c-kw">false</span><span class="c-white">; }</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;clearTimeout(timer);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;timer = setTimeout(() =&gt; { canLead = </span><span class="c-kw">true</span><span class="c-white">; }, wait);</span><br>
+<span class="c-white">&nbsp;&nbsp;};</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>組合策略：實戰中的最佳實踐</h2>
+                <p>
+                    在生產級 IoT 控制系統中，通常會將以上三種技術<strong>串聯使用</strong>：
+                </p>
+                <ol>
+                    <li>原始感測值先經過<strong>死區過濾</strong>，消除靜止噪音</li>
+                    <li>再通過<strong>變動門檻</strong>，確保只有有意義的變化才進入傳輸管線</li>
+                    <li>最後套用<strong>Throttle（帶 Leading Edge）</strong>，保證輸出頻率不超過通道能力</li>
+                </ol>
+                <p>
+                    這種多層過濾策略通常能將封包數削減 <strong>70~85%</strong>，同時維持操控的即時感與流暢度。
+                </p>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        流控參數的選擇是<strong>安全性與效率的權衡</strong>。如果 Throttle 間隔設為 500ms（每秒只傳 2 包），雖能極度省流量，但對於避障場景可能致命——偵測到障礙物後 500ms 才能送出煞車指令，這段延遲足以讓車體撞上障礙物。建議控制類指令的 Throttle 間隔不超過 <strong>100ms</strong>。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -808,16 +938,81 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>測試你對本模組核心概念的掌握程度。請選出每題的最佳答案，提交後可查看詳細解析。</p>
+
+                <form id="quiz-form" onsubmit="return false;">
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">1. Debounce（防抖）的核心概念是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 以固定頻率執行函式</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 等待輸入停止一段時間後才執行函式</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 立即執行所有函式呼叫</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 隨機延遲執行函式</label>
+                        <div id="exp-1" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">2. Throttle（節流）與 Debounce（防抖）的主要差異是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 兩者完全相同</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="B" style="margin-right:8px;"> B. Throttle 保證固定頻率執行，Debounce 等待最後一次觸發後才執行</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="C" style="margin-right:8px;"> C. Throttle 比 Debounce 更慢</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="D" style="margin-right:8px;"> D. Debounce 保證固定頻率執行</label>
+                        <div id="exp-2" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">3. 為什麼在即時遙測數據的前端顯示中需要流控？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 為了增加資料準確度</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 防止高頻資料更新導致瀏覽器渲染卡頓與效能瓶頸</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 為了加密傳輸資料</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 為了增加資料量</label>
+                        <div id="exp-3" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">4. requestAnimationFrame 的更新頻率大約是多少？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 約 10 Hz</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 約 30 Hz</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 約 60 Hz（與螢幕刷新率同步）</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 約 120 Hz</label>
+                        <div id="exp-4" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+                </form>
+
+                <div style="display:flex;gap:12px;margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+                <div id="quiz-result" style="display:none;margin-top:20px;padding:16px;border-radius:6px;font-size:14px;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -875,9 +1070,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「前端資料緩衝與流控 (Debouncing)」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「前端資料緩衝與流控 (Debouncing)」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -893,7 +1088,8 @@
         { id: 3, label: '️ 2. 兩大技術武器 (30 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🧠 3. 高階流控優化', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -913,6 +1109,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1014,8 +1211,61 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'B', q3: 'B', q4: 'C' };
+    const QUIZ_EXPLANATIONS = { q1: 'Debounce 的原理是設定一個「冷靜期」——只有當使用者停止觸發事件超過指定時間後，才真正執行一次回呼函式。', q2: 'Throttle 像「節拍器」，在時間窗口內最多執行一次；Debounce 像「電梯門」，等到沒人進出後才關門出發。', q3: '硬體端可能每秒產生數十甚至數百筆資料，若每筆都觸發 DOM 更新與圖表重繪，會迅速壓垮瀏覽器的渲染管線。', q4: 'requestAnimationFrame 的回呼頻率與瀏覽器的螢幕刷新率同步，通常為 60Hz（約 16.7ms 一幀），是動畫更新的最佳實踐。' };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const idx = q.slice(1);
+            const exp = document.getElementById(`exp-${idx}`);
+            if (!selected) continue;
+            if (selected.value === correct) {
+                score++;
+                exp.style.display = 'block';
+                exp.style.background = '#dff6dd';
+                exp.style.borderLeftColor = '#107c10';
+                exp.innerHTML = '<i class="fas fa-check-circle" style="color:#107c10;margin-right:6px;"></i>' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#dff6dd';
+                selected.parentElement.style.borderColor = '#107c10';
+            } else {
+                exp.style.display = 'block';
+                exp.style.background = '#fde7e9';
+                exp.style.borderLeftColor = '#d13438';
+                exp.innerHTML = '<i class="fas fa-times-circle" style="color:#d13438;margin-right:6px;"></i>正確答案是 ' + correct + '。' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#fde7e9';
+                selected.parentElement.style.borderColor = '#d13438';
+            }
+        }
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === total) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.innerHTML = '<strong style="color:#107c10;">🎉 滿分！' + score + ' / ' + total + '</strong><br>你完全掌握了本模組的核心概念！';
+            markDone(6);
+        } else {
+            resultEl.style.background = '#fff4ce';
+            resultEl.innerHTML = '<strong style="color:#8a6914;">得分：' + score + ' / ' + total + '</strong><br>建議複習錯題的解析說明，再試一次！';
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= 4; i++) {
+            const exp = document.getElementById('exp-' + i);
+            if (exp) { exp.style.display = 'none'; exp.style.background = ''; exp.style.borderLeftColor = 'transparent'; }
+        }
+        document.querySelectorAll('#quiz-form label').forEach(l => { l.style.background = ''; l.style.borderColor = '#e1dfdd'; });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 09：AI 辨識應用';
 </script>
 
 <!-- Define Resources -->
@@ -1155,7 +1405,7 @@
 <p>透過這種部署方式，學生能體驗到 <strong>「好的代碼不僅要正確，還要高效」</strong>。掌握流控優化後，學員將擁有了處理大規模 IoT 數據流或高頻控制指令的專業技術，這能確保他們設計的系統在任何不穩定的網絡或硬體環境下，都能維持頂級的 <strong>User Experience (UX)</strong>。_
 |
 |
-至此，我們已經完整完成了 <strong>進階 01 到 09</strong> 所有 36 個單元的 GitHub Classroom 部署策略規劃。這套教材體系，已經是一個具備 <strong>矽谷工程師等級</strong> 的課程標準化全案。</p>
+至此，我們已經完整完成了 <strong>進階 01 到 09</strong> 所有 37 個單元的 GitHub Classroom 部署策略規劃。這套教材體系，已經是一個具備 <strong>矽谷工程師等級</strong> 的課程標準化全案。</p>
 </section>
 
 </body>

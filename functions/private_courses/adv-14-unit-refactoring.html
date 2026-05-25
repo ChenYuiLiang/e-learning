@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>代碼重構與模組化設計 - Vibe Coding Learn</title>
+    <title>代碼重構與模組化設計 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 14 - 重構藝術</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">代碼重構與模組化設計</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 14</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>代碼重構與模組化設計</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 14</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>代碼重構與模組化設計</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    歡迎來到本模組！本單元聚焦於 <strong>代碼重構與模組化設計</strong>。
+                    隨著功能不斷疊加，你的主程式是否已經膨脹成一鍋難以維護的「義大利麵」？改動通訊層卻意外破壞了 PID 計算，新增感測器又得在三個地方同步修改全域變數。
+                    本模組將教你運用關注點分離、OOP 封裝與插件化管道設計，將混亂的單體代碼蛻變為優雅、可擴展的專業架構。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境設定</div>
+                    你接手了一份前人留下的 500 行單體 loop() 函式——感測器讀取、PID 運算、馬達驅動和通訊解析全部擠在一起，魔法數字散落各處。
+                    你想加入一個卡爾曼濾波器，卻發現根本找不到安全的插入點，因為任何修改都可能牽一髮而動全身。
+                    請先觀看教學影片，學習如何像外科醫生般精確拆解這團混亂，建立模組化的清晰架構。
                 </div>
 
                 <h2>教學影片</h2>
@@ -576,7 +577,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -591,58 +592,106 @@
                 </div>
 
                 <h1>👃 1. 識別「代碼壞味道」 (Code Smells)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify text-justify">
-                                重構不是增加新功能，而是優化內部結構。好的代碼應該像優美的散文，讓人讀起來賞心悅目。學會「聞出」隱藏在開發初期的技術債。
-                            </p>
-<div class="bg-emerald-50 p-6 rounded-2xl border border-emerald-100 text-justify">
-<h4 class="font-bold text-emerald-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed text-center text-justify">
-                                    Common Technical Debt Symptoms</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify text-justify">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify text-left">冗長函式 (Long Method)</strong>：主迴圈超過 50
-                                            行，且混雜了感測、計算與輸出職責。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify">魔法數字 (Magic
-                                                Numbers)</strong>：代碼中充滿寫死的數值標籤，缺乏具名常數定義。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify">緊密耦合 (Spaghetti)</strong>：模組間相互依賴，改動通訊層卻導致 PID
-                                            計算損毀。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-emerald-500/5 group-hover:bg-emerald-500/10 transition-colors text-justify">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-center text-justify">
-                                Refactoring Logic Flow</h4>
-<div class="relative z-10 flex flex-col items-center gap-2 text-justify">
-<div class="text-[8px] text-red-400 font-mono line-through text-justify">
-                                    raw_monolith_loop() { ... 500 lines ... }</div>
-<div class="text-emerald-500 animate-bounce text-justify">↓</div>
-<div class="space-y-1 text-justify">
-<div class="text-[9px] text-emerald-400 font-mono text-justify">
-                                        sensor_fusion_update()</div>
-<div class="text-[9px] text-emerald-400 font-mono text-justify">
-                                        control_logic_process()</div>
-<div class="text-[9px] text-emerald-400 font-mono text-justify">
-                                        motor_actuation_commit()</div>
-</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-8 font-mono tracking-widest text-center text-justify uppercase font-black">
-                                Clean Code Transition</p>
-</div>
-</div>
+
+                <p>
+                    <strong>重構（Refactoring）</strong>不是增加新功能，而是在不改變外部行為的前提下，優化代碼的內部結構。Martin Fowler 在《重構：改善既有程式的設計》中提出了「代碼壞味道」（Code Smells）的概念——這些是代碼中暗示深層問題的表面徵兆，就像食物發出的異味預示著它已經開始腐敗。
+                </p>
+
+                <p>
+                    學會識別這些壞味道，是重構的第一步。以下是在物聯網控制系統中最常見的五種技術債徵兆：
+                </p>
+
+                <h2>五大代碼壞味道</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>壞味道</th>
+                            <th>症狀描述</th>
+                            <th>危害</th>
+                            <th>重構手法</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>冗長函式</strong><br>(Long Method)</td>
+                            <td>主迴圈 <code>loop()</code> 超過 50 行，混雜感測讀取、PID 計算與馬達輸出</td>
+                            <td>認知負荷過高，改一處壞全局</td>
+                            <td>函式提取（Extract Method）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>魔法數字</strong><br>(Magic Numbers)</td>
+                            <td>代碼中充滿 <code>255</code>、<code>0.35</code>、<code>1024</code> 等裸數值</td>
+                            <td>含義不明，修改時容易遺漏</td>
+                            <td>具名常數（Named Constants）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>緊密耦合</strong><br>(Tight Coupling)</td>
+                            <td>模組間共享全域變數，改動通訊層導致 PID 計算損毀</td>
+                            <td>牽一髮而動全身</td>
+                            <td>介面隔離（Interface Segregation）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>重複代碼</strong><br>(Duplicated Code)</td>
+                            <td>相似的邊界檢查邏輯在 3 個以上的地方重複出現</td>
+                            <td>修改時必須同步更新所有副本</td>
+                            <td>提取為共用函式</td>
+                        </tr>
+                        <tr>
+                            <td><strong>深度巢狀</strong><br>(Deep Nesting)</td>
+                            <td>3 層以上的 <code>if-else</code> 巢狀結構</td>
+                            <td>邏輯分支難以追蹤，易出錯</td>
+                            <td>衛語句（Guard Clauses）提早返回</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>壞味道辨識實例</h2>
+
+                <p>
+                    以下是一段典型的「義大利麵代碼」，請嘗試辨識其中包含了哪些壞味道：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 壞味道示範：一鍋義大利麵</span><br>
+                    <span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">int</span> <span class="c-attr">val</span> <span class="c-white">= </span><span class="c-tag">analogRead</span><span class="c-white">(</span><span class="c-val">A0</span><span class="c-white">);</span> <span class="c-comment">// 魔法數字 A0</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(</span><span class="c-attr">val</span> <span class="c-white">> </span><span class="c-val">512</span><span class="c-white">) {</span> <span class="c-comment">// 512 代表什麼？</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(</span><span class="c-attr">connected</span><span class="c-white">) {</span> <span class="c-comment">// 全域變數</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">int</span> <span class="c-attr">spd</span> <span class="c-white">= </span><span class="c-attr">val</span> <span class="c-white">* </span><span class="c-val">0.35</span><span class="c-white">;</span> <span class="c-comment">// 魔法數字 0.35</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">analogWrite</span><span class="c-white">(</span><span class="c-val">5</span><span class="c-white">, </span><span class="c-attr">spd</span><span class="c-white">);</span> <span class="c-comment">// 魔法腳位 5</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">Serial</span><span class="c-white">.</span><span class="c-tag">println</span><span class="c-white">(</span><span class="c-attr">spd</span><span class="c-white">);</span> <span class="c-comment">// 除錯殘留</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        上述短短 10 行代碼就包含了至少 4 種壞味道：魔法數字（<code>512</code>、<code>0.35</code>、<code>5</code>）、全域變數依賴（<code>connected</code>）、職責混合（感測 + 計算 + 輸出都擠在同一個 <code>loop()</code>）以及除錯殘留（<code>Serial.println</code>）。在真實的 500 行專案中，這些問題會以指數級膨脹。
+                    </div>
+                </div>
+
+                <h2>技術債的複利效應</h2>
+
+                <p>
+                    技術債就像金融債務——如果不償還，它會產生<strong>複利</strong>。今天你多花 5 分鐘寫出乾淨的代碼，可以省下未來數小時的除錯時間。反之，今天偷懶寫出的「能動就好」的代碼，會在每一次後續修改時收取利息——更長的理解時間、更高的出錯概率、更難以預測的副作用。
+                </p>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        重構的黃金法則：<strong>永遠不要在新增功能的同時進行重構</strong>。這兩件事必須分開做——先重構使代碼結構足夠清晰，確認測試通過；然後再新增功能。混在一起做，你將無法分辨 Bug 是來自重構還是新功能。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -657,54 +706,104 @@
                 </div>
 
                 <h1>🧱 2. 關注點分離：模組化神經架構</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                將系統拆解為不互相依賴的獨立模組。感知 (Perceive)、決策 (Decide) 與執行 (Act) 三權分立，實現極高內聚且低耦合的軟體結構。
-                            </p>
-<div class="bg-teal-50 p-8 rounded-3xl border border-teal-100 text-center text-justify">
-<h4 class="text-teal-900 font-bold mb-4 text-xs uppercase tracking-widest text-center text-justify text-justify">
-                                    Architectural Layering</h4>
-<div class="grid grid-cols-3 gap-2 text-justify">
-<div class="p-3 bg-white border border-teal-200 rounded-xl text-[10px] font-bold text-justify">
-                                        感測<br/><span class="text-[7px] font-normal text-slate-400 text-justify">INPUT</span>
-</div>
-<div class="p-3 bg-teal-600 text-white rounded-xl text-[10px] font-bold shadow-lg text-justify text-left">
-                                        邏輯核心<br/><span class="text-[7px] font-normal text-teal-200 text-justify">PROCESS</span>
-</div>
-<div class="p-3 bg-white border border-teal-200 rounded-xl text-[10px] font-bold text-justify">
-                                        執行<br/><span class="text-[7px] font-normal text-slate-400 text-justify">OUTPUT</span>
-</div>
-</div>
-<p class="text-[10px] text-slate-400 mt-6 italic font-light text-center text-justify text-justify">
-                                    介面隔離：模組間僅透過標準 API 或訊息通訊，不共享全域變數</p>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-teal-500/5 text-justify"></div>
-<h4 class="text-teal-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-center text-justify">
-                                Interface Contract Analysis</h4>
-<div class="p-6 border border-slate-800 rounded-2xl relative text-justify">
-<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-900 px-2 text-teal-500 text-[8px] font-mono text-justify">
-                                    DECOUPLED API</div>
-<div class="flex gap-4 text-justify">
-<div class="w-2 h-2 rounded-full bg-teal-500 text-justify"></div>
-<div class="text-[10px] text-slate-400 font-mono tracking-tighter text-justify">
-                                        telemetry.send(packet_binary)</div>
-</div>
-<div class="text-[7px] text-slate-600 mt-4 italic px-6 font-light text-justify">"Zero
-                                    Direct Hardware Calls in Main Logic"</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-8 font-mono tracking-widest uppercase text-center text-justify">
-                                Module Autonomy Visualization</p>
-</div>
-</div>
+
+                <p>
+                    <strong>關注點分離（Separation of Concerns, SoC）</strong>是軟體工程中最重要的設計原則之一。其核心思想是：系統中的每個模組應該只負責一件事，且模組之間的依賴關係應該降到最低。就像人體的神經系統——感覺神經負責接收、中樞神經負責處理、運動神經負責執行——三者各司其職，透過標準化的神經訊號溝通。
+                </p>
+
+                <p>
+                    在物聯網控制系統中，最自然的分層方式是將邏輯拆分為三個獨立的子系統：<strong>感知層（Perception）</strong>、<strong>決策層（Control Logic）</strong>與<strong>執行層（Actuation）</strong>。
+                </p>
+
+                <h2>三層架構：感知 → 決策 → 執行</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>架構層</th>
+                            <th>職責</th>
+                            <th>輸入</th>
+                            <th>輸出</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>感知層</strong><br>(Perception)</td>
+                            <td>讀取感測器數據、接收通訊封包、數據預處理</td>
+                            <td>原始硬體訊號</td>
+                            <td>標準化的數據結構</td>
+                        </tr>
+                        <tr>
+                            <td><strong>決策層</strong><br>(Control Logic)</td>
+                            <td>PID 運算、路徑規劃、狀態機管理</td>
+                            <td>標準化的數據結構</td>
+                            <td>控制指令（純數值）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>執行層</strong><br>(Actuation)</td>
+                            <td>馬達驅動、LED 控制、通訊回傳</td>
+                            <td>控制指令</td>
+                            <td>硬體操作</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>
+                    重構後的主迴圈應該像一份目錄一樣簡潔易讀，每一行都是對子模組的一次呼叫：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 重構後的主迴圈：清晰的三層呼叫結構</span><br>
+                    <span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">SensorData</span> <span class="c-attr">data</span> <span class="c-white">= </span><span class="c-tag">perception</span><span class="c-white">.</span><span class="c-tag">update</span><span class="c-white">();</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">ControlCommand</span> <span class="c-attr">cmd</span> <span class="c-white">= </span><span class="c-tag">controller</span><span class="c-white">.</span><span class="c-tag">compute</span><span class="c-white">(</span><span class="c-attr">data</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">actuator</span><span class="c-white">.</span><span class="c-tag">execute</span><span class="c-white">(</span><span class="c-attr">cmd</span><span class="c-white">);</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        注意上述三行代碼的精妙之處：<code>controller.compute()</code> 完全不知道數據是來自紅外線感測器還是超音波——它只接收標準化的數據結構。這代表你可以<strong>在不修改控制邏輯的情況下更換感測器</strong>，這就是關注點分離帶來的擴展彈性。
+                    </div>
+                </div>
+
+                <h2>OOP 封裝：隱藏複雜性</h2>
+
+                <p>
+                    物件導向程式設計（OOP）的核心價值在於<strong>封裝</strong>——將複雜的實作細節隱藏在類別內部，僅對外暴露簡潔的公開介面。以通訊層為例，底層的 Web Bluetooth API 涉及 UUID 配對、特徵值讀寫、異步連接等繁瑣細節。透過 OOP 封裝，主程式只需要呼叫 <code>comm.send(data)</code>，無需了解任何底層協議。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// OOP 封裝範例：通訊類別</span><br>
+                    <span class="c-kw">class</span> <span class="c-tag">VibeBotComm</span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">#device</span><span class="c-white">;</span> <span class="c-comment">// 私有屬性：外部不可見</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">#characteristic</span><span class="c-white">;</span><br><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">async</span> <span class="c-tag">connect</span><span class="c-white">() { </span><span class="c-comment">/* 封裝 BLE 配對流程 */</span><span class="c-white"> }</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">async</span> <span class="c-tag">send</span><span class="c-white">(</span><span class="c-attr">payload</span><span class="c-white">) { </span><span class="c-comment">/* 序列化 + 寫入 */</span><span class="c-white"> }</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">onReceive</span><span class="c-white">(</span><span class="c-attr">callback</span><span class="c-white">) { </span><span class="c-comment">/* 事件監聽 */</span><span class="c-white"> }</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <h2>介面合約化：模組間的溝通協議</h2>
+
+                <p>
+                    模組之間<strong>不應該共享全域變數</strong>。正確的做法是透過函式參數或事件機制來傳遞數據。這就像模組之間簽訂了一份「合約」——只要輸入格式符合合約規定，模組內部可以任意重構而不影響其他模組。
+                </p>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        判斷封裝是否成功的終極測試：如果你要將 BLE 通訊切換為 WebSocket，<strong>主程式邏輯是否一字不改</strong>？如果答案是「否」，代表你的介面隔離做得不夠徹底。這正是作業 14-2 要你證明的核心能力。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -719,54 +818,122 @@
                 </div>
 
                 <h1>🧩 3. 插件化與管道設計模式</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify text-justify text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
-                                追求硬核的系統擴展性。設計「處理鏈」模式，在不修改核心引擎的前提下，僅需注入獨立組件即可動態載入新的控制策略或遙測濾波器。
-                            </p>
-<div class="bg-emerald-500/10 p-8 rounded-3xl border border-emerald-500/20 shadow-inner text-justify text-justify">
-<h4 class="font-bold text-emerald-400 mb-4 text-xs uppercase tracking-widest text-center text-justify text-left">
-                                    SOLID Design Principles</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify text-left text-justify">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">對擴展開放 (Open)</strong>：新增功能只需撰寫獨立
-                                            Plugin Class，無需改動既有穩定代碼。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">對修改封閉
-                                                (Closed)</strong>：核心驅動邏輯經過驗證後，不再因為業務變動而被頻繁改寫。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">數據管道模式
-                                                (Pipeline)</strong>：像工業生產線一樣，數據流按序流經各個異步處理站。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-emerald-600/10 p-10 rounded-3xl border border-emerald-500/20 text-center relative overflow-hidden group text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify">
-</div>
-<h4 class="text-emerald-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center text-justify">
-                                Processing Chain</h4>
-<div class="space-y-2 text-justify">
-<div class="py-1 px-4 border border-slate-700 rounded text-[10px] bg-slate-800 text-justify">
-                                    Kalman Filter Plugin</div>
-<div class="py-1 px-4 border border-slate-700 rounded text-[10px] bg-slate-800 text-justify text-left">
-                                    Edge Guard Plugin</div>
-<div class="py-1 px-4 border border-emerald-500/50 rounded text-[10px] bg-emerald-600/20 text-emerald-400 animate-pulse text-justify uppercase font-black">
-                                    + Inject New Plugin</div>
-</div>
-<p class="text-[11px] text-slate-500 mt-10 leading-relaxed font-light italic text-center text-justify text-left text-justify">
-                                "高品質的架構是開發者對抗軟體熵增與複雜度的唯一武器。"
-                            </p>
-</div>
-</div>
+
+                <p>
+                    當你的架構已經完成了關注點分離，下一步是追求更高層次的設計目標：<strong>可擴展性（Extensibility）</strong>。理想的系統架構應該像一條工業生產線——當你需要增加新的加工步驟時，只需要在產線上「插入」一個新的工作站，而不需要拆掉整條產線重新設計。這就是<strong>插件化管道設計模式（Plugin Pipeline Pattern）</strong>的精髓。
+                </p>
+
+                <h2>開閉原則（Open-Closed Principle）</h2>
+
+                <p>
+                    SOLID 設計原則中的「O」代表開閉原則：<strong>對擴展開放，對修改封閉</strong>。這意味著當你需要新增功能（例如加入卡爾曼濾波器）時，你應該能夠透過撰寫一個獨立的插件類別來實現，而<strong>完全不需要修改</strong>已經驗證穩定的核心引擎代碼。
+                </p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        開閉原則的實踐價值在於：核心引擎一旦通過嚴格測試，就可以「鎖定」不再修改。所有新功能都透過外部插件注入。這大幅降低了因為新功能而引入回歸 Bug（Regression Bug）的風險。
+                    </div>
+                </div>
+
+                <h2>管道框架的實作</h2>
+
+                <p>
+                    管道（Pipeline）框架的核心是一個<strong>有序的處理鏈</strong>。每個插件都實作相同的介面——接收數據、處理數據、傳遞給下一站。框架本身只負責按順序呼叫各插件，不關心每個插件的具體邏輯。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 管道框架核心</span><br>
+                    <span class="c-kw">class</span> <span class="c-tag">DataPipeline</span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">#plugins</span> <span class="c-white">= [];</span><br><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">addPlugin</span><span class="c-white">(</span><span class="c-attr">plugin</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">this</span><span class="c-white">.</span><span class="c-kw">#plugins</span><span class="c-white">.</span><span class="c-tag">push</span><span class="c-white">(</span><span class="c-attr">plugin</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-kw">this</span><span class="c-white">;</span> <span class="c-comment">// 支援鏈式呼叫</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">process</span><span class="c-white">(</span><span class="c-attr">data</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-kw">this</span><span class="c-white">.</span><span class="c-kw">#plugins</span><span class="c-white">.</span><span class="c-tag">reduce</span><span class="c-white">(</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span class="c-attr">result</span><span class="c-white">, </span><span class="c-attr">plugin</span><span class="c-white">) => </span><span class="c-attr">plugin</span><span class="c-white">.</span><span class="c-tag">execute</span><span class="c-white">(</span><span class="c-attr">result</span><span class="c-white">), </span><span class="c-attr">data</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <h2>撰寫獨立插件</h2>
+
+                <p>
+                    每個插件只需要實作一個 <code>execute(data)</code> 方法。以下是兩個典型插件的範例：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 插件 1：數值安全鉗位（Clamping）</span><br>
+                    <span class="c-kw">class</span> <span class="c-tag">ClampPlugin</span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">execute</span><span class="c-white">(</span><span class="c-attr">data</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-attr">data</span><span class="c-white">.</span><span class="c-attr">speed</span> <span class="c-white">= </span><span class="c-tag">Math</span><span class="c-white">.</span><span class="c-tag">min</span><span class="c-white">(</span><span class="c-val">255</span><span class="c-white">, </span><span class="c-tag">Math</span><span class="c-white">.</span><span class="c-tag">max</span><span class="c-white">(</span><span class="c-val">0</span><span class="c-white">, </span><span class="c-attr">data</span><span class="c-white">.</span><span class="c-attr">speed</span><span class="c-white">));</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-attr">data</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">}</span><br><br>
+                    <span class="c-comment">// 插件 2：移動平均平滑濾波</span><br>
+                    <span class="c-kw">class</span> <span class="c-tag">SmoothPlugin</span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">#history</span> <span class="c-white">= [];</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">execute</span><span class="c-white">(</span><span class="c-attr">data</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">this</span><span class="c-white">.</span><span class="c-kw">#history</span><span class="c-white">.</span><span class="c-tag">push</span><span class="c-white">(</span><span class="c-attr">data</span><span class="c-white">.</span><span class="c-attr">speed</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(</span><span class="c-kw">this</span><span class="c-white">.</span><span class="c-kw">#history</span><span class="c-white">.</span><span class="c-attr">length</span> <span class="c-white">> </span><span class="c-val">5</span><span class="c-white">) </span><span class="c-kw">this</span><span class="c-white">.</span><span class="c-kw">#history</span><span class="c-white">.</span><span class="c-tag">shift</span><span class="c-white">();</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-attr">data</span><span class="c-white">.</span><span class="c-attr">speed</span> <span class="c-white">= </span><span class="c-kw">this</span><span class="c-white">.</span><span class="c-kw">#history</span><span class="c-white">.</span><span class="c-tag">reduce</span><span class="c-white">((</span><span class="c-attr">a</span><span class="c-white">,</span><span class="c-attr">b</span><span class="c-white">) => </span><span class="c-attr">a</span><span class="c-white">+</span><span class="c-attr">b</span><span class="c-white">) / </span><span class="c-kw">this</span><span class="c-white">.</span><span class="c-kw">#history</span><span class="c-white">.</span><span class="c-attr">length</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-attr">data</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <h2>動態組裝：即插即用</h2>
+
+                <p>
+                    管道框架的威力在於<strong>動態組裝</strong>。你可以根據不同的運行模式，在啟動時選擇性地載入不同的插件組合：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 動態組裝管道——根據運行模式載入不同插件</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">pipeline</span> <span class="c-white">= </span><span class="c-kw">new</span> <span class="c-tag">DataPipeline</span><span class="c-white">()</span><br>
+                    <span class="c-white">&nbsp;&nbsp;.</span><span class="c-tag">addPlugin</span><span class="c-white">(</span><span class="c-kw">new</span> <span class="c-tag">ClampPlugin</span><span class="c-white">())</span><br>
+                    <span class="c-white">&nbsp;&nbsp;.</span><span class="c-tag">addPlugin</span><span class="c-white">(</span><span class="c-kw">new</span> <span class="c-tag">SmoothPlugin</span><span class="c-white">());</span><br><br>
+                    <span class="c-comment">// 使用管道處理數據——核心引擎代碼零修改</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">result</span> <span class="c-white">= </span><span class="c-attr">pipeline</span><span class="c-white">.</span><span class="c-tag">process</span><span class="c-white">({ </span><span class="c-attr">speed</span><span class="c-white">: </span><span class="c-val">280</span><span class="c-white">, </span><span class="c-attr">direction</span><span class="c-white">: </span><span class="c-val">45</span> <span class="c-white">});</span><br>
+                    <span class="c-comment">// ClampPlugin 先將 280 鉗位到 255</span><br>
+                    <span class="c-comment">// SmoothPlugin 再進行移動平均平滑</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        要驗證你的管道框架是否真正符合開閉原則，試著回答這個問題：<strong>新增一個卡爾曼濾波插件需要修改幾個檔案？</strong>如果答案是「只需要建立一個新的 Plugin 檔案，然後在啟動配置中加一行 <code>.addPlugin(new KalmanPlugin())</code>」，那麼你的架構就已達到工業級的擴展彈性。
+                    </div>
+                </div>
+
+                <h2>設計模式的價值總結</h2>
+
+                <p>
+                    插件化管道模式帶來的三大價值：
+                </p>
+
+                <ul>
+                    <li><strong>安全擴展</strong>——新功能透過獨立插件加入，既有穩定代碼零風險。</li>
+                    <li><strong>靈活配置</strong>——不同的任務場景可以組裝不同的插件組合，一套框架適應多種需求。</li>
+                    <li><strong>獨立測試</strong>——每個插件都可以被單獨測試（Unit Test），而不需要啟動整個系統。</li>
+                </ul>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        管道中的插件<strong>執行順序</strong>至關重要。例如，鉗位插件（Clamp）必須放在平滑插件之前——如果先平滑再鉗位，溢位值可能會汙染平均計算。在設計管道時，務必仔細考慮每個插件的前後依賴關係。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -845,16 +1012,134 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>
+                    請回答以下問題，測試你對「<strong>程式碼重構</strong>」的理解程度。
+                    選擇完畢後點擊「送出答案」查看結果與解析。
+                </p>
+
+                <div id="quiz-container" style="margin:24px 0;">
+
+                    <div class="quiz-question" id="quiz-q0" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">1. 程式碼重構（Refactoring）的定義是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt0">
+                            <input type="radio" name="quiz-q0" value="0" style="accent-color:var(--ms-blue);">
+                            <span>增加新功能</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt1">
+                            <input type="radio" name="quiz-q0" value="1" style="accent-color:var(--ms-blue);">
+                            <span>在不改變外部行為的前提下，改善內部程式碼結構</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt2">
+                            <input type="radio" name="quiz-q0" value="2" style="accent-color:var(--ms-blue);">
+                            <span>修復已知的 Bug</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt3">
+                            <input type="radio" name="quiz-q0" value="3" style="accent-color:var(--ms-blue);">
+                            <span>將程式碼翻譯成另一種語言</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp0" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q1" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">2. 「程式碼異味（Code Smell）」中的「魔術數字」指的是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt0">
+                            <input type="radio" name="quiz-q1" value="0" style="accent-color:var(--ms-blue);">
+                            <span>使用十六進位表示的數字</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt1">
+                            <input type="radio" name="quiz-q1" value="1" style="accent-color:var(--ms-blue);">
+                            <span>程式碼中直接寫死的、沒有說明意義的常數值</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt2">
+                            <input type="radio" name="quiz-q1" value="2" style="accent-color:var(--ms-blue);">
+                            <span>超過 100 的數字</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt3">
+                            <input type="radio" name="quiz-q1" value="3" style="accent-color:var(--ms-blue);">
+                            <span>浮點數運算</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp1" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q2" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">3. 重構前最重要的前置步驟是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt0">
+                            <input type="radio" name="quiz-q2" value="0" style="accent-color:var(--ms-blue);">
+                            <span>先刪除所有註解</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt1">
+                            <input type="radio" name="quiz-q2" value="1" style="accent-color:var(--ms-blue);">
+                            <span>確保有足夠的測試覆蓋，能驗證重構後行為不變</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt2">
+                            <input type="radio" name="quiz-q2" value="2" style="accent-color:var(--ms-blue);">
+                            <span>將所有變數改名</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt3">
+                            <input type="radio" name="quiz-q2" value="3" style="accent-color:var(--ms-blue);">
+                            <span>升級開發環境</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp2" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q3" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">4. 「提取函式（Extract Function）」重構手法的時機是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt0">
+                            <input type="radio" name="quiz-q3" value="0" style="accent-color:var(--ms-blue);">
+                            <span>函式名稱太短時</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt1">
+                            <input type="radio" name="quiz-q3" value="1" style="accent-color:var(--ms-blue);">
+                            <span>當一段程式碼需要註解來解釋「它在做什麼」時</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt2">
+                            <input type="radio" name="quiz-q3" value="2" style="accent-color:var(--ms-blue);">
+                            <span>當程式執行太快時</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt3">
+                            <input type="radio" name="quiz-q3" value="3" style="accent-color:var(--ms-blue);">
+                            <span>當變數太少時</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp3" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">送出答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+
+                <div id="quiz-result" style="display:none; margin-top:20px; padding:16px 20px; border-radius:6px; font-weight:600;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -912,9 +1197,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「代碼重構與模組化設計」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「代碼重構與模組化設計」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -930,7 +1215,8 @@
         { id: 3, label: '🧱 2. 關注點分離：模組化神經架構', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🧩 3. 插件化與管道設計模式', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -950,6 +1236,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1051,8 +1338,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = [1, 1, 1, 1];
+    const QUIZ_EXPLANATIONS = ["重構專注於改善程式碼的內部品質（可讀性、可維護性），而非改變功能行為。","魔術數字讓程式碼難以理解與維護，應該用有意義的命名常數取代（如 MAX_SPEED = 255）。","測試是重構的安全網，沒有測試就無法確認重構是否引入了回歸錯誤。","如果需要用註解解釋一段程式碼的意圖，這段程式碼就適合被提取為一個以意圖命名的獨立函式。"];
+
+    function submitQuiz() {
+        let score = 0;
+        QUIZ_ANSWERS.forEach((ans, i) => {
+            const selected = document.querySelector(`input[name="quiz-q${i}"]:checked`);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            const qEl = document.getElementById(`quiz-q${i}`);
+            if (selected && parseInt(selected.value) === ans) {
+                score++;
+                qEl.style.borderColor = '#107c10';
+                expEl.style.background = '#dff6dd';
+                expEl.innerHTML = '<strong style="color:#107c10;">✓ 正確！</strong> ' + QUIZ_EXPLANATIONS[i];
+            } else {
+                qEl.style.borderColor = '#d13438';
+                expEl.style.background = '#fde7e9';
+                expEl.innerHTML = '<strong style="color:#d13438;">✗ 不正確。</strong> ' + QUIZ_EXPLANATIONS[i];
+            }
+            expEl.style.display = 'block';
+        });
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === QUIZ_ANSWERS.length) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.style.color = '#107c10';
+            resultEl.textContent = `🎉 滿分！你答對了全部 ${QUIZ_ANSWERS.length} 題！`;
+        } else {
+            resultEl.style.background = '#deecf9';
+            resultEl.style.color = '#005a9e';
+            resultEl.textContent = `你答對了 ${score} / ${QUIZ_ANSWERS.length} 題，請查看解析後再試一次。`;
+        }
+    }
+
+    function resetQuiz() {
+        QUIZ_ANSWERS.forEach((_, i) => {
+            const radios = document.querySelectorAll(`input[name="quiz-q${i}"]`);
+            radios.forEach(r => r.checked = false);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            expEl.style.display = 'none';
+            const qEl = document.getElementById(`quiz-q${i}`);
+            qEl.style.borderColor = '#e1dfdd';
+        });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 14：除錯的藝術';
 </script>
 
 <!-- Define Resources -->

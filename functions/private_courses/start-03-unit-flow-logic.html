@@ -310,6 +310,22 @@
             border-left: 3px solid transparent;
             padding-left: 8px;
         }
+    
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 10px 14px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; cursor: pointer; transition: background .1s, border-color .1s; font-size: 14px;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback { display: none; margin-top: 8px; padding: 10px 14px; border-radius: 4px; font-size: 13px; font-weight: 500; }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
     </style>
 </head>
 <body>
@@ -340,7 +356,7 @@
                 <div class="progress-bar-bg">
                     <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
                 </div>
-                <div class="progress-text" id="progress-text">0 / 5 已完成</div>
+                <div class="progress-text" id="progress-text">0 / 6 已完成</div>
             </div>
         </div>
 
@@ -574,12 +590,67 @@
                     <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一單元 &nbsp;›</button>
                 </div>
             </div>
+        <!-- ══════════ PAGE 5: QUIZ ══════════ -->
+        <div class="ms-unit-page" id="page-5">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-5" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
+                </div>
 
-            <!-- PAGE: 摘要與資源 (5) -->
-            <div class="ms-unit-page" id="page-5">
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <div class="quiz-question">
+                        <p>1. 在持續按住控制按鈕時，為什麼要使用 <code>setInterval()</code> 定期發送指令，而非只在 <code>mousedown</code> 時發送一次？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 因為 <code>setInterval()</code> 的語法比較簡潔</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 因為機器人需要持續收到指令才會持續動作，單次指令會導致機器人只動一下就停止</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 因為瀏覽器會自動忽略單次發送的事件</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>2. 當使用者放開按鈕時（<code>mouseup</code>），正確的資源釋放步驟是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 不需要任何處理，瀏覽器會自動停止計時器</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 呼叫 <code>clearInterval()</code> 停止定時器，並將 ID 變數設為 <code>null</code></label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 直接重新整理整個網頁</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>3. 什麼是「Fail-safe（失效安全）」機制？在遙控介面中如何實現？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 當網頁發生 JavaScript 錯誤時自動隱藏錯誤訊息</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 當偵測到異常狀態（如視窗失焦、滑鼠離開）時，自動停止所有指令發送並發送停止訊號</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 在程式碼中加入大量的註解以防止出錯</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>4. 為什麼需要監聽 <code>blur</code> 事件來實作安全機制？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 因為 <code>blur</code> 事件能偵測使用者是否閉上了眼睛</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 因為當使用者切換到其他視窗或 App 時，<code>mouseup</code> 事件可能不會被觸發，導致定時器持續運行</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 因為 <code>blur</code> 事件的觸發頻率比 <code>click</code> 更高</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">5 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+<div class="ms-unit-page" id="page-6">
                 <div class="unit-content">
                     <div class="unit-status-bar">
-                        <div class="unit-completed-badge" id="badge-5" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-completed-badge" id="badge-6" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
                         <div class="unit-time-badge"><i class="far fa-clock"></i> 5 分鐘</div>
                     </div>
                     <h1>摘要與學習資源</h1>
@@ -616,9 +687,9 @@
                     </div>
                 </div>
                 <div class="unit-nav">
-                    <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
                     <span class="unit-page-indicator font-bold text-green-600">✓ 模組已完成</span>
-                    <button class="ms-btn bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm font-bold shadow" onclick="markDone(5); alert('🎉 恭喜完成「指令流邏輯：單次觸發與重複發送」單元！')">完成模組</button>
+                    <button class="ms-btn bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm font-bold shadow" onclick="markDone(6); alert('🎉 恭喜完成「指令流邏輯：單次觸發與重複發送」單元！')">完成模組</button>
                 </div>
             </div>
         </div>
@@ -633,8 +704,15 @@
             { id: 2, label: '直覺實驗室',     time: '15 分鐘',  type: 'unit'  },
             { id: 3, label: '核心技術',       time: '15 分鐘',  type: 'unit'  },
             { id: 4, label: '教室實戰',       time: '165 分鐘', type: 'lab'   },
-            { id: 5, label: '摘要與資源',     time: '5 分鐘',  type: 'unit'  },
+            { id: 5, label: '知識測驗',              time: '4 分鐘',  type: 'quiz'  },
+            { id: 6, label: '摘要與資源',     time: '5 分鐘',  type: 'unit'  },
         ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！在即時控制系統中，機器人需要持續收到「心跳式」的控制指令來維持動作。若只發送一次，機器人無法區分「持續前進」與「點一下就停」的意圖。' },        q2: { b: '正確！必須使用 <code>clearInterval()</code> 明確停止定時器，並將 ID 設為 <code>null</code>，避免「幽靈定時器」持續在背景執行。' },        q3: { b: '正確！Fail-safe 確保在非預期情況下，系統能自動觸發安全停止，防止機器人失控持續運動。' },        q4: { b: '正確！當使用者按住按鈕後切換到其他應用程式，<code>mouseup</code> 不會被網頁捕捉到，定時器會持續發送指令。監聽 <code>blur</code> 能在視窗失焦時立即煞車。' },
+    };
+
 
         let currentUnit = 0;
         let doneSet = new Set();
@@ -649,7 +727,9 @@
         function buildSidebar() {
             const nav = document.getElementById('sidebar-nav');
             nav.innerHTML = UNITS.map(u => {
-                const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>' : '';
+                const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                              : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
+                              : '';
                 return `
                 <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
                     <div class="unit-icon" id="icon-${u.id}">${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div>
@@ -726,7 +806,56 @@
             document.getElementById('progress-text').textContent = `${done} / ${total} 已完成`;
         }
 
-        /* ─── START ─── */
+        
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            document.querySelectorAll(`input[name="${qid}"]`).forEach(opt => {
+                opt.disabled = true;
+                if (opt.value === answer) opt.parentElement.classList.add('correct');
+                if (opt.checked && opt.value !== answer) opt.parentElement.classList.add('wrong');
+            });
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                feedbackEl.textContent = '✗ 不正確。' + QUIZ_EXPLANATIONS[qid][answer];
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        const pct = Math.round(correct / total * 100);
+        scoreEl.style.display = 'block';
+        scoreEl.innerHTML = `<span style="font-size:20px;">${pct >= 75 ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pct >= 75 ? '通過！繼續前往下一個單元。' : '建議回顧相關單元後再試一次。'}</div>`;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => el.classList.remove('correct','wrong'));
+        document.querySelectorAll('input[type=radio]').forEach(el => { el.checked = false; el.disabled = false; });
+        document.querySelectorAll('.quiz-feedback').forEach(el => { el.className = 'quiz-feedback'; el.textContent = ''; });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
+/* ─── START ─── */
         init();
 
         // --- Interactive Demo Logic ---

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>數位影像特徵提取：二值化與濾波 - Vibe Coding Learn</title>
+    <title>數位影像特徵提取：二值化與濾波 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 6 - 二值化與濾波</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">數位影像特徵提取：二值化與濾波</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 6</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>數位影像特徵提取：二值化與濾波</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 6</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,17 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>數位影像特徵提取：二值化與濾波</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    攝影機回傳的彩色畫面包含數十萬個像素，但機器需要的只是「哪裡有目標、哪裡沒有」。
+                    本模組將教你掌握<strong>灰階轉換、二值化門檻判定與卷積濾波</strong>等影像處理基礎，
+                    學會將複雜的現實世界「降維」成機器易於理解的純粹特徵矩陣。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你把攝影機畫面直接做二值化，結果地面反光產生了大量白色雜點，
+                    質心座標被這些「假目標」嚴重拉偏，車子開始無規則亂跑。
+                    你需要在二值化之前加入濾波降噪，之後再用形態學處理補強特徵——
+                    這套「原圖→濾波→二值化→形態學」的標準流程，正是本模組要帶你建立的核心能力。
                 </div>
 
                 <h2>教學影片</h2>
@@ -590,45 +592,82 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🌓 1. 影像二值化 (Thresholding) 的原理 (25 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
-<div class="space-y-6">
-<p class="text-lg text-gray-600 leading-relaxed font-light">
-                                將 256 階的彩色世界簡化為只有 0 (黑) 與 1 (白) 的數位矩陣。這是機器「看見」具體特徵的基礎。
-                            </p>
-<div class="bg-indigo-50 p-6 rounded-2xl border border-indigo-100">
-<h4 class="font-bold text-indigo-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
-                                    Mathematical Rule</h4>
-<div class="bg-white/50 p-4 rounded-lg font-mono text-[11px] leading-relaxed">
-                                    IF Gray &lt; Threshold THEN Pixel=BLACK (0)<br/>
-                                        ELSE Pixel = WHITE (1)
-                                </div>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light mt-4">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
-<div><strong>雜訊抑制</strong>：消除微弱的光影干擾。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
-<div><strong>特徵提取</strong>：鎖定如「賽道線」或「色塊」等關鍵特徵。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-indigo-500/5 group-hover:bg-indigo-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10">
-                                Binarization Effect</h4>
-<div class="relative z-10 flex flex-col items-center gap-2">
-<div class="w-32 h-20 bg-gradient-to-r from-slate-700 to-slate-200 rounded-lg relative overflow-hidden">
-<div class="absolute inset-y-0 left-0 w-1/2 bg-black"></div>
-<div class="absolute inset-y-0 right-0 w-1/2 bg-white"></div>
-</div>
-<div class="text-[9px] text-indigo-400 mt-2 font-mono tracking-widest uppercase">Strict
-                                    1-bit Matrix</div>
-</div>
-</div>
-</div>
+                <h1>影像二值化 (Thresholding) 的原理</h1>
+
+                <p>
+                    影像二值化（Thresholding）是數位影像處理中最基礎也最關鍵的運算之一。它的目的是將一張包含 256 階灰度值的影像，轉化為只有兩種數值（0 與 255，即黑與白）的<strong>二元矩陣</strong>。這個過程讓機器能夠快速判斷「哪裡有目標、哪裡是背景」，是所有後續特徵提取與控制邏輯的起點。
+                </p>
+
+                <h2>灰階轉換：從彩色到單通道</h2>
+
+                <p>
+                    在進行二值化之前，必須先將三通道的 RGB 彩色影像轉換為單通道的灰階影像。人類視覺對綠色最敏感、對藍色最不敏感，因此業界標準採用<strong>加權亮度公式</strong>（ITU-R BT.601 標準）：
+                </p>
+                <p>$$Gray = 0.299 \times R + 0.587 \times G + 0.114 \times B$$</p>
+                <p>
+                    這個公式確保轉換後的灰階值能真實反映人眼對亮度的感知。例如，純綠色 <code>(0, 255, 0)</code> 的灰階值約為 150，而純藍色 <code>(0, 0, 255)</code> 僅約 29——這與我們的直覺一致：綠色看起來比藍色「亮」得多。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 灰階轉換公式實作</span><br/>
+<span class="c-kw">function</span> <span class="c-attr">toGrayscale</span><span class="c-white">(r, g, b) {</span><br/>
+&nbsp;&nbsp;<span class="c-kw">return</span> <span class="c-white">Math.round(r * </span><span class="c-val">0.299</span><span class="c-white"> + g * </span><span class="c-val">0.587</span><span class="c-white"> + b * </span><span class="c-val">0.114</span><span class="c-white">);</span><br/>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>門檻判定：非黑即白的數學規則</h2>
+
+                <p>
+                    取得灰階值後，二值化的核心邏輯極其簡單——將灰階值與一個預設的<strong>門檻值（Threshold）</strong>進行比較。若灰階值大於門檻值，則設為白色（255），代表背景；若灰階值小於或等於門檻值，則設為黑色（0），代表目標特徵。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 二值化核心邏輯</span><br/>
+<span class="c-kw">for</span> <span class="c-white">(</span><span class="c-kw">let</span> <span class="c-attr">i</span> <span class="c-white">= 0; i &lt; pixels.length; i += 4) {</span><br/>
+&nbsp;&nbsp;<span class="c-kw">const</span> <span class="c-attr">gray</span> <span class="c-white">= </span><span class="c-tag">toGrayscale</span><span class="c-white">(pixels[i], pixels[i+1], pixels[i+2]);</span><br/>
+&nbsp;&nbsp;<span class="c-kw">const</span> <span class="c-attr">binary</span> <span class="c-white">= (gray > </span><span class="c-attr">threshold</span><span class="c-white">) ? </span><span class="c-val">255</span> <span class="c-white">: </span><span class="c-val">0</span><span class="c-white">;</span><br/>
+&nbsp;&nbsp;<span class="c-white">pixels[i] = pixels[i+1] = pixels[i+2] = binary;</span><br/>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        在循跡應用中，黑色賽道線在白色背景上的灰階值較低。因此「目標像素」通常是灰階值低於門檻的黑色像素。門檻值的選擇直接決定了特徵提取的品質。
+                    </div>
+                </div>
+
+                <h2>門檻值的選擇策略</h2>
+
+                <p>門檻值沒有「絕對正確」的數字，必須根據實際環境條件進行調校：</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>門檻值</th><th>效果描述</th><th>適用情境</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>50</code>（低）</td><td>只有極暗的區域被標為目標，特徵少但純淨</td><td>強光環境、高對比賽道</td></tr>
+                        <tr><td><code>128</code>（中）</td><td>標準的明暗分界，適合一般室內環境</td><td>均勻光照的室內賽道</td></tr>
+                        <tr><td><code>200</code>（高）</td><td>大量區域被標為目標，雜訊干擾可能增多</td><td>昏暗環境、低對比材料</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        環境光源的變化是二值化最大的敵人。同一條賽道在早上與下午的最佳門檻值可能相差 50 以上。在正式比賽前，務必在<strong>實際場地光照條件</strong>下重新校準門檻值。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在開發階段，建議使用 HTML <code>&lt;input type="range"&gt;</code> 滑桿來即時調整門檻值，並在 Canvas 上同步顯示二值化結果。這能讓你直觀地找到最佳門檻區間。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -647,52 +686,88 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🧼 2. 影像濾波 (Filtering)：消除噪點技術 (25 min)</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-<div class="space-y-8">
-<p class="text-lg text-gray-600 leading-relaxed font-light">
-                                無論感測器如何精準，細微的電噪聲與光影抖動依然存在。利用卷積核 (Kernel) 對影像進行平滑處理。
-                            </p>
-<div class="bg-blue-50 p-8 rounded-3xl border border-blue-100 text-center">
-<h4 class="text-blue-900 font-bold mb-4 text-xs uppercase tracking-widest">Filter Models
-                                </h4>
-<div class="grid grid-cols-2 gap-4 text-[9px]">
-<div class="p-3 border rounded-xl border-blue-200 bg-white"><strong>均值濾波
-                                            (Mean)</strong><br/>磨皮效果，適合平滑漸層</div>
-<div class="p-3 border rounded-xl border-blue-200 bg-white shadow-sm"><strong>中值濾波
-                                            (Median)</strong><br/>去雜點最強，適合抗鹽椒雜訊</div>
-</div>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-blue-500/5"></div>
-<h4 class="text-blue-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10">
-                                Kernel Convolution</h4>
-<div class="grid grid-cols-3 gap-1 w-24">
-<div class="aspect-square bg-slate-800 rounded flex items-center justify-center text-[8px] text-slate-500">
-                                    1/9</div>
-<div class="aspect-square bg-slate-800 rounded flex items-center justify-center text-[8px] text-slate-500">
-                                    1/9</div>
-<div class="aspect-square bg-slate-800 rounded flex items-center justify-center text-[8px] text-slate-500">
-                                    1/9</div>
-<div class="aspect-square bg-slate-800 rounded flex items-center justify-center text-[8px] text-slate-500">
-                                    1/9</div>
-<div class="aspect-square bg-blue-600 rounded flex items-center justify-center text-[8px] text-white font-bold">
-                                    1/9</div>
-<div class="aspect-square bg-slate-800 rounded flex items-center justify-center text-[8px] text-slate-500">
-                                    1/9</div>
-<div class="aspect-square bg-slate-800 rounded flex items-center justify-center text-[8px] text-slate-500">
-                                    1/9</div>
-<div class="aspect-square bg-slate-800 rounded flex items-center justify-center text-[8px] text-slate-500">
-                                    1/9</div>
-<div class="aspect-square bg-slate-800 rounded flex items-center justify-center text-[8px] text-slate-500">
-                                    1/9</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic">Sliding
-                                3x3 Smoothing Window</p>
-</div>
-</div>
+                <h1>影像濾波 (Filtering)：消除噪點技術</h1>
+
+                <p>
+                    無論攝影機感測器的品質多高，擷取到的影像中總是存在不可避免的<strong>噪點（Noise）</strong>。這些噪點可能來自電路的熱噪聲、光源的閃爍、或是感測器本身的量化誤差。如果直接對含噪影像進行二值化，噪點會被放大成大量的「假目標」像素，嚴重干擾後續的質心計算。影像濾波的目的，就是在保留重要特徵的前提下，盡可能消除這些隨機干擾。
+                </p>
+
+                <h2>卷積運算的核心概念</h2>
+
+                <p>
+                    影像濾波的數學本質是<strong>卷積運算（Convolution）</strong>。卷積的過程是：取一個小型的矩陣（稱為<strong>卷積核 / Kernel</strong>），在影像上逐像素滑動。每到一個位置，就將 Kernel 覆蓋的區域內所有像素值進行加權計算，得出中心像素的新值。以 $3 \times 3$ 的 Kernel 為例，每次計算會參考中心像素周圍的 9 個鄰居。
+                </p>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        卷積核的大小決定了濾波的「力道」。$3 \times 3$ 適合輕度降噪；$5 \times 5$ 降噪更強但會模糊邊緣。在循跡應用中，通常使用 $3 \times 3$ 以兼顧速度與品質。
+                    </div>
+                </div>
+
+                <h2>均值濾波 vs. 中值濾波</h2>
+
+                <p>兩種最常見的濾波方法各有其適用場景：</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>特性</th><th>均值濾波（Mean Filter）</th><th>中值濾波（Median Filter）</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>計算方式</td><td>取 $3 \times 3$ 區域所有像素的<strong>算術平均</strong></td><td>取 $3 \times 3$ 區域所有像素的<strong>排序中位數</strong></td></tr>
+                        <tr><td>效果</td><td>整體平滑，類似「磨皮」</td><td>移除極端值，保留邊緣</td></tr>
+                        <tr><td>對椒鹽雜訊</td><td>效果有限，噪點會被「平均進去」</td><td><strong>效果極佳</strong>，噪點被直接排除</td></tr>
+                        <tr><td>邊緣保留</td><td>較差，邊緣會被模糊</td><td>較好，邊緣輪廓清晰</td></tr>
+                        <tr><td>計算成本</td><td>低（純加法與除法）</td><td>較高（需要排序操作）</td></tr>
+                    </tbody>
+                </table>
+
+                <h3>均值濾波實作</h3>
+
+                <div class="ms-code">
+<span class="c-comment">// 3x3 均值濾波：取周圍 9 個像素的平均值</span><br/>
+<span class="c-kw">function</span> <span class="c-attr">meanFilter</span><span class="c-white">(imageData, x, y, width) {</span><br/>
+&nbsp;&nbsp;<span class="c-kw">let</span> <span class="c-attr">sum</span> <span class="c-white">= 0, count = 0;</span><br/>
+&nbsp;&nbsp;<span class="c-kw">for</span> <span class="c-white">(</span><span class="c-kw">let</span> <span class="c-attr">dy</span> <span class="c-white">= -1; dy &lt;= 1; dy++) {</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-kw">for</span> <span class="c-white">(</span><span class="c-kw">let</span> <span class="c-attr">dx</span> <span class="c-white">= -1; dx &lt;= 1; dx++) {</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-attr">sum</span> <span class="c-white">+= getPixel(imageData, x + dx, y + dy, width);</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-attr">count</span><span class="c-white">++;</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-white">}</span><br/>
+&nbsp;&nbsp;<span class="c-white">}</span><br/>
+&nbsp;&nbsp;<span class="c-kw">return</span> <span class="c-white">Math.round(sum / count);</span><br/>
+<span class="c-white">}</span>
+                </div>
+
+                <h3>中值濾波實作</h3>
+
+                <div class="ms-code">
+<span class="c-comment">// 3x3 中值濾波：取周圍 9 個像素的中位數</span><br/>
+<span class="c-kw">function</span> <span class="c-attr">medianFilter</span><span class="c-white">(imageData, x, y, width) {</span><br/>
+&nbsp;&nbsp;<span class="c-kw">const</span> <span class="c-attr">neighbors</span> <span class="c-white">= [];</span><br/>
+&nbsp;&nbsp;<span class="c-kw">for</span> <span class="c-white">(</span><span class="c-kw">let</span> <span class="c-attr">dy</span> <span class="c-white">= -1; dy &lt;= 1; dy++)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-kw">for</span> <span class="c-white">(</span><span class="c-kw">let</span> <span class="c-attr">dx</span> <span class="c-white">= -1; dx &lt;= 1; dx++)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-white">neighbors.push(getPixel(imageData, x+dx, y+dy, width));</span><br/>
+&nbsp;&nbsp;<span class="c-white">neighbors.sort((a, b) =&gt; a - b);</span><br/>
+&nbsp;&nbsp;<span class="c-kw">return</span> <span class="c-white">neighbors[4];</span> <span class="c-comment">// 9 個值排序後取第 5 個（中位數）</span><br/>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在遍歷邊緣像素時，$3 \times 3$ Kernel 會「超出」影像邊界。常見的處理方式是跳過邊界像素（從 <code>x=1</code> 開始到 <code>x=width-2</code>），或將超出邊界的值視為 0。
+                    </div>
+                </div>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        濾波本質上是一種「資訊損失」操作。過度濾波會讓賽道線的邊緣變得模糊，導致質心座標產生系統性偏移。建議先濾波、再二值化，並透過視覺化對比確認濾波強度的合理性。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -711,46 +786,69 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔬 3. 侵蝕與擴張：形態學優化 (10 min)</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center">
-<div class="flex-1 space-y-6">
-<p class="text-slate-400 font-light leading-relaxed text-lg">
-                                二值化後的影像不一定完美。利用形態學運算加強特徵：<strong>侵蝕</strong>去除細碎雜點，<strong>擴張</strong>填補斷裂線條。
-                            </p>
-<div class="bg-emerald-500/10 p-8 rounded-3xl border border-emerald-500/20 shadow-inner">
-<h4 class="font-bold text-emerald-400 mb-4 text-xs uppercase tracking-widest text-center">
-                                    Processing Pipeline</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
-<div><strong class="text-white">侵蝕 (Erosion)</strong>：縮減邊緣，移除孤立的干擾噪聲像素。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
-<div><strong class="text-white">擴張 (Dilation)</strong>：延伸邊緣，連接斷開的賽道線。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
-<div><strong class="text-white">特徵提取</strong>：完成「原圖 -&gt; 濾波 -&gt; 二值化 -&gt; 形態學」的標準流程。
-                                        </div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-emerald-600/10 p-10 rounded-3xl border border-emerald-500/20 text-center relative overflow-hidden group">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-emerald-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">
-                                Feature Clean-up</h4>
-<div class="flex flex-col items-center gap-2">
-<div class="text-[10px] text-slate-500 line-through">Dirty Mask</div>
-<div class="text-emerald-500 animate-bounce">↓</div>
-<div class="text-[10px] text-emerald-400 font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(16,185,129,0.3)]">
-                                    Clean Vector</div>
-</div>
-<p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center">
-                                "讓機器看見它該看見的，無視它該無視的。"
-                            </p>
-</div>
-</div>
+                <h1>侵蝕與擴張：形態學優化</h1>
+
+                <p>
+                    即使經過濾波與二值化處理，影像中仍然可能存在兩類缺陷：<strong>殘餘噪點</strong>（孤立的白色或黑色小斑點）與<strong>特徵斷裂</strong>（原本連續的線條出現間斷）。形態學運算（Morphological Operations）是一組基於集合論的影像處理技術，專門用來解決這兩個問題。在循跡應用中，它是「原圖 → 濾波 → 二值化 → 形態學」標準流程的最後一環。
+                </p>
+
+                <h2>侵蝕（Erosion）：去除噪點</h2>
+
+                <p>
+                    侵蝕的原理是：使用一個結構元素（通常是 $3 \times 3$ 的全白方塊）在二值化影像上滑動。只有當結構元素覆蓋區域內的<strong>所有像素都是目標（黑色）</strong>時，中心像素才保持為目標；否則，中心像素被設為背景（白色）。這個操作會讓所有目標區域的邊緣向內「收縮」，而孤立的小噪點因為面積不足以支撐結構元素，會被完全消除。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 侵蝕操作：只保留完全被目標包圍的像素</span><br/>
+<span class="c-kw">function</span> <span class="c-attr">erode</span><span class="c-white">(binaryImage, width, height) {</span><br/>
+&nbsp;&nbsp;<span class="c-kw">const</span> <span class="c-attr">result</span> <span class="c-white">= new Uint8Array(binaryImage.length);</span><br/>
+&nbsp;&nbsp;<span class="c-kw">for</span> <span class="c-white">(let y = 1; y &lt; height - 1; y++)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-kw">for</span> <span class="c-white">(let x = 1; x &lt; width - 1; x++) {</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-kw">let</span> <span class="c-attr">allBlack</span> <span class="c-white">= </span><span class="c-kw">true</span><span class="c-white">;</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-kw">for</span> <span class="c-white">(let dy = -1; dy &lt;= 1; dy++)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-kw">for</span> <span class="c-white">(let dx = -1; dx &lt;= 1; dx++)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-kw">if</span> <span class="c-white">(binaryImage[(y+dy)*width+(x+dx)] !== </span><span class="c-val">0</span><span class="c-white">) allBlack = </span><span class="c-kw">false</span><span class="c-white">;</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-white">result[y * width + x] = allBlack ? </span><span class="c-val">0</span><span class="c-white"> : </span><span class="c-val">255</span><span class="c-white">;</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-white">}</span><br/>
+&nbsp;&nbsp;<span class="c-kw">return</span> <span class="c-white">result;</span><br/>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>擴張（Dilation）：填補斷裂</h2>
+
+                <p>
+                    擴張是侵蝕的逆操作。只要結構元素覆蓋區域內有<strong>至少一個</strong>目標像素，中心像素就會被設為目標。這會讓目標區域的邊緣向外「膨脹」，將斷開的線段重新連接起來。
+                </p>
+
+                <h2>開運算與閉運算：組合技</h2>
+
+                <p>實務中，侵蝕與擴張經常組合使用，形成兩種標準操作：</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>操作</th><th>定義</th><th>效果</th><th>適用場景</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>開運算</strong>（Opening）</td><td>先侵蝕，再擴張</td><td>去除小噪點，同時恢復主體大小</td><td>清除地面反光造成的散碎雜點</td></tr>
+                        <tr><td><strong>閉運算</strong>（Closing）</td><td>先擴張，再侵蝕</td><td>填補小孔洞與裂縫，同時不過度膨脹</td><td>修復賽道線的微小斷裂</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在循跡場景中，推薦的標準處理流程為：<strong>原圖 → 中值濾波 → 二值化 → 開運算（去噪點）→ 閉運算（補裂縫）</strong>。這套流程能產出乾淨且連續的特徵遮罩，為質心計算提供可靠的輸入數據。
+                    </div>
+                </div>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        過度使用形態學運算會改變目標特徵的幾何形狀。多次侵蝕會讓細線完全消失；多次擴張則會讓兩條相鄰的線條合併成一塊。每一步操作都應透過 Canvas 視覺化驗證效果後再決定參數。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -834,16 +932,81 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>測試你對本模組核心概念的掌握程度。請選出每題的最佳答案，提交後可查看詳細解析。</p>
+
+                <form id="quiz-form" onsubmit="return false;">
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">1. 在 ITU-R BT.601 灰階轉換公式中，哪個顏色通道的權重最高？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 紅色 (R)，權重為 0.299</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 綠色 (G)，權重為 0.587</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 藍色 (B)，權重為 0.114</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 三個通道的權重完全相同</label>
+                        <div id="exp-1" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">2. 針對「椒鹽雜訊 (Salt-and-Pepper Noise)」，以下哪種濾波器效果最佳？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 均值濾波 (Mean Filter)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 高斯濾波 (Gaussian Filter)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 中值濾波 (Median Filter)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 拉普拉斯濾波 (Laplacian Filter)</label>
+                        <div id="exp-2" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">3. 形態學中的「開運算 (Opening)」是如何定義的？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 先擴張，再侵蝕</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 先侵蝕，再擴張</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 連續執行兩次侵蝕</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 連續執行兩次擴張</label>
+                        <div id="exp-3" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">4. 環境光源從明亮變為昏暗時，二值化門檻值通常應如何調整？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 維持不變，門檻值與光源無關</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 大幅提高門檻值</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 適當降低門檻值</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 改為隨機門檻值</label>
+                        <div id="exp-4" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+                </form>
+
+                <div style="display:flex;gap:12px;margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+                <div id="quiz-result" style="display:none;margin-top:20px;padding:16px;border-radius:6px;font-size:14px;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -901,9 +1064,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「數位影像特徵提取：二值化與濾波」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「數位影像特徵提取：二值化與濾波」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -919,7 +1082,8 @@
         { id: 3, label: '🧼 2. 影像濾波 (Filtering)：消除噪點技術 (25 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🔬 3. 侵蝕與擴張：形態學優化 (10 min)', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -939,6 +1103,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1040,8 +1205,61 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'C', q3: 'B', q4: 'C' };
+    const QUIZ_EXPLANATIONS = { q1: '加權亮度公式為 Gray = 0.299R + 0.587G + 0.114B，其中綠色 (G) 的係數 0.587 最高，因為人眼對綠色最敏感。', q2: '中值濾波透過排序取中位數的方式，能直接排除極端的噪點值，對椒鹽雜訊的壓制效果遠優於均值濾波。', q3: '開運算 = 先侵蝕再擴張。侵蝕去除小噪點，擴張恢復主體大小，常用於清除散碎雜點。', q4: '環境變暗時，整體灰階值下降。若不降低門檻值，原本能被偵測到的目標將被判定為背景，導致特徵遺失。' };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const idx = q.slice(1);
+            const exp = document.getElementById(`exp-${idx}`);
+            if (!selected) continue;
+            if (selected.value === correct) {
+                score++;
+                exp.style.display = 'block';
+                exp.style.background = '#dff6dd';
+                exp.style.borderLeftColor = '#107c10';
+                exp.innerHTML = '<i class="fas fa-check-circle" style="color:#107c10;margin-right:6px;"></i>' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#dff6dd';
+                selected.parentElement.style.borderColor = '#107c10';
+            } else {
+                exp.style.display = 'block';
+                exp.style.background = '#fde7e9';
+                exp.style.borderLeftColor = '#d13438';
+                exp.innerHTML = '<i class="fas fa-times-circle" style="color:#d13438;margin-right:6px;"></i>正確答案是 ' + correct + '。' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#fde7e9';
+                selected.parentElement.style.borderColor = '#d13438';
+            }
+        }
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === total) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.innerHTML = '<strong style="color:#107c10;">🎉 滿分！' + score + ' / ' + total + '</strong><br>你完全掌握了本模組的核心概念！';
+            markDone(6);
+        } else {
+            resultEl.style.background = '#fff4ce';
+            resultEl.innerHTML = '<strong style="color:#8a6914;">得分：' + score + ' / ' + total + '</strong><br>建議複習錯題的解析說明，再試一次！';
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= 4; i++) {
+            const exp = document.getElementById('exp-' + i);
+            if (exp) { exp.style.display = 'none'; exp.style.background = ''; exp.style.borderLeftColor = 'transparent'; }
+        }
+        document.querySelectorAll('#quiz-form label').forEach(l => { l.style.background = ''; l.style.borderColor = '#e1dfdd'; });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 06：電腦視覺進階';
 </script>
 
 <!-- Define Resources -->

@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主流 Vibe Coding 工具旗艦店 - Vibe Coding</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <style>
+        :root {
+            --ms-blue: #0078d4;
+            --ms-blue-dark: #005a9e;
+            --ms-blue-light: #deecf9;
+            --ms-gray-10: #f3f2f1;
+            --ms-gray-20: #e1dfdd;
+            --ms-gray-90: #201f1e;
+            --ms-green: #107c10;
+            --ms-red: #d13438;
+            --sidebar-w: 280px;
+        }
+        * { box-sizing: border-box; }
+        #assignment-guide, #tutor-guide { display: none !important; }
+        body { font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: #fff; color: #201f1e; margin: 0; font-size: 15px; line-height: 1.6; }
+
+        .ms-topnav { background: var(--ms-blue); height: 48px; display: flex; align-items: center; padding: 0 20px; gap: 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 4px rgba(0,0,0,.2); }
+        .ms-topnav .brand { color: #fff; font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 8px; text-decoration: none; }
+        .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
+
+        .ms-layout { display: flex; min-height: calc(100vh - 48px); }
+        .ms-sidebar { width: var(--sidebar-w); flex-shrink: 0; background: #faf9f8; border-right: 1px solid #e1dfdd; display: flex; flex-direction: column; position: sticky; top: 48px; height: calc(100vh - 48px); overflow-y: auto; }
+        .ms-sidebar-header { padding: 16px 16px 12px; border-bottom: 1px solid #e1dfdd; }
+        .ms-sidebar-header .module-label { display: none; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #605e5c; font-weight: 600; margin-bottom: 4px; }
+        .ms-sidebar-header .module-title { font-size: 13px; font-weight: 600; color: #201f1e; line-height: 1.4; }
+        .ms-sidebar-header .meta { font-size: 12px; color: #605e5c; margin-top: 6px; }
+        .ms-unit-list { padding: 8px 0; }
+        .ms-unit-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 16px; cursor: pointer; border-left: 3px solid transparent; transition: background .12s, border-color .12s; color: #201f1e; }
+        .ms-unit-item:hover { background: #edebe9; }
+        .ms-unit-item.active { border-left-color: var(--ms-blue); background: #deecf9; }
+        .ms-unit-item.active .unit-name { color: var(--ms-blue); font-weight: 600; }
+        .unit-icon { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #c8c6c4; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; font-size: 10px; background: #fff; }
+        .unit-icon.done { background: var(--ms-green); border-color: var(--ms-green); color: #fff; }
+        .unit-icon.active-icon { border-color: var(--ms-blue); background: var(--ms-blue); color: #fff; }
+        .unit-meta { flex: 1; min-width: 0; } .unit-name { font-size: 13px; line-height: 1.4; } .unit-time { font-size: 11px; color: #605e5c; margin-top: 2px; }
+        .sidebar-progress { padding: 12px 16px; border-top: 1px solid #e1dfdd; margin-top: auto; }
+        .progress-bar-bg { background: #e1dfdd; border-radius: 4px; height: 6px; } .progress-bar-fill { background: var(--ms-green); border-radius: 4px; height: 6px; transition: width .4s; } .progress-text { font-size: 12px; color: #605e5c; margin-top: 6px; }
+
+        .ms-content { flex: 1; min-width: 0; }
+        .ms-breadcrumb { padding: 10px 40px; font-size: 12px; color: #605e5c; border-bottom: 1px solid #e1dfdd; background: #fff; }
+        .ms-breadcrumb a { color: var(--ms-blue); text-decoration: none; } .ms-breadcrumb a:hover { text-decoration: underline; } .ms-breadcrumb span { margin: 0 6px; }
+
+        .ms-unit-page { display: none; } .ms-unit-page.visible { display: block; }
+        .unit-content { max-width: 820px; padding: 32px 40px 60px; margin: 0 auto; }
+        .unit-status-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #e1dfdd; }
+        .unit-completed-badge { display: flex; align-items: center; gap: 6px; background: #dff6dd; color: #107c10; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 2px; }
+        .unit-time-badge { display: flex; align-items: center; gap: 5px; color: #605e5c; font-size: 13px; }
+
+        .unit-content h1 { font-size: 28px; font-weight: 700; margin: 0 0 20px; color: #201f1e; line-height: 1.3; }
+        .unit-content h2 { font-size: 20px; font-weight: 600; margin: 36px 0 12px; color: #201f1e; padding-top: 8px; }
+        .unit-content h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; color: #201f1e; }
+        .unit-content p { margin: 0 0 14px; } .unit-content ul, .unit-content ol { margin: 0 0 14px; padding-left: 28px; } .unit-content li { margin-bottom: 6px; }
+        .unit-content strong { font-weight: 600; } .unit-content a { color: var(--ms-blue); text-decoration: none; } .unit-content a:hover { text-decoration: underline; }
+        .unit-content code { background: #f3f2f1; border: 1px solid #e1dfdd; border-radius: 3px; padding: 1px 6px; font-family: 'Consolas', 'Courier New', monospace; font-size: 13px; color: #a31515; }
+
+        .ms-note, .ms-tip, .ms-warning, .ms-important { display: flex; gap: 12px; padding: 12px 16px; border-radius: 4px; margin: 20px 0; border-left: 4px solid; font-size: 14px; }
+        .ms-note { background: #deecf9; border-color: var(--ms-blue); } .ms-note .note-icon { color: var(--ms-blue); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-tip { background: #dff6dd; border-color: var(--ms-green); } .ms-tip .note-icon { color: var(--ms-green); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-warning { background: #fff4ce; border-color: #ffaa44; } .ms-warning .note-icon { color: #ffaa44; font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .ms-important { background: #fde7e9; border-color: var(--ms-red); } .ms-important .note-icon { color: var(--ms-red); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .note-body strong { display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+
+        .ms-scenario { background: #f3f2f1; border-radius: 4px; padding: 20px 24px; margin: 20px 0; font-style: italic; color: #323130; border-left: 4px solid #c8c6c4; }
+        .ms-scenario-label { font-style: normal; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: #605e5c; margin-bottom: 8px; }
+
+        .ms-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+        .ms-table th { background: #f3f2f1; font-weight: 600; text-align: left; padding: 10px 14px; border: 1px solid #e1dfdd; color: #323130; }
+        .ms-table td { padding: 9px 14px; border: 1px solid #e1dfdd; vertical-align: top; } .ms-table tr:nth-child(even) td { background: #faf9f8; }
+
+        .ms-checklist { list-style: none; padding: 0; margin: 12px 0; }
+        .ms-checklist li { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; font-size: 14px; }
+        .ms-checklist li .check-box { width: 18px; height: 18px; border: 2px solid #8a8886; border-radius: 2px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; cursor: pointer; transition: all .15s; }
+        .ms-checklist li .check-box.checked { background: var(--ms-blue); border-color: var(--ms-blue); color: #fff; }
+
+        .ms-video-embed { border-radius: 4px; overflow: hidden; margin: 20px 0; box-shadow: 0 2px 8px rgba(0,0,0,.12); aspect-ratio: 16/9; }
+        .ms-video-embed iframe { width: 100%; height: 100%; display: block; border: 0; }
+
+        .ms-lab-card { background: linear-gradient(135deg, #eef6ff 0%, #f5f0ff 100%); border: 1px solid #c7e0f4; border-radius: 6px; padding: 24px; margin: 20px 0; }
+        .ms-lab-card h3 { margin: 0 0 12px; color: var(--ms-blue-dark); font-size: 16px; font-weight: 600; }
+        .ms-lab-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--ms-blue); color: #fff; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; }
+        .ms-lab-time { font-size: 12px; color: #605e5c; margin-left: 8px; }
+
+        .ms-code-block { background: #1e1e1e; color: #d4d4d4; padding: 16px 20px; border-radius: 4px; font-family: 'Consolas', 'Courier New', monospace; font-size: 13px; margin: 16px 0; overflow-x: auto; line-height: 1.6; white-space: pre; }
+        .ms-code-block .comment { color: #6a9955; } .ms-code-block .key { color: #9cdcfe; } .ms-code-block .value { color: #ce9178; }
+
+        .ms-btn { background: var(--ms-blue); color: #fff; border: none; padding: 7px 18px; font-size: 14px; font-weight: 600; border-radius: 2px; cursor: pointer; transition: background .12s; font-family: inherit; }
+        .ms-btn:hover { background: var(--ms-blue-dark); }
+        .ms-btn-ghost { background: transparent; color: var(--ms-blue); border: 1px solid var(--ms-blue); padding: 6px 18px; font-size: 14px; font-weight: 600; border-radius: 2px; cursor: pointer; transition: background .12s; font-family: inherit; }
+        .ms-btn-ghost:hover { background: var(--ms-blue-light); }
+
+        .unit-nav { display: flex; justify-content: space-between; align-items: center; padding: 24px 40px; border-top: 1px solid #e1dfdd; max-width: 820px; margin: 0 auto; }
+        .nav-btn-prev, .nav-btn-next { display: flex; align-items: center; gap: 8px; padding: 8px 20px; font-size: 14px; font-weight: 600; border-radius: 2px; cursor: pointer; border: 1px solid; font-family: inherit; transition: background .12s; }
+        .nav-btn-next { background: var(--ms-blue); color: #fff; border-color: var(--ms-blue); } .nav-btn-next:hover { background: var(--ms-blue-dark); border-color: var(--ms-blue-dark); }
+        .nav-btn-prev { background: #fff; color: var(--ms-blue); border-color: var(--ms-blue); } .nav-btn-prev:hover { background: var(--ms-blue-light); }
+        .unit-page-indicator { font-size: 13px; color: #605e5c; }
+
+        .module-meta-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        .ms-tag { background: #f3f2f1; color: #323130; font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: 500; }
+        .ms-tag.blue { background: #deecf9; color: var(--ms-blue-dark); } .ms-tag.green { background: #dff6dd; color: #107c10; } .ms-tag.purple { background: #f3e8ff; color: #6b21a8; }
+        .unit-card-list { margin: 20px 0; }
+        .unit-card { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f3f2f1; cursor: pointer; }
+        .unit-card:last-child { border-bottom: none; } .unit-card:hover .unit-card-name { color: var(--ms-blue); text-decoration: underline; }
+        .unit-card-num { width: 32px; height: 32px; border-radius: 50%; background: #f3f2f1; color: #605e5c; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .unit-card.quiz .unit-card-num { background: #fff4ce; color: #8a6914; } .unit-card.lab .unit-card-num { background: #eef6ff; color: var(--ms-blue-dark); }
+        .unit-card-info { flex: 1; } .unit-card-name { font-size: 15px; font-weight: 500; } .unit-card-time { font-size: 12px; color: #605e5c; margin-top: 2px; } .unit-card-arrow { color: #c8c6c4; font-size: 14px; }
+
+        .quiz-question { margin-bottom: 32px; } .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border: 1px solid #e1dfdd; border-radius: 4px; margin-bottom: 8px; cursor: pointer; transition: background .1s, border-color .1s; font-size: 14px; }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); } .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback { display: none; margin-top: 8px; padding: 10px 14px; border-radius: 4px; font-size: 13px; font-weight: 500; }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; } .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
+
+        .ms-resource-link { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border: 1px solid #e1dfdd; border-radius: 4px; margin-bottom: 8px; text-decoration: none; color: #201f1e; font-size: 14px; transition: background .1s; }
+        .ms-resource-link:hover { background: #f3f2f1; } .ms-resource-link i { color: var(--ms-blue); font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+
+        .ms-achievement { background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%); color: #fff; border-radius: 6px; padding: 24px 28px; margin: 24px 0; display: flex; align-items: center; gap: 20px; }
+        .achievement-icon { font-size: 48px; flex-shrink: 0; } .achievement-text h3 { margin: 0 0 4px; font-size: 18px; } .achievement-text p { margin: 0; font-size: 14px; opacity: .9; }
+
+        .compare-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 20px 0; }
+        .compare-card { border: 1px solid #e1dfdd; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; }
+        .compare-card-header { padding: 12px 14px; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; } .compare-card-header i { font-size: 18px; }
+        .compare-card-body { padding: 14px; font-size: 13px; color: #605e5c; line-height: 1.5; flex-grow: 1; }
+
+        @media (max-width: 768px) { .ms-sidebar { display: none; } .unit-content { padding: 20px 16px 40px; } .unit-nav { padding: 16px; } .ms-breadcrumb { padding: 8px 16px; } .compare-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+
+<body>
+
+<nav class="ms-topnav">
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
+    <div class="divider"></div>
+    <a href="/prepare.html" target="_top" class="nav-label">準備課程</a>
+</nav>
+
+<div class="ms-layout">
+    <aside class="ms-sidebar">
+        <div class="ms-sidebar-header">
+            <div class="module-label">模組</div>
+            <div class="module-title">主流 Vibe Coding 工具旗艦店</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 50 分鐘 · 6 個單元</div>
+        </div>
+        <nav class="ms-unit-list" id="sidebar-nav"></nav>
+        <div class="sidebar-progress">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+        </div>
+    </aside>
+
+    <main class="ms-content">
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
+
+        <!-- ══════════ PAGE 0: INDEX ══════════ -->
+        <div class="ms-unit-page visible" id="page-index">
+            <div class="unit-content">
+                <h1>主流 Vibe Coding 工具旗艦店</h1>
+                <div class="module-meta-tags">
+                    <span class="ms-tag">模組</span><span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag green">初學者</span><span class="ms-tag purple">Vibe Coding</span><span class="ms-tag blue">AI 工具</span>
+                </div>
+                <p>2026 年是 Vibe Coding 爆發的一年，開發者的角色已從「寫字的人」轉向「下令的人」。本模組將帶你認識當前最主流的 Vibe Coding 工具——從 UI 設計到全棧開發再到終端機除錯——學會根據不同需求選擇最合適的 AI Agent，成為一位真正的「指揮官」。</p>
+                <h2>學習目標</h2>
+                <p>完成本模組後，你將能夠：</p>
+                <ul>
+                    <li>理解 <strong>Replit Agent</strong>、<strong>Lovable.dev</strong>、<strong>Cursor / Windsurf</strong>、<strong>Claude Code</strong> 的各自優勢與適用場景。</li>
+                    <li>使用 <strong>Antigravity</strong> 同時指揮多位 Agent 協作開發。</li>
+                    <li>掌握 <strong>CI/CD 部署</strong>最佳實踐，理解為什麼 Agent 無法直接部署。</li>
+                    <li>練習精簡的 <strong>Prompt Engineering</strong>，用最少回合引導 AI 產出高品質結果。</li>
+                </ul>
+                <h2>必要條件</h2>
+                <ul>
+                    <li>已完成模組 04（Agent Mode 基礎）</li>
+                    <li>擁有 GitHub 帳號與 Copilot 訂閱</li>
+                </ul>
+                <h2>本模組單元</h2>
+                <div class="unit-card-list" id="index-unit-list"></div>
+                <div style="margin-top:32px;"><button class="ms-btn" onclick="goToUnit(1)">開始模組 &nbsp;›</button></div>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 1: 簡介 ══════════ -->
+        <div class="ms-unit-page" id="page-1">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-1" style="display:none"><i class="fas fa-check"></i> 已完成</div><div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+                <h1>簡介：The Vibe Frontier</h1>
+                <p>在 2026 年，軟體開發已進入全新的典範。你不再需要精通每個框架的語法，而是需要知道「該找哪個 Agent 幫你做」。每個工具都有自己的強項，就像一支特種部隊中的不同兵種。</p>
+                <div class="ms-scenario">
+                    <div class="ms-scenario-label">情境</div>
+                    小美想做一個精緻的儀表板應用。她用 Lovable 在 5 分鐘內產生了令人驚艷的 UI，但發現它不擅長處理複雜的後端邏輯。於是她切換到 Replit Agent，10 分鐘內連資料庫都搞定了。最後她用 Claude Code 在終端機裡掃了一遍安全漏洞，整個專案就上線了。
+                </div>
+                <h2>四大 Vibe Coding 工具</h2>
+                <div class="compare-grid">
+                    <div class="compare-card">
+                        <div class="compare-card-header" style="background:#f3e8ff; color:#6b21a8;"><i class="fas fa-rocket"></i> Replit Agent</div>
+                        <div class="compare-card-body"><strong>最強一條龍</strong><p style="margin-top:8px;">自動建立資料庫、後端與部署，連環境都不用看。</p></div>
+                    </div>
+                    <div class="compare-card">
+                        <div class="compare-card-header" style="background:#fce7f3; color:#be185d;"><i class="fas fa-heart"></i> Lovable.dev</div>
+                        <div class="compare-card-body"><strong>審美天花板</strong><p style="margin-top:8px;">UI 極其精緻，擅長處理複雜前端交互與 Supabase 整合。</p></div>
+                    </div>
+                    <div class="compare-card">
+                        <div class="compare-card-header" style="background:#deecf9; color:var(--ms-blue-dark);"><i class="fas fa-code"></i> Cursor / Windsurf</div>
+                        <div class="compare-card-body"><strong>本地 IDE 王者</strong><p style="margin-top:8px;">理解整個 Repo 的架構，處理複雜邏輯重構的標竿。</p></div>
+                    </div>
+                    <div class="compare-card">
+                        <div class="compare-card-header" style="background:#fff4ce; color:#92400e;"><i class="fas fa-terminal"></i> Claude Code</div>
+                        <div class="compare-card-body"><strong>終端機極速 Agent</strong><p style="margin-top:8px;">直接在 CLI 運行，自主掃描修復 Bug 並提交 Commit。</p></div>
+                    </div>
+                </div>
+                <h2>教學影片</h2>
+                <div class="ms-video-embed">
+                    <iframe src="https://www.youtube.com/embed/U7cF4RRQ5VI" title="Vibe Coding 工具實戰教學" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
+                <span class="unit-page-indicator">1 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 2: Antigravity 多 Agent 協作 ══════════ -->
+        <div class="ms-unit-page" id="page-2">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-2" style="display:none"><i class="fas fa-check"></i> 已完成</div><div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
+                </div>
+                <h1>Antigravity：指揮多位 Agent 協作</h1>
+                <p>在 Antigravity 中，你可以同時指揮多個 Agent 分工合作。Agent A 負責重構後端，Agent B 負責設計前端，你在統一的任務指揮中心進行批次核准。</p>
+                <h2>核心概念</h2>
+                <ul>
+                    <li><strong>任務導向架構 (Task Boundary)</strong>：每個 Agent 有明確的職責範圍，避免檔案衝突。</li>
+                    <li><strong>rules.md — 協作 DNA</strong>：定義團隊規範，所有 Agent 在工作時必須遵循。</li>
+                    <li><strong>批次核准 (Batch Approve)</strong>：在統一視窗中一次審核所有 Agent 的修改。</li>
+                </ul>
+                <h3>rules.md 範例</h3>
+                <div class="ms-code-block"><span class="comment"># .antigravity/rules.md</span>
+
+<span class="key">@Architect</span> { role: <span class="value">"Planning"</span> }
+<span class="key">@Coder</span>     { role: <span class="value">"Implementation"</span> }
+
+<span class="comment"># 所有 API 必須定義 TS Interface</span>
+<span class="comment"># 修改前必須讀取當前 Git 狀態</span></div>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>關鍵技巧</strong>
+                        明確的 <code>rules.md</code> 越具體，多 Agent 協作的效果越好。模糊的規則會讓 Agent 產生衝突。
+                    </div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">2 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 3: 部署與 CI/CD ══════════ -->
+        <div class="ms-unit-page" id="page-3">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-3" style="display:none"><i class="fas fa-check"></i> 已完成</div><div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 8 分鐘</div>
+                </div>
+                <h1>部署策略與 CI/CD 最佳實踐</h1>
+
+                <h2>為什麼 Agent 無法直接部署？</h2>
+                <p>部署涉及基礎設施權限與敏感密鑰 (API Keys)。為確保安全，Agent 運行在隔離環境，無權直接存取你的正式伺服器。這是一個刻意的安全設計。</p>
+
+                <div class="ms-important">
+                    <i class="fas fa-exclamation-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>安全原則</strong>
+                        永遠不要把生產環境的 API Key 或資料庫密碼直接貼給 Agent。所有部署應透過 CI/CD 流水線自動完成。
+                    </div>
+                </div>
+
+                <h2>最佳實踐：CI/CD 部署</h2>
+                <p>讓 Agent 撰寫 <strong>GitHub Actions YAML</strong> 腳本。你審核並合併 PR 後，由自動化流水線完成部署。這才是最專業的流程。</p>
+
+                <h2>工具選型對照表</h2>
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>需求場景</th><th>推薦工具</th><th>理由</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>精美 UI / 前端原型</td><td><strong>Lovable.dev / v0</strong></td><td>審美天花板，快速產出高品質介面</td></tr>
+                        <tr><td>全棧快速部署</td><td><strong>Replit Agent</strong></td><td>一條龍包含資料庫、後端、部署</td></tr>
+                        <tr><td>複雜邏輯重構</td><td><strong>Cursor / Windsurf</strong></td><td>理解整個 Repo，適合大型專案</td></tr>
+                        <tr><td>終端機除錯 / 安全掃描</td><td><strong>Claude Code</strong></td><td>CLI 原生，自主掃描修復並提交</td></tr>
+                        <tr><td>多 Agent 協作</td><td><strong>Antigravity</strong></td><td>任務導向，批次核准避免衝突</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">3 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 4: 實作練習 ══════════ -->
+        <div class="ms-unit-page" id="page-4">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-4" style="display:none"><i class="fas fa-check"></i> 已完成</div><div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 15 分鐘</div>
+                </div>
+                <h1>實作練習：Vibe Coding 實戰任務</h1>
+                <p>請動手完成以下三項任務，體驗不同 AI 工具的特長，學會根據需求選擇最合適的「兵種」。</p>
+
+                <div class="lab-cards-group">
+                    <div class="ms-lab-card" onclick="openSubmissionModal('ai-agent-task-3-1', '作業 3-1: v0 / Lovable 視覺實戰')">
+                        <div class="ms-lab-badge"><i class="fas fa-heart"></i>&nbsp; 作業 1</div>
+                        <span class="ms-lab-time"><i class="far fa-clock"></i> 約 15 分鐘</span>
+                        <h3>v0 / Lovable 視覺實戰</h3>
+                        <p style="font-size:14px; color:#323130; margin-bottom:14px;">使用 v0 或 Lovable 產生精美的儀表板組件，並描述 Vibe 過程。</p>
+                        <ul class="ms-checklist">
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>打開 <a href="https://lovable.dev" target="_blank">Lovable.dev</a> 或 <a href="https://v0.dev" target="_blank">v0.dev</a></span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>產生一個「Cyberpunk 霓虹 + 毛玻璃」質感的 UI 介面</span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>點擊 "Publish" 並將公開網址貼回 <code>links.md</code></span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>在 <code>vibe-prompts.md</code> 記錄至少 3 次優化對話</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="ms-lab-card" onclick="openSubmissionModal('ai-agent-task-3-2', '作業 3-2: Replit Agent 全棧開發')">
+                        <div class="ms-lab-badge"><i class="fas fa-rocket"></i>&nbsp; 作業 2</div>
+                        <span class="ms-lab-time"><i class="far fa-clock"></i> 約 10 分鐘</span>
+                        <h3>Replit Agent 全棧開發</h3>
+                        <p style="font-size:14px; color:#323130; margin-bottom:14px;">利用 Replit Agent 在 10 分鐘內建立並部署一個含資料庫的待辦清單應用。</p>
+                        <ul class="ms-checklist">
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>前往 <a href="https://replit.com" target="_blank">Replit</a> 並啟動 Agent</span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>描述需求讓 Agent 建立前端、後端與資料庫</span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>確認資料持久化（重新整理後資料不消失）</span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>將部署網址貼回 <code>links.md</code></span></li>
+                        </ul>
+                    </div>
+
+                    <div class="ms-lab-card" onclick="openSubmissionModal('ai-agent-task-3-3', '作業 3-3: Claude Code 終端機除錯')">
+                        <div class="ms-lab-badge"><i class="fas fa-terminal"></i>&nbsp; 作業 3</div>
+                        <span class="ms-lab-time"><i class="far fa-clock"></i> 約 10 分鐘</span>
+                        <h3>Claude Code 終端機除錯</h3>
+                        <p style="font-size:14px; color:#323130; margin-bottom:14px;">在本地專案執行 <code>claude</code> 指令，讓 Agent 掃描並修復安全漏洞。</p>
+                        <ul class="ms-checklist">
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>在終端機執行 <code>claude</code> 並請求安全性掃描</span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>將掃描報告存入 <code>security-audit.log</code></span></li>
+                            <li><div class="check-box" onclick="toggleCheck(this)"></div><span>觀察並記錄 Claude 自動產生的 Git Commit</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">4 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 5: QUIZ ══════════ -->
+        <div class="ms-unit-page" id="page-5">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-5" style="display:none"><i class="fas fa-check"></i> 已完成</div><div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+                <div id="quiz-form">
+                    <div class="quiz-question">
+                        <p>1. 如果你需要快速產出一個精緻的前端 UI 原型，最適合使用哪個工具？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> Claude Code</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> Lovable.dev / v0</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> GitHub Actions</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>2. Antigravity 中 <code>rules.md</code> 的主要作用是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 記錄專案的版本歷史</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 定義多 Agent 的協作規範，避免檔案衝突</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 自動產生測試報告</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>3. 為什麼 AI Agent 無法直接部署到正式伺服器？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> Agent 的程式碼品質不夠好</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 部署涉及基礎設施權限與敏感密鑰，Agent 運行在隔離環境</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 正式伺服器不支援 AI 連線</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>4. 哪個工具最適合在終端機中進行安全性掃描與自動修復？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> Lovable.dev</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> Replit Agent</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> Claude Code</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">5 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 6: SUMMARY ══════════ -->
+        <div class="ms-unit-page" id="page-6">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div><div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+                <h1>摘要與資源</h1>
+                <p>恭喜！你已經完成了 Vibe Coding 工具旗艦店模組。現在你已經擁有「指揮官式開發 (Orchestration)」的核心能力，能根據不同需求調度最適合的 AI Agent。</p>
+                <div class="ms-achievement">
+                    <div class="achievement-icon">🎵</div>
+                    <div class="achievement-text">
+                        <h3>恭喜！你已掌握 Vibe Coding 工具選型能力</h3>
+                        <p>從 UI 設計、全棧開發、邏輯重構到終端機除錯，你已能根據場景選擇最強的 AI 兵種。</p>
+                    </div>
+                </div>
+                <h2>完成本模組後，你已學會：</h2>
+                <ul>
+                    <li>使用 <strong>Lovable / v0</strong> 快速產出高品質 UI 原型。</li>
+                    <li>使用 <strong>Replit Agent</strong> 完成含資料庫的全棧應用開發與部署。</li>
+                    <li>使用 <strong>Claude Code</strong> 在終端機中進行安全性掃描與自動修復。</li>
+                    <li>透過 <strong>Antigravity</strong> 指揮多位 Agent 協作開發。</li>
+                    <li>理解 <strong>CI/CD 部署</strong>最佳實踐，確保安全與專業。</li>
+                </ul>
+                <h2>延伸學習資源</h2>
+                <a href="https://www.youtube.com/watch?v=U7cF4RRQ5VI" target="_blank" class="ms-resource-link">
+                    <i class="fab fa-youtube" style="color:#ff0000;"></i>
+                    <div><div style="font-weight:600;">課程教學影片</div><div style="font-size:12px; color:#605e5c; margin-top:2px;">YouTube — Vibe Coding 工具實戰示範</div></div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+                <a href="https://docs.google.com/document/d/1GQqGRkPu8K1m12oQWyXLNb0XHywEAcyQabCz2tCBH0k/edit?usp=sharing" target="_blank" class="ms-resource-link">
+                    <i class="fas fa-file-alt"></i>
+                    <div><div style="font-weight:600;">課程官方講義</div><div style="font-size:12px; color:#605e5c; margin-top:2px;">Google Docs — Vibe Coding 工具完整操作指南</div></div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+                <a href="https://lovable.dev" target="_blank" class="ms-resource-link">
+                    <i class="fas fa-heart" style="color:#be185d;"></i>
+                    <div><div style="font-weight:600;">Lovable.dev</div><div style="font-size:12px; color:#605e5c; margin-top:2px;">lovable.dev — 審美天花板的 AI UI 設計工具</div></div>
+                    <i class="fas fa-external-link-alt" style="color:#c8c6c4; margin-left:auto;"></i>
+                </a>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
+                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「主流 Vibe Coding 工具旗艦店」模組！')">完成模組</button>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script>
+    const UNITS = [
+        { id: 0, label: '課程總覽',                time: '',        type: 'index' },
+        { id: 1, label: '簡介：The Vibe Frontier', time: '5 分鐘',  type: 'unit'  },
+        { id: 2, label: 'Antigravity 多 Agent',    time: '10 分鐘', type: 'unit'  },
+        { id: 3, label: '部署策略與 CI/CD',        time: '8 分鐘',  type: 'unit'  },
+        { id: 4, label: '實作練習',                time: '15 分鐘', type: 'lab'   },
+        { id: 5, label: '知識測驗',                time: '5 分鐘',  type: 'quiz'  },
+        { id: 6, label: '摘要與資源',              time: '5 分鐘',  type: 'unit'  },
+    ];
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'c' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！Lovable.dev 和 v0 專注於精緻的前端 UI 設計，是產出高品質原型的最佳選擇。' },
+        q2: { b: '正確！rules.md 定義多 Agent 的協作規範（如 API 格式、職責分離），避免檔案衝突。' },
+        q3: { b: '正確！部署涉及基礎設施權限與敏感密鑰，Agent 運行在隔離環境中，無權直接存取正式伺服器。' },
+        q4: { c: '正確！Claude Code 是終端機原生的 Agent，能直接在 CLI 中掃描、修復安全漏洞並自動提交 Commit。' },
+    };
+    let currentUnit = 0, doneSet = new Set();
+
+    function init() { buildSidebar(); buildIndexUnitList(); goToUnit(0); }
+    function buildSidebar() {
+        const nav = document.getElementById('sidebar-nav');
+        nav.innerHTML = UNITS.map(u => {
+            const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>' : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>' : '';
+            return `<div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})"><div class="unit-icon" id="icon-${u.id}">${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div><div class="unit-meta"><div class="unit-name">${u.label}${badge}</div>${u.time ? `<div class="unit-time"><i class="far fa-clock"></i> ${u.time}</div>` : ''}</div></div>`;
+        }).join('');
+    }
+    function buildIndexUnitList() {
+        document.getElementById('index-unit-list').innerHTML = UNITS.filter(u => u.id > 0).map(u => `<div class="unit-card ${u.type}" onclick="goToUnit(${u.id})"><div class="unit-card-num">${u.id}</div><div class="unit-card-info"><div class="unit-card-name">${u.label}</div><div class="unit-card-time"><i class="far fa-clock"></i> ${u.time}</div></div><div class="unit-card-arrow">›</div></div>`).join('');
+    }
+    function goToUnit(id) {
+        document.querySelectorAll('.ms-unit-page').forEach(p => p.classList.remove('visible'));
+        (id === 0 ? document.getElementById('page-index') : document.getElementById(`page-${id}`))?.classList.add('visible');
+        document.querySelectorAll('.ms-unit-item').forEach(el => el.classList.remove('active'));
+        const ni = document.getElementById(`nav-${id}`); if (ni) { ni.classList.add('active'); ni.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+        UNITS.forEach(u => { const ic = document.getElementById(`icon-${u.id}`); if (!ic) return; if (doneSet.has(u.id)) { ic.className = 'unit-icon done'; ic.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>'; } else if (u.id === id) { ic.className = 'unit-icon active-icon'; ic.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id; } else { ic.className = 'unit-icon'; ic.innerHTML = u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id; } });
+        document.getElementById('bc-current').textContent = (UNITS.find(u => u.id === id) || {}).label || ''; currentUnit = id; updateProgress(); window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function markDone(id) { doneSet.add(id); const b = document.getElementById(`badge-${id}`); if (b) b.style.display = 'flex'; UNITS.forEach(u => { const ic = document.getElementById(`icon-${u.id}`); if (ic && doneSet.has(u.id)) { ic.className = 'unit-icon done'; ic.innerHTML = '<i class="fas fa-check" style="font-size:9px;"></i>'; } }); updateProgress(); }
+    function updateProgress() { const t = UNITS.length - 1, d = doneSet.size; document.getElementById('progress-fill').style.width = Math.round(d / t * 100) + '%'; document.getElementById('progress-text').textContent = `${d} / ${t} 已完成`; }
+    function toggleCheck(el) { el.classList.toggle('checked'); el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : ''; }
+    function submitQuiz() {
+        let c = 0; const t = Object.keys(QUIZ_ANSWERS).length; let all = true;
+        for (const [q, a] of Object.entries(QUIZ_ANSWERS)) { const s = document.querySelector(`input[name="${q}"]:checked`); if (!s) { all = false; continue; } const fb = document.getElementById(`${q}-feedback`); document.querySelectorAll(`input[name="${q}"]`).forEach(o => { o.disabled = true; if (o.value === a) o.parentElement.classList.add('correct'); if (o.checked && o.value !== a) o.parentElement.classList.add('wrong'); }); if (s.value === a) { c++; fb.className = 'quiz-feedback correct'; fb.textContent = '✓ ' + QUIZ_EXPLANATIONS[q][a]; } else { fb.className = 'quiz-feedback wrong'; fb.textContent = '✗ 不正確。' + QUIZ_EXPLANATIONS[q][a]; } }
+        if (!all) { alert('請回答所有問題後再提交。'); return; }
+        const se = document.getElementById('quiz-score'), p = Math.round(c / t * 100); se.style.display = 'block'; se.innerHTML = `<span style="font-size:20px;">${p >= 75 ? '🎉' : '📖'}</span><strong style="margin-left:8px;">你答對了 ${c} / ${t} 題（${p}%）</strong><div style="margin-top:6px; color:#605e5c;">${p >= 75 ? '通過！繼續前往下一個單元。' : '建議回顧相關單元後再試一次。'}</div>`;
+        document.querySelector('.quiz-submit .ms-btn').disabled = true; document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+    function resetQuiz() { document.querySelectorAll('.quiz-option').forEach(el => el.classList.remove('correct','wrong')); document.querySelectorAll('input[type=radio]').forEach(el => { el.checked = false; el.disabled = false; }); document.querySelectorAll('.quiz-feedback').forEach(el => { el.className = 'quiz-feedback'; el.textContent = ''; }); document.getElementById('quiz-score').style.display = 'none'; document.querySelector('.quiz-submit .ms-btn').disabled = false; document.getElementById('quiz-reset-btn').style.display = 'none'; }
+    init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;
+</script>
+
+    <script>
+        window.RESOURCES = {
+            video: "https://www.youtube.com/embed/U7cF4RRQ5VI",
+            doc: "https://docs.google.com/document/d/1GQqGRkPu8K1m12oQWyXLNb0XHywEAcyQabCz2tCBH0k/edit?usp=sharing"
+        };
+    </script>
+    <script src="/js/course-shared.js?v=2026.05.25.V21.MS_LEARN_FORMAT"></script>
+
+    <!-- Assignment Guide (Hidden) -->
+    <section id="assignment-guide" style="display: none;">
+<div class="markdown-heading"><h1 class="heading-element">02-unit-vibe-coding: 主流 Vibe Coding 工具旗艦店</h1></div>
+<p>歡迎來到 Vibe Coding 的實戰戰場！你將熟練調度各種 AI 代理人，根據不同需求選擇最合適的工具。</p>
+<div class="markdown-heading"><h2 class="heading-element">🎯 學習目標</h2></div>
+<ol><li><strong>工具選型能力</strong>：理解不同 AI 工具的優勢。</li><li><strong>高效溝通</strong>：練習精簡的 Prompt Engineering。</li><li><strong>自動化意識</strong>：體驗全自動化流程。</li></ol>
+<div class="markdown-heading"><h2 class="heading-element">🚀 實戰任務</h2></div>
+<h3>任務 1：審美天花板 - 視覺實戰 (v0 / Lovable)</h3>
+<ul><li>利用 v0 或 Lovable 打造精美 UI 介面，將網址貼回 <code>links.md</code>。</li><li>在 <code>vibe-prompts.md</code> 記錄至少 3 次優化對話。</li></ul>
+<h3>任務 2：10 分鐘全棧開發 (Replit Agent)</h3>
+<ul><li>使用 Replit Agent 構建含資料庫的 Todo List 應用。</li><li>將部署網址貼回 <code>links.md</code>。</li></ul>
+<h3>任務 3：CLI 掃描與安全修復 (Claude Code)</h3>
+<ul><li>執行 <code>claude</code> 進行安全掃描，將報告存入 <code>security-audit.log</code>。</li></ul>
+    </section>
+
+    <!-- Tutor Guide (Hidden) -->
+    <section id="tutor-guide" style="display: none;">
+<p>針對 <strong><code>02-unit-vibe-coding</code></strong> 單元，評價重點在於「對工具特長的理解」。</p>
+<h3>評估指標</h3>
+<ul>
+<li>[ ] <strong>工具選型</strong>：學員是否理解各工具的適用場景？</li>
+<li>[ ] <strong>溝通效率</strong>：Prompt 是否能讓 AI 在最少回合內達成目標？</li>
+<li>[ ] <strong>自動化意識</strong>：是否理解批次安全修復的價值？</li>
+</ul>
+    </section>
+
+</body>
+</html>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>差速驅動幾何學：ICC 的秘密 - Vibe Coding Learn</title>
+    <title>差速驅動幾何學：ICC 的秘密 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 10 - 差速幾何</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">差速驅動幾何學：ICC 的秘密</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 10</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>差速驅動幾何學：ICC 的秘密</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 10</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,14 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>差速驅動幾何學：ICC 的秘密</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    你的機器人只有兩顆輪子，卻能做出精準的弧線轉彎——這背後的秘密就是 <strong>ICC（即時曲率中心）</strong>。
+                    本模組將帶你從剛體運動學的角度，推導出左右輪速差與轉彎半徑之間的幾何關係，
+                    讓你不再「憑感覺」設定馬達參數，而是用數學精確預測車體在平面上的每一公分位移。
                 </p>
 
                 <div class="ms-scenario">
                     <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    想像你正在設計一台自動巡邏車，需要它沿著一個半徑 50 公分的圓形路徑精確巡航。你該如何計算左右輪各自需要的速度？如果輪距改變了，公式又該怎麼調整？先花 3 分鐘觀看下方的教學影片，建立對 ICC 幾何模型的直覺，接下來的推導與實作會更加順暢。
                 </div>
 
                 <h2>教學影片</h2>
@@ -591,44 +590,112 @@
                 </div>
 
                 <h1>🏎️ 1. 為什麼兩顆輪子就能轉向？ (15 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                差速驅動的本質是「移動距離差」。當左輪速度 $V_L$ 大於右輪 $V_R$ 時，車輛會被迫繞著某個點旋轉。這是剛體運動學在平面上的基本限制。
-                            </p>
-<div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-<h4 class="font-bold text-blue-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
-                                    Kinematic Principles</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify text-justify">
-<li class="flex items-start gap-2 text-justify text-left"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span>
-<div><strong>非對稱推力</strong>：左右輪轉速不一致，產生了繞中心旋轉的扭矩。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span>
-<div><strong>剛體約束</strong>：車體各點必須共享同一個「即時旋轉中心」。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-justify">
-                                Diff-Drive Mode</h4>
-<div class="relative z-10 flex justify-center items-center gap-8">
-<div class="flex flex-col items-center">
-<div class="w-2 h-10 bg-blue-500 rounded animate-pulse"></div>
-<span class="text-[8px] mt-1 text-slate-500">Left Wheel</span>
-</div>
-<div class="flex flex-col items-center opacity-50">
-<div class="w-2 h-6 bg-blue-500 rounded"></div>
-<span class="text-[8px] mt-1 text-slate-500">Right Wheel</span>
-</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic text-center">
-                                Result: Tangential Velocity Gradient</p>
-</div>
-</div>
+
+                <p>
+                    在機器人學中，<strong>差速驅動（Differential Drive）</strong>是最常見且最具教學價值的移動機構之一。
+                    它僅需兩顆獨立驅動的輪子，就能實現前進、後退、轉彎甚至原地旋轉等所有平面運動。
+                    理解其運作原理，需要從<strong>剛體運動學（Rigid Body Kinematics）</strong>的角度切入。
+                </p>
+
+                <h2>剛體約束與旋轉中心</h2>
+                <p>
+                    車體是一個剛體（Rigid Body），這意味著車上任意兩點之間的距離在運動過程中始終保持不變。
+                    當左右兩輪的瞬時線速度不同時（即 \(V_L \neq V_R\)），剛體約束迫使整台車繞著某一個固定點旋轉。
+                    這個點就是接下來我們要深入探討的 <strong>ICC（Instantaneous Center of Curvature，即時曲率中心）</strong>。
+                </p>
+                <p>
+                    想像你和朋友手拉手向前走，但你走得比較快——你們兩個人會自然地繞著某個「中心」旋轉。
+                    差速驅動車的原理完全相同：速度差產生曲率，曲率決定軌跡。
+                </p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        差速驅動的核心直覺：左右輪的<strong>速度差</strong>決定了車體的<strong>轉彎半徑</strong>，
+                        而左右輪的<strong>速度和</strong>決定了車體的<strong>前進速度</strong>。掌握這個直覺，就掌握了差速驅動控制的一半。
+                    </div>
+                </div>
+
+                <h2>差速驅動 vs. 其他轉向機構</h2>
+                <p>
+                    在機器人設計中，存在多種轉向機構。理解差速驅動的定位，有助於判斷何時該選用它。
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>轉向機構</th>
+                            <th>原理</th>
+                            <th>最小轉彎半徑</th>
+                            <th>控制複雜度</th>
+                            <th>典型應用</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>差速驅動</strong></td>
+                            <td>左右輪速差</td>
+                            <td>0（可原地旋轉）</td>
+                            <td>中</td>
+                            <td>室內機器人、教育平台</td>
+                        </tr>
+                        <tr>
+                            <td>阿克曼轉向（Ackermann）</td>
+                            <td>前輪偏角</td>
+                            <td>受限於最大轉向角</td>
+                            <td>低</td>
+                            <td>汽車、戶外車輛</td>
+                        </tr>
+                        <tr>
+                            <td>全向輪（Mecanum）</td>
+                            <td>斜向滾輪組合</td>
+                            <td>0</td>
+                            <td>高</td>
+                            <td>倉儲機器人、競賽</td>
+                        </tr>
+                        <tr>
+                            <td>履帶式（Skid-Steer）</td>
+                            <td>左右履帶速差</td>
+                            <td>0</td>
+                            <td>中</td>
+                            <td>軍用載具、崎嶇地形</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>速度差如何產生轉向</h2>
+                <p>
+                    假設左輪在單位時間內行進了 \(d_L\) 的距離，右輪行進了 \(d_R\) 的距離。
+                    由於兩輪固定在車軸的兩端（間距為輪距 \(L\)），當 \(d_L > d_R\) 時，
+                    車體的左側「走得多」、右側「走得少」——車體自然向右偏轉。
+                    這就是差速驅動的物理本質：<strong>不對稱的移動距離產生旋轉</strong>。
+                </p>
+                <p>
+                    從運動學角度，我們可以直接由左右輪速推導出車體的線速度 \(v\) 和角速度 \(\omega\)：
+                </p>
+                <p style="text-align:center; font-size:16px;">
+                    \[v = \frac{V_L + V_R}{2}, \quad \omega = \frac{V_L - V_R}{L}\]
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 差速驅動基礎運動學（C++ / ESP32）</span><br>
+                    <span class="c-kw">const float</span> <span class="c-attr">L</span> <span class="c-white">= 0.15;</span>  <span class="c-comment">// 輪距 15 cm = 0.15 m</span><br>
+                    <span class="c-kw">float</span> <span class="c-attr">V_L</span> <span class="c-white">= 0.20;</span>  <span class="c-comment">// 左輪線速度 (m/s)</span><br>
+                    <span class="c-kw">float</span> <span class="c-attr">V_R</span> <span class="c-white">= 0.10;</span>  <span class="c-comment">// 右輪線速度 (m/s)</span><br>
+                    <br>
+                    <span class="c-comment">// 車體線速度與角速度</span><br>
+                    <span class="c-kw">float</span> <span class="c-attr">v</span>     <span class="c-white">= (</span><span class="c-attr">V_L</span> <span class="c-white">+</span> <span class="c-attr">V_R</span><span class="c-white">) / 2.0;</span>   <span class="c-comment">// = 0.15 m/s</span><br>
+                    <span class="c-kw">float</span> <span class="c-attr">omega</span> <span class="c-white">= (</span><span class="c-attr">V_L</span> <span class="c-white">-</span> <span class="c-attr">V_R</span><span class="c-white">) /</span> <span class="c-attr">L</span><span class="c-white">;</span>   <span class="c-comment">// = 0.667 rad/s（向右轉）</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在 ESP32 上，「速度」對應的是 PWM 值（0–255）。當你設定 <code>analogWrite(LEFT_MOTOR, 200)</code> 和 <code>analogWrite(RIGHT_MOTOR, 100)</code> 時，
+                        你其實已經在執行差速驅動——只是還沒用數學來精確預測車體會走出什麼軌跡。接下來的 ICC 公式推導，正是為了填補這個缺口。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -648,38 +715,116 @@
                 </div>
 
                 <h1>🌐 2. 核心主角：ICC (Instantaneous Center of Curvature)</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                ICC 是在任何時間點，車體上所有點都在繞著旋轉的那個「虛擬中心」。理解公式中 $L$ (輪距) 與 $R$ (半徑) 的關係，是精確路徑規劃的基礎。
-                            </p>
-<div class="bg-indigo-50 p-8 rounded-3xl border border-indigo-100 text-center text-justify text-left text-justify">
-<h4 class="text-indigo-900 font-bold mb-4 text-xs uppercase tracking-widest text-justify">
-                                    Geometric Derivation</h4>
-<div class="font-mono text-[10px] text-slate-600 space-y-2 text-justify">
-<div>$V_L = \omega(R + L/2)$</div>
-<div>$V_R = \omega(R - L/2)$</div>
-<div class="text-indigo-600 font-bold mt-2">➔ $R = \frac{L}{2} \cdot \frac{V_L +
-                                        V_R}{V_L - V_R}$</div>
-</div>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-indigo-500/5 text-justify"></div>
-<h4 class="text-indigo-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-justify">
-                                Coordinate Mapping</h4>
-<div class="w-full h-32 border border-slate-800 rounded relative overflow-hidden text-justify">
-<div class="absolute left-1/2 top-1/2 w-48 h-48 border border-indigo-500/20 rounded-full -translate-x-1/2 -translate-y-1/2 animate-spin text-justify" style="animation-duration: 3s;"></div>
-<div class="absolute left-1/2 top-1/2 w-2 h-2 bg-indigo-500 rounded-full text-justify text-left">
-</div>
-<span class="absolute left-1/2 top-1/2 ml-2 mt-2 text-[8px] text-indigo-400 font-mono text-justify uppercase tracking-tighter">ICC
-                                    (Point)</span>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic text-center">
-                                Radius determined by Speed Ratio</p>
-</div>
-</div>
+
+                <p>
+                    ICC（Instantaneous Center of Curvature，即時曲率中心）是差速驅動幾何學中最核心的概念。
+                    在任何一個瞬間，車體上的所有點都繞著 ICC 進行圓周運動。ICC 的位置完全由左右輪的速度比決定，
+                    它可能在車體外側很遠的地方（大半徑轉彎），也可能恰好落在車體中心（原地自轉）。
+                </p>
+
+                <h2>從剛體約束推導 ICC 公式</h2>
+                <p>
+                    設車軸中心到 ICC 的距離為 \(R\)（轉彎半徑），輪距為 \(L\)，車體角速度為 \(\omega\)。
+                    由於左右輪都繞同一個 ICC 旋轉，但它們到 ICC 的距離不同，因此線速度也不同：
+                </p>
+                <ul>
+                    <li>左輪到 ICC 的距離為 \(R + L/2\)，所以 \(V_L = \omega \cdot (R + L/2)\)</li>
+                    <li>右輪到 ICC 的距離為 \(R - L/2\)，所以 \(V_R = \omega \cdot (R - L/2)\)</li>
+                </ul>
+                <p>
+                    將兩式相除消去 \(\omega\)，即可解出 \(R\)：
+                </p>
+                <p style="text-align:center; font-size:16px;">
+                    \[\frac{V_L}{V_R} = \frac{R + L/2}{R - L/2} \quad \Longrightarrow \quad R = \frac{L}{2} \cdot \frac{V_L + V_R}{V_L - V_R}\]
+                </p>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        這個公式是整個差速驅動控制的基石。它告訴我們：<strong>轉彎半徑完全由左右輪的速度比決定，與絕對速度無關</strong>。
+                        無論車體以 10 cm/s 還是 100 cm/s 行駛，只要速度比相同，走出的圓弧半徑就相同。
+                    </div>
+                </div>
+
+                <h2>公式中各變數的物理意義</h2>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>符號</th>
+                            <th>名稱</th>
+                            <th>單位</th>
+                            <th>說明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>\(V_L\)</td>
+                            <td>左輪線速度</td>
+                            <td>m/s</td>
+                            <td>左輪接觸地面的瞬時速度</td>
+                        </tr>
+                        <tr>
+                            <td>\(V_R\)</td>
+                            <td>右輪線速度</td>
+                            <td>m/s</td>
+                            <td>右輪接觸地面的瞬時速度</td>
+                        </tr>
+                        <tr>
+                            <td>\(L\)</td>
+                            <td>輪距（Wheel Base）</td>
+                            <td>m</td>
+                            <td>兩輪接地點之間的水平距離</td>
+                        </tr>
+                        <tr>
+                            <td>\(R\)</td>
+                            <td>轉彎半徑</td>
+                            <td>m</td>
+                            <td>車軸中心到 ICC 的距離（正值向左轉）</td>
+                        </tr>
+                        <tr>
+                            <td>\(\omega\)</td>
+                            <td>角速度</td>
+                            <td>rad/s</td>
+                            <td>車體繞 ICC 旋轉的角速率</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>逆向運動學：從目標半徑求輪速</h2>
+                <p>
+                    在實際控制中，我們通常已知「想要的轉彎半徑 \(R\)」和「想要的整體速度 \(V\)」，需要反推出左右輪速。
+                    這就是<strong>逆向運動學（Inverse Kinematics）</strong>：
+                </p>
+                <p style="text-align:center; font-size:16px;">
+                    \[V_L = V \cdot \frac{R + L/2}{R}, \quad V_R = V \cdot \frac{R - L/2}{R}\]
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 逆向運動學：給定 R 和 V，計算左右輪速</span><br>
+                    <span class="c-kw">struct</span> <span class="c-tag">WheelSpeed</span> <span class="c-white">{</span> <span class="c-kw">float</span> <span class="c-attr">left</span><span class="c-white">;</span> <span class="c-kw">float</span> <span class="c-attr">right</span><span class="c-white">; };</span><br>
+                    <br>
+                    <span class="c-tag">WheelSpeed</span> <span class="c-white">calcIK(</span><span class="c-kw">float</span> <span class="c-attr">R</span><span class="c-white">,</span> <span class="c-kw">float</span> <span class="c-attr">V</span><span class="c-white">,</span> <span class="c-kw">float</span> <span class="c-attr">L</span><span class="c-white">) {</span><br>
+                    <span class="c-white">    </span><span class="c-tag">WheelSpeed</span> <span class="c-attr">ws</span><span class="c-white">;</span><br>
+                    <span class="c-white">    </span><span class="c-attr">ws</span><span class="c-white">.left  = </span><span class="c-attr">V</span><span class="c-white"> * (</span><span class="c-attr">R</span><span class="c-white"> + </span><span class="c-attr">L</span><span class="c-white">/2.0) / </span><span class="c-attr">R</span><span class="c-white">;</span><br>
+                    <span class="c-white">    </span><span class="c-attr">ws</span><span class="c-white">.right = </span><span class="c-attr">V</span><span class="c-white"> * (</span><span class="c-attr">R</span><span class="c-white"> - </span><span class="c-attr">L</span><span class="c-white">/2.0) / </span><span class="c-attr">R</span><span class="c-white">;</span><br>
+                    <span class="c-white">    </span><span class="c-kw">return</span> <span class="c-attr">ws</span><span class="c-white">;</span><br>
+                    <span class="c-white">}</span><br>
+                    <br>
+                    <span class="c-comment">// 範例：半徑 0.5m、速度 0.2 m/s、輪距 0.15m</span><br>
+                    <span class="c-tag">WheelSpeed</span> <span class="c-attr">s</span> <span class="c-white">= calcIK(0.5, 0.2, 0.15);</span><br>
+                    <span class="c-comment">// s.left = 0.230 m/s, s.right = 0.170 m/s</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        注意公式中 \(L/2\) 的幾何意義：它代表車軸中心到每顆輪子的距離。
+                        如果你的機器人輪距量測不精確，所有的運動學計算都會出現系統性偏差。
+                        建議用捲尺精確量測兩輪接地點的中心距離，誤差控制在 ±1 mm 以內。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -699,42 +844,120 @@
                 </div>
 
                 <h1>🚦 3. 特殊運動狀態</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
-                                掌握 ICC 公式後，我們可以導出三種極端情況。掌握這些「邊界條件」，才能在寫 Code 時正確處理除以零或無窮大的例外邏輯。
-                            </p>
-<div class="bg-amber-500/10 p-8 rounded-3xl border border-amber-500/20 shadow-inner text-justify">
-<h4 class="font-bold text-amber-400 mb-4 text-xs uppercase tracking-widest text-center text-justify text-left">
-                                    Boundary Conditions</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify text-justify">
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">直線 (Straight)</strong>：當 $V_L =
-                                            V_R$，$R \to \infty$。ICC 在無限遠處。</div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">自轉 (In-Place Turn)</strong>：當 $V_L
-                                            = -V_R$，$R = 0$。ICC 在車體正中心。</div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">單輪旋轉 (Pivot)</strong>：當一輪速率為 0，ICC
-                                            落在靜止的那顆輪胎上。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-amber-600/10 p-10 rounded-3xl border border-amber-500/20 text-center relative overflow-hidden group">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-amber-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-amber-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">
-                                Motion Vector</h4>
-<div class="text-4xl font-extrabold text-white mb-2">$\infty \to 0$</div>
-<p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center text-justify text-left text-justify">
-                                "幾何是代碼的靈魂，ICC 是轉向的支點。"
-                            </p>
-</div>
-</div>
+
+                <p>
+                    掌握了 ICC 公式 \(R = \frac{L}{2} \cdot \frac{V_L + V_R}{V_L - V_R}\) 之後，
+                    我們可以分析三種<strong>邊界條件（Boundary Conditions）</strong>——
+                    這些極端情況不僅在理論上揭示了公式的行為特性，更是在程式實作中<strong>必須正確處理的例外邏輯</strong>，
+                    否則可能引發除以零錯誤或無窮大溢位。
+                </p>
+
+                <h2>三種特殊運動狀態</h2>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>運動狀態</th>
+                            <th>條件</th>
+                            <th>\(R\) 值</th>
+                            <th>ICC 位置</th>
+                            <th>車體行為</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>直線行駛</strong></td>
+                            <td>\(V_L = V_R\)</td>
+                            <td>\(R \to \infty\)</td>
+                            <td>無限遠處</td>
+                            <td>車體沿直線前進，無旋轉</td>
+                        </tr>
+                        <tr>
+                            <td><strong>原地自轉</strong></td>
+                            <td>\(V_L = -V_R\)</td>
+                            <td>\(R = 0\)</td>
+                            <td>車軸中心</td>
+                            <td>車體繞中心點原地旋轉</td>
+                        </tr>
+                        <tr>
+                            <td><strong>單輪旋轉</strong></td>
+                            <td>\(V_L = 0\) 或 \(V_R = 0\)</td>
+                            <td>\(R = \pm L/2\)</td>
+                            <td>靜止輪的接地點</td>
+                            <td>車體繞靜止輪旋轉</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>狀態 1：直線行駛（\(V_L = V_R\)）</h3>
+                <p>
+                    當左右輪速度完全相等時，公式分母 \(V_L - V_R = 0\)，導致 \(R \to \infty\)。
+                    物理上，這代表 ICC 在無限遠處——車體上所有點都在做半徑無限大的圓周運動，即直線運動。
+                    在程式中，<strong>必須在計算 \(R\) 之前攔截此情況</strong>，否則會產生除以零錯誤。
+                </p>
+
+                <h3>狀態 2：原地自轉（\(V_L = -V_R\)）</h3>
+                <p>
+                    當左右輪等速反轉時，代入公式可得 \(R = \frac{L}{2} \cdot \frac{0}{2V_L} = 0\)。
+                    ICC 恰好落在車軸的正中心，車體繞自身中心原地旋轉。
+                    這是差速驅動相較於阿克曼轉向的獨特優勢——它可以在零空間內完成轉向。
+                </p>
+
+                <h3>狀態 3：單輪旋轉（Pivot Turn）</h3>
+                <p>
+                    當一側輪子速度為零（例如 \(V_R = 0\)），代入公式得 \(R = L/2\)。
+                    ICC 恰好落在靜止輪的接地點上，車體繞該輪旋轉。此模式的轉彎半徑固定為 \(L/2\)，
+                    是介於直線行駛和原地自轉之間的折衷方案。
+                </p>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        在程式碼中，<strong>永遠不要讓分母 \(V_L - V_R\) 直接為零時還去做除法</strong>。
+                        使用一個極小的閾值（如 <code>abs(V_L - V_R) &lt; 0.001</code>）來偵測直線行駛狀態，
+                        並切換到專用的直線邏輯分支。
+                    </div>
+                </div>
+
+                <h2>邊界條件的程式實作</h2>
+                <p>
+                    以下程式碼展示如何在運動學計算中正確處理所有三種邊界條件：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-tag">WheelSpeed</span> <span class="c-white">calculateIK(</span><span class="c-kw">float</span> <span class="c-attr">R</span><span class="c-white">,</span> <span class="c-kw">float</span> <span class="c-attr">V</span><span class="c-white">,</span> <span class="c-kw">float</span> <span class="c-attr">L</span><span class="c-white">) {</span><br>
+                    <span class="c-white">    </span><span class="c-tag">WheelSpeed</span> <span class="c-attr">ws</span><span class="c-white">;</span><br>
+                    <br>
+                    <span class="c-white">    </span><span class="c-comment">// 狀態 2：原地自轉（R ≈ 0）</span><br>
+                    <span class="c-white">    </span><span class="c-kw">if</span><span class="c-white"> (abs(</span><span class="c-attr">R</span><span class="c-white">) &lt; 0.001) {</span><br>
+                    <span class="c-white">        </span><span class="c-attr">ws</span><span class="c-white">.left  =  </span><span class="c-attr">V</span><span class="c-white">;</span><br>
+                    <span class="c-white">        </span><span class="c-attr">ws</span><span class="c-white">.right = -</span><span class="c-attr">V</span><span class="c-white">;</span><br>
+                    <span class="c-white">        </span><span class="c-kw">return</span> <span class="c-attr">ws</span><span class="c-white">;</span><br>
+                    <span class="c-white">    }</span><br>
+                    <br>
+                    <span class="c-white">    </span><span class="c-comment">// 狀態 1：直線行駛（R 極大）</span><br>
+                    <span class="c-white">    </span><span class="c-kw">if</span><span class="c-white"> (abs(</span><span class="c-attr">R</span><span class="c-white">) &gt; 1000) {</span><br>
+                    <span class="c-white">        </span><span class="c-attr">ws</span><span class="c-white">.left  = </span><span class="c-attr">V</span><span class="c-white">;</span><br>
+                    <span class="c-white">        </span><span class="c-attr">ws</span><span class="c-white">.right = </span><span class="c-attr">V</span><span class="c-white">;</span><br>
+                    <span class="c-white">        </span><span class="c-kw">return</span> <span class="c-attr">ws</span><span class="c-white">;</span><br>
+                    <span class="c-white">    }</span><br>
+                    <br>
+                    <span class="c-white">    </span><span class="c-comment">// 一般情況：ICC 圓弧運動</span><br>
+                    <span class="c-white">    </span><span class="c-attr">ws</span><span class="c-white">.left  = </span><span class="c-attr">V</span><span class="c-white"> * (</span><span class="c-attr">R</span><span class="c-white"> + </span><span class="c-attr">L</span><span class="c-white">/2.0) / </span><span class="c-attr">R</span><span class="c-white">;</span><br>
+                    <span class="c-white">    </span><span class="c-attr">ws</span><span class="c-white">.right = </span><span class="c-attr">V</span><span class="c-white"> * (</span><span class="c-attr">R</span><span class="c-white"> - </span><span class="c-attr">L</span><span class="c-white">/2.0) / </span><span class="c-attr">R</span><span class="c-white">;</span><br>
+                    <span class="c-white">    </span><span class="c-kw">return</span> <span class="c-attr">ws</span><span class="c-white">;</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        閾值 <code>0.001</code> 和 <code>1000</code> 並非隨意選取，而是根據你的機器人尺寸和精度需求決定的。
+                        對於輪距 15 cm 的小型教育機器人，半徑小於 1 mm 在物理上沒有意義（因為輪胎的接地面積就已經超過這個值），
+                        而半徑超過 10 m 的圓弧在實際場地中與直線無異。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -818,16 +1041,81 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>測試你對本模組核心概念的掌握程度。請選出每題的最佳答案，提交後可查看詳細解析。</p>
+
+                <form id="quiz-form" onsubmit="return false;">
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">1. ICC 的全名是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="A" style="margin-right:8px;"> A. Internal Combustion Controller</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="B" style="margin-right:8px;"> B. Instantaneous Center of Curvature（瞬時曲率中心）</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="C" style="margin-right:8px;"> C. Integrated Circuit Chip</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="D" style="margin-right:8px;"> D. Internet Communication Channel</label>
+                        <div id="exp-1" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">2. 差速驅動機器人的兩輪以相同速度、相同方向旋轉時，會產生什麼運動？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 原地旋轉</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 直線前進</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 圓弧轉彎</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 完全停止</label>
+                        <div id="exp-2" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">3. 兩輪以相同速度但相反方向旋轉時，會產生什麼運動？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 直線前進</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 直線後退</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 原地旋轉 (Pivot Turn)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 靜止不動</label>
+                        <div id="exp-3" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">4. 當左輪速度大於右輪速度時，車子會往哪個方向轉彎？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 向左轉</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 向右轉</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 直線前進</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 原地旋轉</label>
+                        <div id="exp-4" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+                </form>
+
+                <div style="display:flex;gap:12px;margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+                <div id="quiz-result" style="display:none;margin-top:20px;padding:16px;border-radius:6px;font-size:14px;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -885,9 +1173,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「差速驅動幾何學：ICC 的秘密」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「差速驅動幾何學：ICC 的秘密」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -903,7 +1191,8 @@
         { id: 3, label: '🌐 2. 核心主角：ICC (Instantaneous Center of Curvature)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🚦 3. 特殊運動狀態', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -923,6 +1212,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1024,8 +1314,61 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'B', q3: 'C', q4: 'B' };
+    const QUIZ_EXPLANATIONS = { q1: 'ICC = Instantaneous Center of Curvature（瞬時曲率中心），是差速驅動機器人在某一瞬間的旋轉中心點。', q2: '兩輪等速同向 → ICC 位於無窮遠處 → 旋轉半徑為無窮大 → 車子沿直線前進。', q3: '兩輪等速反向 → ICC 位於兩輪的正中央 → 旋轉半徑為零 → 車子繞中心原地旋轉。', q4: '外側輪（左輪）速度較快，車子會以較慢的右輪為內側進行轉彎，因此向右偏轉。' };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const idx = q.slice(1);
+            const exp = document.getElementById(`exp-${idx}`);
+            if (!selected) continue;
+            if (selected.value === correct) {
+                score++;
+                exp.style.display = 'block';
+                exp.style.background = '#dff6dd';
+                exp.style.borderLeftColor = '#107c10';
+                exp.innerHTML = '<i class="fas fa-check-circle" style="color:#107c10;margin-right:6px;"></i>' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#dff6dd';
+                selected.parentElement.style.borderColor = '#107c10';
+            } else {
+                exp.style.display = 'block';
+                exp.style.background = '#fde7e9';
+                exp.style.borderLeftColor = '#d13438';
+                exp.innerHTML = '<i class="fas fa-times-circle" style="color:#d13438;margin-right:6px;"></i>正確答案是 ' + correct + '。' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#fde7e9';
+                selected.parentElement.style.borderColor = '#d13438';
+            }
+        }
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === total) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.innerHTML = '<strong style="color:#107c10;">🎉 滿分！' + score + ' / ' + total + '</strong><br>你完全掌握了本模組的核心概念！';
+            markDone(6);
+        } else {
+            resultEl.style.background = '#fff4ce';
+            resultEl.innerHTML = '<strong style="color:#8a6914;">得分：' + score + ' / ' + total + '</strong><br>建議複習錯題的解析說明，再試一次！';
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= 4; i++) {
+            const exp = document.getElementById('exp-' + i);
+            if (exp) { exp.style.display = 'none'; exp.style.background = ''; exp.style.borderLeftColor = 'transparent'; }
+        }
+        document.querySelectorAll('#quiz-form label').forEach(l => { l.style.background = ''; l.style.borderColor = '#e1dfdd'; });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 10：差速驅動控制';
 </script>
 
 <!-- Define Resources -->

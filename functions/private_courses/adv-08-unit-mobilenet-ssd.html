@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>深度學習模型：MobileNet 與 SSD 簡介 - Vibe Coding Learn</title>
+    <title>深度學習模型：MobileNet 與 SSD 簡介 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 8 - AI 模型</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">深度學習模型：MobileNet 與 SSD 簡介</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 8</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>深度學習模型：MobileNet 與 SSD 簡介</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 8</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,12 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>深度學習模型：MobileNet 與 SSD 簡介</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    本單元介紹兩個在邊緣裝置上廣泛使用的深度學習架構：<strong>MobileNet 與 SSD（Single Shot Detector）</strong>。MobileNet 透過深度可分離卷積大幅減少運算量，而 SSD 則以單次前向傳播完成物件偵測與定位。理解這兩者的設計取捨，能幫助你在嵌入式硬體的運算限制下，做出模型選擇與效能調校的正確決策。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你想讓自走車在行駛中即時辨識路上的障礙物類型（行人、車輛、路錐）。傳統的 YOLO 模型雖然精準，但在低功耗微控制器上每幀需要數秒才能完成推論，完全無法滿足即時需求。換用 MobileNet-SSD 後推論速度提升十倍以上，但精度有所下降。這之間的取捨如何量化？何時該犧牲精度換取速度？本單元將為你解析模型架構背後的設計邏輯。
                 </div>
 
                 <h2>教學影片</h2>
@@ -590,42 +587,70 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🧬 1. MobileNet：神經網路的瘦身專家 (30 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
-<div class="space-y-6">
-<p class="text-lg text-gray-600 leading-relaxed font-light">
-                                MobileNet 透過「深度可分離卷積 (Depthwise Separable Convolution)」將運算量縮減至傳統卷積的 1/8。它是嵌入式 AI（如
-                                ESP32-S3）實現即時分類的核心架構。
-                            </p>
-<div class="bg-emerald-50 p-6 rounded-2xl border border-emerald-100">
-<h4 class="font-bold text-emerald-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
-                                    Structural Efficiency</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
-<div><strong>通道拆解</strong>：將一次性的 3D 卷積拆分為 2D 空間過濾與 1D 通道融合。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
-<div><strong>精準度權衡</strong>：透過 Width Multiplier 調整模型寬度，平衡記憶體佔用與辨識質量。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-emerald-500/5 group-hover:bg-emerald-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10">
-                                Neural Compression</h4>
-<div class="relative z-10 space-y-2">
-<div class="w-full h-1 bg-emerald-500/20 rounded">
-<div class="w-1/4 h-full bg-emerald-500"></div>
-</div>
-<div class="text-[8px] text-emerald-400 font-mono">PARAMETERS: 4.2M vs 25M</div>
-</div>
-<p class="text-[9px] text-slate-500 mt-6 font-mono tracking-widest uppercase italic">
-                                Lightweight Backbone Architecture</p>
-</div>
-</div>
+                <h1>MobileNet：神經網路的瘦身專家</h1>
+
+                <p>
+                    MobileNet 是 Google 於 2017 年提出的輕量化卷積神經網路架構，專為行動裝置與嵌入式設備設計。其核心創新是<strong>深度可分離卷積（Depthwise Separable Convolution）</strong>，將標準卷積運算拆解為兩個步驟，大幅降低計算量與模型參數數量，同時僅損失極少的辨識精度。
+                </p>
+
+                <h2>深度可分離卷積原理</h2>
+                <p>
+                    傳統卷積同時進行「空間過濾」與「通道融合」，計算成本為 \(D_K \times D_K \times M \times N\)。深度可分離卷積將其拆為兩步：
+                </p>
+                <ol>
+                    <li><strong>Depthwise Convolution</strong>：對每個輸入通道獨立套用一個 \(D_K \times D_K\) 的空間濾波器。成本：\(D_K \times D_K \times M\)。</li>
+                    <li><strong>Pointwise Convolution</strong>：使用 \(1 \times 1\) 卷積核將所有通道的特徵融合為 N 個輸出通道。成本：\(M \times N\)。</li>
+                </ol>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>運算量對比</strong>
+                        以 3×3 卷積核、輸入 64 通道、輸出 128 通道為例：標準卷積需要 3×3×64×128 = 73,728 次乘法；深度可分離卷積僅需 3×3×64 + 64×128 = 8,768 次乘法，<strong>縮減至 1/8</strong>。
+                    </div>
+                </div>
+
+                <h2>MobileNet 的調節旋鈕</h2>
+                <p>
+                    MobileNet 提供兩個超參數讓工程師根據硬體限制調整模型：
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>參數</th><th>功能</th><th>效果</th><th>典型值</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Width Multiplier (α)</strong></td><td>縮放每層的通道數</td><td>α=0.5 → 參數量降為 1/4</td><td>0.25, 0.5, 0.75, 1.0</td></tr>
+                        <tr><td><strong>Resolution Multiplier (ρ)</strong></td><td>縮放輸入影像解析度</td><td>ρ=0.5 → 計算量降為 1/4</td><td>224, 192, 160, 128</td></tr>
+                    </tbody>
+                </table>
+
+                <h2>在 TensorFlow.js 中載入 MobileNet</h2>
+                <div class="ms-code">
+                    <span class="c-comment">// 使用 TensorFlow.js 載入預訓練的 MobileNet</span><br>
+                    <span class="c-kw">import</span> <span class="c-white">* </span><span class="c-kw">as</span> <span class="c-attr">mobilenet</span> <span class="c-kw">from</span> <span class="c-str">'@tensorflow-models/mobilenet'</span><span class="c-white">;</span><br><br>
+                    <span class="c-kw">const</span> <span class="c-attr">model</span> <span class="c-white">= </span><span class="c-kw">await</span> <span class="c-white">mobilenet.load({</span><br>
+                    <span class="c-white">    version: </span><span class="c-val">2</span><span class="c-white">,</span>        <span class="c-comment">// MobileNet V2</span><br>
+                    <span class="c-white">    alpha: </span><span class="c-val">0.5</span><span class="c-white">,</span>        <span class="c-comment">// 輕量模式，適合嵌入式</span><br>
+                    <span class="c-white">});</span><br><br>
+                    <span class="c-kw">const</span> <span class="c-attr">predictions</span> <span class="c-white">= </span><span class="c-kw">await</span> <span class="c-white">model.classify(imageElement);</span><br>
+                    <span class="c-comment">// 回傳: [{className: "cup", probability: 0.87}, ...]</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>效能提醒</strong>
+                        首次推論（Cold Start）通常比後續推論慢 3–5 倍，因為需要編譯 GPU Shader 與分配記憶體。在效能測試中，應先執行 2–3 次「預熱」推論，再開始計時。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>實務建議</strong>
+                        MobileNet 僅能進行「分類」（這張圖是什麼），無法告訴你物體在畫面中的位置。若需要同時取得位置資訊（Bounding Box），則需要搭配 SSD 偵測框架——這正是下一節的主題。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -644,38 +669,87 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>👁️ 2. SSD：一眼看穿全局 (30 min)</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-<div class="space-y-8">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify">
-                                SSD (Single Shot MultiBox Detector) 跳過了區域提議步騶，直接在特徵圖上預測物體座標與類別。這讓「物件偵測」的速度足以滿足自動駕駛的即時需求。
-                            </p>
-<div class="bg-blue-50 p-8 rounded-3xl border border-blue-100 text-center">
-<h4 class="text-blue-900 font-bold mb-4 text-xs uppercase tracking-widest">Detection
-                                    Pipeline</h4>
-<div class="flex justify-center gap-4 text-[10px] text-slate-500 font-mono">
-<div class="px-2 py-1 bg-white rounded shadow-sm border">Backbone</div>
-<span class="mt-1">➔</span>
-<div class="px-2 py-1 bg-white rounded shadow-sm border">Anchor Boxes</div>
-<span class="mt-1">➔</span>
-<div class="px-2 py-1 bg-blue-500 text-white rounded shadow-sm">NMS Filter</div>
-</div>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-blue-500/5"></div>
-<h4 class="text-blue-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10">
-                                Bounding Box Output</h4>
-<div class="w-full space-y-2 px-10 relative z-10 font-mono text-[9px] text-slate-400">
-<div class="text-emerald-500">// Prediction Result</div>
-<div>{ label: "Person", conf: 0.98, box: [100, 50, 200, 350] }</div>
-<div class="text-blue-500 mt-2">NMS logic: Suppressing redundant frames</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic text-center">
-                                One-Stage Detection Strategy</p>
-</div>
-</div>
+                <h1>SSD：一眼看穿全局</h1>
+
+                <p>
+                    SSD（Single Shot MultiBox Detector）是一種「一階段」物件偵測架構。與 R-CNN 系列的「兩階段」方法不同，SSD <strong>在單次前向傳播中同時完成物體定位與分類</strong>，無需耗時的區域提議（Region Proposal）步驟。這使得 SSD 的推論速度足以應對即時自動駕駛的需求。
+                </p>
+
+                <h2>SSD 的核心設計</h2>
+                <p>
+                    SSD 的偵測流程可分為三個關鍵階段：
+                </p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>Backbone 特徵提取</h4>
+                            <p>使用 MobileNet 或 VGG 作為骨幹網路，從輸入影像中提取多尺度特徵圖（Feature Maps）。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>Anchor Box 預測</h4>
+                            <p>在每個特徵圖的每個位置上，預設多組不同長寬比的「錨框（Anchor Boxes）」。模型預測每個錨框的偏移量與類別機率。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>NMS 後處理</h4>
+                            <p>非極大值抑制（Non-Maximum Suppression）過濾掉重疊度過高的冗餘偵測框，只保留信心分數最高的結果。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>偵測結果的資料格式</h2>
+                <p>
+                    SSD 輸出的每個偵測結果包含以下欄位：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// SSD 偵測結果格式</span><br>
+                    <span class="c-white">{</span><br>
+                    <span class="c-white">    </span><span class="c-attr">label</span><span class="c-white">: </span><span class="c-str">"person"</span><span class="c-white">,</span>      <span class="c-comment">// 物體類別名稱</span><br>
+                    <span class="c-white">    </span><span class="c-attr">confidence</span><span class="c-white">: </span><span class="c-val">0.92</span><span class="c-white">,</span>   <span class="c-comment">// 信心分數 (0~1)</span><br>
+                    <span class="c-white">    </span><span class="c-attr">bbox</span><span class="c-white">: [</span><span class="c-val">0.12</span><span class="c-white">, </span><span class="c-val">0.25</span><span class="c-white">, </span><span class="c-val">0.45</span><span class="c-white">, </span><span class="c-val">0.88</span><span class="c-white">]</span> <span class="c-comment">// [x1, y1, x2, y2] 正規化座標</span><br>
+                    <span class="c-white">}</span><br><br>
+                    <span class="c-comment">// 轉換為像素座標（以 320×240 為例）</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">pixelBox</span> <span class="c-white">= {</span><br>
+                    <span class="c-white">    x1: Math.round(0.12 * 320),</span> <span class="c-comment">// 38</span><br>
+                    <span class="c-white">    y1: Math.round(0.25 * 240),</span> <span class="c-comment">// 60</span><br>
+                    <span class="c-white">    x2: Math.round(0.45 * 320),</span> <span class="c-comment">// 144</span><br>
+                    <span class="c-white">    y2: Math.round(0.88 * 240),</span> <span class="c-comment">// 211</span><br>
+                    <span class="c-white">};</span>
+                </div>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        模型回傳的 Bounding Box 座標通常是正規化值（0~1），必須乘以實際影像寬高才能得到像素座標。忘記這一步是初學者最常見的錯誤——會導致偵測框縮在畫面左上角的一個小區域內。
+                    </div>
+                </div>
+
+                <h2>MobileNet-SSD 的組合優勢</h2>
+                <p>
+                    將 MobileNet 作為 SSD 的 Backbone，形成 <strong>MobileNet-SSD</strong> 組合，兼具輕量化與偵測能力。這是目前嵌入式即時物件偵測的主流方案：
+                </p>
+                <ul>
+                    <li>模型大小僅約 <strong>6–23 MB</strong>（依 α 值而定），可載入 ESP32-S3 的 PSRAM</li>
+                    <li>在瀏覽器中透過 WebGL 加速，可達 <strong>20–30 FPS</strong></li>
+                    <li>支援 COCO 資料集的 <strong>90 類物體</strong>偵測（行人、車輛、動物等）</li>
+                </ul>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在自走車應用中，我們通常只關心 1–3 種類別（如 person、car、cone）。可以在後處理階段過濾掉不相關的偵測結果，減少下游控制邏輯的複雜度。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -694,43 +768,83 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚖️ 3. 權衡之美：FPS 與 mAP</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center">
-<div class="flex-1 space-y-6">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify">
-                                在自動導航中，FPS (反應速度) 往往比 mAP (精準度) 更重要。毫秒級的延遲可能導致避障失效。我們必須學會如何調配硬體加速與模型複雜度。
-                            </p>
-<div class="bg-orange-500/10 p-8 rounded-3xl border border-orange-500/20 shadow-inner">
-<h4 class="font-bold text-orange-400 mb-4 text-xs uppercase tracking-widest text-center">
-                                    Engineering Metrics</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-orange-500 rounded-full mt-1"></span>
-<div><strong class="text-white">信心門檻 (Confidence)</strong>：過高導致漏失目標，過低引發誤判抖動。
-                                        </div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-orange-500 rounded-full mt-1"></span>
-<div><strong class="text-white">WebGL 加速</strong>：利用 GPU 並行計算大幅提升推演 (Inference)
-                                            效率。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-orange-500 rounded-full mt-1"></span>
-<div><strong class="text-white">資料清洗</strong>：處理 <code>[x, y, w, h]</code>
-                                            數據流，實現從對象到距離的空間理解。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-orange-600/10 p-10 rounded-3xl border border-orange-500/20 text-center relative overflow-hidden group">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-orange-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-orange-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">
-                                Optimization Dial</h4>
-<div class="text-4xl font-extrabold text-white mb-2">30 FPS</div>
-<p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center text-justify">
-                                "AI 的價值不在於模型多大，而在於它能在何種約束下做出正確反應。"
-                            </p>
-</div>
-</div>
+                <h1>權衡之美：FPS 與 mAP</h1>
+
+                <p>
+                    在嵌入式 AI 系統中，模型的評估不能只看精度——<strong>推論速度</strong>同樣是決定系統可用性的關鍵指標。一個 mAP 高達 95% 但每幀需要 2 秒的模型，在自動駕駛場景中毫無價值。工程師必須學會在「看得準」與「看得快」之間找到最佳平衡點。
+                </p>
+
+                <h2>核心效能指標</h2>
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>指標</th><th>全名</th><th>定義</th><th>自駕車需求</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>FPS</strong></td><td>Frames Per Second</td><td>每秒可處理的影像幀數</td><td>≥ 10 FPS（最低安全閾值）</td></tr>
+                        <tr><td><strong>mAP</strong></td><td>mean Average Precision</td><td>所有類別平均精度的均值</td><td>≥ 50%（可接受）</td></tr>
+                        <tr><td><strong>Latency</strong></td><td>推論延遲</td><td>單幀從輸入到輸出的時間</td><td>≤ 100ms</td></tr>
+                        <tr><td><strong>Model Size</strong></td><td>模型檔案大小</td><td>權重檔容量</td><td>≤ 20 MB（PSRAM 限制）</td></tr>
+                    </tbody>
+                </table>
+
+                <h2>信心門檻（Confidence Threshold）的調校</h2>
+                <p>
+                    信心門檻決定了模型輸出中哪些偵測結果被保留。這是精度與召回率之間最直接的權衡旋鈕：
+                </p>
+                <ul>
+                    <li><strong>門檻過高（如 0.9）</strong>：只保留「非常確定」的結果。減少誤判（False Positive），但會漏掉真實目標（False Negative）。車體可能在障礙物面前毫無反應。</li>
+                    <li><strong>門檻過低（如 0.3）</strong>：保留更多偵測結果。不容易漏失目標，但會產生大量虛假偵測（雜訊），導致控制系統頻繁跳動。</li>
+                </ul>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>最佳實務</strong>
+                        在自走車避障場景中，建議起始門檻設定為 <code>0.6</code>。對於「行人」類別可適度降低至 <code>0.5</code>（寧可誤停也不可撞人），對於「路錐」等靜態物體可提高至 <code>0.7</code>。
+                    </div>
+                </div>
+
+                <h2>硬體加速策略</h2>
+                <p>
+                    相同的模型在不同的運算後端上，速度差異可達 10 倍以上：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 指定 TensorFlow.js 運算後端</span><br>
+                    <span class="c-kw">await</span> <span class="c-white">tf.setBackend(</span><span class="c-str">'webgl'</span><span class="c-white">);</span>  <span class="c-comment">// GPU 加速 → ~25 FPS</span><br>
+                    <span class="c-comment">// await tf.setBackend('cpu');  // 純 CPU  → ~3 FPS</span><br><br>
+                    <span class="c-comment">// 效能量測方法</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">t0</span> <span class="c-white">= performance.now();</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">results</span> <span class="c-white">= </span><span class="c-kw">await</span> <span class="c-white">model.detect(canvas);</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">inferenceMs</span> <span class="c-white">= performance.now() - t0;</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">fps</span> <span class="c-white">= Math.round(1000 / inferenceMs);</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>安全考量</strong>
+                        若 FPS 低於 10，代表系統在車體移動 100ms 內無法更新決策。以車速 1 m/s 計算，這意味著車體在每次決策之間已前進 10 cm——對近距離障礙物而言可能來不及煞車。低於此閾值時，應自動降低車速或切換為保守模式。
+                    </div>
+                </div>
+
+                <h2>從偵測結果到控制指令</h2>
+                <p>
+                    偵測到的 Bounding Box 本身就包含豐富的空間資訊，可直接轉換為控制依據：
+                </p>
+                <ul>
+                    <li><strong>Box 中心 X 座標</strong> → 目標物的水平位置 → 轉向誤差</li>
+                    <li><strong>Box 寬度</strong> → 目標物的視覺大小 → 距離估算（寬度越大 = 越近）</li>
+                    <li><strong>類別標籤</strong> → 決策優先級（person &gt; obstacle &gt; cone）</li>
+                </ul>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        MobileNet-SSD 的偵測結果可能在連續幀之間「閃爍」（Flickering）——某一幀偵測到物體，下一幀又消失。在控制邏輯中應加入計數器或移動平均濾波器，確保至少連續 3 幀偵測到同一物體才觸發反應。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -814,16 +928,81 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>測試你對本模組核心概念的掌握程度。請選出每題的最佳答案，提交後可查看詳細解析。</p>
+
+                <form id="quiz-form" onsubmit="return false;">
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">1. MobileNet 實現模型輕量化的核心技術是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 使用更大的卷積核</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 深度可分離卷積 (Depthwise Separable Convolution)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 移除所有隱藏層</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 只使用全連接層</label>
+                        <div id="exp-1" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">2. SSD 的全名是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="A" style="margin-right:8px;"> A. Solid State Drive</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="B" style="margin-right:8px;"> B. Single Shot MultiBox Detector</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="C" style="margin-right:8px;"> C. Supervised Semantic Detection</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="D" style="margin-right:8px;"> D. Simple Shape Descriptor</label>
+                        <div id="exp-2" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">3. 在深度學習模型中，FPS 與 mAP 之間的關係通常是怎樣的？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="A" style="margin-right:8px;"> A. FPS 越高，mAP 也越高</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="B" style="margin-right:8px;"> B. FPS 與 mAP 彼此無關</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="C" style="margin-right:8px;"> C. FPS 越高通常 mAP 越低，兩者需要權衡取捨</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="D" style="margin-right:8px;"> D. mAP 越高，FPS 自動提升</label>
+                        <div id="exp-3" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">4. MobileNet + SSD 架構特別適合在什麼環境下運行？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 只能在雲端 GPU 伺服器上運行</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 適合在邊緣裝置（如手機、嵌入式系統）上運行</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 只適合學術研究</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 只能處理文字資料</label>
+                        <div id="exp-4" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+                </form>
+
+                <div style="display:flex;gap:12px;margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+                <div id="quiz-result" style="display:none;margin-top:20px;padding:16px;border-radius:6px;font-size:14px;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -881,9 +1060,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「深度學習模型：MobileNet 與 SSD 簡介」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「深度學習模型：MobileNet 與 SSD 簡介」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -899,7 +1078,8 @@
         { id: 3, label: '👁️ 2. SSD：一眼看穿全局 (30 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '️ 3. 權衡之美：FPS 與 mAP', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -919,6 +1099,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1020,8 +1201,61 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'B', q3: 'C', q4: 'B' };
+    const QUIZ_EXPLANATIONS = { q1: '深度可分離卷積將標準卷積拆解為深度卷積 (Depthwise) + 逐點卷積 (Pointwise)，大幅減少計算量與參數量。', q2: 'SSD = Single Shot MultiBox Detector，「Single Shot」代表只需一次前向傳播即可同時完成物件定位與分類。', q3: '更輕量的模型（高 FPS）通常犧牲準確度（低 mAP），更精確的模型則需要更多計算（低 FPS）。工程上需根據場景做取捨。', q4: 'MobileNet 的輕量設計搭配 SSD 的單次推論效率，使其特別適合計算資源受限的邊緣裝置，如手機、ESP32 等。' };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const idx = q.slice(1);
+            const exp = document.getElementById(`exp-${idx}`);
+            if (!selected) continue;
+            if (selected.value === correct) {
+                score++;
+                exp.style.display = 'block';
+                exp.style.background = '#dff6dd';
+                exp.style.borderLeftColor = '#107c10';
+                exp.innerHTML = '<i class="fas fa-check-circle" style="color:#107c10;margin-right:6px;"></i>' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#dff6dd';
+                selected.parentElement.style.borderColor = '#107c10';
+            } else {
+                exp.style.display = 'block';
+                exp.style.background = '#fde7e9';
+                exp.style.borderLeftColor = '#d13438';
+                exp.innerHTML = '<i class="fas fa-times-circle" style="color:#d13438;margin-right:6px;"></i>正確答案是 ' + correct + '。' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#fde7e9';
+                selected.parentElement.style.borderColor = '#d13438';
+            }
+        }
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === total) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.innerHTML = '<strong style="color:#107c10;">🎉 滿分！' + score + ' / ' + total + '</strong><br>你完全掌握了本模組的核心概念！';
+            markDone(6);
+        } else {
+            resultEl.style.background = '#fff4ce';
+            resultEl.innerHTML = '<strong style="color:#8a6914;">得分：' + score + ' / ' + total + '</strong><br>建議複習錯題的解析說明，再試一次！';
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= 4; i++) {
+            const exp = document.getElementById('exp-' + i);
+            if (exp) { exp.style.display = 'none'; exp.style.background = ''; exp.style.borderLeftColor = 'transparent'; }
+        }
+        document.querySelectorAll('#quiz-form label').forEach(l => { l.style.background = ''; l.style.borderColor = '#e1dfdd'; });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 08：影像處理實務';
 </script>
 
 <!-- Define Resources -->

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>視覺閉迴路控制理論 - Vibe Coding Learn</title>
+    <title>視覺閉迴路控制理論 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -471,9 +473,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">進階課程 5 - 單元 3</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +487,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">視覺閉迴路控制理論</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 216 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 216 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">進階課程 5</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,13 +509,13 @@
                 <h1>視覺閉迴路控制理論</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">進階課程 5</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
                 </div>
 
-                <p></p>
+                <p>串聯感知、決策與執行的完整自動化迴路，實作 P 控制器與 Failsafe 安全機制，在延遲與震盪的動態博弈中馴服物理世界。</p>
 
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
@@ -553,15 +553,17 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>視覺閉迴路控制理論</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    前面的模組教你「看見」與「量化」，本模組要教你「行動」。
+                    你將學會把<strong>感知、決策與執行</strong>串聯成一個完整的自動化閉迴路，
+                    實作 P 控制器與 Failsafe 安全機制，在系統延遲與震盪的動態博弈中，真正讓程式碼驅動物理世界。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你把質心誤差直接乘上一個常數後送給馬達，結果車子開始瘋狂蛇行，
+                    最後因為攝影機突然被遮住而全速衝出賽道。
+                    問題出在哪？控制增益太大導致過度修正？還是缺少影像遺失時的緊急煞車機制？
+                    這就是閉迴路控制理論要解決的核心挑戰。
                 </div>
 
                 <h2>教學影片</h2>
@@ -575,7 +577,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -589,70 +591,126 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔗 1. 閉迴路控制的核心架構 (25 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-<div class="space-y-6">
-<div class="space-y-4">
-<div class="bg-gray-50 p-4 rounded-xl border-l-4 border-gray-400">
-<h4 class="font-bold text-gray-700 mb-1">開迴路 (Open-Loop)</h4>
-<p class="text-sm text-gray-600">只給指令（如：前進 5 秒），不看結果。容易受地面摩擦力、電池電量影響而偏離。</p>
-</div>
-<div class="bg-blue-50 p-4 rounded-xl border-l-4 border-blue-500">
-<h4 class="font-bold text-blue-700 mb-1">閉迴路 (Closed-Loop)</h4>
-<p class="text-sm text-blue-600">不斷觀察結果（影像位置），並根據結果調整指令，具備自動補償能力。</p>
-</div>
-</div>
-<div class="space-y-3">
-<h4 class="font-bold text-gray-800 flex items-center gap-2">
-<span>🏗️</span> 控制鏈元件 (Control Chain)
-                                </h4>
-<ul class="space-y-2 text-sm text-gray-600">
-<li class="flex items-center gap-2">
-<span class="w-2 h-2 rounded-full bg-blue-500"></span>
-<span><strong>控制器 (Controller)：</strong>網頁中的控制邏輯 (P-Control)。</span>
-</li>
-<li class="flex items-center gap-2">
-<span class="w-2 h-2 rounded-full bg-blue-500"></span>
-<span><strong>執行器 (Actuator)：</strong>ESP32 與馬達。</span>
-</li>
-<li class="flex items-center gap-2">
-<span class="w-2 h-2 rounded-full bg-blue-500"></span>
-<span><strong>感測器 (Sensor)：</strong>攝影機 (Camera)。</span>
-</li>
-<li class="flex items-center gap-2">
-<span class="w-2 h-2 rounded-full bg-blue-500"></span>
-<span><strong>回饋 (Feedback)：</strong>即時計算出的質心誤差。</span>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-2xl p-6 flex flex-col items-center justify-center text-center">
-<div class="w-full max-w-sm space-y-4">
-<div class="flex items-center justify-between gap-4">
-<div class="bg-blue-500 text-white p-3 rounded-lg text-xs font-bold">控制器</div>
-<div class="text-blue-400">➡️</div>
-<div class="bg-indigo-500 text-white p-3 rounded-lg text-xs font-bold">馬達</div>
-</div>
-<div class="flex justify-center">
-<div class="text-blue-400 font-bold block">⬇️</div>
-</div>
-<div class="flex items-center justify-between gap-4">
-<div class="bg-emerald-500 text-white p-3 rounded-lg text-xs font-bold">攝影機</div>
-<div class="text-blue-400">⬅️</div>
-<div class="bg-slate-700 text-white p-3 rounded-lg text-xs font-bold">環境</div>
-</div>
-<div class="mt-4 pt-4 border-t border-slate-700">
-<p class="text-xs text-slate-400">「迴路」即是數據不斷循環的過程。</p>
-</div>
-</div>
-</div>
-</div>
+                <h1>閉迴路控制的核心架構</h1>
+
+                <p>
+                    在自動化控制中，系統可以分為兩大類：<strong>開迴路 (Open-Loop)</strong> 與<strong>閉迴路 (Closed-Loop)</strong>。
+                    兩者的根本差異在於——系統是否會「看」自己的執行結果並據此修正。開迴路就像閉著眼睛走路，
+                    只靠預設指令前進；閉迴路則像睜著眼睛走路，每一步都根據所見調整方向。
+                </p>
+
+                <h2>開迴路 vs. 閉迴路</h2>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>特性</th>
+                        <th>開迴路 (Open-Loop)</th>
+                        <th>閉迴路 (Closed-Loop)</th>
+                    </tr>
+                    <tr>
+                        <td><strong>回饋機制</strong></td>
+                        <td>無。執行預設指令後不檢查結果。</td>
+                        <td>有。持續監測輸出並動態調整。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>典型範例</strong></td>
+                        <td>「前進 5 秒後停止」</td>
+                        <td>「持續追蹤黑線直到對齊中心」</td>
+                    </tr>
+                    <tr>
+                        <td><strong>抗干擾能力</strong></td>
+                        <td>差。地面摩擦力、電池電量變化直接導致偏離。</td>
+                        <td>強。能自動補償外界干擾。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>複雜度</strong></td>
+                        <td>低。無需感測器與運算。</td>
+                        <td>較高。需要感測器、計算邏輯與即時通訊。</td>
+                    </tr>
+                </table>
+
+                <h2>控制迴路的四大元件</h2>
+
+                <p>
+                    一個完整的視覺閉迴路系統由四個關鍵元件組成，數據在這四個節點之間不斷循環流動：
+                </p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>感測器 (Sensor) — 攝影機</h4>
+                            <p>擷取環境影像，將物理世界的光學資訊轉換為數位像素矩陣。這是閉迴路的「眼睛」。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>控制器 (Controller) — 網頁端 P-Control 邏輯</h4>
+                            <p>接收誤差訊號，透過比例控制公式 <code>output = Kp × error</code> 計算出修正量。這是閉迴路的「大腦」。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>執行器 (Actuator) — ESP32 與馬達</h4>
+                            <p>接收控制指令（透過 BLE），驅動馬達產生物理運動。這是閉迴路的「手腳」。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>回饋 (Feedback) — 質心誤差訊號</h4>
+                            <p>車輛移動後，攝影機重新擷取影像並計算新的質心誤差，形成完整的回饋迴路。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        「迴路」一詞的精髓在於：數據永不停止地循環。每一幀影像產生一個新的誤差值，
+                        控制器據此發出新的指令，馬達執行後改變車輛位置，攝影機再次觀測——這個循環以每秒數十次的頻率運作，
+                        直到系統被關閉或目標消失。
+                    </div>
+                </div>
+
+                <h2>比例控制 (P-Control) 的基本概念</h2>
+
+                <p>
+                    在本課程中，我們使用最基本也最直觀的控制策略——<strong>比例控制 (Proportional Control)</strong>。
+                    核心公式只有一行：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// P 控制器核心公式</span><br>
+                    <span class="c-kw">let</span> <span class="c-attr">output</span> <span class="c-white">=</span> <span class="c-attr">Kp</span> <span class="c-white">*</span> <span class="c-attr">error</span><span class="c-white">;</span><br>
+                    <br>
+                    <span class="c-comment">// Kp = 比例增益 (Proportional Gain)</span><br>
+                    <span class="c-comment">// error = 正規化後的視覺誤差 [-1.0, 1.0]</span><br>
+                    <span class="c-comment">// output = 送往馬達的轉向指令</span>
+                </div>
+
+                <p>
+                    <code>Kp</code> 的大小決定了系統的「反應靈敏度」：<code>Kp</code> 越大，同樣的誤差會產生越強的修正力道；
+                    但若 <code>Kp</code> 過大，系統會過度修正，導致車輛左右蛇行震盪。
+                    如何找到最佳的 <code>Kp</code> 值，就是控制工程中<strong>參數調校 (Tuning)</strong> 的核心任務。
+                </p>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        控制器的輸出必須加入<strong>飽和限制 (Saturation)</strong>：確保計算值不超過馬達的物理極限。
+                        例如馬達的 PWM 範圍為 0–255，則輸出必須被限制（Clamp）在此範圍內，否則可能損壞硬體。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -666,46 +724,117 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⏱️ 2. 系統延遲 (Latency) 的影響 (20 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-<div class="space-y-6">
-<p class="text-lg text-gray-600 leading-relaxed">
-<strong>視覺延遲：</strong>影像傳輸、解析 JSON、計算質心都需要時間。
-                            </p>
-<div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-r-xl">
-<h4 class="text-red-700 font-bold mb-2">連鎖後果</h4>
-<p class="text-sm text-red-800 leading-relaxed">
-                                    如果延遲太高，車子修正的是「過去的誤差」，這會導致嚴重的震盪甚至失控（Over-correction）。就像在延遲嚴重的視訊通話中，兩個人總是同時說話又同時停下。
-                                </p>
-</div>
-</div>
-<div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
-<h4 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
-<span>🚀</span> 學習任務：優化思考
-                            </h4>
-<p class="text-gray-700 text-sm mb-4">思考如何縮短控制循環的時間？</p>
-<ul class="space-y-3">
-<li class="flex items-start gap-3 bg-white p-3 rounded-lg shadow-sm">
-<span class="text-emerald-500 font-bold">✓</span>
-<span class="text-xs text-gray-600">降低影像解析度 (減少傳輸量)</span>
-</li>
-<li class="flex items-start gap-3 bg-white p-3 rounded-lg shadow-sm">
-<span class="text-emerald-500 font-bold">✓</span>
-<span class="text-xs text-gray-600">提升藍牙傳輸 MTU (增加吞吐量)</span>
-</li>
-<li class="flex items-start gap-3 bg-white p-3 rounded-lg shadow-sm">
-<span class="text-emerald-500 font-bold">✓</span>
-<span class="text-xs text-gray-600">使用跳行掃描演算法 (減少運算量)</span>
-</li>
-</ul>
-</div>
-</div>
+                <h1>系統延遲 (Latency) 的影響</h1>
+
+                <p>
+                    閉迴路控制的效能取決於「迴路轉一圈要多久」。從攝影機擷取影像、傳輸數據、計算質心與誤差、
+                    發送 BLE 指令到馬達執行——每一個環節都會引入延遲 (Latency)。
+                    當總延遲過高時，控制器修正的是「過去的誤差」而非「當前的誤差」，
+                    這會導致系統產生嚴重的震盪 (Oscillation) 甚至完全失控。
+                </p>
+
+                <p>
+                    這就像在一場嚴重延遲的視訊通話中，兩個人總是同時說話又同時停下——因為雙方看到的都是對方幾秒前的狀態，
+                    無法根據當前狀態做出正確回應。對自動駕駛而言，延遲的後果更為嚴重：車輛可能在轉彎時「遲到修正」而衝出賽道。
+                </p>
+
+                <h2>延遲預算 (Latency Budget)</h2>
+
+                <p>
+                    一個典型的視覺閉迴路系統，其延遲可以拆解為以下幾個階段：
+                </p>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>階段</th>
+                        <th>來源</th>
+                        <th>典型延遲</th>
+                        <th>優化策略</th>
+                    </tr>
+                    <tr>
+                        <td><strong>影像擷取</strong></td>
+                        <td>攝影機曝光 + 編碼</td>
+                        <td>30–100 ms</td>
+                        <td>降低解析度（如 160×120）、使用 JPEG 壓縮</td>
+                    </tr>
+                    <tr>
+                        <td><strong>數據傳輸</strong></td>
+                        <td>Wi-Fi / BLE 無線傳輸</td>
+                        <td>20–80 ms</td>
+                        <td>提高 MTU、減少封包大小、使用二進位協定</td>
+                    </tr>
+                    <tr>
+                        <td><strong>影像處理</strong></td>
+                        <td>二值化 + 質心計算</td>
+                        <td>5–20 ms</td>
+                        <td>跳行掃描、ROI 裁切、避免全幀遍歷</td>
+                    </tr>
+                    <tr>
+                        <td><strong>控制計算</strong></td>
+                        <td>P-Control 運算</td>
+                        <td>&lt; 1 ms</td>
+                        <td>運算量極小，通常不是瓶頸</td>
+                    </tr>
+                    <tr>
+                        <td><strong>指令傳輸</strong></td>
+                        <td>BLE Write 到 ESP32</td>
+                        <td>15–40 ms</td>
+                        <td>確保指令頻率不超過影像 FPS</td>
+                    </tr>
+                </table>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>關鍵</strong>
+                        總迴路延遲應控制在 <strong>200 ms 以內</strong>（即控制頻率 ≥ 5 Hz）。
+                        當延遲超過 300 ms 時，比例控制器的修正幾乎必然過時，系統將進入「修正→過衝→反向修正→再過衝」的震盪循環。
+                    </div>
+                </div>
+
+                <h2>延遲導致過度修正的機制</h2>
+
+                <p>
+                    假設控制迴路延遲為 200 ms，而車輛正以穩定速度行駛。當車偏向右邊時：
+                </p>
+
+                <ol>
+                    <li>攝影機在 T=0 ms 捕捉到偏右影像</li>
+                    <li>經過 200 ms 的處理與傳輸，馬達在 T=200 ms 收到「左轉」指令</li>
+                    <li>但在這 200 ms 內，車輛可能已經因慣性<strong>繼續偏右</strong>甚至已經<strong>自然回正</strong></li>
+                    <li>此時「左轉」指令反而造成了<strong>過度修正 (Over-correction)</strong></li>
+                </ol>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 延遲越高，Kp 必須越小，否則過度修正</span><br>
+                    <span class="c-comment">// 典型經驗法則：</span><br>
+                    <span class="c-comment">//   延遲 &lt; 100ms → Kp 可達 1.0–2.0</span><br>
+                    <span class="c-comment">//   延遲 100–200ms → Kp 建議 0.3–0.8</span><br>
+                    <span class="c-comment">//   延遲 &gt; 300ms → Kp 須低於 0.3，否則必然震盪</span>
+                </div>
+
+                <h2>降低延遲的實務策略</h2>
+
+                <ul>
+                    <li><strong>降低影像解析度</strong>：從 320×240 降至 160×120，傳輸量減少 75%，處理速度提升 4 倍。</li>
+                    <li><strong>跳行掃描 (Row Skipping)</strong>：只掃描影像的偶數行（或特定 ROI 區域），運算量直接減半。</li>
+                    <li><strong>提升 BLE MTU</strong>：將藍牙最大傳輸單元從預設的 23 byte 提升至 247 byte，減少分包次數。</li>
+                    <li><strong>指令頻率限制</strong>：確保 BLE 指令發送頻率不超過影像 FPS，防止「指令堆疊」造成控制滯後。</li>
+                </ul>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在作業中，你可以透過在控制迴路中插入 <code>console.log(Date.now())</code> 來測量實際的迴路延遲。
+                        記錄「影像抵達時間」與「BLE 指令送出時間」的差值，就是你系統的端到端延遲。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -719,47 +848,133 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🎯 3. 設定點 (Set-point) 與偏差 (Deviation) (15 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-<div class="space-y-6">
-<ul class="space-y-4 text-gray-600 leading-relaxed">
-<li class="flex gap-3">
-<span class="text-blue-500 font-bold">●</span>
-<span><strong>設定點 (Set-point)：</strong>我們希望物體出現在影像中的目標位置（通常是中心 $x = 160$）。</span>
-</li>
-<li class="flex gap-3">
-<span class="text-blue-500 font-bold">●</span>
-<span><strong>偏差 (Deviation)：</strong>當前偵測位置與設定點之間的動態距離。</span>
-</li>
-<li class="flex gap-3">
-<span class="text-emerald-500 font-bold">💡</span>
-<span class="font-medium">預習任務：為什麼閉迴路系統可以「自動容忍」馬達左右出力不均的問題？</span>
-</li>
-</ul>
-</div>
-<div class="bg-indigo-900 p-8 rounded-3xl text-white">
-<h4 class="font-bold text-xl mb-4 text-indigo-300">PD 控制的物理意義</h4>
-<div class="space-y-4 text-sm">
-<div class="bg-white/10 p-4 rounded-xl">
-<span class="text-emerald-400 font-bold mr-2">Kp (比例)</span>
-<span>決定目前的轉向強度。Kp 越大，修正越果斷。</span>
-</div>
-<div class="bg-white/10 p-4 rounded-xl">
-<span class="text-blue-400 font-bold mr-2">Kd (微分)</span>
-<span>預測誤差變化趨勢，抑制過度震盪（就像是阻尼）。</span>
-</div>
-<div class="pt-4 text-xs text-indigo-200 italic">
-                                    線上任務：觀察「追蹤震盪」案例影片，分析為何 $K_p$ 過大會導致車輛在線上蛇行。
-                                </div>
-</div>
-</div>
-</div>
+                <h1>設定點 (Set-point) 與偏差 (Deviation)</h1>
+
+                <p>
+                    在控制理論中，<strong>設定點 (Set-point)</strong> 是系統的「目標狀態」——我們希望被控變量達到的理想值。
+                    對循跡車而言，設定點就是「目標線出現在影像正中央」，即質心 X 座標等於影像中心（例如 <code>x = 160</code>）。
+                    <strong>偏差 (Deviation)</strong> 則是當前偵測值與設定點之間的動態距離——也就是我們在前一個模組中學到的「正規化誤差」。
+                </p>
+
+                <p>
+                    閉迴路系統的核心目標只有一個：<strong>持續將偏差驅動為零。</strong>
+                    當偏差為正，控制器輸出右轉修正；當偏差為負，輸出左轉修正；當偏差趨近零，修正力道自然消失。
+                    這個自動調節過程不需要預先知道路徑形狀，也能自動補償馬達出力不均、地面摩擦力差異等外部干擾——
+                    這就是閉迴路控制的強大之處。
+                </p>
+
+                <h2>P 控制器的參數調校</h2>
+
+                <p>
+                    比例增益 <code>Kp</code> 是 P 控制器唯一需要調校的參數，但它的影響極為深遠。
+                    以下表格展示了不同 <code>Kp</code> 值對系統行為的影響：
+                </p>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>Kp 範圍</th>
+                        <th>系統表現</th>
+                        <th>物理現象</th>
+                    </tr>
+                    <tr>
+                        <td><strong>過小</strong>（&lt; 0.2）</td>
+                        <td>修正力道不足，偏差無法歸零</td>
+                        <td>車輛持續偏離賽道中心，過彎時容易衝出</td>
+                    </tr>
+                    <tr>
+                        <td><strong>適中</strong>（0.3–0.8）</td>
+                        <td>快速收斂，輕微過衝後穩定</td>
+                        <td>車輛平穩追蹤賽道，過彎流暢</td>
+                    </tr>
+                    <tr>
+                        <td><strong>過大</strong>（&gt; 1.5）</td>
+                        <td>嚴重過衝，持續震盪</td>
+                        <td>車輛劇烈蛇行，如同醉酒駕駛</td>
+                    </tr>
+                    <tr>
+                        <td><strong>臨界值</strong></td>
+                        <td>等幅震盪，永不收斂</td>
+                        <td>車輛在賽道上持續左右擺盪，幅度不減</td>
+                    </tr>
+                </table>
+
+                <h2>從 P 到 PD：加入微分項</h2>
+
+                <p>
+                    純 P 控制器有一個固有缺陷：它只看「當前的偏差大小」，不考慮「偏差的變化趨勢」。
+                    <strong>微分項 (D-term)</strong> 的加入解決了這個問題：它監測誤差的變化速率，提前預測偏差走向，
+                    就像是為系統裝上了「阻尼器」——當誤差正在快速減小時（車輛正在回正），微分項會自動減弱修正力道，防止過衝。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// PD 控制器實作</span><br>
+                    <span class="c-kw">let</span> <span class="c-attr">previousError</span> <span class="c-white">= 0;</span><br>
+                    <br>
+                    <span class="c-kw">function</span> <span class="c-tag">pdControl</span><span class="c-white">(error, Kp, Kd) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">let</span> <span class="c-attr">derivative</span> <span class="c-white">= error - previousError;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;previousError = error;</span><br>
+                    <br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">let</span> <span class="c-attr">output</span> <span class="c-white">= (Kp * error) + (Kd * derivative);</span><br>
+                    <br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 飽和限制 (Saturation)</span><br>
+                    <span class="c-white">&nbsp;&nbsp;output = Math.max(-1, Math.min(1, output));</span><br>
+                    <br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-white">output;</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        <strong>Kp（比例項）</strong>決定修正的「力道」——偏差越大，修正越強。
+                        <strong>Kd（微分項）</strong>決定修正的「阻尼」——誤差變化越快，抑制力越強。
+                        在本課程的作業中，你將先實作純 P 控制器，體驗震盪問題後再嘗試加入 D 項來改善穩定性。
+                    </div>
+                </div>
+
+                <h2>Failsafe 安全機制</h2>
+
+                <p>
+                    真實世界中，攝影機可能被遮擋、BLE 可能斷線、目標可能完全消失。
+                    如果系統在「看不見」時仍然繼續執行最後一次的控制指令，車輛將失控「盲衝」——
+                    這就是為什麼每一個閉迴路系統都必須內建 <strong>Failsafe（故障安全）機制</strong>。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// Failsafe：影像遺失超時保護</span><br>
+                    <span class="c-kw">let</span> <span class="c-attr">framesSinceTarget</span> <span class="c-white">= 0;</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">TIMEOUT_FRAMES</span> <span class="c-white">= 10;</span> <span class="c-comment">// 連續 10 幀未偵測到目標</span><br>
+                    <br>
+                    <span class="c-kw">function</span> <span class="c-tag">safetyCheck</span><span class="c-white">(targetDetected) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(targetDetected) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;framesSinceTarget = 0;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-kw">true</span><span class="c-white">;</span> <span class="c-comment">// 系統安全，繼續控制</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <br>
+                    <span class="c-white">&nbsp;&nbsp;framesSinceTarget++;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(framesSinceTarget > TIMEOUT_FRAMES) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;sendEmergencyStop();</span> <span class="c-comment">// 緊急煞車！</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-kw">false</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-kw">true</span><span class="c-white">;</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>關鍵</strong>
+                        Failsafe 不是「附加功能」，而是閉迴路系統的<strong>必要組成部分</strong>。
+                        在工業機器人與自動駕駛領域，任何缺乏失效保護的控制系統都無法通過安全認證。
+                        作業中你將實作超時判定邏輯，並模擬影像中斷場景來驗證 Failsafe 是否能在 500ms 內觸發停車。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -838,16 +1053,113 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>請回答以下問題，測試你對本模組內容的理解程度。每題僅有一個正確答案。</p>
+
+                <form id="quiz-form" onsubmit="return false;" style="margin-top:24px;">
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">1. 閉迴路 (Closed-Loop) 與開迴路 (Open-Loop) 控制的根本差異在於？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 閉迴路使用更好的馬達
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 閉迴路會根據感測器反饋修正輸出
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 開迴路不需要電源
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 開迴路的精度更高
+                        </label>
+                        <div id="fb-q1" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">2. P 控制器的輸出公式為何？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="A" style="margin-right:8px;"> A. output = Ki × ∫error
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="B" style="margin-right:8px;"> B. output = Kp × error
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="C" style="margin-right:8px;"> C. output = Kd × Δerror
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="D" style="margin-right:8px;"> D. output = error / Kp
+                        </label>
+                        <div id="fb-q2" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">3. Failsafe（安全防護）機制在控制系統中的作用是什麼？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 提高系統運算速度
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 在異常狀態（如感測器失效）下確保系統安全
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 增加系統的輸出功率
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 降低系統的延遲
+                        </label>
+                        <div id="fb-q3" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">4. 系統延遲 (Latency) 過高對閉迴路控制會造成什麼影響？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 系統更穩定
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 不影響控制效果
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 導致過度修正或震盪
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 降低功耗
+                        </label>
+                        <div id="fb-q4" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="display:flex;gap:12px;margin-top:20px;">
+                        <button type="button" class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button type="button" class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                    </div>
+                    <div id="quiz-result" style="margin-top:16px;font-size:15px;font-weight:600;display:none;"></div>
+                </form>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -905,9 +1217,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「視覺閉迴路控制理論」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「視覺閉迴路控制理論」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -923,7 +1235,8 @@
         { id: 3, label: '️ 2. 系統延遲 (Latency) 的影響 (20 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🎯 3. 設定點 (Set-point) 與偏差 (Deviation) (15 min)', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '180 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',     time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -943,6 +1256,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1044,8 +1358,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'B', q3: 'B', q4: 'C' };
+    const QUIZ_EXPLANATIONS = {
+        q1: '閉迴路控制的核心在於「反饋」——系統會觀察自己的執行結果並據此修正，而開迴路只靠預設指令行動，無法自我修正。',
+        q2: 'P 控制器的輸出與誤差成正比：output = Kp × error。Kp 越大修正越激進，但過大會導致震盪。',
+        q3: 'Failsafe 確保當感測器失效或通訊中斷時，系統能自動進入安全狀態（如煞車停止），防止失控造成損害。',
+        q4: '延遲使控制器收到的是「過時的」狀態資訊，導致修正動作與當前實際狀態脫節，容易造成過度修正或持續震盪。'
+    };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const fb = document.getElementById(`fb-${q}`);
+            if (!selected) {
+                fb.style.display = 'block';
+                fb.innerHTML = '<span style="color:#d13438;">⚠ 請選擇一個答案</span>';
+                continue;
+            }
+            fb.style.display = 'block';
+            if (selected.value === correct) {
+                score++;
+                fb.innerHTML = `<span style="color:#107c10;">✔ 正確！</span> ${QUIZ_EXPLANATIONS[q]}`;
+            } else {
+                fb.innerHTML = `<span style="color:#d13438;">✘ 不正確。正確答案是 ${correct}。</span> ${QUIZ_EXPLANATIONS[q]}`;
+            }
+        }
+        const result = document.getElementById('quiz-result');
+        result.style.display = 'block';
+        if (score === total) {
+            result.innerHTML = `<span style="color:#107c10;">🎉 滿分！你答對了全部 ${total} 題！</span>`;
+            markDone(6);
+        } else {
+            result.innerHTML = `<span style="color:#d13438;">你答對了 ${score} / ${total} 題。再試一次吧！</span>`;
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= Object.keys(QUIZ_ANSWERS).length; i++) {
+            const fb = document.getElementById(`fb-q${i}`);
+            if (fb) { fb.style.display = 'none'; fb.innerHTML = ''; }
+        }
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 05：電腦視覺基礎';
 </script>
 
 <!-- Define Resources -->

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>系統性能分析與瓶頸優化 - Vibe Coding Learn</title>
+    <title>系統性能分析與瓶頸優化 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 13 - 效能優化</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">系統性能分析與瓶頸優化</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 196 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 196 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 13</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>系統性能分析與瓶頸優化</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 13</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>系統性能分析與瓶頸優化</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    歡迎來到本模組！本單元聚焦於 <strong>系統性能分析與瓶頸優化</strong>。
+                    你的控制系統明明邏輯正確，操控起來卻總有一種「遲鈍感」？問題往往不在演算法，而在隱藏的性能瓶頸——可能是一行阻塞式 Serial 輸出吞掉了 85% 的 CPU 時間，也可能是肥大的 JSON 封包塞爆了藍牙頻寬。
+                    本模組將教你用數據精準定位這些「效能黑洞」，並從通訊協議到前端渲染全鏈路壓榨性能。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境設定</div>
+                    你的機器人儀表板顯示一切正常，但當你快速操控搖桿時，車體反應總是慢半拍，轉彎時像在水中移動。
+                    你懷疑是藍牙延遲，但用 micros() 一量才發現：主迴圈中一個被遺忘的 Serial.print() 就佔用了每次循環 12ms 中的 10ms。
+                    請先觀看教學影片，學會如何用科學方法揪出這些隱形的性能殺手。
                 </div>
 
                 <h2>教學影片</h2>
@@ -576,7 +577,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -591,66 +592,90 @@
                 </div>
 
                 <h1>🔍 1. 偵測效能黑洞 (Bottlenecks)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                控制系統的速度取決於「最慢」的那一環。即使馬達再快，如果感測器讀取或數據傳輸卡住，控制表現就會像「Lag」一樣遲鈍。
-                            </p>
-<div class="bg-indigo-50 p-6 rounded-2xl border border-indigo-100 text-justify">
-<h4 class="font-bold text-indigo-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed text-center text-justify">
-                                    The Three Efficiency Layers</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify text-justify">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify text-left">通訊瓶頸
-                                                (Latency)</strong>：藍牙頻寬不足或封包內容過於肥大導致延遲。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify text-left">運算瓶頸 (CPU)</strong>：主迴圈內含有過多阻塞式 I/O
-                                            或複雜數學運算。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify text-left">渲染瓶頸 (Frontend)</strong>：瀏覽器過度重繪與
-                                            DOM 更新導致指令響應緩慢。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-indigo-500/5 group-hover:bg-indigo-500/10 transition-colors text-justify">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-center text-justify">
-                                System Latency Profiling</h4>
-<div class="relative z-10 space-y-4 text-justify">
-<div class="flex items-center gap-2 text-justify">
-<div class="w-16 text-[8px] text-slate-400 text-justify text-left">MATH</div>
-<div class="flex-grow h-1 bg-indigo-500/20 rounded-full overflow-hidden text-justify text-left">
-<div class="h-full bg-indigo-500 w-[10%] text-justify"></div>
-</div>
-</div>
-<div class="flex items-center gap-2 text-justify">
-<div class="w-16 text-[8px] text-slate-400 font-bold text-red-400 text-justify text-left">
-                                        SERIAL/IO</div>
-<div class="flex-grow h-1 bg-red-500/20 rounded-full overflow-hidden text-justify text-left text-justify">
-<div class="h-full bg-red-500 w-[85%] animate-pulse text-justify"></div>
-</div>
-</div>
-<div class="flex items-center gap-2 text-justify">
-<div class="w-16 text-[8px] text-slate-400 text-justify text-left">TELEMETRY</div>
-<div class="flex-grow h-1 bg-indigo-500/20 rounded-full overflow-hidden text-justify text-left">
-<div class="h-full bg-indigo-500 w-[45%] text-justify"></div>
-</div>
-</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest text-center text-justify">
-                                IDENTIFYING THE BOTTLENECK...</p>
-</div>
-</div>
-                
+
+                <p>
+                    控制系統的反應速度取決於整條鏈路中<strong>最慢的那一環</strong>。
+                    即使你的 PID 演算法再精妙、馬達再強勁，如果主迴圈中有一行被遺忘的 <code>Serial.print()</code>
+                    佔據了每次循環 12ms 中的 10ms，整台車的操控體驗就會像在水中移動一樣遲鈍。
+                    性能優化的第一步，永遠是<strong>用數據找出瓶頸</strong>，而非憑直覺猜測。
+                </p>
+
+                <p>
+                    嵌入式系統的性能瓶頸通常隱藏在三個層面：<strong>通訊層</strong>（藍牙頻寬與封包延遲）、
+                    <strong>運算層</strong>（CPU 被阻塞式 I/O 佔用）、以及<strong>渲染層</strong>（前端 DOM 操作過於頻繁）。
+                    本單元將教你使用 <code>micros()</code> 函數對 ESP32 主迴圈進行精確的時間埋點，
+                    找出真正的「效能黑洞」。
+                </p>
+
+                <h2>使用 micros() 進行效能剖析</h2>
+
+                <p>
+                    <code>micros()</code> 回傳自 ESP32 開機以來的微秒數，精度遠高於 <code>millis()</code>。
+                    透過在主迴圈的各個關鍵區段前後插入時間戳記，你可以精確計算每個模組的執行耗時，
+                    並算出其佔總循環時間的百分比。
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span><br>
+&nbsp;&nbsp;<span class="c-kw">unsigned long</span> <span class="c-attr">t0</span> <span class="c-white">= </span><span class="c-tag">micros</span><span class="c-white">();</span><br><br>
+&nbsp;&nbsp;<span class="c-tag">readSensors</span><span class="c-white">();</span><br>
+&nbsp;&nbsp;<span class="c-kw">unsigned long</span> <span class="c-attr">t1</span> <span class="c-white">= </span><span class="c-tag">micros</span><span class="c-white">();</span><br><br>
+&nbsp;&nbsp;<span class="c-tag">processCommand</span><span class="c-white">();</span><br>
+&nbsp;&nbsp;<span class="c-kw">unsigned long</span> <span class="c-attr">t2</span> <span class="c-white">= </span><span class="c-tag">micros</span><span class="c-white">();</span><br><br>
+&nbsp;&nbsp;<span class="c-tag">updateMotors</span><span class="c-white">();</span><br>
+&nbsp;&nbsp;<span class="c-kw">unsigned long</span> <span class="c-attr">t3</span> <span class="c-white">= </span><span class="c-tag">micros</span><span class="c-white">();</span><br><br>
+&nbsp;&nbsp;<span class="c-tag">sendTelemetry</span><span class="c-white">();</span>
+<span class="c-comment">  // 包含 Serial.print — 常見瓶頸！</span><br>
+&nbsp;&nbsp;<span class="c-kw">unsigned long</span> <span class="c-attr">t4</span> <span class="c-white">= </span><span class="c-tag">micros</span><span class="c-white">();</span><br><br>
+&nbsp;&nbsp;<span class="c-comment">// 每 100 次循環輸出一次性能報告</span><br>
+&nbsp;&nbsp;<span class="c-kw">static int</span> <span class="c-attr">count</span> <span class="c-white">= </span><span class="c-val">0</span><span class="c-white">;</span><br>
+&nbsp;&nbsp;<span class="c-kw">if</span> <span class="c-white">(++count % </span><span class="c-val">100</span> <span class="c-white">== </span><span class="c-val">0</span><span class="c-white">) {</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-tag">Serial</span><span class="c-white">.printf(</span><span class="c-str">"Sensor:%lu Cmd:%lu Motor:%lu Tele:%lu\n"</span><span class="c-white">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-white">t1-t0, t2-t1, t3-t2, t4-t3);</span><br>
+&nbsp;&nbsp;<span class="c-white">}</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>常見陷阱</strong>
+                        <code>Serial.print()</code> 在 115200 baud 下傳輸 100 個字元需要約 8.7ms——
+                        這在一個理想循環時間只有 10ms 的控制系統中，幾乎佔用了 87% 的 CPU 時間！
+                        解法是將 Serial 輸出改為<strong>條件式</strong>（如每 N 次才輸出一次），
+                        或直接透過 WebSocket 傳送遙測數據來取代 Serial。
+                    </div>
+                </div>
+
+                <h2>常見瓶頸排行榜</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>瓶頸來源</th><th>典型耗時</th><th>佔比影響</th><th>優化策略</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>Serial.print()</code> (阻塞式)</td><td>5–12 ms</td><td>50–85%</td><td>條件式輸出 / 改用非阻塞 UART</td></tr>
+                        <tr><td><code>analogRead()</code> (多通道)</td><td>1–3 ms</td><td>10–30%</td><td>降低取樣頻率 / 使用 DMA</td></tr>
+                        <tr><td>JSON 序列化</td><td>0.5–2 ms</td><td>5–20%</td><td>改用二進位精簡協議</td></tr>
+                        <tr><td>PID 計算</td><td>10–50 μs</td><td>&lt;1%</td><td>通常不是瓶頸</td></tr>
+                        <tr><td>WiFi/BLE 事件處理</td><td>0–5 ms</td><td>不定</td><td>使用回呼 (Callback) 而非輪詢</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>阿姆達爾定律 (Amdahl's Law)</strong>
+                        優化應優先針對佔比最大的瓶頸。如果 Serial 佔了 85% 的時間，
+                        即使你把 PID 計算速度提升 10 倍，整體效能也只會改善不到 1%。
+                        <strong>先量測，再優化</strong>——這是性能工程的鐵律。
+                    </div>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -665,48 +690,102 @@
                 </div>
 
                 <h1>🧱 2. 數據壓縮：少即是多的智慧</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                無線傳輸頻寬有限。透過自定義精簡協議（將 JSON 縮減為緊湊字串或二進制），能顯著提昇系統更新率與即時性。
-                            </p>
-<div class="bg-cyan-50 p-8 rounded-3xl border border-cyan-100 text-justify">
-<h4 class="text-cyan-900 font-bold mb-4 text-xs uppercase tracking-widest text-center text-justify">
-                                    Protocol Evolution</h4>
-<div class="space-y-3 text-justify">
-<div class="text-[9px] bg-white p-2 border rounded font-mono text-red-400 text-justify text-left text-justify">
-                                        {"velocity":100, "angle":45} (42 bytes)</div>
-<div class="text-[9px] bg-cyan-100 p-2 border border-cyan-200 rounded font-mono text-cyan-700 text-justify text-left text-justify">
-                                        v100a45 (7 bytes)</div>
-</div>
-<p class="text-[10px] text-slate-400 mt-4 italic font-light text-center text-justify text-justify">
-                                    封包越精簡、更新頻率越高、控制反饋越穩</p>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-cyan-500/5 text-justify"></div>
-<h4 class="text-cyan-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-center text-justify">
-                                Bandwidth Maximization</h4>
-<div class="w-full h-12 flex items-end gap-1 relative z-10 px-4 text-justify">
-<div class="flex-grow bg-cyan-500/20 h-full flex items-center justify-center text-[10px] text-slate-500 font-mono text-justify">
-                                    JSON PROTO</div>
-<div class="w-2 text-justify"></div>
-<div class="flex-grow bg-cyan-500 h-full flex flex-col items-center justify-center text-justify">
-<span class="text-[8px] text-white font-bold text-justify">BINARY PROTO</span>
-<span class="text-[6px] text-cyan-100 animate-pulse text-justify uppercase font-black">4X
-                                        PERFORMANCE BOOST</span>
-</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase text-center text-justify text-left">
-                                Payload Optimization Results</p>
-</div>
-</div>
-                
+
+                <p>
+                    無線傳輸的頻寬是有限且珍貴的資源。在 BLE (Bluetooth Low Energy) 環境中，
+                    單次封包的有效載荷 (Payload) 通常只有 20–244 位元組。
+                    如果你仍然使用像 <code>{"velocity":100,"angle":45,"brake":false}</code> 這樣的冗長 JSON 格式，
+                    每個封包就要消耗 40+ 位元組——相當於把寶貴的頻寬浪費在大量的引號、冒號和鍵名上。
+                </p>
+
+                <p>
+                    <strong>數據壓縮的核心哲學是「少即是多」</strong>：
+                    透過設計更精簡的自定義協議，將相同的語意資訊用更少的位元組表達，
+                    不僅能降低單次傳輸延遲，更能在相同時間內傳送更多筆指令，直接提升系統的控制更新率 (Hz)。
+                </p>
+
+                <h2>協議演進：從 JSON 到極簡格式</h2>
+
+                <p>以下展示了三種不同壓縮層級的協議設計，以及它們對系統性能的影響：</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>協議類型</th><th>封包範例</th><th>大小</th><th>壓縮率</th><th>解析複雜度</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>原始 JSON</strong></td>
+                            <td><code>{"velocity":100,"angle":45}</code></td>
+                            <td>31 bytes</td>
+                            <td>—</td>
+                            <td>中（需 JSON 解析器）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>短字串協議</strong></td>
+                            <td><code>v100a45</code></td>
+                            <td>7 bytes</td>
+                            <td>77%</td>
+                            <td>低（字串切割）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>二進位協議</strong></td>
+                            <td><code>0x64 0x2D</code> (2 bytes)</td>
+                            <td>2 bytes</td>
+                            <td>94%</td>
+                            <td>極低（直接記憶體映射）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>實作：短字串協議的編碼與解碼</h2>
+
+                <p>短字串協議在壓縮率與可讀性之間取得了良好的平衡，非常適合教學與除錯場景：</p>
+
+                <div class="ms-code">
+<span class="c-comment">// ESP32 端：解析短字串協議 "v100a45"</span><br>
+<span class="c-kw">void</span> <span class="c-tag">parseCompactCmd</span><span class="c-white">(</span><span class="c-kw">String</span> <span class="c-attr">msg</span><span class="c-white">) {</span><br>
+&nbsp;&nbsp;<span class="c-kw">int</span> <span class="c-attr">vIdx</span> <span class="c-white">= msg.indexOf(</span><span class="c-str">'v'</span><span class="c-white">);</span><br>
+&nbsp;&nbsp;<span class="c-kw">int</span> <span class="c-attr">aIdx</span> <span class="c-white">= msg.indexOf(</span><span class="c-str">'a'</span><span class="c-white">);</span><br>
+&nbsp;&nbsp;<span class="c-kw">if</span> <span class="c-white">(vIdx < </span><span class="c-val">0</span><span class="c-white"> || aIdx < </span><span class="c-val">0</span><span class="c-white">) </span><span class="c-kw">return</span><span class="c-white">;</span><br><br>
+&nbsp;&nbsp;<span class="c-kw">int</span> <span class="c-attr">vel</span> <span class="c-white">= msg.substring(vIdx+</span><span class="c-val">1</span><span class="c-white">, aIdx).toInt();</span><br>
+&nbsp;&nbsp;<span class="c-kw">int</span> <span class="c-attr">ang</span> <span class="c-white">= msg.substring(aIdx+</span><span class="c-val">1</span><span class="c-white">).toInt();</span><br><br>
+&nbsp;&nbsp;<span class="c-attr">vel</span> <span class="c-white">= </span><span class="c-tag">constrain</span><span class="c-white">(vel, </span><span class="c-val">0</span><span class="c-white">, </span><span class="c-val">255</span><span class="c-white">);</span><br>
+&nbsp;&nbsp;<span class="c-attr">ang</span> <span class="c-white">= </span><span class="c-tag">constrain</span><span class="c-white">(ang, </span><span class="c-val">-90</span><span class="c-white">, </span><span class="c-val">90</span><span class="c-white">);</span><br>
+&nbsp;&nbsp;<span class="c-tag">applyControl</span><span class="c-white">(vel, ang);</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-code">
+<span class="c-comment">// JavaScript 端：編碼短字串協議</span><br>
+<span class="c-kw">function</span> <span class="c-tag">encodeCmd</span><span class="c-white">(</span><span class="c-attr">velocity</span><span class="c-white">, </span><span class="c-attr">angle</span><span class="c-white">) {</span><br>
+&nbsp;&nbsp;<span class="c-kw">return</span> <span class="c-str">`v${velocity}a${angle}`</span><span class="c-white">;</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>二進位協議的取捨</strong>
+                        雖然二進位協議的壓縮率最高，但它犧牲了<strong>人類可讀性</strong>。
+                        在除錯階段，你無法直接用 Serial Monitor 查看封包內容。
+                        建議在開發初期使用短字串協議，待系統穩定後再切換到二進位格式以獲取極致性能。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>量化驗證</strong>
+                        切換協議後，務必量測「數據刷新率 (Hz)」的實際提升幅度。
+                        典型結果是從 JSON 的 10–15 Hz 提升到短字串的 40–60 Hz，
+                        甚至二進位的 80–120 Hz。這個數據將是你性能報告中最有說服力的證據。
+                    </div>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -721,50 +800,97 @@
                 </div>
 
                 <h1>⚡ 3. 前端極速渲染：告別控制卡頓</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
-                                瀏覽器在處理海量即時遙測數據時，容易因 Canvas 頻繁刷新而阻塞。透過渲染緩衝 (Buffering) 與 Frame Rate 管理，確保操控手感如絲般順滑。
-                            </p>
-<div class="bg-indigo-500/10 p-8 rounded-3xl border border-indigo-500/20 shadow-inner text-justify text-justify">
-<h4 class="font-bold text-indigo-400 mb-4 text-xs uppercase tracking-widest text-center text-justify">
-                                    Advanced Rendering Strategy</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify text-left">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">離屏渲染 (Offscreen
-                                                Draw)</strong>：將靜態圖層預先繪製，減少重複渲染運算負荷。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">請求幀節流
-                                                (rAF)</strong>：同步螢幕刷新率，防止過度計算造成的 CPU 資源浪費。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1 text-justify text-left"></span>
-<div><strong class="text-white text-justify">Buffer 管理</strong>：預建循環隊列
-                                            Buffer，優化記憶體分配並減少 GC 引起的抖動。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-indigo-600/10 p-10 rounded-3xl border border-indigo-500/20 text-center relative overflow-hidden group text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-indigo-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify">
-</div>
-<h4 class="text-indigo-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center text-justify">
-                                Real-time Performance</h4>
-<div class="w-full h-32 bg-black/50 rounded-xl p-4 flex flex-col justify-end text-justify">
-<div class="w-full bg-slate-800 h-1 mb-2 text-justify text-left"></div>
-<div class="w-full bg-slate-800 h-1 mb-2 text-justify text-left"></div>
-<div class="w-full bg-indigo-500 h-10 animate-pulse rounded-t-sm text-justify"></div>
-</div>
-<p class="text-[9px] text-slate-500 mt-6 font-mono text-center text-justify uppercase italic font-black">
-                                Profiling: Scripting &lt; 10ms</p>
-</div>
-</div>
-                
+
+                <p>
+                    當後端（ESP32）與通訊協議都已經過優化，最後一個可能拖慢系統的環節就是<strong>前端渲染</strong>。
+                    如果你的 Dashboard 每收到一筆數據就直接操作 DOM——更新文字、重繪 Canvas、插入日誌——
+                    瀏覽器很快就會因為過度重繪 (Repaint) 與重排 (Reflow) 而卡頓。
+                    當數據流達到每秒 50–100 筆時，未經優化的前端甚至會拖累整個控制鏈路。
+                </p>
+
+                <p>
+                    高效能前端渲染的關鍵在於三個策略：
+                    <strong>使用 <code>requestAnimationFrame</code> 同步螢幕刷新率</strong>、
+                    <strong>採用離屏 Canvas 預渲染靜態圖層</strong>、以及
+                    <strong>利用循環緩衝區管理數據流</strong>。
+                    這三者結合，能確保即便數據洪流來襲，儀表板依然如絲般順滑。
+                </p>
+
+                <h2>requestAnimationFrame：與瀏覽器同步</h2>
+
+                <p>
+                    <code>requestAnimationFrame(callback)</code> 會在瀏覽器下一次重繪之前調用你的回呼函數，
+                    頻率通常為 60 次/秒（即 60 FPS）。相比直接用 <code>setInterval</code> 來驅動渲染，
+                    rAF 有兩個核心優勢：它會自動匹配螢幕刷新率，避免無謂的計算；
+                    且在頁面不可見時會自動暫停，節省 CPU 資源。
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">let</span> <span class="c-attr">dataBuffer</span> <span class="c-white">= [];</span><br>
+<span class="c-kw">let</span> <span class="c-attr">needsRedraw</span> <span class="c-white">= </span><span class="c-kw">false</span><span class="c-white">;</span><br><br>
+<span class="c-comment">// 數據接收：只更新 buffer，標記需要重繪</span><br>
+<span class="c-attr">ws</span><span class="c-white">.onmessage = (</span><span class="c-attr">e</span><span class="c-white">) => {</span><br>
+&nbsp;&nbsp;<span class="c-attr">dataBuffer</span><span class="c-white">.push(JSON.parse(e.data));</span><br>
+&nbsp;&nbsp;<span class="c-kw">if</span> <span class="c-white">(dataBuffer.length > </span><span class="c-val">200</span><span class="c-white">) dataBuffer.shift();</span><br>
+&nbsp;&nbsp;<span class="c-attr">needsRedraw</span> <span class="c-white">= </span><span class="c-kw">true</span><span class="c-white">;</span><br>
+<span class="c-white">};</span><br><br>
+<span class="c-comment">// 渲染迴圈：僅在有新數據時才重繪</span><br>
+<span class="c-kw">function</span> <span class="c-tag">renderLoop</span><span class="c-white">() {</span><br>
+&nbsp;&nbsp;<span class="c-kw">if</span> <span class="c-white">(needsRedraw) {</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-tag">drawWaveform</span><span class="c-white">(dataBuffer);</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-attr">needsRedraw</span> <span class="c-white">= </span><span class="c-kw">false</span><span class="c-white">;</span><br>
+&nbsp;&nbsp;<span class="c-white">}</span><br>
+&nbsp;&nbsp;<span class="c-tag">requestAnimationFrame</span><span class="c-white">(renderLoop);</span><br>
+<span class="c-white">}</span><br>
+<span class="c-tag">requestAnimationFrame</span><span class="c-white">(renderLoop);</span>
+                </div>
+
+                <h2>離屏 Canvas：預渲染靜態圖層</h2>
+
+                <p>
+                    儀表板上的許多元素（如刻度盤背景、座標軸、標籤文字）是<strong>靜態的</strong>，不隨數據變動。
+                    如果每一幀都重新繪製這些元素，就是在浪費 GPU 運算。
+                    解法是使用 <strong>Offscreen Canvas</strong> 預先繪製靜態圖層，
+                    然後在每一幀的渲染中只需用 <code>drawImage()</code> 把它「貼」上去，再疊加動態波形。
+                </p>
+
+                <h2>三種渲染策略的效能比較</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>渲染策略</th><th>數據流 50 Hz</th><th>數據流 100 Hz</th><th>CPU 佔用</th><th>適用場景</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>直接 DOM 操作</td><td>卡頓明顯</td><td>近乎凍結</td><td>極高</td><td>低頻文字更新</td></tr>
+                        <tr><td>Canvas + rAF</td><td>流暢 (55+ FPS)</td><td>偶有掉幀</td><td>中等</td><td>中頻圖表繪製</td></tr>
+                        <tr><td>Offscreen + rAF + Buffer</td><td>穩定 60 FPS</td><td>穩定 60 FPS</td><td>低</td><td>高頻即時儀表板</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>Chrome DevTools 性能診斷</strong>
+                        打開 Chrome DevTools 的 <strong>Performance</strong> 面板，錄製 5 秒的操作過程。
+                        在火焰圖 (Flame Chart) 中觀察 <strong>Scripting</strong>（JavaScript 執行）佔比是否超過每幀 10ms。
+                        如果超過，就需要進一步優化渲染邏輯。目標是讓每幀的總處理時間保持在 <strong>16.67ms 以內</strong>（60 FPS 的預算）。
+                    </div>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>垃圾回收 (GC) 的影響</strong>
+                        頻繁建立與銷毀 JavaScript 物件會觸發瀏覽器的垃圾回收，造成不定期的微型凍結。
+                        使用<strong>預分配的循環陣列 (Ring Buffer)</strong> 而非 <code>push/shift</code>，
+                        可以顯著減少記憶體分配壓力，讓波形繪製更加穩定。
+                    </div>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -843,16 +969,134 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>
+                    請回答以下問題，測試你對「<strong>系統效能分析</strong>」的理解程度。
+                    選擇完畢後點擊「送出答案」查看結果與解析。
+                </p>
+
+                <div id="quiz-container" style="margin:24px 0;">
+
+                    <div class="quiz-question" id="quiz-q0" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">1. 在嵌入式系統中，「即時性（Real-Time）」的定義是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt0">
+                            <input type="radio" name="quiz-q0" value="0" style="accent-color:var(--ms-blue);">
+                            <span>程式執行速度越快越好</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt1">
+                            <input type="radio" name="quiz-q0" value="1" style="accent-color:var(--ms-blue);">
+                            <span>系統必須在確定的時間期限內完成指定任務</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt2">
+                            <input type="radio" name="quiz-q0" value="2" style="accent-color:var(--ms-blue);">
+                            <span>使用最新的硬體</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt3">
+                            <input type="radio" name="quiz-q0" value="3" style="accent-color:var(--ms-blue);">
+                            <span>同時處理多個任務</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp0" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q1" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">2. 迴圈執行時間（Loop Time）不穩定會對 PID 控制產生什麼影響？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt0">
+                            <input type="radio" name="quiz-q1" value="0" style="accent-color:var(--ms-blue);">
+                            <span>完全沒有影響</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt1">
+                            <input type="radio" name="quiz-q1" value="1" style="accent-color:var(--ms-blue);">
+                            <span>積分與微分計算失準，導致控制品質下降</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt2">
+                            <input type="radio" name="quiz-q1" value="2" style="accent-color:var(--ms-blue);">
+                            <span>只影響顯示畫面</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt3">
+                            <input type="radio" name="quiz-q1" value="3" style="accent-color:var(--ms-blue);">
+                            <span>會讓馬達反轉</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp1" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q2" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">3. 以下哪種方法最適合用來量測程式碼某段的執行時間？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt0">
+                            <input type="radio" name="quiz-q2" value="0" style="accent-color:var(--ms-blue);">
+                            <span>用肉眼觀察</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt1">
+                            <input type="radio" name="quiz-q2" value="1" style="accent-color:var(--ms-blue);">
+                            <span>在前後使用 micros() 取時間差</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt2">
+                            <input type="radio" name="quiz-q2" value="2" style="accent-color:var(--ms-blue);">
+                            <span>計算程式碼行數</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt3">
+                            <input type="radio" name="quiz-q2" value="3" style="accent-color:var(--ms-blue);">
+                            <span>查看編譯器輸出</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp2" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q3" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">4. 當系統需要同時處理感測、運算、通訊等多項任務時，最佳的架構策略是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt0">
+                            <input type="radio" name="quiz-q3" value="0" style="accent-color:var(--ms-blue);">
+                            <span>全部放在一個大迴圈用 delay 分隔</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt1">
+                            <input type="radio" name="quiz-q3" value="1" style="accent-color:var(--ms-blue);">
+                            <span>使用合作式多工（時間片輪轉）或優先權排程</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt2">
+                            <input type="radio" name="quiz-q3" value="2" style="accent-color:var(--ms-blue);">
+                            <span>只處理最重要的任務，忽略其他</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt3">
+                            <input type="radio" name="quiz-q3" value="3" style="accent-color:var(--ms-blue);">
+                            <span>使用多個 Arduino 板子分工</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp3" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">送出答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+
+                <div id="quiz-result" style="display:none; margin-top:20px; padding:16px 20px; border-radius:6px; font-weight:600;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -910,9 +1154,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「系統性能分析與瓶頸優化」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「系統性能分析與瓶頸優化」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -928,7 +1172,8 @@
         { id: 3, label: '🧱 2. 數據壓縮：少即是多的智慧', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '前端極速渲染：告別控制卡頓', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '160 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -948,6 +1193,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1049,8 +1295,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = [1, 1, 1, 1];
+    const QUIZ_EXPLANATIONS = ["即時系統的關鍵不是「快」，而是「可預測」——必須保證在 deadline 之前完成計算與回應。","PID 的積分與微分項假設固定的取樣間隔，若 loop time 波動，Δt 不一致會導致計算偏差。","micros() 提供微秒級計時，在程式段前後各取一次時間戳並相減，即可精確量測該段的執行耗時。","合作式多工或優先權排程能確保各任務按需求獲得執行時間，兼顧即時性與公平性。"];
+
+    function submitQuiz() {
+        let score = 0;
+        QUIZ_ANSWERS.forEach((ans, i) => {
+            const selected = document.querySelector(`input[name="quiz-q${i}"]:checked`);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            const qEl = document.getElementById(`quiz-q${i}`);
+            if (selected && parseInt(selected.value) === ans) {
+                score++;
+                qEl.style.borderColor = '#107c10';
+                expEl.style.background = '#dff6dd';
+                expEl.innerHTML = '<strong style="color:#107c10;">✓ 正確！</strong> ' + QUIZ_EXPLANATIONS[i];
+            } else {
+                qEl.style.borderColor = '#d13438';
+                expEl.style.background = '#fde7e9';
+                expEl.innerHTML = '<strong style="color:#d13438;">✗ 不正確。</strong> ' + QUIZ_EXPLANATIONS[i];
+            }
+            expEl.style.display = 'block';
+        });
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === QUIZ_ANSWERS.length) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.style.color = '#107c10';
+            resultEl.textContent = `🎉 滿分！你答對了全部 ${QUIZ_ANSWERS.length} 題！`;
+        } else {
+            resultEl.style.background = '#deecf9';
+            resultEl.style.color = '#005a9e';
+            resultEl.textContent = `你答對了 ${score} / ${QUIZ_ANSWERS.length} 題，請查看解析後再試一次。`;
+        }
+    }
+
+    function resetQuiz() {
+        QUIZ_ANSWERS.forEach((_, i) => {
+            const radios = document.querySelectorAll(`input[name="quiz-q${i}"]`);
+            radios.forEach(r => r.checked = false);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            expEl.style.display = 'none';
+            const qEl = document.getElementById(`quiz-q${i}`);
+            qEl.style.borderColor = '#e1dfdd';
+        });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 13：系統穩健性';
 </script>
 
 <!-- Define Resources -->

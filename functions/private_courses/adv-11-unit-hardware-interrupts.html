@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>硬體中斷觀念 - Vibe Coding Learn</title>
+    <title>硬體中斷觀念 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 11 - 中斷機制</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">硬體中斷觀念</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 216 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 216 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 11</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>硬體中斷觀念</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 11</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,14 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>硬體中斷觀念</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    當你的機器人正在執行複雜的路徑計算時，編碼器的脈衝訊號不會等你——錯過一個脈衝，速度數據就會失準。
+                    本模組將帶你理解 <strong>硬體中斷 (Hardware Interrupt)</strong> 的事件驅動架構，
+                    學會如何讓 CPU 在任何時刻都能被緊急事件「搶佔」，實現微秒級的精確響應，同時釋放主迴圈的運算資源。
                 </p>
 
                 <div class="ms-scenario">
                     <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    想像你的 loop() 裡有一個 100ms 的延遲計算——在這段時間內，使用者按了緊急停止按鈕，但程式完全沒有反應。這就是「輪詢盲區」的代價。觀看下方影片，了解中斷如何像手機鈴聲一樣主動通知 CPU，以及 ISR 必須遵守的嚴苛規則（不准 delay、不准 Serial、共享變數必須 volatile）。
                 </div>
 
                 <h2>教學影片</h2>
@@ -576,7 +575,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -591,45 +590,96 @@
                 </div>
 
                 <h1>🧐 1. 什麼是中斷？主動 vs. 被動</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                輪詢 (Polling) 就像是每隔一秒看一次手機有沒有簡訊；中斷 (Interrupt) 則是等簡訊來時讓鈴聲主動通知你。這就是事件驅動架構的精髓。
-                            </p>
-<div class="bg-purple-50 p-6 rounded-2xl border border-purple-100 text-justify">
-<h4 class="font-bold text-purple-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
-                                    System Efficiency</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span>
-<div><strong>搶佔執行流</strong>：中斷能立即暫停 Main Loop，確保緊急事件不漏失。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1"></span>
-<div><strong>釋放資源</strong>：CPU 可以全速處理主要演算法，而非無謂等待。</div>
-</li>
-</ul>
+
+                <p>
+                    在微控制器的世界中，CPU 如何感知外部事件？最直覺的方式是<strong>輪詢 (Polling)</strong>——像不斷翻看手機是否有新訊息。
+                    但這種方式讓 CPU 忙於檢查，無法專注做其他事。<strong>中斷 (Interrupt)</strong> 是更優雅的解方：讓硬體在事件發生時主動「拍 CPU 的肩膀」，
+                    CPU 才需要暫停手邊工作、處理事件、再返回。這就是<strong>事件驅動架構 (Event-Driven Architecture)</strong> 的精髓。
+                </p>
+
+                <div class="ms-note">
+                    <strong>注意：</strong>中斷是一種硬體機制。當外部腳位偵測到電位變化，CPU 會<strong>立即搶佔 (Preempt)</strong> 正在執行的程式碼，
+                    跳轉到預先註冊的<strong>中斷服務函式 (ISR, Interrupt Service Routine)</strong>。ISR 執行完畢後，CPU 自動返回原本的程式流。
+                </div>
+
+                <p>
+                    想像你正在寫報告（Main Loop），門鈴響了（中斷觸發）。你放下筆、去開門處理事情（ISR），然後回到座位繼續寫。
+                    重要的是：開門這件事必須<strong>快速完成</strong>——如果你在門口聊了一小時，報告進度就會嚴重落後。
+                    這正是 ISR 必須「極速、極簡」的原因。
+                </p>
+
+                <div class="ms-table">
+                    <table>
+                        <caption>輪詢 vs. 中斷 比較表</caption>
+                        <thead>
+                            <tr>
+                                <th>特性</th>
+                                <th>輪詢 (Polling)</th>
+                                <th>中斷 (Interrupt)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>CPU 使用率</td>
+                                <td>高（持續檢查）</td>
+                                <td>低（僅事件時啟動）</td>
+                            </tr>
+                            <tr>
+                                <td>反應速度</td>
+                                <td>取決於檢查頻率</td>
+                                <td>微秒級即時響應</td>
+                            </tr>
+                            <tr>
+                                <td>是否漏失事件</td>
+                                <td>可能（若檢查間隔太長）</td>
+                                <td>不會（硬體保證觸發）</td>
+                            </tr>
+                            <tr>
+                                <td>程式複雜度</td>
+                                <td>簡單直觀</td>
+                                <td>需處理共享變數與競態</td>
+                            </tr>
+                            <tr>
+                                <td>適用場景</td>
+                                <td>低頻率、非即時性</td>
+                                <td>高頻脈衝、精確計時</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="ms-code">
+                    <div class="code-header">C++ (Arduino) — 中斷基礎範例</div>
+<pre><code>volatile int pulseCount = 0;   // 共享變數必須加 volatile
+
+void IRAM_ATTR handlePulse() {
+    pulseCount++;              // ISR 內只做最小操作
+}
+
+void setup() {
+    Serial.begin(115200);
+    pinMode(SENSOR_PIN, INPUT_PULLUP);
+    // 在 SENSOR_PIN 偵測到下降緣時，呼叫 handlePulse
+    attachInterrupt(digitalPinToInterrupt(SENSOR_PIN),
+                    handlePulse, FALLING);
+}
+
+void loop() {
+    // 主程式可安心做其他事，中斷會自動累加 pulseCount
+    Serial.println(pulseCount);
+    delay(500);
+}</code></pre>
+                </div>
+
+                <div class="ms-tip">
+                    <strong>提示：</strong>ESP32 的每個 GPIO 都支援中斷，但 Arduino UNO 只有 pin 2 與 pin 3 支援外部中斷。
+                    開發前請先查閱你的開發板的中斷腳位對照表。
+                </div>
+
 </div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-purple-500/5 group-hover:bg-purple-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-justify">
-                                Execution Pipeline Switch</h4>
-<div class="flex items-center justify-around gap-2 mb-4 relative z-10">
-<div class="px-3 py-1 bg-slate-700 rounded text-[10px] text-justify">Task A (Loop)</div>
-<div class="text-red-500 animate-pulse text-justify">⚡</div>
-<div class="px-3 py-1 bg-purple-600 rounded text-[10px] font-bold text-justify">ISR
-                                    (Interrupt)</div>
-</div>
-<p class="text-[9px] text-slate-500 font-mono tracking-widest mt-4 uppercase text-center text-justify">
-                                Context Saving &amp; Restoring...</p>
-</div>
-</div>
-                
-            </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -644,44 +694,96 @@
                 </div>
 
                 <h1>📜 2. 中斷服務函式 (ISR) 的嚴苛規則</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                ISR 程式碼必須「極速執行」。在裡面做太多事會導致主程式崩潰，甚至造成系統看門狗（Watchdog）重啟。
-                            </p>
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-justify text-justify">
-<div class="bg-red-50 p-4 rounded-xl border border-red-100 text-justify">
-<h4 class="font-bold text-red-900 mb-1 text-[10px] uppercase tracking-widest text-center text-justify">
-                                        No Delay</h4>
-<p class="text-[8px] text-red-600 text-center text-justify">不准調用延遲函式。</p>
+
+                <p>
+                    ISR 是在中斷發生時由硬體自動呼叫的函式。由於它會<strong>搶佔主程式的執行流</strong>，因此有極其嚴格的編寫規範。
+                    違反這些規則輕則導致資料損壞、序列埠亂碼，重則造成系統當機或看門狗 (Watchdog) 重啟。
+                </p>
+
+                <div class="ms-warning">
+                    <strong>警告：</strong>在 ISR 內呼叫 <code>delay()</code>、<code>Serial.print()</code>、<code>millis()</code>（在某些平台）
+                    等依賴中斷的函式，會導致系統死鎖。因為這些函式本身也需要中斷才能運作，但在 ISR 執行期間，中斷是被禁用的。
+                </div>
+
+                <div class="ms-table">
+                    <table>
+                        <caption>ISR 黃金守則一覽</caption>
+                        <thead>
+                            <tr>
+                                <th>守則</th>
+                                <th>說明</th>
+                                <th>違反後果</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>禁止 <code>delay()</code></strong></td>
+                                <td>delay() 依靠計時器中斷，在 ISR 中無法運作</td>
+                                <td>系統凍結</td>
+                            </tr>
+                            <tr>
+                                <td><strong>禁止 <code>Serial.print()</code></strong></td>
+                                <td>序列通訊耗時且使用緩衝區中斷</td>
+                                <td>資料損毀、輸出亂碼</td>
+                            </tr>
+                            <tr>
+                                <td><strong>共享變數加 <code>volatile</code></strong></td>
+                                <td>告訴編譯器不要最佳化此變數，每次都從記憶體讀取</td>
+                                <td>主程式讀到過時的快取值</td>
+                            </tr>
+                            <tr>
+                                <td><strong>加上 <code>IRAM_ATTR</code></strong></td>
+                                <td>將 ISR 放入 IRAM（內部 RAM），避免從 Flash 讀取的延遲</td>
+                                <td>ESP32 可能觸發 LoadProhibited 例外</td>
+                            </tr>
+                            <tr>
+                                <td><strong>程式碼極短</strong></td>
+                                <td>只做旗標設定或計數器累加，複雜邏輯留給 loop()</td>
+                                <td>阻塞其他中斷、影響系統即時性</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p>
+                    正確的模式是：ISR 內只設旗標或累加計數器，所有「慢操作」（列印、計算、通訊）都在 <code>loop()</code> 中根據旗標來執行。
+                    這種「旗標驅動」的設計模式，是嵌入式系統中最常見且最安全的中斷處理架構。
+                </p>
+
+                <div class="ms-code">
+                    <div class="code-header">C++ (Arduino) — 安全 ISR 模式</div>
+<pre><code>volatile bool dataReady = false;    // 旗標：ISR 設定，loop() 檢查
+volatile unsigned long lastTime = 0;
+
+void IRAM_ATTR sensorISR() {
+    lastTime = micros();   // micros() 在 ESP32 ISR 中可安全使用
+    dataReady = true;      // 只設旗標，不做任何慢操作
+}
+
+void loop() {
+    if (dataReady) {
+        dataReady = false;
+        noInterrupts();                // 暫時禁用中斷
+        unsigned long t = lastTime;    // 安全複製 volatile 變數
+        interrupts();                  // 重新啟用中斷
+
+        Serial.print("Event at: ");    // 慢操作在 loop() 中執行
+        Serial.println(t);
+    }
+    // ... 其他主程式邏輯 ...
+}</code></pre>
+                </div>
+
+                <div class="ms-important">
+                    <strong>重要：</strong>當主程式需要讀取 ISR 修改的變數時，應使用 <code>noInterrupts()</code> / <code>interrupts()</code>
+                    包裹讀取操作，防止在讀取多位元組變數（如 <code>unsigned long</code>）時，ISR 介入導致讀到「半新半舊」的值。
+                    這稱為<strong>原子操作 (Atomic Operation)</strong> 保護。
+                </div>
+
 </div>
-<div class="bg-orange-50 p-4 rounded-xl border border-orange-100 text-justify">
-<h4 class="font-bold text-orange-900 mb-1 text-[10px] uppercase tracking-widest text-center">
-                                        No Serial</h4>
-<p class="text-[8px] text-orange-600 text-center text-justify">Serial 輸出太慢，請避免。</p>
-</div>
-<div class="bg-blue-50 p-4 rounded-xl border border-blue-100 text-justify text-justify">
-<h4 class="font-bold text-blue-900 mb-1 text-[10px] uppercase tracking-widest text-center">
-                                        Volatile</h4>
-<p class="text-[8px] text-blue-600 text-center text-justify">共享變數需加 volatile。</p>
-</div>
-</div>
-</div>
-<div class="bg-slate-950 rounded-3xl p-8 shadow-2xl border border-slate-800 font-mono text-[10px] text-blue-300 text-justify text-justify">
-<span class="text-gray-500 text-justify">// ISR Safe Pattern</span><br/>
-<span class="text-purple-400">volatile int</span> count = <span class="text-pink-400">0</span>;<br/><br/>
-<span class="text-purple-400">void IRAM_ATTR</span> <span class="text-yellow-400">handleISR</span>() {<br/>
-                              count++; <span class="text-gray-500">// Mini Logic</span><br/>
-                            }<br/><br/>
-<span class="text-gray-500 text-justify text-left">// attach at setup()</span>
-</div>
-</div>
-                
-            </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -696,48 +798,99 @@
                 </div>
 
                 <h1>⚡ 3. 中斷觸發類型與防抖</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify text-left">
-                                數位訊號的物理邊緣 (Edge) 是觸發核心。但機械開關的「彈跳雜訊」常導致錯誤的多重觸發，需透過硬體或軟體層級的濾波來解決。
-                            </p>
-<div class="bg-indigo-500/10 p-8 rounded-3xl border border-indigo-500/20 shadow-inner text-justify text-justify">
-<h4 class="font-bold text-indigo-400 mb-4 text-xs uppercase tracking-widest text-justify text-left">
-                                    Trigger Strategy</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify text-justify">
-<li class="flex items-start gap-2 text-justify text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify text-justify">RISING /
-                                                FALLING</strong>：偵測電位從 0 變 1 或 1 變 0 的瞬間。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify text-justify">Software
-                                                Debounce</strong>：利用時間檢查，剔除極短時間內的重複跳火。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify text-justify">IRAM_ATTR</strong>：將處理程式存放在
-                                            IRAM，加速中斷反應。</div>
-</li>
-</ul>
+
+                <p>
+                    中斷觸發的核心在於偵測數位訊號的<strong>邊緣 (Edge)</strong>——電位從低到高或從高到低的瞬間。
+                    ESP32 與 Arduino 提供多種觸發模式，開發者需根據感測器的輸出特性選擇正確的模式。
+                    但在實際應用中，機械開關與訊號線上的雜訊會產生<strong>彈跳 (Bounce)</strong>，導致一次按壓觸發數十次中斷。
+                </p>
+
+                <div class="ms-table">
+                    <table>
+                        <caption>中斷觸發模式</caption>
+                        <thead>
+                            <tr>
+                                <th>模式</th>
+                                <th>觸發條件</th>
+                                <th>適用場景</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>RISING</code></td>
+                                <td>電位從 LOW → HIGH（上升緣）</td>
+                                <td>光電遮斷器離開遮蔽區</td>
+                            </tr>
+                            <tr>
+                                <td><code>FALLING</code></td>
+                                <td>電位從 HIGH → LOW（下降緣）</td>
+                                <td>按鈕按下（INPUT_PULLUP 配置）</td>
+                            </tr>
+                            <tr>
+                                <td><code>CHANGE</code></td>
+                                <td>任何電位變化</td>
+                                <td>需要雙倍解析度的編碼器</td>
+                            </tr>
+                            <tr>
+                                <td><code>LOW</code></td>
+                                <td>電位維持在 LOW 時持續觸發</td>
+                                <td>少用；適合喚醒深度睡眠</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p>
+                    在測速應用中，光電遮斷器的輸出通常非常乾淨（因為使用光學感測，不存在機械接觸），
+                    所以防抖的需求較低。但如果你使用的是機械式按鈕或簧片開關，軟體防抖就至關重要。
+                </p>
+
+                <div class="ms-code">
+                    <div class="code-header">C++ (Arduino) — 軟體防抖 ISR</div>
+<pre><code>#define DEBOUNCE_US  200   // 200 微秒內的重複觸發視為彈跳
+
+volatile unsigned long lastTrigger = 0;
+volatile int cleanCount = 0;
+
+void IRAM_ATTR debouncedISR() {
+    unsigned long now = micros();
+    if (now - lastTrigger > DEBOUNCE_US) {
+        cleanCount++;
+        lastTrigger = now;
+    }
+}
+
+void setup() {
+    Serial.begin(115200);
+    pinMode(SENSOR_PIN, INPUT_PULLUP);
+    attachInterrupt(digitalPinToInterrupt(SENSOR_PIN),
+                    debouncedISR, FALLING);
+}
+
+void loop() {
+    noInterrupts();
+    int c = cleanCount;
+    interrupts();
+    Serial.printf("Clean pulses: %d\n", c);
+    delay(500);
+}</code></pre>
+                </div>
+
+                <div class="ms-tip">
+                    <strong>提示：</strong>防抖時間的選擇取決於硬體特性。光電遮斷器通常只需 50–200μs；
+                    機械按鈕可能需要 5–20ms。建議先用示波器或 <code>micros()</code> 實測彈跳持續時間，再設定合適的門檻值。
+                </div>
+
+                <div class="ms-note">
+                    <strong>觀念釐清：</strong>對於光電編碼盤測速，通常<strong>不需要</strong>軟體防抖，因為光學訊號的邊緣非常銳利。
+                    過度防抖反而會「吞掉」合法的高頻脈衝，導致高速時計數不足。
+                    只有在低速手動旋轉時，才可能因為格柵邊緣停留在感測器縫隙上而產生誤觸發。
+                </div>
+
 </div>
-</div>
-<div class="lg:w-96 text-center text-justify text-justify">
-<div class="relative w-full aspect-video bg-black/50 rounded-2xl border border-slate-800 p-4 text-justify text-justify">
-<svg class="w-full h-full" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 300 100">
-<path d="M0 80 H50 V20 H120 V80 H130 V20 H140 V80 H220 V20 H300" stroke="#4ade80"></path>
-<circle class="animate-ping" cx="50" cy="50" fill="#ef4444" r="5"></circle>
-<text fill="#ef4444" font-size="10" font-weight="bold" x="60" y="45">TRIGGER</text>
-</svg>
-</div>
-<p class="text-[9px] text-slate-500 mt-4 uppercase tracking-widest font-mono text-center text-justify text-justify">
-                                Signal Jitter &amp; Edge Detection</p>
-</div>
-</div>
-                
-            </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -816,16 +969,134 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>
+                    請回答以下問題，測試你對「<strong>硬體中斷觀念</strong>」的理解程度。
+                    選擇完畢後點擊「送出答案」查看結果與解析。
+                </p>
+
+                <div id="quiz-container" style="margin:24px 0;">
+
+                    <div class="quiz-question" id="quiz-q0" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">1. 在 ESP32 中，ISR（中斷服務函式）內部為什麼不能使用 <code>delay()</code>？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt0">
+                            <input type="radio" name="quiz-q0" value="0" style="accent-color:var(--ms-blue);">
+                            <span>會導致編譯錯誤</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt1">
+                            <input type="radio" name="quiz-q0" value="1" style="accent-color:var(--ms-blue);">
+                            <span>會阻塞中斷執行流，可能觸發看門狗重啟</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt2">
+                            <input type="radio" name="quiz-q0" value="2" style="accent-color:var(--ms-blue);">
+                            <span>會讓 Serial 輸出亂碼</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt3">
+                            <input type="radio" name="quiz-q0" value="3" style="accent-color:var(--ms-blue);">
+                            <span>會導致記憶體洩漏</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp0" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q1" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">2. 以下哪個關鍵字必須用於宣告 ISR 與主迴圈之間共享的變數？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt0">
+                            <input type="radio" name="quiz-q1" value="0" style="accent-color:var(--ms-blue);">
+                            <span>static</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt1">
+                            <input type="radio" name="quiz-q1" value="1" style="accent-color:var(--ms-blue);">
+                            <span>const</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt2">
+                            <input type="radio" name="quiz-q1" value="2" style="accent-color:var(--ms-blue);">
+                            <span>volatile</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt3">
+                            <input type="radio" name="quiz-q1" value="3" style="accent-color:var(--ms-blue);">
+                            <span>extern</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp1" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q2" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">3. 硬體中斷相較於輪詢（Polling）的最大優勢是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt0">
+                            <input type="radio" name="quiz-q2" value="0" style="accent-color:var(--ms-blue);">
+                            <span>程式碼更簡短</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt1">
+                            <input type="radio" name="quiz-q2" value="1" style="accent-color:var(--ms-blue);">
+                            <span>CPU 可被即時搶佔，不會有感知盲區</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt2">
+                            <input type="radio" name="quiz-q2" value="2" style="accent-color:var(--ms-blue);">
+                            <span>不需要設定 GPIO 腳位</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt3">
+                            <input type="radio" name="quiz-q2" value="3" style="accent-color:var(--ms-blue);">
+                            <span>可以同時偵測多個感測器</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp2" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q3" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">4. <code>IRAM_ATTR</code> 的作用是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt0">
+                            <input type="radio" name="quiz-q3" value="0" style="accent-color:var(--ms-blue);">
+                            <span>將變數存放在 Flash 記憶體</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt1">
+                            <input type="radio" name="quiz-q3" value="1" style="accent-color:var(--ms-blue);">
+                            <span>將 ISR 程式碼放入高速內部 RAM，加速中斷響應</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt2">
+                            <input type="radio" name="quiz-q3" value="2" style="accent-color:var(--ms-blue);">
+                            <span>啟用多核心處理</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt3">
+                            <input type="radio" name="quiz-q3" value="3" style="accent-color:var(--ms-blue);">
+                            <span>開啟低功耗模式</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp3" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">送出答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+
+                <div id="quiz-result" style="display:none; margin-top:20px; padding:16px 20px; border-radius:6px; font-weight:600;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -883,9 +1154,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「硬體中斷觀念」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「硬體中斷觀念」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -901,7 +1172,8 @@
         { id: 3, label: '📜 2. 中斷服務函式 (ISR) 的嚴苛規則', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '中斷觸發類型與防抖', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '180 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -921,6 +1193,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1022,8 +1295,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = [1, 2, 1, 1];
+    const QUIZ_EXPLANATIONS = ["ISR 必須極速完成，使用 delay() 會阻塞整個中斷流程，導致系統不穩定甚至觸發 Watchdog Timer 重啟。","volatile 告訴編譯器該變數可能被外部（如 ISR）修改，避免編譯器過度優化而讀取到過時的快取值。","中斷是事件驅動架構，當事件發生時 CPU 立即響應，不像輪詢必須等到下一次檢查週期。","IRAM_ATTR 確保 ISR 代碼存放在 IRAM（內部 RAM），避免從較慢的 Flash 讀取，大幅降低中斷延遲。"];
+
+    function submitQuiz() {
+        let score = 0;
+        QUIZ_ANSWERS.forEach((ans, i) => {
+            const selected = document.querySelector(`input[name="quiz-q${i}"]:checked`);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            const qEl = document.getElementById(`quiz-q${i}`);
+            if (selected && parseInt(selected.value) === ans) {
+                score++;
+                qEl.style.borderColor = '#107c10';
+                expEl.style.background = '#dff6dd';
+                expEl.innerHTML = '<strong style="color:#107c10;">✓ 正確！</strong> ' + QUIZ_EXPLANATIONS[i];
+            } else {
+                qEl.style.borderColor = '#d13438';
+                expEl.style.background = '#fde7e9';
+                expEl.innerHTML = '<strong style="color:#d13438;">✗ 不正確。</strong> ' + QUIZ_EXPLANATIONS[i];
+            }
+            expEl.style.display = 'block';
+        });
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === QUIZ_ANSWERS.length) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.style.color = '#107c10';
+            resultEl.textContent = `🎉 滿分！你答對了全部 ${QUIZ_ANSWERS.length} 題！`;
+        } else {
+            resultEl.style.background = '#deecf9';
+            resultEl.style.color = '#005a9e';
+            resultEl.textContent = `你答對了 ${score} / ${QUIZ_ANSWERS.length} 題，請查看解析後再試一次。`;
+        }
+    }
+
+    function resetQuiz() {
+        QUIZ_ANSWERS.forEach((_, i) => {
+            const radios = document.querySelectorAll(`input[name="quiz-q${i}"]`);
+            radios.forEach(r => r.checked = false);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            expEl.style.display = 'none';
+            const qEl = document.getElementById(`quiz-q${i}`);
+            qEl.style.borderColor = '#e1dfdd';
+        });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 11：光電感測器';
 </script>
 
 <!-- Define Resources -->

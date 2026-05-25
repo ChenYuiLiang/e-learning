@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON 封包解析與物件解構 - Vibe Coding Learn</title>
+    <title>JSON 封包解析與物件解構 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 7 - JSON 解析</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">JSON 封包解析與物件解構</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 7</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>JSON 封包解析與物件解構</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 7</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,12 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>JSON 封包解析與物件解構</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    本單元聚焦於 <strong>JSON 封包的解析技巧與 JavaScript 物件解構語法</strong>。物聯網裝置傳回的資料通常以 JSON 格式封裝多層巢狀結構，你需要快速且安全地取出目標欄位。掌握解構賦值、可選鏈與預設值等技巧，能讓你的程式碼更簡潔、更具防禦性，同時降低因欄位缺失而導致執行錯誤的風險。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的氣象站裝置每 5 秒傳回一筆 JSON 封包，內含溫度、濕度、氣壓、風速等感測值，且部分欄位可能因硬體異常而缺失。前端需要在毫秒級時間內安全地提取這些數據並更新 UI。如果直接存取未定義的巢狀屬性，頁面就會因 TypeError 而崩潰。如何優雅地處理這些不確定結構？本單元將教你實用的解構策略。
                 </div>
 
                 <h2>教學影片</h2>
@@ -590,43 +587,109 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>💎 1. 為什麼選擇 JSON？ (20 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
-<div class="space-y-6">
-<p class="text-lg text-gray-600 leading-relaxed font-light">
-                                JSON 是跨平台通用的純文字格式。無論是 ESP32 (C++) 還是網頁 (JS)，都能透過結構化標籤精準交換數據，免除逗號分隔字串的易錯性。
-                            </p>
-<div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
-<h4 class="font-bold text-slate-800 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
-                                    Protocol Benefits</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
-<div><strong>易讀性</strong>：Key-Value 結構一目了然。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
-<div><strong>擴展性</strong>：增加感測器欄位不影響舊有解析代碼。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-indigo-500/5 group-hover:bg-indigo-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10">
-                                Data Schema Payload</h4>
-<div class="text-left font-mono text-[10px] space-y-1">
-<div class="text-blue-400">"{</div>
-<div class="ml-4 text-purple-300">\"v_bat\": <span class="text-orange-400">12.6</span>,
-                                </div>
-<div class="ml-4 text-purple-300">\"sensors\": [ <span class="text-orange-400">102</span>, <span class="text-orange-400">98</span> ]
-                                </div>
-<div class="text-blue-400">}"</div>
-<div class="mt-4 text-emerald-500 font-bold uppercase tracking-widest">Byte Stream
-                                    String</div>
-</div>
-</div>
-</div>
+                <h1>為什麼選擇 JSON？</h1>
+
+                <p>
+                    在物聯網 (IoT) 開發中，ESP32 控制器與網頁前端之間需要一個<strong>共通的資料交換格式</strong>。常見選項包括：純文字逗號分隔 (CSV)、自訂二進位封包 (Custom Binary)、以及 JSON (JavaScript Object Notation)。三者各有優劣，但 JSON 已成為 Web 領域的事實標準，其原因值得深入了解。
+                </p>
+
+                <h2>資料格式比較</h2>
+
+                <p>
+                    當 ESP32 透過藍牙 (BLE) 傳送感測器數值給網頁時，最直覺的做法是用逗號分隔：<code>"12.6,1024,98"</code>。這看起來簡潔，但一旦欄位順序改變或新增感測器，接收端就必須同步修改解析邏輯。自訂二進位協議雖然位元組效率最高，但除錯困難且兩端都需要手動位元操作。JSON 則以 Key-Value 結構在<strong>可讀性、擴展性與跨平台相容性</strong>之間取得了最佳平衡。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>特性</th>
+                            <th>JSON</th>
+                            <th>CSV</th>
+                            <th>自訂二進位</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>可讀性</td>
+                            <td><span class="check"><i class="fas fa-check-circle"></i></span> Key-Value 一目了然</td>
+                            <td>僅靠欄位順序辨識</td>
+                            <td><span class="cross"><i class="fas fa-times-circle"></i></span> 需對照規格書</td>
+                        </tr>
+                        <tr>
+                            <td>擴展性</td>
+                            <td><span class="check"><i class="fas fa-check-circle"></i></span> 新增欄位不破壞舊解析</td>
+                            <td>新增欄位須同步修改索引</td>
+                            <td>需重新定義位元偏移</td>
+                        </tr>
+                        <tr>
+                            <td>跨平台支援</td>
+                            <td><span class="check"><i class="fas fa-check-circle"></i></span> C++/JS/Python 原生支援</td>
+                            <td>需自行 split 解析</td>
+                            <td>需自行實作編解碼器</td>
+                        </tr>
+                        <tr>
+                            <td>位元組效率</td>
+                            <td>中等（Key 佔用空間）</td>
+                            <td>較佳（無 Key 開銷）</td>
+                            <td><span class="check"><i class="fas fa-check-circle"></i></span> 最佳</td>
+                        </tr>
+                        <tr>
+                            <td>除錯友善度</td>
+                            <td><span class="check"><i class="fas fa-check-circle"></i></span> 瀏覽器 Console 直接檢視</td>
+                            <td>需手動比對欄位</td>
+                            <td><span class="cross"><i class="fas fa-times-circle"></i></span> 需 HEX 查看器</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>ESP32 端的 JSON 輸出範例</h2>
+
+                <p>
+                    以下是 ESP32 透過 BLE 傳送給網頁的典型 JSON 封包。每個欄位都有明確的 Key 名稱，接收端可以依照 Key 提取數值，而非依賴欄位在字串中的位置。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// ESP32 (C++) — 使用 ArduinoJson 產生封包</span><br>
+                    <span class="c-tag">StaticJsonDocument</span><span class="c-white">&lt;200&gt; doc;</span><br>
+                    <span class="c-white">doc[</span><span class="c-str">"v_bat"</span><span class="c-white">] = </span><span class="c-val">12.6</span><span class="c-white">;</span><br>
+                    <span class="c-white">doc[</span><span class="c-str">"rpm"</span><span class="c-white">] = </span><span class="c-val">1024</span><span class="c-white">;</span><br>
+                    <span class="c-white">doc[</span><span class="c-str">"sensors"</span><span class="c-white">][</span><span class="c-val">0</span><span class="c-white">] = </span><span class="c-val">102</span><span class="c-white">;</span><br>
+                    <span class="c-white">doc[</span><span class="c-str">"sensors"</span><span class="c-white">][</span><span class="c-val">1</span><span class="c-white">] = </span><span class="c-val">98</span><span class="c-white">;</span><br><br>
+                    <span class="c-tag">String</span><span class="c-white"> output;</span><br>
+                    <span class="c-white">serializeJson(doc, output);</span><br>
+                    <span class="c-comment">// output → {"v_bat":12.6,"rpm":1024,"sensors":[102,98]}</span>
+                </div>
+
+                <h2>同樣的資料用 CSV 傳送</h2>
+
+                <p>
+                    如果改用 CSV 格式，相同的資料會被壓縮為一行字串。看起來更短，但問題在於：接收端必須<strong>記住每個欄位的順序</strong>。一旦 ESP32 端新增一個 <code>temp</code> 欄位插入中間，所有索引都會錯位，導致解析邏輯全面崩潰。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// CSV 格式 — 簡潔但脆弱</span><br>
+                    <span class="c-str">"12.6,1024,102,98"</span><br><br>
+                    <span class="c-comment">// 接收端解析：依賴欄位索引</span><br>
+                    <span class="c-kw">const</span> <span class="c-white">parts = raw.</span><span class="c-attr">split</span><span class="c-white">(</span><span class="c-str">","</span><span class="c-white">);</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">v_bat</span> <span class="c-white">= parseFloat(parts[</span><span class="c-val">0</span><span class="c-white">]);</span>  <span class="c-comment">// 萬一順序變了呢？</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">rpm</span>   <span class="c-white">= parseInt(parts[</span><span class="c-val">1</span><span class="c-white">]);</span>    <span class="c-comment">// 新增欄位就全部錯位</span>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        JSON 是純文字格式，你可以直接在瀏覽器的 Console 或 BLE 除錯工具中閱讀封包內容。這在開發階段大幅縮短了除錯時間——你不需要對照偏移量表來理解每個位元組的含義。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在 ESP32 (C/C++) 端，推薦使用 <strong>ArduinoJson</strong> 函式庫來組裝與解析 JSON。它提供了 <code>StaticJsonDocument</code>（堆疊配置，適合小封包）與 <code>DynamicJsonDocument</code>（堆積配置，適合大封包）兩種模式，並能自動處理記憶體管理與字串逸出 (Escaping)。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -645,35 +708,110 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🎨 2. 物件解構 (Destructuring) 的藝術 (25 min)</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-<div class="space-y-8">
-<p class="text-lg text-gray-600 leading-relaxed font-light">
-                                利用 ES6 解構語法，只需一行代碼即可從資料包中提取數值。配合「預設值 (Defaults)」與「巢狀提取」，打造強健且簡潔的數據處理鏈。
-                            </p>
-<div class="bg-purple-50 p-8 rounded-3xl border border-purple-100 text-center">
-<h4 class="text-purple-900 font-bold mb-4 text-xs uppercase tracking-widest">Modern
-                                    Syntax Pattern</h4>
-<div class="font-mono text-[11px] text-left space-y-1 bg-white p-4 rounded-xl shadow-sm">
-<span class="text-purple-600">const</span> { <span class="text-blue-600">rpm</span>
-                                    = 0, <span class="text-blue-600">bat</span> } = data;
-                                </div>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-purple-500/5"></div>
-<h4 class="text-purple-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10">
-                                Nested Object Mapping</h4>
-<div class="w-full space-y-2 px-10 relative z-10 font-mono text-[9px] text-slate-400">
-<div>const data = { motor: { left: 100 } };</div>
-<div class="text-emerald-500">const { motor: { left: speed } } = data;</div>
-<div class="text-white mt-2">console.log(speed); // 100</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic">Deep
-                                Property Extraction</p>
-</div>
-</div>
+                <h1>物件解構 (Destructuring) 的藝術</h1>
+
+                <p>
+                    ES6 引入的<strong>解構賦值 (Destructuring Assignment)</strong> 是處理 JSON 資料的利器。傳統寫法需要逐行用 <code>obj.key</code> 提取數值，而解構語法讓你在一行之內就能同時提取多個欄位、重新命名變數、並設定預設值。對於頻繁處理 IoT 封包的前端程式來說，這不只是語法糖——它是寫出<strong>簡潔且防禦性代碼</strong>的關鍵技巧。
+                </p>
+
+                <h2>基本解構：從封包提取欄位</h2>
+
+                <p>
+                    假設從 ESP32 接收到一筆 JSON 封包，已經透過 <code>JSON.parse()</code> 還原為 JavaScript 物件。最基本的解構寫法如下：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 傳統寫法</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">v_bat</span> <span class="c-white">= data.v_bat;</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">rpm</span>   <span class="c-white">= data.rpm;</span><br><br>
+                    <span class="c-comment">// ES6 解構寫法 — 一行搞定</span><br>
+                    <span class="c-kw">const</span> <span class="c-white">{ </span><span class="c-attr">v_bat</span><span class="c-white">, </span><span class="c-attr">rpm</span> <span class="c-white">} = data;</span>
+                </div>
+
+                <p>
+                    兩種寫法的結果完全相同，但解構語法在欄位數量增加時優勢更加明顯——你不需要為每個欄位寫一行 <code>const x = obj.x</code>。
+                </p>
+
+                <h2>預設值：防禦欄位缺失</h2>
+
+                <p>
+                    IoT 裝置傳回的封包不一定每次都包含所有欄位。硬體異常、韌體版本差異、或傳輸中斷都可能導致某些 Key 消失。解構語法允許你為每個欄位指定<strong>預設值</strong>，當該欄位為 <code>undefined</code> 時自動套用：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-kw">const</span> <span class="c-white">{ </span><span class="c-attr">v_bat</span> <span class="c-white">= </span><span class="c-val">0</span><span class="c-white">, </span><span class="c-attr">rpm</span> <span class="c-white">= </span><span class="c-val">0</span><span class="c-white">, </span><span class="c-attr">temp</span> <span class="c-white">= </span><span class="c-val">25.0</span> <span class="c-white">} = data;</span><br><br>
+                    <span class="c-comment">// 若 data = { v_bat: 12.6 }（缺少 rpm 和 temp）</span><br>
+                    <span class="c-comment">// 結果：v_bat = 12.6, rpm = 0, temp = 25.0</span>
+                </div>
+
+                <h2>巢狀解構：深入多層物件</h2>
+
+                <p>
+                    真實的 IoT 封包經常包含巢狀結構。例如馬達控制資料可能是 <code>{ motor: { left: 100, right: 80 } }</code>。巢狀解構讓你一步到位地提取深層屬性，甚至可以在提取的同時重新命名變數：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-kw">const</span> <span class="c-white">packet = {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;motor: { left: </span><span class="c-val">100</span><span class="c-white">, right: </span><span class="c-val">80</span><span class="c-white"> },</span><br>
+                    <span class="c-white">&nbsp;&nbsp;pid: { p: </span><span class="c-val">1.2</span><span class="c-white">, i: </span><span class="c-val">0.01</span><span class="c-white">, d: </span><span class="c-val">0.5</span><span class="c-white"> }</span><br>
+                    <span class="c-white">};</span><br><br>
+                    <span class="c-comment">// 巢狀解構 + 變數重新命名</span><br>
+                    <span class="c-kw">const</span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;motor: { left: </span><span class="c-attr">leftSpeed</span><span class="c-white">, right: </span><span class="c-attr">rightSpeed</span><span class="c-white"> },</span><br>
+                    <span class="c-white">&nbsp;&nbsp;pid: { p: </span><span class="c-attr">kp</span><span class="c-white">, i: </span><span class="c-attr">ki</span><span class="c-white">, d: </span><span class="c-attr">kd</span><span class="c-white"> }</span><br>
+                    <span class="c-white">} = packet;</span><br><br>
+                    <span class="c-white">console.log(leftSpeed);</span>  <span class="c-comment">// 100</span><br>
+                    <span class="c-white">console.log(kp);</span>         <span class="c-comment">// 1.2</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        當巢狀的父層物件不存在時，解構會拋出 <code>TypeError: Cannot destructure property 'left' of undefined</code>。例如，若封包缺少整個 <code>motor</code> 欄位，直接寫 <code>const { motor: { left } } = packet</code> 會導致程式崩潰。你<strong>必須</strong>為父層提供預設值或使用可選鏈來防禦。
+                    </div>
+                </div>
+
+                <h2>可選鏈 (Optional Chaining) 作為替代防線</h2>
+
+                <p>
+                    ES2020 引入的可選鏈運算子 <code>?.</code> 是另一種防禦策略。當你不確定物件的某一層是否存在時，可選鏈會在遇到 <code>null</code> 或 <code>undefined</code> 時短路回傳 <code>undefined</code>，而不會拋出錯誤：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 可選鏈 — 安全存取深層屬性</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">leftSpeed</span> <span class="c-white">= packet?.motor?.left ?? </span><span class="c-val">0</span><span class="c-white">;</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">kp</span>        <span class="c-white">= packet?.pid?.p ?? </span><span class="c-val">1.0</span><span class="c-white">;</span><br><br>
+                    <span class="c-comment">// 即使 packet.motor 是 undefined，也不會拋出 TypeError</span><br>
+                    <span class="c-comment">// ?? 是「空值合併運算子」，僅在左側為 null/undefined 時套用右側預設值</span>
+                </div>
+
+                <h2>雙重保險模式：解構 + 預設物件</h2>
+
+                <p>
+                    在實務開發中，最穩健的做法是結合巢狀解構與父層預設值，形成所謂的「雙重保險」模式。這確保即使整個子物件都不存在，解構仍然可以順利完成並套用預設值：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 雙重保險：父層預設 {} + 子層預設值</span><br>
+                    <span class="c-kw">const</span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;pid: { p = </span><span class="c-val">1.0</span><span class="c-white">, i = </span><span class="c-val">0</span><span class="c-white">, d = </span><span class="c-val">0</span><span class="c-white"> } = {}</span><br>
+                    <span class="c-white">} = config;</span><br><br>
+                    <span class="c-comment">// 情境 A：config = { pid: { p: 2.5 } }</span><br>
+                    <span class="c-comment">//   → p = 2.5, i = 0, d = 0  (i, d 套用子層預設值)</span><br><br>
+                    <span class="c-comment">// 情境 B：config = {}  (完全沒有 pid 欄位)</span><br>
+                    <span class="c-comment">//   → p = 1.0, i = 0, d = 0  (父層 = {} 防止 TypeError，再套用子層預設值)</span><br><br>
+                    <span class="c-comment">// 情境 C：config = { pid: { p: 0.8, i: 0.02, d: 0.3 } }</span><br>
+                    <span class="c-comment">//   → p = 0.8, i = 0.02, d = 0.3  (全部使用封包實際值)</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        <code>= {}</code> 是關鍵所在。它告訴 JavaScript：「如果 <code>config.pid</code> 是 <code>undefined</code>，就把它當成空物件 <code>{}</code>，然後繼續對空物件做解構並套用預設值。」沒有這個 <code>= {}</code>，當 <code>pid</code> 不存在時就會直接拋出 TypeError。建議在所有處理 IoT 封包的解構語句中都採用此模式。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -692,45 +830,137 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔄 3. 序列化與反序列化 (15 min)</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center">
-<div class="flex-1 space-y-6">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify">
-                                傳輸媒介只能傳送「位元組流」。<code>stringify</code> 將物件拆解為木屑 (字串) 塞入水管，而 <code>parse</code>
-                                則在出口將其重組回椅子 (物件)。
-                            </p>
-<div class="bg-blue-500/10 p-8 rounded-3xl border border-blue-500/20 shadow-inner">
-<h4 class="font-bold text-blue-400 mb-4 text-xs uppercase tracking-widest text-center">
-                                    Data Integrity Lifecycle</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span>
-<div><strong class="text-white">JSON.stringify()</strong>：將物件轉化為標準 JSON 字串準備發送至
-                                            BLE。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span>
-<div><strong class="text-white">JSON.parse()</strong>：將接收到的原始封包字串還原為 JS 可操作的物件。
-                                        </div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span>
-<div><strong class="text-white">Exception Safety</strong>：使用
-                                            <code>try-catch</code> 攔截格式錯誤，防止解析失敗導致網頁崩潰。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-blue-600/10 p-10 rounded-3xl border border-blue-500/20 text-center relative overflow-hidden group">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-blue-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-blue-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">
-                                Serialization Engine</h4>
-<div class="text-3xl font-mono text-white mb-2">OBJECT <span class="text-blue-500">↔</span>
-                                STRING</div>
-<p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center">
-                                "資料的傳輸，是一場關於拆解與重組的藝術。"
-                            </p>
-</div>
-</div>
+                <h1>序列化與反序列化</h1>
+
+                <p>
+                    BLE（藍牙低功耗）等傳輸媒介只能傳送<strong>位元組流（byte stream）</strong>——它不認得 JavaScript 物件，也不認得陣列或數字。因此，在發送資料前你必須將物件「打平」成一串純文字字串，這個過程稱為<strong>序列化 (Serialization)</strong>。而接收端收到字串後，需要將其「還原」為可操作的 JavaScript 物件，這就是<strong>反序列化 (Deserialization)</strong>。
+                </p>
+
+                <p>
+                    在 JavaScript 中，這兩個操作分別由 <code>JSON.stringify()</code> 和 <code>JSON.parse()</code> 完成。它們是 JSON 資料交換的核心雙子星，理解其用法與陷阱是穩健開發的基礎。
+                </p>
+
+                <h2>JSON.stringify()：物件 → 字串</h2>
+
+                <p>
+                    <code>JSON.stringify()</code> 接受一個 JavaScript 物件，回傳對應的 JSON 字串。它還提供了兩個可選參數：<code>replacer</code>（過濾函式或陣列）和 <code>space</code>（縮排格式化），方便你在除錯時美化輸出。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-kw">const</span> <span class="c-white">packet = {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;v_bat: </span><span class="c-val">12.6</span><span class="c-white">,</span><br>
+                    <span class="c-white">&nbsp;&nbsp;rpm: </span><span class="c-val">1024</span><span class="c-white">,</span><br>
+                    <span class="c-white">&nbsp;&nbsp;sensors: [</span><span class="c-val">102</span><span class="c-white">, </span><span class="c-val">98</span><span class="c-white">]</span><br>
+                    <span class="c-white">};</span><br><br>
+                    <span class="c-comment">// 基本序列化 — 產生最精簡的字串</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">raw</span> <span class="c-white">= JSON.stringify(packet);</span><br>
+                    <span class="c-comment">// → '{"v_bat":12.6,"rpm":1024,"sensors":[102,98]}'</span><br><br>
+                    <span class="c-comment">// 美化輸出 — 第三個參數指定縮排空格數</span><br>
+                    <span class="c-white">console.log(JSON.stringify(packet, </span><span class="c-val">null</span><span class="c-white">, </span><span class="c-val">2</span><span class="c-white">));</span><br>
+                    <span class="c-comment">// {</span><br>
+                    <span class="c-comment">//   "v_bat": 12.6,</span><br>
+                    <span class="c-comment">//   "rpm": 1024,</span><br>
+                    <span class="c-comment">//   "sensors": [102, 98]</span><br>
+                    <span class="c-comment">// }</span><br><br>
+                    <span class="c-comment">// 使用 replacer 過濾欄位 — 只保留指定的 Key</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">slim</span> <span class="c-white">= JSON.stringify(packet, [</span><span class="c-str">"v_bat"</span><span class="c-white">, </span><span class="c-str">"rpm"</span><span class="c-white">]);</span><br>
+                    <span class="c-comment">// → '{"v_bat":12.6,"rpm":1024}'</span>
+                </div>
+
+                <h2>JSON.parse()：字串 → 物件</h2>
+
+                <p>
+                    接收端從 BLE 拿到的是一串原始字串。<code>JSON.parse()</code> 負責將其還原為 JavaScript 物件，讓你可以用 <code>.</code> 或解構語法存取欄位。但這裡有一個<strong>致命陷阱</strong>：如果字串不是合法的 JSON 格式，<code>JSON.parse()</code> 會直接拋出 <code>SyntaxError</code>，導致後續程式碼完全停止執行。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 防禦性解析 — 永遠用 try-catch 包覆 JSON.parse()</span><br>
+                    <span class="c-kw">function</span> <span class="c-attr">safeParsePacket</span><span class="c-white">(rawString) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">try</span><span class="c-white"> {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span><span class="c-white"> data = JSON.parse(rawString);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span><span class="c-white"> { v_bat = </span><span class="c-val">0</span><span class="c-white">, rpm = </span><span class="c-val">0</span><span class="c-white"> } = data;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span><span class="c-white"> { v_bat, rpm, ok: </span><span class="c-val">true</span><span class="c-white"> };</span><br>
+                    <span class="c-white">&nbsp;&nbsp;} </span><span class="c-kw">catch</span><span class="c-white"> (err) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;console.error(</span><span class="c-str">"封包解析失敗:"</span><span class="c-white">, err.message);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span><span class="c-white"> { v_bat: </span><span class="c-val">null</span><span class="c-white">, rpm: </span><span class="c-val">null</span><span class="c-white">, ok: </span><span class="c-val">false</span><span class="c-white"> };</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">}</span><br><br>
+                    <span class="c-comment">// 使用範例</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">result</span> <span class="c-white">= safeParsePacket(</span><span class="c-str">'{"v_bat":12.6,"rpm":1024}'</span><span class="c-white">);</span><br>
+                    <span class="c-kw">if</span> <span class="c-white">(result.ok) updateUI(result.v_bat, result.rpm);</span>
+                </div>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        在 BLE 通訊中，<code>try-catch</code> 不是可選的——它是<strong>必要的</strong>。藍牙封包可能因訊號干擾而被截斷（例如只收到 <code>{"v_bat":12</code>），也可能因 MTU 限制而被拆分成多段。任何一次未被捕捉的 <code>SyntaxError</code> 都會中斷整個事件處理迴圈，導致網頁介面完全凍結。
+                    </div>
+                </div>
+
+                <h2>常見 JSON.parse() 錯誤對照表</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>錯誤輸入範例</th>
+                            <th>錯誤訊息</th>
+                            <th>原因說明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>{"v_bat":12.6,</code></td>
+                            <td>Unexpected end of JSON input</td>
+                            <td>BLE 傳輸中斷，封包被截斷</td>
+                        </tr>
+                        <tr>
+                            <td><code>{v_bat: 12.6}</code></td>
+                            <td>Expected property name or '}'</td>
+                            <td>Key 未加雙引號（非合法 JSON）</td>
+                        </tr>
+                        <tr>
+                            <td><code>{'v_bat': 12.6}</code></td>
+                            <td>Expected property name or '}'</td>
+                            <td>使用單引號（JSON 僅允許雙引號）</td>
+                        </tr>
+                        <tr>
+                            <td><code>""</code>（空字串）</td>
+                            <td>Unexpected end of JSON input</td>
+                            <td>BLE 回傳空資料</td>
+                        </tr>
+                        <tr>
+                            <td><code>undefined</code></td>
+                            <td>Unexpected token u in JSON</td>
+                            <td>變數未初始化即傳入 parse</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>測量 Payload 大小：BLE MTU 考量</h2>
+
+                <p>
+                    BLE 4.2 的預設 MTU（最大傳輸單元）僅有 <strong>23 bytes</strong>（扣除 ATT 標頭後實際可用約 20 bytes）。雖然 BLE 5.0 支援協商至 251 bytes，但在設計 JSON 封包時仍應盡量精簡——更短的封包意味著更快的傳輸與更低的功耗。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 使用 Blob 測量 JSON 字串的實際位元組大小</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">payload</span> <span class="c-white">= JSON.stringify({ v_bat: </span><span class="c-val">12.6</span><span class="c-white">, rpm: </span><span class="c-val">1024</span><span class="c-white"> });</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">byteSize</span> <span class="c-white">= </span><span class="c-kw">new</span><span class="c-white"> Blob([payload]).size;</span><br><br>
+                    <span class="c-white">console.log(payload);</span>   <span class="c-comment">// '{"v_bat":12.6,"rpm":1024}'</span><br>
+                    <span class="c-white">console.log(byteSize);</span>  <span class="c-comment">// 26 (bytes)</span><br><br>
+                    <span class="c-comment">// 精簡版：縮短 Key 名稱</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">slim</span> <span class="c-white">= JSON.stringify({ vb: </span><span class="c-val">12.6</span><span class="c-white">, r: </span><span class="c-val">1024</span><span class="c-white"> });</span><br>
+                    <span class="c-white">console.log(</span><span class="c-kw">new</span><span class="c-white"> Blob([slim]).size);</span>  <span class="c-comment">// 18 (bytes) — 省下 31%</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        <code>new Blob([str]).size</code> 回傳的是 UTF-8 編碼的實際位元組數（非字元數）。這是衡量 BLE 封包是否超出 MTU 限制最準確的方式。中文字元佔 3 bytes，因此 JSON Key 應盡量使用短英文縮寫以節省空間。在作業 3-3 中，你將實際運用此技巧來優化封包大小。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -814,16 +1044,81 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>測試你對本模組核心概念的掌握程度。請選出每題的最佳答案，提交後可查看詳細解析。</p>
+
+                <form id="quiz-form" onsubmit="return false;">
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">1. JSON.parse() 的作用是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 將 JavaScript 物件轉為 JSON 字串</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 將 JSON 格式的字串轉為 JavaScript 物件</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 驗證 JSON 格式是否正確</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 壓縮 JSON 檔案大小</label>
+                        <div id="exp-1" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">2. JSON 格式不支援以下哪種資料類型？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 字串 (String)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 數字 (Number)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 函式 (Function)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 布林值 (Boolean)</label>
+                        <div id="exp-2" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">3. 解構賦值 (Destructuring) 的主要好處是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 增加程式碼執行速度</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 快速從物件或陣列中提取需要的屬性到獨立變數</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 自動加密資料</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 減少記憶體使用量</label>
+                        <div id="exp-3" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">4. JSON.stringify() 的作用是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 將 JSON 字串轉為物件</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 將 JavaScript 物件序列化為 JSON 字串</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 刪除物件中的 null 值</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 將字串轉為大寫</label>
+                        <div id="exp-4" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+                </form>
+
+                <div style="display:flex;gap:12px;margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+                <div id="quiz-result" style="display:none;margin-top:20px;padding:16px;border-radius:6px;font-size:14px;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -881,9 +1176,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「JSON 封包解析與物件解構」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「JSON 封包解析與物件解構」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -899,7 +1194,8 @@
         { id: 3, label: '🎨 2. 物件解構 (Destructuring) 的藝術 (25 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🔄 3. 序列化與反序列化 (15 min)', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -919,6 +1215,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1020,8 +1317,61 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'C', q3: 'B', q4: 'B' };
+    const QUIZ_EXPLANATIONS = { q1: 'JSON.parse() 接收一個 JSON 格式的字串，解析後回傳對應的 JavaScript 物件或陣列，這個過程稱為「反序列化」。', q2: 'JSON 只支援字串、數字、布林值、null、物件和陣列。函式 (Function)、undefined 以及註解 (//) 都不是合法的 JSON 資料。', q3: '解構賦值讓你用簡潔的語法從物件中提取屬性，例如 const { x, y } = data; 比逐一 data.x, data.y 更簡潔易讀。', q4: 'JSON.stringify() 將 JavaScript 物件轉換為 JSON 格式的字串，這個過程稱為「序列化」，常用於網路傳輸與本地儲存。' };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const idx = q.slice(1);
+            const exp = document.getElementById(`exp-${idx}`);
+            if (!selected) continue;
+            if (selected.value === correct) {
+                score++;
+                exp.style.display = 'block';
+                exp.style.background = '#dff6dd';
+                exp.style.borderLeftColor = '#107c10';
+                exp.innerHTML = '<i class="fas fa-check-circle" style="color:#107c10;margin-right:6px;"></i>' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#dff6dd';
+                selected.parentElement.style.borderColor = '#107c10';
+            } else {
+                exp.style.display = 'block';
+                exp.style.background = '#fde7e9';
+                exp.style.borderLeftColor = '#d13438';
+                exp.innerHTML = '<i class="fas fa-times-circle" style="color:#d13438;margin-right:6px;"></i>正確答案是 ' + correct + '。' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#fde7e9';
+                selected.parentElement.style.borderColor = '#d13438';
+            }
+        }
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === total) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.innerHTML = '<strong style="color:#107c10;">🎉 滿分！' + score + ' / ' + total + '</strong><br>你完全掌握了本模組的核心概念！';
+            markDone(6);
+        } else {
+            resultEl.style.background = '#fff4ce';
+            resultEl.innerHTML = '<strong style="color:#8a6914;">得分：' + score + ' / ' + total + '</strong><br>建議複習錯題的解析說明，再試一次！';
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= 4; i++) {
+            const exp = document.getElementById('exp-' + i);
+            if (exp) { exp.style.display = 'none'; exp.style.background = ''; exp.style.borderLeftColor = 'transparent'; }
+        }
+        document.querySelectorAll('#quiz-form label').forEach(l => { l.style.background = ''; l.style.borderColor = '#e1dfdd'; });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 07：UI 框架設計';
 </script>
 
 <!-- Define Resources -->

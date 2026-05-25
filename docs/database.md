@@ -62,7 +62,7 @@
 | `title` | string | 課程/單元標題。 |
 | `courseUnits` | array | 該課程包含的單元 HTML 檔列表。 |
 | `price` | number | 價格（0 代表免費）。 |
-| `category` | string | 課程類別（如 `prepare`, `started`, `basic`, `advanced`）。 |
+| `category` | string | 課程類別（如 `prepare`, `start`, `basic`, `advanced`）。 |
 | `isPhysical` | boolean | 是否為實體商品。 |
 | `orderWeight` | number | 排序權重。 |
 

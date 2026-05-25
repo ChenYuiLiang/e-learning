@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLE 核心架構：GATT 協議與階層 - Vibe Coding Learn</title>
+    <title>BLE 核心架構：GATT 協議與階層 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -471,9 +473,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 5 - BLE 核心架構</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +487,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">BLE 核心架構：GATT 協議與階層</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 5</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,7 +509,7 @@
                 <h1>BLE 核心架構：GATT 協議與階層</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 5</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -520,9 +520,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>🏛️ 1. 藍牙的階層美學：GATT 結構</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>🆔 2. 身份識別：UUID 規格</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>🔄 3. 數據交換流派</strong> 的調校技巧與穩定性測試。</li>
+                    <li>能夠解釋 GATT 的三層階層結構（Profile → Service → Characteristic），並設計功能解耦的多 Service 通訊藍圖。</li>
+                    <li>能夠區分 16-bit 標準 UUID 與 128-bit 自定義 UUID 的適用場景，並為自訂服務生成唯一識別碼。</li>
+                    <li>能夠實作 <code>onWrite</code> 回呼解析手機指令、設定 <code>Read</code> 回傳裝置狀態，並配置 <code>BLE2902</code> 描述符啟用 Notify 主動推播。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -553,15 +553,15 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>BLE 核心架構：GATT 協議與階層</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    <strong>GATT（通用屬性協定）</strong>定義了 BLE 設備之間交換數據的階層結構：Profile、Service、Characteristic。
+                    本單元將帶你學會如何將無人車的動力控制與感測遙測拆分為獨立的 Service，
+                    並透過 UUID 標識與 Notify / Read / Write 機制，建立一套邏輯嚴密的通訊藍圖。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的手機 App 成功連上了 ESP32，但所有數據——馬達指令、電池電量、感測器讀數——全部擠在同一個 Characteristic 裡，
+                    讀寫邏輯混亂不堪。你需要一套分類清晰的 GATT 服務樹，讓每個功能模組各有其專屬的數據通道。
                 </div>
 
                 <h2>教學影片</h2>
@@ -575,7 +575,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -589,41 +589,110 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🏛️ 1. 藍牙的階層美學：GATT 結構</h1>
-                
-                <div class="space-y-6 text-gray-600 text-justify">
-<p class="text-lg leading-relaxed font-light text-justify">
-                                    GATT 定義數據交換。像個嚴密的圖書館：
-                                </p>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-justify">
-<div class="p-6 rounded-2xl border border-blue-100 shadow-sm group hover:bg-blue-600 transition duration-300 bg-blue-50 text-justify">
-<h4 class="font-bold text-blue-800 group-hover:text-white mb-2 flex items-center gap-2 text-sm uppercase text-justify">
-<span>📦</span> Profile
-                                        </h4>
-<p class="text-[11px] text-slate-500 group-hover:text-blue-100 font-light leading-relaxed text-justify">
-                                            角色完整定義。如：「無人車」。</p>
-</div>
-<div class="p-6 rounded-2xl border border-indigo-100 shadow-sm group hover:bg-indigo-600 transition duration-300 bg-indigo-50 text-justify">
-<h4 class="font-bold text-indigo-800 group-hover:text-white mb-2 flex items-center gap-2 text-sm uppercase text-justify">
-<span>📂</span> Service
-                                        </h4>
-<p class="text-[11px] text-slate-500 group-hover:text-indigo-100 font-light leading-relaxed text-justify">
-                                            功能邏輯分類。如：「動力」、「傳感」。</p>
-</div>
-<div class="p-6 rounded-2xl border border-purple-100 shadow-sm group hover:bg-purple-600 transition duration-300 bg-purple-50 text-justify">
-<h4 class="font-bold text-purple-800 group-hover:text-white mb-2 flex items-center gap-2 text-sm uppercase text-justify">
-<span>📄</span> Char
-                                        </h4>
-<p class="text-[11px] text-slate-500 group-hover:text-purple-100 font-light leading-relaxed text-justify">
-                                            數據節點。如：「轉速」、「電量」。</p>
-</div>
-</div>
-</div>
+                <h1>藍牙的階層美學：GATT 結構</h1>
+
+                <p>
+                    <strong>GATT（Generic Attribute Profile，通用屬性協定）</strong>是 BLE 設備間交換數據的核心框架。它定義了一套嚴謹的階層式資料模型，
+                    讓任何 BLE 裝置都能以統一格式公開其功能與數據。你可以把 GATT 想像成一座結構嚴密的圖書館——每一層都有明確的職責與命名規範。
+                </p>
+
+                <p>
+                    當手機與 ESP32 建立連線後，手機會執行一次<strong>服務發現（Service Discovery）</strong>程序，自動列舉出 ESP32 上所有的 Service 與 Characteristic。
+                    這個過程完全由 BLE 協定棧自動完成，開發者只需在韌體中正確定義 GATT 結構即可。
+                </p>
+
+                <h2>三層階層架構</h2>
+
+                <p>
+                    GATT 採用 <strong>Profile → Service → Characteristic</strong> 的三層樹狀結構。每一層的職責如下：
+                </p>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>層級</th>
+                        <th>角色</th>
+                        <th>類比</th>
+                        <th>無人車範例</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Profile</strong></td>
+                        <td>定義設備的整體角色與能力組合</td>
+                        <td>一本書的「類別」</td>
+                        <td>無人車通訊協議</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Service</strong></td>
+                        <td>將功能邏輯分組，每個 Service 代表一個獨立功能模組</td>
+                        <td>書中的「章節」</td>
+                        <td>動力服務、遙測服務</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Characteristic</strong></td>
+                        <td>實際承載數據的最小單位，擁有值（Value）與屬性（Properties）</td>
+                        <td>章節中的「段落」</td>
+                        <td>馬達轉速、電池電量</td>
+                    </tr>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        在實務中，Profile 通常是概念性的分類（如 Heart Rate Profile），程式碼中你主要操作的是 Service 與 Characteristic。一個 BLE Server 可以同時擁有多個 Service。
+                    </div>
+                </div>
+
+                <h2>功能解耦設計</h2>
+
+                <p>
+                    好的 GATT 架構設計遵循<strong>功能解耦原則</strong>——不同類型的功能應拆分到獨立的 Service 中。以無人車為例：
+                </p>
+
+                <ul>
+                    <li><strong>動力服務（Drive Service）</strong>：包含馬達控制指令、轉向角度等 Characteristic</li>
+                    <li><strong>遙測服務（Telemetry Service）</strong>：包含電池電量、超音波距離、陀螺儀角度等 Characteristic</li>
+                    <li><strong>系統服務（System Service）</strong>：包含韌體版本、設備名稱等 Characteristic</li>
+                </ul>
+
+                <p>
+                    這種設計讓手機 App 可以選擇性地訂閱感興趣的服務，也方便日後獨立擴充功能而不影響其他模組。
+                </p>
+
+                <h2>ESP32 程式碼範例</h2>
+
+                <p>以下展示如何在 ESP32 上建立包含兩個 Service 的 GATT 結構：</p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 建立 BLE Server</span><br>
+                    <span class="c-tag">BLEServer</span> <span class="c-white">*pServer = BLEDevice::</span><span class="c-attr">createServer</span><span class="c-white">();</span><br><br>
+                    <span class="c-comment">// 建立動力服務</span><br>
+                    <span class="c-tag">BLEService</span> <span class="c-white">*pDriveService = pServer-></span><span class="c-attr">createService</span><span class="c-white">(DRIVE_SERVICE_UUID);</span><br><br>
+                    <span class="c-comment">// 在動力服務下掛載馬達控制特徵值</span><br>
+                    <span class="c-tag">BLECharacteristic</span> <span class="c-white">*pMotorChar = pDriveService-></span><span class="c-attr">createCharacteristic</span><span class="c-white">(</span><br>
+                    <span class="c-white">&nbsp;&nbsp;MOTOR_CHAR_UUID,</span><br>
+                    <span class="c-white">&nbsp;&nbsp;BLECharacteristic::</span><span class="c-attr">PROPERTY_WRITE</span><br>
+                    <span class="c-white">);</span><br><br>
+                    <span class="c-comment">// 建立遙測服務</span><br>
+                    <span class="c-tag">BLEService</span> <span class="c-white">*pTelemetryService = pServer-></span><span class="c-attr">createService</span><span class="c-white">(TELEMETRY_SERVICE_UUID);</span><br><br>
+                    <span class="c-comment">// 在遙測服務下掛載電池特徵值</span><br>
+                    <span class="c-tag">BLECharacteristic</span> <span class="c-white">*pBatteryChar = pTelemetryService-></span><span class="c-attr">createCharacteristic</span><span class="c-white">(</span><br>
+                    <span class="c-white">&nbsp;&nbsp;BATTERY_CHAR_UUID,</span><br>
+                    <span class="c-white">&nbsp;&nbsp;BLECharacteristic::</span><span class="c-attr">PROPERTY_READ</span> <span class="c-white">| BLECharacteristic::</span><span class="c-attr">PROPERTY_NOTIFY</span><br>
+                    <span class="c-white">);</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        使用 nRF Connect App 連線到你的 ESP32 後，可以清楚看到完整的 GATT 樹狀結構。建議在開發過程中隨時使用此工具驗證你的 Service 與 Characteristic 是否正確掛載。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -637,30 +706,101 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🆔 2. 身份識別：UUID 規格</h1>
-                
-                <div class="space-y-6 text-gray-600 text-justify uppercase tracking-widest">
-<p class="text-lg leading-relaxed font-light text-justify">為了確界不衝突，必須擁有專屬 128-bit 生存碼。
-                                </p>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-justify uppercase tracking-tighter">
-<div class="p-6 rounded-2xl border-l-[6px] border-purple-500 shadow-sm bg-slate-50 text-justify">
-<h4 class="font-bold text-purple-900 mb-2 text-xs uppercase text-justify">16-bit
-                                            Standard</h4>
-<p class="text-[11px] text-slate-500 text-justify uppercase tracking-widest">
-                                            藍牙聯盟預定義功能。如心跳 (0x180D)。</p>
-</div>
-<div class="p-6 rounded-2xl border-l-[6px] border-pink-500 shadow-sm bg-slate-50 text-justify">
-<h4 class="font-bold text-pink-900 mb-2 text-xs uppercase text-justify">128-bit
-                                            Custom</h4>
-<p class="text-[11px] text-slate-500 text-justify">開發者生成。如自製無人車服務。</p>
-</div>
-</div>
-</div>
+                <h1>身份識別：UUID 規格</h1>
+
+                <p>
+                    在 BLE 的世界中，每一個 Service 與 Characteristic 都需要一個唯一的識別碼——<strong>UUID（Universally Unique Identifier）</strong>。
+                    UUID 就像是每個數據節點的「身份證號碼」，讓手機端能準確找到並操作目標特徵值，不會因為名稱重複而產生混淆。
+                </p>
+
+                <p>
+                    BLE 規範支援兩種 UUID 格式：<strong>16-bit 標準 UUID</strong> 與 <strong>128-bit 自定義 UUID</strong>。選擇哪種格式取決於你的應用場景。
+                </p>
+
+                <h2>16-bit 標準 UUID</h2>
+
+                <p>
+                    藍牙技術聯盟（Bluetooth SIG）預先定義了大量標準化的 16-bit UUID，涵蓋常見的功能，例如心率監測、電池電量、環境感測等。
+                    使用標準 UUID 的好處是<strong>互通性（Interoperability）</strong>——任何支援該標準的 App 或設備都能自動識別並正確解析你的數據。
+                </p>
+
+                <p>常見的 16-bit 標準 UUID：</p>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>UUID (Hex)</th>
+                        <th>Service 名稱</th>
+                        <th>用途</th>
+                    </tr>
+                    <tr>
+                        <td><code>0x180D</code></td>
+                        <td>Heart Rate</td>
+                        <td>心跳感測器</td>
+                    </tr>
+                    <tr>
+                        <td><code>0x180F</code></td>
+                        <td>Battery Service</td>
+                        <td>電池電量回報</td>
+                    </tr>
+                    <tr>
+                        <td><code>0x181A</code></td>
+                        <td>Environmental Sensing</td>
+                        <td>溫度、濕度等環境數據</td>
+                    </tr>
+                    <tr>
+                        <td><code>0x1800</code></td>
+                        <td>Generic Access</td>
+                        <td>設備名稱與外觀</td>
+                    </tr>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        16-bit UUID 實際上是 128-bit 的縮寫形式。完整格式為 <code>0000XXXX-0000-1000-8000-00805F9B34FB</code>，其中 <code>XXXX</code> 就是 16-bit 值。
+                    </div>
+                </div>
+
+                <h2>128-bit 自定義 UUID</h2>
+
+                <p>
+                    當你開發的功能沒有對應的標準定義時（例如自製無人車的動力控制），就必須使用 128-bit UUID。這是一串由隨機演算法產生的全球唯一識別碼，
+                    格式為 <code>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</code>（32 位十六進位字元，以連字號分隔為 5 組）。
+                </p>
+
+                <p>產生 128-bit UUID 的方式：</p>
+                <ul>
+                    <li>線上工具：<a href="https://www.uuidgenerator.net/" target="_blank">uuidgenerator.net</a></li>
+                    <li>命令列：Linux/macOS 執行 <code>uuidgen</code></li>
+                    <li>Python：<code>import uuid; print(uuid.uuid4())</code></li>
+                </ul>
+
+                <h2>UUID 定義最佳實踐</h2>
+
+                <p>建議將所有 UUID 集中定義在一個標頭檔中，方便管理與維護：</p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// include/uuid_defs.h</span><br>
+                    <span class="c-kw">#define</span> <span class="c-attr">DRIVE_SERVICE_UUID</span> <span class="c-str">"a1b2c3d4-e5f6-7890-abcd-ef1234567890"</span><br>
+                    <span class="c-kw">#define</span> <span class="c-attr">MOTOR_CHAR_UUID</span>&nbsp;&nbsp;&nbsp; <span class="c-str">"a1b2c3d4-e5f6-7890-abcd-ef1234567891"</span><br>
+                    <span class="c-kw">#define</span> <span class="c-attr">SPEED_CHAR_UUID</span>&nbsp;&nbsp; <span class="c-str">"a1b2c3d4-e5f6-7890-abcd-ef1234567892"</span><br><br>
+                    <span class="c-kw">#define</span> <span class="c-attr">TELEM_SERVICE_UUID</span> <span class="c-str">"b2c3d4e5-f6a7-8901-bcde-f12345678900"</span><br>
+                    <span class="c-kw">#define</span> <span class="c-attr">BATTERY_CHAR_UUID</span>&nbsp; <span class="c-str">"b2c3d4e5-f6a7-8901-bcde-f12345678901"</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        絕對不要手動「編造」UUID（如 <code>"12345678-1234-1234-1234-123456789012"</code>）。手動編造的 UUID 在全球範圍極可能與他人衝突，必須使用隨機生成工具確保唯一性。同一個專案中，每個 Service 和 Characteristic 的 UUID 也不可重複。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -674,45 +814,109 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔄 3. 數據交換流派</h1>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-justify uppercase tracking-widest">
-<div class="p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-emerald-500 transition text-justify">
-<span class="text-2xl mb-4 block text-justify uppercase tracking-tighter">📥</span>
-<h4 class="font-bold text-sm mb-2 text-justify">Read</h4>
-<p class="text-[10px] text-slate-500 leading-relaxed text-justify uppercase tracking-widest">
-                                手機發問。適合穩定數值。</p>
-</div>
-<div class="p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-emerald-500 transition text-justify">
-<span class="text-2xl mb-4 block text-justify">📤</span>
-<h4 class="font-bold text-sm mb-2 text-justify">Write</h4>
-<p class="text-[10px] text-slate-500 leading-relaxed text-justify font-black">手機下令。用於馬達控制。
-                            </p>
-</div>
-<div class="p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-emerald-500 transition text-justify">
-<span class="text-2xl mb-4 block text-justify">🔔</span>
-<h4 class="font-bold text-sm mb-2 text-justify">Notify</h4>
-<p class="text-[10px] text-slate-500 leading-relaxed text-left text-justify">設備推播。即時遙測方式。
-                            </p>
-</div>
-<div class="p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-emerald-500 transition text-justify">
-<span class="text-2xl mb-4 block text-justify">✅</span>
-<h4 class="font-bold text-sm mb-2 text-justify">Indicate</h4>
-<p class="text-[10px] text-slate-500 leading-relaxed text-justify uppercase tracking-widest">
-                                附確認通知。安全但慢。</p>
-</div>
-</div><div class="mt-12 p-8 rounded-3xl border border-emerald-500/20 text-center bg-emerald-600/10 text-justify">
-<h4 class="text-emerald-400 font-bold mb-4 text-xs uppercase tracking-widest text-justify">實習挑戰
-                        </h4>
-<p class="text-sm font-light leading-relaxed text-slate-400 italic text-justify uppercase tracking-tight">
-                            「實作『緊急斷電鈕』。哪種交換方式最安全且快速？」
-                        </p>
-</div>
+                <h1>數據交換流派</h1>
+
+                <p>
+                    GATT Characteristic 的<strong>屬性（Properties）</strong>決定了數據的流向與觸發方式。BLE 規範定義了四種主要的數據交換模式，
+                    每種模式適合不同的應用場景。作為系統架構師，你必須為每個 Characteristic 選擇最合適的屬性組合。
+                </p>
+
+                <h2>四種核心交換模式</h2>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>屬性</th>
+                        <th>方向</th>
+                        <th>觸發者</th>
+                        <th>確認機制</th>
+                        <th>適用場景</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Read</strong></td>
+                        <td>Server → Client</td>
+                        <td>Client（手機）主動發起</td>
+                        <td>有（Request/Response）</td>
+                        <td>韌體版本、設備 ID、靜態設定</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Write</strong></td>
+                        <td>Client → Server</td>
+                        <td>Client（手機）主動發起</td>
+                        <td>可選（With/Without Response）</td>
+                        <td>馬達指令、LED 控制、模式切換</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Notify</strong></td>
+                        <td>Server → Client</td>
+                        <td>Server（ESP32）主動推播</td>
+                        <td>無（Fire-and-forget）</td>
+                        <td>高頻感測數據、即時遙測</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Indicate</strong></td>
+                        <td>Server → Client</td>
+                        <td>Server（ESP32）主動推播</td>
+                        <td>有（需等待 Client ACK）</td>
+                        <td>關鍵警報、韌體更新確認</td>
+                    </tr>
+                </table>
+
+                <h2>Notify vs. Indicate 的權衡</h2>
+
+                <p>
+                    Notify 與 Indicate 都是 Server 主動推播數據的方式，但兩者有關鍵差異：
+                </p>
+
+                <ul>
+                    <li><strong>Notify</strong>：發送後不等待確認，吞吐量高、延遲低，但可能丟包。適合高頻感測數據——即使偶爾丟失一筆讀數，下一筆很快就會到來。</li>
+                    <li><strong>Indicate</strong>：發送後必須等待 Client 回傳確認（ACK），保證每一筆數據都被接收。適合關鍵事件（如緊急斷電確認），但頻率受限。</li>
+                </ul>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在無人車專案中，超音波距離感測推薦使用 Notify（高頻、允許偶爾丟包），而「緊急斷電確認」則應使用 Indicate（必須保證指令已被執行）。
+                    </div>
+                </div>
+
+                <h2>屬性組合設計</h2>
+
+                <p>
+                    一個 Characteristic 可以同時擁有多種屬性。例如，你可以建立一個同時支援 Read 和 Notify 的感測特徵值——平時由 Server 主動推播（Notify），
+                    但 Client 也可以隨時主動查詢當前值（Read）：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-tag">BLECharacteristic</span> <span class="c-white">*pSensorChar = pService-></span><span class="c-attr">createCharacteristic</span><span class="c-white">(</span><br>
+                    <span class="c-white">&nbsp;&nbsp;SENSOR_UUID,</span><br>
+                    <span class="c-white">&nbsp;&nbsp;BLECharacteristic::</span><span class="c-attr">PROPERTY_READ</span> <span class="c-white">|</span><br>
+                    <span class="c-white">&nbsp;&nbsp;BLECharacteristic::</span><span class="c-attr">PROPERTY_NOTIFY</span><br>
+                    <span class="c-white">);</span><br><br>
+                    <span class="c-comment">// Notify 需要掛載 BLE2902 描述符</span><br>
+                    <span class="c-white">pSensorChar-></span><span class="c-attr">addDescriptor</span><span class="c-white">(</span><span class="c-kw">new</span> <span class="c-tag">BLE2902</span><span class="c-white">());</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        任何使用 Notify 或 Indicate 屬性的 Characteristic，都<strong>必須</strong>掛載 <code>BLE2902</code>（Client Characteristic Configuration Descriptor）。
+                        少了這個描述符，手機端將無法訂閱通知，這是最常見的 BLE 開發錯誤之一。
+                    </div>
+                </div>
+
+                <h2>實務設計思考</h2>
+
+                <p>
+                    設計 GATT 屬性時，請思考以下問題：這筆數據的<strong>時效性</strong>如何？是否需要<strong>可靠傳輸</strong>？<strong>更新頻率</strong>多高？
+                    根據這三個維度，你就能為每個 Characteristic 選出最適合的屬性組合，打造出既高效又節能的通訊架構。
+                </p>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -791,16 +995,75 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
-
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: QUIZ ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <div class="quiz-question">
+                        <p>1. GATT 的三層階層結構正確順序為何？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> Characteristic → Service → Profile</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> Profile → Service → Characteristic</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> Service → Profile → Characteristic</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>2. 為什麼自定義的 BLE Service 必須使用 128-bit UUID 而非手動編造簡單的數字序列？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 因為 ESP32 硬體只能處理 128-bit 格式</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 因為手動編造的 UUID 在全球範圍極可能與他人衝突，必須使用隨機生成工具確保唯一性</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 因為 16-bit UUID 的傳輸速度比 128-bit 慢</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>3. 使用 Notify 屬性的 Characteristic 必須掛載哪個描述符才能讓手機端訂閱通知？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> BLE1801</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> BLE2902（CCCD）</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> BLE180F</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>4. Notify 與 Indicate 最關鍵的差異是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> Notify 只能傳文字，Indicate 可以傳二進位</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> Notify 不需確認（Fire-and-forget），Indicate 需等待 Client 回傳 ACK 確認</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> Notify 由 Client 觸發，Indicate 由 Server 觸發</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -858,9 +1121,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「BLE 核心架構：GATT 協議與階層」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「BLE 核心架構：GATT 協議與階層」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -876,8 +1139,17 @@
         { id: 3, label: '🆔 2. 身份識別：UUID 規格', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🔄 3. 數據交換流派', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '150 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',              time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！GATT 採用 Profile（角色定義）→ Service（功能分組）→ Characteristic（數據承載）的三層樹狀結構。' },
+        q2: { b: '正確！128-bit UUID 由隨機演算法產生，確保全球唯一。手動編造的簡單序列極可能與其他開發者的裝置衝突，導致連線異常。' },
+        q3: { b: '正確！BLE2902 是 Client Characteristic Configuration Descriptor（CCCD）的簡稱，是 Notify/Indicate 機制的核心基礎。沒有它，手機無法訂閱通知。' },
+        q4: { b: '正確！Notify 發送後不等待確認，吞吐量高但可能丟包；Indicate 需等待 ACK，保證每筆數據都被接收。兩者都是 Server 主動推播。' },
+    };
+
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -896,6 +1168,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -999,6 +1272,7 @@
 
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 05：BLE GATT 協定';
 </script>
 
 <!-- Define Resources -->

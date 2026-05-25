@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>事件驅動 vs. 輪詢更新 - Vibe Coding Learn</title>
+    <title>事件驅動 vs. 輪詢更新 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 7 - 事件架構</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">事件驅動 vs. 輪詢更新</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 7</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>事件驅動 vs. 輪詢更新</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 7</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,12 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>事件驅動 vs. 輪詢更新</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    本單元探討前端與硬體通訊中兩種最基本的資料同步模式：<strong>事件驅動（Event-Driven）與輪詢（Polling）</strong>。理解這兩種架構的差異，能幫助你在延遲敏感度、電力消耗與伺服器負載之間做出正確取捨，並為不同應用場景選用最合適的即時更新策略。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你負責一個工廠產線的即時告警系統：當機台異常時必須在 500 毫秒內通知操作員。起初你使用每秒一次的輪詢來檢查狀態，卻發現反應太慢且浪費頻寬；改用 WebSocket 事件推送後速度達標，但連線中斷的處理又成為新挑戰。這兩種模式各有何優劣？如何設計 fallback 機制？本單元將為你逐一解析。
                 </div>
 
                 <h2>教學影片</h2>
@@ -590,45 +587,98 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🍕 1. 觀念拆解：外送員與餐廳的溝通 (25 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
-<div class="space-y-6">
-<p class="text-lg text-gray-600 leading-relaxed font-light">
-                                輪詢像是不停打電話問「好了嗎？」，而事件驅動則是等對方主動傳簡訊通知。這在嵌入式系統中直接影響到 CPU 的佔用率。
-                            </p>
-<div class="grid grid-cols-2 gap-4">
-<div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-<h4 class="font-bold text-blue-900 mb-2 text-[10px] uppercase tracking-widest">
-                                        Polling</h4>
-<p class="text-[9px] text-slate-500 leading-relaxed">主動詢問、邏輯簡單，但極度浪費資源且具備固定延遲。</p>
-</div>
-<div class="bg-purple-50 p-6 rounded-2xl border border-purple-100">
-<h4 class="font-bold text-purple-900 mb-2 text-[10px] uppercase tracking-widest">
-                                        Event-Driven</h4>
-<p class="text-[9px] text-slate-500 leading-relaxed">被動中斷、零閒置浪費，反應即時但程式流程較跳躍。</p>
-</div>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-purple-500/5 group-hover:bg-purple-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10">
-                                Logic Flow Comparison</h4>
-<div class="relative z-10 flex items-center justify-around">
-<div class="flex flex-col items-center">
-<div class="w-8 h-8 rounded-full border-2 border-dashed border-slate-600 animate-spin">
-</div>
-<div class="text-[8px] mt-2 text-slate-500 font-mono">POLLING (LOOP)</div>
-</div>
-<div class="text-2xl text-slate-700">VS</div>
-<div class="flex flex-col items-center">
-<div class="w-8 h-8 bg-purple-500 rounded-lg animate-bounce"></div>
-<div class="text-[8px] mt-2 text-purple-400 font-mono">EVENT (INTERRUPT)</div>
-</div>
-</div>
-</div>
-</div>
+                <h1>觀念拆解：外送員與餐廳的溝通</h1>
+
+                <p>
+                    在軟體與硬體系統中，「如何得知狀態變化」是一個核心問題。無論是前端網頁需要即時更新資料，還是嵌入式裝置需要偵測感測器數值，都離不開兩種基本模式：<strong>輪詢（Polling）</strong>與<strong>事件驅動（Event-Driven）</strong>。這兩種模式的差異，直接決定了系統的效能、功耗與回應速度。
+                </p>
+
+                <div class="ms-scenario">
+                    <div class="ms-scenario-label">情境比喻：外送訂單追蹤</div>
+                    想像你訂了一份外送午餐。<strong>輪詢模式</strong>就像你每隔 30 秒就打一通電話給餐廳：「餐點好了嗎？」——大部分時候得到的回答都是「還沒」，但你依然不停地打。這不僅佔用你的時間，也讓餐廳員工疲於應付。<br><br>
+                    <strong>事件驅動模式</strong>則完全不同：你告訴餐廳「好了請傳簡訊給我」，然後安心做自己的事。當餐點備妥的那一刻，你立即收到通知並前去取餐——零浪費、零延遲。
+                </div>
+
+                <h2>輪詢（Polling）的運作原理</h2>
+                <p>
+                    輪詢是一種<strong>主動查詢</strong>機制：程式透過定時迴圈，反覆向目標詢問「有沒有新資料？」。這種方式邏輯簡單、容易實作，但代價是 CPU 必須持續執行檢查，即使大部分時間什麼事都沒發生。這種空轉（Busy-waiting）在資源有限的嵌入式系統上尤為致命。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 輪詢模式：每 500ms 檢查一次輸入框的值</span><br>
+                    <span class="c-kw">setInterval</span><span class="c-white">(() => {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">val</span> <span class="c-white">= document.</span><span class="c-kw">getElementById</span><span class="c-white">(</span><span class="c-str">'password'</span><span class="c-white">).value;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(</span><span class="c-attr">val</span><span class="c-white">.length >= 8) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;document.</span><span class="c-kw">getElementById</span><span class="c-white">(</span><span class="c-str">'submitBtn'</span><span class="c-white">).disabled = </span><span class="c-kw">false</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">}, </span><span class="c-val">500</span><span class="c-white">);</span>
+                </div>
+
+                <h2>事件驅動（Event-Driven）的運作原理</h2>
+                <p>
+                    事件驅動是一種<strong>被動等待</strong>機制：程式預先註冊一個「回調函式（Callback）」，當目標事件真正發生時，系統自動呼叫該函式。在事件未發生期間，CPU 處於閒置狀態，不執行任何無謂的檢查。這種模式更節能、回應更即時，但程式流程較不直觀，需要理解非同步程式設計的概念。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 事件驅動模式：僅在使用者實際輸入時才觸發</span><br>
+                    <span class="c-white">document.</span><span class="c-kw">getElementById</span><span class="c-white">(</span><span class="c-str">'password'</span><span class="c-white">)</span><br>
+                    <span class="c-white">&nbsp;&nbsp;.</span><span class="c-kw">addEventListener</span><span class="c-white">(</span><span class="c-str">'input'</span><span class="c-white">, (</span><span class="c-attr">e</span><span class="c-white">) => {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(</span><span class="c-attr">e</span><span class="c-white">.target.value.length >= 8) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;document.</span><span class="c-kw">getElementById</span><span class="c-white">(</span><span class="c-str">'submitBtn'</span><span class="c-white">).disabled = </span><span class="c-kw">false</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">&nbsp;&nbsp;});</span>
+                </div>
+
+                <h2>兩種模式的比較</h2>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>比較項目</th>
+                            <th>輪詢（Polling）</th>
+                            <th>事件驅動（Event-Driven）</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>觸發方式</strong></td>
+                            <td>主動定時查詢</td>
+                            <td>被動等待通知</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CPU 佔用</strong></td>
+                            <td>持續佔用（即使無事發生）</td>
+                            <td>僅事件發生時佔用</td>
+                        </tr>
+                        <tr>
+                            <td><strong>回應延遲</strong></td>
+                            <td>最大延遲 = 輪詢間隔時間</td>
+                            <td>接近零延遲（即時回調）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>實作難度</strong></td>
+                            <td>簡單直觀（線性邏輯）</td>
+                            <td>較複雜（需理解回調與非同步）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>功耗影響</strong></td>
+                            <td>高（持續運算）</td>
+                            <td>低（閒置時可進入省電模式）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>適用場景</strong></td>
+                            <td>需定頻取樣的感測器數據</td>
+                            <td>按鈕點擊、連線狀態變化、中斷</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        輪詢並非總是劣於事件驅動。在某些場景中，輪詢反而是更好的選擇——例如搖桿座標需要以固定頻率（如 20Hz）送出時，使用 <code>setInterval</code> 定時發送可以避免高頻事件「打爆」藍牙協議棧。實務上，許多系統會採用<strong>混合架構</strong>：用事件即時更新緩衝區，再用輪詢定頻發送。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -647,39 +697,83 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔄 2. 瀏覽器中的事件與循環 (25 min)</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-<div class="space-y-8">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify">
-                                理解 <code>addEventListener</code> 如何監聽藍牙斷線與按鈕點擊。在 JavaScript 中，Event Loop
-                                決定了回調函式的執行時機，而輪詢則常透過 <code>setInterval</code> 實作。
-                            </p>
-<div class="bg-indigo-50 p-8 rounded-3xl border border-indigo-100">
-<h4 class="text-indigo-900 font-bold mb-4 text-xs uppercase tracking-widest">Scenario
-                                    Selection</h4>
-<ul class="text-[10px] text-slate-500 space-y-3 font-light">
-<li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
-<strong>搖桿控制</strong>：適合輪詢 (定時更新座標)。</li>
-<li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
-<strong>連線成功/失敗</strong>：適合事件 (異步回調)。</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-indigo-500/5"></div>
-<h4 class="text-indigo-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10">
-                                Event Loop Tracker</h4>
-<div class="w-full space-y-2 px-10 relative z-10 font-mono text-[9px]">
-<div class="text-slate-500">// Stack processing...</div>
-<div class="text-purple-400">CALLBACK QUEUE: [ bleNotify, clickMsg ]</div>
-<div class="w-full h-px bg-slate-800 my-2"></div>
-<div class="text-indigo-300">WAITING FOR NEXT EVENT...</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic">
-                                Non-Blocking I/O Architecture</p>
-</div>
-</div>
+                <h1>瀏覽器中的事件與循環</h1>
+
+                <p>
+                    JavaScript 是一門<strong>單執行緒（Single-threaded）</strong>語言，這意味著同一時間只能執行一段程式碼。那麼，瀏覽器是如何同時處理使用者點擊、網路請求、計時器回調等多個任務的呢？答案就是 <strong>Event Loop（事件循環）</strong>——它是瀏覽器非同步運行的核心引擎。
+                </p>
+
+                <h2>Event Loop 的運作機制</h2>
+                <p>
+                    Event Loop 持續監控三個關鍵區域，並決定哪段程式碼應該在什麼時候執行：
+                </p>
+                <ul>
+                    <li><strong>Call Stack（呼叫堆疊）</strong>：目前正在執行的函式。JavaScript 引擎會逐一從堆疊頂端取出函式執行，直到堆疊清空。</li>
+                    <li><strong>Task Queue（任務佇列）</strong>：又稱 Callback Queue 或 Macrotask Queue。<code>setTimeout</code>、<code>setInterval</code>、DOM 事件回調等完成後，會被排入此佇列。Event Loop 在 Call Stack 清空後，從這裡取出下一個任務執行。</li>
+                    <li><strong>Microtask Queue（微任務佇列）</strong>：<code>Promise.then()</code>、<code>MutationObserver</code> 等產生的回調會進入此佇列。微任務的優先級高於一般任務——每當 Call Stack 清空時，Event Loop 會<strong>先清空所有微任務</strong>，才會處理下一個 Task Queue 中的任務。</li>
+                </ul>
+
+                <div class="ms-scenario">
+                    <div class="ms-scenario-label">運作流程</div>
+                    Event Loop 的核心循環可簡化為：① 執行 Call Stack 中的所有同步程式碼 → ② 清空 Microtask Queue → ③ 從 Task Queue 取出一個回調執行 → ④ 若需要，執行瀏覽器渲染（repaint）→ 回到 ①。這個循環永不停止，因此稱為「事件循環」。
+                </div>
+
+                <h2>使用 addEventListener 監聽事件</h2>
+                <p>
+                    在 IoT 儀表板中，藍牙連線狀態的改變（連線成功、斷線）是典型的事件驅動場景。我們使用 <code>addEventListener</code> 註冊回調函式，當事件發生時由瀏覽器將回調推入 Task Queue，等待 Event Loop 排程執行。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 監聽 BLE 裝置斷線事件</span><br>
+                    <span class="c-attr">bleDevice</span><span class="c-white">.</span><span class="c-kw">addEventListener</span><span class="c-white">(</span><span class="c-str">'gattserverdisconnected'</span><span class="c-white">, (</span><span class="c-attr">event</span><span class="c-white">) => {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;console.</span><span class="c-kw">warn</span><span class="c-white">(</span><span class="c-str">'⚠️ 藍牙裝置已斷線！'</span><span class="c-white">, </span><span class="c-attr">event</span><span class="c-white">.target.name);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">updateUI</span><span class="c-white">(</span><span class="c-str">'disconnected'</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">attemptReconnect</span><span class="c-white">();</span><br>
+                    <span class="c-white">});</span><br><br>
+                    <span class="c-comment">// 監聽按鈕點擊事件</span><br>
+                    <span class="c-white">document.</span><span class="c-kw">getElementById</span><span class="c-white">(</span><span class="c-str">'connectBtn'</span><span class="c-white">)</span><br>
+                    <span class="c-white">&nbsp;&nbsp;.</span><span class="c-kw">addEventListener</span><span class="c-white">(</span><span class="c-str">'click'</span><span class="c-white">, </span><span class="c-kw">async</span> <span class="c-white">() => {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">device</span> <span class="c-white">= </span><span class="c-kw">await</span> <span class="c-white">navigator.bluetooth.</span><span class="c-kw">requestDevice</span><span class="c-white">({</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;filters: [{ services: [</span><span class="c-str">'battery_service'</span><span class="c-white">] }]</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;});</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;console.</span><span class="c-kw">log</span><span class="c-white">(</span><span class="c-str">'已選擇裝置：'</span><span class="c-white">, </span><span class="c-attr">device</span><span class="c-white">.name);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;});</span>
+                </div>
+
+                <h2>使用 setInterval 實作輪詢</h2>
+                <p>
+                    對於需要定頻取樣的資料——例如搖桿座標——事件驅動並不合適（<code>mousemove</code> 每秒可能觸發數百次，遠超 BLE 的傳輸能力）。此時使用 <code>setInterval</code> 以固定頻率讀取並發送數據，是更穩定的做法。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 輪詢模式：每 50ms (20Hz) 讀取搖桿座標並發送至 ESP32</span><br>
+                    <span class="c-kw">let</span> <span class="c-attr">latestX</span> <span class="c-white">= 0, </span><span class="c-attr">latestY</span> <span class="c-white">= 0;</span><br><br>
+                    <span class="c-comment">// 事件層：快速更新座標到緩衝區</span><br>
+                    <span class="c-attr">joystick</span><span class="c-white">.</span><span class="c-kw">addEventListener</span><span class="c-white">(</span><span class="c-str">'mousemove'</span><span class="c-white">, (</span><span class="c-attr">e</span><span class="c-white">) => {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">latestX</span> <span class="c-white">= </span><span class="c-attr">e</span><span class="c-white">.offsetX;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">latestY</span> <span class="c-white">= </span><span class="c-attr">e</span><span class="c-white">.offsetY;</span><br>
+                    <span class="c-white">});</span><br><br>
+                    <span class="c-comment">// 輪詢層：以固定頻率發送最新座標</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">pollId</span> <span class="c-white">= </span><span class="c-kw">setInterval</span><span class="c-white">(() => {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">sendBLE</span><span class="c-white">({ x: </span><span class="c-attr">latestX</span><span class="c-white">, y: </span><span class="c-attr">latestY</span> <span class="c-white">});</span><br>
+                    <span class="c-white">}, </span><span class="c-val">50</span><span class="c-white">);</span>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>選擇指南</strong>
+                        在 IoT 前端開發中，選擇輪詢還是事件驅動取決於<strong>資料的產生特性</strong>：離散且不可預測的事件（按鈕點擊、藍牙斷線）→ 用 <code>addEventListener</code>；連續且需要定頻取樣的資料（搖桿座標、感測器數值）→ 用 <code>setInterval</code> 輪詢或混合架構。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>資源清理</strong>
+                        務必在元件卸載或頁面關閉時清除計時器與事件監聽器，否則將造成記憶體洩漏（Memory Leak）。使用 <code>clearInterval(pollId)</code> 停止輪詢，使用 <code>removeEventListener</code> 移除事件監聽。在 BLE 斷線後也應清除所有相關的 Interval，避免對已關閉的連線持續發送指令。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -698,43 +792,124 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🚨 3. 硬體端的中斷 (Hardware Interrupts)</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center">
-<div class="flex-1 space-y-6">
-<p class="text-slate-400 font-light leading-relaxed text-lg">
-                                當網頁傳送「緊急停止」或車子撞到東西時，ESP32 如何利用 <code>attachInterrupt</code> 立即跳出主程式進行處理？這是安全性通訊的最終防線。
-                            </p>
-<div class="bg-red-500/10 p-8 rounded-3xl border border-red-500/20 shadow-inner">
-<h4 class="font-bold text-red-400 mb-4 text-xs uppercase tracking-widest text-center">
-                                    Fail-safe Logic</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span>
-<div><strong class="text-white">致命延遲</strong>：輪詢 100ms 代表你可能有 100ms 的空白期無法煞車。
-                                        </div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span>
-<div><strong class="text-white">優先級調色</strong>：中斷處理器 (ISR) 會強制暫停 CPU 目前的工作。
-                                        </div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span>
-<div><strong class="text-white">連線監聽</strong>：瀏覽器
-                                            <code>gattserverdisconnected</code> 的零秒感應能力。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-red-600/10 p-10 rounded-3xl border border-red-500/20 text-center relative overflow-hidden group">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-red-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-red-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">
-                                Emergency Vector</h4>
-<div class="text-5xl font-bold text-white mb-2 animate-pulse">STOP</div>
-<p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center">
-                                "事件驅動不僅是為了效能，更是為了安全。"
-                            </p>
-</div>
-</div>
+                <h1>硬體端的中斷 (Hardware Interrupts)</h1>
+
+                <p>
+                    在嵌入式系統中，「中斷（Interrupt）」是比輪詢更底層、更即時的事件驅動機制。當 ESP32 的某個 GPIO 引腳狀態發生變化（例如碰撞感測器被觸發），硬體會<strong>強制暫停</strong>目前正在執行的程式碼，立即跳轉到預先註冊的<strong>中斷服務程式（ISR, Interrupt Service Routine）</strong>。這個過程不需要等待主程式完成當前迴圈，延遲通常在微秒（μs）等級。
+                </p>
+
+                <h2>ESP32 上的 attachInterrupt</h2>
+                <p>
+                    在 Arduino / PlatformIO 框架下，我們使用 <code>attachInterrupt()</code> 函式將某個 GPIO 引腳與一個 ISR 綁定。當該引腳偵測到指定的電位變化（上升緣 <code>RISING</code>、下降緣 <code>FALLING</code>、或任意變化 <code>CHANGE</code>）時，ISR 會被立即執行。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// ESP32 C++ - 碰撞感測器中斷停止馬達</span><br>
+                    <span class="c-kw">#define</span> <span class="c-attr">BUMP_PIN</span>  <span class="c-val">14</span><br>
+                    <span class="c-kw">#define</span> <span class="c-attr">MOTOR_PIN</span> <span class="c-val">25</span><br><br>
+                    <span class="c-kw">volatile bool</span> <span class="c-attr">emergencyStop</span> <span class="c-white">= </span><span class="c-kw">false</span><span class="c-white">;</span><br><br>
+                    <span class="c-comment">// ISR：必須極短、不可使用 Serial.print</span><br>
+                    <span class="c-kw">void</span> <span class="c-tag">IRAM_ATTR</span> <span class="c-kw">onBump</span><span class="c-white">() {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">emergencyStop</span> <span class="c-white">= </span><span class="c-kw">true</span><span class="c-white">;</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">digitalWrite</span><span class="c-white">(</span><span class="c-attr">MOTOR_PIN</span><span class="c-white">, </span><span class="c-val">LOW</span><span class="c-white">);</span>  <span class="c-comment">// 立即切斷馬達</span><br>
+                    <span class="c-white">}</span><br><br>
+                    <span class="c-kw">void</span> <span class="c-kw">setup</span><span class="c-white">() {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">pinMode</span><span class="c-white">(</span><span class="c-attr">BUMP_PIN</span><span class="c-white">, INPUT_PULLUP);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">pinMode</span><span class="c-white">(</span><span class="c-attr">MOTOR_PIN</span><span class="c-white">, OUTPUT);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">attachInterrupt</span><span class="c-white">(</span><span class="c-kw">digitalPinToInterrupt</span><span class="c-white">(</span><span class="c-attr">BUMP_PIN</span><span class="c-white">), </span><span class="c-attr">onBump</span><span class="c-white">, FALLING);</span><br>
+                    <span class="c-white">}</span><br><br>
+                    <span class="c-kw">void</span> <span class="c-kw">loop</span><span class="c-white">() {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(</span><span class="c-attr">emergencyStop</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;Serial.</span><span class="c-kw">println</span><span class="c-white">(</span><span class="c-str">"緊急停止已觸發！"</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">while</span><span class="c-white">(</span><span class="c-kw">true</span><span class="c-white">) { </span><span class="c-kw">delay</span><span class="c-white">(</span><span class="c-val">1000</span><span class="c-white">); }</span>  <span class="c-comment">// 停機等待人工處理</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 正常馬達控制邏輯...</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>ISR 限制</strong>
+                        中斷服務程式（ISR）必須盡可能精簡。在 ESP32 的 ISR 中，<strong>禁止使用</strong> <code>Serial.print()</code>、<code>delay()</code>、<code>malloc()</code> 等耗時或需要中斷的函式。ISR 只應設定旗標（flag）或操作 GPIO，複雜的後續處理應回到 <code>loop()</code> 中執行。使用 <code>volatile</code> 關鍵字宣告與 ISR 共享的變數，避免編譯器最佳化導致主程式讀不到更新值。
+                    </div>
+                </div>
+
+                <h2>瀏覽器端的「軟體中斷」：gattserverdisconnected</h2>
+                <p>
+                    在前端（網頁）控制藍牙裝置時，同樣需要事件驅動的安全機制。Web Bluetooth API 提供的 <code>gattserverdisconnected</code> 事件就扮演著「軟體中斷」的角色：一旦藍牙連線意外中斷，瀏覽器會立即觸發此事件，讓你的程式碼可以在第一時間執行安全措施。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// JavaScript - 藍牙斷線緊急停止</span><br>
+                    <span class="c-kw">let</span> <span class="c-attr">motorSpeed</span> <span class="c-white">= 0;</span><br>
+                    <span class="c-kw">let</span> <span class="c-attr">pollInterval</span> <span class="c-white">= </span><span class="c-kw">null</span><span class="c-white">;</span><br><br>
+                    <span class="c-kw">function</span> <span class="c-kw">onDisconnected</span><span class="c-white">(</span><span class="c-attr">event</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;console.</span><span class="c-kw">error</span><span class="c-white">(</span><span class="c-str">'🚨 BLE 裝置斷線！立即停止馬達'</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">motorSpeed</span> <span class="c-white">= 0;</span>       <span class="c-comment">// 馬達速度歸零</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">clearInterval</span><span class="c-white">(</span><span class="c-attr">pollInterval</span><span class="c-white">);</span> <span class="c-comment">// 停止座標輪詢</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">updateUI</span><span class="c-white">(</span><span class="c-str">'emergency-stop'</span><span class="c-white">);</span><br>
+                    <span class="c-white">}</span><br><br>
+                    <span class="c-attr">bleDevice</span><span class="c-white">.</span><span class="c-kw">addEventListener</span><span class="c-white">(</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-str">'gattserverdisconnected'</span><span class="c-white">,</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">onDisconnected</span><br>
+                    <span class="c-white">);</span>
+                </div>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>安全關鍵</strong>
+                        在安全性攸關（Safety-critical）的系統中，<strong>絕對不能</strong>使用輪詢來偵測緊急狀況。如果你以每秒一次的頻率輪詢連線狀態，在最壞情況下，車輛可能在斷線後繼續全速行駛長達 1 秒鐘——對於一台速度為 1 m/s 的小車，這代表它會失控衝出 1 公尺。事件驅動（中斷）讓回應時間降至毫秒甚至微秒等級，是安全機制的唯一可靠選擇。
+                    </div>
+                </div>
+
+                <h2>輪詢安全 vs. 中斷安全：延遲風險比較</h2>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>比較項目</th>
+                            <th>輪詢式安全偵測</th>
+                            <th>中斷式安全偵測</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>偵測機制</strong></td>
+                            <td>主迴圈中定時檢查 <code>isConnected()</code></td>
+                            <td>硬體中斷 / <code>gattserverdisconnected</code> 事件</td>
+                        </tr>
+                        <tr>
+                            <td><strong>最大回應延遲</strong></td>
+                            <td>等於輪詢間隔（如 100ms ~ 1000ms）</td>
+                            <td>微秒等級（硬體）/ 毫秒等級（軟體）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>主程式阻塞時</strong></td>
+                            <td>可能無限延遲（檢查被跳過）</td>
+                            <td>仍可觸發（硬體中斷獨立於主程式）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CPU 空閒時的行為</strong></td>
+                            <td>持續消耗 CPU 資源執行檢查</td>
+                            <td>CPU 可進入省電模式，中斷喚醒</td>
+                        </tr>
+                        <tr>
+                            <td><strong>失控風險</strong></td>
+                            <td>高——間隔期間車輛持續運行</td>
+                            <td>極低——事件發生即刻回應</td>
+                        </tr>
+                        <tr>
+                            <td><strong>適用場景</strong></td>
+                            <td>非關鍵性的狀態監控</td>
+                            <td>安全停車、碰撞偵測、斷線保護</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>
+                    理解硬體中斷與事件驅動的核心思想後，你會發現：<strong>事件驅動不僅是為了效能，更是為了安全</strong>。在下一個單元的實作挑戰中，你將親手實作這些概念——從效能對比實驗到搖桿混合架構，再到緊急停止系統的建置。
+                </p>
                 
             </div>
             <div class="unit-nav">
@@ -818,16 +993,81 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>測試你對本模組核心概念的掌握程度。請選出每題的最佳答案，提交後可查看詳細解析。</p>
+
+                <form id="quiz-form" onsubmit="return false;">
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">1. 事件驅動 (Event-driven) 與輪詢 (Polling) 的核心差異是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 事件驅動更慢，輪詢更快</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 事件驅動被動等待通知，輪詢主動反覆查詢</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 兩者完全相同，只是名稱不同</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 輪詢只能用於硬體，事件驅動只能用於軟體</label>
+                        <div id="exp-1" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">2. JavaScript 中的 setInterval() 屬於哪種更新模式？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 事件驅動</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 輪詢 (定時重複查詢)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 中斷模式</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 串流模式</label>
+                        <div id="exp-2" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">3. 硬體中斷 (Hardware Interrupt) 相比軟體輪詢的主要優勢是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 程式碼更簡單</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="B" style="margin-right:8px;"> B. CPU 不需持續檢查狀態，事件發生時自動觸發回應</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 不需要任何硬體支援</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 只能用於 JavaScript</label>
+                        <div id="exp-3" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">4. 瀏覽器中的 Event Loop（事件循環）負責什麼工作？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 渲染 3D 圖形</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 協調同步與非同步任務的執行順序</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 編譯 JavaScript 為機器碼</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 管理網路連線加密</label>
+                        <div id="exp-4" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+                </form>
+
+                <div style="display:flex;gap:12px;margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+                <div id="quiz-result" style="display:none;margin-top:20px;padding:16px;border-radius:6px;font-size:14px;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -885,9 +1125,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「事件驅動 vs. 輪詢更新」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「事件驅動 vs. 輪詢更新」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -903,7 +1143,8 @@
         { id: 3, label: '🔄 2. 瀏覽器中的事件與循環 (25 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🚨 3. 硬體端的中斷 (Hardware Interrupts)', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -923,6 +1164,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1024,8 +1266,61 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'B', q3: 'B', q4: 'B' };
+    const QUIZ_EXPLANATIONS = { q1: '事件驅動像是「外送員打電話通知取餐」，CPU 在事件發生前可以做其他事；輪詢像是「不斷打電話問餐好了沒」，持續佔用資源。', q2: 'setInterval() 以固定時間間隔重複執行回呼函式，屬於典型的輪詢（定時器驅動的週期性查詢）模式。', q3: '硬體中斷讓 CPU 在等待期間可以執行其他任務，只有當外部事件（如按鈕按下、訊號變化）發生時才中斷當前工作進行處理。', q4: 'Event Loop 是 JavaScript 運行時的核心機制，它不斷檢查呼叫堆疊與任務佇列，協調同步任務與非同步回呼的執行順序。' };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const idx = q.slice(1);
+            const exp = document.getElementById(`exp-${idx}`);
+            if (!selected) continue;
+            if (selected.value === correct) {
+                score++;
+                exp.style.display = 'block';
+                exp.style.background = '#dff6dd';
+                exp.style.borderLeftColor = '#107c10';
+                exp.innerHTML = '<i class="fas fa-check-circle" style="color:#107c10;margin-right:6px;"></i>' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#dff6dd';
+                selected.parentElement.style.borderColor = '#107c10';
+            } else {
+                exp.style.display = 'block';
+                exp.style.background = '#fde7e9';
+                exp.style.borderLeftColor = '#d13438';
+                exp.innerHTML = '<i class="fas fa-times-circle" style="color:#d13438;margin-right:6px;"></i>正確答案是 ' + correct + '。' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#fde7e9';
+                selected.parentElement.style.borderColor = '#d13438';
+            }
+        }
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === total) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.innerHTML = '<strong style="color:#107c10;">🎉 滿分！' + score + ' / ' + total + '</strong><br>你完全掌握了本模組的核心概念！';
+            markDone(6);
+        } else {
+            resultEl.style.background = '#fff4ce';
+            resultEl.innerHTML = '<strong style="color:#8a6914;">得分：' + score + ' / ' + total + '</strong><br>建議複習錯題的解析說明，再試一次！';
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= 4; i++) {
+            const exp = document.getElementById('exp-' + i);
+            if (exp) { exp.style.display = 'none'; exp.style.background = ''; exp.style.borderLeftColor = 'transparent'; }
+        }
+        document.querySelectorAll('#quiz-form label').forEach(l => { l.style.background = ''; l.style.borderColor = '#e1dfdd'; });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 07：UI 框架設計';
 </script>
 
 <!-- Define Resources -->

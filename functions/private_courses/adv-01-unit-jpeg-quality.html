@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>影像品質參數 (JPEG Quality) 的權衡 - Vibe Coding Learn</title>
+    <title>影像品質參數 (JPEG Quality) 的權衡 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 1 - JPEG 品質</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">影像品質參數 (JPEG Quality) 的權衡</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 1</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,13 +510,13 @@
                 <h1>影像品質參數 (JPEG Quality) 的權衡</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 1</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
                 </div>
 
-                <p></p>
+                <p>深入 JPEG 有損壓縮的量化核心，在畫質、檔案大小與演算法穩定性之間找到黃金交叉點，實作動態品質切換策略。</p>
 
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
@@ -554,15 +554,14 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>影像品質參數 (JPEG Quality) 的權衡</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    在即時影像系統中，JPEG Quality 參數不只是「畫質好不好看」的問題——它直接牽動<strong>傳輸延遲、頻寬占用與視覺演算法的準確度</strong>。
+                    把品質調太高，FPS 會掉到無法操控的程度；調太低，邊緣偵測演算法會被壓縮雜訊搞得判斷失準。
+                    本模組將教你用數據量化這些權衡，並實作一套能根據場景自動切換品質的動態策略。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的遙控車專案終於能透過網頁看到即時影像了，但你發現一個惱人的問題：把 JPEG 品質設成 90 時畫面超清晰，車子卻因為延遲太高而頻繁撞牆；設成 10 時反應很靈敏，但車道線辨識演算法開始瘋狂誤判。到底該設多少？有沒有辦法讓系統自己判斷何時需要高畫質、何時該犧牲畫質換取速度？這就是本模組要解決的核心工程問題。
                 </div>
 
                 <h2>教學影片</h2>
@@ -576,7 +575,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -590,29 +589,108 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🎨 1. JPEG 壓縮：丟棄人類看不見的資訊 (20 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg">
-<p><strong>有損壓縮 (Lossy Compression)：</strong>JPEG 的魔術在於它會丟棄人眼不敏感的高頻色彩資訊。這就是為什麼 JPEG
-                                    檔案重新儲存多次後會變得模糊。</p>
-<p><strong>量化 (Quantization)：</strong>這是控制品質的核心步驟。高品質（如 90）保留更多細節，檔案較大；低品質（如
-                                    10）壓縮率高，但會產生明顯的 8x8「方塊效應」。</p>
-<div class="bg-purple-50 p-6 rounded-xl border border-purple-100 relative">
-<h4 class="font-bold text-purple-800 mb-2 flex items-center gap-2">
-<span>🔍</span> 學習任務
-                                    </h4>
-<p class="text-base text-purple-700 mb-2">觀察同一張圖片在 Quality 10 與 Quality 90 下的差異。</p>
-<ul class="list-disc list-inside space-y-2 text-purple-700 text-base">
-<li>特別注意物體的<strong>「邊緣」</strong>。</li>
-<li>思考這些模糊或鋸齒狀的邊緣，對後續的<strong>「邊緣偵測」演算法</strong>會有什麼影響？</li>
-</ul>
-</div>
-</div>
+                <h1>JPEG 壓縮：丟棄人類看不見的資訊</h1>
+
+                <p>
+                    JPEG 是目前世界上使用最廣泛的影像壓縮格式，而它之所以能將圖片大小壓縮到原始資料的 1/10 甚至 1/50，核心秘密在於一個大膽的策略——<strong>有損壓縮 (Lossy Compression)</strong>。它會有選擇性地丟棄人類視覺系統不敏感的高頻色彩資訊，在「幾乎看不出差異」的前提下大幅縮小檔案大小。
+                </p>
+
+                <h2>JPEG 壓縮的四個步驟</h2>
+                <p>
+                    理解 JPEG 的壓縮流程，能幫助你理解為什麼 Quality 參數會影響影像的方塊效應與檔案大小。JPEG 壓縮包含四個依序執行的步驟：
+                </p>
+                <ol>
+                    <li><strong>色彩空間轉換：</strong>將 RGB 像素轉換為 YCbCr 格式（Y = 亮度、Cb/Cr = 色度）。人眼對亮度變化遠比色彩變化敏感，因此色度分量可以被降採樣 (Chroma Subsampling) 至一半甚至四分之一的解析度。</li>
+                    <li><strong>離散餘弦變換 (DCT)：</strong>將影像切成 8×8 像素的小區塊，對每個區塊進行 DCT 變換，將空間域的像素值轉換為頻率域的係數。低頻係數代表區塊的平均色調，高頻係數代表細節與邊緣。</li>
+                    <li><strong>量化 (Quantization)：</strong>這是壓縮的核心步驟，也是 <strong>Quality 參數</strong>直接控制的環節。量化器會將 DCT 係數除以一個「量化矩陣」中的對應值，然後取整數。量化矩陣的值越大（Quality 越低），越多高頻係數會被歸零——資訊就此永久丟失。</li>
+                    <li><strong>熵編碼 (Entropy Coding)：</strong>對量化後的係數進行霍夫曼編碼 (Huffman Coding) 或算術編碼，進一步壓縮資料量。這一步是無損的。</li>
+                </ol>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        JPEG 的 Quality 參數（通常為 0～100 或 0～63）並不是線性的壓縮率控制。Quality 從 90 降到 80 可能只減少 20% 的檔案大小，但從 20 降到 10 卻可能造成畫質的劇烈崩壞。這種「邊際效益遞減」的特性，是後續實驗中你需要親手量化的重點。
+                    </div>
+                </div>
+
+                <h2>量化矩陣：Quality 參數的幕後推手</h2>
+                <p>
+                    每個 8×8 DCT 區塊經過變換後會產生 64 個頻率係數。量化矩陣也是一個 8×8 的表格，定義了每個頻率位置的「除數」。當 Quality 設得越低，量化矩陣中的除數就越大，意味著更多的 DCT 係數在除法後變成 0——這些歸零的係數就是被「丟棄」的資訊。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>Quality 值</th>
+                            <th>量化效果</th>
+                            <th>檔案大小（VGA）</th>
+                            <th>視覺品質</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>90 ～ 100</td>
+                            <td>幾乎不量化，保留大量高頻</td>
+                            <td>80 ～ 150 KB</td>
+                            <td>肉眼無法區分原圖</td>
+                        </tr>
+                        <tr>
+                            <td>60 ～ 80</td>
+                            <td>適度量化，丟棄部分高頻</td>
+                            <td>30 ～ 60 KB</td>
+                            <td>略有模糊，可接受</td>
+                        </tr>
+                        <tr>
+                            <td>30 ～ 50</td>
+                            <td>較強量化，邊緣開始模糊</td>
+                            <td>15 ～ 30 KB</td>
+                            <td>可見方塊效應</td>
+                        </tr>
+                        <tr>
+                            <td>10 ～ 20</td>
+                            <td>激烈量化，大量高頻歸零</td>
+                            <td>5 ～ 15 KB</td>
+                            <td>嚴重方塊效應、色彩失真</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>8×8 方塊效應 (Block Artifact)</h2>
+                <p>
+                    由於 JPEG 是以 8×8 像素為單位進行獨立壓縮的，當量化過於激烈時，相鄰區塊之間的色彩差異會變得明顯，形成肉眼可見的<strong>格狀邊界</strong>——這就是俗稱的「方塊效應」或「馬賽克」。這種人工雜訊對人類觀看來說只是「畫質差」，但對<strong>機器視覺演算法</strong>來說，它會產生大量<strong>不存在的假邊緣 (False Edges)</strong>，嚴重干擾邊緣偵測、輪廓追蹤與物件辨識。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// ESP-IDF 中設定 JPEG 品質的方式</span><br>
+<span class="c-white">camera_config_t config;</span><br>
+<span class="c-white">config.</span><span class="c-attr">jpeg_quality</span><span class="c-white"> = </span><span class="c-val">12</span><span class="c-white">;</span>  <span class="c-comment">// 範圍 0-63，數字越低品質越高</span><br>
+<br>
+<span class="c-comment">// 注意：ESP-IDF 的 jpeg_quality 與一般工具的 Q 值方向相反！</span><br>
+<span class="c-comment">// jpeg_quality = 10  → 高品質 (約等於一般工具的 Q=85)</span><br>
+<span class="c-comment">// jpeg_quality = 63  → 最低品質 (約等於一般工具的 Q=5)</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        ESP-IDF 攝影機驅動中的 <code>jpeg_quality</code> 參數範圍是 <strong>0～63</strong>，且<strong>數值越低代表品質越高</strong>（與大多數影像編輯軟體的慣例相反）。這是一個極易混淆的陷阱。設成 <code>10</code> 是高品質，設成 <code>50</code> 反而是低品質。務必在程式碼中加上明確的註解以避免混淆。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        JPEG 壓縮是不可逆的——每次重新編碼都會進一步損失品質。這就是為什麼你在影像編輯軟體中對同一張 JPEG 反覆「開啟→儲存」後，畫面會逐漸變得模糊與失真。在 ESP32 的串流場景中，攝影機硬體直接輸出 JPEG 格式，所以每幀只經歷一次壓縮，不存在「多代損失」的問題。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -626,40 +704,138 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚖️ 2. 權衡：畫質 vs. 延遲 (25 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg">
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-<div>
-<h4 class="font-bold text-gray-800 mb-2">大小與速度的連鎖反應</h4>
-<p class="text-sm leading-relaxed mb-4">
-                                    高品質影像 $\rightarrow$ 檔案大 $\rightarrow$ 傳輸時間長 $\rightarrow$
-                                    <strong>控制延遲增加</strong>。在即時遙控車的應用中，高延遲是致命的。
-                                </p>
-<h4 class="font-bold text-gray-800 mb-2">計算代價</h4>
-<p class="text-sm leading-relaxed">
-                                    在 ESP32 上，極高畫質的壓縮不僅消耗傳輸頻寬，也需要更多的運算時間與記憶體緩衝區來進行 JPEG 編碼。
-                                </p>
-</div>
-<div class="bg-blue-50 p-6 rounded-xl border border-blue-100 flex flex-col justify-center">
-<h4 class="font-bold text-blue-800 mb-3 flex items-center gap-2">
-<span>🧠</span> 預測思考
-                                </h4>
-<p class="text-blue-700 text-sm mb-3">
-                                    假設你的無線網路頻寬固定（例如 10 Mbps），如果你將 Quality 從 20 提高到 80，請預測你的 <strong>FPS（每秒幀數）</strong>
-                                    會發生什麼變化？
-                                </p>
-<div class="mt-2 pt-2 border-t border-blue-200 text-xs text-blue-600">
-                                    提示：檔案大小可能變成 4-5 倍，FPS 會......？
-                                </div>
-</div>
-</div>
-</div>
+                <h1>權衡：畫質 vs. 延遲</h1>
+
+                <p>
+                    在即時影像串流系統中，JPEG Quality 參數不只是「畫面好不好看」的美學選擇——它是一個涉及 <strong>畫質、檔案大小、傳輸延遲與 FPS（每秒幀數）</strong> 四者連鎖反應的工程決策。提高品質會讓畫面更清晰，但也會讓每一幀的檔案變大，導致傳輸時間拉長、FPS 下降，最終使遙控車的操控延遲變得無法接受。
+                </p>
+
+                <h2>連鎖反應模型</h2>
+                <p>
+                    讓我們用一個具體的數字推演來理解這個連鎖反應。假設你的 ESP32-CAM 連接在一個 Wi-Fi 網路上，可用頻寬約為 <strong>10 Mbps（即 1.25 MB/s）</strong>：
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>jpeg_quality</th>
+                            <th>約等於 Q 值</th>
+                            <th>平均幀大小 (VGA)</th>
+                            <th>理論最大 FPS</th>
+                            <th>單幀傳輸延遲</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>10</td>
+                            <td>~85</td>
+                            <td>~80 KB</td>
+                            <td>~15 FPS</td>
+                            <td>~64 ms</td>
+                        </tr>
+                        <tr>
+                            <td>20</td>
+                            <td>~60</td>
+                            <td>~35 KB</td>
+                            <td>~35 FPS</td>
+                            <td>~28 ms</td>
+                        </tr>
+                        <tr>
+                            <td>40</td>
+                            <td>~35</td>
+                            <td>~15 KB</td>
+                            <td>~83 FPS*</td>
+                            <td>~12 ms</td>
+                        </tr>
+                        <tr>
+                            <td>63</td>
+                            <td>~5</td>
+                            <td>~5 KB</td>
+                            <td>~250 FPS*</td>
+                            <td>~4 ms</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>
+                    * 實際 FPS 會受到攝影機擷取速度、JPEG 編碼時間與 TCP 協議開銷的限制，通常不會超過 30 FPS。但這個計算清楚展示了頻寬如何成為瓶頸。
+                </p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        理論最大 FPS = 可用頻寬 ÷ 平均幀大小。例如 1.25 MB/s ÷ 80 KB ≈ 15 FPS。但在實際環境中，Wi-Fi 的有效吞吐量通常只有標稱值的 30%～60%（受干擾、協議開銷影響），因此實際 FPS 會更低。
+                    </div>
+                </div>
+
+                <h2>編碼時間的隱藏成本</h2>
+                <p>
+                    除了頻寬瓶頸之外，JPEG 編碼本身也需要 CPU 時間。在 ESP32-S3 上，壓縮一張 VGA 解析度的影像大約需要 <strong>15～30 ms</strong>（取決於品質設定與是否使用硬體 JPEG 編碼器）。這意味著即使頻寬無限大，單靠編碼延遲就已經將 FPS 上限壓到約 <strong>30～60 FPS</strong>。
+                </p>
+                <p>
+                    更高的品質設定會讓量化步驟產生更多的非零 DCT 係數，進而增加熵編碼的工作量與輸出資料量。在某些極端情況下（如 jpeg_quality = 5），編碼時間可能比 jpeg_quality = 30 多出 <strong>50%</strong>。
+                </p>
+
+                <h2>端到端延遲的組成</h2>
+                <p>
+                    對於遙控車這類「看到→反應→操控」的應用，延遲 (Latency) 是比 FPS 更關鍵的指標。完整的端到端延遲由以下部分組成：
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>延遲來源</th>
+                            <th>典型值</th>
+                            <th>受 Quality 影響？</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>攝影機曝光與讀出</td>
+                            <td>10 ～ 33 ms</td>
+                            <td><span class="cross"><i class="fas fa-times"></i></span></td>
+                        </tr>
+                        <tr>
+                            <td>JPEG 編碼</td>
+                            <td>15 ～ 30 ms</td>
+                            <td><span class="check"><i class="fas fa-check"></i></span> 品質越高越慢</td>
+                        </tr>
+                        <tr>
+                            <td>Wi-Fi 傳輸</td>
+                            <td>4 ～ 80 ms</td>
+                            <td><span class="check"><i class="fas fa-check"></i></span> 檔案越大越慢</td>
+                        </tr>
+                        <tr>
+                            <td>瀏覽器解碼與渲染</td>
+                            <td>2 ～ 5 ms</td>
+                            <td><span class="cross"><i class="fas fa-times"></i></span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>總計</strong></td>
+                            <td><strong>31 ～ 148 ms</strong></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        人類的視覺反應時間約為 200 ms。如果端到端延遲超過 <strong>150 ms</strong>，操控者會明顯感受到「遙控車不聽話」的現象，因為車子在他做出操控動作之前的 150 ms 內已經移動了相當距離。對於高速移動的場景，延遲應盡量控制在 <strong>100 ms 以內</strong>。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在實際測試中，你可以透過在每幀影像上疊加<strong>時間戳 (Timestamp)</strong> 的方式來精確測量端到端延遲。在 ESP32 端用 <code>millis()</code> 記錄擷取時間，在瀏覽器端用 JavaScript 記錄接收時間，兩者的差值即為近似的端到端延遲（需確保 ESP32 與電腦的時鐘已同步）。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -673,39 +849,132 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🤖 3. 視覺演算法的敏感度 (15 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg">
-<p>並非所有演算法都需要最高畫質。選擇適當的 Q 值 (Quality) 可以節省大量頻寬而不影響功能。</p>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-<div class="bg-emerald-50 p-6 rounded-xl border border-emerald-100">
-<h4 class="font-bold text-emerald-800 mb-3 flex items-center gap-2">
-<span>🔑</span> 關鍵概念：壓縮比 vs 頻寬
-                                </h4>
-<ul class="list-disc list-inside space-y-2 text-emerald-700 text-sm">
-<li><strong>顏色辨識 (Color
-                                            Tracking)：</strong>通常對雜訊<strong>較不敏感</strong>。即使又糊又馬賽克，紅色還是紅色。</li>
-<li><strong>形狀/邊緣辨識 (Shape/Edge
-                                            Detection)：</strong>對雜訊<strong>非常敏感</strong>。方塊效應會創造出不存在的「假邊緣」，干擾判斷。</li>
-<li>Q 值的物理意義：透過捨棄<strong>高頻資訊</strong>來換取傳輸速度。</li>
-</ul>
-</div>
-<div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
-<h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
-<span>💻</span> 線上任務
-                                </h4>
-<p class="text-sm text-gray-600 mb-4">
-                                    撰寫一段簡易 JavaScript，預習如何使用 <code>URL.createObjectURL</code> 呈現接收到的圖片
-                                    Blob，這將是後續我們在網頁上顯示串流的基礎。
-                                </p>
-</div>
-</div>
-</div>
+                <h1>視覺演算法的敏感度</h1>
+
+                <p>
+                    並非所有電腦視覺演算法都需要最高畫質的影像。事實上，根據演算法的類型不同，JPEG 壓縮雜訊對其準確度的影響可以從「幾乎無感」到「完全失效」。理解不同演算法對壓縮品質的<strong>敏感度差異</strong>，是設計「動態品質切換策略」的理論基礎。
+                </p>
+
+                <h2>演算法敏感度分類</h2>
+                <p>
+                    我們可以根據演算法依賴的影像特徵，將常見的視覺任務分為三個敏感度等級：
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>敏感度</th>
+                            <th>演算法類型</th>
+                            <th>依賴的影像特徵</th>
+                            <th>建議最低 Q 值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>低敏感</strong></td>
+                            <td>顏色追蹤 (Color Tracking)</td>
+                            <td>像素的色相 (Hue) 值</td>
+                            <td>Q ≈ 20（jpeg_quality ≈ 40）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>低敏感</strong></td>
+                            <td>動態偵測 (Motion Detection)</td>
+                            <td>前後幀像素差異的統計量</td>
+                            <td>Q ≈ 15（jpeg_quality ≈ 45）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>中敏感</strong></td>
+                            <td>質心追蹤 (Centroid Tracking)</td>
+                            <td>目標區域的幾何中心</td>
+                            <td>Q ≈ 40（jpeg_quality ≈ 25）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>高敏感</strong></td>
+                            <td>邊緣偵測 (Canny / Sobel)</td>
+                            <td>像素梯度的方向與強度</td>
+                            <td>Q ≈ 60（jpeg_quality ≈ 15）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>高敏感</strong></td>
+                            <td>特徵點匹配 (ORB / SIFT)</td>
+                            <td>角點與紋理細節</td>
+                            <td>Q ≈ 70（jpeg_quality ≈ 12）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>為什麼顏色追蹤不怕壓縮？</h2>
+                <p>
+                    顏色追蹤演算法的核心邏輯是：將影像從 RGB 轉換到 HSV 色彩空間，然後根據色相 (Hue) 值的閾值來判斷目標。即使 JPEG 壓縮造成了嚴重的方塊效應，每個 8×8 區塊內的<strong>平均色相</strong>仍然保持大致正確。一塊紅色區域即使變得模糊、出現馬賽克，它在 HSV 空間中仍然落在「紅色」的色相範圍內。
+                </p>
+
+                <h2>為什麼邊緣偵測極度敏感？</h2>
+                <p>
+                    邊緣偵測演算法（如 Canny、Sobel）是透過計算<strong>相鄰像素之間的梯度</strong>來找出影像中的邊界。問題在於：JPEG 的方塊效應會在每個 8×8 區塊的邊界處製造出<strong>突然的亮度跳變</strong>，而邊緣偵測器會忠實地將這些跳變識別為「邊緣」——即使原始場景中根本不存在這些邊界。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 質心追蹤的「抖動」問題示意（JavaScript 端）</span><br>
+<span class="c-kw">function</span> <span class="c-tag">calculateCentroid</span><span class="c-white">(binaryMask) {</span><br>
+<span class="c-white">    </span><span class="c-kw">let</span><span class="c-white"> sumX = </span><span class="c-val">0</span><span class="c-white">, sumY = </span><span class="c-val">0</span><span class="c-white">, count = </span><span class="c-val">0</span><span class="c-white">;</span><br>
+<span class="c-white">    </span><span class="c-kw">for</span><span class="c-white"> (</span><span class="c-kw">let</span><span class="c-white"> y = </span><span class="c-val">0</span><span class="c-white">; y &lt; height; y++) {</span><br>
+<span class="c-white">        </span><span class="c-kw">for</span><span class="c-white"> (</span><span class="c-kw">let</span><span class="c-white"> x = </span><span class="c-val">0</span><span class="c-white">; x &lt; width; x++) {</span><br>
+<span class="c-white">            </span><span class="c-kw">if</span><span class="c-white"> (binaryMask[y * width + x]) {</span><br>
+<span class="c-white">                sumX += x; sumY += y; count++;</span><br>
+<span class="c-white">            }</span><br>
+<span class="c-white">        }</span><br>
+<span class="c-white">    }</span><br>
+<span class="c-comment">    // 低品質影像中，方塊效應導致 binaryMask 的邊緣</span><br>
+<span class="c-comment">    // 每幀都不同，使得 centroidX/Y 產生「抖動」</span><br>
+<span class="c-white">    </span><span class="c-kw">return</span><span class="c-white"> { x: sumX / count, y: sumY / count };</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        在低品質影像中，即使目標物體完全靜止，質心座標也可能每幀都在跳動。這是因為方塊效應使得二值化遮罩 (Binary Mask) 的邊緣像素每幀都略有不同。如果你的控制邏輯直接使用原始質心座標來驅動馬達，車子會出現不可預測的<strong>抖動 (Jitter)</strong>。
+                    </div>
+                </div>
+
+                <h2>動態品質切換策略</h2>
+                <p>
+                    既然不同場景對畫質的需求不同，最佳策略不是固定一個 Quality 值，而是根據<strong>當前的系統狀態</strong>動態調整。以遙控車為例：
+                </p>
+                <ul>
+                    <li><strong>車輛靜止時：</strong>使用高品質（jpeg_quality = 10～15），因為此時不需要低延遲，但可能需要高品質影像來執行精密的視覺辨識（如讀取路標文字）。</li>
+                    <li><strong>車輛移動時：</strong>使用低品質（jpeg_quality = 30～40），優先確保低延遲與高 FPS，讓操控者能即時反應。此時畫面的運動模糊 (Motion Blur) 本身就會遮蓋壓縮雜訊。</li>
+                    <li><strong>品質切換時加入 Debounce：</strong>避免在「剛好停下來又馬上啟動」的邊界情境中頻繁切換品質，造成畫面閃爍。</li>
+                </ul>
+
+                <div class="ms-code">
+<span class="c-comment">// 動態品質切換的核心邏輯 (JavaScript 端)</span><br>
+<span class="c-kw">let</span><span class="c-white"> lastSwitchTime = </span><span class="c-val">0</span><span class="c-white">;</span><br>
+<span class="c-kw">const</span><span class="c-white"> DEBOUNCE_MS = </span><span class="c-val">2000</span><span class="c-white">;</span>  <span class="c-comment">// 切換後至少等 2 秒才能再切</span><br>
+<br>
+<span class="c-kw">function</span> <span class="c-tag">updateQuality</span><span class="c-white">(motorSpeed) {</span><br>
+<span class="c-white">    </span><span class="c-kw">const</span><span class="c-white"> now = Date.</span><span class="c-tag">now</span><span class="c-white">();</span><br>
+<span class="c-white">    </span><span class="c-kw">if</span><span class="c-white"> (now - lastSwitchTime &lt; DEBOUNCE_MS) </span><span class="c-kw">return</span><span class="c-white">;</span><br>
+<br>
+<span class="c-white">    </span><span class="c-kw">const</span><span class="c-white"> newQ = (motorSpeed === </span><span class="c-val">0</span><span class="c-white">) ? </span><span class="c-val">10</span><span class="c-white"> : </span><span class="c-val">35</span><span class="c-white">;</span><br>
+<span class="c-white">    </span><span class="c-tag">fetch</span><span class="c-white">(</span><span class="c-str">`/control?quality=${newQ}`</span><span class="c-white">);</span><br>
+<span class="c-white">    lastSwitchTime = now;</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在作業中，你將需要使用 <code>URL.createObjectURL(blob)</code> 來在網頁上即時顯示從 ESP32 接收到的 JPEG Blob 影像。這個 API 會為記憶體中的二進位資料建立一個臨時 URL，可直接賦值給 <code>&lt;img&gt;</code> 標籤的 <code>src</code> 屬性。記得在每次更新前呼叫 <code>URL.revokeObjectURL()</code> 釋放前一張圖片的記憶體，否則會造成瀏覽器端的記憶體洩漏。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -784,16 +1053,113 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>請回答以下問題，測試你對本模組內容的理解程度。每題僅有一個正確答案。</p>
+
+                <form id="quiz-form" onsubmit="return false;" style="margin-top:24px;">
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">1. JPEG 壓縮中，DCT (離散餘弦變換) 的作用是什麼？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 將像素從 RGB 轉換為 YCbCr
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 將 8×8 區塊從空間域轉換為頻率域
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 直接壓縮像素資料
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 對影像進行降解析度處理
+                        </label>
+                        <div id="fb-q1" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">2. 提高 JPEG Quality 值會造成什麼影響？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 檔案變小，FPS 提高
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 檔案變大，傳輸延遲增加
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 畫質降低，頻寬減少
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 壓縮率提高，品質不變
+                        </label>
+                        <div id="fb-q2" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">3. 人眼對下列哪種影像資訊最為敏感？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 色度 (Chrominance)
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 亮度 (Luminance)
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 飽和度 (Saturation)
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="D" style="margin-right:8px;"> D. Alpha 透明度
+                        </label>
+                        <div id="fb-q3" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">4. JPEG 壓縮的量化步驟中，Quality 值控制的核心參數是什麼？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 影像解析度
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 色彩空間轉換精度
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 量化表 (Quantization Table) 中的除數大小
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 霍夫曼編碼的碼表長度
+                        </label>
+                        <div id="fb-q4" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="display:flex;gap:12px;margin-top:20px;">
+                        <button type="button" class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button type="button" class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                    </div>
+                    <div id="quiz-result" style="margin-top:16px;font-size:15px;font-weight:600;display:none;"></div>
+                </form>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -851,9 +1217,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「影像品質參數 (JPEG Quality) 的權衡」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「影像品質參數 (JPEG Quality) 的權衡」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -869,7 +1235,8 @@
         { id: 3, label: '️ 2. 權衡：畫質 vs. 延遲 (25 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🤖 3. 視覺演算法的敏感度 (15 min)', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',     time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -889,6 +1256,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -990,8 +1358,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'B', q3: 'B', q4: 'C' };
+    const QUIZ_EXPLANATIONS = {
+        q1: 'DCT 將每個 8×8 像素區塊轉換到頻率域，分離出低頻（平均色調）與高頻（細節邊緣）成分，為後續量化做準備。',
+        q2: 'Quality 越高，量化表的除數越小，保留的細節越多，檔案越大，占用頻寬也越多，導致 FPS 降低和延遲增加。',
+        q3: '人眼對亮度變化遠比色彩變化敏感，因此 JPEG 壓縮中色度分量可以被大幅降採樣而幾乎不被察覺。',
+        q4: 'Quality 值直接控制量化表中的除數——Quality 越低除數越大，高頻係數被歸零的越多，畫面越模糊但檔案越小。'
+    };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const fb = document.getElementById(`fb-${q}`);
+            if (!selected) {
+                fb.style.display = 'block';
+                fb.innerHTML = '<span style="color:#d13438;">⚠ 請選擇一個答案</span>';
+                continue;
+            }
+            fb.style.display = 'block';
+            if (selected.value === correct) {
+                score++;
+                fb.innerHTML = `<span style="color:#107c10;">✔ 正確！</span> ${QUIZ_EXPLANATIONS[q]}`;
+            } else {
+                fb.innerHTML = `<span style="color:#d13438;">✘ 不正確。正確答案是 ${correct}。</span> ${QUIZ_EXPLANATIONS[q]}`;
+            }
+        }
+        const result = document.getElementById('quiz-result');
+        result.style.display = 'block';
+        if (score === total) {
+            result.innerHTML = `<span style="color:#107c10;">🎉 滿分！你答對了全部 ${total} 題！</span>`;
+            markDone(6);
+        } else {
+            result.innerHTML = `<span style="color:#d13438;">你答對了 ${score} / ${total} 題。再試一次吧！</span>`;
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= Object.keys(QUIZ_ANSWERS).length; i++) {
+            const fb = document.getElementById(`fb-q${i}`);
+            if (fb) { fb.style.display = 'none'; fb.innerHTML = ''; }
+        }
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 01：ESP32-S3 攝影機';
 </script>
 
 <!-- Define Resources -->

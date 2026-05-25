@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PID 演算法視覺化模擬 - Vibe Coding Learn</title>
+    <title>PID 演算法視覺化模擬 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 15 - PID 模擬</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">PID 演算法視覺化模擬</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 15</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>PID 演算法視覺化模擬</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 15</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>PID 演算法視覺化模擬</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    歡迎來到本模組！本單元聚焦於 <strong>PID 演算法視覺化模擬</strong>。
+                    PID 控制是讓機器人從「大致能動」進化到「精確如手術刀」的核心演算法，但它的三個參數 Kp、Ki、Kd 的交互作用常被視為工程界的「玄學」。
+                    本模組將透過即時波形圖把抽象的數學公式轉化為看得見的動態曲線，讓你直觀理解每個參數如何影響過衝、震盪與收斂速度，並掌握科學調校方法與工業級安全防護機制。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境設定</div>
+                    你的循跡機器人在直線上表現完美，但一進入彎道就開始劇烈左右擺動，像喝醉了一樣蛇行前進。你把 Kp 調大，反應變快了但震盪更嚴重；調小後雖然穩定卻慢到追不上彎道。
+                    真正的解方不是盲目試參數，而是用視覺化波形圖觀察過衝與穩態特徵，再結合齊格勒-尼科爾斯法科學定位最佳參數組合。
+                    請先觀看教學影片，開啟你的控制工程之旅。
                 </div>
 
                 <h2>教學影片</h2>
@@ -576,7 +577,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -591,51 +592,99 @@
                 </div>
 
                 <h1>🧠 1. 拆解 PID：三大控制靈魂</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify text-justify">
-                                PID 參數調校常被視為工程界的「玄學」，但透過即時模擬分析，我們能清晰透視 P 的反應、I 的補償與 D 的預測效果。將冷冰冰的數學公式轉化為動態的物理直覺。
-                            </p>
-<div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-justify">
-<h4 class="font-bold text-blue-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed text-center text-justify">
-                                    Controller Functional Components</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify text-justify">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify text-left text-justify">P (比例 -
-                                                Present)</strong>：當前的修正力量。比例越大反應越快，但也最容易引發劇烈震盪。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify">I (積分 -
-                                                Integral)</strong>：過去的累積。專門消除靜態殘差，負責對抗持續性的外部阻力。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify">D (微分 -
-                                                Derivative)</strong>：未來的預測。抑制震盪的智慧型煞車，負責提升系統的動態阻尼與穩定度。</div>
-</li>
-</ul>
+
+                <p>
+                    PID (Proportional-Integral-Derivative) 控制器是自動化工程中最廣泛使用的回饋控制演算法。從工廠的溫度調節、無人機的姿態穩定，到你正在開發的循跡機器人，PID 的核心思想始終如一：<strong>持續測量目標值與實際值的偏差，並即時計算修正量</strong>。它的數學表達式看似簡單，但三個參數 Kp、Ki、Kd 的交互作用卻蘊含深刻的控制理論。
+                </p>
+
+                <h2>PID 控制公式</h2>
+
+                <p>完整的 PID 控制輸出由三個分量的加總組成：</p>
+
+                <p style="text-align:center; font-size:16px; margin:20px 0; font-weight:600;">
+                    \( u(t) = K_p \cdot e(t) + K_i \int_0^t e(\tau)\,d\tau + K_d \frac{de(t)}{dt} \)
+                </p>
+
+                <p>其中 \( e(t) = \text{Setpoint} - \text{Measured} \) 是當前時刻的誤差值。在離散化的嵌入式實作中，積分項以累加取代、微分項以差分取代：</p>
+
+<div class="ms-code">
+<span class="c-comment">// 離散化 PID 核心運算（每個控制週期執行一次）</span><br>
+<span class="c-attr">error</span> <span class="c-white">= setpoint - measured;</span><br>
+<span class="c-attr">integral</span> <span class="c-white">+= error * dt;</span><br>
+<span class="c-attr">derivative</span> <span class="c-white">= (error - prevError) / dt;</span><br>
+<span class="c-attr">output</span> <span class="c-white">= Kp * error + Ki * integral + Kd * derivative;</span><br>
+<span class="c-attr">prevError</span> <span class="c-white">= error;</span>
 </div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors text-justify">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-center text-justify">
-                                Closed-Loop Control Logic</h4>
-<div class="relative z-10 space-y-2 text-justify">
-<div class="text-[9px] font-mono p-3 border border-slate-800 rounded bg-slate-950/50 text-justify">
-                                    Error(t) = Setpoint - MeasuredValue</div>
-<div class="text-[9px] font-mono p-3 border border-indigo-500/30 bg-indigo-500/10 rounded text-indigo-400 text-justify">
-                                    ControlValue = \( K_p \cdot e(t) + K_i \int e(t)dt + K_d \frac{de}{dt} \)</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-10 font-mono tracking-widest uppercase text-center text-justify font-black">
-                                Iterative Computation: ACTIVE</p>
-</div>
-</div>
+
+                <h2>三大控制分量詳解</h2>
+
+                <table class="ms-table">
+                    <tr><th>分量</th><th>時間觀點</th><th>物理作用</th><th>過大的副作用</th></tr>
+                    <tr>
+                        <td><strong>P (比例)</strong></td>
+                        <td>看「現在」</td>
+                        <td>誤差越大修正越強，提供快速反應力。像彈簧一樣將系統「拉回」目標值。</td>
+                        <td>高頻震盪、無法完全消除穩態誤差</td>
+                    </tr>
+                    <tr>
+                        <td><strong>I (積分)</strong></td>
+                        <td>看「過去」</td>
+                        <td>累積歷史誤差，專門消滅持續性偏差。對抗摩擦力、重力等恆定擾動。</td>
+                        <td>積分飽和 (Windup)、響應遲緩、過衝加劇</td>
+                    </tr>
+                    <tr>
+                        <td><strong>D (微分)</strong></td>
+                        <td>看「未來」</td>
+                        <td>預測誤差變化趨勢，在過衝發生前提前施加「煞車力」，提升阻尼。</td>
+                        <td>放大高頻雜訊、系統抖動</td>
+                    </tr>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        在實際循跡機器人中，感測器讀值通常含有高頻雜訊。如果直接對原始誤差做微分，D 分量會劇烈抖動。常見解法是對微分項加入低通濾波器：<code>filteredD = alpha * derivative + (1 - alpha) * prevFilteredD</code>，其中 <code>alpha</code> 通常設為 0.1-0.3。
+                    </div>
+                </div>
+
+                <h2>閉迴路控制的運作流程</h2>
+
+                <p>
+                    PID 控制器運作在一個持續循環的<strong>閉迴路 (Closed-loop)</strong> 中。每個控制週期（通常 10-50ms）依序執行以下步驟：
+                </p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body"><h4>量測 (Sense)</h4><p>讀取感測器數值（如紅外線循跡陣列的偏移量）作為 Measured Value。</p></div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body"><h4>計算 (Compute)</h4><p>將 Setpoint（目標值，通常為 0 即「在線上」）與 Measured 的差值帶入 PID 公式，得到控制輸出 <code>u(t)</code>。</p></div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body"><h4>執行 (Actuate)</h4><p>將控制輸出轉換為左右馬達的 PWM 差值，驅動機器人修正方向。</p></div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body"><h4>回饋 (Feedback)</h4><p>機器人移動後感測器數值改變，新的 Measured Value 進入下一輪迴圈。</p></div>
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        控制週期的穩定性至關重要。使用 <code>millis()</code> 計時並確保每次迴圈間隔恆定（例如固定 20ms）。不穩定的 <code>dt</code> 會導致積分項和微分項的計算結果偏離預期，使調參變得毫無規律。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -650,56 +699,102 @@
                 </div>
 
                 <h1>📈 2. 數據視覺化：望塵莫及的北極星</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                透過動態波形圖，即時觀測目標值 (Setpoint) 與實際測量值 (Measured) 的追隨狀態。學會從波形特徵中解讀「過衝 (Overshoot)」與「穩態到達時間
-                                (Settling Time)」。
-                            </p>
-<div class="bg-cyan-50 p-8 rounded-3xl border border-cyan-100 text-center text-justify">
-<h4 class="text-cyan-900 font-bold mb-4 text-xs uppercase tracking-widest text-center text-justify text-justify text-justify">
-                                    Control Response Waveform</h4>
-<div class="h-32 bg-white rounded-2xl shadow-inner relative overflow-hidden text-justify">
-<div class="absolute inset-0 flex items-center text-justify">
-<div class="w-full border-t border-red-400/50 border-dashed text-justify"></div>
+
+                <p>
+                    PID 調參如果只靠反覆試錯，效率極低且無法複現。透過即時波形圖將控制過程「視覺化」，是從「憑感覺」進化到「憑數據」的關鍵一步。當你能在螢幕上看到 Setpoint（紅色目標線）與 Measured（藍色回授線）的動態追隨關係，PID 三個參數的效果立刻從抽象數學變成直覺可感的物理現象。
+                </p>
+
+                <h2>階躍響應的四大關鍵指標</h2>
+
+                <p>
+                    當目標值瞬間從 0 跳變至某一固定值時（稱為<strong>階躍輸入, Step Input</strong>），系統的響應曲線揭示了控制品質的一切資訊。以下四個指標是評估 PID 調參成果的「北極星」：
+                </p>
+
+                <table class="ms-table">
+                    <tr><th>指標</th><th>定義</th><th>理想值</th><th>影響因素</th></tr>
+                    <tr>
+                        <td><strong>上升時間 (Rise Time)</strong></td>
+                        <td>從 10% 到 90% 目標值的時間</td>
+                        <td>越短越好</td>
+                        <td>Kp 越大，上升越快</td>
+                    </tr>
+                    <tr>
+                        <td><strong>過衝量 (Overshoot)</strong></td>
+                        <td>超過目標值的最大百分比</td>
+                        <td>&lt; 5%</td>
+                        <td>Kd 可有效抑制</td>
+                    </tr>
+                    <tr>
+                        <td><strong>穩態時間 (Settling Time)</strong></td>
+                        <td>進入 ±2% 誤差帶並不再離開的時間</td>
+                        <td>&lt; 2 秒</td>
+                        <td>三者共同影響</td>
+                    </tr>
+                    <tr>
+                        <td><strong>穩態誤差 (Steady-State Error)</strong></td>
+                        <td>穩定後與目標值的持續偏差</td>
+                        <td>≈ 0</td>
+                        <td>Ki 專門消除</td>
+                    </tr>
+                </table>
+
+                <h2>建立即時波形監測儀表板</h2>
+
+                <p>
+                    使用 <strong>Chart.js</strong> 或類似的前端圖表庫，可以建立高頻率（15-60 FPS）的即時波形監測介面。核心架構是：BLE Notify 持續回傳 Setpoint 與 Measured 數據，前端將其即時繪製到動態折線圖上。加上 Kp/Ki/Kd 的滑動條控制，就能實現「所調即所見 (WYSIWYG)」的即時回饋體驗。
+                </p>
+
+<div class="ms-code">
+<span class="c-comment">// 即時波形繪製核心邏輯</span><br>
+<span class="c-kw">function</span> <span class="c-attr">onTelemetry</span><span class="c-white">(event) {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">dv</span> <span class="c-white">= </span><span class="c-kw">new</span> <span class="c-tag">DataView</span><span class="c-white">(event.target.value.buffer);</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">setpoint</span> <span class="c-white">= dv.</span><span class="c-tag">getInt16</span><span class="c-white">(0, </span><span class="c-kw">true</span><span class="c-white">);</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">measured</span> <span class="c-white">= dv.</span><span class="c-tag">getInt16</span><span class="c-white">(2, </span><span class="c-kw">true</span><span class="c-white">);</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">output</span> <span class="c-white">= dv.</span><span class="c-tag">getInt16</span><span class="c-white">(4, </span><span class="c-kw">true</span><span class="c-white">);</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 推入時序數據並限制窗口大小</span><br>
+<span class="c-white">&nbsp;&nbsp;chart.data.labels.</span><span class="c-tag">push</span><span class="c-white">(Date.</span><span class="c-tag">now</span><span class="c-white">());</span><br>
+<span class="c-white">&nbsp;&nbsp;chart.data.datasets[0].data.</span><span class="c-tag">push</span><span class="c-white">(setpoint);</span><br>
+<span class="c-white">&nbsp;&nbsp;chart.data.datasets[1].data.</span><span class="c-tag">push</span><span class="c-white">(measured);</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (chart.data.labels.length > 200) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;chart.data.labels.</span><span class="c-tag">shift</span><span class="c-white">();</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;chart.data.datasets.</span><span class="c-tag">forEach</span><span class="c-white">(ds => ds.data.</span><span class="c-tag">shift</span><span class="c-white">());</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<span class="c-white">&nbsp;&nbsp;chart.</span><span class="c-tag">update</span><span class="c-white">(</span><span class="c-str">'none'</span><span class="c-white">);</span><span class="c-comment"> // 無動畫更新，保持高幀率</span><br>
+<span class="c-white">}</span>
 </div>
-<div class="absolute inset-x-0 bottom-1/4 h-1/2 flex items-center text-justify">
-<svg class="w-full h-full text-justify">
-<path class="animate-[dash_6s_infinite_linear] text-justify" d="M0 40 Q 50 5, 100 45 T 200 40 T 300 40" fill="none" stroke="#3b82f6" stroke-width="2.5"></path>
-</svg>
-</div>
-</div>
-<p class="text-[10px] text-slate-400 mt-6 italic font-light text-center text-justify">
-                                    藍色回授線正動態趨近日紅色目標線，代表系統正在穩定收斂</p>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-cyan-500/5 text-justify"></div>
-<h4 class="text-cyan-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-center text-justify">
-                                Stability Metric Tracking</h4>
-<div class="w-full space-y-4 px-10 relative z-10 text-justify">
-<div class="flex justify-between text-[8px] text-slate-400 text-justify"><span>Overshoot
-                                        Peak</span> <span>2.8% (Target: &lt; 5%)</span>
-</div>
-<div class="w-full bg-slate-800 h-1 rounded-full overflow-hidden text-justify">
-<div class="bg-blue-500 h-full w-[30%] text-justify"></div>
-</div>
-<div class="flex justify-between text-[8px] text-slate-400 text-justify"><span>Settling
-                                        Success</span> <span>1.18s (ULTRA FAST)</span></div>
-<div class="w-full bg-slate-800 h-1 rounded-full overflow-hidden text-justify">
-<div class="bg-emerald-500 h-full w-[85%] text-justify"></div>
-</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-10 font-mono tracking-widest uppercase text-center text-justify italic font-black">
-                                High-Precision Acquisition Active</p>
-</div>
-</div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        Chart.js 的 <code>update('none')</code> 跳過動畫過渡，是高頻即時繪圖的關鍵。預設的動畫模式在 60Hz 數據流下會造成嚴重的渲染延遲。另外，將數據窗口限制在 200 個點以內可防止記憶體持續增長。
+                    </div>
+                </div>
+
+                <h2>從波形特徵診斷調參問題</h2>
+
+                <p>學會「閱讀」波形是控制工程師的核心技能。以下是常見波形特徵與對應的調參建議：</p>
+
+                <ul>
+                    <li><strong>持續高頻震盪，無法穩定</strong>：Kp 過大。先降低 Kp 至震盪消失，再逐步回調。</li>
+                    <li><strong>穩定但有持續偏差</strong>：缺少 I 分量。適度增加 Ki，讓積分項消除穩態誤差。</li>
+                    <li><strong>大幅過衝後緩慢收斂</strong>：缺少 D 分量。增加 Kd 提供「煞車力」以抑制過衝。</li>
+                    <li><strong>反應遲鈍，追不上目標變化</strong>：Kp 太小。適度增大 Kp 以提升響應速度。</li>
+                </ul>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        BLE 通訊延遲（典型 15-40ms）會在波形上引入額外的「相位延遲」。在分析波形時必須將通訊延遲納入考量——它可能讓 D 分量的效果看起來比實際更弱。建議在 ESP32 端同步傳回時間戳，以精確對齊 Setpoint 與 Measured 的時間軸。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -714,51 +809,107 @@
                 </div>
 
                 <h1>🛡️ 3. 調校策略與硬體安全邊界</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify text-justify text-justify">
-<div class="flex-1 space-y-6 text-justify text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
-                                頂尖工程師絕不盲目微調。學習經典的齊格勒-尼科爾斯 (Ziegler-Nichols) 啟發式綜合法。同時實作「積分飽和抑制
-                                (Anti-windup)」與限幅邏輯，確保系統在任何物理負載下絕不產生計算溢位或爆衝。
-                            </p>
-<div class="bg-cyan-500/10 p-8 rounded-3xl border border-cyan-500/20 shadow-inner text-justify text-justify">
-<h4 class="font-bold text-cyan-400 mb-4 text-xs uppercase tracking-widest text-center text-justify text-left text-justify">
-                                    Safety Implementation Rules</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify text-left text-justify">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">積芬抑制
-                                                (Anti-windup)</strong>：馬達遇阻時自動凍結積分累計，防止恢復後發生毀滅性超調。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">軟體限幅
-                                                (Clamping)</strong>：強制鎖定控制量輸出範圍至 [0, 255]，保護底層 ESC 驅動管。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">靜態補償 (Static
-                                                Bias)</strong>：補償機械摩擦阻力，提升起始點的靈敏度與穩態準確性。</div>
-</li>
-</ul>
+
+                <p>
+                    盲目地反覆調整 Kp/Ki/Kd 是初學者最常見的錯誤——每次只改一個參數，重新跑一輪測試，效率極低且容易陷入「越調越差」的迴圈。經典的 <strong>Ziegler-Nichols (Z-N) 方法</strong>提供了一套系統化的起點估算流程。而在實際部署中，<strong>積分飽和抑制 (Anti-Windup)</strong> 和<strong>輸出限幅 (Output Clamping)</strong> 是保護硬體免於損壞的安全底線。
+                </p>
+
+                <h2>Ziegler-Nichols 臨界振盪法</h2>
+
+                <p>
+                    Z-N 法是控制工程界使用超過 80 年的經典調參起點。其步驟如下：先將 Ki 和 Kd 設為 0，逐步增大 Kp 直到系統出現<strong>等幅持續振盪</strong>（既不發散也不收斂）。此時的 Kp 值稱為<strong>臨界增益 Ku</strong>，振盪週期稱為<strong>臨界週期 Tu</strong>。
+                </p>
+
+                <table class="ms-table">
+                    <tr><th>控制器類型</th><th>Kp</th><th>Ki</th><th>Kd</th></tr>
+                    <tr>
+                        <td><strong>純 P</strong></td>
+                        <td>0.5 × Ku</td>
+                        <td>—</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PI</strong></td>
+                        <td>0.45 × Ku</td>
+                        <td>1.2 × Kp / Tu</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PID</strong></td>
+                        <td>0.6 × Ku</td>
+                        <td>2 × Kp / Tu</td>
+                        <td>Kp × Tu / 8</td>
+                    </tr>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        Z-N 法提供的是一個「合理的起點」，而非最終的最佳參數。它產生的響應通常有 25% 左右的過衝量。在對過衝敏感的場景中（如避障系統），需要在此基礎上進一步手動微調——通常是降低 Kp 並增加 Kd。
+                    </div>
+                </div>
+
+                <h2>積分飽和抑制 (Anti-Windup)</h2>
+
+                <p>
+                    當馬達被卡住或達到物理極限時，PID 的輸出被限幅鎖定，但<strong>積分項仍在持續累積</strong>。當障礙移除後，巨大的積分累積值會導致系統產生劇烈的過衝——馬達會以最大功率爆衝直到積分值慢慢減小。Anti-Windup 的解法是：當輸出達到限幅邊界時，凍結積分項的累積。
+                </p>
+
+<div class="ms-code">
+<span class="c-comment">// 帶 Anti-Windup 的完整 PID 控制器</span><br>
+<span class="c-attr">error</span> <span class="c-white">= setpoint - measured;</span><br>
+<span class="c-attr">pTerm</span> <span class="c-white">= Kp * error;</span><br>
+<span class="c-attr">dTerm</span> <span class="c-white">= Kd * (error - prevError) / dt;</span><br>
+<br>
+<span class="c-comment">// Anti-Windup：僅在輸出未飽和時才累積積分</span><br>
+<span class="c-kw">if</span><span class="c-white"> (output > -MAX_OUTPUT && output &lt; MAX_OUTPUT) {</span><br>
+<span class="c-white">&nbsp;&nbsp;integral += error * dt;</span><br>
+<span class="c-white">}</span><br>
+<span class="c-attr">iTerm</span> <span class="c-white">= Ki * integral;</span><br>
+<br>
+<span class="c-comment">// 輸出限幅 (Clamping)</span><br>
+<span class="c-attr">output</span> <span class="c-white">= </span><span class="c-tag">constrain</span><span class="c-white">(pTerm + iTerm + dTerm, -255, 255);</span><br>
+<span class="c-attr">prevError</span> <span class="c-white">= error;</span>
 </div>
-</div>
-<div class="lg:w-80 bg-cyan-600/10 p-10 rounded-3xl border border-cyan-500/20 text-center relative overflow-hidden group text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-cyan-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify">
-</div>
-<h4 class="text-cyan-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center text-justify">
-                                Safety Constraint Alert</h4>
-<div class="text-5xl font-bold text-white mb-2 text-justify tracking-tighter uppercase font-black">
-                                CLAMP</div>
-<div class="text-[10px] text-cyan-400 uppercase tracking-widest text-justify">Output Limit
-                                Saturated</div>
-<p class="text-[11px] text-slate-500 mt-10 leading-relaxed font-light italic text-center text-justify text-left text-justify">
-                                "極致的控制來自於對物理邊界的絕對掌控。"
-                            </p>
-</div>
-</div>
+
+                <h2>輸出限幅的必要性</h2>
+
+                <p>
+                    PWM 的有效範圍是 0-255（8-bit 解析度）。如果 PID 運算的原始輸出超出此範圍（例如 Kp 很大時，error × Kp 可能達到數千），不加限幅就直接寫入 PWM 暫存器會導致整數溢位，可能讓馬達收到完全錯誤的驅動訊號。<code>constrain()</code> 函式是最後一道防線。
+                </p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body"><h4>設定 Ki=0, Kd=0</h4><p>先用純 P 控制找到 Ku 和 Tu。</p></div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body"><h4>套用 Z-N 公式</h4><p>計算 PID 三參數的起始值。</p></div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body"><h4>加入 Anti-Windup</h4><p>實作積分凍結邏輯，防止飽和。</p></div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body"><h4>微調至目標指標</h4><p>參照波形圖，調整至過衝 &lt;5%、穩態時間 &lt;2s。</p></div>
+                    </div>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        在實體機器人上進行 Z-N 調參的「尋找 Ku」階段時，系統會處於持續振盪的臨界狀態。務必確保機器人在安全的測試環境中運行（例如架高底盤、遠離障礙物），並隨時準備手動斷電。臨界振盪意味著機械結構承受最大的反覆應力，長時間運行可能損壞齒輪或軸承。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -837,16 +988,134 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>
+                    請回答以下問題，測試你對「<strong>PID 模擬與視覺化</strong>」的理解程度。
+                    選擇完畢後點擊「送出答案」查看結果與解析。
+                </p>
+
+                <div id="quiz-container" style="margin:24px 0;">
+
+                    <div class="quiz-question" id="quiz-q0" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">1. 使用軟體模擬 PID 控制器（而非直接在硬體上調參）的主要優點是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt0">
+                            <input type="radio" name="quiz-q0" value="0" style="accent-color:var(--ms-blue);">
+                            <span>模擬結果一定比實際更準確</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt1">
+                            <input type="radio" name="quiz-q0" value="1" style="accent-color:var(--ms-blue);">
+                            <span>可快速迭代測試不同參數組合，無需擔心硬體損壞或安全風險</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt2">
+                            <input type="radio" name="quiz-q0" value="2" style="accent-color:var(--ms-blue);">
+                            <span>不需要了解 PID 原理</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt3">
+                            <input type="radio" name="quiz-q0" value="3" style="accent-color:var(--ms-blue);">
+                            <span>可以跳過所有測試直接部署</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp0" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q1" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">2. 在 PID 模擬中，「階躍響應（Step Response）」測試的目的是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt0">
+                            <input type="radio" name="quiz-q1" value="0" style="accent-color:var(--ms-blue);">
+                            <span>測試系統的最大速度</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt1">
+                            <input type="radio" name="quiz-q1" value="1" style="accent-color:var(--ms-blue);">
+                            <span>觀察系統對突變目標值的反應特性：上升時間、超調量、穩定時間</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt2">
+                            <input type="radio" name="quiz-q1" value="2" style="accent-color:var(--ms-blue);">
+                            <span>驗證程式碼有無語法錯誤</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt3">
+                            <input type="radio" name="quiz-q1" value="3" style="accent-color:var(--ms-blue);">
+                            <span>測量電源消耗</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp1" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q2" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">3. 模擬時加入「雜訊（Noise）」與「延遲（Delay）」的目的是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt0">
+                            <input type="radio" name="quiz-q2" value="0" style="accent-color:var(--ms-blue);">
+                            <span>讓圖表看起來更複雜</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt1">
+                            <input type="radio" name="quiz-q2" value="1" style="accent-color:var(--ms-blue);">
+                            <span>模擬真實世界中感測器雜訊與通訊延遲，驗證控制器的魯棒性</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt2">
+                            <input type="radio" name="quiz-q2" value="2" style="accent-color:var(--ms-blue);">
+                            <span>測試程式的記憶體管理</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt3">
+                            <input type="radio" name="quiz-q2" value="3" style="accent-color:var(--ms-blue);">
+                            <span>增加模擬的計算量</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp2" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q3" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">4. 從模擬結果轉移到實際硬體時，通常需要進行什麼調整？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt0">
+                            <input type="radio" name="quiz-q3" value="0" style="accent-color:var(--ms-blue);">
+                            <span>不需要任何調整，直接使用模擬參數</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt1">
+                            <input type="radio" name="quiz-q3" value="1" style="accent-color:var(--ms-blue);">
+                            <span>根據實際系統的非線性與未建模因素，微調 PID 增益</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt2">
+                            <input type="radio" name="quiz-q3" value="2" style="accent-color:var(--ms-blue);">
+                            <span>完全放棄模擬結果重新調參</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt3">
+                            <input type="radio" name="quiz-q3" value="3" style="accent-color:var(--ms-blue);">
+                            <span>只需要更改程式語言</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp3" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">送出答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+
+                <div id="quiz-result" style="display:none; margin-top:20px; padding:16px 20px; border-radius:6px; font-weight:600;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -904,9 +1173,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「PID 演算法視覺化模擬」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「PID 演算法視覺化模擬」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -922,7 +1191,8 @@
         { id: 3, label: '📈 2. 數據視覺化：望塵莫及的北極星', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🛡️ 3. 調校策略與硬體安全邊界', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -942,6 +1212,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1043,8 +1314,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = [1, 1, 1, 1];
+    const QUIZ_EXPLANATIONS = ["模擬環境允許快速、安全地嘗試極端參數，觀察系統響應而不會損壞馬達或機械結構。","階躍響應是控制系統最基本的性能測試，透過觀察響應曲線可評估系統的速度、精度與穩定性。","真實系統必然存在雜訊與延遲，加入這些因素能驗證 PID 參數在非理想條件下是否仍能穩定運作。","模擬模型無法完全捕捉現實中的摩擦、齒輪背隙等非線性因素，通常需以模擬值為起點做現場微調。"];
+
+    function submitQuiz() {
+        let score = 0;
+        QUIZ_ANSWERS.forEach((ans, i) => {
+            const selected = document.querySelector(`input[name="quiz-q${i}"]:checked`);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            const qEl = document.getElementById(`quiz-q${i}`);
+            if (selected && parseInt(selected.value) === ans) {
+                score++;
+                qEl.style.borderColor = '#107c10';
+                expEl.style.background = '#dff6dd';
+                expEl.innerHTML = '<strong style="color:#107c10;">✓ 正確！</strong> ' + QUIZ_EXPLANATIONS[i];
+            } else {
+                qEl.style.borderColor = '#d13438';
+                expEl.style.background = '#fde7e9';
+                expEl.innerHTML = '<strong style="color:#d13438;">✗ 不正確。</strong> ' + QUIZ_EXPLANATIONS[i];
+            }
+            expEl.style.display = 'block';
+        });
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === QUIZ_ANSWERS.length) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.style.color = '#107c10';
+            resultEl.textContent = `🎉 滿分！你答對了全部 ${QUIZ_ANSWERS.length} 題！`;
+        } else {
+            resultEl.style.background = '#deecf9';
+            resultEl.style.color = '#005a9e';
+            resultEl.textContent = `你答對了 ${score} / ${QUIZ_ANSWERS.length} 題，請查看解析後再試一次。`;
+        }
+    }
+
+    function resetQuiz() {
+        QUIZ_ANSWERS.forEach((_, i) => {
+            const radios = document.querySelectorAll(`input[name="quiz-q${i}"]`);
+            radios.forEach(r => r.checked = false);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            expEl.style.display = 'none';
+            const qEl = document.getElementById(`quiz-q${i}`);
+            qEl.style.borderColor = '#e1dfdd';
+        });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 15：系統架構設計';
 </script>
 
 <!-- Define Resources -->

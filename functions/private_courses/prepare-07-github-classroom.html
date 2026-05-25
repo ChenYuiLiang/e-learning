@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Classroom 與 Vibe Coding 實務 - Vibe Coding Learn</title>
+    <title>GitHub Classroom 與 Vibe Coding 實務 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -32,7 +32,7 @@
         /* SIDEBAR */
         .ms-sidebar { width:var(--sidebar-w); flex-shrink:0; background:#faf9f8; border-right:1px solid #e1dfdd; display:flex; flex-direction:column; position:sticky; top:48px; height:calc(100vh - 48px); overflow-y:auto; }
         .ms-sidebar-header { padding:16px 16px 12px; border-bottom:1px solid #e1dfdd; }
-        .ms-sidebar-header .module-label { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:#605e5c; font-weight:600; margin-bottom:4px; }
+        .ms-sidebar-header .module-label { display: none; font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:#605e5c; font-weight:600; margin-bottom:4px; }
         .ms-sidebar-header .module-title { font-size:13px; font-weight:600; color:#201f1e; line-height:1.4; }
         .ms-sidebar-header .meta { font-size:12px; color:#605e5c; margin-top:6px; }
         .ms-unit-list { padding:8px 0; }
@@ -224,9 +224,9 @@
 <body>
 
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">開發者課程</span>
+    <a href="/prepare.html" target="_top" class="nav-label">準備課程</a>
 </nav>
 
 <div class="ms-layout">
@@ -244,11 +244,7 @@
     </aside>
 
     <main class="ms-content">
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">開發者課程</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -1193,6 +1189,7 @@
     }
 
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;
 </script>
 
 

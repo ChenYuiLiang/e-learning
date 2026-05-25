@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLE 廣播機制與連線流程 - Vibe Coding Learn</title>
+    <title>BLE 廣播機制與連線流程 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -471,9 +473,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 5 - BLE 通訊深潛</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +487,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">BLE 廣播機制與連線流程</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 156 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 156 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 5</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,7 +509,7 @@
                 <h1>BLE 廣播機制與連線流程</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 5</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -520,9 +520,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>📢 1. 廣播機制：宣告存在</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>🤝 2. 掃描與連線</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>🔋 3. 工作週期</strong> 的調校技巧與穩定性測試。</li>
+                    <li>能夠解釋 BLE 廣播封包的結構與固定頻道（37/38/39）機制，並自定義設備名稱與 Service UUID 讓手機正確識別。</li>
+                    <li>能夠實作 <code>BLEServerCallbacks</code> 的 <code>onConnect</code> 與 <code>onDisconnect</code> 回呼，透過 LED 反映連線狀態並在斷線後自動重啟廣播。</li>
+                    <li>能夠記錄不同距離下的 RSSI 信號強度變化，並實作基於 RSSI 閾值的近場感知互動功能。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -553,15 +553,14 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>BLE 廣播機制與連線流程</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    BLE 設備透過<strong>廣播封包（Advertising）</strong>在固定頻道上宣告自身存在，手機掃描後發起連線請求，建立專屬的 1 對 1 通訊。
+                    本單元將帶你掌握廣播封包的結構、掃描與連線的三步握手流程，以及如何透過限時廣播與事件觸發策略優化功耗管理。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你給 ESP32 上電後，手機的 nRF Connect 卻完全搜尋不到它；好不容易連上後，手機一斷開連線，
+                    設備就再也無法被重新發現——你懷疑是廣播封包配置有誤，而且忘記在斷線回呼中重新啟動廣播。
                 </div>
 
                 <h2>教學影片</h2>
@@ -575,7 +574,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -589,36 +588,97 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>📢 1. 廣播機制：宣告存在</h1>
-                
-                <div class="space-y-6 text-gray-600 text-justify uppercase tracking-tighter">
-<p class="text-lg leading-relaxed text-justify uppercase tracking-widest">
-                                    連線前，設備主動宣告存在。這就是<strong>廣播 (Advertising)</strong>。
-                                </p>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-justify font-black">
-<div class="p-6 rounded-2xl border border-emerald-100 shadow-sm group hover:bg-emerald-600 transition duration-300 bg-emerald-50 text-justify uppercase tracking-widest">
-<h4 class="font-bold text-emerald-800 group-hover:text-white mb-2 flex items-center gap-2 text-justify">
-<span>📡</span> 避開 Wi-Fi 干擾
-                                        </h4>
-<p class="text-xs text-slate-600 group-hover:text-emerald-100 leading-relaxed font-light text-justify uppercase tracking-widest">
-                                            固定於頻道 37, 38, 39。確保訊號被快速搜尋。
-                                        </p>
-</div>
-<div class="p-6 rounded-2xl border border-teal-100 shadow-sm group hover:bg-teal-600 transition duration-300 bg-teal-50 text-justify uppercase tracking-widest font-black text-left">
-<h4 class="font-bold text-teal-800 group-hover:text-white mb-2 flex items-center gap-2 text-justify">
-<span>📦</span> 封包載荷 (Payload)
-                                        </h4>
-<p class="text-xs text-slate-600 group-hover:text-teal-100 leading-relaxed font-light text-justify uppercase tracking-tighter font-black">
-                                            含名稱與 Service UUID。讓手機識別。
-                                        </p>
-</div>
-</div>
-</div>
+                <h1>廣播機制：宣告存在</h1>
+
+                <p>
+                    BLE 設備在尚未與任何 Client 建立連線之前，會透過<strong>廣播（Advertising）</strong>機制向周圍宣告自身的存在。
+                    這就像是一家新開的店面掛出招牌——路過的人（手機）看到招牌後，才能決定是否要進門（建立連線）。
+                </p>
+
+                <p>
+                    廣播是一種單向、無連線的通訊方式。ESP32 會週期性地在特定頻道上發送<strong>廣播封包（Advertising Packet）</strong>，
+                    任何處於掃描狀態的設備都可以接收到這些封包，但此時雙方並未建立專屬的通訊通道。
+                </p>
+
+                <h2>廣播頻道設計</h2>
+
+                <p>
+                    BLE 使用 2.4 GHz ISM 頻段，共劃分為 40 個頻道（編號 0–39）。其中，<strong>頻道 37、38、39</strong> 被指定為專用廣播頻道，
+                    其餘 37 個頻道用於連線後的數據傳輸。
+                </p>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>廣播頻道</th>
+                        <th>中心頻率</th>
+                        <th>設計用意</th>
+                    </tr>
+                    <tr>
+                        <td>Ch 37</td>
+                        <td>2402 MHz</td>
+                        <td>避開 Wi-Fi Ch 1 的干擾峰值</td>
+                    </tr>
+                    <tr>
+                        <td>Ch 38</td>
+                        <td>2426 MHz</td>
+                        <td>位於 Wi-Fi Ch 1 與 Ch 6 之間的間隙</td>
+                    </tr>
+                    <tr>
+                        <td>Ch 39</td>
+                        <td>2480 MHz</td>
+                        <td>避開 Wi-Fi Ch 11 的干擾峰值</td>
+                    </tr>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        BLE 的廣播頻道特別選在 Wi-Fi 頻道的「間隙」位置，大幅降低了與 Wi-Fi 的互相干擾。這也是為何即使在 Wi-Fi 密集的環境中，BLE 廣播仍能被快速搜尋到的原因。
+                    </div>
+                </div>
+
+                <h2>廣播封包結構</h2>
+
+                <p>
+                    每個廣播封包的最大長度為 <strong>31 bytes</strong>（BLE 4.x）或 <strong>255 bytes</strong>（BLE 5.0 Extended Advertising）。
+                    在有限的空間中，開發者需要精心選擇要在封包中攜帶哪些資訊：
+                </p>
+
+                <ul>
+                    <li><strong>Flags</strong>（必要）：標示設備類型與發現模式</li>
+                    <li><strong>Local Name</strong>：設備名稱，如 <code>"Vibe-Car-07"</code></li>
+                    <li><strong>Service UUID</strong>：公開的服務識別碼，讓手機篩選目標</li>
+                    <li><strong>TX Power Level</strong>：發射功率，用於估算距離</li>
+                    <li><strong>Manufacturer Data</strong>：廠商自定義數據</li>
+                </ul>
+
+                <h2>ESP32 廣播配置</h2>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 初始化 BLE 並設定設備名稱</span><br>
+                    <span class="c-tag">BLEDevice</span><span class="c-white">::</span><span class="c-attr">init</span><span class="c-white">(</span><span class="c-str">"Vibe-Car-07"</span><span class="c-white">);</span><br><br>
+                    <span class="c-comment">// 取得廣播物件並配置封包內容</span><br>
+                    <span class="c-tag">BLEAdvertising</span> <span class="c-white">*pAdvertising = BLEDevice::</span><span class="c-attr">getAdvertising</span><span class="c-white">();</span><br>
+                    <span class="c-white">pAdvertising-></span><span class="c-attr">addServiceUUID</span><span class="c-white">(SERVICE_UUID);</span><br>
+                    <span class="c-white">pAdvertising-></span><span class="c-attr">setScanResponse</span><span class="c-white">(</span><span class="c-kw">true</span><span class="c-white">);</span><br>
+                    <span class="c-white">pAdvertising-></span><span class="c-attr">setMinPreferred</span><span class="c-white">(0x06);</span><br><br>
+                    <span class="c-comment">// 開始廣播</span><br>
+                    <span class="c-tag">BLEDevice</span><span class="c-white">::</span><span class="c-attr">startAdvertising</span><span class="c-white">();</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        將設備名稱加入座號（如 <code>"Vibe-Car-07"</code>）是課堂中區分多台 ESP32 的最佳做法。在 nRF Connect 中，你可以透過名稱快速找到自己的設備。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -632,41 +692,108 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🤝 2. 掃描與連線</h1>
-                
-                <div class="space-y-6 text-justify font-black">
-<div class="flex gap-6 items-center p-6 bg-slate-50 rounded-2xl border border-slate-100 group hover:border-blue-400 transition text-justify font-black">
-<span class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center shrink-0 font-bold text-lg shadow-lg text-justify font-black">1</span>
-<div class="text-justify font-black">
-<h5 class="font-bold text-gray-900 text-sm text-justify font-black uppercase tracking-widest">
-                                            掃描 (Scanning)</h5>
-<p class="text-[11px] text-slate-500 font-light mt-1 text-justify font-black">
-                                            手機傾聽廣播封包。</p>
-</div>
-</div>
-<div class="flex gap-6 items-center p-6 bg-slate-50 rounded-2xl border border-slate-100 group hover:border-blue-400 transition text-justify font-black border border-slate-100">
-<span class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center shrink-0 font-bold text-lg shadow-lg text-justify font-black">2</span>
-<div class="text-justify font-black">
-<h5 class="font-bold text-gray-900 text-sm text-justify font-black text-left uppercase tracking-tighter">
-                                            連線請求 (Req)</h5>
-<p class="text-[11px] text-slate-500 font-light mt-1 text-justify font-black">
-                                            手機送出指令建立專屬頻道。</p>
-</div>
-</div>
-<div class="flex gap-6 items-center p-6 bg-slate-50 rounded-2xl border border-slate-100 group hover:border-blue-400 transition text-justify font-black border border-slate-100">
-<span class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center shrink-0 font-bold text-lg shadow-lg text-justify font-black font-black">3</span>
-<div class="text-justify font-black">
-<h5 class="font-bold text-gray-900 text-sm text-justify font-black">獨佔連線</h5>
-<p class="text-[11px] text-slate-500 font-light mt-1 text-justify font-black">1
-                                            對 1 高速交換。他人不可見。</p>
-</div>
-</div>
-</div>
+                <h1>掃描與連線</h1>
+
+                <p>
+                    當手機開啟藍牙掃描時，它會在三個廣播頻道上<strong>被動傾聽（Passive Scanning）</strong>或<strong>主動詢問（Active Scanning）</strong>廣播封包。
+                    一旦發現目標設備，手機便可發起<strong>連線請求（Connection Request）</strong>，將雙方從「廣播模式」切換到「連線模式」。
+                </p>
+
+                <h2>連線建立三步流程</h2>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>掃描（Scanning）</h4>
+                            <p>手機（Central）在廣播頻道上傾聽封包。若使用 Active Scanning，還會發送 Scan Request 要求設備回傳額外資訊（Scan Response）。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>連線請求（Connection Request）</h4>
+                            <p>手機選定目標後，在廣播頻道上發送 <code>CONNECT_REQ</code> 封包，內含連線參數（間隔、延遲、超時等），ESP32 收到後停止廣播。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>獨佔連線（Connected State）</h4>
+                            <p>雙方進入 1 對 1 的專屬連線。數據傳輸改用其餘 37 個數據頻道，並透過<strong>跳頻（Frequency Hopping）</strong>避免干擾。此時其他手機無法看到該設備。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        BLE 連線是<strong>排他性</strong>的——一旦 ESP32 與一台手機建立連線，它就會停止廣播，其他設備無法發現它。若需要支援多裝置連線，需使用 BLE 5.0 的 Multi-Connection 特性或手動管理重新廣播。
+                    </div>
+                </div>
+
+                <h2>Server Callbacks 事件處理</h2>
+
+                <p>
+                    ESP32 作為 BLE Server，可以透過繼承 <code>BLEServerCallbacks</code> 類別來監聽連線與斷開事件。
+                    這是實現「硬體狀態同步」的關鍵——讓 LED 即時反映藍牙連線狀態：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-kw">class</span> <span class="c-tag">MyServerCallbacks</span> <span class="c-white">:</span> <span class="c-kw">public</span> <span class="c-tag">BLEServerCallbacks</span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">void</span> <span class="c-attr">onConnect</span><span class="c-white">(BLEServer* pServer) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;digitalWrite(LED_PIN, HIGH);</span> <span class="c-comment">// 連線時亮燈</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;Serial.println(</span><span class="c-str">"Client connected!"</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">void</span> <span class="c-attr">onDisconnect</span><span class="c-white">(BLEServer* pServer) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;digitalWrite(LED_PIN, LOW);</span> <span class="c-comment">// 斷線時熄燈</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;pServer-></span><span class="c-attr">startAdvertising</span><span class="c-white">();</span> <span class="c-comment">// 重啟廣播！</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">};</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        <code>onDisconnect</code> 中必須呼叫 <code>pServer->startAdvertising()</code> 重新啟動廣播。若省略此步驟，手機斷線後設備將永遠「消失」，只能透過重新上電才能恢復——這是學員最常犯的錯誤。
+                    </div>
+                </div>
+
+                <h2>連線參數</h2>
+
+                <p>
+                    連線建立時，Central 會提議一組連線參數，影響通訊的即時性與功耗：
+                </p>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>參數</th>
+                        <th>說明</th>
+                        <th>典型值</th>
+                    </tr>
+                    <tr>
+                        <td>Connection Interval</td>
+                        <td>兩次通訊事件之間的間隔</td>
+                        <td>7.5ms – 4000ms</td>
+                    </tr>
+                    <tr>
+                        <td>Slave Latency</td>
+                        <td>Peripheral 可跳過的通訊事件次數</td>
+                        <td>0 – 499</td>
+                    </tr>
+                    <tr>
+                        <td>Supervision Timeout</td>
+                        <td>無通訊多久後判定斷線</td>
+                        <td>100ms – 32s</td>
+                    </tr>
+                </table>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -680,34 +807,120 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔋 3. 工作週期</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 text-justify uppercase tracking-widest leading-relaxed">
-<div class="flex-1 space-y-6 text-justify font-black">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify font-black uppercase tracking-widest">
-                                功耗奇蹟源自極致管理。
-                            </p>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-justify font-black border border-slate-800">
-<div class="p-8 rounded-3xl bg-white/5 border border-white/10 group hover:border-purple-500/50 transition text-justify font-black">
-<h4 class="font-bold text-purple-400 mb-3 text-sm uppercase tracking-widest text-justify font-black">
-                                        限時廣播</h4>
-<p class="text-xs text-slate-500 leading-relaxed text-justify font-black">開機廣播 60
-                                        秒。無人連線則休眠。</p>
-</div>
-<div class="p-8 rounded-3xl bg-white/5 border border-white/10 group hover:border-purple-500/50 transition text-justify font-black uppercase tracking-widest">
-<h4 class="font-bold text-purple-400 mb-3 text-sm uppercase tracking-widest text-justify font-black">
-                                        事件觸發</h4>
-<p class="text-xs text-slate-500 leading-relaxed text-justify font-black uppercase tracking-widest">
-                                        按鈕觸發。達成待機。</p>
-</div>
-</div>
-</div>
-</div>
+                <h1>工作週期與功耗管理</h1>
+
+                <p>
+                    BLE 之所以被稱為「低功耗藍牙」，核心秘密在於其精心設計的<strong>工作週期（Duty Cycle）</strong>管理機制。
+                    設備不需要持續廣播或保持連線——透過合理的週期配置，可以將電池壽命從數小時延長到數月甚至數年。
+                </p>
+
+                <p>
+                    對於無人車應用，雖然電池容量通常較充裕，但理解功耗管理仍然至關重要——尤其是在設備閒置待命的場景中。
+                </p>
+
+                <h2>廣播間隔（Advertising Interval）</h2>
+
+                <p>
+                    廣播間隔決定了 ESP32 多久發送一次廣播封包。間隔越短，手機越容易快速發現設備，但功耗也越高：
+                </p>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>廣播間隔</th>
+                        <th>發現速度</th>
+                        <th>功耗</th>
+                        <th>適用場景</th>
+                    </tr>
+                    <tr>
+                        <td>20ms – 100ms</td>
+                        <td>極快（&lt;1秒）</td>
+                        <td>高</td>
+                        <td>需要立即被發現（展示、教學）</td>
+                    </tr>
+                    <tr>
+                        <td>100ms – 500ms</td>
+                        <td>快（1–3秒）</td>
+                        <td>中</td>
+                        <td>一般消費產品</td>
+                    </tr>
+                    <tr>
+                        <td>1000ms – 10000ms</td>
+                        <td>慢（3–30秒）</td>
+                        <td>極低</td>
+                        <td>資產追蹤、長待機 Beacon</td>
+                    </tr>
+                </table>
+
+                <h2>功耗優化策略</h2>
+
+                <p>以下兩種策略可大幅降低廣播階段的電力消耗：</p>
+
+                <h3>策略一：限時廣播（Timed Advertising）</h3>
+
+                <p>
+                    設備開機後僅廣播固定時間（如 60 秒），若無人連線則自動進入深度休眠（Deep Sleep）。
+                    使用者按下按鈕時才喚醒並重新廣播：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 設定廣播持續 60 秒後自動停止</span><br>
+                    <span class="c-kw">unsigned long</span> <span class="c-attr">advStartTime</span> <span class="c-white">= millis();</span><br>
+                    <span class="c-kw">const unsigned long</span> <span class="c-attr">ADV_TIMEOUT</span> <span class="c-white">= 60000;</span> <span class="c-comment">// 60 秒</span><br><br>
+                    <span class="c-kw">void</span> <span class="c-attr">loop</span><span class="c-white">() {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(!connected && millis() - advStartTime > ADV_TIMEOUT) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;Serial.println(</span><span class="c-str">"No connection. Entering deep sleep..."</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;esp_deep_sleep_start();</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <h3>策略二：事件觸發廣播（Event-Triggered Advertising）</h3>
+
+                <p>
+                    設備平時處於休眠狀態，僅在外部事件（如按下按鈕、感測器觸發）發生時才啟動廣播。
+                    ESP32 支援 GPIO 作為喚醒源，即使在 Deep Sleep 下也能監聽引腳狀態：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 設定 GPIO 0 (BOOT 鍵) 為喚醒源</span><br>
+                    <span class="c-white">esp_sleep_enable_ext0_wakeup(GPIO_NUM_0, 0);</span> <span class="c-comment">// LOW 觸發</span><br>
+                    <span class="c-white">esp_deep_sleep_start();</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        ESP32 在 Deep Sleep 模式下的電流消耗僅約 <strong>10μA</strong>，相較於正常運行時的 80–240mA，省電效果超過 10000 倍。對於電池供電的遙控裝置，合理使用休眠機制是延長續航的關鍵。
+                    </div>
+                </div>
+
+                <h2>RSSI 信號強度感知</h2>
+
+                <p>
+                    <strong>RSSI（Received Signal Strength Indicator）</strong>是手機接收到 BLE 廣播封包時量測的信號強度，單位為 dBm。
+                    RSSI 隨距離增加而衰減，可用於粗略估算設備間的物理距離：
+                </p>
+
+                <ul>
+                    <li><strong>-30 ~ -50 dBm</strong>：極近距離（10cm 以內）</li>
+                    <li><strong>-50 ~ -70 dBm</strong>：近距離（0.5m – 2m）</li>
+                    <li><strong>-70 ~ -90 dBm</strong>：中距離（2m – 5m）</li>
+                    <li><strong>&lt; -90 dBm</strong>：遠距離或訊號微弱</li>
+                </ul>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        RSSI 受環境影響極大——人體遮擋、金屬反射、多路徑效應都會造成讀數波動。切勿將 RSSI 視為精確距離量測工具，它只適合做「近場/遠場」的粗略判斷。實務中建議取 10 組以上的平均值來減少雜訊。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -786,16 +999,75 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
-
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: QUIZ ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <div class="quiz-question">
+                        <p>1. BLE 廣播使用的三個專用頻道（37、38、39）為什麼被選在這些特定頻率上？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 因為這三個頻道的傳輸速度最快</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 因為它們位於 Wi-Fi 頻道的間隙位置，可大幅降低與 Wi-Fi 的互相干擾</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 因為這三個頻道是 BLE 5.0 新增的專用通道</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>2. 在 BLEServerCallbacks 的 onDisconnect 中，如果忘記呼叫 pServer->startAdvertising() 會發生什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> ESP32 會自動重新開始廣播</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 手機斷線後設備將「消失」，無法被重新發現，只能重新上電</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 不會有任何影響，BLE 連線是持久的</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>3. RSSI 值為 -45 dBm 時，代表什麼距離範圍？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 中距離（2m-5m）</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 極近距離（10cm 以內）</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 遠距離（5m 以上）</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>4. ESP32 在 Deep Sleep 模式下的電流消耗約為多少？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 約 80mA</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 約 10μA</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 約 1mA</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -853,9 +1125,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「BLE 廣播機制與連線流程」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「BLE 廣播機制與連線流程」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -871,8 +1143,17 @@
         { id: 3, label: '🤝 2. 掃描與連線', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🔋 3. 工作週期', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '120 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',              time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！BLE 的廣播頻道特別選在 Wi-Fi Ch1、Ch6、Ch11 的「間隙」位置（2402/2426/2480 MHz），即使在 Wi-Fi 密集環境中也能被快速搜尋到。' },
+        q2: { b: '正確！BLE 連線是排他性的，斷線後 ESP32 不會自動恢復廣播。必須在 onDisconnect 中手動呼叫 startAdvertising() 重啟廣播。' },
+        q3: { b: '正確！-30～-50 dBm 通常代表極近距離（約 10cm 以內）。RSSI 隨距離增加而衰減，但受環境影響很大，只適合做粗略的近場/遠場判斷。' },
+        q4: { b: '正確！ESP32 在 Deep Sleep 下電流僅約 10μA，相較於正常運行的 80-240mA，省電效果超過 10000 倍，是延長電池續航的關鍵技術。' },
+    };
+
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -891,6 +1172,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -994,6 +1276,7 @@
 
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 05：BLE GATT 協定';
 </script>
 
 <!-- Define Resources -->

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>速度計算演算法 - Vibe Coding Learn</title>
+    <title>速度計算演算法 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 11 - 速度演算法</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">速度計算演算法</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 216 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 216 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 11</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>速度計算演算法</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 11</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,14 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>速度計算演算法</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    有了脈衝數據，下一步就是把它變成精確的速度值——但「怎麼算」大有學問。
+                    本模組深入比較兩種工業級測速策略：<strong>頻率法 (M-Method)</strong> 適合高速穩定場景，<strong>週期法 (T-Method)</strong> 則在低速時提供無與倫比的精度。
+                    你將學會根據轉速動態切換演算法，打造一套從蠕行到全速都能平滑回饋的全時速感知引擎。
                 </p>
 
                 <div class="ms-scenario">
                     <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    當馬達全速運轉時，你的測速數據穩如磐石；但一旦降到低速，數值突然開始階梯式跳動——為什麼同一套演算法在不同速度下表現天差地別？先觀看下方影片，理解「量化誤差」如何隨轉速變化而消長，以及為什麼工業控制器需要一套「雙演算法混合切換」的策略才能覆蓋全速域。
                 </div>
 
                 <h2>教學影片</h2>
@@ -576,7 +575,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -590,47 +589,91 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>M 1. 頻率法 (M-Method)：高速穩定王</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                固定取樣時間窗格（如 100ms），計算這段時間內「收到了幾個脈衝」。這是高速環境下最穩定的運算法，能有效抵禦單一脈衝的抖動。
-                            </p>
-<div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-justify">
-<h4 class="font-bold text-blue-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
-                                    Execution Logic</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify">
-<li class="flex items-center gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full text-justify text-left"></span>
-<strong>原理</strong>：固定時間 \(\Delta T\)，數脈衝數 \(N\)。</li>
-<li class="flex items-center gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full text-justify"></span>
-<strong>優點</strong>：抗干擾強，高轉速極準，具備數位濾波效果。</li>
-<li class="flex items-center gap-2 text-justify text-left"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full text-justify"></span>
-<strong>缺點</strong>：低速時解像力差，數值會呈階梯狀跳變。</li>
-</ul>
+                <h1>頻率法 (M-Method)：高速穩定王</h1>
+
+                <p>
+                    頻率法（M-Method，也稱為脈衝計數法）的原理極其直觀：設定一個<strong>固定的取樣時間窗格 ΔT</strong>（例如 100ms），
+                    計算在這段時間內收到了多少個脈衝 <em>N</em>。脈衝數越多，代表轉速越快。
+                    這是工業控制與機器人領域中最廣泛使用的測速方法。
+                </p>
+
+                <div class="ms-note">
+                    <strong>M-Method 公式：</strong>
+                    \[Speed = \frac{N}{PPR \times \Delta T} \quad \text{(圈/秒)}\]
+                    \[RPM = \frac{N \times 60}{PPR \times \Delta T}\]
+                    其中 <em>N</em> = 窗格內脈衝數，<em>PPR</em> = 每圈脈衝數，<em>ΔT</em> = 取樣時間（秒）。
+                </div>
+
+                <div class="ms-table">
+                    <table>
+                        <caption>M-Method 優缺點分析</caption>
+                        <thead>
+                            <tr>
+                                <th>面向</th>
+                                <th>說明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>優點：高速穩定</strong></td>
+                                <td>高速時每個窗格內脈衝數量多，統計平均效果好，抗雜訊能力強</td>
+                            </tr>
+                            <tr>
+                                <td><strong>優點：實作簡單</strong></td>
+                                <td>只需一個計數器和定時器，程式邏輯清晰</td>
+                            </tr>
+                            <tr>
+                                <td><strong>缺點：量化誤差</strong></td>
+                                <td>速度解析度 = 1 tick / (PPR × ΔT)，低速時解析度不足</td>
+                            </tr>
+                            <tr>
+                                <td><strong>缺點：階梯跳變</strong></td>
+                                <td>低速時 N 值只有個位數，速度呈現離散階梯式變化</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="ms-code">
+                    <div class="code-header">C++ (Arduino) — M-Method 實作</div>
+<pre><code>const int   PPR = 20;
+const float DT  = 0.1;           // 100ms 取樣窗格
+const float WHEEL_D = 6.5;       // 輪徑 cm
+const float CM_TICK = PI * WHEEL_D / PPR;
+
+volatile int mCount = 0;
+
+void IRAM_ATTR pulseISR() { mCount++; }
+
+unsigned long lastSample = 0;
+
+void loop() {
+    if (millis() - lastSample >= 100) {   // 每 100ms
+        lastSample = millis();
+        noInterrupts();
+        int n = mCount;
+        mCount = 0;
+        interrupts();
+
+        float rpm     = (float)n * 60.0 / (PPR * DT);
+        float speed   = n * CM_TICK / DT;  // cm/s
+
+        Serial.printf("N=%d  RPM=%.1f  Speed=%.1f cm/s\n",
+                      n, rpm, speed);
+    }
+}</code></pre>
+                </div>
+
+                <div class="ms-warning">
+                    <strong>警告：低速盲區！</strong>假設 PPR=20、ΔT=100ms，最小可偵測速度為 1 tick / 100ms = 10 ticks/s，
+                    對應 RPM = 10×60/20 = 30 RPM。低於此轉速時，窗格內可能出現 0 或 1 個脈衝，速度讀數會在 0 和最小值之間劇烈跳動。
+                    這就是 M-Method 在低速場景的根本限制。
+                </div>
+
 </div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-justify">
-                                Counting Pulses in Window</h4>
-<div class="flex items-center justify-around gap-2 mb-4 relative z-10 text-justify">
-<div class="w-2 h-8 bg-blue-500 text-justify text-left"></div>
-<div class="w-2 h-8 bg-blue-500 text-justify text-left"></div>
-<div class="w-2 h-8 bg-blue-500 text-justify text-left"></div>
-<div class="w-2 h-8 bg-blue-500 text-justify text-left text-justify"></div>
-<div class="w-2 h-8 bg-blue-500/20 text-justify"></div>
-</div>
-<p class="text-[9px] text-blue-400 mt-4 font-mono tracking-widest text-center text-justify">
-                                FIXED TIME WINDOW ANALYZING...</p>
-</div>
-</div>
-                
-            </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -644,45 +687,96 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>T 2. 週期法 (T-Method)：低速精準儀</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                測量相鄰脈衝間隔的「微秒時間」。這是賦予機器人細膩低速行走與高精度位置控制能力的關鍵技術。
-                            </p>
-<div class="bg-purple-50 p-8 rounded-3xl border border-purple-100 text-justify">
-<h4 class="text-purple-900 font-bold mb-4 text-xs uppercase tracking-widest text-center text-justify text-justify">
-                                    Time-to-Speed Mapping</h4>
-<div class="text-xl font-mono text-purple-600 text-center text-justify text-justify">
-                                    \[Speed \propto \frac{1}{\Delta t}\]
-                                </div>
-<p class="text-[10px] text-slate-400 mt-4 italic font-light text-center text-justify text-justify">
-                                    精密計時：使用 micros() 級別解像力</p>
+                <h1>週期法 (T-Method)：低速精準儀</h1>
+
+                <p>
+                    週期法（T-Method）反轉了 M-Method 的邏輯：不再計算「固定時間內有多少脈衝」，
+                    而是測量<strong>相鄰兩個脈衝之間的時間間隔 Δt</strong>。間隔越短代表轉速越快，間隔越長代表轉速越慢。
+                    這種方法在低速時能提供極高的解析度。
+                </p>
+
+                <div class="ms-note">
+                    <strong>T-Method 公式：</strong>
+                    \[Speed = \frac{1}{PPR \times \Delta t} \quad \text{(圈/秒)}\]
+                    \[RPM = \frac{60}{PPR \times \Delta t}\]
+                    其中 <em>Δt</em> = 相鄰脈衝間隔（秒），使用 <code>micros()</code> 測量以獲得微秒級精度。
+                </div>
+
+                <div class="ms-table">
+                    <table>
+                        <caption>T-Method 優缺點分析</caption>
+                        <thead>
+                            <tr>
+                                <th>面向</th>
+                                <th>說明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>優點：低速精準</strong></td>
+                                <td>低速時 Δt 很大，micros() 的解析度相對極高，計算結果平滑</td>
+                            </tr>
+                            <tr>
+                                <td><strong>優點：即時響應</strong></td>
+                                <td>每個脈衝都更新一次速度，不需等待整個取樣窗格</td>
+                            </tr>
+                            <tr>
+                                <td><strong>缺點：高速雜訊</strong></td>
+                                <td>高速時 Δt 極小，micros() 的有限解析度會導致計算結果抖動</td>
+                            </tr>
+                            <tr>
+                                <td><strong>缺點：停轉問題</strong></td>
+                                <td>馬達停止後不再產生脈衝，速度值會「凍結」在最後一次讀數，無法歸零</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="ms-code">
+                    <div class="code-header">C++ (Arduino) — T-Method 實作（含超時保護）</div>
+<pre><code>const int   PPR = 20;
+const float WHEEL_D = 6.5;
+const float CM_TICK = PI * WHEEL_D / PPR;
+const unsigned long TIMEOUT_US = 500000;  // 0.5 秒無脈衝視為停止
+
+volatile unsigned long lastPulseTime = 0;
+volatile unsigned long pulsePeriod   = 0;
+
+void IRAM_ATTR periodISR() {
+    unsigned long now = micros();
+    pulsePeriod   = now - lastPulseTime;
+    lastPulseTime = now;
+}
+
+void loop() {
+    noInterrupts();
+    unsigned long dt = pulsePeriod;
+    unsigned long lp = lastPulseTime;
+    interrupts();
+
+    float speed = 0;
+    // 超時保護：若距離上次脈衝已超過閾值，判定為停止
+    if (micros() - lp < TIMEOUT_US && dt > 0) {
+        float rps = 1000000.0 / (PPR * dt);   // 圈/秒
+        speed = rps * PI * WHEEL_D;            // cm/s
+    }
+
+    Serial.printf("Period=%lu us  Speed=%.1f cm/s\n", dt, speed);
+    delay(50);
+}</code></pre>
+                </div>
+
+                <div class="ms-important">
+                    <strong>重要：超時歸零機制。</strong>T-Method 最常見的 Bug 是「馬達停了，速度讀數卻不歸零」。
+                    因為停轉後沒有新脈衝觸發 ISR，<code>pulsePeriod</code> 會永遠停留在最後一個值。
+                    解法是在 <code>loop()</code> 中檢查「距離上次脈衝的時間」，超過閾值就強制將速度設為 0。
+                    閾值建議設為「最低可接受速度下的理論脈衝間隔」的 2–3 倍。
+                </div>
+
 </div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent text-justify">
-</div>
-<h4 class="text-purple-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-justify">
-                                Period Integration</h4>
-<div class="flex items-center gap-20 relative z-10 text-justify">
-<div class="w-1 h-12 bg-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.5)] text-justify">
-</div>
-<div class="text-slate-500 font-mono text-xs animate-pulse text-justify">--- Δt ---
-                                </div>
-<div class="w-1 h-12 bg-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.5)] text-justify text-left">
-</div>
-</div>
-<p class="text-[9px] text-slate-500 mt-8 font-mono tracking-tighter uppercase relative z-10 text-center text-justify text-justify">
-                                High Precision: &lt; 1μs Resolution</p>
-</div>
-</div>
-                
-            </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -696,49 +790,121 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚡ 3. 混合測速 (M/T Method) 策略</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
-                                工業級控制器會根據「轉速門檻」動態切換演算法。這能完美結合 M 法的高速強度與 T 法的低速靈敏，打破物理感測的侷限。
-                            </p>
-<div class="bg-cyan-500/10 p-8 rounded-3xl border border-cyan-500/20 shadow-inner text-justify text-justify">
-<h4 class="font-bold text-cyan-400 mb-4 text-xs uppercase tracking-widest text-justify text-left">
-                                    M/T Crossover Strategy</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify text-justify">
-<li class="flex items-start gap-2 text-justify text-justify"><span class="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify text-justify">切換閾值
-                                                (Threshold)</strong>：尋找誤差曲線的交點作為算法換手點。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-justify"><span class="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">平滑過渡
-                                                (Smoothing)</strong>：利用濾波防止算法切換瞬間的速度跳變。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-justify"><span class="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-1 text-justify text-justify"></span>
-<div><strong class="text-white text-justify">實時魯棒性</strong>：在中斷與定時器間建立穩健的數據同步管線。
-                                        </div>
-</li>
-</ul>
+                <h1>混合測速 (M/T Method) 策略</h1>
+
+                <p>
+                    工業級馬達控制器從不只依賴單一演算法。<strong>混合 M/T 測速法</strong>根據當前轉速動態切換演算法：
+                    高速時使用 M-Method（脈衝計數穩定），低速時切換至 T-Method（週期測量精準）。
+                    這樣就能在全速域範圍內獲得最佳的測量精度。
+                </p>
+
+                <div class="ms-table">
+                    <table>
+                        <caption>M/T 混合策略：速域分工</caption>
+                        <thead>
+                            <tr>
+                                <th>速域</th>
+                                <th>使用方法</th>
+                                <th>原因</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>高速 (&gt; 閾值)</td>
+                                <td>M-Method（頻率法）</td>
+                                <td>脈衝數量充足，統計平均效果好</td>
+                            </tr>
+                            <tr>
+                                <td>低速 (&lt; 閾值)</td>
+                                <td>T-Method（週期法）</td>
+                                <td>脈衝間隔大，micros() 解析度足以精確計算</td>
+                            </tr>
+                            <tr>
+                                <td>停止 (超時)</td>
+                                <td>強制歸零</td>
+                                <td>T-Method 無法自行偵測停轉</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="ms-note">
+                    <strong>切換閾值的選擇：</strong>理論上，M-Method 與 T-Method 的誤差曲線會在某個轉速交叉。
+                    該交叉點就是最佳切換閾值。實務上，可以設定 <code>THRESHOLD_HIGH</code> 和 <code>THRESHOLD_LOW</code>
+                    兩個值（遲滯帶 / Hysteresis），避免在臨界速度時反覆切換造成速度值跳動。
+                </div>
+
+                <div class="ms-code">
+                    <div class="code-header">C++ (Arduino) — 混合 M/T 測速引擎</div>
+<pre><code>const int   PPR = 20;
+const float DT  = 0.1;
+const float WHEEL_D = 6.5;
+const float CM_TICK = PI * WHEEL_D / PPR;
+const int   THRESHOLD_HIGH = 5;   // ≥5 ticks/窗格 → 用 M-Method
+const int   THRESHOLD_LOW  = 3;   // ≤3 ticks/窗格 → 用 T-Method
+const unsigned long TIMEOUT_US = 500000;
+
+volatile int mCount = 0;
+volatile unsigned long lastPulseTime = 0;
+volatile unsigned long pulsePeriod   = 0;
+bool useM = true;
+
+void IRAM_ATTR hybridISR() {
+    unsigned long now = micros();
+    pulsePeriod   = now - lastPulseTime;
+    lastPulseTime = now;
+    mCount++;
+}
+
+unsigned long lastSample = 0;
+
+void loop() {
+    if (millis() - lastSample >= 100) {
+        lastSample = millis();
+        noInterrupts();
+        int n = mCount;
+        mCount = 0;
+        unsigned long dt = pulsePeriod;
+        unsigned long lp = lastPulseTime;
+        interrupts();
+
+        float speed = 0;
+
+        // 遲滯切換邏輯
+        if (n >= THRESHOLD_HIGH) useM = true;
+        if (n <= THRESHOLD_LOW)  useM = false;
+
+        if (micros() - lp > TIMEOUT_US) {
+            speed = 0;                        // 超時歸零
+        } else if (useM) {
+            speed = n * CM_TICK / DT;         // M-Method
+        } else if (dt > 0) {
+            float rps = 1000000.0 / (PPR * dt);
+            speed = rps * PI * WHEEL_D;       // T-Method
+        }
+
+        Serial.printf("[%s] N=%d dt=%lu Speed=%.1f cm/s\n",
+                      useM ? "M" : "T", n, dt, speed);
+    }
+}</code></pre>
+                </div>
+
+                <div class="ms-tip">
+                    <strong>提示：</strong>遲滯帶 (Hysteresis) 是防止「閃爍切換」的關鍵設計。
+                    就像恆溫器不會在 25.0°C 時不斷開關冷氣一樣，我們設定「升到 5 才切 M，降到 3 才切 T」，
+                    中間的 4 保持現有模式，確保速度讀數在切換點附近平滑過渡。
+                </div>
+
+                <div class="ms-warning">
+                    <strong>警告：</strong>混合測速的切換閾值必須根據實際硬體校準。
+                    不同的 PPR、取樣時間、輪徑都會改變 M/T 誤差的交叉點。
+                    建議的校準流程：以固定 PWM 從低速逐步加速，同時記錄 M 法與 T 法的讀數，找到兩者偏差最小的交叉轉速。
+                </div>
+
 </div>
-</div>
-<div class="lg:w-80 bg-cyan-600/10 p-10 rounded-3xl border border-cyan-500/20 text-center relative overflow-hidden group text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-cyan-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify">
-</div>
-<h4 class="text-cyan-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center text-justify">
-                                Hybrid Engine</h4>
-<p class="text-[11px] text-slate-500 leading-relaxed font-light mb-8 italic text-center text-justify text-left">
-                                "沒有完美的單一演算法，只有完美的工程取舍。"
-                            </p>
-<div class="inline-block px-8 py-3 bg-cyan-500 text-white rounded-xl font-bold text-[10px] shadow-lg cursor-pointer hover:bg-cyan-400 transition-colors text-center text-justify">
-                                Switch M/T Mode</div>
-</div>
-</div>
-                
-            </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -817,16 +983,134 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>
+                    請回答以下問題，測試你對「<strong>速度演算法</strong>」的理解程度。
+                    選擇完畢後點擊「送出答案」查看結果與解析。
+                </p>
+
+                <div id="quiz-container" style="margin:24px 0;">
+
+                    <div class="quiz-question" id="quiz-q0" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">1. 使用編碼器計算速度時，「M 法（頻率法）」適用於什麼情境？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt0">
+                            <input type="radio" name="quiz-q0" value="0" style="accent-color:var(--ms-blue);">
+                            <span>極低速運轉</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt1">
+                            <input type="radio" name="quiz-q0" value="1" style="accent-color:var(--ms-blue);">
+                            <span>中高速運轉，脈衝頻率較高時</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt2">
+                            <input type="radio" name="quiz-q0" value="2" style="accent-color:var(--ms-blue);">
+                            <span>只有單一脈衝時</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt3">
+                            <input type="radio" name="quiz-q0" value="3" style="accent-color:var(--ms-blue);">
+                            <span>馬達靜止狀態</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp0" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q1" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">2. 「T 法（週期法）」測速的核心原理是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt0">
+                            <input type="radio" name="quiz-q1" value="0" style="accent-color:var(--ms-blue);">
+                            <span>計算固定時間內的脈衝總數</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt1">
+                            <input type="radio" name="quiz-q1" value="1" style="accent-color:var(--ms-blue);">
+                            <span>量測相鄰兩個脈衝之間的時間間隔</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt2">
+                            <input type="radio" name="quiz-q1" value="2" style="accent-color:var(--ms-blue);">
+                            <span>使用加速度積分得到速度</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt3">
+                            <input type="radio" name="quiz-q1" value="3" style="accent-color:var(--ms-blue);">
+                            <span>透過電流反推轉速</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp1" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q2" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">3. 移動平均濾波器（Moving Average Filter）在速度計算中的作用是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt0">
+                            <input type="radio" name="quiz-q2" value="0" style="accent-color:var(--ms-blue);">
+                            <span>提高取樣頻率</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt1">
+                            <input type="radio" name="quiz-q2" value="1" style="accent-color:var(--ms-blue);">
+                            <span>平滑雜訊波動，減少速度讀數的抖動</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt2">
+                            <input type="radio" name="quiz-q2" value="2" style="accent-color:var(--ms-blue);">
+                            <span>增加編碼器解析度</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt3">
+                            <input type="radio" name="quiz-q2" value="3" style="accent-color:var(--ms-blue);">
+                            <span>降低 CPU 使用率</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp2" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q3" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">4. 當編碼器解析度為 360 PPR（每轉脈衝數），在 1 秒內計到 720 個脈衝，馬達轉速為多少 RPM？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt0">
+                            <input type="radio" name="quiz-q3" value="0" style="accent-color:var(--ms-blue);">
+                            <span>60 RPM</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt1">
+                            <input type="radio" name="quiz-q3" value="1" style="accent-color:var(--ms-blue);">
+                            <span>120 RPM</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt2">
+                            <input type="radio" name="quiz-q3" value="2" style="accent-color:var(--ms-blue);">
+                            <span>360 RPM</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt3">
+                            <input type="radio" name="quiz-q3" value="3" style="accent-color:var(--ms-blue);">
+                            <span>720 RPM</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp3" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">送出答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+
+                <div id="quiz-result" style="display:none; margin-top:20px; padding:16px 20px; border-radius:6px; font-weight:600;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -884,9 +1168,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「速度計算演算法」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「速度計算演算法」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -902,7 +1186,8 @@
         { id: 3, label: '週期法 (T-Method)：低速精準儀', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '混合測速 (M/T Method) 策略', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '180 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -922,6 +1207,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1023,8 +1309,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = [1, 1, 1, 1];
+    const QUIZ_EXPLANATIONS = ["M 法在固定時間內計數脈衝數，高速時脈衝多、精度高；低速時脈衝少、解析度差。","T 法量測兩個相鄰脈衝之間的時間差，再換算為頻率與速度，適合低速高精度量測。","移動平均對連續多次量測取平均，有效抑制隨機雜訊造成的速度值跳動，但會引入少量延遲。","720 脈衝 ÷ 360 PPR = 2 轉/秒，2 × 60 = 120 RPM。"];
+
+    function submitQuiz() {
+        let score = 0;
+        QUIZ_ANSWERS.forEach((ans, i) => {
+            const selected = document.querySelector(`input[name="quiz-q${i}"]:checked`);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            const qEl = document.getElementById(`quiz-q${i}`);
+            if (selected && parseInt(selected.value) === ans) {
+                score++;
+                qEl.style.borderColor = '#107c10';
+                expEl.style.background = '#dff6dd';
+                expEl.innerHTML = '<strong style="color:#107c10;">✓ 正確！</strong> ' + QUIZ_EXPLANATIONS[i];
+            } else {
+                qEl.style.borderColor = '#d13438';
+                expEl.style.background = '#fde7e9';
+                expEl.innerHTML = '<strong style="color:#d13438;">✗ 不正確。</strong> ' + QUIZ_EXPLANATIONS[i];
+            }
+            expEl.style.display = 'block';
+        });
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === QUIZ_ANSWERS.length) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.style.color = '#107c10';
+            resultEl.textContent = `🎉 滿分！你答對了全部 ${QUIZ_ANSWERS.length} 題！`;
+        } else {
+            resultEl.style.background = '#deecf9';
+            resultEl.style.color = '#005a9e';
+            resultEl.textContent = `你答對了 ${score} / ${QUIZ_ANSWERS.length} 題，請查看解析後再試一次。`;
+        }
+    }
+
+    function resetQuiz() {
+        QUIZ_ANSWERS.forEach((_, i) => {
+            const radios = document.querySelectorAll(`input[name="quiz-q${i}"]`);
+            radios.forEach(r => r.checked = false);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            expEl.style.display = 'none';
+            const qEl = document.getElementById(`quiz-q${i}`);
+            qEl.style.borderColor = '#e1dfdd';
+        });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 11：光電感測器';
 </script>
 
 <!-- Define Resources -->

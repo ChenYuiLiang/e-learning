@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>系統架構全覽與數據流分析 - Vibe Coding Learn</title>
+    <title>系統架構全覽與數據流分析 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 15 - 數據流分析</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">系統架構全覽與數據流分析</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 15</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>系統架構全覽與數據流分析</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 15</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>系統架構全覽與數據流分析</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    歡迎來到本模組！本單元聚焦於 <strong>系統架構全覽與數據流分析</strong>。
+                    當你在螢幕上滑動搖桿的瞬間，這個觸控事件經歷了哪些變形與跳轉，最終才轉化為馬達的 PWM 訊號？整條數據鏈路中，哪一層消耗了最多的毫秒數？
+                    本模組將帶你以「系統診斷醫師」的視角，解構感知層、傳輸層與執行層的端到端數據流，精準定位瓶頸並建立工業級的韌性解析器。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境設定</div>
+                    你的搖桿操控延遲從原本的 20ms 突然惡化到 150ms，但你不確定問題出在哪裡——是瀏覽器的 JavaScript 渲染太慢？藍牙封包太大導致傳輸阻塞？還是 ESP32 韌體的 JSON 解析器效率低落？
+                    只有在數據流的每一個關鍵節點埋入時間戳，你才能像觀測心電圖一樣精確診斷系統的生命脈動。
+                    請先觀看教學影片，建立全鏈路觀測的工程師思維。
                 </div>
 
                 <h2>教學影片</h2>
@@ -576,7 +577,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -591,55 +592,73 @@
                 </div>
 
                 <h1>🏗️ 1. 三層神經架構：從螢幕到馬達</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify text-justify">
-                                理解系統全貌是架構師的核心競爭力。將自動駕駛系統拆解為感知控制、無線傳輸、硬體執行三大神經層級，定義清晰的層級協議邊界。
-                            </p>
-<div class="bg-indigo-50 p-6 rounded-2xl border border-indigo-100 text-justify">
-<h4 class="font-bold text-indigo-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed text-center text-justify">
-                                    Data Pathway Tiering</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify text-justify">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify text-left">感知控制層 (Dashboard)</strong>：負責 UI
-                                            事件捕捉、遙測視覺化與控制指令序列化。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify">通訊傳輸層 (Web Bluetooth)</strong>：跨平台 GATT
-                                            協議實施，負責封包的高效低延時傳輸。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify">硬體執行層 (Firmware)</strong>：負責解析協議、狀態機管理與底層 PWM
-                                            物理訊號產生。</div>
-</li>
-</ul>
+
+                <p>
+                    理解系統全貌是架構師的核心競爭力。當你在螢幕上滑動搖桿，這個看似簡單的動作背後，數據需要穿越三個截然不同的技術領域：瀏覽器中的 JavaScript 運算環境、藍牙射頻的無線傳輸通道、以及 ESP32 微控制器上的即時韌體。每一層都有各自的資料格式、時間尺度和失敗模式。將系統拆解為清晰的層級架構，是定位瓶頸與設計容錯機制的基礎。
+                </p>
+
+                <h2>感知控制層 (Dashboard Layer)</h2>
+
+                <p>
+                    感知控制層運行在使用者的瀏覽器中，負責三項核心任務：<strong>UI 事件捕捉</strong>（搖桿位移、按鈕觸發）、<strong>遙測資料視覺化</strong>（即時速度、電池電壓、感測器數值的圖形呈現）、以及<strong>控制指令序列化</strong>（將浮點數座標轉換為 BLE 可傳輸的封包格式）。
+                </p>
+
+                <p>
+                    此層的關鍵挑戰在於「人類感知的即時性要求」。研究顯示，操控延遲超過 100ms 時使用者會明顯感受到「黏滯感」，超過 200ms 則幾乎無法精確操控。因此感知層的處理時間預算極為有限，通常必須在 5-10ms 內完成座標運算與封包組裝。
+                </p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        搖桿事件的觸發頻率取決於瀏覽器的 <code>pointermove</code> 取樣率，通常在 60-120Hz 之間。但 BLE 的傳輸頻寬有限，因此必須在此層實施節流 (Throttle)，將發送頻率限制在 20-50Hz。
+                    </div>
+                </div>
+
+                <h2>通訊傳輸層 (Transport Layer)</h2>
+
+                <p>
+                    通訊傳輸層由 Web Bluetooth GATT 協議承擔，是數據從軟體世界跨越到硬體世界的「空中橋樑」。BLE 4.2 的單次封包最大承載為 20 bytes（BLE 5.0 可擴展至 244 bytes），這意味著每一個 byte 都極為珍貴。此層的設計目標是在有限頻寬內實現最低延遲與最高可靠性。
+                </p>
+
+                <table class="ms-table">
+                    <tr><th>傳輸參數</th><th>典型值</th><th>影響</th></tr>
+                    <tr><td>Connection Interval</td><td>7.5ms - 4s</td><td>決定封包往返的最小時間單位</td></tr>
+                    <tr><td>MTU (最大傳輸單元)</td><td>23 bytes (預設)</td><td>單次可攜帶的最大數據量</td></tr>
+                    <tr><td>Slave Latency</td><td>0 (即時模式)</td><td>周邊裝置可跳過的連線事件數</td></tr>
+                    <tr><td>Supervision Timeout</td><td>4000ms</td><td>超過此時間無回應視為斷線</td></tr>
+                </table>
+
+                <h2>硬體執行層 (Firmware Layer)</h2>
+
+                <p>
+                    硬體執行層運行在 ESP32 的 FreeRTOS 即時作業系統上，負責將接收到的封包解析為具體的物理動作。此層的工作包括：JSON/二進制協議解析、差分驅動運動學計算（將線速度 <code>v</code> 與角速度 <code>w</code> 轉換為左右輪 PWM）、以及安全限幅（確保 PWM 值不超出硬體安全範圍）。
+                </p>
+
+<div class="ms-code">
+<span class="c-comment">// ESP32 韌體端：接收 BLE 封包並轉換為馬達 PWM</span><br>
+<span class="c-kw">void</span> <span class="c-tag">onBleReceive</span><span class="c-white">(</span><span class="c-kw">const</span> <span class="c-white">uint8_t* data, </span><span class="c-kw">size_t</span> <span class="c-white">len) {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">int8_t</span> <span class="c-attr">v</span> <span class="c-white">= (</span><span class="c-kw">int8_t</span><span class="c-white">)data[0]; &nbsp;</span><span class="c-comment">// 線速度 [-128, 127]</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">int8_t</span> <span class="c-attr">w</span> <span class="c-white">= (</span><span class="c-kw">int8_t</span><span class="c-white">)data[1]; &nbsp;</span><span class="c-comment">// 角速度 [-128, 127]</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">int</span> <span class="c-attr">pwmL</span> <span class="c-white">= </span><span class="c-tag">constrain</span><span class="c-white">(v + w, -255, 255);</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">int</span> <span class="c-attr">pwmR</span> <span class="c-white">= </span><span class="c-tag">constrain</span><span class="c-white">(v - w, -255, 255);</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">setMotor</span><span class="c-white">(MOTOR_L, pwmL);</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">setMotor</span><span class="c-white">(MOTOR_R, pwmR);</span><br>
+<span class="c-white">}</span>
 </div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-indigo-500/5 group-hover:bg-indigo-500/10 transition-colors text-justify">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-center text-justify">
-                                Real-time Pipeline Trace</h4>
-<div class="relative z-10 flex flex-col items-center gap-4 text-justify">
-<div class="text-[9px] font-mono p-2 border border-slate-700 rounded w-full text-justify">
-                                    UI EVENT: joystick_move (0.85, -0.4)</div>
-<div class="text-indigo-500 font-bold text-justify">⬇</div>
-<div class="text-[9px] font-mono p-2 border border-slate-700 rounded w-full text-justify text-left">
-                                    GATT WRITE: {v:12, w:-4}</div>
-<div class="text-indigo-500 font-bold text-justify">⬇</div>
-<div class="text-[9px] font-mono p-2 border border-indigo-500/50 bg-indigo-500/10 rounded w-full text-indigo-400 text-left text-justify">
-                                    PWM OUTPUT: M1:180, M2:142</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-10 font-mono tracking-widest text-center text-justify uppercase font-black">
-                                Data-Driven Execution Cycle</p>
-</div>
-</div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        韌體層的解析迴圈必須在 <strong>1ms 以內</strong>完成。如果使用 <code>ArduinoJson</code> 解析複雜 JSON 結構，在 ESP32 240MHz 主頻下可能需要 200-500μs。當封包頻率超過 50Hz 時，累積的解析延遲可能導致 Serial 緩衝區溢位。考慮使用二進制協議取代 JSON 以提升解析效率。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -654,47 +673,98 @@
                 </div>
 
                 <h1>🔄 2. 數據變身術：序列化與動態映射</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                同一個控制概念在不同層級有完全不同的數位形態。學習定義具備容錯性的「通訊協議」，確保網頁端發出的浮點數能被 ESP32 精確映射為 8-bit 的物理功率。
-                            </p>
-<div class="bg-cyan-50 p-8 rounded-3xl border border-cyan-100 text-center text-justify">
-<h4 class="text-cyan-900 font-bold mb-4 text-xs uppercase tracking-widest text-center text-justify text-justify text-justify">
-                                    Type Conversion Pipeline</h4>
-<div class="text-[11px] font-mono text-cyan-600 p-5 bg-white rounded-2xl shadow-inner text-justify text-left">
-                                    Normalized (0~1.0) -&gt; JSON Packet -&gt; ESP32 UInt8 (0~255)
-                                </div>
-<p class="text-[10px] text-slate-400 mt-6 italic font-light text-center text-justify">解決
-                                    Byte Order 不一致與精確度損失的實戰關鍵</p>
+
+                <p>
+                    同一個「向前走」的控制意圖，在系統的不同層級有著截然不同的數位表達方式：在網頁端是 JavaScript 的浮點數 <code>0.78</code>，經過 BLE 傳輸時變成 JSON 字串 <code>{"v":12}</code>，到了 ESP32 韌體端則轉化為 <code>uint8_t</code> 類型的 PWM 值 <code>200</code>。這個「數據變身」的過程稱為<strong>序列化 (Serialization)</strong> 與<strong>動態映射 (Dynamic Mapping)</strong>——設計不當會導致精度損失、溢位錯誤，甚至讓馬達做出完全相反的動作。
+                </p>
+
+                <h2>從浮點到位元組：類型轉換管道</h2>
+
+                <p>
+                    搖桿控制器輸出的座標通常是 [-1.0, 1.0] 範圍的正規化浮點數，但 BLE 封包的每一個 byte 都極為珍貴。傳輸前必須將浮點數映射為整數以壓縮體積。常見的映射策略如下：
+                </p>
+
+                <table class="ms-table">
+                    <tr><th>映射方案</th><th>網頁端輸入</th><th>封包內容</th><th>韌體端還原</th><th>精度損失</th></tr>
+                    <tr>
+                        <td><strong>JSON 字串</strong></td>
+                        <td><code>0.78</code></td>
+                        <td><code>{"v":0.78}</code> (10 bytes)</td>
+                        <td><code>parseFloat()</code></td>
+                        <td>零損失，但體積大</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Int8 映射</strong></td>
+                        <td><code>0.78</code></td>
+                        <td><code>0x63</code> (1 byte)</td>
+                        <td><code>val / 127.0</code></td>
+                        <td>~0.8%（可接受）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>UInt8 映射</strong></td>
+                        <td><code>0.78</code></td>
+                        <td><code>0xC7</code> (1 byte)</td>
+                        <td><code>val / 255.0</code></td>
+                        <td>~0.4%</td>
+                    </tr>
+                </table>
+
+                <h2>JSON vs. 二進制協議的取捨</h2>
+
+                <p>
+                    JSON 格式具有極佳的可讀性與除錯便利性——你可以直接在 Serial Monitor 中看到 <code>{"v":12,"w":-4}</code>，一目了然。但 JSON 的代價是體積膨脹：一個簡單的二維座標用 JSON 表示需要 15-20 bytes，而用二進制緊湊封包只需 2 bytes。在 BLE 4.2 的 20-byte MTU 限制下，這個差距意味著 JSON 協議每次只能傳送一筆數據，而二進制協議可以打包多達 10 筆。
+                </p>
+
+<div class="ms-code">
+<span class="c-comment">// 網頁端：將正規化座標打包為二進制封包</span><br>
+<span class="c-kw">function</span> <span class="c-attr">packCommand</span><span class="c-white">(x, y) {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">buf</span> <span class="c-white">= </span><span class="c-kw">new</span> <span class="c-tag">ArrayBuffer</span><span class="c-white">(3);</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">view</span> <span class="c-white">= </span><span class="c-kw">new</span> <span class="c-tag">DataView</span><span class="c-white">(buf);</span><br>
+<span class="c-white">&nbsp;&nbsp;view.</span><span class="c-tag">setUint8</span><span class="c-white">(0, 0xA5);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 同步標記 (Sync Byte)</span><br>
+<span class="c-white">&nbsp;&nbsp;view.</span><span class="c-tag">setInt8</span><span class="c-white">(1, Math.round(x * 127));</span><span class="c-comment">// X: [-127, 127]</span><br>
+<span class="c-white">&nbsp;&nbsp;view.</span><span class="c-tag">setInt8</span><span class="c-white">(2, Math.round(y * 127));</span><span class="c-comment">// Y: [-127, 127]</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-white">buf;</span><br>
+<span class="c-white">}</span>
 </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        <strong>同步標記 (Sync Byte)</strong> 是封包起始的魔術數字（如 <code>0xA5</code>），用於在數據流中定位有效封包的開頭。當通訊因干擾產生位元錯位時，解析器可搜尋下一個同步標記重新對齊。這是串流協議中不可或缺的容錯機制。
+                    </div>
+                </div>
+
+                <h2>韌體端的安全解析</h2>
+
+                <p>
+                    韌體端接收到原始位元組後，必須執行嚴格的驗證：檢查同步標記是否正確、封包長度是否符合預期、數值是否在合法範圍內。任何一項驗證失敗都應丟棄該封包，而非使用可能損毀的數據驅動馬達。
+                </p>
+
+<div class="ms-code">
+<span class="c-comment">// ESP32 韌體端：安全解析二進制封包</span><br>
+<span class="c-kw">void</span> <span class="c-tag">parsePacket</span><span class="c-white">(</span><span class="c-kw">const</span> <span class="c-white">uint8_t* data, </span><span class="c-kw">size_t</span> <span class="c-white">len) {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (len &lt; 3 || data[0] != 0xA5) </span><span class="c-kw">return</span><span class="c-white">;</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">int8_t</span> <span class="c-attr">x</span> <span class="c-white">= (</span><span class="c-kw">int8_t</span><span class="c-white">)data[1];</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">int8_t</span> <span class="c-attr">y</span> <span class="c-white">= (</span><span class="c-kw">int8_t</span><span class="c-white">)data[2];</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">float</span> <span class="c-attr">normX</span> <span class="c-white">= x / 127.0f;&nbsp;</span><span class="c-comment">// 還原至 [-1.0, 1.0]</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">float</span> <span class="c-attr">normY</span> <span class="c-white">= y / 127.0f;</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">applyMotorControl</span><span class="c-white">(normX, normY);</span><br>
+<span class="c-white">}</span>
 </div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-cyan-500/5 text-justify"></div>
-<h4 class="text-cyan-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-center text-justify">
-                                Signal Integrity Analysis</h4>
-<div class="w-full space-y-4 px-10 relative z-10 text-justify">
-<div class="flex justify-between text-[8px] text-slate-400 text-justify"><span>Dashboard
-                                        Input (float)</span> <span>0.7853</span></div>
-<div class="w-full bg-slate-800 h-1 rounded-full overflow-hidden text-justify">
-<div class="bg-cyan-500 h-full w-[78%] text-justify"></div>
-</div>
-<div class="flex justify-between text-[8px] text-slate-400 text-justify"><span>Firmware
-                                        Logic (uint8)</span> <span>200 / 255</span></div>
-<div class="w-full bg-slate-800 h-1 rounded-full overflow-hidden text-justify">
-<div class="bg-emerald-500 h-full w-[78%] text-justify"></div>
-</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-10 font-mono tracking-widest uppercase text-center text-justify italic font-black">
-                                Lossless Protocol Compliance</p>
-</div>
-</div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        JavaScript 與 C/C++ 的位元組順序 (Endianness) 可能不同。JavaScript <code>DataView</code> 預設使用大端序 (Big-Endian)，而 ESP32（Xtensa 架構）使用小端序 (Little-Endian)。對於多位元組數值（如 <code>int16_t</code>），務必在 <code>DataView</code> 中明確指定 <code>littleEndian: true</code>，否則韌體端解析出的數值將完全錯誤。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -709,49 +779,114 @@
                 </div>
 
                 <h1>📈 3. 性能指標：端到端延遲測量</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify text-justify text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
-                                工程師從不靠直覺除錯。學會使用時間戳記 (Timestamp) 埋點測量「全鏈路延遲」，精確定位瓶頸：是瀏覽器渲染太慢，還是固件端的序列化解析太過沉重？
-                            </p>
-<div class="bg-cyan-500/10 p-8 rounded-3xl border border-cyan-500/20 shadow-inner text-justify text-justify">
-<h4 class="font-bold text-cyan-400 mb-4 text-xs uppercase tracking-widest text-center text-justify text-left">
-                                    End-to-End Latency Tracing</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify text-left text-justify">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">雙向時間埋點</strong>：在 Web 發送與 ESP
-                                            接收處同步紀錄 <code>millis()</code>，量化 RTT 值。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">壓力限制測試</strong>：持續提升發送頻率直到觸發序列緩衝區
-                                            (Buffer) 溢位邊界。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">解析韌性
-                                                (Resilience)</strong>：故意注入損毀封包，測試系統解析器是否具備自動復位能力。</div>
-</li>
-</ul>
+
+                <p>
+                    「感覺有點卡」是工程師最危險的自我欺騙。端到端延遲 (End-to-End Latency) 必須用數據而非直覺來量化。從搖桿位移的瞬間到馬達實際轉動的瞬間，中間經歷了至少六個處理階段，每個階段都可能是瓶頸。學會在關鍵路徑上埋入時間戳，是從「碰運氣」進化到「精準除錯」的分水嶺。
+                </p>
+
+                <h2>全鏈路延遲拆解</h2>
+
+                <p>一次完整的控制指令從觸發到執行，需要穿越以下六個階段：</p>
+
+                <table class="ms-table">
+                    <tr><th>階段</th><th>位置</th><th>典型耗時</th><th>測量方法</th></tr>
+                    <tr>
+                        <td><strong>1. UI 事件處理</strong></td>
+                        <td>瀏覽器 JS</td>
+                        <td>1-3 ms</td>
+                        <td><code>performance.now()</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>2. 封包序列化</strong></td>
+                        <td>瀏覽器 JS</td>
+                        <td>&lt; 1 ms</td>
+                        <td><code>performance.now()</code> 差值</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3. BLE 傳輸</strong></td>
+                        <td>空中介面</td>
+                        <td>7.5-30 ms</td>
+                        <td>Connection Interval 決定</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4. 封包解析</strong></td>
+                        <td>ESP32 韌體</td>
+                        <td>0.05-0.5 ms</td>
+                        <td><code>micros()</code> 差值</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5. PID 運算</strong></td>
+                        <td>ESP32 韌體</td>
+                        <td>0.01-0.1 ms</td>
+                        <td><code>micros()</code> 差值</td>
+                    </tr>
+                    <tr>
+                        <td><strong>6. PWM 輸出</strong></td>
+                        <td>硬體外設</td>
+                        <td>&lt; 0.01 ms</td>
+                        <td>示波器</td>
+                    </tr>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        BLE 傳輸延遲（階段 3）通常佔據總延遲的 70-90%，是最大的瓶頸。此延遲主要取決於 Connection Interval 設定，最小值為 7.5ms。要降低此延遲，可在連線後請求更短的 Connection Interval——但代價是更高的功耗。
+                    </div>
+                </div>
+
+                <h2>RTT 測量實作</h2>
+
+                <p>
+                    最直接的延遲測量方式是<strong>往返時間 (Round-Trip Time, RTT)</strong>：網頁端在發送指令時記錄時間戳，ESP32 收到後立即回傳一個 Echo 封包，網頁端收到 Echo 後計算時間差。RTT 除以 2 即為單程延遲的近似值。
+                </p>
+
+<div class="ms-code">
+<span class="c-comment">// 網頁端 RTT 測量</span><br>
+<span class="c-kw">async function</span> <span class="c-attr">measureRTT</span><span class="c-white">() {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">t0</span> <span class="c-white">= performance.</span><span class="c-tag">now</span><span class="c-white">();</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">pingPacket</span> <span class="c-white">= </span><span class="c-kw">new</span> <span class="c-tag">Uint8Array</span><span class="c-white">([0xEE]);</span><span class="c-comment"> // Ping 標記</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">await</span> <span class="c-white">txChar.</span><span class="c-tag">writeValueWithResponse</span><span class="c-white">(pingPacket);</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">return new</span> <span class="c-tag">Promise</span><span class="c-white">(resolve => {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;rxChar.</span><span class="c-tag">addEventListener</span><span class="c-white">(</span><span class="c-str">'characteristicvaluechanged'</span><span class="c-white">,</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">function</span> <span class="c-attr">onEcho</span><span class="c-white">(e) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (e.target.value.</span><span class="c-tag">getUint8</span><span class="c-white">(0) === 0xEE) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rxChar.</span><span class="c-tag">removeEventListener</span><span class="c-white">(</span><span class="c-str">'characteristicvaluechanged'</span><span class="c-white">, onEcho);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve(performance.</span><span class="c-tag">now</span><span class="c-white">() - t0);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});</span><br>
+<span class="c-white">&nbsp;&nbsp;});</span><br>
+<span class="c-white">}</span>
 </div>
-</div>
-<div class="lg:w-80 bg-cyan-600/10 p-10 rounded-3xl border border-cyan-500/20 text-center relative overflow-hidden group text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-cyan-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify">
-</div>
-<h4 class="text-cyan-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center text-justify">
-                                Total Trip Time</h4>
-<div class="text-5xl font-bold text-white mb-2 text-justify">14ms</div>
-<div class="text-[10px] text-cyan-400 uppercase tracking-widest text-justify">E2E Latency
-                                (Target)</div>
-<p class="text-[11px] text-slate-500 mt-10 leading-relaxed font-light italic text-center text-justify text-left text-justify">
-                                "看見數據的每一次脈動，掌握系統診斷的主動權。"
-                            </p>
-</div>
-</div>
+
+                <h2>壓力測試與崩潰邊界</h2>
+
+                <p>
+                    壓力測試的目的是找出系統的「崩潰邊界」——從哪個發送頻率開始，封包遺失率急劇上升？測試方法是逐步提高發送頻率（從 10Hz 到 200Hz），同時在 ESP32 端統計實際收到的封包數量。當丟包率超過 5% 時，即為該系統配置下的安全上限。
+                </p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在壓力測試期間，同時監測 ESP32 的可用堆積記憶體 (<code>ESP.getFreeHeap()</code>)。如果記憶體持續下降，可能表示封包處理速度跟不上接收速度，未處理的封包正在佇列中堆積。這是記憶體洩漏的前兆，最終會導致系統崩潰。
+                    </div>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        <code>performance.now()</code> 在某些瀏覽器中受到「時間精度降級 (Reduced Time Precision)」的安全限制，精度可能被截斷至 100μs 甚至 1ms。在 Chrome 中啟用 <code>Cross-Origin-Opener-Policy</code> 和 <code>Cross-Origin-Embedder-Policy</code> 標頭可恢復高精度時間戳。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -830,16 +965,134 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>
+                    請回答以下問題，測試你對「<strong>資料流設計</strong>」的理解程度。
+                    選擇完畢後點擊「送出答案」查看結果與解析。
+                </p>
+
+                <div id="quiz-container" style="margin:24px 0;">
+
+                    <div class="quiz-question" id="quiz-q0" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">1. 在嵌入式系統的資料管線（Data Pipeline）中，「生產者-消費者模式」的核心概念是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt0">
+                            <input type="radio" name="quiz-q0" value="0" style="accent-color:var(--ms-blue);">
+                            <span>所有模組共用相同的變數</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt1">
+                            <input type="radio" name="quiz-q0" value="1" style="accent-color:var(--ms-blue);">
+                            <span>資料產生與資料處理透過佇列解耦，獨立運作</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt2">
+                            <input type="radio" name="quiz-q0" value="2" style="accent-color:var(--ms-blue);">
+                            <span>只有一個模組可以讀寫資料</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt3">
+                            <input type="radio" name="quiz-q0" value="3" style="accent-color:var(--ms-blue);">
+                            <span>資料必須即時處理不能暫存</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp0" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q1" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">2. 環形緩衝區（Ring Buffer）相較於動態陣列的優勢是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt0">
+                            <input type="radio" name="quiz-q1" value="0" style="accent-color:var(--ms-blue);">
+                            <span>容量可以無限擴展</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt1">
+                            <input type="radio" name="quiz-q1" value="1" style="accent-color:var(--ms-blue);">
+                            <span>固定記憶體大小、無需動態配置、O(1) 讀寫效能</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt2">
+                            <input type="radio" name="quiz-q1" value="2" style="accent-color:var(--ms-blue);">
+                            <span>支援隨機存取任意元素</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt3">
+                            <input type="radio" name="quiz-q1" value="3" style="accent-color:var(--ms-blue);">
+                            <span>可以存放不同型態的資料</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp1" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q2" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">3. 資料流設計中的「背壓（Backpressure）」機制是為了解決什麼問題？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt0">
+                            <input type="radio" name="quiz-q2" value="0" style="accent-color:var(--ms-blue);">
+                            <span>網路延遲太高</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt1">
+                            <input type="radio" name="quiz-q2" value="1" style="accent-color:var(--ms-blue);">
+                            <span>當下游處理速度跟不上上游產生速度時，防止緩衝區溢位</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt2">
+                            <input type="radio" name="quiz-q2" value="2" style="accent-color:var(--ms-blue);">
+                            <span>資料格式不統一</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt3">
+                            <input type="radio" name="quiz-q2" value="3" style="accent-color:var(--ms-blue);">
+                            <span>電源供應不穩定</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp2" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q3" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">4. 為什麼感測器資料在傳送前需要「打包（Serialization）」？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt0">
+                            <input type="radio" name="quiz-q3" value="0" style="accent-color:var(--ms-blue);">
+                            <span>壓縮資料節省空間</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt1">
+                            <input type="radio" name="quiz-q3" value="1" style="accent-color:var(--ms-blue);">
+                            <span>將結構化資料轉換為位元組序列，確保跨平台傳輸的一致性</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt2">
+                            <input type="radio" name="quiz-q3" value="2" style="accent-color:var(--ms-blue);">
+                            <span>加密資料防止竊聽</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt3">
+                            <input type="radio" name="quiz-q3" value="3" style="accent-color:var(--ms-blue);">
+                            <span>增加傳輸速度</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp3" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">送出答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+
+                <div id="quiz-result" style="display:none; margin-top:20px; padding:16px 20px; border-radius:6px; font-weight:600;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -897,9 +1150,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「系統架構全覽與數據流分析」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「系統架構全覽與數據流分析」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -915,7 +1168,8 @@
         { id: 3, label: '🔄 2. 數據變身術：序列化與動態映射', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '📈 3. 性能指標：端到端延遲測量', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -935,6 +1189,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1036,8 +1291,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = [1, 1, 1, 1];
+    const QUIZ_EXPLANATIONS = ["生產者-消費者模式透過緩衝佇列將資料的產生與消費分離，使兩端可以不同速率獨立運作。","環形緩衝區預先配置固定大小記憶體，用指標環繞方式存取，避免了動態配置的碎片化風險與不確定延遲。","背壓機制在消費者來不及處理時通知生產者放慢或暫停，避免資料淹沒緩衝區造成遺失。","不同平台的記憶體對齊與位元組序可能不同，序列化確保資料以統一格式傳輸，接收端能正確還原。"];
+
+    function submitQuiz() {
+        let score = 0;
+        QUIZ_ANSWERS.forEach((ans, i) => {
+            const selected = document.querySelector(`input[name="quiz-q${i}"]:checked`);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            const qEl = document.getElementById(`quiz-q${i}`);
+            if (selected && parseInt(selected.value) === ans) {
+                score++;
+                qEl.style.borderColor = '#107c10';
+                expEl.style.background = '#dff6dd';
+                expEl.innerHTML = '<strong style="color:#107c10;">✓ 正確！</strong> ' + QUIZ_EXPLANATIONS[i];
+            } else {
+                qEl.style.borderColor = '#d13438';
+                expEl.style.background = '#fde7e9';
+                expEl.innerHTML = '<strong style="color:#d13438;">✗ 不正確。</strong> ' + QUIZ_EXPLANATIONS[i];
+            }
+            expEl.style.display = 'block';
+        });
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === QUIZ_ANSWERS.length) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.style.color = '#107c10';
+            resultEl.textContent = `🎉 滿分！你答對了全部 ${QUIZ_ANSWERS.length} 題！`;
+        } else {
+            resultEl.style.background = '#deecf9';
+            resultEl.style.color = '#005a9e';
+            resultEl.textContent = `你答對了 ${score} / ${QUIZ_ANSWERS.length} 題，請查看解析後再試一次。`;
+        }
+    }
+
+    function resetQuiz() {
+        QUIZ_ANSWERS.forEach((_, i) => {
+            const radios = document.querySelectorAll(`input[name="quiz-q${i}"]`);
+            radios.forEach(r => r.checked = false);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            expEl.style.display = 'none';
+            const qEl = document.getElementById(`quiz-q${i}`);
+            qEl.style.borderColor = '#e1dfdd';
+        });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 15：系統架構設計';
 </script>
 
 <!-- Define Resources -->

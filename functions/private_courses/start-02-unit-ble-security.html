@@ -451,6 +451,22 @@
             .ms-breadcrumb { padding: 8px 16px; }
             .compare-grid { grid-template-columns: 1fr; }
         }
+    
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 10px 14px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; cursor: pointer; transition: background .1s, border-color .1s; font-size: 14px;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback { display: none; margin-top: 8px; padding: 10px 14px; border-radius: 4px; font-size: 13px; font-weight: 500; }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
     </style>
 </head>
 <body>
@@ -473,7 +489,7 @@
 <div class="progress-bar-bg">
 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
 </div>
-<div class="progress-text" id="progress-text">0 / 5 已完成</div>
+<div class="progress-text" id="progress-text">0 / 6 已完成</div>
 </div>
 </aside>
 <!-- MAIN -->
@@ -541,7 +557,7 @@
 </div>
 <div class="unit-nav">
 <button class="nav-btn-prev" onclick="goToUnit(0)">‹  總覽</button>
-<span class="unit-page-indicator">1 / 5</span>
+<span class="unit-page-indicator">1 / 6</span>
 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元  ›</button>
 </div>
 </div>
@@ -619,7 +635,7 @@
 </div>
 <div class="unit-nav">
 <button class="nav-btn-prev" onclick="goToUnit(1)">‹  上一個單元</button>
-<span class="unit-page-indicator">2 / 5</span>
+<span class="unit-page-indicator">2 / 6</span>
 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元  ›</button>
 </div>
 </div>
@@ -674,7 +690,7 @@
 </div>
 <div class="unit-nav">
 <button class="nav-btn-prev" onclick="goToUnit(2)">‹  上一個單元</button>
-<span class="unit-page-indicator">3 / 5</span>
+<span class="unit-page-indicator">3 / 6</span>
 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元  ›</button>
 </div>
 </div>
@@ -752,15 +768,73 @@
 </div>
 <div class="unit-nav">
 <button class="nav-btn-prev" onclick="goToUnit(3)">‹  上一個單元</button>
-<span class="unit-page-indicator">4 / 5</span>
+<span class="unit-page-indicator">4 / 6</span>
 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元  ›</button>
 </div>
 </div>
 <!-- ══════════ PAGE 5: 摘要與資源 ══════════ -->
-<div class="ms-unit-page" id="page-5">
+
+        <!-- ══════════ PAGE 5: QUIZ ══════════ -->
+        <div class="ms-unit-page" id="page-5">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-5" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <div class="quiz-question">
+                        <p>1. Web Bluetooth API 為什麼強制要求網頁必須透過 HTTPS 才能使用？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 因為 HTTPS 的網頁載入速度比 HTTP 更快</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 因為藍牙通訊涉及敏感的硬體存取權限，HTTPS 能防止中間人攻擊竊取資料</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 因為瀏覽器廠商希望推廣 SSL 憑證的銷售</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>2. 什麼是「User Gesture 要求」？為什麼 <code>requestDevice()</code> 需要它？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 需要使用者做出特定手勢才能開啟藍牙功能</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 必須由使用者的主動操作（如點擊按鈕）觸發，防止網頁在背景偷偷掃描藍牙裝置</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 需要使用者在手機設定中手動開啟藍牙權限</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>3. 在多人教室環境中，如何確保你的程式只連接到自己的 ESP32 裝置？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 使用 <code>acceptAllDevices: true</code> 掃描所有裝置並手動選擇</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 使用 <code>filters</code> 設定 <code>namePrefix</code> 或 <code>services</code> UUID 進行精準過濾</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 關閉其他同學的藍牙裝置以減少干擾</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>4. Web BLE 在 iOS Safari 上的主要限制是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> iOS Safari 完全不支援 JavaScript</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> iOS Safari 目前不支援 Web Bluetooth API</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> iOS Safari 只能連接 Apple 自家的藍牙裝置</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">5 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+<div class="ms-unit-page" id="page-6">
 <div class="unit-content">
 <div class="unit-status-bar">
-<div class="unit-completed-badge" id="badge-5" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+<div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
 <div></div>
 <div class="unit-time-badge"><i class="far fa-clock"></i>  15 分鐘</div>
 </div>
@@ -819,9 +893,9 @@
 </a>
 </div>
 <div class="unit-nav">
-<button class="nav-btn-prev" onclick="goToUnit(4)">‹  上一個單元</button>
+<button class="nav-btn-prev" onclick="goToUnit(5)">‹  上一個單元</button>
 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-<button class="ms-btn" onclick="markDone(5); alert('🎉 恭喜完成「Web BLE 安全機制與權限規範」模組！')">完成模組</button>
+<button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「Web BLE 安全機制與權限規範」模組！')">完成模組</button>
 </div>
 </div>
 <footer style="background:#faf9f8; border-top:1px solid #e1dfdd; padding:24px 40px; text-align:center; font-size:12px; color:#605e5c; margin-top:40px;">
@@ -837,8 +911,15 @@
         { id: 2, label: '安全沙箱',        time: '30 分鐘',  type: 'unit'  },
         { id: 3, label: '三大安全鐵律',     time: '45 分鐘',  type: 'unit'  },
         { id: 4, label: '教室實戰',        time: '135 分鐘', type: 'lab'   },
-        { id: 5, label: '摘要與資源',      time: '15 分鐘',  type: 'unit'  },
+        { id: 5, label: '知識測驗',              time: '4 分鐘',  type: 'quiz'  },
+        { id: 6, label: '摘要與資源',      time: '15 分鐘',  type: 'unit'  },
     ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！Web BLE 可以操控實體硬體，若透過不安全的 HTTP 連線，攻擊者可能透過中間人攻擊劫持藍牙指令。HTTPS 確保了通訊通道的完整性與保密性。' },        q2: { b: '正確！瀏覽器要求 <code>requestDevice()</code> 必須在使用者互動事件（如 click）的處理函式中呼叫，防止惡意網頁在背景未經授權掃描周遭的藍牙裝置。' },        q3: { b: '正確！使用 <code>filters</code> 參數能在掃描階段就篩選出目標裝置，避免在多裝置環境中連錯機器。' },        q4: { b: '正確！截至目前，Apple 的 Safari 瀏覽器（包含 iOS 與 macOS）尚未原生支援 Web Bluetooth API。開發者需使用替代方案（如 WebBLE App 或改用 Android/Chrome）。' },
+    };
+
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -860,6 +941,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -969,6 +1051,55 @@
     };
 
     // Trigger Init
+
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            document.querySelectorAll(`input[name="${qid}"]`).forEach(opt => {
+                opt.disabled = true;
+                if (opt.value === answer) opt.parentElement.classList.add('correct');
+                if (opt.checked && opt.value !== answer) opt.parentElement.classList.add('wrong');
+            });
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                feedbackEl.textContent = '✗ 不正確。' + QUIZ_EXPLANATIONS[qid][answer];
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        const pct = Math.round(correct / total * 100);
+        scoreEl.style.display = 'block';
+        scoreEl.innerHTML = `<span style="font-size:20px;">${pct >= 75 ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pct >= 75 ? '通過！繼續前往下一個單元。' : '建議回顧相關單元後再試一次。'}</div>`;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => el.classList.remove('correct','wrong'));
+        document.querySelectorAll('input[type=radio]').forEach(el => { el.checked = false; el.disabled = false; });
+        document.querySelectorAll('.quiz-feedback').forEach(el => { el.className = 'quiz-feedback'; el.textContent = ''; });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
     init();
 </script>
 <script src="/js/course-shared.js?v=2026.05.22.V27.START_UNITS_LAYOUT_UPGRADE"></script>

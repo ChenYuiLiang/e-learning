@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>代碼實作邏輯預習 - Vibe Coding Learn</title>
+    <title>代碼實作邏輯預習 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 12 - 程式邏輯</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">代碼實作邏輯預習</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 12</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>代碼實作邏輯預習</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 12</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,14 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>代碼實作邏輯預習</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    有了 PID 公式還不夠——真正的挑戰是如何讓它在嵌入式系統中穩定且安全地運行。
+                    本模組聚焦於將控制理論落地為<strong>工業級程式架構</strong>：用有限狀態機 (FSM) 管理複雜行為模式，
+                    用非阻塞計時器確保 PID 迴圈的精確週期，並建立心跳包監測與堵轉保護等失效安全機制，讓你的機器人大腦既聰明又堅韌。
                 </p>
 
                 <div class="ms-scenario">
                     <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    你的循跡車跑得正好，突然感測器全部讀到白色——Loss of Line！如果程式沒有準備好「搜尋模式」，車子就會直直衝出賽道。更糟的是，如果通訊斷線而程式沒有心跳檢測，馬達會以最後一個指令持續全速運轉。觀看下方影片，了解為什麼專業的控制專案 80% 的代碼都在處理「出錯後的安全退路」。
                 </div>
 
                 <h2>教學影片</h2>
@@ -576,7 +575,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -591,54 +590,118 @@
                 </div>
 
                 <h1>🔄 1. 有限狀態機 (FSM)：決策的骨架</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                無人車的大腦不是單一線程跑到底。它會根據目前的模式（如：靜止 Idle / 循跡 Tracking / 搜尋 Search）採取完全不同的計算策略。
-                            </p>
-<div class="bg-orange-50 p-6 rounded-2xl border border-orange-100 text-justify">
-<h4 class="font-bold text-orange-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed text-center text-justify">
-                                    FSM Core Elements</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify text-justify">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-orange-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify text-left">狀態
-                                                (States)</strong>：系統當下的身份。如「搜尋循跡線中」。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-orange-500 rounded-full mt-1 text-justify text-left"></span>
-<div><strong class="text-justify">轉換 (Transitions)</strong>：觸發身份切換的事件。如「感測器全白」。
-                                        </div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-orange-500 rounded-full mt-1 text-justify text-left"></span>
-<div><strong class="text-justify">行為 (Actions)</strong>：在特定狀態下執行的具體控制邏輯。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-orange-500/5 group-hover:bg-orange-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-center text-justify">
-                                State Transition Graph</h4>
-<div class="relative z-10 flex flex-col items-center gap-4 text-justify">
-<div class="px-4 py-2 border border-slate-600 rounded-full text-xs text-justify">IDLE
-                                </div>
-<div class="text-orange-500 animate-[bounce_2s_infinite] text-justify">↓ Start cmd</div>
-<div class="px-6 py-2 bg-orange-600 rounded-full text-xs font-bold shadow-[0_0_15px_rgba(234,88,12,0.5)] text-justify">
-                                    TRACKING</div>
-<div class="text-slate-500 text-justify">↓ Off track</div>
-<div class="px-4 py-2 border border-slate-600 rounded-full text-xs text-justify">
-                                    SEARCHING</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase text-center text-justify">
-                                Logic Complexity Reduced</p>
-</div>
-</div>
+
+                <p>
+                    一台循跡機器人的行為遠比「沿著線走」複雜。它需要在不同情境下採取完全不同的策略：正常循跡時全速追蹤、脫線時旋轉搜尋、收到停止指令時安全減速。<strong>有限狀態機 (Finite State Machine, FSM)</strong> 正是管理這些複雜行為模式的最佳架構。
+                </p>
+
+                <p>
+                    FSM 的核心思想是：系統在任何時刻只能處於<strong>一個</strong>明確定義的狀態 (State)，並且只有在特定事件 (Event) 發生時，才會切換到另一個狀態。這種「分而治之」的設計方式，讓每個狀態內的邏輯簡單且可預測。
+                </p>
+
+                <h2>FSM 的三大元素</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>元素</th>
+                            <th>定義</th>
+                            <th>循跡車範例</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>狀態 (States)</strong></td>
+                            <td>系統當下的「身份」，決定執行哪套邏輯</td>
+                            <td>IDLE、TRACKING、SEARCHING、EMERGENCY_STOP</td>
+                        </tr>
+                        <tr>
+                            <td><strong>轉換 (Transitions)</strong></td>
+                            <td>觸發狀態切換的條件或事件</td>
+                            <td>「感測器全白」→ 進入 SEARCHING</td>
+                        </tr>
+                        <tr>
+                            <td><strong>行為 (Actions)</strong></td>
+                            <td>在特定狀態下執行的控制邏輯</td>
+                            <td>TRACKING 狀態下執行 PID 循跡演算法</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>程式碼實作：switch-case 骨架</h2>
+
+                <div class="ms-code">
+<span class="c-comment">// 定義狀態列舉</span><br>
+<span class="c-kw">enum</span><span class="c-white"> </span><span class="c-tag">RobotState</span><span class="c-white"> {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-val">STATE_IDLE</span><span class="c-white">,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 靜止等待指令</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-val">STATE_TRACKING</span><span class="c-white">,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 正常循跡中</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-val">STATE_SEARCHING</span><span class="c-white">,&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 脫線搜尋中</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-val">STATE_EMERGENCY_STOP</span><span class="c-white">&nbsp;</span><span class="c-comment">// 緊急停止</span><br>
+<span class="c-white">};</span><br><br>
+<span class="c-tag">RobotState</span><span class="c-white"> currentState = </span><span class="c-val">STATE_IDLE</span><span class="c-white">;</span><br><br>
+<span class="c-kw">void</span><span class="c-white"> </span><span class="c-tag">updateFSM</span><span class="c-white">() {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">switch</span><span class="c-white"> (currentState) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">case</span><span class="c-white"> </span><span class="c-val">STATE_IDLE</span><span class="c-white">:</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;motorStop();</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (startCommandReceived())</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentState = </span><span class="c-val">STATE_TRACKING</span><span class="c-white">;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">break</span><span class="c-white">;</span><br><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">case</span><span class="c-white"> </span><span class="c-val">STATE_TRACKING</span><span class="c-white">:</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;runPID();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 執行 PID 控制</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (allSensorsWhite())</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentState = </span><span class="c-val">STATE_SEARCHING</span><span class="c-white">;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">break</span><span class="c-white">;</span><br><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">case</span><span class="c-white"> </span><span class="c-val">STATE_SEARCHING</span><span class="c-white">:</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;spinToFindLine();&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 旋轉搜尋</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (lineDetected())</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentState = </span><span class="c-val">STATE_TRACKING</span><span class="c-white">;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (searchTimeout())</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentState = </span><span class="c-val">STATE_EMERGENCY_STOP</span><span class="c-white">;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">break</span><span class="c-white">;</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>狀態轉換圖</h2>
+
+                <p>清晰的狀態轉換圖是 FSM 設計的第一步。在寫任何程式碼之前，你應該先畫出：</p>
+
+                <div class="ms-code">
+<span class="c-comment">// 狀態轉換圖 (State Transition Diagram)</span><br>
+<span class="c-white">&nbsp;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;[IDLE]</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│ 收到啟動指令</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼</span><br>
+<span class="c-white">&nbsp;&nbsp;[TRACKING] ◀──── 偵測到線</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▲</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│ 感測器全白&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span><br>
+<span class="c-white">&nbsp;&nbsp;[SEARCHING] ────────┘</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│ 超時未找到</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼</span><br>
+<span class="c-white">&nbsp;&nbsp;[EMERGENCY_STOP]</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>設計原則</strong>
+                        好的 FSM 設計應遵循三個原則：(1) 每個狀態的行為<strong>單一且明確</strong>；(2) 轉換條件<strong>互斥且完備</strong>（不會有兩個條件同時成立）；(3) 每個狀態都必須有<strong>離開的路徑</strong>（避免死鎖）。
+                    </div>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>進階提示</strong>
+                        當狀態從 SEARCHING 切回 TRACKING 時，記得<strong>清除 PID 的積分項</strong>。否則搜尋期間累積的積分值會導致重新循跡時產生猛烈過衝。這種「狀態切換時的初始化」是 FSM 設計中最容易被忽略的細節。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -653,49 +716,112 @@
                 </div>
 
                 <h1>♾️ 2. 非阻塞迴圈：維持大腦的清醒</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify text-left text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                嚴禁在 PID 迴圈中使用 <code>delay()</code>。每一毫秒的阻塞，感測器都是盲目的。我們利用時間戳計時器達成多工併行處理。
-                            </p>
-<div class="bg-cyan-50 p-8 rounded-3xl border border-cyan-100 text-justify">
-<h4 class="text-cyan-900 font-bold mb-4 text-xs uppercase tracking-widest text-center text-justify">
-                                    Efficiency Paradigm</h4>
-<div class="text-xl font-mono text-cyan-600 text-center text-justify text-justify">
-                                    \[\Delta T \approx Constant\]
-                                </div>
-<p class="text-[10px] text-slate-400 mt-4 italic font-light text-center text-justify text-justify">
-                                    使用 millis() 取代沈睡：讓 CPU 隨時響應中斷與任務切換</p>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-cyan-500/5 text-justify"></div>
-<h4 class="text-cyan-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-center text-justify">
-                                Task Scheduling Pipeline</h4>
-<div class="space-y-4 w-full px-10 relative z-10 text-justify">
-<div class="flex justify-between items-center text-[10px] text-justify text-left text-justify">
-<span class="text-slate-400 text-justify">PID Calc (10ms)</span>
-<div class="w-20 h-1 bg-cyan-500 rounded-full text-justify"></div>
-</div>
-<div class="flex justify-between items-center text-[10px] text-justify text-left text-justify">
-<span class="text-slate-400 text-justify">Sensor Sync (2ms)</span>
-<div class="w-32 h-1 bg-blue-500 rounded-full text-justify"></div>
-</div>
-<div class="flex justify-between items-center text-[10px] text-justify text-left text-justify">
-<span class="text-slate-400 text-justify">WiFi Telemetry (500ms)</span>
-<div class="w-12 h-1 bg-indigo-500 rounded-full text-justify text-left"></div>
-</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-8 font-mono tracking-widest uppercase italic text-center text-justify">
-                                Zero-Delay Async Framework</p>
-</div>
-</div>
+
+                <p>
+                    在嵌入式控制系統中，有一條鐵律：<strong>永遠不要使用 <code>delay()</code></strong>。當你呼叫 <code>delay(500)</code> 時，CPU 完全停止工作 500 毫秒——在這半秒內，感測器的讀數被忽略、PID 無法更新、通訊中斷也無法偵測。對於一台高速循跡車來說，0.5 秒的盲目足以讓它衝出賽道。
+                </p>
+
+                <h2>delay() 的致命問題</h2>
+
+                <p>
+                    PID 控制器的精確度直接取決於<strong>控制迴圈的更新頻率</strong>。典型的循跡車需要 100Hz (每 10ms 更新一次) 的控制頻率。任何超過 10ms 的阻塞都會破壞控制品質：
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>阻塞時間</th>
+                            <th>對 PID 的影響</th>
+                            <th>物理後果</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>0 ms (理想)</td>
+                            <td>dt 穩定，微分與積分計算精確</td>
+                            <td>平穩追蹤軌跡</td>
+                        </tr>
+                        <tr>
+                            <td>50 ms</td>
+                            <td>dt 抖動，D 項產生假脈衝</td>
+                            <td>馬達偶爾抽搐</td>
+                        </tr>
+                        <tr>
+                            <td>500 ms</td>
+                            <td>半秒無更新，積分大幅偏離</td>
+                            <td>車輛直接衝出彎道</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>關鍵觀念</strong>
+                        <code>delay()</code> 不只是「等一下」那麼簡單——它讓整個系統陷入<strong>失聰、失明、失控</strong>的狀態。專業的控制專案中，程式碼審查的第一件事就是搜尋 <code>delay</code> 關鍵字：如果找到任何一個，就是不合格。
+                    </div>
+                </div>
+
+                <h2>解法：millis() 時間戳計時器</h2>
+
+                <p>
+                    取代 <code>delay()</code> 的方法是使用 <code>millis()</code> 建立非阻塞計時器。原理：記錄上次執行的時間戳，每次迴圈檢查「時間到了嗎？」——如果到了就執行，沒到就跳過。CPU 永遠不會被卡住。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 非阻塞多工架構</span><br>
+<span class="c-kw">unsigned long</span><span class="c-white"> lastPID&nbsp;&nbsp;&nbsp; = </span><span class="c-val">0</span><span class="c-white">;</span><br>
+<span class="c-kw">unsigned long</span><span class="c-white"> lastBlink&nbsp; = </span><span class="c-val">0</span><span class="c-white">;</span><br>
+<span class="c-kw">unsigned long</span><span class="c-white"> lastReport = </span><span class="c-val">0</span><span class="c-white">;</span><br><br>
+<span class="c-kw">void</span><span class="c-white"> </span><span class="c-tag">loop</span><span class="c-white">() {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">unsigned long</span><span class="c-white"> now = </span><span class="c-tag">millis</span><span class="c-white">();</span><br><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 任務 1：PID 控制 (每 10ms = 100Hz)</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (now - lastPID >= </span><span class="c-val">10</span><span class="c-white">) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;lastPID = now;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;readSensors();</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;computePID();</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;driveMotors();</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 任務 2：狀態燈閃爍 (每 500ms)</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (now - lastBlink >= </span><span class="c-val">500</span><span class="c-white">) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;lastBlink = now;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;toggleLED();</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 任務 3：藍牙遙測 (每 200ms)</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (now - lastReport >= </span><span class="c-val">200</span><span class="c-white">) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;lastReport = now;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;sendTelemetry();</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>確保 dt 的穩定性</h2>
+
+                <p>
+                    PID 的積分項和微分項都依賴精確的 \(\Delta t\)。如果控制迴圈的間隔不穩定，計算結果就會出錯。使用 <code>millis()</code> 計時器可以保證 dt 近乎恆定：
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 精確計算 dt</span><br>
+<span class="c-kw">unsigned long</span><span class="c-white"> now = millis();</span><br>
+<span class="c-kw">float</span><span class="c-white"> dt = (now - lastPID) / </span><span class="c-val">1000.0</span><span class="c-white">;&nbsp;&nbsp;</span><span class="c-comment">// 轉為秒</span><br>
+<span class="c-attr">lastPID</span><span class="c-white"> = now;</span><br><br>
+<span class="c-comment">// 安全檢查：防止 dt 為零（連續兩次呼叫間隔太短）</span><br>
+<span class="c-kw">if</span><span class="c-white"> (dt <= </span><span class="c-val">0</span><span class="c-white">) </span><span class="c-kw">return</span><span class="c-white">;</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>效能驗證法</strong>
+                        要確認你的非阻塞架構是否達標，可以在 Serial Plotter 中繪製每次 <code>loop()</code> 的實際間隔。理想情況下應該是一條平直的水平線（如 10ms）。如果出現尖峰抖動，代表某處存在隱藏的阻塞操作（常見原因：Serial.print 過多、WiFi 阻塞、I2C 超時未設定）。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -710,48 +836,133 @@
                 </div>
 
                 <h1>🛡️ 3. 防錯邏輯與系統魯棒性</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
-                                工業級程式必須考量「驚喜」。數據溢位、感測器誤報、通訊中斷，都必須具備相應的失效保護 (Fail-Safe) 解決方案。
-                            </p>
-<div class="bg-red-500/10 p-8 rounded-3xl border border-red-500/20 shadow-inner text-justify text-left">
-<h4 class="font-bold text-red-400 mb-4 text-xs uppercase tracking-widest text-center text-justify">
-                                    Robustness Architecture</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify text-left">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">數值鉗位 (Clamping)</strong>：確保 PWM
-                                            永不超出邊際 \[0, 255\]，防止溢位導致的倒車災難。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">心跳包
-                                                (Heartbeat)</strong>：若一段時間未收到外部指令，系統應立刻進入 SAFE STOP。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1 text-justify text-left text-justify"></span>
-<div><strong class="text-white text-justify">堵轉偵測 (Stall
-                                                Guard)</strong>：感測馬達過載狀態，及時切斷電力以防電機燒毀。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-red-600/10 p-10 rounded-3xl border border-red-500/20 text-center relative overflow-hidden group text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-red-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify">
-</div>
-<h4 class="text-red-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center text-justify">
-                                Hardware Guard</h4>
-<p class="text-[11px] text-slate-500 leading-relaxed font-light mb-8 italic text-center text-justify text-left text-justify">
-                                "一個好的控制專案，20% 處理正常流程，80% 處理出錯後的安全退路。"
-                            </p>
-<div class="inline-block px-8 py-3 bg-red-500 text-white rounded-xl font-bold text-[10px] shadow-lg cursor-pointer hover:bg-red-400 transition-colors text-center text-justify">
-                                Invoke Safety Protocol</div>
-</div>
-</div>
+
+                <p>
+                    一個好的控制程式，20% 處理正常路徑，<strong>80% 處理出錯後的安全退路</strong>。在真實物理世界中，感測器會故障、通訊會中斷、馬達會卡死、電壓會驟降。如果程式碼沒有為這些「意外」做好準備，輕則車輛失控，重則硬體燒毀。
+                </p>
+
+                <p>
+                    這一節介紹三種最關鍵的防護機制：<strong>數值鉗位 (Clamping)</strong>、<strong>心跳包監測 (Heartbeat)</strong>、<strong>堵轉保護 (Stall Guard)</strong>。它們共同構成嵌入式控制系統的「安全防護網」。
+                </p>
+
+                <h2>防護機制一覽</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>防護機制</th>
+                            <th>防禦對象</th>
+                            <th>觸發條件</th>
+                            <th>保護動作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>數值鉗位</strong></td>
+                            <td>PID 計算溢位</td>
+                            <td>output 超出 [0, 255] 範圍</td>
+                            <td>強制截斷至安全範圍</td>
+                        </tr>
+                        <tr>
+                            <td><strong>心跳包監測</strong></td>
+                            <td>通訊中斷</td>
+                            <td>超過 2 秒未收到指令</td>
+                            <td>立即進入 EMERGENCY_STOP</td>
+                        </tr>
+                        <tr>
+                            <td><strong>堵轉偵測</strong></td>
+                            <td>馬達過載/卡死</td>
+                            <td>PWM &gt; 100 且編碼器無變化達 3 秒</td>
+                            <td>切斷馬達電力</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>實作一：數值鉗位 (Output Clamping)</h2>
+
+                <p>
+                    PID 的計算結果可能是任何數值——正的、負的、極大的。但 PWM 硬體只接受 0~255。如果不做限制，負值可能導致整數下溢變成 255（全速倒車），極大值可能導致未定義行為。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 安全鉗位：確保輸出永遠在合法範圍內</span><br>
+<span class="c-kw">int</span><span class="c-white"> output = Kp*error + Ki*integral + Kd*derivative;</span><br><br>
+<span class="c-comment">// 方法一：使用 constrain()</span><br>
+<span class="c-white">output = </span><span class="c-tag">constrain</span><span class="c-white">(output, </span><span class="c-val">0</span><span class="c-white">, </span><span class="c-val">255</span><span class="c-white">);</span><br><br>
+<span class="c-comment">// 方法二：手動實作（更清楚）</span><br>
+<span class="c-kw">if</span><span class="c-white"> (output > </span><span class="c-val">255</span><span class="c-white">) output = </span><span class="c-val">255</span><span class="c-white">;</span><br>
+<span class="c-kw">if</span><span class="c-white"> (output < </span><span class="c-val">0</span><span class="c-white">)&nbsp;&nbsp; output = </span><span class="c-val">0</span><span class="c-white">;</span><br><br>
+<span class="c-tag">analogWrite</span><span class="c-white">(MOTOR_PIN, output);</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>整數溢位陷阱</strong>
+                        在 Arduino 中，如果 PID 的計算結果是 <code>int</code> 型態且值為 -10，直接傳入 <code>analogWrite()</code> 時會被解讀為 unsigned byte = 246（近乎全速）。這是嵌入式開發中最常見也最危險的 Bug 之一。<strong>永遠在傳入驅動函數之前做鉗位</strong>。
+                    </div>
+                </div>
+
+                <h2>實作二：心跳包監測 (Heartbeat Monitor)</h2>
+
+                <p>
+                    如果你的機器人透過藍牙或 WiFi 接收控制指令，當通訊中斷時，馬達會以<strong>最後收到的指令</strong>持續運轉——可能是全速前進。心跳機制的解法：要求外部每隔固定時間發送一個「我還在」的信號。
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">unsigned long</span><span class="c-white"> lastHeartbeat = </span><span class="c-val">0</span><span class="c-white">;</span><br>
+<span class="c-kw">const unsigned long</span><span class="c-white"> </span><span class="c-val">HEARTBEAT_TIMEOUT</span><span class="c-white"> = </span><span class="c-val">2000</span><span class="c-white">;&nbsp;</span><span class="c-comment">// 2 秒</span><br><br>
+<span class="c-kw">void</span><span class="c-white"> </span><span class="c-tag">loop</span><span class="c-white">() {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 收到任何有效指令時，重置心跳計時</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (commandReceived()) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;lastHeartbeat = millis();</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;processCommand();</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 檢查心跳是否超時</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (millis() - lastHeartbeat > </span><span class="c-val">HEARTBEAT_TIMEOUT</span><span class="c-white">) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;currentState = </span><span class="c-val">STATE_EMERGENCY_STOP</span><span class="c-white">;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;motorStop();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 立即停機！</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>實作三：堵轉保護 (Stall Guard)</h2>
+
+                <p>
+                    當輪子被障礙物卡住時，馬達電流會急劇上升（因為轉子無法旋轉，等效為短路）。如果不及時斷電，馬達線圈會過熱燒毀。堵轉偵測的邏輯：<strong>高 PWM 輸出 + 編碼器無變化 = 堵轉</strong>。
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">unsigned long</span><span class="c-white"> stallStartTime = </span><span class="c-val">0</span><span class="c-white">;</span><br>
+<span class="c-kw">bool</span><span class="c-white"> stallDetected = </span><span class="c-val">false</span><span class="c-white">;</span><br><br>
+<span class="c-kw">void</span><span class="c-white"> </span><span class="c-tag">checkStall</span><span class="c-white">(</span><span class="c-kw">int</span><span class="c-white"> pwm, </span><span class="c-kw">long</span><span class="c-white"> encoderTicks) {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">static long</span><span class="c-white"> lastTicks = </span><span class="c-val">0</span><span class="c-white">;</span><br><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (pwm > </span><span class="c-val">100</span><span class="c-white"> && encoderTicks == lastTicks) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (stallStartTime == </span><span class="c-val">0</span><span class="c-white">)</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stallStartTime = millis();</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (millis() - stallStartTime > </span><span class="c-val">3000</span><span class="c-white">) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;motorStop();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 緊急斷電！</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stallDetected = </span><span class="c-val">true</span><span class="c-white">;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+<span class="c-white">&nbsp;&nbsp;} </span><span class="c-kw">else</span><span class="c-white"> {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;stallStartTime = </span><span class="c-val">0</span><span class="c-white">;&nbsp;&nbsp;</span><span class="c-comment">// 正常運轉，重置</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<span class="c-white">&nbsp;&nbsp;lastTicks = encoderTicks;</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>工程哲學</strong>
+                        專業的嵌入式系統開發遵循「防禦性程式設計 (Defensive Programming)」原則：假設每一個外部輸入都可能是錯誤的、每一個硬體元件都可能在任何時刻故障。你的程式碼必須在最壞情況下依然能安全停機，而不是撞毀或燒毀。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -830,16 +1041,134 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>
+                    請回答以下問題，測試你對「<strong>程式邏輯設計</strong>」的理解程度。
+                    選擇完畢後點擊「送出答案」查看結果與解析。
+                </p>
+
+                <div id="quiz-container" style="margin:24px 0;">
+
+                    <div class="quiz-question" id="quiz-q0" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">1. 在嵌入式系統中，為什麼建議使用狀態機（State Machine）來管理程式流程？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt0">
+                            <input type="radio" name="quiz-q0" value="0" style="accent-color:var(--ms-blue);">
+                            <span>減少程式碼行數</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt1">
+                            <input type="radio" name="quiz-q0" value="1" style="accent-color:var(--ms-blue);">
+                            <span>使複雜邏輯結構化，避免巢狀 if-else 造成的維護困難</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt2">
+                            <input type="radio" name="quiz-q0" value="2" style="accent-color:var(--ms-blue);">
+                            <span>增加程式執行速度</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt3">
+                            <input type="radio" name="quiz-q0" value="3" style="accent-color:var(--ms-blue);">
+                            <span>減少記憶體使用量</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp0" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q1" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">2. 以下哪種做法能有效避免 <code>loop()</code> 中使用 <code>delay()</code> 造成的阻塞？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt0">
+                            <input type="radio" name="quiz-q1" value="0" style="accent-color:var(--ms-blue);">
+                            <span>使用更快的微控制器</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt1">
+                            <input type="radio" name="quiz-q1" value="1" style="accent-color:var(--ms-blue);">
+                            <span>使用 millis() 搭配非阻塞計時器模式</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt2">
+                            <input type="radio" name="quiz-q1" value="2" style="accent-color:var(--ms-blue);">
+                            <span>將 delay 值設為 0</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt3">
+                            <input type="radio" name="quiz-q1" value="3" style="accent-color:var(--ms-blue);">
+                            <span>使用多個 loop 函式</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp1" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q2" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">3. 模組化程式設計中，「關注點分離」的核心原則是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt0">
+                            <input type="radio" name="quiz-q2" value="0" style="accent-color:var(--ms-blue);">
+                            <span>所有程式碼寫在同一個檔案</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt1">
+                            <input type="radio" name="quiz-q2" value="1" style="accent-color:var(--ms-blue);">
+                            <span>每個模組只負責單一功能，降低耦合度</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt2">
+                            <input type="radio" name="quiz-q2" value="2" style="accent-color:var(--ms-blue);">
+                            <span>盡量使用全域變數</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt3">
+                            <input type="radio" name="quiz-q2" value="3" style="accent-color:var(--ms-blue);">
+                            <span>減少函式呼叫次數</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp2" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q3" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">4. 在 PID 控制的程式實作中，為什麼建議將「計算」與「輸出執行」分離？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt0">
+                            <input type="radio" name="quiz-q3" value="0" style="accent-color:var(--ms-blue);">
+                            <span>讓程式碼更長</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt1">
+                            <input type="radio" name="quiz-q3" value="1" style="accent-color:var(--ms-blue);">
+                            <span>方便單元測試、調參與除錯，且可獨立替換演算法</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt2">
+                            <input type="radio" name="quiz-q3" value="2" style="accent-color:var(--ms-blue);">
+                            <span>減少變數使用</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt3">
+                            <input type="radio" name="quiz-q3" value="3" style="accent-color:var(--ms-blue);">
+                            <span>加快編譯速度</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp3" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">送出答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+
+                <div id="quiz-result" style="display:none; margin-top:20px; padding:16px 20px; border-radius:6px; font-weight:600;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -897,9 +1226,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「代碼實作邏輯預習」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「代碼實作邏輯預習」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -915,7 +1244,8 @@
         { id: 3, label: '️ 2. 非阻塞迴圈：維持大腦的清醒', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🛡️ 3. 防錯邏輯與系統魯棒性', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -935,6 +1265,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1036,8 +1367,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = [1, 1, 1, 1];
+    const QUIZ_EXPLANATIONS = ["狀態機將行為分解為明確的狀態與轉換條件，使複雜邏輯易於理解、除錯與擴展。","millis() 計時器模式透過檢查時間差來決定是否執行，不會阻塞主迴圈，讓其他任務能正常運作。","關注點分離讓每個模組專注於單一責任，降低模組間的依賴（耦合），提高可維護性與可測試性。","分離計算與執行使得 PID 邏輯可以獨立測試與調參，不需要實際硬體就能驗證演算法正確性。"];
+
+    function submitQuiz() {
+        let score = 0;
+        QUIZ_ANSWERS.forEach((ans, i) => {
+            const selected = document.querySelector(`input[name="quiz-q${i}"]:checked`);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            const qEl = document.getElementById(`quiz-q${i}`);
+            if (selected && parseInt(selected.value) === ans) {
+                score++;
+                qEl.style.borderColor = '#107c10';
+                expEl.style.background = '#dff6dd';
+                expEl.innerHTML = '<strong style="color:#107c10;">✓ 正確！</strong> ' + QUIZ_EXPLANATIONS[i];
+            } else {
+                qEl.style.borderColor = '#d13438';
+                expEl.style.background = '#fde7e9';
+                expEl.innerHTML = '<strong style="color:#d13438;">✗ 不正確。</strong> ' + QUIZ_EXPLANATIONS[i];
+            }
+            expEl.style.display = 'block';
+        });
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === QUIZ_ANSWERS.length) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.style.color = '#107c10';
+            resultEl.textContent = `🎉 滿分！你答對了全部 ${QUIZ_ANSWERS.length} 題！`;
+        } else {
+            resultEl.style.background = '#deecf9';
+            resultEl.style.color = '#005a9e';
+            resultEl.textContent = `你答對了 ${score} / ${QUIZ_ANSWERS.length} 題，請查看解析後再試一次。`;
+        }
+    }
+
+    function resetQuiz() {
+        QUIZ_ANSWERS.forEach((_, i) => {
+            const radios = document.querySelectorAll(`input[name="quiz-q${i}"]`);
+            radios.forEach(r => r.checked = false);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            expEl.style.display = 'none';
+            const qEl = document.getElementById(`quiz-q${i}`);
+            qEl.style.borderColor = '#e1dfdd';
+        });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 12：PID 控制';
 </script>
 
 <!-- Define Resources -->

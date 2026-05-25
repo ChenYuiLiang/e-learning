@@ -16,6 +16,24 @@
       ]
     }
   ],
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "functions": {
+      "port": 5001
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "hosting": {
+      "port": 5002
+    },
+    "ui": {
+      "enabled": true,
+      "port": 4000
+    }
+  },
   "hosting": {
     "public": "public",
     "ignore": [
@@ -26,11 +44,13 @@
     "rewrites": [
       {
         "source": "/paymentNotify",
-        "function": "paymentNotify"
+        "function": "paymentNotify",
+        "region": "asia-east1"
       },
       {
         "source": "/courses/**",
-        "function": "serveCourse"
+        "function": "serveCourse",
+        "region": "asia-east1"
       }
     ]
   }

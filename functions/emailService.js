@@ -63,7 +63,7 @@ function renderNextSteps(title, steps = []) {
 async function sendWelcomeEmail(email, displayName, expiryDateStr) {
     const dashboardUrl = appUrl('/dashboard.html');
     const introUrl = appUrl('/prepare.html');
-    const courseListUrl = appUrl('/started.html');
+    const courseListUrl = appUrl('/start.html');
     const mailOptions = {
         from: '"Vibe Coding" <info@vibe-coding.tw>',
         to: email,

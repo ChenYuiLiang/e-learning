@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>預覽控制 (Look-ahead Control) 觀念 - Vibe Coding Learn</title>
+    <title>預覽控制 (Look-ahead Control) 觀念 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 6 - 預覽控制</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">預覽控制 (Look-ahead Control) 觀念</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 6</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>預覽控制 (Look-ahead Control) 觀念</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 6</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,17 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>預覽控制 (Look-ahead Control) 觀念</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    傳統控制只看「車頭正下方」，一旦速度提升，系統來不及反應就衝出彎道。
+                    本模組將帶你理解<strong>預覽控制的核心理念：用空間換取時間</strong>，
+                    學會透過掃描影像遠處的目標點來預判彎道走向，實現高速下依然平滑流暢的自動導航。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的循跡車在低速時表現完美，但一加速就開始劇烈蛇行，甚至在急彎處直接衝出賽道。
+                    原因在於：系統只根據「此刻的偏差」做修正，等到發現彎道時已經來不及了。
+                    如果能像賽車手一樣「看向遠方的彎心」提前轉向，震盪問題就能迎刃而解——
+                    這就是預覽控制的威力。
                 </div>
 
                 <h2>教學影片</h2>
@@ -590,44 +592,66 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔭 1. 為什麼要「往遠處看」？ (20 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
-<div class="space-y-6">
-<p class="text-lg text-gray-600 leading-relaxed font-light">
-                                感測器擷取、AI 計算到馬達轉向都有延遲。如果只看車頭正下方，高速時會衝出彎道。預覽遠方可以讓轉向動作更提早、更柔和。
-                            </p>
-<div class="bg-emerald-50 p-6 rounded-2xl border border-emerald-100">
-<h4 class="font-bold text-emerald-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
-                                    Control Benefits</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
-<div><strong>震盪抑制</strong>：解決蛇行震盪問題。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
-<div><strong>預判過彎</strong>：在入彎前就開始切換轉向舵角。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-emerald-500/5 group-hover:bg-emerald-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10">
-                                Look-ahead Visualization</h4>
-<div class="relative z-10 flex flex-col items-center gap-4">
-<div class="w-48 h-32 border border-slate-700 rounded-lg relative bg-slate-800/50">
-<div class="absolute bottom-4 left-1/2 -translate-x-1/2 w-4 h-6 bg-emerald-500 rounded-sm">
-</div>
-<div class="absolute top-10 left-1/2 -translate-x-1/2 w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.8)]">
-</div>
-<div class="absolute bottom-10 left-1/2 -translate-x-1/2 w-px h-12 bg-emerald-500/30 border-dashed border-l">
-</div>
-</div>
-<div class="text-[8px] text-emerald-400 font-mono">TARGET POINT: (160, 80)</div>
-</div>
-</div>
-</div>
+                <h1>為什麼要「往遠處看」？</h1>
+
+                <p>
+                    在前面的單元中，我們學會了在影像底部附近計算質心並產生轉向指令。這套「<strong>應對式控制（Reactive Control）</strong>」在低速行駛時表現良好，但當車速提升後，一個嚴重的問題會浮現：<strong>系統延遲（System Latency）</strong>讓車輛來不及反應。
+                </p>
+
+                <h2>系統延遲的來源</h2>
+
+                <p>從攝影機擷取畫面到舵機完成轉向，中間經歷了多個延遲環節：</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>延遲環節</th><th>典型耗時</th><th>說明</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>影像擷取</td><td>~33 ms（30 fps）</td><td>攝影機曝光與資料傳輸</td></tr>
+                        <tr><td>影像處理</td><td>~10-20 ms</td><td>灰階轉換、二值化、質心計算</td></tr>
+                        <tr><td>控制計算</td><td>~5 ms</td><td>誤差計算與角度映射</td></tr>
+                        <tr><td>舵機響應</td><td>~50-100 ms</td><td>PWM 訊號到機械轉動的物理延遲</td></tr>
+                        <tr><td><strong>總計</strong></td><td><strong>~100-160 ms</strong></td><td>約 0.1 ~ 0.16 秒</td></tr>
+                    </tbody>
+                </table>
+
+                <p>
+                    以時速 1 m/s 計算，0.15 秒的延遲意味著車輛在「看到彎道」到「完成轉向」之間已經前進了 15 公分。在窄賽道上，這個距離足以讓車輛衝出跑道。
+                </p>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        即使你的程式處理速度極快，<strong>舵機的機械響應延遲</strong>是物理限制，無法透過軟體優化來消除。預覽控制的核心理念就是：既然無法消除延遲，那就<strong>提前預判</strong>來補償它。
+                    </div>
+                </div>
+
+                <h2>預覽控制的核心理念</h2>
+
+                <p>
+                    預覽控制的靈感來自人類駕駛行為。經驗豐富的賽車手不會盯著引擎蓋前方看——他們的目光永遠鎖定在<strong>彎道的出口</strong>。透過觀察遠方的道路走向，大腦有充裕的時間提前計算轉向角度，產生平滑而精準的入彎動作。
+                </p>
+
+                <p>
+                    在影像處理中，「往遠處看」意味著：<strong>在影像的上方區域</strong>（較小的 Y 值）而非底部區域計算質心。影像透視投影的特性決定了——畫面上方對應的是現實世界中較遠的位置。
+                </p>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        你可以做一個簡單的實驗來感受預覽控制的效果：先用 $Y=220$（車頭正下方）計算質心並驅動舵機，再切換到 $Y=120$（畫面中段）。你會發現後者的轉向明顯更早、更柔和，蛇行震盪也大幅減少。
+                    </div>
+                </div>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        預覽太遠也有風險——畫面頂部可能包含其他賽道、觀眾席或雜訊，質心會被這些無關目標拉偏。預覽距離的選擇需要在「提前量」與「準確度」之間取得平衡，這正是下一節的主題。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -646,43 +670,77 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>📐 2. 預覽點 (Look-ahead Point) 的數學選取 (25 min)</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-<div class="space-y-8">
-<p class="text-lg text-gray-600 leading-relaxed font-light">
-                                選取影像中上方（如 $Y=80$）作為導航參考。這意味著我們是在「模擬未來的軌跡」。
-                            </p>
-<div class="bg-blue-50 p-8 rounded-3xl border border-blue-100 text-center">
-<h4 class="text-blue-900 font-bold mb-4 text-xs uppercase tracking-widest">Adaptive
-                                    Strategy</h4>
-<div class="grid grid-cols-2 gap-4 text-[9px]">
-<div class="p-3 border rounded-xl border-blue-200 bg-white">
-<strong>低速情境</strong><br/>近處預覽，精度高</div>
-<div class="p-3 border rounded-xl border-blue-200 bg-white shadow-sm">
-<strong>高速情境</strong><br/>遠處預覽，平滑度高</div>
-</div>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-blue-500/5"></div>
-<h4 class="text-blue-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10">
-                                Scan Line Analysis</h4>
-<div class="w-full space-y-3 px-10 relative z-10">
-<div class="flex justify-between text-[7px] text-slate-500"><span>Y=200 (NEAR)</span>
-<span>High Precision</span></div>
-<div class="w-full h-px bg-slate-700"></div>
-<div class="flex justify-between text-[7px] text-blue-400"><span>Y=120 (MID)</span>
-<span>Optimal Balance</span></div>
-<div class="w-full h-px bg-blue-500/50"></div>
-<div class="flex justify-between text-[7px] text-slate-500"><span>Y=40 (FAR)</span>
-<span>Curve Predict</span></div>
-<div class="w-full h-px bg-slate-700"></div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase">Dynamic ROI
-                                Selection</p>
-</div>
-</div>
+                <h1>預覽點 (Look-ahead Point) 的數學選取</h1>
+
+                <p>
+                    預覽控制的關鍵參數是<strong>預覽點的 Y 軸高度</strong>（$Y_{target}$）。在攝影機的透視投影中，Y 值越小代表現實中越遠的位置。選擇適當的 $Y_{target}$，就是在決定「車輛要看多遠的未來」。
+                </p>
+
+                <h2>多層次掃描線架構</h2>
+
+                <p>
+                    最佳實務不是只看單一高度的質心，而是同時在影像的<strong>近、中、遠</strong>三個高度各設一條掃描線，分別計算質心。三條線的質心差異能揭示賽道的彎曲方向與程度：
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>掃描層</th><th>建議 Y 值</th><th>對應距離</th><th>用途</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>近層（Near）</td><td>$Y = 200$</td><td>車頭前方 ~5 cm</td><td>精確定位當前位置</td></tr>
+                        <tr><td>中層（Mid）</td><td>$Y = 120$</td><td>前方 ~15 cm</td><td>主要導航參考（推薦預設）</td></tr>
+                        <tr><td>遠層（Far）</td><td>$Y = 60$</td><td>前方 ~30 cm</td><td>彎道預判與提前修正</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-code">
+<span class="c-comment">// 多層次質心提取</span><br/>
+<span class="c-kw">const</span> <span class="c-attr">SCAN_LINES</span> <span class="c-white">= [200, 120, 60];</span> <span class="c-comment">// 近、中、遠</span><br/>
+<span class="c-kw">const</span> <span class="c-attr">centroids</span> <span class="c-white">= SCAN_LINES.map(y =&gt; {</span><br/>
+&nbsp;&nbsp;<span class="c-kw">let</span> <span class="c-attr">sumX</span> <span class="c-white">= 0, count = 0;</span><br/>
+&nbsp;&nbsp;<span class="c-kw">for</span> <span class="c-white">(let x = 0; x &lt; width; x++)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-kw">if</span> <span class="c-white">(isBlack(x, y)) { sumX += x; count++; }</span><br/>
+&nbsp;&nbsp;<span class="c-kw">return</span> <span class="c-white">count > 0 ? sumX / count : </span><span class="c-kw">null</span><span class="c-white">;</span><br/>
+<span class="c-white">});</span>
+                </div>
+
+                <h2>自適應預覽距離</h2>
+
+                <p>
+                    固定的預覽高度無法同時滿足低速與高速的需求。更進階的做法是讓預覽高度<strong>隨車速動態調整</strong>：
+                </p>
+                <p>$$Y_{target} = \text{map}(speed, 0, V_{max}, Y_{near}, Y_{far})$$</p>
+                <p>
+                    速度越快，$Y_{target}$ 越小（看越遠），給系統更多的反應時間。速度越慢，$Y_{target}$ 越大（看越近），提供更精確的即時定位。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 自適應預覽高度：速度越快，看越遠</span><br/>
+<span class="c-kw">function</span> <span class="c-attr">updateLookahead</span><span class="c-white">(currentSpeed) {</span><br/>
+&nbsp;&nbsp;<span class="c-kw">const</span> <span class="c-attr">Y_NEAR</span> <span class="c-white">= 200;</span> <span class="c-comment">// 最近</span><br/>
+&nbsp;&nbsp;<span class="c-kw">const</span> <span class="c-attr">Y_FAR</span> <span class="c-white">= 50;</span> <span class="c-comment">// 最遠</span><br/>
+&nbsp;&nbsp;<span class="c-kw">const</span> <span class="c-attr">MAX_SPEED</span> <span class="c-white">= 100;</span><br/>
+&nbsp;&nbsp;<span class="c-kw">let</span> <span class="c-attr">targetY</span> <span class="c-white">= Y_NEAR - (currentSpeed / MAX_SPEED) * (Y_NEAR - Y_FAR);</span><br/>
+&nbsp;&nbsp;<span class="c-white">targetY = Math.max(Y_FAR, Math.min(Y_NEAR, targetY));</span><br/>
+&nbsp;&nbsp;<span class="c-kw">return</span> <span class="c-white">Math.round(targetY);</span><br/>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        自適應預覽高度必須設有<strong>上下限防護</strong>。$Y_{target}$ 不應小於 40（過遠的區域容易看到賽道以外的雜訊），也不應大於 220（過近的位置已失去預覽效果）。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在 Canvas 上用三種顏色（紅、綠、藍）分別繪製近、中、遠三層的質心位置，可以直觀觀察入彎時「遠處質心先偏移」的現象。這是驗證預覽控制是否正確運作的最佳視覺化手段。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -701,42 +759,73 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔄 3. 純追蹤 (Pure Pursuit) 概念與切彎問題</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center">
-<div class="flex-1 space-y-6">
-<p class="text-slate-400 font-light leading-relaxed text-lg">
-                                預覽過遠會導致「截彎取直 (Cutting Corners)」現象。學習如何控制預覽長度，在「過早轉彎」與「來不及轉彎」之間取得平衡。
-                            </p>
-<div class="bg-emerald-500/10 p-8 rounded-3xl border border-emerald-500/20 shadow-inner">
-<h4 class="font-bold text-emerald-400 mb-4 text-xs uppercase tracking-widest text-center">
-                                    Path Geometry Control</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
-<div><strong class="text-white">切西瓜問題</strong>：視線過遠，車輛會提早切入彎道內側。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
-<div><strong class="text-white">追蹤延遲</strong>：視線過近，高速下會產生嚴重的超調 (Overshoot)。
-                                        </div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
-<div><strong class="text-white">幾何補償</strong>：透過 $K_p$ 係數與 Y 軸高度的連動優化。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-emerald-600/10 p-10 rounded-3xl border border-emerald-500/20 text-center relative overflow-hidden group">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-emerald-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">
-                                Steering Correction</h4>
-<div class="text-4xl font-mono text-white mb-2">$\delta = \arctan(\frac{2L \sin
-                                \alpha}{l_d})$</div>
-<p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center">
-                                "預防勝於治療：看遠方就是為了提早應對。"
-                            </p>
-</div>
-</div>
+                <h1>純追蹤 (Pure Pursuit) 概念與切彎問題</h1>
+
+                <p>
+                    <strong>純追蹤演算法（Pure Pursuit Algorithm）</strong>是自動駕駛領域中最經典的路徑追蹤方法之一。它的核心思想極其直覺：在車輛前方選定一個<strong>目標點（Look-ahead Point）</strong>，然後計算出一段能讓車輛精確通過該點的<strong>圓弧路徑</strong>，再將圓弧的曲率轉換為舵機轉向角。
+                </p>
+
+                <h2>純追蹤的轉向公式</h2>
+
+                <p>
+                    假設車輛的軸距為 $L$，目標點相對於車頭的距離為 $l_d$（預覽距離），目標點偏離車頭方向的角度為 $\alpha$，則所需的轉向角為：
+                </p>
+                <p>$$\delta = \arctan\left(\frac{2L \sin \alpha}{l_d}\right)$$</p>
+                <p>
+                    在簡化的循跡場景中，$\alpha$ 可以用質心誤差近似計算：<code>alpha = atan2(error, lookaheadDistance)</code>。這個公式的美妙之處在於——它會根據預覽距離自動調節轉向的「積極程度」。
+                </p>
+
+                <h2>截彎取直（Cutting Corners）問題</h2>
+
+                <p>
+                    預覽控制的一大陷阱是：當預覽距離設定過長時，車輛在接近彎道時就「看到」了彎道出口，於是直接朝出口方向前進，<strong>走了一條切過彎心內側的捷徑</strong>。雖然這在某些情境下反而更快，但在需要嚴格沿線行駛的場景中，這會導致車輛偏離賽道。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>預覽距離 $l_d$</th><th>轉向行為</th><th>問題</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>過短（如 $Y=220$）</td><td>急轉急停，頻繁修正</td><td>蛇行震盪、超調（Overshoot）</td></tr>
+                        <tr><td>適中（如 $Y=120$）</td><td>平滑入彎，貼合賽道</td><td>（理想狀態）</td></tr>
+                        <tr><td>過長（如 $Y=40$）</td><td>提前轉向，走捷徑</td><td>截彎取直、偏離賽道線</td></tr>
+                    </tbody>
+                </table>
+
+                <h2>$K_p$ 與預覽高度的連動調校</h2>
+
+                <p>
+                    解決截彎取直的方法不是一味縮短預覽距離，而是<strong>同時調整比例增益 $K_p$</strong>。當預覽距離增加時，應降低 $K_p$ 以抑制轉向幅度；反之，近距離預覽時可以使用較高的 $K_p$ 提升響應速度。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 預覽控制與 P-Control 整合</span><br/>
+<span class="c-kw">const</span> <span class="c-attr">lookaheadY</span> <span class="c-white">= updateLookahead(currentSpeed);</span><br/>
+<span class="c-kw">const</span> <span class="c-attr">centroidX</span> <span class="c-white">= getCentroidAtY(binaryImage, lookaheadY);</span><br/><br/>
+<span class="c-kw">if</span> <span class="c-white">(centroidX !== </span><span class="c-kw">null</span><span class="c-white">) {</span><br/>
+&nbsp;&nbsp;<span class="c-kw">const</span> <span class="c-attr">error</span> <span class="c-white">= centroidX - </span><span class="c-val">160</span><span class="c-white">;</span><br/>
+&nbsp;&nbsp;<span class="c-comment">// Kp 隨預覽距離反向調整</span><br/>
+&nbsp;&nbsp;<span class="c-kw">const</span> <span class="c-attr">Kp</span> <span class="c-white">= map(lookaheadY, 200, 50, </span><span class="c-val">0.25</span><span class="c-white">, </span><span class="c-val">0.10</span><span class="c-white">);</span><br/>
+&nbsp;&nbsp;<span class="c-kw">const</span> <span class="c-attr">steer</span> <span class="c-white">= 90 + error * Kp;</span><br/>
+&nbsp;&nbsp;<span class="c-white">servo.write(Math.max(</span><span class="c-val">60</span><span class="c-white">, Math.min(</span><span class="c-val">120</span><span class="c-white">, steer)));</span><br/>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        當預覽目標點突然消失（例如直道進入彎道的瞬間），質心可能產生大幅跳變。此時若直接將跳變值傳給舵機，會導致機械暴力抽動。建議加入<strong>變化率限制（Rate Limiting）</strong>：每幀的角度變化不超過 5°，確保轉向始終平滑。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在 Canvas 上繪製一條從車頭中心（畫面底部中央）到預覽質心的<strong>連接線</strong>，可以直觀觀察車輛的「視線方向」。入彎時這條線會提前偏轉，讓你確認預覽控制是否正確地在「看向彎心」。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -820,16 +909,81 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>測試你對本模組核心概念的掌握程度。請選出每題的最佳答案，提交後可查看詳細解析。</p>
+
+                <form id="quiz-form" onsubmit="return false;">
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">1. 預覽控制 (Look-ahead Control) 的核心概念是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 只關注當前位置的誤差</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 觀察前方較遠處的路徑資訊，提前做出轉向決策</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 降低馬達轉速以避免錯誤</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 使用後視鏡觀察後方車輛</label>
+                        <div id="exp-1" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">2. 預覽距離 (Look-ahead Distance) 設定得過遠會造成什麼問題？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 車子完全無法移動</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 車子反應過度靈敏，劇烈震盪</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 車子忽略近處急彎，來不及轉向</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 車子速度會自動降低</label>
+                        <div id="exp-2" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">3. 純追蹤 (Pure Pursuit) 演算法的目標是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 追蹤前方固定距離上的一個目標點</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 追蹤所有可見的路徑點</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 保持車速恆定</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 追蹤後方車輛的位置</label>
+                        <div id="exp-3" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">4. 車速增加時，預覽距離通常應如何調整？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 縮短預覽距離</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 保持不變</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 適度增加預覽距離</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 設為零</label>
+                        <div id="exp-4" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+                </form>
+
+                <div style="display:flex;gap:12px;margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+                <div id="quiz-result" style="display:none;margin-top:20px;padding:16px;border-radius:6px;font-size:14px;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -887,9 +1041,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「預覽控制 (Look-ahead Control) 觀念」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「預覽控制 (Look-ahead Control) 觀念」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -905,7 +1059,8 @@
         { id: 3, label: '📐 2. 預覽點 (Look-ahead Point) 的數學選取 (25 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🔄 3. 純追蹤 (Pure Pursuit) 概念與切彎問題', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -925,6 +1080,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1026,8 +1182,61 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'C', q3: 'A', q4: 'C' };
+    const QUIZ_EXPLANATIONS = { q1: '預覽控制的核心是「往遠處看」——提前獲取前方路徑曲率，讓車子在進彎前就開始轉向，避免「看到彎道才急轉」。', q2: '預覽距離過遠會讓系統只看到遠處的「大趨勢」而忽略近處的急彎，導致轉彎時路徑偏離過大。', q3: 'Pure Pursuit 的核心是在路徑上找到一個距離車子固定長度（即 Look-ahead Distance）的目標點，然後計算前往該點的轉向角。', q4: '速度越快，車子需要更多時間來執行轉向，因此預覽距離應隨車速增加而加大，確保有足夠的反應時間。' };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const idx = q.slice(1);
+            const exp = document.getElementById(`exp-${idx}`);
+            if (!selected) continue;
+            if (selected.value === correct) {
+                score++;
+                exp.style.display = 'block';
+                exp.style.background = '#dff6dd';
+                exp.style.borderLeftColor = '#107c10';
+                exp.innerHTML = '<i class="fas fa-check-circle" style="color:#107c10;margin-right:6px;"></i>' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#dff6dd';
+                selected.parentElement.style.borderColor = '#107c10';
+            } else {
+                exp.style.display = 'block';
+                exp.style.background = '#fde7e9';
+                exp.style.borderLeftColor = '#d13438';
+                exp.innerHTML = '<i class="fas fa-times-circle" style="color:#d13438;margin-right:6px;"></i>正確答案是 ' + correct + '。' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#fde7e9';
+                selected.parentElement.style.borderColor = '#d13438';
+            }
+        }
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === total) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.innerHTML = '<strong style="color:#107c10;">🎉 滿分！' + score + ' / ' + total + '</strong><br>你完全掌握了本模組的核心概念！';
+            markDone(6);
+        } else {
+            resultEl.style.background = '#fff4ce';
+            resultEl.innerHTML = '<strong style="color:#8a6914;">得分：' + score + ' / ' + total + '</strong><br>建議複習錯題的解析說明，再試一次！';
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= 4; i++) {
+            const exp = document.getElementById('exp-' + i);
+            if (exp) { exp.style.display = 'none'; exp.style.background = ''; exp.style.borderLeftColor = 'transparent'; }
+        }
+        document.querySelectorAll('#quiz-form label').forEach(l => { l.style.background = ''; l.style.borderColor = '#e1dfdd'; });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 06：電腦視覺進階';
 </script>
 
 <!-- Define Resources -->

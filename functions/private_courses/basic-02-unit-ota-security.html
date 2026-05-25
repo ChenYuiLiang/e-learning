@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OTA 安全性：密碼保護與版本檢查 - Vibe Coding Learn</title>
+    <title>OTA 安全性：密碼保護與版本檢查 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -70,6 +70,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -93,6 +94,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -385,6 +387,35 @@
             line-height: 1.5;
         }
 
+        /* Quiz */
+        .quiz-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 12px;
+            border: 1px solid #e1dfdd;
+            border-radius: 4px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: background .1s, border-color .1s;
+            font-size: 14px;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback {
+            display: none;
+            margin-top: 8px;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
+        .quiz-submit { margin-top: 16px; }
+
         /* Buttons */
         .ms-btn {
             background: var(--ms-blue); color: #fff; border: none;
@@ -483,9 +514,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 2 - 安全防線</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -495,25 +528,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">OTA 安全性：密碼保護與版本檢查</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 2</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -521,7 +550,7 @@
                 <h1>OTA 安全性：密碼保護與版本檢查</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 2</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -532,10 +561,10 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>️ 為什麼需要 OTA 安全機制？</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>🔐 密碼保護：HTTP 基本驗證</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>🏷️ 版本檢查與中繼資料</strong> 的調校技巧與穩定性測試。</li>
-                    <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
+                    <li>能夠辨識 OTA 的三大安全威脅（中間人攻擊、版本降級、硬體型號不匹配），並解釋每種威脅的危害。</li>
+                    <li>能夠實作 HTTP Basic Authentication 密碼保護，並將管理帳密透過 NVS（<code>Preferences</code>）持久化儲存。</li>
+                    <li>能夠實作語義化版本比對邏輯，在偵測到舊版韌體時主動呼叫 <code>Update.abort()</code> 攔截降級更新。</li>
+                    <li>能夠利用 <code>ESP.getChipModel()</code> 實作硬體型號鎖定，防止誤刷不相容韌體，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
                 <h2>必要條件</h2>
@@ -565,15 +594,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>OTA 安全性：密碼保護與版本檢查</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    OTA 讓你能遠端更新韌體，但如果缺乏安全防護，任何同網段的人都能推送惡意程式到你的裝置上。
+                    從密碼驗證、版本號比對到韌體簽章校驗，每一層防線都在阻止「未經授權的程式碼」進入你的晶片。
+                    本單元將教你如何為 OTA 通道加上「鎖」，確保只有合法的更新才能通過。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    一間新創公司部署了 200 台智慧門鎖，全部開放了 OTA 埠方便維護。某天凌晨，一名攻擊者在同一 Wi-Fi 網段掃描到這些裝置，
+                    用預設的空密碼推送了一個「開門」韌體——所有門鎖瞬間失效。事後檢討才發現：OTA 端點既沒有密碼保護，也沒有韌體版本驗證。
+                    這場災難本可透過幾行安全設定完全避免。
                 </div>
 
                 <h2>教學影片</h2>
@@ -587,7 +617,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -601,37 +631,85 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚠️ 為什麼需要 OTA 安全機制？</h1>
-                
-                <p class="text-gray-500 mb-10 text-lg font-light leading-relaxed">
-                        沒有保護的 OTA，就像是把家門大開並放了台「全自動換鎖機」。
-                    </p><div class="grid lg:grid-cols-3 gap-8">
-<div class="p-8 rounded-3xl bg-red-50 border border-red-100 transition hover:shadow-lg">
-<div class="w-12 h-12 bg-red-200 text-red-700 rounded-2xl flex items-center justify-center text-2xl mb-6 text-justify">
-                                🔒</div>
-<h3 class="font-bold text-gray-900 mb-3 text-justify">攔截與偽造 (MITM)</h3>
-<p class="text-sm text-gray-600 leading-relaxed text-justify">理解「中間人攻擊」。防止攻擊者接管無人車甚至引發危害。
-                            </p>
-</div>
-<div class="p-8 rounded-3xl bg-orange-50 border border-orange-100 transition hover:shadow-lg">
-<div class="w-12 h-12 bg-orange-200 text-orange-700 rounded-2xl flex items-center justify-center text-2xl mb-6 text-justify">
-                                📉</div>
-<h3 class="font-bold text-gray-900 mb-3 text-justify uppercase tracking-widest">版本倒退風險</h3>
-<p class="text-sm text-gray-600 leading-relaxed text-justify">舊版韌體漏洞可能導致硬體失效。好的系統必須「拒絕降級」。
-                            </p>
-</div>
-<div class="p-8 rounded-3xl bg-slate-100 border border-slate-200 transition hover:shadow-lg">
-<div class="w-12 h-12 bg-slate-300 text-slate-700 rounded-2xl flex items-center justify-center text-2xl mb-6 text-justify">
-                                🎭</div>
-<h3 class="font-bold text-gray-900 mb-3 text-justify">硬體規格不匹配</h3>
-<p class="text-sm text-gray-600 leading-relaxed text-justify">誤刷錯誤機型可能導致損壞。更新前必須確認設備型號。</p>
-</div>
-</div>
+                <h1>為什麼需要 OTA 安全機制？</h1>
+
+                <p>OTA 功能為你的裝置打開了一扇「遠端替換大腦」的大門。這扇門帶來了巨大的便利性——你可以在千里之外修復 Bug、推送新功能。但如果這扇門沒有「鎖」，任何有心人士都能從同一個 Wi-Fi 網路中推送惡意韌體，完全接管你的裝置。</p>
+
+                <p>在生產環境中，OTA 安全不是可選項目，而是<strong>絕對必要的基礎設施</strong>。一個沒有防護的 OTA 端口，其危險程度等同於把 SSH root 密碼設為空值然後開放到公網上。</p>
+
+                <h2>三大安全威脅</h2>
+
+                <p>要設計有效的防護機制，首先需要理解攻擊者可能利用哪些漏洞。以下是 OTA 系統面臨的三大核心威脅：</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>威脅類型</th>
+                            <th>攻擊方式</th>
+                            <th>可能危害</th>
+                            <th>防禦機制</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>中間人攻擊 (MITM)</strong></td>
+                            <td>攻擊者攔截 OTA 傳輸通道，替換為惡意韌體</td>
+                            <td>裝置被完全接管、資料外洩、物理損害</td>
+                            <td>HTTPS 加密 + 韌體數位簽章</td>
+                        </tr>
+                        <tr>
+                            <td><strong>版本降級 (Rollback)</strong></td>
+                            <td>攻擊者故意推送含有已知漏洞的舊版韌體</td>
+                            <td>重新暴露已修補的安全漏洞</td>
+                            <td>語義化版本比對 + Anti-rollback</td>
+                        </tr>
+                        <tr>
+                            <td><strong>硬體型號不匹配</strong></td>
+                            <td>將 A 型號的韌體誤刷到 B 型號的硬體</td>
+                            <td>GPIO 設定錯誤可能損壞硬體元件</td>
+                            <td>晶片型號鎖定 + 韌體標頭檢查</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>威脅一：中間人攻擊</h2>
+
+                <p>中間人攻擊（Man-in-the-Middle, MITM）是最嚴重的威脅。攻擊者不需要知道你的 OTA 密碼，只需在裝置與更新伺服器之間的網路路徑上進行監聽與竄改。在區域網路環境中，這可以透過 ARP Spoofing 輕易實現。</p>
+
+                <p>想像一個場景：你的智慧門鎖透過 HTTP（非加密）接收 OTA 更新。攻擊者在同一 Wi-Fi 網段中攔截了更新請求，將你的「修復 Bug」韌體替換為「永遠開門」的惡意版本。由於沒有數位簽章驗證，門鎖無法分辨這個韌體是否來自合法來源。</p>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        在涉及人身安全的應用（門鎖、車輛控制、醫療設備）中，OTA 通道<strong>必須</strong>使用 TLS 加密，且韌體必須經過數位簽章驗證。這不是建議，而是安全合規的基本要求。
+                    </div>
+                </div>
+
+                <h2>威脅二：版本降級攻擊</h2>
+
+                <p>假設你在 v1.2.0 修補了一個關鍵的緩衝區溢位漏洞。如果攻擊者能讓裝置「更新」回 v1.1.0，這個漏洞就會重新暴露。更狡猾的是，降級攻擊可能不容易被察覺——裝置看起來運作正常，但安全防線已被悄悄撕開。</p>
+
+                <p>防禦方法很直觀：在接受更新前，比對新韌體的版本號與目前版本。若新版本號 ≤ 現有版本號，立即拒絕更新。ESP-IDF 原生提供 Anti-rollback 功能，可在 Bootloader 層級強制執行此策略。</p>
+
+                <h2>威脅三：硬體不匹配</h2>
+
+                <p>ESP32 系列包含多種晶片變體：ESP32、ESP32-S2、ESP32-S3、ESP32-C3 等。它們的 GPIO 配置、周邊裝置、記憶體架構都不同。若將為 ESP32-S3 編譯的韌體刷入 ESP32-C3，輕則程式無法運行，重則因為 GPIO 電壓設定錯誤而燒毀外接元件。</p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        使用 <code>ESP.getChipModel()</code> 可在運行時取得晶片型號字串（如 "ESP32-S3"）。將此資訊與韌體標頭中的目標型號進行比對，就能在寫入 Flash 之前阻止不相容的更新。
+                    </div>
+                </div>
+
+                <p>在接下來的單元中，我們將逐一實作這三種防護機制的程式碼，從最基礎的密碼保護開始，逐步建立起完整的安全防線。</p>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -645,58 +723,112 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔐 密碼保護：HTTP 基本驗證</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-<div class="space-y-8">
-<div class="bg-indigo-50 p-8 rounded-3xl border border-indigo-100 shadow-sm relative overflow-hidden group">
-<div class="absolute -right-4 -top-4 w-24 h-24 bg-indigo-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h3 class="font-bold text-xl text-indigo-900 mb-4 flex items-center gap-2">HTTP Basic
-                                    Auth 流程</h3>
-<ul class="space-y-4">
-<li class="flex items-start gap-3">
-<div class="w-5 h-5 bg-indigo-200 rounded-full flex items-center justify-center text-[10px] text-indigo-700 font-bold mt-0.5 shrink-0">
-                                            1</div>
-<p class="text-sm text-indigo-800 leading-relaxed text-justify">發送請求，ESP32 檢查
-                                            Auth Header 資訊。</p>
-</li>
-<li class="flex items-start gap-3">
-<div class="w-5 h-5 bg-indigo-200 rounded-full flex items-center justify-center text-[10px] text-indigo-700 font-bold mt-0.5 shrink-0">
-                                            2</div>
-<p class="text-sm text-indigo-800 leading-relaxed text-justify">若無，回傳
-                                            <strong>401 Unauthorized</strong> 觸發登入視窗。</p>
-</li>
-<li class="flex items-start gap-3">
-<div class="w-5 h-5 bg-indigo-200 rounded-full flex items-center justify-center text-[10px] text-indigo-700 font-bold mt-0.5 shrink-0">
-                                            3</div>
-<p class="text-sm text-indigo-800 leading-relaxed text-justify">密碼儲存於
-                                            NVS，確保每個設備擁有獨特認證。</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 relative shadow-2xl overflow-hidden group">
-<div class="absolute top-0 right-0 p-4 font-mono text-[10px] text-slate-500 tracking-widest uppercase">
-                                auth-logic-snippet</div>
-<h4 class="text-white font-bold mb-6 flex items-center gap-2">網頁路徑攔截器</h4>
-<div class="code-block group-hover:border-indigo-500/50 transition">
-                                server.<span class="text-indigo-300">on</span>(<span class="text-emerald-300">"/update"</span>, HTTP_GET, []() {<br/>
-                                  <span class="text-slate-500 italic text-justify">// 檢查 Preferences
-                                    帳密</span><br/>
-                                  <span class="text-indigo-300">if</span> (!server.<span class="text-blue-300">authenticate</span>(username, password)) {<br/>
-                                    <span class="text-indigo-300">return</span> server.<span class="text-blue-300">requestAuthentication</span>();<br/>
-                                  }<br/>
-                                  server.<span class="text-blue-300">sendContent</span>(index_html);<br/>
-                                });
-                            </div>
-</div>
-</div>
+                <h1>密碼保護：HTTP 基本驗證</h1>
+
+                <p>HTTP Basic Authentication 是為 OTA 端點建立存取控制的最直接方法。它利用 HTTP 協議內建的認證機制，讓瀏覽器在使用者嘗試存取受保護頁面時自動彈出登入對話框。雖然這不是最安全的認證方式，但對於區域網路內的 IoT 裝置而言，它提供了足夠的防護層級。</p>
+
+                <h2>認證流程解析</h2>
+
+                <p>HTTP Basic Auth 的運作機制基於「挑戰-回應」（Challenge-Response）模型。整個流程完全由 HTTP 標頭驅動，不需要額外的登入頁面或 Session 管理：</p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>客戶端發送請求</h4>
+                            <p>使用者在瀏覽器輸入 <code>http://esp32.local/update</code>，瀏覽器發送一個不帶認證資訊的 HTTP GET 請求。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>伺服器回傳 401 挑戰</h4>
+                            <p>ESP32 的 WebServer 檢測到請求中沒有 <code>Authorization</code> 標頭，回傳 HTTP 401 狀態碼，並附帶 <code>WWW-Authenticate: Basic realm="OTA"</code> 標頭。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>瀏覽器彈出登入框</h4>
+                            <p>瀏覽器收到 401 回應後，自動顯示原生的使用者名稱/密碼輸入對話框。使用者輸入認證資訊後，瀏覽器將其以 Base64 編碼放入 <code>Authorization</code> 標頭，重新發送請求。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>伺服器驗證並放行</h4>
+                            <p>ESP32 解碼 <code>Authorization</code> 標頭，與儲存在 NVS 中的帳密比對。若正確，回傳 OTA 更新頁面；若錯誤，再次回傳 401。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>ESP32 實作程式碼</h2>
+
+                <p>在 ESP32 的 WebServer 框架中，實作 Basic Auth 只需要兩個 API 呼叫：<code>server.authenticate()</code> 進行比對，<code>server.requestAuthentication()</code> 發送 401 挑戰。</p>
+
+                <pre class="ms-code"><span class="c-kw">#include</span> <span class="c-str">&lt;WebServer.h&gt;</span>
+<span class="c-kw">#include</span> <span class="c-str">&lt;Preferences.h&gt;</span>
+
+<span class="c-tag">WebServer</span> <span class="c-attr">server</span>(80);
+<span class="c-tag">Preferences</span> <span class="c-attr">prefs</span>;
+<span class="c-tag">String</span> <span class="c-attr">ota_user</span>, <span class="c-attr">ota_pass</span>;
+
+<span class="c-kw">void</span> <span class="c-attr">setup</span>() {
+  prefs.<span class="c-attr">begin</span>(<span class="c-str">"ota-auth"</span>, <span class="c-kw">false</span>);
+
+  <span class="c-comment">// 從 NVS 讀取帳密（首次使用時設定預設值）</span>
+  ota_user = prefs.<span class="c-attr">getString</span>(<span class="c-str">"username"</span>, <span class="c-str">"admin"</span>);
+  ota_pass = prefs.<span class="c-attr">getString</span>(<span class="c-str">"password"</span>, <span class="c-str">"changeme"</span>);
+
+  server.<span class="c-attr">on</span>(<span class="c-str">"/update"</span>, HTTP_GET, []() {
+    <span class="c-comment">// 驗證身份：失敗則要求登入</span>
+    <span class="c-kw">if</span> (!server.<span class="c-attr">authenticate</span>(
+        ota_user.<span class="c-attr">c_str</span>(), ota_pass.<span class="c-attr">c_str</span>())) {
+      <span class="c-kw">return</span> server.<span class="c-attr">requestAuthentication</span>();
+    }
+    server.<span class="c-attr">send</span>(200, <span class="c-str">"text/html"</span>, update_html);
+  });
+
+  server.<span class="c-attr">begin</span>();
+}</pre>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        絕對不要將密碼硬編碼（Hardcode）在原始碼中。原始碼可能被上傳到 GitHub、被反編譯，或者在團隊成員間流通。正確的做法是將密碼存儲在 NVS 中，並在裝置首次啟動時由管理員設定。
+                    </div>
+                </div>
+
+                <h2>使用 NVS 持久化認證資訊</h2>
+
+                <p>將帳密存儲在 NVS 的好處是：每台裝置可以擁有獨立的認證資訊、密碼可以在不重新燒錄韌體的情況下被更新、且即使裝置重啟密碼也不會遺失。你可以建立一個專用的「管理介面」讓使用者修改密碼：</p>
+
+                <pre class="ms-code"><span class="c-comment">// 密碼變更路由（同樣需要先通過認證）</span>
+server.<span class="c-attr">on</span>(<span class="c-str">"/change-password"</span>, HTTP_POST, []() {
+  <span class="c-kw">if</span> (!server.<span class="c-attr">authenticate</span>(ota_user.<span class="c-attr">c_str</span>(), ota_pass.<span class="c-attr">c_str</span>())) {
+    <span class="c-kw">return</span> server.<span class="c-attr">requestAuthentication</span>();
+  }
+  <span class="c-tag">String</span> newPass = server.<span class="c-attr">arg</span>(<span class="c-str">"new_password"</span>);
+  <span class="c-kw">if</span> (newPass.<span class="c-attr">length</span>() &gt;= 8) {
+    prefs.<span class="c-attr">putString</span>(<span class="c-str">"password"</span>, newPass);
+    ota_pass = newPass;
+    server.<span class="c-attr">send</span>(200, <span class="c-str">"text/plain"</span>, <span class="c-str">"密碼已更新"</span>);
+  }
+});</pre>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        HTTP Basic Auth 搭配 HTTPS 才能提供完整防護。在僅使用 HTTP 的區域網路環境中，密碼雖以 Base64 編碼傳輸（可被輕易解碼），但至少能阻止「隨意掃描就能更新」的無差別攻擊。對於教學與原型開發階段，這已經是足夠的起步防護。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -710,37 +842,145 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🏷️ 版本檢查與中繼資料</h1>
-                
-                <p class="text-gray-500 mb-10 text-lg font-light leading-relaxed">
-                        「在上傳前就知道會失敗」是專業開發者不可或缺的細節。
-                    </p><div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-<div class="p-8 bg-emerald-50 rounded-3xl border border-emerald-100 text-center group hover:bg-emerald-500 transition-all duration-500">
-<div class="text-4xl mb-4 group-hover:scale-125 transition">📦</div>
-<h4 class="font-bold text-emerald-900 group-hover:text-white mb-2 text-justify">語義化版本</h4>
-<p class="text-xs text-emerald-700 group-hover:text-white/80 leading-relaxed text-justify">
-                                理解 MAJOR.MINOR.PATCH。確保更新方向正確。</p>
-</div>
-<div class="p-8 bg-emerald-50 rounded-3xl border border-emerald-100 text-center group hover:bg-emerald-500 transition-all duration-500">
-<div class="text-4xl mb-4 group-hover:scale-125 transition">🏷️</div>
-<h4 class="font-bold text-emerald-900 group-hover:text-white mb-2 text-justify uppercase tracking-widest">
-                                韌體標頭解析</h4>
-<p class="text-xs text-emerald-700 group-hover:text-white/80 leading-relaxed text-justify">
-                                讀取前 1K Bytes，提取型號。防止誤刷。</p>
-</div>
-<div class="p-8 bg-emerald-50 rounded-3xl border border-emerald-100 text-center group hover:bg-emerald-500 transition-all duration-500">
-<div class="text-4xl mb-4 group-hover:scale-125 transition">🛡️</div>
-<h4 class="font-bold text-emerald-900 group-hover:text-white mb-2 text-justify">主動攔截 (Abort)
-                            </h4>
-<p class="text-xs text-emerald-700 group-hover:text-white/80 leading-relaxed text-justify">
-                                寫入 Flash 前調用 `Update.abort()` 除後患。</p>
-</div>
-</div>
+                <h1>版本檢查與中繼資料</h1>
+
+                <p>密碼保護解決了「誰可以更新」的問題，但還有另一個同樣重要的問題需要處理：<strong>「這個韌體應該被更新嗎？」</strong>版本檢查機制能在韌體寫入 Flash 之前，先驗證它的版本號、目標型號等中繼資料（Metadata），主動攔截不合規的更新請求。</p>
+
+                <p>這就是「在上傳前就知道會失敗」的防禦哲學——與其等到韌體寫入一半才發現問題，不如在第一個 byte 抵達時就做出判斷。</p>
+
+                <h2>語義化版本控制 (Semantic Versioning)</h2>
+
+                <p>語義化版本（SemVer）使用 <code>MAJOR.MINOR.PATCH</code> 三段式格式來表達韌體的演進程度。在 OTA 安全的語境中，版本號的比對規則很明確：<strong>只接受版本號嚴格大於目前版本的更新</strong>。</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>版本段</th>
+                            <th>含義</th>
+                            <th>更新範例</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>MAJOR</strong></td>
+                            <td>不相容的 API 變更或架構重構</td>
+                            <td>1.x.x → 2.0.0（通訊協議變更）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>MINOR</strong></td>
+                            <td>新增功能，保持向下相容</td>
+                            <td>1.2.x → 1.3.0（新增感測器支援）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PATCH</strong></td>
+                            <td>Bug 修復，無新功能</td>
+                            <td>1.2.3 → 1.2.4（修復溫度偏移）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>在韌體中，版本號通常定義在獨立的標頭檔案中，方便管理與引用：</p>
+
+                <pre class="ms-code"><span class="c-comment">// include/version.h</span>
+<span class="c-kw">#define</span> <span class="c-attr">FW_VERSION_MAJOR</span>  <span class="c-val">1</span>
+<span class="c-kw">#define</span> <span class="c-attr">FW_VERSION_MINOR</span>  <span class="c-val">2</span>
+<span class="c-kw">#define</span> <span class="c-attr">FW_VERSION_PATCH</span>  <span class="c-val">4</span>
+<span class="c-kw">#define</span> <span class="c-attr">FW_VERSION_STRING</span> <span class="c-str">"1.2.4"</span>
+<span class="c-kw">#define</span> <span class="c-attr">HW_TARGET</span>         <span class="c-str">"ESP32-S3"</span></pre>
+
+                <h2>實作版本比對邏輯</h2>
+
+                <p>版本比對的核心邏輯是：將三段版本號各自轉為整數，從 MAJOR 到 PATCH 依序比較。以下函式會在 OTA 上傳的初期階段被呼叫：</p>
+
+                <pre class="ms-code"><span class="c-comment">// 比對版本號：回傳 true 表示允許更新</span>
+<span class="c-kw">bool</span> <span class="c-attr">isVersionNewer</span>(<span class="c-kw">int</span> newMaj, <span class="c-kw">int</span> newMin, <span class="c-kw">int</span> newPat) {
+  <span class="c-kw">if</span> (newMaj != FW_VERSION_MAJOR)
+    <span class="c-kw">return</span> newMaj &gt; FW_VERSION_MAJOR;
+  <span class="c-kw">if</span> (newMin != FW_VERSION_MINOR)
+    <span class="c-kw">return</span> newMin &gt; FW_VERSION_MINOR;
+  <span class="c-kw">return</span> newPat &gt; FW_VERSION_PATCH;
+}
+
+<span class="c-comment">// 在上傳處理中使用</span>
+<span class="c-kw">if</span> (!<span class="c-attr">isVersionNewer</span>(newMaj, newMin, newPat)) {
+  Serial.<span class="c-attr">println</span>(<span class="c-str">"拒絕：韌體版本過舊"</span>);
+  Update.<span class="c-attr">abort</span>();
+  server.<span class="c-attr">send</span>(403, <span class="c-str">"text/plain"</span>,
+    <span class="c-str">"Error: 版本降級被拒絕"</span>);
+  <span class="c-kw">return</span>;
+}</pre>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        <code>Update.abort()</code> 必須在 <code>Update.end()</code> 之前呼叫。一旦 <code>end()</code> 被執行且返回成功，分區切換就已經完成，此時再呼叫 <code>abort()</code> 為時已晚。最佳實作是在收到韌體的前幾個封包時就完成所有預檢。
+                    </div>
+                </div>
+
+                <h2>硬體型號鎖定</h2>
+
+                <p>除了版本號，韌體標頭中還應包含<strong>目標硬體型號</strong>資訊。ESP32 系列有多種變體，它們的指令集、GPIO 腳位、記憶體配置都不同。將錯誤型號的韌體刷入裝置可能造成不可逆的損害。</p>
+
+                <pre class="ms-code"><span class="c-comment">// 檢查硬體型號是否匹配</span>
+<span class="c-tag">String</span> <span class="c-attr">chipModel</span> = ESP.<span class="c-attr">getChipModel</span>();
+
+<span class="c-kw">if</span> (chipModel != <span class="c-tag">String</span>(HW_TARGET)) {
+  Serial.<span class="c-attr">printf</span>(<span class="c-str">"型號不匹配！本機: %s, 韌體目標: %s\n"</span>,
+    chipModel.<span class="c-attr">c_str</span>(), HW_TARGET);
+  Update.<span class="c-attr">abort</span>();
+  server.<span class="c-attr">send</span>(403, <span class="c-str">"text/plain"</span>,
+    <span class="c-str">"Error: 硬體型號不匹配"</span>);
+  <span class="c-kw">return</span>;
+}</pre>
+
+                <h2>防禦層級總結</h2>
+
+                <p>將所有安全機制組合在一起，OTA 更新會經過層層檢查才能最終寫入 Flash：</p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>身份驗證（密碼）</h4>
+                            <p>攔截未經授權的使用者 → HTTP 401</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>版本檢查（Anti-rollback）</h4>
+                            <p>拒絕降級更新 → HTTP 403 + Update.abort()</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>硬體綁定（Chip Model）</h4>
+                            <p>阻止不相容韌體 → HTTP 403 + Update.abort()</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>完整性校驗（Checksum）</h4>
+                            <p>偵測傳輸損壞 → Update.end() 返回 false</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在前端 UI 中，當更新被攔截時，應提供清晰的錯誤訊息告訴使用者原因（如「版本過舊」或「型號不匹配」），而非僅顯示一個通用的「更新失敗」。好的錯誤提示能大幅減少技術支援的負擔。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -819,16 +1059,76 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識檢測 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識檢測</h1>
+                <p>測試你對本模組核心概念的理解程度。選擇每題最正確的答案後按下「提交答案」。</p>
+
+                <form id="quiz-form" onsubmit="return false;" style="margin:24px 0;">
+                    <!-- Q1 -->
+                    <div style="margin-bottom:28px;">
+                        <p style="font-weight:600;">1. OTA系統面臨的「版本降級攻擊」指的是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> a) 攻擊者竊取Wi-Fi密碼</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> b) 攻擊者故意推送含有已知漏洞的舊版韌體，重新暴露已修補的安全漏洞</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> c) 攻擊者加速韌體傳輸速度導致資料損壞</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+                    <!-- Q2 -->
+                    <div style="margin-bottom:28px;">
+                        <p style="font-weight:600;">2. 在ESP32中實作HTTP Basic Authentication時，為什麼不應將密碼硬編碼在原始碼中？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> a) 硬編碼會導致編譯速度變慢</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> b) 原始碼可能被上傳至GitHub或被反編譯，應將密碼存儲在NVS中</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> c) ESP32不支援字串常數</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+                    <!-- Q3 -->
+                    <div style="margin-bottom:28px;">
+                        <p style="font-weight:600;">3. 使用ESP.getChipModel()實作硬體型號鎖定的目的是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> a) 提高Wi-Fi連線速度</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> b) 防止將不相容型號的韌體刷入裝置，避免GPIO設定錯誤導致硬體損壞</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> c) 自動偵測並安裝正確的驅動程式</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+                    <!-- Q4 -->
+                    <div style="margin-bottom:28px;">
+                        <p style="font-weight:600;">4. 在OTA預檢流程中，若偵測到韌體版本過舊，應該呼叫哪個API來攔截更新？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> a) ESP.restart()</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> b) Update.abort()</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> c) WiFi.disconnect()</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit" style="display:flex; gap:12px; margin-top:20px;">
+                        <button type="button" class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button type="button" class="ms-btn-ghost" onclick="resetQuiz()" style="display:none;" id="quiz-reset-btn">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </form>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -886,9 +1186,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「OTA 安全性：密碼保護與版本檢查」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「OTA 安全性：密碼保護與版本檢查」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -904,8 +1204,17 @@
         { id: 3, label: '🔐 密碼保護：HTTP 基本驗證', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🏷️ 版本檢查與中繼資料', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '150 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識檢測',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！版本降級攻擊讓裝置「更新」回含有已知漏洞的舊版韌體，重新暴露已修補的安全弱點。防禦方法是實作語義化版本比對，拒絕版本號 ≤ 現有版本的更新。' },
+        q2: { b: '正確！原始碼可能被上傳到GitHub、被反編譯或在團隊間流通。正確做法是將密碼存儲在NVS(Preferences)中，首次啟動時由管理員設定。' },
+        q3: { b: '正確！ESP32系列有多種變體（ESP32、S2、S3、C3），GPIO配置各不相同。將錯誤型號的韌體刷入可能因GPIO電壓設定錯誤而燒毀外接元件。' },
+        q4: { b: '正確！Update.abort()必須在Update.end()之前呼叫，能在韌體寫入Flash之前就攔截不合規的更新，避免寫入不完整或不安全的韌體。' },
+    };
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -924,6 +1233,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#e1dfdd;padding:1px 5px;border-radius:2px;color:#605e5c;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1025,8 +1335,74 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        let total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            const options = document.querySelectorAll(`input[name="${qid}"]`);
+
+            options.forEach(opt => {
+                opt.disabled = true;
+                const label = opt.parentElement;
+                if (opt.value === answer) label.classList.add('correct');
+                if (opt.checked && opt.value !== answer) label.classList.add('wrong');
+            });
+
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                const exp = QUIZ_EXPLANATIONS[qid][answer];
+                feedbackEl.textContent = '✗ 不正確。' + exp;
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        scoreEl.style.display = 'block';
+        const pct = Math.round(correct / total * 100);
+        const pass = pct >= 75;
+        scoreEl.innerHTML = `
+            <span style="font-size:20px;">${pass ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pass ? '通過！你已掌握本模組的核心概念。' : '建議回顧相關單元後再試一次。'}</div>
+        `;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => {
+            el.classList.remove('correct','wrong');
+        });
+        document.querySelectorAll('input[type=radio]').forEach(el => {
+            el.checked = false;
+            el.disabled = false;
+        });
+        document.querySelectorAll('.quiz-feedback').forEach(el => {
+            el.className = 'quiz-feedback';
+            el.textContent = '';
+        });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 02：OTA 更新架構';
 </script>
 
 <!-- Define Resources -->

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>擺脫 delay()：millis() 與非阻塞邏輯 - Vibe Coding Learn</title>
+    <title>擺脫 delay()：millis() 與非阻塞邏輯 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -465,6 +467,37 @@
             .compare-grid { grid-template-columns: 1fr; }
         }
 
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
+            border: 1px solid #e1dfdd;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background .1s, border-color .1s;
+            font-size: 14px;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback {
+            display: none;
+            margin-top: 8px;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
+        .quiz-submit { margin-top: 16px; }
+
     </style>
 </head>
 
@@ -472,9 +505,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 9 - 多工處理</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +519,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">擺脫 delay()：millis() 與非阻塞邏輯</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 9</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -554,15 +585,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>擺脫 delay()：millis() 與非阻塞邏輯</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    <code>delay()</code> 會讓整個程式「睡著」，在等待期間無法回應任何事件——這對需要同時處理多項任務的物聯網裝置是致命的。
+                    <code>millis()</code> 提供了一種非阻塞的計時方式：不斷檢查「時間到了沒」，沒到就繼續做其他事。
+                    這是從「新手寫法」邁向「專業架構」最重要的第一步。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的 ESP32 要同時做兩件事：每 500ms 閃爍 LED 指示連線狀態，同時即時回應手機送來的馬達控制指令。
+                    如果用 <code>delay(500)</code> 來閃 LED，那半秒鐘內所有控制指令都會被忽略。
+                    改用 <code>millis()</code> 判斷時間差，兩件事就能「看似同時」運行，互不干擾。
                 </div>
 
                 <h2>教學影片</h2>
@@ -590,36 +622,102 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>😈 1. 為什麼 delay() 是邪惡的？</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tight">
-                                執行 <code>delay(1000)</code> 時，處理器全停。像等紅燈閉眼，無視緊急狀況。
-                            </p>
-<div class="p-6 rounded-2xl border border-red-100 bg-red-50 text-justify uppercase tracking-widest">
-<h4 class="font-bold text-red-900 mb-2 text-xs uppercase tracking-widest leading-relaxed text-justify">
-                                    The Impact</h4>
-<ul class="text-slate-500 font-light space-y-2 text-[10px] text-justify uppercase tracking-widest">
-<li class="flex items-center gap-2 text-justify"><span class="w-1.5 h-1.5 bg-red-400 rounded-full"></span>指令無視：CPU 忙著
-                                        delay，你的按鈕指令被丟棄。</li>
-<li class="flex items-center gap-2 text-justify"><span class="w-1.5 h-1.5 bg-red-400 rounded-full"></span>連線中斷：超時導致反應遲鈍甚至斷線。</li>
-</ul>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center bg-slate-900 text-justify uppercase tracking-widest font-black">
-<h4 class="font-bold text-slate-500 mb-6 uppercase tracking-widest text-[10px] text-justify">
-                                Single Thread Problem</h4>
-<div class="space-y-4 text-justify">
-<div class="w-full h-2 rounded-full overflow-hidden bg-slate-800 text-justify">
-<div class="w-full h-full bg-red-500 animate-[pulse_2s_infinite] text-justify">
-</div>
-</div>
-<p class="text-slate-500 italic text-[10px] text-justify uppercase tracking-tighter">
-                                    "Doing Absolutely Nothing but Waiting."</p>
-</div>
-</div>
-</div>
+                <h1>為什麼 delay() 是邪惡的？</h1>
+
+                <p>在學習嵌入式開發的初期，<code>delay()</code> 是最直覺的計時方法——呼叫 <code>delay(1000)</code> 就能讓程式暫停一秒鐘。但這個看似方便的函式，實際上是一個「忙等待 (Busy-Wait)」迴圈：它讓 CPU 原地空轉，完全不做任何有意義的事情，直到倒數結束為止。</p>
+
+                <p>對於 ESP32 這類<strong>單執行緒</strong>的微控制器而言（Arduino 框架下的 <code>loop()</code> 只在一個核心上跑一條主迴圈），<code>delay()</code> 的影響是災難性的：在等待期間，所有輸入偵測、通訊處理、安全監控全部停擺。</p>
+
+                <h2>delay() 的內部機制</h2>
+
+                <p>當你呼叫 <code>delay(ms)</code> 時，Arduino 核心實際執行的是：</p>
+
+                <div class="ms-code">
+<span class="c-kw">void</span> <span class="c-tag">delay</span><span class="c-white">(</span><span class="c-kw">unsigned long</span> <span class="c-attr">ms</span><span class="c-white">) {</span>
+<span class="c-white">    </span><span class="c-kw">unsigned long</span> <span class="c-attr">start</span> <span class="c-white">= </span><span class="c-tag">millis</span><span class="c-white">();</span>
+<span class="c-white">    </span><span class="c-kw">while</span> <span class="c-white">(</span><span class="c-tag">millis</span><span class="c-white">() - </span><span class="c-attr">start</span> <span class="c-white">&lt; </span><span class="c-attr">ms</span><span class="c-white">) {</span>
+<span class="c-white">        </span><span class="c-comment">// CPU 在這裡空轉... 什麼都不做</span>
+<span class="c-white">        </span><span class="c-tag">yield</span><span class="c-white">();  </span><span class="c-comment">// ESP32 會餵看門狗，但你的程式碼無法執行</span>
+<span class="c-white">    }</span>
+<span class="c-white">}</span>
+                </div>
+
+                <p>這意味著在 <code>delay(1000)</code> 的整整一秒鐘內，你的 <code>loop()</code> 函式被完全凍結——無法讀取按鈕、無法接收藍牙封包、無法檢查安全逾時。</p>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>安全警告</strong>
+                        在控制馬達的系統中使用 <code>delay()</code>，意味著在等待期間機器人無法接收緊急停止指令。若發生碰撞或故障，系統將無法及時反應——這是真實世界中的安全隱患。
+                    </div>
+                </div>
+
+                <h2>具體影響分析</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>影響面向</th>
+                            <th>使用 delay()</th>
+                            <th>嚴重程度</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>使用者輸入</td>
+                            <td>按鈕、遙桿指令在等待期間全部被忽略</td>
+                            <td><span class="cross"><i class="fas fa-times-circle"></i></span> 高</td>
+                        </tr>
+                        <tr>
+                            <td>通訊可靠性</td>
+                            <td>BLE/WiFi 封包堆積導致緩衝區溢位或連線逾時</td>
+                            <td><span class="cross"><i class="fas fa-times-circle"></i></span> 高</td>
+                        </tr>
+                        <tr>
+                            <td>感測器精度</td>
+                            <td>取樣間隔不穩定，PID 控制出現抖動</td>
+                            <td><span class="cross"><i class="fas fa-times-circle"></i></span> 高</td>
+                        </tr>
+                        <tr>
+                            <td>安全機制</td>
+                            <td>Watchdog 逾時、碰撞偵測延遲</td>
+                            <td><span class="cross"><i class="fas fa-times-circle"></i></span> 致命</td>
+                        </tr>
+                        <tr>
+                            <td>多工能力</td>
+                            <td>無法同時處理閃燈 + 通訊 + 感測</td>
+                            <td><span class="cross"><i class="fas fa-times-circle"></i></span> 高</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>實際案例：LED 閃爍阻斷遙控</h2>
+
+                <p>考慮以下常見的新手寫法——讓 LED 每 500ms 閃爍一次，同時監聽藍牙指令：</p>
+
+                <div class="ms-code">
+<span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span>
+<span class="c-white">    </span><span class="c-tag">digitalWrite</span><span class="c-white">(LED_PIN, HIGH);</span>
+<span class="c-white">    </span><span class="c-tag">delay</span><span class="c-white">(</span><span class="c-val">500</span><span class="c-white">);   </span><span class="c-comment">// 🚨 此處凍結 500ms</span>
+<span class="c-white">    </span><span class="c-tag">digitalWrite</span><span class="c-white">(LED_PIN, LOW);</span>
+<span class="c-white">    </span><span class="c-tag">delay</span><span class="c-white">(</span><span class="c-val">500</span><span class="c-white">);   </span><span class="c-comment">// 🚨 再凍結 500ms</span>
+<span class="c-white"></span>
+<span class="c-white">    </span><span class="c-comment">// 🔥 這裡的藍牙指令最多延遲 500ms 才被處理！</span>
+<span class="c-white">    </span><span class="c-kw">if</span> <span class="c-white">(BLE.available()) {</span>
+<span class="c-white">        handleCommand();</span>
+<span class="c-white">    }</span>
+<span class="c-white">}</span>
+                </div>
+
+                <p>在最壞情況下，使用者送出「緊急停止」指令後，系統需要等待<strong>最多 500ms</strong> 才能收到——對時速 1 公尺/秒的小車而言，這等於白白多衝出 50 公分。</p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>關鍵認知</strong>
+                        在專業的嵌入式開發中，<code>loop()</code> 應該盡可能<strong>快速循環</strong>（理想情況下每次迭代 &lt; 1ms）。任何「等待」都應該用非阻塞的時間檢查來實現，而非讓 CPU 停擺。下一節我們將學習如何用 <code>millis()</code> 達成這個目標。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -638,42 +736,136 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⏱️ 2. millis() 碼錶邏輯</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify uppercase tracking-widest">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tighter">
-                                不要叫電腦「等待」。要它「檢查時間差是否足夠」。
-                            </p>
-<div class="p-8 rounded-3xl border border-blue-100 text-center flex flex-col justify-center bg-blue-50 text-justify uppercase tracking-widest font-black">
-<h4 class="text-blue-900 font-bold mb-4 text-xs uppercase tracking-widest text-justify">
-                                    Non-blocking Formula</h4>
-<div class="text-2xl font-mono text-blue-600 text-justify uppercase tracking-widest font-black text-center">
-                                    \[now - prev \ge Interval\]
-                                </div>
-<p class="text-slate-400 mt-4 italic font-light text-[10px] text-justify">Variable:
-                                    unsigned long</p>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 bg-slate-900 text-justify">
-<div class="flex items-center gap-3 mb-6">
-<span class="w-3 h-3 bg-red-400 rounded-full"></span>
-<span class="w-3 h-3 bg-amber-400 rounded-full"></span>
-<span class="w-3 h-3 bg-emerald-400 rounded-full"></span>
-<span class="ml-auto text-[10px] text-slate-500 font-mono tracking-widest uppercase text-justify uppercase tracking-widest font-black text-left">MILLIS
-                                    PATTERN (C++)</span>
-</div>
-<pre class="text-xs md:text-sm leading-relaxed overflow-x-auto text-blue-300 font-mono text-justify uppercase tracking-widest font-black text-left">
-<span class="text-purple-400 text-justify">unsigned long</span> last = <span class="text-amber-200">0</span>;
-<span class="text-blue-500 text-justify">void</span> <span class="text-emerald-400 text-justify">loop</span>() {
-  <span class="text-purple-400 text-justify">unsigned long</span> n = <span class="text-yellow-400 uppercase tracking-widest">millis</span>();
-  <span class="text-purple-400 text-justify">if</span> (n - last &gt;= <span class="text-amber-200">1000</span>) {
-    last = n; <span class="text-slate-500 text-justify font-black">// Task!</span>
-  }
-  <span class="text-slate-500 text-justify uppercase tracking-widest font-black">// Free to handle other tasks...</span>
-}</pre>
-</div>
-</div>
+                <h1>millis() 碼錶邏輯</h1>
+
+                <p><code>millis()</code> 是 Arduino 框架中的系統時鐘函式，它回傳自開機以來經過的毫秒數。與 <code>delay()</code> 不同的是，呼叫 <code>millis()</code> 只是「看一眼時鐘」——瞬間完成，不會阻塞任何程式碼。</p>
+
+                <p>非阻塞計時的核心思想是：<strong>不要叫 CPU 等待，而是讓它不斷檢查「時間到了沒」</strong>。如果還沒到，就繼續做其他事情；如果到了，就執行對應的任務並更新時間戳。這就像你看手錶決定是否該行動，而不是閉眼數秒。</p>
+
+                <h2>基礎公式</h2>
+
+                <p>非阻塞計時的判斷條件為：</p>
+
+                <p style="text-align:center; font-size:18px; margin:20px 0;">
+                    <code>currentMillis - previousMillis &gt;= interval</code>
+                </p>
+
+                <p>其中：</p>
+                <ul>
+                    <li><code>currentMillis</code>：當前的系統時間（呼叫 <code>millis()</code> 取得）</li>
+                    <li><code>previousMillis</code>：上一次執行任務時的時間戳記</li>
+                    <li><code>interval</code>：期望的時間間隔（毫秒）</li>
+                </ul>
+
+                <h2>完整範例：非阻塞 LED 閃爍</h2>
+
+                <div class="ms-code">
+<span class="c-kw">const int</span> <span class="c-attr">LED_PIN</span> <span class="c-white">= </span><span class="c-val">2</span><span class="c-white">;</span>
+<span class="c-kw">const unsigned long</span> <span class="c-attr">BLINK_INTERVAL</span> <span class="c-white">= </span><span class="c-val">500</span><span class="c-white">;  </span><span class="c-comment">// 500ms 閃爍週期</span>
+<span class="c-white"></span>
+<span class="c-kw">unsigned long</span> <span class="c-attr">previousMillis</span> <span class="c-white">= </span><span class="c-val">0</span><span class="c-white">;</span>
+<span class="c-kw">bool</span> <span class="c-attr">ledState</span> <span class="c-white">= </span><span class="c-val">false</span><span class="c-white">;</span>
+<span class="c-white"></span>
+<span class="c-kw">void</span> <span class="c-tag">setup</span><span class="c-white">() {</span>
+<span class="c-white">    </span><span class="c-tag">pinMode</span><span class="c-white">(LED_PIN, OUTPUT);</span>
+<span class="c-white">}</span>
+<span class="c-white"></span>
+<span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span>
+<span class="c-white">    </span><span class="c-kw">unsigned long</span> <span class="c-attr">currentMillis</span> <span class="c-white">= </span><span class="c-tag">millis</span><span class="c-white">();</span>
+<span class="c-white"></span>
+<span class="c-white">    </span><span class="c-kw">if</span> <span class="c-white">(currentMillis - previousMillis >= BLINK_INTERVAL) {</span>
+<span class="c-white">        previousMillis = currentMillis;  </span><span class="c-comment">// 更新時間戳</span>
+<span class="c-white">        ledState = !ledState;</span>
+<span class="c-white">        </span><span class="c-tag">digitalWrite</span><span class="c-white">(LED_PIN, ledState);</span>
+<span class="c-white">    }</span>
+<span class="c-white"></span>
+<span class="c-white">    </span><span class="c-comment">// ✅ 程式不會停在這裡——可以繼續處理其他任務</span>
+<span class="c-white">    handleBluetooth();</span>
+<span class="c-white">    checkSensors();</span>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        務必使用 <code>unsigned long</code> 型別儲存時間戳。<code>millis()</code> 的回傳值會在約 49.7 天後溢位歸零，但只要使用<strong>減法判定</strong>（<code>now - last >= interval</code>），即使發生溢位，邏輯依然正確——這是無號整數減法的數學特性。
+                    </div>
+                </div>
+
+                <h2>為什麼減法判定能防溢位？</h2>
+
+                <p>假設 <code>unsigned long</code> 為 32 位元，最大值為 4,294,967,295。當 <code>millis()</code> 溢位：</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>變數</th>
+                            <th>值</th>
+                            <th>說明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>previousMillis</code></td>
+                            <td>4,294,967,290</td>
+                            <td>接近溢位邊界</td>
+                        </tr>
+                        <tr>
+                            <td><code>currentMillis</code></td>
+                            <td>5（溢位後）</td>
+                            <td>已經繞回起點</td>
+                        </tr>
+                        <tr>
+                            <td><code>current - previous</code></td>
+                            <td>11</td>
+                            <td>無號減法自動得到正確差值</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>常見錯誤</strong>
+                        切勿使用 <code>if (millis() > previousMillis + interval)</code> 這種加法寫法——當 <code>previousMillis + interval</code> 溢位時，條件判斷會失效。永遠使用<strong>減法形式</strong>。
+                    </div>
+                </div>
+
+                <h2>millis() 模式的運作流程</h2>
+
+                <p>每次 <code>loop()</code> 迭代的執行流程如下：</p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>取得當前時間</h4>
+                            <p>呼叫 <code>millis()</code> 記錄「現在幾點」。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>比較時間差</h4>
+                            <p>計算 <code>now - last</code>，判斷是否已達到設定的間隔。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>條件執行</h4>
+                            <p>若時間到了，執行任務並更新 <code>previousMillis = currentMillis</code>。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>繼續循環</h4>
+                            <p>無論時間到或沒到，<code>loop()</code> 都會立即繼續下一輪——不會停頓。</p>
+                        </div>
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -692,41 +884,128 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🤝 3. 合作式多工：任務並行</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify uppercase tracking-tighter">
-                                任務僅佔極短時間。讓多工看起來像是「同時運行」。
-                            </p>
-<div class="p-8 rounded-3xl border border-emerald-500/20 shadow-inner bg-emerald-500/10 text-justify uppercase tracking-widest font-black">
-<h4 class="font-bold text-emerald-400 mb-4 text-xs uppercase tracking-widest text-justify">
-                                    Cooperative Loop</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify uppercase tracking-widest">
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">高頻任務</strong>：10ms 讀取感測器。</div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">低頻任務</strong>：500ms 回傳電量。</div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">保護機制</strong>：超時 2s 則強迫剎車。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 p-10 rounded-3xl border border-emerald-500/20 text-center relative overflow-hidden group bg-emerald-600/10 text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify">
-</div>
-<h4 class="text-emerald-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-justify uppercase tracking-widest font-black">
-                                Concurrency</h4>
-<p class="text-slate-500 leading-relaxed font-light mb-8 italic text-[11px] text-justify uppercase tracking-tighter font-black">
-                                "毫秒切換，給機器人並行思考靈魂。"
-                            </p>
-<div class="inline-block px-8 py-3 bg-emerald-500 text-white rounded-xl font-bold text-[10px] shadow-lg text-justify uppercase tracking-widest">
-                                Test Task Scheduler</div>
-</div>
-</div>
+                <h1>合作式多工：任務並行</h1>
+
+                <p>掌握了 <code>millis()</code> 的非阻塞計時後，下一步就是將多個獨立任務整合到同一個 <code>loop()</code> 中。這種架構稱為<strong>合作式多工 (Cooperative Multitasking)</strong>——每個任務各自管理自己的時間戳，輪流佔用極短的 CPU 時間，整體看起來就像「同時運行」。</p>
+
+                <p>與作業系統的搶佔式多工不同，合作式多工要求每個任務<strong>主動讓出</strong> CPU（即快速完成並返回），不能獨佔處理器。只要遵守這個規則，你就能在單一核心上同時處理感測器讀取、LED 指示、通訊回應、安全監控等多項任務。</p>
+
+                <h2>多任務調度架構</h2>
+
+                <p>以一輛遙控車為例，同時需要以下任務：</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>任務</th>
+                            <th>頻率</th>
+                            <th>間隔 (ms)</th>
+                            <th>說明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>感測器讀取</td>
+                            <td>100 Hz</td>
+                            <td>10</td>
+                            <td>超音波測距或循線陣列</td>
+                        </tr>
+                        <tr>
+                            <td>PID 修正</td>
+                            <td>50 Hz</td>
+                            <td>20</td>
+                            <td>馬達速度控制運算</td>
+                        </tr>
+                        <tr>
+                            <td>LED 狀態指示</td>
+                            <td>2 Hz</td>
+                            <td>500</td>
+                            <td>系統心跳閃爍</td>
+                        </tr>
+                        <tr>
+                            <td>電量回報</td>
+                            <td>1 Hz</td>
+                            <td>1000</td>
+                            <td>ADC 讀取電池電壓</td>
+                        </tr>
+                        <tr>
+                            <td>安全看門狗</td>
+                            <td>0.5 Hz</td>
+                            <td>2000</td>
+                            <td>逾時強迫停機</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>完整實作範例</h2>
+
+                <div class="ms-code">
+<span class="c-comment">// ─── 各任務獨立的時間戳 ───</span>
+<span class="c-kw">unsigned long</span> <span class="c-attr">lastSensor</span>  <span class="c-white">= </span><span class="c-val">0</span><span class="c-white">;</span>
+<span class="c-kw">unsigned long</span> <span class="c-attr">lastBlink</span>   <span class="c-white">= </span><span class="c-val">0</span><span class="c-white">;</span>
+<span class="c-kw">unsigned long</span> <span class="c-attr">lastBattery</span> <span class="c-white">= </span><span class="c-val">0</span><span class="c-white">;</span>
+<span class="c-kw">unsigned long</span> <span class="c-attr">lastCmdTime</span> <span class="c-white">= </span><span class="c-val">0</span><span class="c-white">;</span>
+<span class="c-white"></span>
+<span class="c-kw">const unsigned long</span> <span class="c-attr">SENSOR_INTERVAL</span>  <span class="c-white">= </span><span class="c-val">10</span><span class="c-white">;</span>
+<span class="c-kw">const unsigned long</span> <span class="c-attr">BLINK_INTERVAL</span>   <span class="c-white">= </span><span class="c-val">500</span><span class="c-white">;</span>
+<span class="c-kw">const unsigned long</span> <span class="c-attr">BATTERY_INTERVAL</span> <span class="c-white">= </span><span class="c-val">1000</span><span class="c-white">;</span>
+<span class="c-kw">const unsigned long</span> <span class="c-attr">WATCHDOG_TIMEOUT</span> <span class="c-white">= </span><span class="c-val">2000</span><span class="c-white">;</span>
+<span class="c-white"></span>
+<span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span>
+<span class="c-white">    </span><span class="c-kw">unsigned long</span> <span class="c-attr">now</span> <span class="c-white">= </span><span class="c-tag">millis</span><span class="c-white">();</span>
+<span class="c-white"></span>
+<span class="c-white">    </span><span class="c-comment">// 任務 1：高頻感測器讀取 (100Hz)</span>
+<span class="c-white">    </span><span class="c-kw">if</span> <span class="c-white">(now - lastSensor >= SENSOR_INTERVAL) {</span>
+<span class="c-white">        lastSensor = now;</span>
+<span class="c-white">        readSensors();</span>
+<span class="c-white">    }</span>
+<span class="c-white"></span>
+<span class="c-white">    </span><span class="c-comment">// 任務 2：LED 心跳閃爍 (2Hz)</span>
+<span class="c-white">    </span><span class="c-kw">if</span> <span class="c-white">(now - lastBlink >= BLINK_INTERVAL) {</span>
+<span class="c-white">        lastBlink = now;</span>
+<span class="c-white">        toggleHeartbeat();</span>
+<span class="c-white">    }</span>
+<span class="c-white"></span>
+<span class="c-white">    </span><span class="c-comment">// 任務 3：電量回報 (1Hz)</span>
+<span class="c-white">    </span><span class="c-kw">if</span> <span class="c-white">(now - lastBattery >= BATTERY_INTERVAL) {</span>
+<span class="c-white">        lastBattery = now;</span>
+<span class="c-white">        reportBatteryLevel();</span>
+<span class="c-white">    }</span>
+<span class="c-white"></span>
+<span class="c-white">    </span><span class="c-comment">// 安全任務：Watchdog 逾時停機</span>
+<span class="c-white">    </span><span class="c-kw">if</span> <span class="c-white">(now - lastCmdTime > WATCHDOG_TIMEOUT) {</span>
+<span class="c-white">        emergencyStop();</span>
+<span class="c-white">    }</span>
+<span class="c-white"></span>
+<span class="c-white">    </span><span class="c-comment">// 持續處理通訊（非定時，每次 loop 都執行）</span>
+<span class="c-white">    handleBluetooth();</span>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>設計原則</strong>
+                        每個任務函式（如 <code>readSensors()</code>）的執行時間應控制在<strong>微秒等級</strong>。如果某個任務需要較長時間（例如等待感測器回應），應該將它拆分成「啟動」和「讀取」兩個階段，用狀態機模式實作。
+                    </div>
+                </div>
+
+                <h2>合作式多工的黃金守則</h2>
+
+                <ol>
+                    <li><strong>絕不阻塞</strong>：<code>loop()</code> 中禁止任何 <code>delay()</code>、<code>while(等待)</code> 或長時間計算。</li>
+                    <li><strong>各自管理時間</strong>：每個任務擁有獨立的 <code>previousMillis</code> 變數，互不干擾。</li>
+                    <li><strong>快進快出</strong>：每個任務函式執行後立即返回，讓出 CPU 給下一個任務。</li>
+                    <li><strong>優先處理安全</strong>：Watchdog 檢查可以放在每次 loop 都執行（不需要計時器），確保最快反應。</li>
+                </ol>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>Jitter（抖動）問題</strong>
+                        若某個任務的執行時間超出預期（例如 I2C 通訊卡住），會導致其他任務的觸發時間被延後——這就是「抖動」。在作業中你將學習如何量測 Jitter，並透過程式架構優化將其最小化。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -810,16 +1089,82 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
-                    <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div class="unit-completed-badge" id="badge-6" style="display:none">
+                        <i class="fas fa-check"></i> 已完成
+                    </div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <!-- Q1 -->
+                    <div class="quiz-question" id="q1">
+                        <p>1. <code>delay()</code> 函式在執行期間對 ESP32 的 <code>loop()</code> 有什麼影響？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> <code>loop()</code> 繼續正常執行其他任務，不受影響</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> <code>loop()</code> 被完全凍結，無法處理任何事件</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> <code>loop()</code> 以一半的速度繼續運行</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="quiz-question" id="q2">
+                        <p>2. 使用 <code>millis()</code> 實作非阻塞計時時，正確的時間判斷寫法是哪一個？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> <code>if (millis() > previousMillis + interval)</code></label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> <code>if (currentMillis - previousMillis >= interval)</code></label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> <code>if (previousMillis - currentMillis <= interval)</code></label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="quiz-question" id="q3">
+                        <p>3. 為什麼儲存 <code>millis()</code> 回傳值的變數必須宣告為 <code>unsigned long</code>？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 因為 <code>millis()</code> 的值會超過 <code>int</code> 的最大範圍</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 因為 <code>unsigned long</code> 可以儲存浮點數時間戳</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 因為 <code>unsigned long</code> 的減法在溢位時仍能得到正確的時間差</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="quiz-question" id="q4">
+                        <p>4. 合作式多工 (Cooperative Multitasking) 中，每個任務最重要的守則是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 每個任務應獨佔 CPU 直到自身工作全部完成</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 每個任務必須快速執行並主動讓出 CPU</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 每個任務需要使用 <code>delay()</code> 控制執行頻率</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" style="margin-left:8px; display:none;" id="quiz-reset-btn">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -877,9 +1222,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「擺脫 delay()：millis() 與非阻塞邏輯」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「擺脫 delay()：millis() 與非阻塞邏輯」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -895,8 +1240,17 @@
         { id: 3, label: '️ 2. millis() 碼錶邏輯', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🤝 3. 合作式多工：任務並行', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '4 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'c', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: 'delay() 內部是忙等待迴圈，會讓整個 loop() 凍結，期間無法處理任何輸入或通訊。' },
+        q2: { b: '減法形式 (currentMillis - previousMillis >= interval) 能正確處理 unsigned long 溢位，是唯一安全的寫法。' },
+        q3: { c: 'millis() 約 49.7 天後溢位歸零，但 unsigned long 的無號減法數學特性確保即使溢位，時間差計算仍然正確。' },
+        q4: { b: '合作式多工要求每個任務快速執行後主動讓出 CPU，不能獨佔處理器，這樣才能讓多個任務「看似同時」運行。' },
+    };
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -915,6 +1269,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1016,8 +1371,74 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        let total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            const options = document.querySelectorAll(`input[name="${qid}"]`);
+
+            options.forEach(opt => {
+                opt.disabled = true;
+                const label = opt.parentElement;
+                if (opt.value === answer) label.classList.add('correct');
+                if (opt.checked && opt.value !== answer) label.classList.add('wrong');
+            });
+
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                const exp = QUIZ_EXPLANATIONS[qid][answer];
+                feedbackEl.textContent = '✗ 不正確。' + exp;
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        scoreEl.style.display = 'block';
+        const pct = Math.round(correct / total * 100);
+        const pass = pct >= 75;
+        scoreEl.innerHTML = `
+            <span style="font-size:20px;">${pass ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pass ? '通過！你已掌握本模組的核心概念。' : '建議回顧相關單元後再試一次。'}</div>
+        `;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => {
+            el.classList.remove('correct','wrong');
+        });
+        document.querySelectorAll('input[type=radio]').forEach(el => {
+            el.checked = false;
+            el.disabled = false;
+        });
+        document.querySelectorAll('.quiz-feedback').forEach(el => {
+            el.className = 'quiz-feedback';
+            el.textContent = '';
+        });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 09：多工處理';
 </script>
 
 <!-- Define Resources -->

@@ -31,7 +31,7 @@
                     <span>🚀</span> Vibe Coding
                 </a>
                 <div class="hidden md:flex items-center space-x-6 font-medium text-gray-600">
-                    <a href="started.html" class="hover:text-cyan-600">開始上課</a>
+                    <a href="start.html" class="hover:text-cyan-600">開始上課</a>
                     <a href="students.html" class="hover:text-cyan-600">常見問題</a>
                 </div>
             </div>
@@ -59,7 +59,7 @@
             </div>
 
             <div class="space-y-3">
-                <a href="started.html" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition shadow-lg hover:shadow-xl">
+                <a href="start.html" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition shadow-lg hover:shadow-xl">
                     🎓 立即開始上課
                 </a>
                 <a href="index.html" class="block w-full bg-white hover:bg-gray-50 text-gray-600 font-bold py-3 rounded-lg border border-gray-200 transition">
@@ -78,17 +78,11 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js"; 
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCO6Y6Pa7b7zbieJIErysaNF6-UqbT8KJw",
-            authDomain: "e-learning-942f7.firebaseapp.com",
-            projectId: "e-learning-942f7",
-            storageBucket: "e-learning-942f7.firebasestorage.app",
-            messagingSenderId: "878397058574",
-            appId: "1:878397058574:web:28aaa07a291ee3baab165f"
-        };
+        import { firebaseConfig, connectFirebaseEmulators } from "./js/firebase-local.js";
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        connectFirebaseEmulators({ auth });
 
         // ==========================================
         // 核心邏輯：清空購物車

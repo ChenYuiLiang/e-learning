@@ -316,6 +316,22 @@
         .unit-card-name { font-size: 15px; font-weight: 500; }
         .unit-card-time { font-size: 12px; color: #605e5c; margin-top: 2px; }
         .unit-card-arrow { color: #c8c6c4; font-size: 14px; }
+    
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 10px 14px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; cursor: pointer; transition: background .1s, border-color .1s; font-size: 14px;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback { display: none; margin-top: 8px; padding: 10px 14px; border-radius: 4px; font-size: 13px; font-weight: 500; }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
     </style>
 </head>
 <body>
@@ -346,7 +362,7 @@
                 <div class="progress-bar-bg">
                     <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
                 </div>
-                <div class="progress-text" id="progress-text">0 / 5 已完成</div>
+                <div class="progress-text" id="progress-text">0 / 6 已完成</div>
             </div>
         </div>
 
@@ -684,12 +700,67 @@ return JSON.stringify(complexData);</textarea>
                     <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一單元 &nbsp;›</button>
                 </div>
             </div>
+        <!-- ══════════ PAGE 5: QUIZ ══════════ -->
+        <div class="ms-unit-page" id="page-5">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-5" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
+                </div>
 
-            <!-- PAGE: 摘要與資源 (5) -->
-            <div class="ms-unit-page" id="page-5">
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <div class="quiz-question">
+                        <p>1. <code>JSON.stringify()</code> 的作用是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 將 JSON 字串解析為 JavaScript 物件</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 將 JavaScript 物件序列化為 JSON 格式的字串</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 驗證一段字串是否為合法的 JSON 格式</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>2. 在 BLE 通訊的封包設計中，為什麼建議將 Key 縮短（例如將 <code>command</code> 改為 <code>c</code>）？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 因為短 Key 讓程式碼更難被逆向工程破解</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 因為 BLE 單次傳輸的封包大小有限（約 20 bytes），縮短 Key 能在有限頻寬中攜帶更多有效資料</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 因為 JavaScript 解析短 Key 的速度比長 Key 快 10 倍</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>3. 以下哪個是合法的 JSON 格式？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> <code>{ command: 'forward', speed: 100 }</code></label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> <code>{"command": "forward", "speed": 100}</code></label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> <code>{ 'command': 'forward', 'speed': 100 }</code></label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>4. 在通訊協定中加入時間戳記（<code>Date.now()</code>）的主要目的是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 讓接收端知道發送端的當地時區</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 用於偵測封包的新鮮度、排序先後順序，以及丟棄過期的指令</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 讓 JSON 封包的大小固定統一</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">5 / 6</span>
+                <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+<div class="ms-unit-page" id="page-6">
                 <div class="unit-content">
                     <div class="unit-status-bar">
-                        <div class="unit-completed-badge" id="badge-5" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
+                        <div class="unit-completed-badge" id="badge-6" style="display: none;"><i class="fas fa-check"></i> 已完成</div>
                         <div class="unit-time-badge"><i class="far fa-clock"></i> 5 分鐘</div>
                     </div>
                     <h1>摘要與學習資源</h1>
@@ -726,9 +797,9 @@ return JSON.stringify(complexData);</textarea>
                     </div>
                 </div>
                 <div class="unit-nav">
-                    <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
+                    <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
                     <span class="unit-page-indicator font-bold text-green-600">✓ 模組已完成</span>
-                    <button class="ms-btn bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm font-bold shadow" onclick="markDone(5); alert('🎉 恭喜完成「數據格式化：從物件到 JSON」單元！')">完成模組</button>
+                    <button class="ms-btn bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm font-bold shadow" onclick="markDone(6); alert('🎉 恭喜完成「數據格式化：從物件到 JSON」單元！')">完成模組</button>
                 </div>
             </div>
         </div>
@@ -743,8 +814,15 @@ return JSON.stringify(complexData);</textarea>
             { id: 2, label: '課前體驗',        time: '15 分鐘',  type: 'unit'  },
             { id: 3, label: '核心原理',        time: '15 分鐘',  type: 'unit'  },
             { id: 4, label: '實戰挑戰',        time: '165 分鐘', type: 'lab'   },
-            { id: 5, label: '摘要與資源',      time: '5 分鐘',  type: 'unit'  },
+            { id: 5, label: '知識測驗',              time: '4 分鐘',  type: 'quiz'  },
+            { id: 6, label: '摘要與資源',      time: '5 分鐘',  type: 'unit'  },
         ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！<code>JSON.stringify()</code> 將物件轉為字串，適合在網路傳輸或儲存時使用。相對地，<code>JSON.parse()</code> 則是將 JSON 字串還原為物件。' },        q2: { b: '正確！BLE 的 MTU 預設約 20 bytes，每個字元都很珍貴。使用短 Key 能大幅降低封包的 Overhead，讓有限的空間承載更多控制數據。' },        q3: { b: '正確！JSON 標準要求所有的 Key 和字串值必須使用雙引號包裹。單引號或無引號的 Key 在 JavaScript 物件中合法，但不是合法的 JSON。' },        q4: { b: '正確！時間戳記讓接收端能判斷封包是否過期，也能在多封包同時到達時正確排序，確保機器人執行最新指令。' },
+    };
+
 
         let currentUnit = 0;
         let doneSet = new Set();
@@ -759,7 +837,9 @@ return JSON.stringify(complexData);</textarea>
         function buildSidebar() {
             const nav = document.getElementById('sidebar-nav');
             nav.innerHTML = UNITS.map(u => {
-                const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>' : '';
+                const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                              : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
+                              : '';
                 return `
                 <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
                     <div class="unit-icon" id="icon-${u.id}">${u.id === 0 ? '<i class="fas fa-home" style="font-size:9px;"></i>' : u.id}</div>
@@ -836,7 +916,56 @@ return JSON.stringify(complexData);</textarea>
             document.getElementById('progress-text').textContent = `${done} / ${total} 已完成`;
         }
 
-        /* ─── START ─── */
+        
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            document.querySelectorAll(`input[name="${qid}"]`).forEach(opt => {
+                opt.disabled = true;
+                if (opt.value === answer) opt.parentElement.classList.add('correct');
+                if (opt.checked && opt.value !== answer) opt.parentElement.classList.add('wrong');
+            });
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                feedbackEl.textContent = '✗ 不正確。' + QUIZ_EXPLANATIONS[qid][answer];
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        const pct = Math.round(correct / total * 100);
+        scoreEl.style.display = 'block';
+        scoreEl.innerHTML = `<span style="font-size:20px;">${pct >= 75 ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pct >= 75 ? '通過！繼續前往下一個單元。' : '建議回顧相關單元後再試一次。'}</div>`;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => el.classList.remove('correct','wrong'));
+        document.querySelectorAll('input[type=radio]').forEach(el => { el.checked = false; el.disabled = false; });
+        document.querySelectorAll('.quiz-feedback').forEach(el => { el.className = 'quiz-feedback'; el.textContent = ''; });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
+/* ─── START ─── */
         init();
 
         // --- Lab 1: Interactive JSON Handwriting ---

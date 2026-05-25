@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>數位影像處理基礎：顏色空間 - Vibe Coding Learn</title>
+    <title>數位影像處理基礎：顏色空間 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 8 - 影像處理</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">數位影像處理基礎：顏色空間</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 8</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>數位影像處理基礎：顏色空間</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 8</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,12 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>數位影像處理基礎：顏色空間</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    本單元將帶你認識 <strong>數位影像中顏色空間的基礎原理</strong>。從最常見的 RGB 到更適合視覺追蹤的 HSV，不同顏色空間各有其數學定義與應用場景。理解顏色模型之間的轉換邏輯，是進行色彩偵測、物件分割與影像濾波等後續任務的關鍵前置知識。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你正在開發一台分揀機器人的視覺系統：攝影機拍攝輸送帶上的彩色積木，程式需要辨識紅色、藍色與綠色方塊並分類。然而在 RGB 空間中，光線稍有變化就會導致紅色的數值範圍劇烈漂移，辨識失敗率居高不下。切換到 HSV 顏色空間後，色相通道能有效隔離亮度干擾。為什麼 HSV 在這類任務中表現更好？本單元將揭示其中的數學原理。
                 </div>
 
                 <h2>教學影片</h2>
@@ -590,42 +587,76 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🌈 1. RGB：光的加法與顯示器的邏輯 (20 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
-<div class="space-y-6">
-<p class="text-lg text-gray-600 leading-relaxed font-light">
-                                RGB (Red, Green, Blue) 是最直覺的色彩空間，直接對應顯示器硬體。然而，它最大的限制是「亮度與顏色耦合」，這對電腦視覺識別來說非常致命。
-                            </p>
-<div class="bg-red-50 p-6 rounded-2xl border border-red-100">
-<h4 class="font-bold text-red-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
-                                    Coupling Limitation</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span>
-<div><strong>環境變數干擾</strong>：當燈光變暗，R、G、B 數值會同時等比例下降。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span>
-<div><strong>硬體依賴</strong>：不同攝像頭感測到的 RGB 原色分布可能完全不同。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-red-500/5 group-hover:bg-red-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-justify">
-                                Pixel Intensity Projection</h4>
-<div class="relative z-10 flex flex-col items-center">
-<div class="flex gap-1 mb-4 text-justify">
-<div class="w-12 h-12 bg-red-600 rounded"></div>
-<div class="w-12 h-12 bg-green-600 rounded"></div>
-<div class="w-12 h-12 bg-blue-600 rounded"></div>
-</div>
-<div class="text-[9px] text-slate-500 font-mono tracking-widest uppercase">Additive
-                                    Color Model: 24-bit Depth</div>
-</div>
-</div>
-</div>
+                <h1>RGB：光的加法與顯示器的邏輯</h1>
+
+                <p>
+                    RGB（Red, Green, Blue）是數位影像中最基礎也最普遍的色彩表示法。每一個像素由紅、綠、藍三個通道組成，每個通道以 8 位元（0–255）儲存強度值。三色混合後產生人眼可見的色彩——這正是「加法混色」的原理。所有 LCD 螢幕、攝影機感測器與影像檔案格式都以 RGB 為基礎架構。
+                </p>
+
+                <h2>加法混色原理</h2>
+                <p>
+                    與繪畫顏料的「減法混色」不同，光源遵循加法混色：紅光 + 綠光 = 黃色；紅光 + 藍光 = 洋紅色；三色全開 = 白色；三色全關 = 黑色。每個像素佔用 3 Bytes（24 bits），因此一張 320×240 的影像需要 320 × 240 × 3 = 230,400 Bytes ≈ 225 KB 的原始記憶體。
+                </p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        在 ESP32-CAM 模組中，受限於 PSRAM 容量（通常 4 MB），實際運作時多使用 RGB565（16-bit）或 YUV422 格式以節省記憶體，而非完整的 RGB888。
+                    </div>
+                </div>
+
+                <h2>RGB 的耦合問題</h2>
+                <p>
+                    RGB 最大的限制在於<strong>亮度與色彩高度耦合</strong>。當環境光線改變時，三個通道的數值會同時變化。例如，一顆紅色球在強光下可能是 <code>(220, 30, 25)</code>，但在陰影中變成 <code>(90, 12, 10)</code>。若以固定閾值過濾「紅色」，系統將在光線變化時完全失效。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>光照條件</th><th>紅球 R 值</th><th>紅球 G 值</th><th>紅球 B 值</th><th>辨識結果</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>強光直射</td><td>220</td><td>30</td><td>25</td><td><span class="check"><i class="fas fa-check-circle"></i></span> 成功</td></tr>
+                        <tr><td>室內日光燈</td><td>180</td><td>22</td><td>18</td><td><span class="check"><i class="fas fa-check-circle"></i></span> 成功</td></tr>
+                        <tr><td>陰影區域</td><td>90</td><td>12</td><td>10</td><td><span class="cross"><i class="fas fa-times-circle"></i></span> 失敗</td></tr>
+                        <tr><td>黃光照射</td><td>200</td><td>85</td><td>15</td><td><span class="cross"><i class="fas fa-times-circle"></i></span> 誤判</td></tr>
+                    </tbody>
+                </table>
+
+                <h2>像素的位元結構</h2>
+                <p>
+                    理解像素在記憶體中的排列方式，對嵌入式系統開發至關重要。以下是一個像素值 <code>(200, 100, 50)</code> 在 RGB888 格式下的二進位表示：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// RGB888 像素結構（每通道 8 bits，共 24 bits）</span><br>
+                    <span class="c-kw">R:</span> <span class="c-val">11001000</span>  <span class="c-comment">// 200</span><br>
+                    <span class="c-kw">G:</span> <span class="c-val">01100100</span>  <span class="c-comment">// 100</span><br>
+                    <span class="c-kw">B:</span> <span class="c-val">00110010</span>  <span class="c-comment">// 50</span><br><br>
+                    <span class="c-comment">// 在 frame buffer 中的排列（Big Endian）</span><br>
+                    <span class="c-white">Memory: [0xC8][0x64][0x32] → 1 pixel = 3 bytes</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        不同硬體平台的通道排列順序可能不同。OpenCV 使用 BGR 順序，而 HTML Canvas 與大多數攝影機感測器使用 RGB 順序。混淆排列順序是嵌入式視覺開發中最常見的 Bug 來源之一。
+                    </div>
+                </div>
+
+                <h2>為什麼需要其他色彩空間？</h2>
+                <p>
+                    RGB 雖然直覺，但其「三維耦合」特性使得色彩過濾極為困難。在電腦視覺應用中，我們需要一種能夠<strong>將色相（Hue）從亮度中解耦</strong>的表示法，才能在不同光照條件下穩定辨識物體顏色。這正是下一單元 HSV 色彩空間要解決的核心問題。
+                </p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在後續的實作作業中，你將親身體驗：同樣的紅球追蹤任務，在 RGB 空間需要針對每種光照條件設定不同閾值，而在 HSV 空間只需一組參數即可涵蓋所有情境。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -644,37 +675,78 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🎯 2. HSV/HSL：色彩處理的利器 (30 min)</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify">
-                                透過解除亮度耦合，HSV 讓我們能鎖定 **H (Hue, 色相)**。即使在陰影下，只要色相不變，系統就能穩定地定位目標物體。
-                            </p>
-<div class="bg-purple-50 p-8 rounded-3xl border border-purple-100 text-center text-justify">
-<h4 class="text-purple-900 font-bold mb-4 text-xs uppercase tracking-widest text-justify">
-                                    Cylindrical Coordinate System</h4>
-<div class="grid grid-cols-3 gap-2 text-[10px] text-slate-600 font-mono text-justify">
-<div class="p-2 bg-white rounded border">H: 0-360°</div>
-<div class="p-2 bg-white rounded border">S: 0-100%</div>
-<div class="p-2 bg-white rounded border text-justify">V: 0-100%</div>
-</div>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-purple-500/5 text-justify"></div>
-<h4 class="text-purple-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-justify">
-                                Object Tracking Range</h4>
-<div class="w-full space-y-2 px-10 relative z-10 font-mono text-[9px] text-slate-400 text-justify">
-<div class="text-purple-300">// Filtering Red Objects</div>
-<div>if (H &gt; 350 || H &lt; 10) {</div>
-<div class="ml-4">if (S &gt; 50 &amp;&amp; V &gt; 30) return TARGET_LOCKED;</div>
-<div>}</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic text-center">
-                                    Robust Detection Architecture</p>
-</div>
-</div>
+                <h1>HSV/HSL：色彩處理的利器</h1>
+
+                <p>
+                    HSV（Hue, Saturation, Value）色彩空間將顏色資訊拆解為三個獨立維度：<strong>色相</strong>（顏色種類）、<strong>飽和度</strong>（顏色純度）與<strong>明度</strong>（亮暗程度）。這種圓柱座標系的設計，完美解決了 RGB 中亮度與色彩耦合的問題，使得色彩過濾在不同光照條件下依然穩定可靠。
+                </p>
+
+                <h2>HSV 三通道解析</h2>
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>通道</th><th>物理意義</th><th>數值範圍</th><th>OpenCV 範圍</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>H（Hue）</strong></td><td>色相角度，決定「是什麼顏色」</td><td>0°–360°</td><td>0–179</td></tr>
+                        <tr><td><strong>S（Saturation）</strong></td><td>飽和度，顏色的鮮豔程度</td><td>0%–100%</td><td>0–255</td></tr>
+                        <tr><td><strong>V（Value）</strong></td><td>明度，顏色的明暗程度</td><td>0%–100%</td><td>0–255</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        OpenCV 中 H 通道的範圍是 0–179（而非 0–360），因為使用 8-bit 無法儲存超過 255 的值，所以角度被除以 2。在撰寫過濾邏輯時必須注意此差異，否則過濾範圍會完全錯誤。
+                    </div>
+                </div>
+
+                <h2>RGB 到 HSV 的轉換公式</h2>
+                <p>
+                    轉換的核心步驟為：先找出 RGB 中的最大值與最小值，計算差值 (Delta)，再依據哪個通道為最大值來決定 H 的象限。轉換公式如下：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// RGB → HSV 轉換核心邏輯</span><br>
+                    <span class="c-kw">let</span> <span class="c-attr">max</span> <span class="c-white">= Math.max(r, g, b);</span><br>
+                    <span class="c-kw">let</span> <span class="c-attr">min</span> <span class="c-white">= Math.min(r, g, b);</span><br>
+                    <span class="c-kw">let</span> <span class="c-attr">delta</span> <span class="c-white">= max - min;</span><br><br>
+                    <span class="c-comment">// V (明度) = 最大通道值 / 255</span><br>
+                    <span class="c-kw">let</span> <span class="c-attr">V</span> <span class="c-white">= max / 255;</span><br><br>
+                    <span class="c-comment">// S (飽和度) = delta / max</span><br>
+                    <span class="c-kw">let</span> <span class="c-attr">S</span> <span class="c-white">= (max === 0) ? 0 : delta / max;</span><br><br>
+                    <span class="c-comment">// H (色相) 依據最大通道決定象限</span><br>
+                    <span class="c-kw">if</span> <span class="c-white">(delta === 0) H = 0;</span><br>
+                    <span class="c-kw">else if</span> <span class="c-white">(max === r) H = 60 * ((g - b) / delta % 6);</span><br>
+                    <span class="c-kw">else if</span> <span class="c-white">(max === g) H = 60 * ((b - r) / delta + 2);</span><br>
+                    <span class="c-kw">else</span> <span class="c-white">H = 60 * ((r - g) / delta + 4);</span>
+                </div>
+
+                <h2>HSV 在視覺追蹤中的優勢</h2>
+                <p>
+                    在追蹤任務中，我們最關心的是「目標物是什麼顏色」。HSV 的 H 通道恰好只回答這個問題，不受光照影響。只要設定合理的 S 與 V 下限（排除過暗或過灰的區域），即可在各種環境下穩定鎖定目標。
+                </p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>實務技巧</strong>
+                        紅色在 HSV 色環中位於 0° 附近，但因為是圓形分布，紅色會「跨越」0°/360° 的邊界。過濾紅色時需使用兩段範圍：<code>H &lt; 10 OR H &gt; 170</code>（OpenCV 尺度）。這是初學者最常犯的錯誤。
+                    </div>
+                </div>
+
+                <h2>HSV 與 HSL 的差異</h2>
+                <p>
+                    HSL（Hue, Saturation, Lightness）與 HSV 類似，但 L 通道的計算方式不同：L = (max + min) / 2。HSL 中純白色的 L = 1、S = 0，而 HSV 中純白色 V = 1、S = 0。在電腦視覺領域，<strong>HSV 遠比 HSL 常用</strong>，因為 V 通道更直覺地反映了感測器接收到的光強度。
+                </p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        OpenCV 的 <code>cv2.cvtColor(img, cv2.COLOR_BGR2HSV)</code> 是最常用的轉換函式。在 JavaScript 環境中（如 ESP32 的 Web 控制介面），你需要手動實作上述轉換邏輯。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -693,43 +765,76 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🎞️ 3. YUV/YCbCr：影像傳輸與壓縮</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center">
-<div class="flex-1 space-y-6">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
-                                YUV 將影像拆分為亮度 (Y) 與色度 (UV)。由於人類視覺對明暗極其敏感，但對顏色細節相對遲鈍，這成為 JPEG 壓縮與 ESP32 攝像頭輸出的核心協議。
-                            </p>
-<div class="bg-indigo-500/10 p-8 rounded-3xl border border-indigo-500/20 shadow-inner">
-<h4 class="font-bold text-indigo-400 mb-4 text-xs uppercase tracking-widest text-center text-justify text-left">
-                                    Compression Logistics</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
-<div><strong class="text-white">Chroma Subsampling</strong>：捨棄部分 UV 數據（如
-                                            4:2:2），節省 33% 頻寬而不失真感官體驗。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
-<div><strong class="text-white">Y-Channel Focus</strong>：利用亮度頻道進行高效率的邊緣檢測 (Edge
-                                            Detection)。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
-<div><strong class="text-white">RGB565 Optimization</strong>：理解 16-bit 像素如何在 MCU
-                                            記憶體中節省每一分 Byte。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-indigo-600/10 p-10 rounded-3xl border border-indigo-500/20 text-center relative overflow-hidden group">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-indigo-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-indigo-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">
-                                Bandwidth Dial</h4>
-<div class="text-3xl font-mono text-white mb-2">3:2:1 <span class="text-indigo-500">Ratio</span></div>
-<p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center text-justify text-left">
-                                "看見人類看不見的細節，捨棄人類沒察覺的冗餘。"
-                            </p>
-</div>
-</div>
+                <h1>YUV/YCbCr：影像傳輸與壓縮</h1>
+
+                <p>
+                    YUV 色彩空間源自類比電視時代，其核心設計理念是利用人類視覺系統的特性：<strong>人眼對亮度的敏感度遠高於對色彩的敏感度</strong>。因此，YUV 將影像分離為亮度通道（Y）與兩個色差通道（U/Cb 與 V/Cr），允許對色差通道進行更激進的壓縮而不被察覺。
+                </p>
+
+                <h2>YUV 通道定義</h2>
+                <table class="ms-table">
+                    <thead>
+                        <tr><th>通道</th><th>全名</th><th>物理意義</th><th>應用價值</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Y</strong></td><td>Luminance（亮度）</td><td>灰階影像，描述明暗</td><td>邊緣檢測、灰階處理</td></tr>
+                        <tr><td><strong>U (Cb)</strong></td><td>Blue-difference Chrominance</td><td>藍色色差</td><td>色彩還原</td></tr>
+                        <tr><td><strong>V (Cr)</strong></td><td>Red-difference Chrominance</td><td>紅色色差</td><td>色彩還原</td></tr>
+                    </tbody>
+                </table>
+
+                <h2>RGB 與 YUV 的轉換公式</h2>
+                <p>
+                    BT.601 標準定義的轉換矩陣如下（適用於 SD 視訊）：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// RGB → YUV (BT.601 標準)</span><br>
+                    <span class="c-attr">Y</span>  <span class="c-white">=  0.299 × R + 0.587 × G + 0.114 × B</span><br>
+                    <span class="c-attr">U</span>  <span class="c-white">= -0.169 × R - 0.331 × G + 0.500 × B + 128</span><br>
+                    <span class="c-attr">V</span>  <span class="c-white">=  0.500 × R - 0.419 × G - 0.081 × B + 128</span><br><br>
+                    <span class="c-comment">// 注意：綠色對 Y 通道的貢獻最大 (0.587)</span><br>
+                    <span class="c-comment">// 因為人眼對綠色光最為敏感</span>
+                </div>
+
+                <h2>色度次取樣（Chroma Subsampling）</h2>
+                <p>
+                    由於人眼對色差資訊的空間解析度需求較低，我們可以用較少的取樣點來記錄 U 和 V 通道。常見的次取樣格式如下：
+                </p>
+                <ul>
+                    <li><strong>4:4:4</strong> — 無壓縮，每個像素都有完整的 YUV 資料。</li>
+                    <li><strong>4:2:2</strong> — 水平方向每 2 個像素共享一組 UV，節省 33% 頻寬。</li>
+                    <li><strong>4:2:0</strong> — 水平與垂直方向各每 2 個像素共享 UV，節省 50% 頻寬。JPEG 與 H.264 的預設格式。</li>
+                </ul>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        ESP32-CAM 的 OV2640 感測器原生輸出格式為 YUV422。若需要 RGB 資料進行色彩分析，必須執行格式轉換，這會額外消耗 CPU 時間。在設計系統架構時，應考慮是否能直接在 YUV 空間完成所需處理。
+                    </div>
+                </div>
+
+                <h2>RGB565：嵌入式系統的折衷方案</h2>
+                <p>
+                    RGB565 是另一種節省記憶體的策略，使用 16 bits 取代 24 bits 儲存一個像素：紅色 5 bits、綠色 6 bits、藍色 5 bits。綠色分配較多位元是因為人眼對綠色最敏感。此格式在 QVGA（320×240）解析度下，每幀僅需 150 KB，相比 RGB888 的 225 KB 節省了 33%。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// RGB888 → RGB565 位元運算</span><br>
+                    <span class="c-kw">uint16_t</span> <span class="c-attr">rgb565</span> <span class="c-white">=</span><br>
+                    <span class="c-white">    ((r &amp; 0xF8) &lt;&lt; 8) |</span>  <span class="c-comment">// 取 R 的高 5 位，左移至 [15:11]</span><br>
+                    <span class="c-white">    ((g &amp; 0xFC) &lt;&lt; 3) |</span>  <span class="c-comment">// 取 G 的高 6 位，左移至 [10:5]</span><br>
+                    <span class="c-white">    ((b &gt;&gt; 3));</span>           <span class="c-comment">// 取 B 的高 5 位，置於 [4:0]</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        RGB565 會產生可見的色彩斷層（Banding），尤其在漸層色區域。對於需要精確色彩判斷的視覺追蹤任務，建議在 HSV 轉換前先還原為完整的 RGB888 精度。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -813,16 +918,81 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>測試你對本模組核心概念的掌握程度。請選出每題的最佳答案，提交後可查看詳細解析。</p>
+
+                <form id="quiz-form" onsubmit="return false;">
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">1. RGB 三原色光的混色方式屬於什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 減法混色 (Subtractive)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 加法混色 (Additive)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 乘法混色 (Multiplicative)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 濾波混色 (Filtered)</label>
+                        <div id="exp-1" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">2. 在 HSV 色彩空間中，S (Saturation) = 0 時代表什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 純黑色</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 純白色</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 灰階色（無色彩飽和度）</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 最鮮豔的顏色</label>
+                        <div id="exp-2" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">3. YUV / YCbCr 色彩空間被廣泛用於影像傳輸與壓縮的原因是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 它的計算速度最快</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 亮度 (Y) 與色度 (Cb/Cr) 分離，色度可以降採樣壓縮而不明顯影響畫質</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 它只需要一個通道</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 它是最新的色彩標準</label>
+                        <div id="exp-3" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">4. 在機器視覺的色彩偵測應用中，以下哪個色彩空間最常被使用？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="A" style="margin-right:8px;"> A. RGB</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="B" style="margin-right:8px;"> B. HSV</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="C" style="margin-right:8px;"> C. CMYK</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="D" style="margin-right:8px;"> D. Grayscale</label>
+                        <div id="exp-4" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+                </form>
+
+                <div style="display:flex;gap:12px;margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+                <div id="quiz-result" style="display:none;margin-top:20px;padding:16px;border-radius:6px;font-size:14px;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -880,9 +1050,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「數位影像處理基礎：顏色空間」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「數位影像處理基礎：顏色空間」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -898,7 +1068,8 @@
         { id: 3, label: '🎯 2. HSV/HSL：色彩處理的利器 (30 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🎞️ 3. YUV/YCbCr：影像傳輸與壓縮', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -918,6 +1089,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1019,8 +1191,61 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'C', q3: 'B', q4: 'B' };
+    const QUIZ_EXPLANATIONS = { q1: 'RGB 採用加法混色——紅、綠、藍三色光疊加，三色全亮時產生白色 (255, 255, 255)，全暗時為黑色 (0, 0, 0)。', q2: 'S = 0 表示飽和度為零，顏色完全失去色彩成分，只剩下亮度資訊，呈現不同深淺的灰色。', q3: '人眼對亮度變化比色度變化更敏感，YUV 分離後可以對色度通道進行降採樣（如 4:2:0），大幅減少資料量。', q4: 'HSV 將色相獨立出來，只需指定 H 通道的範圍即可偵測特定顏色，不受光照亮度變化的影響，是色彩偵測的首選。' };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const idx = q.slice(1);
+            const exp = document.getElementById(`exp-${idx}`);
+            if (!selected) continue;
+            if (selected.value === correct) {
+                score++;
+                exp.style.display = 'block';
+                exp.style.background = '#dff6dd';
+                exp.style.borderLeftColor = '#107c10';
+                exp.innerHTML = '<i class="fas fa-check-circle" style="color:#107c10;margin-right:6px;"></i>' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#dff6dd';
+                selected.parentElement.style.borderColor = '#107c10';
+            } else {
+                exp.style.display = 'block';
+                exp.style.background = '#fde7e9';
+                exp.style.borderLeftColor = '#d13438';
+                exp.innerHTML = '<i class="fas fa-times-circle" style="color:#d13438;margin-right:6px;"></i>正確答案是 ' + correct + '。' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#fde7e9';
+                selected.parentElement.style.borderColor = '#d13438';
+            }
+        }
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === total) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.innerHTML = '<strong style="color:#107c10;">🎉 滿分！' + score + ' / ' + total + '</strong><br>你完全掌握了本模組的核心概念！';
+            markDone(6);
+        } else {
+            resultEl.style.background = '#fff4ce';
+            resultEl.innerHTML = '<strong style="color:#8a6914;">得分：' + score + ' / ' + total + '</strong><br>建議複習錯題的解析說明，再試一次！';
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= 4; i++) {
+            const exp = document.getElementById('exp-' + i);
+            if (exp) { exp.style.display = 'none'; exp.style.background = ''; exp.style.borderLeftColor = 'transparent'; }
+        }
+        document.querySelectorAll('#quiz-form label').forEach(l => { l.style.background = ''; l.style.borderColor = '#e1dfdd'; });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 08：影像處理實務';
 </script>
 
 <!-- Define Resources -->

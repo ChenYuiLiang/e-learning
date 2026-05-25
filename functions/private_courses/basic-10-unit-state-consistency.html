@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>非同步下的狀態一致性 - Vibe Coding Learn</title>
+    <title>非同步下的狀態一致性 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -457,6 +459,37 @@
         .achievement-text h3 { margin: 0 0 4px; font-size: 18px; }
         .achievement-text p { margin: 0; font-size: 14px; opacity: .9; }
 
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
+            border: 1px solid #e1dfdd;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background .1s, border-color .1s;
+            font-size: 14px;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback {
+            display: none;
+            margin-top: 8px;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
+        .quiz-submit { margin-top: 16px; }
+
         @media (max-width: 768px) {
             .ms-sidebar { display: none; }
             .unit-content { padding: 20px 16px 40px; }
@@ -472,9 +505,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 10 - 系統一致性</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +519,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">非同步下的狀態一致性</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 10</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +541,7 @@
                 <h1>非同步下的狀態一致性</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 10</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -521,9 +552,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>🏁 1. 競爭條件 (Race Condition)</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>樂觀 UI 與真值來源 (SSoT)</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>🔄 3. ACK 與等級機制</strong> 的調校技巧與穩定性測試。</li>
+                    <li>能夠解釋競爭條件（Race Condition）與封包亂序抵達如何導致 UI 狀態與硬體現實不同步，並實作版本序號過濾器丟棄過期封包。</li>
+                    <li>能夠設計 ACK 應答確認機制搭配指數退避（Exponential Backoff）自動重傳，確保關鍵指令在丟包環境下仍能可靠送達。</li>
+                    <li>能夠將控制面板重構為真值來源（SSoT）架構——UI 狀態完全由硬體回傳的 NOTIFY 封包驅動，徹底消除「樂觀更新」造成的顯示謊言。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -554,15 +585,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>非同步下的狀態一致性</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    在嵌入式系統中，ISR、計時器回呼與主迴圈可能同時存取同一個狀態變數，
+                    若缺乏保護機制，就會產生競爭條件（Race Condition）——狀態被「撕裂」更新，導致不可預測的行為。
+                    本單元探討如何在非同步執行環境下維持狀態的一致性，包括 <code>volatile</code>、臨界區段與原子操作。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的 FSM 狀態變數在 ISR 裡被改成「緊急停止」，但主迴圈正好在讀取舊狀態、準備輸出 PWM。
+                    結果車子明明該停下來，馬達卻多轉了好幾圈才停——因為主迴圈讀到的是「過期」的狀態值。
+                    確保跨上下文的狀態讀寫具備原子性，是避免這類幽靈 bug 的關鍵。
                 </div>
 
                 <h2>教學影片</h2>
@@ -590,36 +622,112 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🏁 1. 競爭條件 (Race Condition)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tight">
-                                無線環境順序亂。多個操作同時發生，結果取決於誰跑得快。
-                            </p>
-<div class="p-6 rounded-2xl border border-red-100 bg-red-50 text-justify uppercase tracking-widest leading-relaxed">
-<h4 class="font-bold text-red-800 mb-2 text-[10px] text-justify font-black">Failure
-                                    Scenario</h4>
-<ol class="text-red-700 space-y-2 font-light text-[9px] text-justify uppercase tracking-widest font-black">
-<li>1. 網頁發送「進入自動模式」</li>
-<li>2. 車子電力不足自動退回「待機模式」</li>
-<li>3. 通訊延遲。網頁收到模式確認，顯示錯誤。</li>
-</ol>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center bg-slate-900 text-justify uppercase tracking-widest font-black">
-<h4 class="font-bold text-slate-500 mb-6 uppercase tracking-widest text-[10px] text-justify">
-                                Out-of-order Arrival</h4>
-<div class="flex items-center justify-around gap-2 mb-4 text-justify">
-<div class="px-3 py-1 rounded text-[8px] animate-bounce bg-blue-500 text-justify font-black">
-                                    Cmd #2</div>
-<div class="px-3 py-1 rounded text-[8px] bg-amber-500 text-justify font-black">Cmd #1
-                                </div>
-</div>
-<p class="text-red-400 font-bold uppercase tracking-widest leading-relaxed mt-4 text-[10px] text-justify">
-                                UI State Corruption Risk</p>
-</div>
-</div>
+                <h1>競爭條件 (Race Condition)</h1>
+
+                <p>
+                    在物聯網系統中，網頁前端與硬體之間透過無線通訊交換資料。然而，無線環境本質上是<strong>不可靠且無序</strong>的——封包可能延遲、丟失、甚至以相反的順序抵達。當多個操作同時影響同一個狀態變數時，最終結果取決於「誰先到達」，而不是「誰先發出」。這就是競爭條件（Race Condition）。
+                </p>
+
+                <p>
+                    競爭條件在單機嵌入式系統中也會發生：當 ISR（中斷服務程序）與主迴圈同時讀寫同一個狀態變數時，若缺乏保護機制，主迴圈可能讀到「半更新」的資料。在分散式系統（如 BLE 遙控車）中，這個問題更加嚴重，因為網路延遲讓時序完全不可預測。
+                </p>
+
+                <h2>典型失敗情境</h2>
+
+                <p>以下是一個常見的競爭條件場景：</p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>使用者點擊「進入自動模式」</h4>
+                            <p>網頁發出指令封包 <code>{cmd: "SET_MODE", mode: "AUTO", seq: 42}</code>。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>硬體因電力不足自動退回待機</h4>
+                            <p>在收到指令之前，ESP32 偵測到電壓過低，已自行切回 <code>IDLE</code> 並發出狀態通知 <code>{state: "IDLE", seq: 43}</code>。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>封包亂序抵達</h4>
+                            <p>網頁先收到舊的 ACK（確認已切換到 AUTO），後收到新的狀態通知（已退回 IDLE）。若無序號過濾，UI 最終顯示「AUTO」——但車子其實在待機！</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        UI 與硬體狀態不同步不只是「顯示錯誤」——它可能導致使用者基於錯誤資訊做出危險操作。例如，使用者以為車子在自動模式（不需介入），實際上車子正待機等待指令而朝障礙物前進。
+                    </div>
+                </div>
+
+                <h2>版本序號過濾器</h2>
+
+                <p>
+                    解決亂序問題最直接的方法是<strong>版本序號（Sequence Number）</strong>。每個封包都附帶一個遞增的整數序號，接收端只接受序號大於目前已知序號的封包，丟棄所有「遲到的舊資料」。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 前端 JavaScript：序號過濾邏輯</span><br>
+<span class="c-kw">let</span> <span class="c-attr">lastSeq</span> <span class="c-white">= 0;</span><br>
+<br>
+<span class="c-kw">function</span> <span class="c-attr">onMessageReceived</span><span class="c-white">(packet) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(packet.seq > lastSeq) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lastSeq = packet.seq;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;updateUI(packet.state);</span> <span class="c-comment">// 更新顯示</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;} </span><span class="c-kw">else</span><span class="c-white"> {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.warn(</span><span class="c-str">`丟棄過期封包: seq=${packet.seq}, current=${lastSeq}`</span><span class="c-white">);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>封包過濾策略比較</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>策略</th>
+                            <th>原理</th>
+                            <th>適用場景</th>
+                            <th>缺點</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>序號遞增</strong></td>
+                            <td>丟棄 seq ≤ lastSeq 的封包</td>
+                            <td>狀態同步、感測器數據</td>
+                            <td>序號溢位需處理環繞</td>
+                        </tr>
+                        <tr>
+                            <td><strong>時間戳比對</strong></td>
+                            <td>丟棄時間戳早於已知的封包</td>
+                            <td>時鐘同步良好的系統</td>
+                            <td>需要精確的時鐘同步</td>
+                        </tr>
+                        <tr>
+                            <td><strong>向量時鐘</strong></td>
+                            <td>多節點因果關係追蹤</td>
+                            <td>多裝置協同控制</td>
+                            <td>實作複雜度高</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        對於 ESP32 BLE 通訊的場景，使用 <code>uint16_t</code> 序號即可（0–65535）。以每秒 10 個封包的頻率，需要將近兩小時才會溢位。當偵測到序號從極大值跳到極小值時，可以判定為合法的環繞而非亂序。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -638,40 +746,109 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>✨ 2. 樂觀 UI 與真值來源 (SSoT)</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tighter">
-                                介面狀態必須由實體硬體回傳決定 (SSoT)。
-                            </p>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-justify uppercase tracking-widest leading-relaxed font-black">
-<div class="p-6 rounded-2xl border border-emerald-100 shadow-sm bg-emerald-50 text-justify">
-<h4 class="font-bold text-emerald-800 mb-2 text-[10px] text-justify uppercase tracking-widest font-black">
-                                        Optimistic</h4>
-<p class="text-emerald-600 text-[9px] text-justify uppercase tracking-tighter font-black">
-                                        快速反應。但失敗時產生「畫面閃回」。</p>
-</div>
-<div class="p-6 rounded-2xl border border-cyan-100 shadow-sm bg-cyan-50 text-justify uppercase tracking-tighter font-black">
-<h4 class="font-bold text-cyan-800 mb-2 text-[10px] text-justify uppercase tracking-widest font-black">
-                                        SSoT Framework</h4>
-<p class="text-cyan-600 text-[9px] text-justify uppercase tracking-widest font-black">
-                                        100% 同步。沒收到確認前不變。眼見即真實。</p>
-</div>
-</div>
-</div>
-<div class="p-10 rounded-3xl shadow-2xl border border-slate-700 text-center relative overflow-hidden group bg-slate-900 text-justify">
-<div class="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent text-justify">
-</div>
-<h4 class="text-cyan-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-justify uppercase tracking-widest font-black">
-                                Consistency Architecture</h4>
-<p class="text-slate-500 leading-relaxed font-light mb-8 italic text-[11px] text-justify uppercase tracking-widest font-black">
-                                "精確權重高於毫秒級操作快感。"
-                            </p>
-<div class="inline-block px-8 py-3 bg-cyan-600 text-white rounded-xl font-bold text-[10px] shadow-lg text-justify uppercase tracking-widest font-black">
-                                Enforce SSoT</div>
-</div>
-</div>
+                <h1>樂觀 UI 與真值來源 (SSoT)</h1>
+
+                <p>
+                    在 Web 應用開發中，「樂觀更新（Optimistic UI）」是一種常見的設計模式：當使用者執行操作時，UI 立即顯示預期結果，不等待伺服器確認。這在普通網頁（如按讚）中很好用，但在<strong>控制實體硬體</strong>的場景下卻可能致命。
+                </p>
+
+                <p>
+                    想像你點擊「切換到自動模式」，UI 立刻將按鈕變為綠色——但此時 BLE 封包可能根本還沒送達硬體。如果指令最終失敗（丟包、硬體拒絕、電力不足），UI 就會「說謊」：螢幕顯示自動模式，車子實際在待機。這種「認知不對稱」在遙控機器人場景中極其危險。
+                </p>
+
+                <h2>樂觀 UI vs. SSoT 架構</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>特性</th>
+                            <th>樂觀更新 (Optimistic)</th>
+                            <th>真值來源 (SSoT)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>UI 更新時機</td>
+                            <td>使用者點擊後立刻更新</td>
+                            <td>收到硬體確認後才更新</td>
+                        </tr>
+                        <tr>
+                            <td>操作感受</td>
+                            <td>極快（0ms 延遲感）</td>
+                            <td>略有延遲（50–200ms）</td>
+                        </tr>
+                        <tr>
+                            <td>失敗處理</td>
+                            <td>需要「回滾」UI，產生閃爍</td>
+                            <td>不需回滾，狀態始終正確</td>
+                        </tr>
+                        <tr>
+                            <td>一致性保證</td>
+                            <td>可能短暫不一致</td>
+                            <td>100% 一致</td>
+                        </tr>
+                        <tr>
+                            <td>適用場景</td>
+                            <td>低風險操作（按讚、收藏）</td>
+                            <td>高風險操作（馬達控制、模式切換）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        在控制物理裝置的介面中，<strong>絕對不要使用樂觀更新</strong>。一個「螢幕說自動、車子其實待機」的狀態不一致，可能導致使用者放手不管——而車子正朝牆壁衝去。
+                    </div>
+                </div>
+
+                <h2>SSoT 架構實作</h2>
+
+                <p>
+                    SSoT（Single Source of Truth，真值來源）的核心原則很簡單：<strong>UI 狀態完全由硬體回傳的 NOTIFY 封包驅動</strong>。前端不自行猜測、不樂觀假設——只呈現硬體告訴它的真實狀態。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// SSoT 架構：UI 狀態完全由硬體驅動</span><br>
+<span class="c-kw">class</span> <span class="c-tag">StateManager</span> <span class="c-white">{</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">constructor</span><span class="c-white">() {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">this</span><span class="c-white">.currentMode = </span><span class="c-str">'UNKNOWN'</span><span class="c-white">;</span> <span class="c-comment">// 開機時不假設</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">this</span><span class="c-white">.pendingCmd = </span><span class="c-kw">null</span><span class="c-white">;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 只有硬體通知才能改變 UI 狀態</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-attr">onHardwareNotify</span><span class="c-white">(packet) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">this</span><span class="c-white">.currentMode = packet.state;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">this</span><span class="c-white">.pendingCmd = </span><span class="c-kw">null</span><span class="c-white">;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;renderPanel(</span><span class="c-kw">this</span><span class="c-white">.currentMode);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 發送指令時只顯示「處理中」</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-attr">sendCommand</span><span class="c-white">(cmd) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">this</span><span class="c-white">.pendingCmd = cmd;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;showPendingIndicator();</span> <span class="c-comment">// 旋轉圖示，不改變狀態</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bleTransmit(cmd);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>實作要點</h2>
+
+                <ul>
+                    <li><strong>開機初始化</strong>：UI 啟動時狀態設為 <code>UNKNOWN</code>，顯示「等待連線」，直到收到第一個硬體心跳。</li>
+                    <li><strong>指令發送</strong>：點擊按鈕後不改變 UI 狀態，僅顯示「處理中」動畫（如 spinner）。</li>
+                    <li><strong>狀態接收</strong>：只有收到硬體的 NOTIFY 封包時才更新 UI。</li>
+                    <li><strong>超時處理</strong>：若超過閾值（如 2 秒）未收到回應，顯示「通訊異常」警告。</li>
+                </ul>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        SSoT 架構的「延遲感」可以透過 UI 設計來緩解：在按下按鈕後立即顯示一個優雅的過渡動畫（如脈衝光環），讓使用者知道指令已送出、正在等待確認。這比假裝已完成要誠實得多。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -690,40 +867,119 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔄 3. ACK 與等級機制</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify uppercase tracking-tighter">
-                                「應答 (ACK)」是最高效方案：硬體執行後主動通知。
-                            </p>
-<div class="p-8 rounded-3xl border border-indigo-500/20 shadow-inner bg-indigo-500/10 text-justify uppercase tracking-widest font-black">
-<h4 class="font-bold text-indigo-400 mb-4 text-xs uppercase tracking-widest text-justify">
-                                    Protocol Strategy</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify uppercase tracking-widest">
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">版本序號 (Sequence)</strong>：封包加上遞增編號。
-                                        </div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">雙向握手 (ACK)</strong>：包含指令 ID。</div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">指數退避 (Backoff)</strong>：失敗時重試。
-                                        </div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-96 text-justify uppercase tracking-widest font-black">
-<div class="p-6 rounded-2xl border border-slate-800 shadow-inner font-mono text-[10px] text-blue-300 bg-slate-950 text-justify uppercase tracking-widest font-black text-left">
-<span class="text-gray-500 text-justify font-black">// 发送具備 ID 指令</span><br/>
-                                sendCmd({ id: <span class="text-pink-400">101</span>, act: <span class="text-emerald-400">"START"</span> });<br/><br/>
-<span class="text-gray-500 text-justify font-black">// ACK 回传</span><br/>
-                                { <span class="text-pink-400 text-justify font-black">"ack"</span>: <span class="text-purple-400">true</span>, <span class="text-pink-400">"id"</span>: <span class="text-pink-400">101</span> }
-                            </div>
-</div>
-</div>
+                <h1>ACK 與等級機制</h1>
+
+                <p>
+                    序號過濾器解決了「亂序」問題，但還有另一個致命挑戰：<strong>封包丟失（Packet Loss）</strong>。當你發出「切換到自動模式」的指令，如何確認硬體真的收到了？如果封包在空中消失了呢？這就需要 ACK（Acknowledgement，應答確認）機制。
+                </p>
+
+                <p>
+                    ACK 機制的核心思想借鑒自 TCP 協議：每個關鍵指令都帶有唯一 ID，接收端執行完畢後必須回傳帶有相同 ID 的確認封包。若發送端在超時時間內沒收到 ACK，就自動重傳——但重傳不能太頻繁，否則會造成網路壅塞，因此需要指數退避策略。
+                </p>
+
+                <h2>ACK 通訊協議流程</h2>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>封裝指令</h4>
+                            <p>前端將指令封裝為帶有唯一 <code>cmdId</code> 的 JSON 物件，並記錄發送時間。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>顯示 Pending 狀態</h4>
+                            <p>UI 進入「等待確認」模式：按鈕顯示旋轉動畫，禁止重複點擊。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>硬體執行並回覆 ACK</h4>
+                            <p>ESP32 收到指令 → 執行動作 → 回傳 <code>{ack: true, cmdId: 101}</code>。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>前端匹配確認</h4>
+                            <p>收到 ACK 後，匹配 <code>cmdId</code>，清除 Pending 狀態，由 NOTIFY 驅動 UI 更新。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>指數退避重傳 (Exponential Backoff)</h2>
+
+                <p>
+                    若超時未收到 ACK，不能立即瘋狂重傳——這會在網路已經壅塞時雪上加霜。正確的做法是<strong>指數退避</strong>：每次重傳的等待時間加倍，直到達到上限或重傳次數耗盡。
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">async function</span> <span class="c-attr">sendWithRetry</span><span class="c-white">(cmd, maxRetries = 3) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">let</span> <span class="c-white">delay = 500;</span> <span class="c-comment">// 初始等待 500ms</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">for</span> <span class="c-white">(</span><span class="c-kw">let</span> <span class="c-white">attempt = 0; attempt &lt; maxRetries; attempt++) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bleTransmit(cmd);</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-white">ack = </span><span class="c-kw">await</span> <span class="c-white">waitForAck(cmd.cmdId, delay);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(ack) </span><span class="c-kw">return</span> <span class="c-white">{ success: </span><span class="c-kw">true</span><span class="c-white">, attempts: attempt + 1 };</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;delay *= 2;</span> <span class="c-comment">// 500 → 1000 → 2000ms</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.warn(</span><span class="c-str">`重傳 #${attempt + 1}，下次等待 ${delay}ms`</span><span class="c-white">);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 全部重傳失敗</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;showConnectionError();</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-white">{ success: </span><span class="c-kw">false</span><span class="c-white">, attempts: maxRetries };</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>指令等級分類</h2>
+
+                <p>
+                    並非所有指令都需要 ACK。持續發送的搖桿座標（每秒 20 次）若都要求 ACK，會造成巨大的通訊負擔。正確做法是按指令的<strong>重要程度</strong>分級：
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>等級</th>
+                            <th>類型</th>
+                            <th>需要 ACK？</th>
+                            <th>範例</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Critical</strong></td>
+                            <td>模式切換 / E-Stop</td>
+                            <td>必須，含重傳</td>
+                            <td><code>SET_MODE</code>、<code>EMERGENCY_STOP</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Normal</strong></td>
+                            <td>參數設定</td>
+                            <td>需要 ACK，不重傳</td>
+                            <td><code>SET_SPEED_LIMIT</code>、<code>CALIBRATE</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Streaming</strong></td>
+                            <td>即時控制數據</td>
+                            <td>不需要</td>
+                            <td>搖桿座標、感測器輪詢</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        ESP32 端需要實作「指令冪等性（Idempotency）」：即使收到重複的指令（同一個 <code>cmdId</code>），也只執行一次。收到重複指令時直接回傳 ACK 而不重複執行動作，避免因重傳導致馬達被啟動兩次。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -807,16 +1063,82 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
-                    <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div class="unit-completed-badge" id="badge-6" style="display:none">
+                        <i class="fas fa-check"></i> 已完成
+                    </div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <!-- Q1 -->
+                    <div class="quiz-question" id="q1">
+                        <p>1. 競爭條件（Race Condition）在物聯網通訊中最常見的後果是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 程式碼執行速度變慢</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> UI 狀態與硬體實際狀態不同步，導致使用者基於錯誤資訊操作</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 藍芽連線自動斷開</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="quiz-question" id="q2">
+                        <p>2. 版本序號過濾器的核心原理是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 只接受序號大於目前已知序號的封包，丟棄遲到的舊資料</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 將所有封包排序後一次性處理</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 只接受偶數序號的封包</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="quiz-question" id="q3">
+                        <p>3. SSoT（真值來源）架構中，UI 狀態應該由什麼驅動更新？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 使用者的點擊操作（樂觀更新）</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 定時輪詢伺服器</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 硬體回傳的 NOTIFY 封包</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="quiz-question" id="q4">
+                        <p>4. 指數退避（Exponential Backoff）重傳策略的主要目的是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 讓封包傳送更快</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 避免在網路已壅塞時因頻繁重傳而雪上加霜</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 減少硬體的電力消耗</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" style="margin-left:8px; display:none;" id="quiz-reset-btn">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -874,9 +1196,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「非同步下的狀態一致性」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「非同步下的狀態一致性」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -892,8 +1214,17 @@
         { id: 3, label: '樂觀 UI 與真值來源 (SSoT)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🔄 3. ACK 與等級機制', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '4 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'a', q3: 'c', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '封包亂序或延遲抵達時，UI 可能顯示過時的狀態，導致使用者以為車子在自動模式，實際上已退回待機——這種認知不對稱可能造成危險操作。' },
+        q2: { a: '序號過濾器透過比對遞增的整數序號，只接受比目前已知序號更大的封包，自動丟棄所有「遲到的舊資料」以解決亂序問題。' },
+        q3: { c: 'SSoT 架構的核心原則是 UI 狀態完全由硬體回傳的 NOTIFY 封包驅動，前端不自行猜測、不樂觀假設，只呈現硬體告知的真實狀態。' },
+        q4: { b: '指數退避策略讓每次重傳的等待時間加倍（如 500ms → 1000ms → 2000ms），避免在網路壅塞時因密集重傳造成更嚴重的壅塞。' },
+    };
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -912,6 +1243,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1013,8 +1345,74 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        let total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            const options = document.querySelectorAll(`input[name="${qid}"]`);
+
+            options.forEach(opt => {
+                opt.disabled = true;
+                const label = opt.parentElement;
+                if (opt.value === answer) label.classList.add('correct');
+                if (opt.checked && opt.value !== answer) label.classList.add('wrong');
+            });
+
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                const exp = QUIZ_EXPLANATIONS[qid][answer];
+                feedbackEl.textContent = '✗ 不正確。' + exp;
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        scoreEl.style.display = 'block';
+        const pct = Math.round(correct / total * 100);
+        const pass = pct >= 75;
+        scoreEl.innerHTML = `
+            <span style="font-size:20px;">${pass ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pass ? '通過！你已掌握本模組的核心概念。' : '建議回顧相關單元後再試一次。'}</div>
+        `;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => {
+            el.classList.remove('correct','wrong');
+        });
+        document.querySelectorAll('input[type=radio]').forEach(el => {
+            el.checked = false;
+            el.disabled = false;
+        });
+        document.querySelectorAll('.quiz-feedback').forEach(el => {
+            el.className = 'quiz-feedback';
+            el.textContent = '';
+        });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 10：有限狀態機';
 </script>
 
 <!-- Define Resources -->

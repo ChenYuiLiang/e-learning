@@ -80,6 +80,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -334,6 +335,13 @@
             font-family: inherit;
         }
         .ms-btn:hover { background: var(--ms-blue-dark); }
+        .ms-btn-ghost {
+            background: transparent; color: var(--ms-blue);
+            border: 1px solid var(--ms-blue); padding: 6px 18px;
+            font-size: 14px; font-weight: 600; border-radius: 2px;
+            cursor: pointer; transition: background .12s; font-family: inherit;
+        }
+        .ms-btn-ghost:hover { background: var(--ms-blue-light); }
 
         /* Nav */
         .unit-nav {
@@ -402,6 +410,37 @@
         .achievement-text h3 { margin: 0 0 4px; font-size: 18px; }
         .achievement-text p { margin: 0; font-size: 14px; opacity: .9; }
 
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 10px 14px; border: 1px solid #e1dfdd; border-radius: 4px;
+            margin-bottom: 8px; cursor: pointer; transition: background .1s;
+        }
+        .quiz-option:hover { background: #f3f2f1; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback { display: none; margin-top: 8px; padding: 10px 14px; border-radius: 4px; font-size: 13px; font-weight: 500; }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
+
+        /* BLE Demo Widget */
+        .ble-demo-widget {
+            background: #faf9f8;
+            border: 1px solid #e1dfdd;
+            border-radius: 6px;
+            padding: 24px;
+            margin: 20px 0;
+        }
+        .ble-demo-widget h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 0 16px;
+            color: var(--ms-blue-dark);
+        }
+
         @media (max-width: 768px) {
             .ms-sidebar { display: none; }
             .unit-content { padding: 20px 16px 40px; }
@@ -416,9 +455,9 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">物聯網配網</span>
+    <a href="/prepare.html" target="_top" class="nav-label">準備課程</a>
 </nav>
 
 <div class="ms-layout">
@@ -428,25 +467,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">WiFi 組態設定</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 136 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 150 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">物聯網配網</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -454,27 +489,28 @@
                 <h1>WiFi 組態設定</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">物聯網配網</span>
-                    <span class="ms-tag blue">自主學習</span>
+                    <span class="ms-tag blue">Web Bluetooth</span>
                     <span class="ms-tag blue">實戰演練</span>
                 </div>
 
-                <p>透過 Web Bluetooth 技術，直接從瀏覽器將 WiFi 帳密傳送至 ESP32 開發板。</p>
+                <p>透過 Web Bluetooth 技術，直接從瀏覽器將 WiFi 帳密傳送至 ESP32 開發板，實現無鍵盤、無螢幕的物聯網裝置配網流程。</p>
 
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>裝置連線與配網資訊</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>配網說明與提交規範</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>技術開發細節</strong> 的調校技巧與穩定性測試。</li>
+                    <li>理解 BLE（Bluetooth Low Energy）與 Web Bluetooth API 的運作原理。</li>
+                    <li>掌握 NVS（Non-Volatile Storage）如何讓 WiFi 憑證跨電源週期持久化。</li>
+                    <li>運用 <code>TextEncoder</code> 將字串編碼為位元組流，並正確設定 BLE UUID。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
                 <h2>必要條件</h2>
                 <ul>
                     <li>擁有 GitHub 帳號，能夠接受 GitHub Classroom 邀請</li>
-                    <li>配備合適的電腦開發環境及瀏覽器（推薦 Chrome）</li>
+                    <li>配備合適的電腦開發環境及瀏覽器（推薦 Chrome / Edge）</li>
+                    <li>ESP32 開發板（已燒錄 BLE WiFi Provisioning 韌體）</li>
                 </ul>
 
                 <h2>本模組單元</h2>
@@ -491,24 +527,67 @@
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-1" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
-                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
                 </div>
 
                 <h1>簡介</h1>
 
-                <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>WiFi 組態設定</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網與軟體系統，你必須確實理解底層的架構與控制協定。
-                </p>
-
-                <div class="ms-scenario" id="intro-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始實作之前，請先花時間閱讀講義或觀看影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                <div class="ms-scenario">
+                    <div class="ms-scenario-label">情境</div>
+                    你正在開發一款 IoT 環境監測裝置。ESP32 開發板將安裝在牆壁內側，沒有鍵盤也沒有螢幕——使用者唯一能接觸的介面就是自己的手機瀏覽器。你需要設計一套方案：讓使用者打開手機網頁，透過藍牙將 WiFi 名稱與密碼傳入 ESP32，裝置收到後自動連上區域網路並開始上傳感測資料。這就是「BLE WiFi Provisioning（藍牙配網）」的典型應用場景。
                 </div>
 
-                <div id="video-section" class="mt-8">
+                <p>
+                    在本模組中，你將從零開始理解這套配網機制背後的三大技術支柱：
+                </p>
+
+                <ul>
+                    <li><strong>Web Bluetooth API</strong> — 讓瀏覽器直接與 BLE 裝置通訊，無需安裝任何 App。</li>
+                    <li><strong>NVS（Non-Volatile Storage）</strong> — ESP32 的持久化儲存機制，讓 WiFi 憑證在斷電後依然保留。</li>
+                    <li><strong>TextEncoder 與 UUID</strong> — 跨越 JavaScript 字串世界與 BLE 位元組世界的橋樑。</li>
+                </ul>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>NOTE</strong>
+                        本模組結合了前端 Web 技術與嵌入式硬體操作。即使你目前手邊沒有 ESP32 硬體，前三個教學單元的概念學習仍然適用——你可以先完成知識理解，等取得硬體後再進行實戰挑戰。
+                    </div>
+                </div>
+
+                <h2>你將在本模組中完成</h2>
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>學習 BLE 與 Web Bluetooth</h4>
+                            <p>理解 GATT 架構與瀏覽器端的連線流程。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>理解 NVS 與資料流</h4>
+                            <p>追蹤 WiFi 憑證從瀏覽器到硬體快閃記憶體的完整路徑。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>掌握 TextEncoder 與 UUID</h4>
+                            <p>了解字串如何編碼為位元組、BLE Service/Characteristic 如何透過 UUID 定址。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>實戰挑戰與知識測驗</h4>
+                            <p>動手完成三項作業任務，並通過知識測驗驗證理解程度。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="video-section">
                     <h2>教學影片</h2>
                     <div style="border-radius:4px; overflow:hidden; margin:20px 0; box-shadow:0 2px 8px rgba(0,0,0,.12); aspect-ratio:16/9;">
                         <iframe src=""
@@ -521,234 +600,515 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 2: 單元 1 ══════════ -->
+        <!-- ══════════ PAGE 2: BLE & Web Bluetooth ══════════ -->
         <div class="ms-unit-page" id="page-2">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-2" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
-                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 15 分鐘</div>
                 </div>
 
-                <h1>裝置連線與配網資訊</h1>
-                
-                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8 border border-slate-100">
-<div class="flex flex-col md:flex-row justify-between items-center mb-6">
-<h2 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
-<i class="fa-brands fa-bluetooth text-blue-500"></i>
-                    裝置連線
-                </h2>
-<div class="mt-2 md:mt-0 px-4 py-1.5 bg-slate-100 text-slate-500 rounded-full text-sm font-medium flex items-center gap-2" id="connectionStatus">
-<span class="w-2 h-2 rounded-full bg-slate-400"></span>
-                    未連線
+                <h1>BLE 與 Web Bluetooth API</h1>
+
+                <h2>什麼是 BLE（Bluetooth Low Energy）？</h2>
+                <p>
+                    BLE 是藍牙 4.0 以後引入的低功耗通訊協定。與傳統藍牙（Classic Bluetooth）相比，BLE 專為短距離、小資料量、低功耗的物聯網場景設計。它不需要「配對」程序即可快速建立連線，非常適合感測器資料傳輸或裝置設定等場景。
+                </p>
+
+                <h3>BLE vs 傳統藍牙 vs WiFi 比較</h3>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>特性</th>
+                            <th>BLE</th>
+                            <th>傳統藍牙</th>
+                            <th>WiFi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>功耗</td>
+                            <td>極低（mA 等級）</td>
+                            <td>中等</td>
+                            <td>高</td>
+                        </tr>
+                        <tr>
+                            <td>傳輸速率</td>
+                            <td>~1 Mbps</td>
+                            <td>~3 Mbps</td>
+                            <td>~100+ Mbps</td>
+                        </tr>
+                        <tr>
+                            <td>連線建立時間</td>
+                            <td>數毫秒</td>
+                            <td>數秒</td>
+                            <td>數秒</td>
+                        </tr>
+                        <tr>
+                            <td>典型用途</td>
+                            <td>感測器、設定配網</td>
+                            <td>音訊串流、檔案傳輸</td>
+                            <td>網路連線、大量資料</td>
+                        </tr>
+                        <tr>
+                            <td>是否需配對</td>
+                            <td>不需要</td>
+                            <td>需要</td>
+                            <td>需要密碼</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>GATT 架構（Generic Attribute Profile）</h2>
+                <p>
+                    BLE 裝置透過 GATT 架構組織資料。你可以把它想像成一個「資料夾結構」：
+                </p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>Profile（設定檔）</h4>
+                            <p>整個裝置的最上層定義，描述裝置的用途。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>Service（服務）</h4>
+                            <p>一組相關功能的集合，每個 Service 有一個唯一的 UUID。例如：WiFi 配網服務。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>Characteristic（特徵值）</h4>
+                            <p>Service 下的實際資料欄位。每個 Characteristic 也有自己的 UUID，可設為可讀 / 可寫 / 可通知。</p>
+                        </div>
+                    </div>
                 </div>
-</div>
-<div class="grid md:grid-cols-2 gap-8">
-<!-- Step 1: Prep -->
-<div class="space-y-4">
-<h3 class="font-bold text-lg text-slate-700">第一步：事前準備</h3>
-<ul class="space-y-2 text-sm text-slate-600">
-<li class="flex items-start gap-2">
-<i class="fa-brands fa-chrome mt-1 text-green-500"></i>
-<span>使用 Chrome, Edge 或 Bluefy (iOS)</span>
-</li>
-<li class="flex items-start gap-2">
-<i class="fa-solid fa-power-off mt-1 text-red-500"></i>
-<span>確認 ESP32 已開啟並廣播 "esp32..."</span>
-</li>
-<li class="flex items-start gap-2">
-<i class="fa-solid fa-location-dot mt-1 text-blue-500"></i>
-<span>開啟系統藍牙與定位權限</span>
-</li>
-</ul>
-<button class="w-full mt-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium shadow-md hover:shadow-lg transition flex justify-center items-center gap-2" id="connectBtn">
-<i class="fa-solid fa-bolt"></i>
-                        連線 BLE 裝置
-                    </button>
-</div>
-<!-- Input Form -->
-<div class="space-y-4 opacity-50 pointer-events-none transition-all duration-300" id="configForm">
-<h3 class="font-bold text-lg text-slate-700">第二步：WiFi 資訊</h3>
-<div>
-<label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">WiFi SSID
-                            (名稱)</label>
-<input class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition" id="ssidInput" placeholder="輸入 WiFi 名稱" type="text"/>
-</div>
-<div>
-<label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Password
-                            (密碼)</label>
-<input class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition" id="passwordInput" placeholder="輸入 WiFi 密碼" type="password"/>
-</div>
-<button class="w-full py-3 bg-slate-800 text-white rounded-lg font-medium shadow transition hover:bg-slate-900 flex justify-center items-center gap-2" id="sendBtn">
-<i class="fa-regular fa-paper-plane"></i>
-                        傳送設定至裝置
-                    </button>
-<p class="text-xs text-center text-slate-400 min-h-[1.5em]" id="msgDetails"></p>
-</div>
-</div>
-</div>
-                
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>TIP</strong>
+                        類比思考：Service 就像一個「資料夾」，Characteristic 就像資料夾裡的「檔案」。你可以往 Characteristic 裡寫入資料（Write）、讀取資料（Read）或訂閱變更通知（Notify）。
+                    </div>
+                </div>
+
+                <h2>Web Bluetooth API 連線流程</h2>
+                <p>
+                    Web Bluetooth 讓瀏覽器能直接與 BLE 裝置通訊。整個連線流程是一連串非同步操作：
+                </p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>requestDevice — 掃描並選擇裝置</h4>
+                            <p><code>navigator.bluetooth.requestDevice({ filters: [...] })</code> — 彈出裝置選擇器，使用者點選後回傳 BluetoothDevice 物件。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>connect — 連線 GATT Server</h4>
+                            <p><code>device.gatt.connect()</code> — 與裝置建立 GATT 連線，回傳 BluetoothRemoteGATTServer。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>getPrimaryService — 取得服務</h4>
+                            <p><code>server.getPrimaryService(SERVICE_UUID)</code> — 透過 UUID 找到目標 Service。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>getCharacteristic — 取得特徵值</h4>
+                            <p><code>service.getCharacteristic(CHAR_UUID)</code> — 在 Service 下找到目標 Characteristic。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">5</div>
+                        <div class="ms-step-body">
+                            <h4>writeValue — 寫入資料</h4>
+                            <p><code>characteristic.writeValue(encodedData)</code> — 將位元組陣列寫入 Characteristic。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>WARNING</strong>
+                        Web Bluetooth 需要安全環境（HTTPS 或 localhost），且 <code>requestDevice</code> 必須由使用者操作（如點擊按鈕）觸發。一般的 Line 或 Facebook 內建瀏覽器不支援 Web Bluetooth，iOS 用戶請使用 Bluefy 瀏覽器。
+                    </div>
+                </div>
+
+                <h2>互動示範：BLE 連線 Widget</h2>
+                <p>以下是一個可實際運作的 BLE 連線工具。如果你手邊有 ESP32 裝置（廣播名稱以 "esp32" 開頭），可以嘗試連線並傳送 WiFi 資訊：</p>
+
+                <div class="ble-demo-widget">
+                    <h3><i class="fa-brands fa-bluetooth"></i> BLE 裝置連線</h3>
+                    <div id="connectionStatus" style="font-size:13px; color:#605e5c; margin-bottom:12px;">
+                        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#8a8886; margin-right:6px;"></span>未連線
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                        <div>
+                            <p style="font-size:13px; font-weight:600; margin-bottom:8px;">第一步：連線裝置</p>
+                            <ul style="font-size:13px; margin-bottom:12px;">
+                                <li>使用 Chrome / Edge / Bluefy</li>
+                                <li>確認 ESP32 已開啟並廣播</li>
+                                <li>開啟系統藍牙權限</li>
+                            </ul>
+                            <button class="ms-btn" id="connectBtn" style="width:100%;">
+                                <i class="fa-solid fa-bolt"></i> 連線 BLE 裝置
+                            </button>
+                        </div>
+                        <div id="configForm" style="opacity:0.5; pointer-events:none;">
+                            <p style="font-size:13px; font-weight:600; margin-bottom:8px;">第二步：WiFi 資訊</p>
+                            <div style="margin-bottom:8px;">
+                                <label style="font-size:11px; font-weight:600; color:#605e5c; display:block; margin-bottom:4px;">SSID（名稱）</label>
+                                <input id="ssidInput" type="text" placeholder="輸入 WiFi 名稱" style="width:100%; padding:6px 10px; border:1px solid #e1dfdd; border-radius:3px; font-size:13px;">
+                            </div>
+                            <div style="margin-bottom:12px;">
+                                <label style="font-size:11px; font-weight:600; color:#605e5c; display:block; margin-bottom:4px;">密碼</label>
+                                <input id="passwordInput" type="password" placeholder="輸入 WiFi 密碼" style="width:100%; padding:6px 10px; border:1px solid #e1dfdd; border-radius:3px; font-size:13px;">
+                            </div>
+                            <button class="ms-btn" id="sendBtn" style="width:100%; background:#323130;">
+                                <i class="fa-regular fa-paper-plane"></i> 傳送設定至裝置
+                            </button>
+                            <p id="msgDetails" style="font-size:12px; text-align:center; color:#605e5c; margin-top:8px; min-height:1.5em;"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>NOTE</strong>
+                        上方 Widget 中的 JavaScript 程式碼就是你在實戰挑戰中需要理解並擴展的基礎。在閱讀完本模組的教學單元後，你將能完整說明每一行的用途。
+                    </div>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 3: 單元 2 ══════════ -->
+        <!-- ══════════ PAGE 3: NVS & Data Flow ══════════ -->
         <div class="ms-unit-page" id="page-3">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-3" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
-                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 12 分鐘</div>
                 </div>
 
-                <h1>配網說明與提交規範</h1>
-                
-                <div class="bg-amber-50 border-l-4 border-amber-400 p-4 mb-12 rounded-r-lg">
-<div class="flex">
-<div class="flex-shrink-0">
-<i class="fa-solid fa-triangle-exclamation text-amber-500"></i>
-</div>
-<div class="ml-3">
-<p class="text-sm text-amber-700">
-                        注意：一般的 Line 或 Facebook 內建瀏覽器不支援 Web Bluetooth。IOS 用戶請下載 Bluefy 瀏覽器。
-                    </p>
-</div>
-</div>
-</div>
-<div class="bg-indigo-50 border border-indigo-200 rounded-xl p-6">
-<h3 class="text-lg font-bold text-indigo-900 mb-3">📂 程式庫結構（提交時請確認）</h3>
-<ul class="text-sm text-indigo-900 list-disc list-inside space-y-1">
-<li><code>wifi-config.html</code>：前端配網介面（主要實作檔）</li>
-<li><code>firmware/</code>：ESP32 韌體原始碼</li>
-<li><code>test/</code>：自動化測試腳本</li>
-<li><code>serial-output.log</code>：硬體連線日誌（必交）</li>
-</ul>
-</div>
-<div class="bg-slate-900 text-slate-200 rounded-xl p-6">
-<h3 class="text-lg font-bold text-white mb-3">📝 提交要求（與 GitHub Classroom README 一致）</h3>
-<ol class="list-decimal list-inside text-sm space-y-2">
-<li><code>wifi-config.html</code> 內 TODO 必須完成。</li>
-<li><code>serial-output.log</code> 必須包含關鍵連線與 NVS 成功訊息。</li>
-<li>將所有變更 push 到你的 GitHub Classroom repository。</li>
-</ol>
-</div>
-                
+                <h1>NVS 與資料流</h1>
+
+                <h2>什麼是 NVS（Non-Volatile Storage）？</h2>
+                <p>
+                    NVS 是 ESP32 上的一塊持久化儲存區域，存放於 SPI Flash 的特定分區中。「Non-Volatile（非揮發性）」意味著即使裝置斷電，資料也不會消失。這正是 WiFi 憑證能夠「記住」的原因。
+                </p>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>TIP</strong>
+                        你可以把 NVS 想像成嵌入式系統的「localStorage」——鍵值對（Key-Value）結構，斷電不遺失。ESP-IDF 提供 <code>nvs_set_str()</code> 和 <code>nvs_get_str()</code> 等 API 來操作它。
+                    </div>
+                </div>
+
+                <h3>NVS 的關鍵特性</h3>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>特性</th>
+                            <th>說明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>儲存格式</td>
+                            <td>Key-Value 鍵值對，支援字串、整數、Binary Blob</td>
+                        </tr>
+                        <tr>
+                            <td>容量</td>
+                            <td>預設約 16~24 KB（可在 partition table 中調整）</td>
+                        </tr>
+                        <tr>
+                            <td>磨損均衡</td>
+                            <td>內建 Wear Leveling，延長 Flash 壽命</td>
+                        </tr>
+                        <tr>
+                            <td>Namespace</td>
+                            <td>可用命名空間隔離不同模組的資料</td>
+                        </tr>
+                        <tr>
+                            <td>斷電安全</td>
+                            <td>寫入後立即持久化，不受意外斷電影響</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>WiFi 憑證如何跨電源週期存活？</h2>
+                <p>
+                    當 ESP32 收到 WiFi SSID 和密碼後，韌體會將這些資料寫入 NVS。下次裝置重新上電時，韌體會先從 NVS 讀取已儲存的 WiFi 資訊，如果存在就自動嘗試連線——完全不需要重新透過 BLE 配網。
+                </p>
+
+                <h2>完整資料流：從瀏覽器到 WiFi 連線</h2>
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>瀏覽器：使用者輸入 SSID / 密碼</h4>
+                            <p>前端 JavaScript 取得表單值，使用 <code>TextEncoder</code> 編碼為 <code>Uint8Array</code>。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>BLE 傳輸：寫入 Characteristic</h4>
+                            <p>呼叫 <code>characteristic.writeValue(encoded)</code>，位元組經由 BLE 空中介面傳送至 ESP32。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>ESP32 韌體：接收並解碼</h4>
+                            <p>韌體的 Write Callback 被觸發，從 BLE Buffer 讀出位元組並還原為字串。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>NVS：持久化寫入</h4>
+                            <p>韌體呼叫 <code>nvs_set_str()</code> 將 SSID 與密碼寫入 Flash，再 <code>nvs_commit()</code> 確認。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">5</div>
+                        <div class="ms-step-body">
+                            <h4>WiFi 連線：自動啟動</h4>
+                            <p>裝置重啟後，從 NVS 讀取憑證，呼叫 <code>esp_wifi_connect()</code> 自動連上路由器。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>WARNING</strong>
+                        NVS 中的 WiFi 密碼以明文儲存。在量產產品中應使用 ESP-IDF 的 NVS Encryption 功能加密整個 NVS 分區，或在應用層自行加密敏感資料後再存入。
+                    </div>
+                </div>
+
+                <h2>提交規範</h2>
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>NOTE</strong>
+                        實戰挑戰的作業提交需遵循以下結構：
+                        <ul style="margin-top:8px; margin-bottom:0;">
+                            <li><code>wifi-config.html</code>：前端配網介面（主要實作檔）</li>
+                            <li><code>firmware/</code>：ESP32 韌體原始碼</li>
+                            <li><code>test/</code>：自動化測試腳本</li>
+                            <li><code>serial-output.log</code>：硬體連線日誌（必交）</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="ms-important">
+                    <i class="fas fa-exclamation-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>IMPORTANT</strong>
+                        <code>serial-output.log</code> 必須包含 <code>WiFi Connected!</code> 與 <code>NVS Commit Success</code> 等關鍵日誌訊息，作為硬體整合成功的證據。
+                    </div>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 4: 單元 3 ══════════ -->
+        <!-- ══════════ PAGE 4: TextEncoder & UUID ══════════ -->
         <div class="ms-unit-page" id="page-4">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-4" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
-                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 12 分鐘</div>
                 </div>
 
-                <h1>技術開發細節</h1>
-                
-                <section class="mt-16 bg-slate-800 text-slate-300 p-8 rounded-xl font-mono text-sm">
-<h3 class="text-white font-bold text-lg mb-4 flex items-center gap-2">
-<i class="fa-solid fa-code"></i> Developer Notes
-            </h3>
-<div class="grid md:grid-cols-2 gap-8">
-<div>
-<h4 class="text-indigo-400 font-bold mb-2">UUID Configuration</h4>
-<ul class="space-y-2">
-<li>Service: <span class="break-all text-white">6E400001-B5A3-F393-E0A9-E50E24DCCA9E</span></li>
-<li>Char (SSID): <span class="break-all text-white">6E400002...</span> (Write)</li>
-<li>Char (Pwd): <span class="break-all text-white">6E400003...</span> (Write)</li>
-</ul>
-</div>
-<div>
-<h4 class="text-pink-400 font-bold mb-2">Key Logic</h4>
-<p class="mb-2">TextEncoder is used to convert strings to Uint8Array before writing to
-                        characteristics.</p>
-<p>Device auto-restarts upon receiving the password (implied commit).</p>
-</div>
-</div>
-</section>
-<h2>WiFi 組態設定 - BLE 傳輸操作</h2>
-<div class="assignment-quest">
-<h3 class="quest-title">任務 1：行動優先 - UX 反饋與連線狀態優化</h3>
-<div class="quest-meta">
-<span>角色扮演：產品設計師 (UX Designer)</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：30 min</span>
-</div>
-<div class="quest-workflow">
-<h4>🛠️ 執行技術流程 (Git Workflow)</h4>
-<ol>
-<li><strong>優化狀態視景</strong>：在網頁前端實作連線中的動畫反饋（例如：使用 Tailwind 的 <code>animate-pulse</code>）。</li>
-<li><strong>連線成功回饋</strong>：當裝置成功接收 WiFi 資訊後，自動改變網頁背景顏色或顯示明顯的成功 Badge。</li>
-<li><strong>斷線處理</strong>：實作 <code>gattserverdisconnected</code> 事件監聽，並在斷線時自動重置 UI 狀態。</li>
-</ol>
-</div>
-<div class="tutor-benchmark">
-<h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
-<ul>
-<li>[ ] <strong>直覺性</strong>：使用者是否能從 UI 立即得知當前與硬體的連線狀態？</li>
-<li>[ ] <strong>魯棒性</strong>：當藍牙意外中斷時，網頁是否能正確引導使用者重新連線？</li>
-</ul>
-</div>
-</div><div class="assignment-quest" style="margin-top: 2rem;">
-<h3 class="quest-title">任務 2：編碼偵錯 - UTF-8 協議與字元檢查</h3>
-<div class="quest-meta">
-<span>角色扮演：通訊協定工程師</span> | <span>難度：⭐️⭐️</span> | <span>估計時長：40 min</span>
-</div>
-<div class="quest-workflow">
-<h4>🛠️ 執行技術流程 (Git Workflow)</h4>
-<ol>
-<li><strong>觀察編碼</strong>：使用 <code>console.log</code> 觀察 <code>TextEncoder</code> 對包含空格或特殊符號的 SSID 的編碼結果。</li>
-<li><strong>長度檢查</strong>：在前端實作字元長度限制，防止傳送超過 ESP32 緩衝區大小的密碼。</li>
-<li><strong>異常捕捉</strong>：使用 <code>try...catch</code> 攔截藍牙寫入時的異常，並將錯誤代碼顯示在網頁控制台上。</li>
-</ol>
-</div>
-<div class="tutor-benchmark">
-<h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
-<ul>
-<li>[ ] <strong>協議正確性</strong>：是否理解 JS 陣列緩衝區 (Uint8Array) 如何轉換為 BLE 的 Byte Stream？</li>
-<li>[ ] <strong>除錯效率</strong>：是否能透過日誌精確診斷傳輸失敗的原因？</li>
-</ul>
-</div>
-</div><div class="assignment-quest" style="margin-top: 2rem;">
-<h3 class="quest-title">任務 3：永恆連結 - NVS 記憶與自動重連驗證</h3>
-<div class="quest-meta">
-<span>角色扮演：韌體維運工程師</span> | <span>難度：⭐️⭐️⭐️</span> | <span>估計時長：30 min</span>
-</div>
-<div class="quest-workflow">
-<h4>🛠️ 執行技術流程 (Git Workflow)</h4>
-<ol>
-<li><strong>斷電測試</strong>：將設定好的 WiFi 裝置拔除電源再重新插上，驗證是否能自動連回網路。</li>
-<li><strong>持久性檢查</strong>：確認 SSID/Password 是否正確存入 ESP32 的 <strong>NVS (Non-volatile storage)</strong> 分區。</li>
-<li><strong>多次覆寫實驗</strong>：測試快速連續更改 WiFi 設定，觀察 NVS 存取是否發生衝突或損毀。</li>
-</ol>
-</div>
-<div class="tutor-benchmark">
-<h4>🎯 教師點評標準 (Tutor Benchmarks)</h4>
-<ul>
-<li>[ ] <strong>硬體穩定性</strong>：裝置重啟後是否具備自主恢復連網的能力？</li>
-<li>[ ] <strong>NVS 運作原理</strong>：是否理解 WiFi 資訊在硬體層級是如何被持久化儲存的？</li>
-</ul>
-</div>
-</div>
-                
+                <h1>TextEncoder 與 UUID</h1>
+
+                <h2>為什麼需要 TextEncoder？</h2>
+                <p>
+                    BLE Characteristic 只接受位元組陣列（<code>ArrayBuffer</code> / <code>DataView</code> / <code>TypedArray</code>），而 JavaScript 的字串是 UTF-16 編碼的高階物件。<code>TextEncoder</code> 負責將字串轉換為 UTF-8 位元組序列，產生一個 <code>Uint8Array</code> 供 BLE 寫入使用。
+                </p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>建立 Encoder</h4>
+                            <p><code>const encoder = new TextEncoder();</code> — 預設產生 UTF-8 編碼器。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>編碼字串</h4>
+                            <p><code>const bytes = encoder.encode("MyWiFi");</code> — 回傳 <code>Uint8Array [77, 121, 87, 105, 70, 105]</code>。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>寫入 BLE</h4>
+                            <p><code>characteristic.writeValue(bytes);</code> — 位元組經由空中介面傳送。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>NOTE</strong>
+                        UTF-8 對 ASCII 字元（英文、數字）每字元只佔 1 byte，但中文字佔 3 bytes。如果 SSID 包含中文（如「我的網路」），編碼後長度會超出預期。BLE 單次寫入上限通常為 MTU - 3 bytes（預設 MTU = 23，可用 20 bytes）。
+                    </div>
+                </div>
+
+                <h2>BLE UUID 結構</h2>
+                <p>
+                    每個 BLE Service 和 Characteristic 都透過 UUID（Universally Unique Identifier）來識別。BLE 定義兩種格式：
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>類型</th>
+                            <th>格式</th>
+                            <th>範例</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>16-bit UUID</td>
+                            <td>SIG 標準服務</td>
+                            <td><code>0x180A</code>（Device Info）</td>
+                        </tr>
+                        <tr>
+                            <td>128-bit UUID</td>
+                            <td>自定義服務</td>
+                            <td><code>6e400001-b5a3-f393-e0a9-e50e24dcca9e</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Nordic UART Service（NUS）UUID</h3>
+                <p>
+                    本專案使用的是 Nordic Semiconductor 定義的 UART Service（NUS），這是 BLE 串口模擬的事實標準：
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>角色</th>
+                            <th>UUID</th>
+                            <th>屬性</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Service</td>
+                            <td><code>6E400001-B5A3-F393-E0A9-E50E24DCCA9E</code></td>
+                            <td>—</td>
+                        </tr>
+                        <tr>
+                            <td>RX Characteristic（寫 SSID）</td>
+                            <td><code>6E400002-B5A3-F393-E0A9-E50E24DCCA9E</code></td>
+                            <td>Write</td>
+                        </tr>
+                        <tr>
+                            <td>TX Characteristic（寫密碼）</td>
+                            <td><code>6E400003-B5A3-F393-E0A9-E50E24DCCA9E</code></td>
+                            <td>Write</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>TIP</strong>
+                        UUID 中只有最後四碼不同（<code>0001</code>、<code>0002</code>、<code>0003</code>），前綴一致。這是 NUS 的命名慣例——只改變 Service/Characteristic 編號。在 Web Bluetooth API 中，UUID 必須全部使用小寫。
+                    </div>
+                </div>
+
+                <h2>非同步錯誤處理</h2>
+                <p>
+                    BLE 操作全部是非同步的（回傳 Promise），任何一步都可能失敗。良好的錯誤處理是穩定配網工具的關鍵：
+                </p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>使用者取消選擇</h4>
+                            <p><code>NotFoundError</code> — 使用者按了「取消」或裝置不在範圍內。應提示重試。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>安全環境限制</h4>
+                            <p><code>SecurityError</code> — 頁面不在 HTTPS 或 localhost。應顯示環境需求提示。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>連線中斷</h4>
+                            <p><code>NetworkError</code> — 裝置超出範圍或關機。監聽 <code>gattserverdisconnected</code> 事件來重置 UI。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>寫入失敗</h4>
+                            <p><code>InvalidStateError</code> — Characteristic 不可寫或連線已失效。應在 <code>try...catch</code> 中捕捉並回報。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>WARNING</strong>
+                        永遠在 <code>async</code> 函數中使用 <code>try...catch</code> 封裝 BLE 操作。未捕捉的 Promise rejection 會導致無聲失敗——使用者看不到任何反饋，卻不知道配網未成功。
+                    </div>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -765,78 +1125,111 @@
                 <h1>實戰任務挑戰</h1>
 
                 <p>
-                    請動手完成以下三項實作任務，這是驗證本單元學習成果的核心挑戰。
+                    請動手完成以下三項實作任務，這是驗證本模組學習成果的核心挑戰。
                     完成後請將程式碼與報告提交至 GitHub Classroom。
                 </p>
 
-                <div class="grid md:grid-cols-3 gap-6 my-6">
-                    <!-- Task 1 -->
-                    <div onclick="openSubmissionModal('wifi-setup-task-1', '作業 1: 連線狀態與 UX 優化')"
-                        class="border border-gray-200 bg-white rounded-xl p-6 hover:shadow-lg transition cursor-pointer relative group flex flex-col justify-between">
-                        <div>
-                            <div class="bg-[#E76F51] text-white w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 1</div>
-                            <h3 class="text-lg font-bold mb-2">連線狀態與 UX 優化</h3>
-                            <p class="text-xs text-gray-600 mb-4">讓使用者能清楚知道藍牙是否連線、斷線或連線中。</p>
-                        </div>
-                        <div class="border-t border-gray-100 pt-3 flex items-center justify-between text-xs text-[#E76F51] font-bold">
-                            <span>⏱ 30 min</span>
-                        </div>
-                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-                            <span class="bg-[#E76F51] text-white text-xs px-4 py-2 rounded-full font-bold shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
-                                📤 點擊繳交作業
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- Task 2 -->
-                    <div onclick="openSubmissionModal('wifi-setup-task-2', '作業 2: 編碼與異常處理')"
-                        class="border border-gray-200 bg-white rounded-xl p-6 hover:shadow-lg transition cursor-pointer relative group flex flex-col justify-between">
-                        <div>
-                            <div class="bg-[#2A9D8F] text-white w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 2</div>
-                            <h3 class="text-lg font-bold mb-2">編碼與異常處理</h3>
-                            <p class="text-xs text-gray-600 mb-4">確保 SSID/密碼可正確編碼並能處理通訊失敗。</p>
-                        </div>
-                        <div class="border-t border-gray-100 pt-3 flex items-center justify-between text-xs text-[#2A9D8F] font-bold">
-                            <span>⏱ 40 min</span>
-                        </div>
-                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-                            <span class="bg-[#2A9D8F] text-white text-xs px-4 py-2 rounded-full font-bold shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
-                                📤 點擊繳交作業
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- Task 3 -->
-                    <div onclick="openSubmissionModal('wifi-setup-task-3', '作業 3: 硬體整合與 NVS 驗證')"
-                        class="border border-gray-200 bg-white rounded-xl p-6 hover:shadow-lg transition cursor-pointer relative group flex flex-col justify-between">
-                        <div>
-                            <div class="bg-[#457B9D] text-white w-max px-3 py-1 rounded-full text-xs font-bold mb-4">作業 3</div>
-                            <h3 class="text-lg font-bold mb-2">硬體整合與 NVS 驗證</h3>
-                            <p class="text-xs text-gray-600 mb-4">確認設備可重啟後自動連線，且持久化寫入成功。</p>
-                        </div>
-                        <div class="border-t border-gray-100 pt-3 flex items-center justify-between text-xs text-[#457B9D] font-bold">
-                            <span>⏱ 30 min</span>
-                        </div>
-                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-                            <span class="bg-[#457B9D] text-white text-xs px-4 py-2 rounded-full font-bold shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
-                                📤 點擊繳交作業
-                            </span>
-                        </div>
-                    </div>
+                <div class="ms-lab-card" onclick="openSubmissionModal('wifi-setup-task-1', '作業 1: 連線狀態與 UX 優化')">
+                    <div class="ms-lab-badge"><i class="fas fa-flask"></i> LAB</div>
+                    <span class="ms-lab-time">30 min</span>
+                    <h3>任務 1：連線狀態與 UX 優化</h3>
+                    <p style="font-size:14px; margin:0; color:#323130;">
+                        實作 <code>gattserverdisconnected</code> 事件監聽、連線中動畫反饋（<code>animate-pulse</code>），以及斷線自動重置 UI。讓使用者能清楚知道藍牙是否連線、斷線或連線中。
+                    </p>
                 </div>
+
+                <div class="ms-lab-card" onclick="openSubmissionModal('wifi-setup-task-2', '作業 2: 編碼與異常處理')">
+                    <div class="ms-lab-badge"><i class="fas fa-flask"></i> LAB</div>
+                    <span class="ms-lab-time">40 min</span>
+                    <h3>任務 2：編碼與異常處理</h3>
+                    <p style="font-size:14px; margin:0; color:#323130;">
+                        使用 <code>TextEncoder</code> 正確編碼 SSID/密碼，實作字元長度前端驗證，以及 <code>try...catch</code> 封裝 BLE 寫入異常。透過 <code>console.log</code> 觀察編碼結果。
+                    </p>
+                </div>
+
+                <div class="ms-lab-card" onclick="openSubmissionModal('wifi-setup-task-3', '作業 3: 硬體整合與 NVS 驗證')">
+                    <div class="ms-lab-badge"><i class="fas fa-flask"></i> LAB</div>
+                    <span class="ms-lab-time">30 min</span>
+                    <h3>任務 3：硬體整合與 NVS 驗證</h3>
+                    <p style="font-size:14px; margin:0; color:#323130;">
+                        將設定寫入 ESP32 後斷電再重啟，驗證 NVS 持久化與自動重連。將 Serial Monitor 日誌存入 <code>serial-output.log</code>，內含 <code>WiFi Connected!</code> 與 <code>NVS Commit Success</code>。
+                    </p>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>檢驗你對 BLE 配網相關概念的理解程度。選擇每題最正確的答案後點擊「提交答案」。</p>
+
+                <div id="quiz-form">
+
+                    <div class="quiz-question">
+                        <p>1. 使用 Web Bluetooth API 時，啟動 BLE 裝置搜尋的第一個呼叫是？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> <code>navigator.bluetooth.connect()</code></label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> <code>navigator.bluetooth.requestDevice()</code></label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> <code>navigator.bluetooth.getPrimaryService()</code></label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>2. ESP32 的 NVS（Non-Volatile Storage）在斷電後會發生什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 所有儲存的資料會遺失，需重新寫入</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 資料保留不變，裝置重啟後可直接讀取</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 資料會自動同步到雲端備份</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>3. 為什麼在寫入 BLE Characteristic 前需要使用 <code>TextEncoder</code>？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 為了加密密碼以保護安全性</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 為了將 JavaScript 字串轉換為 BLE 可接受的 UTF-8 位元組陣列</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 為了壓縮資料以減少傳輸時間</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>4. 在 BLE GATT 架構中，Service 與 Characteristic 的關係為何？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> Service 是 Characteristic 的子項目，一個 Characteristic 下有多個 Service</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> Service 是一組相關 Characteristic 的容器，一個 Service 下包含多個 Characteristic</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> Service 和 Characteristic 是同一層級的獨立物件，彼此沒有階層關係</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -845,23 +1238,23 @@
 
                 <p>
                     恭喜！你已經完成了「<strong>WiFi 組態設定</strong>」模組。
-                    透過本單元的學習與實作，你已經掌握了關鍵的核心技術，為後續的開發奠定了深厚的基石。
+                    從 BLE 基礎、GATT 架構、NVS 持久化到 TextEncoder 與 UUID，你已經建立了一套完整的配網知識體系。
                 </p>
 
                 <div class="ms-achievement">
                     <div class="achievement-icon">🚀</div>
                     <div class="achievement-text">
                         <h3>恭喜！你已完成本模組</h3>
-                        <p>你已具備開發與調校本單元核心功能的專業實力。持續累積，前進下一個挑戰！</p>
+                        <p>你已具備使用 Web Bluetooth 為 ESP32 進行 WiFi 配網的完整技術能力。</p>
                     </div>
                 </div>
 
                 <h2>完成本模組後，你已學會：</h2>
                 <ul>
-                    <li><strong>裝置連線與配網資訊</strong> 的基本架構與實作技能。</li>
-                    <li><strong>配網說明與提交規範</strong> 的調試方法與資料傳輸細節。</li>
-                    <li><strong>技術開發細節</strong> 的優化指標與生產環境安全機制。</li>
-                    <li>在實戰挑戰中，透過 Git 與 GitHub Classroom 提交完整的專案成果。</li>
+                    <li><strong>BLE 與 Web Bluetooth API</strong> — GATT 架構、Service/Characteristic 層級，以及瀏覽器端的完整連線流程。</li>
+                    <li><strong>NVS 持久化與資料流</strong> — WiFi 憑證如何從瀏覽器→BLE→ESP32→NVS→WiFi 連線的全鏈路旅程。</li>
+                    <li><strong>TextEncoder 與 UUID</strong> — 字串到位元組的轉換、Nordic UART Service 的 UUID 命名慣例與錯誤處理模式。</li>
+                    <li><strong>實戰技能</strong> — UX 狀態管理、異常捕捉，以及硬體斷電重連驗證。</li>
                 </ul>
 
                 <h2>延伸學習資源</h2>
@@ -894,9 +1287,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「WiFi 組態設定」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「WiFi 組態設定」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -906,14 +1299,23 @@
 <script>
     /* ─── DATA ─── */
     const UNITS = [
-        { id: 0, label: '課程總覽',       time: '',         type: 'index' },
-        { id: 1, label: '簡介',            time: '3 分鐘',  type: 'unit'  },
-        { id: 2, label: '裝置連線與配網資訊', time: '10 分鐘', type: 'unit' },
-        { id: 3, label: '配網說明與提交規範', time: '10 分鐘', type: 'unit' },
-        { id: 4, label: '技術開發細節', time: '10 分鐘', type: 'unit' },
-        { id: 5, label: '實戰挑戰',       time: '100 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 0, label: '課程總覽',             time: '',         type: 'index' },
+        { id: 1, label: '簡介',                 time: '5 分鐘',  type: 'unit'  },
+        { id: 2, label: 'BLE 與 Web Bluetooth', time: '15 分鐘', type: 'unit'  },
+        { id: 3, label: 'NVS 與資料流',         time: '12 分鐘', type: 'unit'  },
+        { id: 4, label: 'TextEncoder 與 UUID',  time: '12 分鐘', type: 'unit'  },
+        { id: 5, label: '實戰挑戰',             time: '100 分鐘', type: 'lab'  },
+        { id: 6, label: '知識測驗',             time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',           time: '3 分鐘',  type: 'unit'  },
     ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！requestDevice() 是 Web Bluetooth 的入口點，負責掃描並讓使用者選擇裝置。' },
+        q2: { b: '正確！NVS 是非揮發性儲存，斷電後資料仍然保留，這就是 WiFi 憑證能跨重啟存活的原因。' },
+        q3: { b: '正確！BLE Characteristic 只接受位元組陣列，TextEncoder 將 JS 字串轉為 UTF-8 的 Uint8Array。' },
+        q4: { b: '正確！GATT 是階層式架構：Profile → Service → Characteristic，Service 是 Characteristic 的容器。' },
+    };
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -923,7 +1325,6 @@
         buildSidebar();
         buildIndexUnitList();
         
-        // Hide empty resources
         if (!window.RESOURCES.video) {
             const videoSection = document.getElementById('video-section');
             if (videoSection) videoSection.style.display = 'none';
@@ -938,13 +1339,11 @@
         goToUnit(0);
     }
 
-    /**
-     * 動態建構側邊欄單元選單。
-     */
     function buildSidebar() {
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -957,9 +1356,6 @@
         }).join('');
     }
 
-    /**
-     * 動態建構首頁單元卡片列表。
-     */
     function buildIndexUnitList() {
         const el = document.getElementById('index-unit-list');
         el.innerHTML = UNITS.filter(u => u.id > 0).map(u => `
@@ -1030,7 +1426,58 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            document.querySelectorAll(`input[name="${qid}"]`).forEach(r => {
+                r.disabled = true;
+                const label = r.closest('.quiz-option');
+                if (r.value === answer) label.classList.add('correct');
+                else if (r.checked) label.classList.add('wrong');
+            });
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                feedbackEl.textContent = '✗ 不正確。' + QUIZ_EXPLANATIONS[qid][answer];
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const pct = Math.round(correct / total * 100);
+        const scoreEl = document.getElementById('quiz-score');
+        scoreEl.style.display = 'block';
+        scoreEl.innerHTML = `<div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:40px;height:40px;border-radius:50%;background:${pct >= 75 ? 'var(--ms-green)' : 'var(--ms-red)'};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;">${pct}%</div>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pct >= 75 ? '通過！繼續前往下一個單元。' : '建議回顧相關單元後再試一次。'}</div>`;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => el.classList.remove('correct','wrong'));
+        document.querySelectorAll('input[type=radio]').forEach(el => { el.checked = false; el.disabled = false; });
+        document.querySelectorAll('.quiz-feedback').forEach(el => { el.className = 'quiz-feedback'; el.textContent = ''; });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;
 </script>
 
 <!-- Define Resources -->
@@ -1052,8 +1499,6 @@
         const passwordInput = document.getElementById('passwordInput');
         const msgDetails = document.getElementById('msgDetails');
 
-        // 藍牙常數
-        // Nordic UART 服務
         const SERVICE_UUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
         const CHAR_SSID_UUID = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
         const CHAR_PWD_UUID = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
@@ -1064,8 +1509,6 @@
 
         connectBtn.addEventListener('click', async () => {
             try {
-                // 請求藍牙裝置
-                console.log('Requesting Bluetooth Device...');
                 bluetoothDevice = await navigator.bluetooth.requestDevice({
                     filters: [{ namePrefix: 'esp32' }],
                     optionalServices: [SERVICE_UUID]
@@ -1073,28 +1516,16 @@
 
                 updateStatus('connecting', '正在連線...');
 
-                // 連線至 GATT 伺服器
                 const server = await bluetoothDevice.gatt.connect();
-                console.log('Connected to GATT Server');
-
-                // 獲取服務
                 const service = await server.getPrimaryService(SERVICE_UUID);
-                console.log('Service found');
 
-                // 獲取特徵值
                 charSSID = await service.getCharacteristic(CHAR_SSID_UUID);
                 charPWD = await service.getCharacteristic(CHAR_PWD_UUID);
-                console.log('Characteristics found');
 
-                // 連線成功時更新 UI
                 onConnected();
-
-                // 處理斷線事件
                 bluetoothDevice.addEventListener('gattserverdisconnected', onDisconnected);
 
             } catch (error) {
-                console.error('Connection failed!', error);
-
                 let msg = '連線失敗';
                 if (error.name === 'NotFoundError') {
                     msg = '使用者取消選擇或找不到裝置';
@@ -1125,28 +1556,20 @@
                 updateStatus('sending', '傳送中...');
 
                 const encoder = new TextEncoder();
-
-                // 1. 寫入 SSID
-                console.log(`Writing SSID: ${ssid}`);
                 await charSSID.writeValue(encoder.encode(ssid));
-
-                // 2. 寫入密碼
-                console.log(`Writing Password...`);
                 await charPWD.writeValue(encoder.encode(password));
 
-                console.log('Write Complete');
-                msgDetails.textContent = '✅ 設定成功傳送! 裝置正在重啟...';
-                msgDetails.className = 'text-green-600 font-bold text-sm text-center mt-2';
+                msgDetails.textContent = '✅ 設定成功傳送！裝置正在重啟...';
+                msgDetails.style.color = '#107c10';
+                msgDetails.style.fontWeight = '600';
 
-                // 裝置通常在重啟後會自動斷線，我們可以在延遲後重置 UI
                 setTimeout(() => {
-                    if (bluetoothDevice.gatt.connected) {
+                    if (bluetoothDevice && bluetoothDevice.gatt.connected) {
                         bluetoothDevice.gatt.disconnect();
                     }
                 }, 3000);
 
             } catch (error) {
-                console.error('Write failed', error);
                 alert('傳送失敗: ' + error.message);
                 updateStatus('connected', '✅ 已連線: ' + bluetoothDevice.name);
             }
@@ -1155,47 +1578,27 @@
         function onConnected() {
             updateStatus('connected', '✅ 已連線: ' + bluetoothDevice.name);
             connectBtn.disabled = true;
-            connectBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
-            connectBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
-
-            // 啟用表單
-            configForm.classList.remove('opacity-50', 'pointer-events-none');
-
-            // 選擇性：改變背景顏色表示成功 (作業提示)
-            document.body.style.backgroundColor = '#f0f9ff'; // 淺藍色
+            connectBtn.style.opacity = '0.5';
+            connectBtn.style.cursor = 'not-allowed';
+            configForm.style.opacity = '1';
+            configForm.style.pointerEvents = 'auto';
         }
 
         function onDisconnected() {
-            console.log('Device Disconnected');
             updateStatus('disconnected', '❌ 已斷線');
             connectBtn.disabled = false;
-            connectBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
-            connectBtn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+            connectBtn.style.opacity = '1';
+            connectBtn.style.cursor = 'pointer';
+            connectBtn.textContent = '';
             connectBtn.innerHTML = '<i class="fa-solid fa-bolt"></i> 重新連線 BLE';
-
-            // 停用表單
-            configForm.classList.add('opacity-50', 'pointer-events-none');
-            document.body.style.backgroundColor = '#f8fafc'; // 重置背景顏色
+            configForm.style.opacity = '0.5';
+            configForm.style.pointerEvents = 'none';
         }
 
         function updateStatus(state, text) {
-            connectionStatus.innerHTML = '';
-
-            const dot = document.createElement('span');
-            dot.className = 'w-2 h-2 rounded-full mr-2';
-
-            if (state === 'connected') {
-                dot.classList.add('bg-green-500');
-            } else if (state === 'connecting') {
-                dot.classList.add('bg-amber-500', 'animate-pulse');
-            } else if (state === 'sending') {
-                dot.classList.add('bg-blue-500', 'animate-pulse');
-            } else {
-                dot.classList.add('bg-slate-400');
-            }
-
-            connectionStatus.appendChild(dot);
-            connectionStatus.appendChild(document.createTextNode(text));
+            const dotColors = { connected: '#107c10', connecting: '#ffaa44', sending: '#0078d4', disconnected: '#8a8886' };
+            const color = dotColors[state] || '#8a8886';
+            connectionStatus.innerHTML = `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${color}; margin-right:6px;"></span>${text}`;
         }
     </script>
 

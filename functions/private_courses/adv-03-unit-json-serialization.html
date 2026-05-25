@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON 序列化與反序列化 - Vibe Coding Learn</title>
+    <title>JSON 序列化與反序列化 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -471,9 +473,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">進階課程 3 - 單元 2</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +487,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">JSON 序列化與反序列化</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">進階課程 3</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,13 +509,13 @@
                 <h1>JSON 序列化與反序列化</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">進階課程 3</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
                 </div>
 
-                <p></p>
+                <p>架起記憶體物件與物理電波之間的橋樑，掌握跨平台數據交換的嚴謹規範，實作防禦性解析與極致精簡的封包優化術。</p>
 
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
@@ -553,15 +553,14 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>JSON 序列化與反序列化</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    網頁與 ESP32 之間的溝通，本質上就是在傳送一串位元組。<strong>JSON 序列化</strong>是將你的控制指令與感測器數據轉換為雙方都能理解的文字格式的橋樑。
+                    一個格式錯誤、一個多餘的逗號，都可能讓 <code>JSON.parse()</code> 直接拋出例外，導致整個通訊鏈路斷裂。
+                    本模組將教你精確掌握 JSON 的格式規範、在 MCU 端高效序列化，以及在前端安全地反序列化與容錯處理。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你讓 ESP32 透過 BLE 回傳感測器數據，格式是 <code>{speed:50, angle:30}</code>。網頁端呼叫 <code>JSON.parse()</code> 卻直接報錯：<code>Unexpected token s in JSON</code>。明明看起來很像 JSON 啊？原來問題出在 Key 沒有加雙引號——這在 JavaScript 物件語法中合法，但在 JSON 規範中是非法的。這類「差一點就對了」的陷阱，正是本模組要幫你系統性排除的。
                 </div>
 
                 <h2>教學影片</h2>
@@ -575,7 +574,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -589,44 +588,99 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>📦 1. 為什麼要序列化？ (20 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg leading-relaxed">
-<p>
-<strong>物理限制：</strong>理解通訊媒介（藍牙、Wi-Fi）只能傳送一連串的「位元組（Bytes）」，無法直接傳送一個「JavaScript 物件」。
-                                </p>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
-<div class="bg-purple-50 p-6 rounded-xl border border-purple-100">
-<h4 class="font-bold text-purple-800 mb-2 flex items-center gap-2">
-<span>📤</span> 序列化 (Serialization)
-                                        </h4>
-<p class="text-sm text-purple-700">
-                                            將記憶體中的物件狀態「壓平」成文字格式（如 JSON 字串）的過程。
-                                        </p>
-</div>
-<div class="bg-indigo-50 p-6 rounded-xl border border-indigo-100">
-<h4 class="font-bold text-indigo-800 mb-2 flex items-center gap-2">
-<span>📥</span> 反序列化 (Deserialization)
-                                        </h4>
-<p class="text-sm text-indigo-700">
-                                            將接收到的文字格式「重新組裝」成可操作物件的過程。
-                                        </p>
-</div>
-</div>
-<div class="bg-amber-50 p-6 rounded-xl border border-amber-100">
-<h4 class="font-bold text-amber-800 mb-3 flex items-center gap-2">
-<span>🪑</span> 學習任務：家具郵寄比喻
-                                    </h4>
-<p class="text-amber-700 text-sm">
-                                        想像你要郵寄一張椅子給朋友。你必須先拆解它並裝箱（<strong>序列化</strong>），朋友收到後再按照說明書組裝（<strong>反序列化</strong>）。
-                                    </p>
-</div>
-</div>
+                <h1>為什麼要序列化？</h1>
+
+                <p>
+                    通訊媒介（無論是藍牙、Wi-Fi 還是序列埠）只能傳送一連串的<strong>位元組（Bytes）</strong>——它們無法直接理解什麼是「JavaScript 物件」或「C++ struct」。序列化（Serialization）就是將記憶體中的結構化數據「壓平」成一段文字字串，使其能夠在物理通道上安全傳輸的過程。
+                </p>
+
+                <h2>序列化與反序列化的定義</h2>
+
+                <p>
+                    <strong>序列化（Serialization）</strong>：將程式語言中的物件、陣列、結構等複雜數據型態，轉換為一段有規範的純文字字串（例如 JSON 格式）。這個過程就像把一張立體的椅子拆解、壓平後裝進紙箱——讓它能通過狹窄的郵遞通道。
+                </p>
+                <p>
+                    <strong>反序列化（Deserialization）</strong>：在接收端將收到的文字字串還原回原始的數據結構，使程式能直接存取其中的欄位。就像朋友收到紙箱後，按照說明書把椅子重新組裝起來。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 序列化：物件 → JSON 字串 → BLE 位元組</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">sensorData</span> <span class="c-white">= { speed: 80, angle: 45 };</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">jsonStr</span> <span class="c-white">= JSON.</span><span class="c-tag">stringify</span><span class="c-white">(sensorData);</span><br>
+                    <span class="c-comment">// → '{"speed":80,"angle":45}'</span><br><br>
+                    <span class="c-comment">// 反序列化：BLE 位元組 → JSON 字串 → 物件</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">received</span> <span class="c-white">= JSON.</span><span class="c-tag">parse</span><span class="c-white">(</span><span class="c-str">'{"speed":80,"angle":45}'</span><span class="c-white">);</span><br>
+                    <span class="c-white">console.</span><span class="c-tag">log</span><span class="c-white">(received.speed);</span> <span class="c-comment">// → 80</span>
+                </div>
+
+                <h2>為什麼 BLE 通訊需要 JSON？</h2>
+
+                <p>
+                    在 ESP32 與網頁之間的 BLE 通訊中，雙方使用的程式語言完全不同（C++ vs JavaScript）。JSON 作為一種<strong>跨語言、跨平台</strong>的文字格式，恰好扮演了「通用翻譯官」的角色。以下表格比較了常見的序列化格式：
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>格式</th>
+                            <th>可讀性</th>
+                            <th>體積</th>
+                            <th>跨語言支援</th>
+                            <th>BLE 適用性</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>JSON</strong></td>
+                            <td>高（純文字）</td>
+                            <td>中等</td>
+                            <td>極廣泛</td>
+                            <td>最佳選擇</td>
+                        </tr>
+                        <tr>
+                            <td>Protocol Buffers</td>
+                            <td>低（二進位）</td>
+                            <td>極小</td>
+                            <td>廣泛</td>
+                            <td>需要額外函式庫</td>
+                        </tr>
+                        <tr>
+                            <td>MessagePack</td>
+                            <td>低（二進位）</td>
+                            <td>小</td>
+                            <td>中等</td>
+                            <td>MCU 端支援有限</td>
+                        </tr>
+                        <tr>
+                            <td>CSV / 自訂分隔符</td>
+                            <td>中等</td>
+                            <td>小</td>
+                            <td>手動解析</td>
+                            <td>不適合巢狀結構</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        JSON 雖然不是體積最小的格式，但它是唯一在 JavaScript（<code>JSON.stringify</code> / <code>JSON.parse</code>）和 C++（ArduinoJson 函式庫）兩端都具備<strong>原生級支援</strong>的文字格式。在 BLE 頻寬受限的場景下，我們可以透過「縮短 Key 名稱」等技巧來進一步壓縮體積。
+                    </div>
+                </div>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        一個常見的初學者錯誤是直接透過 BLE 發送 JavaScript 物件的 <code>toString()</code> 結果（例如 <code>[object Object]</code>），而非正確呼叫 <code>JSON.stringify()</code>。這會導致接收端拿到完全無法解析的亂碼。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -640,33 +694,115 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>📜 2. JSON 格式規範與類型 (25 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg leading-relaxed">
-<p>
-<strong>合法格式：</strong>理解 JSON 支援的數據類型（字串、數字、布林值、陣列、物件）。
-                        </p>
-<div class="bg-slate-800 text-purple-400 p-6 rounded-xl font-mono mb-6">
-<h4 class="text-white font-bold mb-4 flex items-center gap-2"><span>⚠️</span> 常見錯誤：雙引號</h4>
-<div class="space-y-2 text-sm">
-<p class="text-green-400">✔ {"speed": 50} <span class="text-slate-500">// 正確</span></p>
-<p class="text-red-400">✘ {speed: 50} <span class="text-slate-500">// 錯誤：Key
-                                        必須用雙引號</span></p>
-</div>
-</div>
-<div class="bg-blue-50 p-6 rounded-xl border border-blue-100">
-<h4 class="font-bold text-blue-800 mb-2 flex items-center gap-2"><span>🔍</span> 預習任務
-                            </h4>
-<p class="text-blue-700 text-sm">
-                                觀察一段複雜的無人車配置 JSON，嘗試識別出哪些是「數值（Number）」，哪些是「嵌套物件（Nested Object）」。
-                            </p>
-</div>
-</div>
+                <h1>JSON 格式規範與類型</h1>
+
+                <p>
+                    JSON（JavaScript Object Notation）雖然源自 JavaScript，但它是一個<strong>獨立的數據交換標準</strong>（RFC 8259）。許多在 JavaScript 中合法的語法，在 JSON 規範中是非法的。精確掌握 JSON 的格式規則，是避免 <code>JSON.parse()</code> 拋出 <code>SyntaxError</code> 的關鍵。
+                </p>
+
+                <h2>JSON 支援的六種數據類型</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>類型</th>
+                            <th>JSON 範例</th>
+                            <th>說明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>字串 (String)</strong></td>
+                            <td><code>"hello"</code></td>
+                            <td>必須使用<strong>雙引號</strong>包裹</td>
+                        </tr>
+                        <tr>
+                            <td><strong>數字 (Number)</strong></td>
+                            <td><code>42</code>, <code>3.14</code>, <code>-7</code></td>
+                            <td>整數或浮點數，不支援 <code>NaN</code> / <code>Infinity</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>布林 (Boolean)</strong></td>
+                            <td><code>true</code>, <code>false</code></td>
+                            <td>全小寫，不可使用大寫或數字代替</td>
+                        </tr>
+                        <tr>
+                            <td><strong>空值 (Null)</strong></td>
+                            <td><code>null</code></td>
+                            <td>全小寫，代表「無值」</td>
+                        </tr>
+                        <tr>
+                            <td><strong>物件 (Object)</strong></td>
+                            <td><code>{"key": "value"}</code></td>
+                            <td>Key 必須是雙引號字串，支援巢狀</td>
+                        </tr>
+                        <tr>
+                            <td><strong>陣列 (Array)</strong></td>
+                            <td><code>[1, 2, 3]</code></td>
+                            <td>有序值列表，元素可混合類型</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-important">
+                    <i class="fas fa-exclamation-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        JSON <strong>不支援</strong>以下 JavaScript 中常見的值：<code>undefined</code>、<code>NaN</code>、<code>Infinity</code>、<code>-Infinity</code>、函式（Function）、日期物件（Date）。如果嘗試對包含這些值的物件執行 <code>JSON.stringify()</code>，它們會被自動省略或轉換為 <code>null</code>。
+                    </div>
+                </div>
+
+                <h2>常見格式錯誤</h2>
+
+                <p>以下是初學者最容易犯的 JSON 格式錯誤，每一個都會導致 <code>JSON.parse()</code> 失敗：</p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// ✅ 正確的 JSON</span><br>
+                    <span class="c-str">{"speed": 50, "active": true, "mode": "auto"}</span><br><br>
+                    <span class="c-comment">// ❌ Key 沒有雙引號（JavaScript 物件合法，JSON 非法）</span><br>
+                    <span class="c-str">{speed: 50}</span><br><br>
+                    <span class="c-comment">// ❌ 使用單引號（JSON 只接受雙引號）</span><br>
+                    <span class="c-str">{'speed': 50}</span><br><br>
+                    <span class="c-comment">// ❌ 結尾多了逗號（Trailing Comma）</span><br>
+                    <span class="c-str">{"speed": 50, "angle": 30,}</span><br><br>
+                    <span class="c-comment">// ❌ 使用註解（JSON 不支援任何形式的註解）</span><br>
+                    <span class="c-str">{"speed": 50 /* 單位: cm/s */}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        在 ESP32 的 C++ 韌體中手動拼接 JSON 字串時（例如 <code>String json = "{speed:" + String(val) + "}"</code>），極容易遺漏 Key 的雙引號。強烈建議使用 <strong>ArduinoJson</strong> 函式庫，而非手動拼接，以確保產出的字串符合嚴格的 JSON 規範。
+                    </div>
+                </div>
+
+                <h2>巢狀結構：無人車配置範例</h2>
+
+                <p>JSON 支援物件與陣列的任意巢狀，讓你能以結構化方式描述複雜的設備狀態：</p>
+
+                <div class="ms-code">
+                    <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">"id"</span><span class="c-white">:</span> <span class="c-str">"car-01"</span><span class="c-white">,</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">"pos"</span><span class="c-white">: {</span> <span class="c-attr">"x"</span><span class="c-white">:</span> <span class="c-val">102</span><span class="c-white">,</span> <span class="c-attr">"y"</span><span class="c-white">:</span> <span class="c-val">-45</span> <span class="c-white">},</span> <span class="c-comment">&nbsp;&nbsp;← 巢狀物件</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">"sensors"</span><span class="c-white">: [30, 45, 60, 90],</span> <span class="c-comment">← 陣列</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">"active"</span><span class="c-white">:</span> <span class="c-kw">true</span><span class="c-white">,</span> <span class="c-comment">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← 布林值</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">"error"</span><span class="c-white">:</span> <span class="c-kw">null</span> <span class="c-comment">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← 空值</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        開發過程中可使用線上 JSON 驗證工具（如 <strong>jsonlint.com</strong>）即時檢查你手動拼接的 JSON 是否合法。許多難以發現的解析錯誤，都能透過驗證工具在幾秒內定位。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -680,47 +816,128 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🛠️ 3. 語法工具箱 (15 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-<div class="space-y-4">
-<h4 class="font-bold text-slate-800 flex items-center gap-2">
-<span class="bg-slate-100 p-2 rounded-lg text-xl">🌐</span> JavaScript 端
-                            </h4>
-<ul class="space-y-2 font-mono text-sm text-slate-600">
-<li class="bg-white p-3 rounded-lg border border-slate-100">JSON.stringify(obj)</li>
-<li class="bg-white p-3 rounded-lg border border-slate-100">JSON.parse(string)</li>
-</ul>
-</div>
-<div class="space-y-4">
-<h4 class="font-bold text-slate-800 flex items-center gap-2">
-<span class="bg-slate-100 p-2 rounded-lg text-xl">🦾</span> C++ (ESP32) 端
-                            </h4>
-<ul class="space-y-2 font-mono text-sm text-slate-600">
-<li class="bg-white p-3 rounded-lg border border-slate-100">serializeJson(doc, output)
-                                </li>
-<li class="bg-white p-3 rounded-lg border border-slate-100">deserializeJson(doc, input)
-                                </li>
-</ul>
-</div>
-</div><div class="bg-amber-100 p-8 rounded-2xl border border-amber-200 mt-12">
-<h4 class="text-amber-900 font-bold text-xl mb-4 flex items-center gap-2">
-<span>💡</span> 節省頻寬的技巧
-                        </h4>
-<p class="text-amber-800">
-                            如何設計精簡的 Key 值？<br/>
-                            例如使用 <code class="bg-amber-200 px-2 py-1 rounded">{"d": 10}</code> 代替 <code class="bg-amber-200 px-2 py-1 rounded">{"distance": 10}</code>。
-                        </p>
-<hr class="border-amber-200 my-4"/>
-<p class="text-amber-800 font-medium">
-                            學習目標：在線上編譯器中寫出一個能產生目標 JSON 格式的代碼片段。
-                        </p>
-</div>
+                <h1>語法工具箱</h1>
+
+                <p>
+                    在 BLE 通訊的兩端——網頁（JavaScript）與 ESP32（C++）——各有一套 JSON 處理工具。掌握這些 API 的正確用法與常見陷阱，是實現穩定跨平台數據交換的基礎。
+                </p>
+
+                <h2>JavaScript 端：原生 JSON API</h2>
+
+                <p>JavaScript 內建了兩個核心函式，無需安裝任何套件即可使用：</p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 序列化：物件 → JSON 字串</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">sensor</span> <span class="c-white">= { speed: 80, angle: 45, active: </span><span class="c-kw">true</span> <span class="c-white">};</span><br>
+                    <span class="c-kw">const</span> <span class="c-attr">json</span> <span class="c-white">= JSON.</span><span class="c-tag">stringify</span><span class="c-white">(sensor);</span><br>
+                    <span class="c-comment">// → '{"speed":80,"angle":45,"active":true}'</span><br><br>
+                    <span class="c-comment">// 反序列化：JSON 字串 → 物件（必須 try-catch 防護）</span><br>
+                    <span class="c-kw">try</span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">data</span> <span class="c-white">= JSON.</span><span class="c-tag">parse</span><span class="c-white">(receivedString);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;console.</span><span class="c-tag">log</span><span class="c-white">(data.speed);</span> <span class="c-comment">// → 80</span><br>
+                    <span class="c-white">} </span><span class="c-kw">catch</span> <span class="c-white">(e) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;console.</span><span class="c-tag">warn</span><span class="c-white">(</span><span class="c-str">'JSON 解析失敗，使用安全預設值'</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">data</span> <span class="c-white">= { speed: 0, angle: 0, active: </span><span class="c-kw">false</span> <span class="c-white">};</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-important">
+                    <i class="fas fa-exclamation-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        <code>JSON.parse()</code> 在接收到殘缺或格式錯誤的字串時會直接拋出 <code>SyntaxError</code>。在 BLE 通訊中，封包遺失與截斷是常態，因此<strong>任何</strong>呼叫 <code>JSON.parse()</code> 的地方都必須包裹在 <code>try-catch</code> 中。
+                    </div>
+                </div>
+
+                <h2>C++ (ESP32) 端：ArduinoJson 函式庫</h2>
+
+                <p>ESP32 端推薦使用 <strong>ArduinoJson</strong> 函式庫來處理 JSON，它提供了安全且高效的序列化 / 反序列化 API：</p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// ESP32 C++：序列化</span><br>
+                    <span class="c-kw">#include</span> <span class="c-str">&lt;ArduinoJson.h&gt;</span><br><br>
+                    <span class="c-tag">StaticJsonDocument</span><span class="c-white">&lt;128&gt; doc;</span><br>
+                    <span class="c-white">doc[</span><span class="c-str">"speed"</span><span class="c-white">] = 80;</span><br>
+                    <span class="c-white">doc[</span><span class="c-str">"angle"</span><span class="c-white">] = 45;</span><br>
+                    <span class="c-white">doc[</span><span class="c-str">"active"</span><span class="c-white">] = </span><span class="c-kw">true</span><span class="c-white">;</span><br><br>
+                    <span class="c-tag">String</span> <span class="c-attr">output</span><span class="c-white">;</span><br>
+                    <span class="c-tag">serializeJson</span><span class="c-white">(doc, output);</span><br>
+                    <span class="c-comment">// output → '{"speed":80,"angle":45,"active":true}'</span><br><br>
+                    <span class="c-comment">// ESP32 C++：反序列化</span><br>
+                    <span class="c-tag">StaticJsonDocument</span><span class="c-white">&lt;128&gt; incoming;</span><br>
+                    <span class="c-tag">DeserializationError</span> <span class="c-attr">err</span> <span class="c-white">= </span><span class="c-tag">deserializeJson</span><span class="c-white">(incoming, bleData);</span><br>
+                    <span class="c-kw">if</span> <span class="c-white">(err) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;Serial.</span><span class="c-tag">println</span><span class="c-white">(</span><span class="c-str">"JSON 解析錯誤"</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">return</span><span class="c-white">;</span><br>
+                    <span class="c-white">}</span><br>
+                    <span class="c-kw">int</span> <span class="c-attr">spd</span> <span class="c-white">= incoming[</span><span class="c-str">"speed"</span><span class="c-white">];</span> <span class="c-comment">// → 80</span>
+                </div>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        <code>StaticJsonDocument&lt;N&gt;</code> 中的 <code>N</code> 是分配給 JSON 文件的記憶體大小（Bytes）。可使用 ArduinoJson 官方提供的 <strong>Assistant</strong> 工具（<code>arduinojson.org/v6/assistant/</code>）計算精確的所需容量。分配過小會導致數據截斷，過大則浪費 ESP32 寶貴的 RAM。
+                    </div>
+                </div>
+
+                <h2>頻寬優化：精簡 Key 名稱</h2>
+
+                <p>
+                    在 BLE 20 Bytes 的嚴格限制下，每一個字元都很珍貴。透過縮短 JSON 的 Key 名稱，可以顯著減少封包體積，甚至讓原本需要分段傳輸的數據縮減到單一封包內：
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>語義化 Key</th>
+                            <th>精簡 Key</th>
+                            <th>節省空間</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>"speed"</code> (7 Bytes)</td>
+                            <td><code>"s"</code> (3 Bytes)</td>
+                            <td>4 Bytes</td>
+                        </tr>
+                        <tr>
+                            <td><code>"angle"</code> (7 Bytes)</td>
+                            <td><code>"a"</code> (3 Bytes)</td>
+                            <td>4 Bytes</td>
+                        </tr>
+                        <tr>
+                            <td><code>"distance"</code> (10 Bytes)</td>
+                            <td><code>"d"</code> (3 Bytes)</td>
+                            <td>7 Bytes</td>
+                        </tr>
+                        <tr>
+                            <td><code>"battery"</code> (9 Bytes)</td>
+                            <td><code>"b"</code> (3 Bytes)</td>
+                            <td>6 Bytes</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 優化前：47 Bytes（需要分 3 片）</span><br>
+                    <span class="c-str">{"speed":80,"angle":45,"distance":120,"battery":85}</span><br><br>
+                    <span class="c-comment">// 優化後：25 Bytes（只需 2 片，減少 47%）</span><br>
+                    <span class="c-str">{"s":80,"a":45,"d":120,"b":85}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        精簡 Key 名稱時，務必在專案中維護一份<strong>對照表文件</strong>（例如 <code>docs/key_mapping.md</code>），記錄每個縮寫對應的完整語義。這樣在除錯時不會因為看到 <code>"b":85</code> 而搞不清楚它代表 battery 還是 bearing。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -799,16 +1016,113 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>請回答以下問題，測試你對本模組內容的理解程度。每題僅有一個正確答案。</p>
+
+                <form id="quiz-form" onsubmit="return false;" style="margin-top:24px;">
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">1. JSON 格式中，物件的 Key (鍵) 必須用什麼符號包裹？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 單引號
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 雙引號
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 反引號
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 不需要引號
+                        </label>
+                        <div id="fb-q1" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">2. 序列化 (Serialization) 指的是什麼過程？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 將文字字串轉換為程式物件
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 將程式物件轉換為可傳輸的文字字串
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 將數據加密以保護安全
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 將二進位數據壓縮
+                        </label>
+                        <div id="fb-q2" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">3. 在 JavaScript 中，<code>JSON.parse()</code> 遇到格式錯誤的字串時會發生什麼？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 返回 null
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 返回 undefined
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 拋出 SyntaxError 例外
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 自動修正格式錯誤
+                        </label>
+                        <div id="fb-q3" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">4. 下列哪一個不是 JSON 規範支援的資料型態？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 字串 (String)
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 函數 (Function)
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 布林 (Boolean)
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="D" style="margin-right:8px;"> D. null
+                        </label>
+                        <div id="fb-q4" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="display:flex;gap:12px;margin-top:20px;">
+                        <button type="button" class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button type="button" class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                    </div>
+                    <div id="quiz-result" style="margin-top:16px;font-size:15px;font-weight:600;display:none;"></div>
+                </form>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -866,9 +1180,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「JSON 序列化與反序列化」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「JSON 序列化與反序列化」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -884,7 +1198,8 @@
         { id: 3, label: '📜 2. JSON 格式規範與類型 (25 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🛠️ 3. 語法工具箱 (15 min)', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',     time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -904,6 +1219,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1005,8 +1321,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'B', q3: 'C', q4: 'B' };
+    const QUIZ_EXPLANATIONS = {
+        q1: 'JSON 規範嚴格要求所有 Key 必須用雙引號包裹。{speed:50} 在 JS 中合法，但不是合法的 JSON。',
+        q2: '序列化是將記憶體中的結構化數據「壓平」成文字字串（如 JSON），使其能在通訊通道上傳輸。反向過程稱為反序列化。',
+        q3: 'JSON.parse() 遇到非法格式會拋出 SyntaxError。建議使用 try...catch 包裹，實作防禦性解析。',
+        q4: 'JSON 支援字串、數字、布林、物件、陣列與 null 六種型態。函數 (Function) 和 undefined 不是合法的 JSON 值。'
+    };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const fb = document.getElementById(`fb-${q}`);
+            if (!selected) {
+                fb.style.display = 'block';
+                fb.innerHTML = '<span style="color:#d13438;">⚠ 請選擇一個答案</span>';
+                continue;
+            }
+            fb.style.display = 'block';
+            if (selected.value === correct) {
+                score++;
+                fb.innerHTML = `<span style="color:#107c10;">✔ 正確！</span> ${QUIZ_EXPLANATIONS[q]}`;
+            } else {
+                fb.innerHTML = `<span style="color:#d13438;">✘ 不正確。正確答案是 ${correct}。</span> ${QUIZ_EXPLANATIONS[q]}`;
+            }
+        }
+        const result = document.getElementById('quiz-result');
+        result.style.display = 'block';
+        if (score === total) {
+            result.innerHTML = `<span style="color:#107c10;">🎉 滿分！你答對了全部 ${total} 題！</span>`;
+            markDone(6);
+        } else {
+            result.innerHTML = `<span style="color:#d13438;">你答對了 ${score} / ${total} 題。再試一次吧！</span>`;
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= Object.keys(QUIZ_ANSWERS).length; i++) {
+            const fb = document.getElementById(`fb-q${i}`);
+            if (fb) { fb.style.display = 'none'; fb.innerHTML = ''; }
+        }
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 03：BLE 進階通訊';
 </script>
 
 <!-- Define Resources -->

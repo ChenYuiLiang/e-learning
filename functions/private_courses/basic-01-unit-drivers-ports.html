@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>驅動程式與通訊埠原理 - Vibe Coding Learn</title>
+    <title>驅動程式與通訊埠原理 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -79,6 +79,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -468,9 +469,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 1 - 硬體連線</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -480,25 +483,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">驅動程式與通訊埠原理</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 1 - 硬體連線</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -506,7 +505,7 @@
                 <h1>驅動程式與通訊埠原理</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 1</span>
                     <span class="ms-tag blue">硬體連線</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -517,10 +516,10 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>USB-to-UART 橋接晶片</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>通訊埠 (COM Port)</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>波特率 (Baud Rate)</strong> 的調校技巧與穩定性測試。</li>
-                    <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
+                    <li>能夠解釋 USB-to-UART 橋接晶片（CP2102/CH340）的角色，並安裝正確的驅動程式讓系統識別開發板。</li>
+                    <li>能夠在作業系統中定位通訊埠（COM Port），並診斷「裝置不可見」的常見連線問題。</li>
+                    <li>能夠判斷波特率不匹配導致的亂碼現象，並正確設定 <code>monitor_speed = 115200</code> 使序列通訊正常運作。</li>
+                    <li>能夠使用 Loopback 硬體環回測試驗證 TX/RX 收發功能，並以 Git 提交診斷報告到 GitHub Classroom。</li>
                 </ul>
 
                 <h2>必要條件</h2>
@@ -550,15 +549,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>驅動程式與通訊埠原理</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    當你把 USB 線插進電腦，作業系統需要透過「驅動程式」才能與開發板上的橋接晶片建立對話通道。
+                    這條看不見的通訊鏈路——從 USB 協定轉換到 UART 序列信號——是所有燒錄、除錯與即時監控的基礎。
+                    搞不懂這層，你連最簡單的 Hello World 都無法從晶片傳回螢幕。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    阿凱第一次把 ESP32 插上 MacBook，打開 PlatformIO 準備燒錄，卻發現「Upload Port」欄位是空的——系統根本看不到裝置。
+                    他換了三條線、重開機兩次，依然毫無反應。最後才發現是因為開發板使用 CH340 晶片，而他從未安裝對應的驅動程式。
+                    這種「硬體在手上，軟體看不見」的窘境，正是本單元要幫你徹底解決的問題。
                 </div>
 
                 <h2>教學影片</h2>
@@ -572,7 +572,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -586,42 +586,95 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔌 1. 數位翻譯官：USB-to-UART 橋接晶片</h1>
+                <h1>數位翻譯官：USB-to-UART 橋接晶片</h1>
                 
-                <div class="space-y-8 text-gray-600 text-lg">
-                    <div class="bg-blue-50 rounded-xl p-6 border border-blue-100 shadow-sm">
-                        <h3 class="text-xl font-bold text-blue-800 mb-3 underline decoration-blue-200" style="border-bottom:none; margin:0 0 12px; padding:0;">通訊協定的衝突</h3>
-                        <p class="leading-relaxed text-justify">
-                            電腦說的是 <strong>USB 語言</strong>（高速）；而 ESP32 說的是 <strong>UART 語言</strong>（序列）。兩者直接對話是無法溝通的。
-                        </p>
-                        <div
-                            class="mt-6 flex items-center justify-center gap-4 text-sm font-mono text-blue-900 bg-white/50 p-4 rounded-lg border border-blue-100 italic">
-                            💻 USB <span class="text-blue-300">↔️</span> <span
-                                class="bg-white px-3 py-1 rounded shadow-sm border border-blue-200 font-bold text-justify">橋接晶片</span>
-                            <span class="text-blue-300">↔️</span> 🤖 UART
+                <p>要理解橋接晶片為什麼重要，首先要認識兩種截然不同的通訊協定。你的電腦使用 <strong>USB（Universal Serial Bus）</strong> 協定——一種高速、複雜的封包式通訊標準，支援熱插拔與設備列舉。而 ESP32 內部使用的是 <strong>UART（Universal Asynchronous Receiver/Transmitter）</strong>——一種古老但可靠的序列通訊協定，僅需兩條訊號線（TX 發送、RX 接收）即可傳輸資料。</p>
+
+                <p>問題在於：USB 與 UART 是完全不同的「語言」。電腦無法直接透過 USB 介面發送 UART 格式的資料給 ESP32，就像一個人說中文、另一個人說法文，彼此根本無法理解對方。因此，開發板上需要一顆「翻譯官」晶片——<strong>USB-to-UART 橋接晶片</strong>——來即時轉換這兩種協定。</p>
+
+                <p>當你把 USB 線接上電腦時，資料流經的路徑是：<strong>電腦 USB 控制器 → USB 線纜 → 橋接晶片（USB 轉 UART） → ESP32 UART 接收腳（RX）</strong>。反方向的資料傳回也是走同一條路，只是方向相反。橋接晶片就是這條通訊鏈路上不可或缺的中繼站。</p>
+
+                <h2>常見橋接晶片比較</h2>
+
+                <p>市面上的 ESP32 開發板主要使用兩種橋接晶片，各有優缺點：</p>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>特性</th>
+                        <th>CP2102 (Silicon Labs)</th>
+                        <th>CH340 (南京沁恒)</th>
+                    </tr>
+                    <tr>
+                        <td>驅動程式</td>
+                        <td>Windows / macOS 多數自動識別</td>
+                        <td>通常需要手動安裝驅動</td>
+                    </tr>
+                    <tr>
+                        <td>最高波特率</td>
+                        <td>最高 921,600 bps</td>
+                        <td>最高 2,000,000 bps</td>
+                    </tr>
+                    <tr>
+                        <td>穩定性</td>
+                        <td>非常穩定，工業級品質</td>
+                        <td>偶有相容性問題</td>
+                    </tr>
+                    <tr>
+                        <td>價格</td>
+                        <td>較高（正版晶片）</td>
+                        <td>較低，廣泛用於平價開發板</td>
+                    </tr>
+                    <tr>
+                        <td>常見開發板</td>
+                        <td>NodeMCU-32S、官方 DevKit</td>
+                        <td>廉價通用 ESP32 開發板</td>
+                    </tr>
+                </table>
+
+                <h2>驅動程式的角色</h2>
+
+                <p>驅動程式（Driver）是安裝在電腦端的一段軟體，它告訴作業系統如何與特定的硬體設備溝通。當你插入 ESP32 開發板時，作業系統會偵測到 USB 設備，但如果沒有對應的驅動程式，系統就不知道這顆橋接晶片是什麼、該如何操作它。</p>
+
+                <p>簡單來說：<strong>沒有驅動 = 電腦看不見開發板</strong>。這也是許多初學者遇到的第一個坑——開發板明明接上了，PlatformIO 卻完全找不到任何上傳埠。</p>
+
+                <h2>安裝驅動的步驟</h2>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>確認橋接晶片型號</h4>
+                            <p>翻到開發板背面，找到 USB 連接埠旁邊的小型 IC。上面的刻字會標示型號，例如 <code>CP2102</code> 或 <code>CH340G</code>。</p>
                         </div>
                     </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>下載對應驅動</h4>
+                            <p>CP2102：前往 Silicon Labs 官網下載。CH340：前往南京沁恒官網或搜尋 <code>CH340 driver</code> 下載。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>安裝並重新連接</h4>
+                            <p>安裝驅動後，拔掉 USB 線再重新插入。系統應該能自動識別設備並分配通訊埠。</p>
+                        </div>
+                    </div>
+                </div>
 
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <div class="p-6 bg-slate-50 rounded-xl border border-slate-200 transition hover:shadow-md">
-                            <h3 class="text-lg font-bold text-slate-800 mb-3 text-justify" style="border-bottom:none; margin:0 0 12px; padding:0;">橋接晶片的角色</h3>
-                            <p class="text-gray-600 text-sm leading-relaxed text-justify">
-                                常見型號如 CP2102, CH340。負責將 USB 包還原為序列信號。
-                            </p>
-                        </div>
-                        <div class="p-6 bg-slate-50 rounded-xl border border-slate-200 transition hover:shadow-md">
-                            <h3 class="text-lg font-bold text-slate-800 mb-3 text-justify" style="border-bottom:none; margin:0 0 12px; padding:0;">驅動程式的本質</h3>
-                            <p class="text-gray-600 text-sm leading-relaxed text-justify">
-                                給作業系統看的「說明書」。不安裝，系統就不知道如何操作橋接晶片。
-                            </p>
-                        </div>
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>快速驗證</strong>
+                        安裝驅動後，在 macOS 終端機輸入 <code>ls /dev/tty.*</code>，如果看到類似 <code>/dev/tty.usbserial-0001</code> 或 <code>/dev/tty.SLAB_USBtoUART</code> 的裝置名稱，就代表驅動安裝成功。Windows 用戶請開啟「裝置管理員」，在「連接埠 (COM 和 LPT)」下尋找新出現的 COM 埠。
                     </div>
                 </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -635,38 +688,94 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🚪 2. 什麼是通訊埠 (COM Port)？</h1>
+                <h1>什麼是通訊埠 (COM Port)？</h1>
                 
-                <div class="flex flex-col md:flex-row gap-8 items-center">
-                    <div class="flex-1 space-y-6">
-                        <div class="bg-purple-50 p-6 rounded-xl border border-purple-100 shadow-sm">
-                            <h4 class="font-bold text-purple-800 mb-2">邏輯抽象化</h4>
-                            <p class="text-gray-600 leading-relaxed text-base text-justify">
-                                安裝後，系統會將晶片「虛擬化」為一個 COM 埠。這終端就像為裝置開了一個專屬的「門牌號碼」。
-                            </p>
-                        </div>
-                        <div class="bg-amber-50 border-l-4 border-amber-400 p-6 rounded-r-xl">
-                            <h4 class="font-bold text-amber-800 mb-1 flex items-center gap-2"><span>⚠️</span> 唯一性與衝突</h4>
-                            <p class="text-amber-700 text-sm leading-relaxed text-left text-justify">
-                                編號衝突或找不到門牌是失敗最常見原因。
-                            </p>
+                <p>當橋接晶片的驅動程式安裝成功後，作業系統會為這個 USB-to-UART 設備分配一個<strong>通訊埠（Communication Port）</strong>。你可以把通訊埠想像成一個「門牌號碼」——每個連接到電腦的序列裝置都會被分配到一個專屬的埠號，軟體就是透過這個埠號來找到並連線到正確的硬體設備。</p>
+
+                <p>在 Windows 系統中，通訊埠以 <code>COM</code> 加數字的方式命名（如 <code>COM3</code>、<code>COM5</code>）。在 macOS 與 Linux 系統中，則以裝置檔案路徑的形式呈現（如 <code>/dev/tty.usbserial-0001</code> 或 <code>/dev/ttyUSB0</code>）。雖然命名方式不同，但概念是相同的——它們都是一個讓軟體找到硬體的「地址」。</p>
+
+                <p>當 PlatformIO 需要燒錄程式或開啟序列監視器時，它必須知道要連接到哪個通訊埠。如果系統中有多個序列裝置（例如同時接了兩塊開發板），你必須手動選擇正確的埠號，否則程式可能會被燒到錯誤的裝置上。</p>
+
+                <h2>如何在各作業系統中找到通訊埠</h2>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">W</div>
+                        <div class="ms-step-body">
+                            <h4>Windows</h4>
+                            <p>按下 <code>Win + X</code> → 選擇「裝置管理員」→ 展開「連接埠 (COM 和 LPT)」。你應該會看到類似 <code>Silicon Labs CP210x USB to UART Bridge (COM3)</code> 的項目。括號中的 <code>COM3</code> 就是你的通訊埠名稱。</p>
                         </div>
                     </div>
-                    <div class="w-full md:w-1/3 text-justify">
-                        <div class="bg-slate-900 text-green-400 font-mono p-6 rounded-2xl shadow-2xl text-xs md:text-sm leading-relaxed border border-slate-700">
-                            <span class="text-gray-500">// Terminal Check</span><br>
-                            &gt; ls /dev/tty.*<br>
-                            <span class="text-gray-600">/dev/tty.Bluetooth-In</span><br>
-                            <span class="text-yellow-400 font-bold">/dev/tty.usbserial-0001</span><br>
-                            <span class="text-gray-600">/dev/tty.wlan-debug</span>
+                    <div class="ms-step">
+                        <div class="ms-step-num">M</div>
+                        <div class="ms-step-body">
+                            <h4>macOS</h4>
+                            <p>開啟「終端機」（Terminal），輸入以下指令：</p>
                         </div>
+                    </div>
+                </div>
+
+                <div class="ms-code">
+                    <span class="c-white">$ </span><span class="c-kw">ls</span> <span class="c-str">/dev/tty.*</span><br>
+                    <span class="c-comment">/dev/tty.Bluetooth-Incoming-Port</span><br>
+                    <span class="c-tag">/dev/tty.usbserial-0001</span><span class="c-comment">  ← 這就是你的 ESP32</span><br>
+                    <span class="c-comment">/dev/tty.wlan-debug</span>
+                </div>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">L</div>
+                        <div class="ms-step-body">
+                            <h4>Linux</h4>
+                            <p>開啟終端機，輸入 <code>ls /dev/ttyUSB*</code> 或 <code>dmesg | tail</code>。如果出現 <code>/dev/ttyUSB0</code>，代表系統已識別設備。若出現權限錯誤，需將當前使用者加入 <code>dialout</code> 群組：<code>sudo usermod -aG dialout $USER</code>，然後重新登入。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>常見的連線問題與排除</h2>
+
+                <p>「找不到通訊埠」是硬體開發新手最常遇到的問題。以下是系統化的診斷流程：</p>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>症狀</th>
+                        <th>可能原因</th>
+                        <th>解決方法</th>
+                    </tr>
+                    <tr>
+                        <td>完全看不到任何新裝置</td>
+                        <td>USB 線為「僅充電」線，缺少資料線</td>
+                        <td>更換一條確認能傳輸資料的 USB 線</td>
+                    </tr>
+                    <tr>
+                        <td>裝置管理員中出現黃色驚嘆號</td>
+                        <td>驅動程式未安裝或版本不相容</td>
+                        <td>手動下載並安裝對應橋接晶片的最新驅動</td>
+                    </tr>
+                    <tr>
+                        <td>埠號存在但 PlatformIO 無法連線</td>
+                        <td>埠被其他程式佔用（如另一個序列監視器）</td>
+                        <td>關閉所有可能佔用該埠的軟體，再重試</td>
+                    </tr>
+                    <tr>
+                        <td>Linux 出現 "Permission denied"</td>
+                        <td>使用者未加入 <code>dialout</code> 群組</td>
+                        <td>執行 <code>sudo usermod -aG dialout $USER</code> 並重新登入</td>
+                    </tr>
+                </table>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>USB 線的陷阱</strong>
+                        市面上許多 USB 線只有電源線而沒有資料線——這些「充電線」外觀與資料線完全相同，但無法傳輸任何資料。如果你嘗試了所有方法仍然找不到通訊埠，請先換一條確認能傳輸資料的 USB 線再試。這是最常見、也最容易被忽略的原因。
                     </div>
                 </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -680,41 +789,75 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⏱️ 3. 序列通訊的核心參數：Baud Rate</h1>
+                <h1>序列通訊的核心參數：Baud Rate</h1>
                 
-                <div class="grid md:grid-cols-2 gap-12">
-                    <div class="space-y-6 text-gray-600 text-lg">
-                        <p class="text-justify"><strong>波特率 (Baud Rate)：</strong>定義每秒傳輸 bit。雙方必須遵守的「溝通語速」。</p>
-                        <div class="grid grid-cols-1 gap-4">
-                            <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200 shadow-sm text-justify">
-                                <span class="text-slate-400 font-mono font-bold w-16">9600</span>
-                                <span class="text-sm">傳統速率。</span>
-                            </div>
-                            <div class="flex items-center gap-4 bg-emerald-50 p-4 rounded-lg border border-emerald-200 shadow-sm text-justify">
-                                <span class="text-emerald-600 font-mono font-bold w-16">115200</span>
-                                <span class="text-sm text-emerald-800 font-medium text-justify">ESP32 標準速率。</span>
-                            </div>
-                            <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200 shadow-sm text-justify">
-                                <span class="text-slate-400 font-mono font-bold w-16 text-justify">921600</span>
-                                <span class="text-sm">極速燒錄。</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-red-50 rounded-2xl p-8 border border-red-100 shadow-inner flex flex-col justify-center text-center">
-                        <h3 class="text-xl font-bold text-red-800 mb-4" style="border-bottom:none; margin:0 0 12px; padding:0;">🚫 為何看見亂碼？</h3>
-                        <p class="text-red-700 text-base leading-relaxed mb-6 italic text-justify">
-                            「語速不一，數據就會在解碼時崩潰，形成亂碼。」
-                        </p>
-                        <div class="text-3xl bg-white/50 p-4 rounded-xl border border-red-200 font-mono text-red-400 select-none">
-                            ▒▓▒░▒▓▒░
-                        </div>
+                <p><strong>波特率（Baud Rate）</strong>定義了序列通訊中每秒鐘傳輸的位元數（bits per second, bps）。你可以把它想像成兩個人對話時的「語速」——如果一方說得快、另一方聽得慢，聽到的內容就會變成一團亂碼。同理，如果 ESP32 以 115200 bps 的速度發送資料，而你的序列監視器設定為 9600 bps 的接收速度，螢幕上顯示的就會是無法辨識的亂碼字元。</p>
+
+                <p>波特率的概念源自早期電報通訊，以法國工程師 Emile Baudot 的名字命名。在現代嵌入式開發中，波特率決定了微控制器與電腦之間交換資料的速度。雙方必須協議使用完全相同的波特率，通訊才能正確進行。</p>
+
+                <h2>常見波特率一覽</h2>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>波特率 (bps)</th>
+                        <th>用途</th>
+                        <th>說明</th>
+                    </tr>
+                    <tr>
+                        <td><code>9600</code></td>
+                        <td>傳統預設值</td>
+                        <td>許多教學範例與舊裝置的預設速率，速度較慢但穩定</td>
+                    </tr>
+                    <tr>
+                        <td><code>115200</code></td>
+                        <td>ESP32 標準速率</td>
+                        <td>ESP-IDF 與 PlatformIO 的預設建議值，適合日常開發與除錯</td>
+                    </tr>
+                    <tr>
+                        <td><code>921600</code></td>
+                        <td>高速燒錄</td>
+                        <td>加速韌體上傳（Upload）時使用，縮短燒錄等待時間</td>
+                    </tr>
+                    <tr>
+                        <td><code>2000000</code></td>
+                        <td>極速模式</td>
+                        <td>部分橋接晶片支援，用於大量即時資料串流</td>
+                    </tr>
+                </table>
+
+                <h2>波特率不匹配的後果</h2>
+
+                <p>當發送端與接收端的波特率不一致時，接收端會以錯誤的時序來採樣每個位元，導致所有資料都被錯誤解讀。你會在序列監視器中看到類似 <code>▒▓▒░▒▓▒░</code> 或 <code>⸮⸮⸮⸮</code> 的亂碼。這不是硬體故障，單純只是「語速不同步」造成的解碼錯誤。</p>
+
+                <p>解決亂碼的方法非常簡單：確保發送端與接收端使用相同的波特率即可。在 ESP32 開發中，程式碼裡 <code>Serial.begin(115200)</code> 設定了晶片的發送速度，而序列監視器的接收速度則需要在 <code>platformio.ini</code> 中透過 <code>monitor_speed</code> 來設定。</p>
+
+                <h2>在 PlatformIO 中設定波特率</h2>
+
+                <p>PlatformIO 的序列監視器預設波特率是 9600 bps，但 ESP32 程式碼中 <code>Serial.begin()</code> 通常設定為 115200。要修正這個不匹配，需要在 <code>platformio.ini</code> 中加入以下設定：</p>
+
+                <div class="ms-code">
+                    <span class="c-comment">; platformio.ini 設定範例</span><br>
+                    <span class="c-tag">[env:esp32dev]</span><br>
+                    <span class="c-attr">platform</span> <span class="c-white">=</span> <span class="c-str">espressif32</span><br>
+                    <span class="c-attr">board</span> <span class="c-white">=</span> <span class="c-str">esp32dev</span><br>
+                    <span class="c-attr">framework</span> <span class="c-white">=</span> <span class="c-str">arduino</span><br>
+                    <span class="c-attr">monitor_speed</span> <span class="c-white">=</span> <span class="c-val">115200</span>
+                </div>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>黃金法則</strong>
+                        永遠確保 <code>platformio.ini</code> 中的 <code>monitor_speed</code> 與程式碼中 <code>Serial.begin()</code> 的參數完全一致。如果你在程式碼中寫了 <code>Serial.begin(115200)</code>，那麼 <code>monitor_speed</code> 也必須設為 <code>115200</code>。
                     </div>
                 </div>
+
+                <p>修正波特率後，重新開啟序列監視器（或按下 PlatformIO 工具列的「Serial Monitor」按鈕），你應該會看到清晰可讀的文字輸出，代表電腦與 ESP32 之間的通訊已經成功同步。</p>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -810,16 +953,69 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+                <div id="quiz-form">
+                    <div class="quiz-question">
+                        <p>1. USB-to-UART 橋接晶片（如 CP2102、CH340）在開發板上的主要角色是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 提供 Wi-Fi 無線通訊功能</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 在 USB 協定與 UART 序列協定之間進行即時轉換</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 將 3.3V 電壓升壓至 5V 供 ESP32 使用</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>2. 插上 ESP32 開發板後，完全看不到任何新的通訊埠裝置，最可能的原因是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> ESP32 晶片已經損壞</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> USB 線為「僅充電」線，缺少資料線</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 電腦的 USB 規格太舊</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>3. 當序列監視器顯示亂碼（如 ▒▓▒░）時，最可能的原因與解決方法是？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 開發板硬體故障，需要更換晶片</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 驅動程式版本過舊，需要重新安裝</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 波特率不匹配，需確保 platformio.ini 的 monitor_speed 與程式碼中 Serial.begin() 設定一致</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>4. 在 Loopback 硬體環回測試中，將 TX 與 RX 引腳直接短接的目的是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 測試 Wi-Fi 訊號強度</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 讓晶片自己發出的訊號被自己接收回來，驗證通訊晶片收發功能是否正常</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 將開發板切換為高速燒錄模式</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -877,9 +1073,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「驅動程式與通訊埠原理」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「驅動程式與通訊埠原理」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -895,8 +1091,17 @@
         { id: 3, label: 'COM Port',      time: '10 分鐘', type: 'unit' },
         { id: 4, label: 'Baud Rate',     time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '150 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'c', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！橋接晶片負責在 USB 協定與 UART 序列協定之間進行轉換，讓電腦能透過 USB 線與 ESP32 通訊。' },
+        q2: { b: '正確！市面上許多 USB 線只有電源線而沒有資料線，外觀完全相同但無法傳輸資料，這是最常見也最容易被忽略的原因。' },
+        q3: { c: '正確！亂碼是因為發送端與接收端的波特率不一致。確保 platformio.ini 中的 monitor_speed 與程式碼中 Serial.begin() 的參數完全一致即可解決。' },
+        q4: { b: '正確！Loopback 測試讓晶片自己發出的電訊號被自己接收回來。如果沒有回音，代表晶片或接線有故障。' },
+    };
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -918,6 +1123,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1019,8 +1225,52 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            document.querySelectorAll(`input[name="${qid}"]`).forEach(opt => {
+                opt.disabled = true;
+                if (opt.value === answer) opt.parentElement.classList.add('correct');
+                if (opt.checked && opt.value !== answer) opt.parentElement.classList.add('wrong');
+            });
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                feedbackEl.textContent = '✗ 不正確。' + QUIZ_EXPLANATIONS[qid][answer];
+            }
+        }
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+        const scoreEl = document.getElementById('quiz-score');
+        const pct = Math.round(correct / total * 100);
+        scoreEl.style.display = 'block';
+        scoreEl.innerHTML = `<span style="font-size:20px;">${pct >= 75 ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pct >= 75 ? '通過！繼續前往下一個單元。' : '建議回顧相關單元後再試一次。'}</div>`;
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => el.classList.remove('correct','wrong'));
+        document.querySelectorAll('input[type=radio]').forEach(el => { el.checked = false; el.disabled = false; });
+        document.querySelectorAll('.quiz-feedback').forEach(el => { el.className = 'quiz-feedback'; el.textContent = ''; });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 01：開發環境建置';
 </script>
 
 <!-- Define Resources -->

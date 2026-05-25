@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTTP 協議：請求與回應 - Vibe Coding Learn</title>
+    <title>HTTP 協議：請求與回應 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -471,9 +473,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 6 - 網路通訊基礎</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +487,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">HTTP 協議：請求與回應</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 6</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,7 +509,7 @@
                 <h1>HTTP 協議：請求與回應</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 6</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -520,9 +520,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>🍽️ 1. 理解 HTTP 對話</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>️ 2. 方法、標頭、正文</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>🏷️ 3. 狀態碼</strong> 的調校技巧與穩定性測試。</li>
+                    <li>能夠解釋 HTTP 請求（Request）與回應（Response）的完整結構，並區分 GET 與 POST 方法的適用場景與安全差異。</li>
+                    <li>能夠實作 ESP32 的 POST 請求，正確設定 <code>Content-Type</code> 標頭並將感測器數據序列化為 JSON 格式傳送至伺服器。</li>
+                    <li>能夠根據 HTTP 狀態碼（200、404、500）實作分流處理邏輯，並設計基於 <code>millis()</code> 的非阻塞重試機制。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -553,15 +553,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>HTTP 協議：請求與回應</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    <strong>HTTP</strong> 是網頁、伺服器與物聯網設備互相「對話」的標準語言——每一次交互都由一組請求（Request）與回應（Response）構成。
+                    本單元將帶你拆解 HTTP 的三大核心元素：方法（GET / POST）、標頭（Headers）與狀態碼（200 / 404 / 500），
+                    讓你的 ESP32 能像專業的 API 客戶端一樣，精確地與雲端服務進行數據交換。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的 ESP32 嘗試將感測器數據上傳到雲端，卻收到了一個神秘的「500 Internal Server Error」回覆。
+                    你不確定問題出在 JSON 格式、缺少 Content-Type 標頭，還是伺服器端本身的邏輯錯誤——這時你才發現，
+                    理解 HTTP 的「對話規則」是排除一切網路故障的起點。
                 </div>
 
                 <h2>教學影片</h2>
@@ -575,7 +576,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -589,41 +590,109 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🍽️ 1. 理解 HTTP 對話</h1>
-                
-                <div class="space-y-6 text-gray-600 text-justify uppercase tracking-tighter">
-<p class="text-lg leading-relaxed font-light text-justify uppercase tracking-widest">
-                                    交換數據的標準格式。最直觀的理解方式就是「餐廳點餐」流程：
-                                </p>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-justify font-black">
-<div class="p-6 rounded-2xl border border-blue-100 shadow-sm group hover:bg-blue-600 transition duration-300 bg-blue-50 text-justify uppercase tracking-widest">
-<h4 class="font-bold text-blue-800 group-hover:text-white mb-2 flex items-center gap-2 text-sm uppercase text-justify">
-<span>🙋‍♂️</span> 請求 (Request)
-                                        </h4>
-<p class="text-[11px] text-slate-500 group-hover:text-blue-100 font-light leading-relaxed text-justify uppercase tracking-widest">
-                                            點餐。包含網址、動作與參數。</p>
-</div>
-<div class="p-6 rounded-2xl border border-indigo-100 shadow-sm group hover:bg-indigo-600 transition duration-300 bg-indigo-50 text-justify uppercase tracking-widest font-black text-left">
-<h4 class="font-bold text-indigo-800 group-hover:text-white mb-2 flex items-center gap-2 text-sm uppercase text-justify">
-<span>🍛</span> 回應 (Response)
-                                        </h4>
-<p class="text-[11px] text-slate-500 group-hover:text-indigo-100 font-light leading-relaxed text-justify uppercase tracking-tighter font-black">
-                                            送餐。包含狀態碼與具體內文。</p>
-</div>
-<div class="p-6 rounded-2xl border border-purple-100 shadow-sm group hover:bg-purple-600 transition duration-300 bg-purple-50 text-justify uppercase tracking-widest font-black text-left">
-<h4 class="font-bold text-purple-800 group-hover:text-white mb-2 flex items-center gap-2 text-sm uppercase text-justify font-black">
-<span>🧠</span> Stateless
-                                        </h4>
-<p class="text-[11px] text-slate-500 group-hover:text-purple-100 font-light leading-relaxed text-justify uppercase tracking-widest font-black">
-                                            伺服器很健忘！連線獨立，不記名。</p>
-</div>
-</div>
-</div>
+                <h1>理解 HTTP 對話</h1>
+
+                <p>
+                    <strong>HTTP（HyperText Transfer Protocol，超文本傳輸協定）</strong>是全球資訊網（WWW）的基礎通訊協議。
+                    無論你在瀏覽器中載入一個網頁、透過手機 App 查看天氣，還是讓 ESP32 將感測器數據上傳到雲端，底層都是透過 HTTP 在傳遞訊息。
+                    理解 HTTP 的運作機制，是成為全端開發者與物聯網工程師的第一步。
+                </p>
+
+                <h2>餐廳點餐：HTTP 的直覺類比</h2>
+                <p>
+                    最直觀的理解方式就是把 HTTP 想像成「餐廳點餐」的流程。在這個類比中，<strong>客戶端（Client）</strong>是顧客，
+                    <strong>伺服器（Server）</strong>是廚房，而 HTTP 就是服務員在兩者之間傳遞的那張「點餐單」和「出餐單」。
+                </p>
+                <p>
+                    每一次完整的 HTTP 互動都由兩個部分組成：
+                </p>
+                <ul>
+                    <li><strong>請求（Request）</strong>：客戶端向伺服器發出的「點餐單」——告訴伺服器你要什麼資源、用什麼方法取得、附帶哪些額外說明。</li>
+                    <li><strong>回應（Response）</strong>：伺服器回覆的「出餐單」——告訴客戶端請求是否成功、附帶狀態碼與實際的資料內容。</li>
+                </ul>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        HTTP 是一種<strong>無狀態（Stateless）</strong>協議。這意味著伺服器不會記住任何一次請求的前後文——每一次的 Request/Response 都是獨立的。
+                        就像餐廳服務員不會自動記得你上次點了什麼菜，每次你都需要重新告訴他。如果需要「記憶」，則需要額外機制如 Cookie 或 Session。
+                    </div>
+                </div>
+
+                <h2>HTTP 對話的完整結構</h2>
+                <p>
+                    一次完整的 HTTP 對話可以拆解為以下流程。無論是瀏覽器存取網頁，還是 ESP32 上傳感測器數據，都遵循相同的結構：
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th style="width:15%">階段</th>
+                            <th style="width:30%">描述</th>
+                            <th>餐廳類比</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>建立連線</strong></td>
+                            <td>客戶端透過 TCP 與伺服器建立連線（三次握手）</td>
+                            <td>走進餐廳、坐下、服務員走過來</td>
+                        </tr>
+                        <tr>
+                            <td><strong>發送 Request</strong></td>
+                            <td>客戶端發出請求，包含方法、URL、標頭與正文</td>
+                            <td>把寫好的點餐單交給服務員</td>
+                        </tr>
+                        <tr>
+                            <td><strong>處理請求</strong></td>
+                            <td>伺服器解析請求內容，執行對應的邏輯</td>
+                            <td>廚房收到菜單，開始備料烹調</td>
+                        </tr>
+                        <tr>
+                            <td><strong>回傳 Response</strong></td>
+                            <td>伺服器回覆狀態碼、標頭與回應正文</td>
+                            <td>菜做好了，服務員把餐點端上桌</td>
+                        </tr>
+                        <tr>
+                            <td><strong>關閉連線</strong></td>
+                            <td>傳輸完成後，連線結束（HTTP/1.1 可重用）</td>
+                            <td>吃完結帳離開（或繼續加點）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>ESP32 與 HTTP：物聯網的對話場景</h2>
+                <p>
+                    在物聯網（IoT）場景中，ESP32 通常扮演 <strong>HTTP 客戶端</strong>的角色——它主動向雲端伺服器發送請求，
+                    上傳感測器數據或取得指令。但在某些情境下（例如建立本地控制台網頁），ESP32 也可以同時扮演 <strong>HTTP 伺服器</strong>的角色，
+                    接收來自手機或電腦瀏覽器的請求。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// ESP32 作為 HTTP Client 發送請求的基本流程</span><br>
+                    <span class="c-tag">HTTPClient</span> <span class="c-attr">http</span><span class="c-white">;</span><br>
+                    <span class="c-attr">http</span><span class="c-white">.</span><span class="c-kw">begin</span><span class="c-white">(</span><span class="c-str">"http://api.example.com/data"</span><span class="c-white">);</span><br><br>
+                    <span class="c-kw">int</span> <span class="c-attr">httpCode</span> <span class="c-white">=</span> <span class="c-attr">http</span><span class="c-white">.</span><span class="c-kw">GET</span><span class="c-white">();</span>
+                    <span class="c-comment">  // 發送 GET 請求</span><br>
+                    <span class="c-tag">String</span> <span class="c-attr">payload</span> <span class="c-white">=</span> <span class="c-attr">http</span><span class="c-white">.</span><span class="c-kw">getString</span><span class="c-white">();</span>
+                    <span class="c-comment"> // 取得回應正文</span><br><br>
+                    <span class="c-attr">http</span><span class="c-white">.</span><span class="c-kw">end</span><span class="c-white">();</span>
+                    <span class="c-comment"> // 關閉連線</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在學習 HTTP 時，建議使用 <strong>Postman</strong> 或瀏覽器的 <strong>DevTools（開發者工具）</strong>觀察真實的 Request 與 Response。
+                        你可以清楚看到每次請求的方法、標頭、狀態碼與回應內容，這比閱讀文件更加直覺。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -637,62 +706,155 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>✉️ 2. 方法、標頭、正文</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify uppercase tracking-widest">
-<div class="space-y-6 text-justify font-black text-left">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-widest">
-                                一封標準 Request 信：</p>
-<div class="space-y-4 text-justify font-black text-left">
-<div class="p-5 rounded-2xl border border-slate-100 group hover:border-emerald-400 transition bg-slate-50 text-justify font-black">
-<div class="flex items-center gap-3 mb-2 text-justify">
-<span class="bg-emerald-500 text-white px-3 py-1 rounded font-bold text-[10px] text-justify uppercase tracking-widest font-black">GET</span>
-<h5 class="font-bold text-emerald-900 text-sm italic text-justify font-black text-left">
-                                            讀取菜單</h5>
-</div>
-<p class="text-slate-500 font-light leading-relaxed text-[11px] text-justify uppercase tracking-widest font-black text-left">
-                                        請求數據。參數在網址後面。</p>
-</div>
-<div class="p-5 rounded-2xl border border-slate-100 group hover:border-blue-400 transition bg-slate-50 text-justify text-left font-black">
-<div class="flex items-center gap-3 mb-2 text-justify font-black">
-<span class="bg-blue-500 text-white px-3 py-1 rounded font-bold text-[10px] text-justify uppercase tracking-widest font-black text-justify">POST</span>
-<h5 class="font-bold text-blue-900 text-sm italic text-justify text-left uppercase tracking-tighter font-black text-justify">
-                                            送交訂單</h5>
-</div>
-<p class="text-slate-500 font-light leading-relaxed text-[11px] text-justify uppercase tracking-widest font-black text-left">
-                                        提交資料。封裝 Body，安全。</p>
-</div>
-<div class="p-5 rounded-2xl border border-slate-100 group hover:border-indigo-400 transition bg-slate-50 text-justify font-black text-left">
-<div class="flex items-center gap-3 mb-2 text-justify font-black">
-<span class="bg-indigo-500 text-white px-2 py-1 rounded font-bold text-[10px] text-justify uppercase tracking-widest font-black">Headers</span>
-<h5 class="font-bold text-indigo-900 text-sm italic text-justify font-black text-left">
-                                            信封標註</h5>
-</div>
-<p class="text-slate-500 font-light leading-relaxed text-[11px] text-justify uppercase tracking-widest font-black text-left">
-                                        備註。如宣告、Token。</p>
-</div>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 bg-slate-900 text-justify uppercase tracking-widest font-black text-left">
-<div class="flex items-center gap-3 mb-6 text-justify">
-<span class="w-3 h-3 bg-red-400 rounded-full text-justify font-black"></span>
-<span class="w-3 h-3 bg-amber-400 rounded-full text-justify font-black"></span>
-<span class="w-3 h-3 bg-emerald-400 rounded-full text-justify font-black"></span>
-<span class="ml-auto text-slate-500 font-mono tracking-widest text-justify uppercase tracking-widest font-black text-[10px]">URL
-                                    ANATOMY</span>
-</div>
-<pre class="leading-relaxed overflow-x-auto text-emerald-400 font-mono text-justify uppercase tracking-widest font-black text-[11px] border border-slate-700">
-http://<span class="text-blue-400 font-bold text-justify uppercase tracking-widest">192.168.4.1</span>/<span class="text-amber-400 text-justify uppercase tracking-tighter">move</span>?<span class="text-white">dir=forward</span>&amp;<span class="text-white">speed=200</span>
-<hr class="border-slate-800 my-4 text-justify"/>
-<span class="text-slate-500 text-justify uppercase tracking-widest font-black">// GET 參數解析：</span>
-{ dir: "forward", speed: 200 }</pre>
-</div>
-</div>
+                <h1>方法、標頭、正文</h1>
+
+                <p>
+                    每一個 HTTP 請求都像一封格式嚴謹的信件，由三個核心部分組成：<strong>方法（Method）</strong>告訴伺服器你想做什麼動作、
+                    <strong>標頭（Headers）</strong>提供這次請求的附加資訊、<strong>正文（Body）</strong>承載要傳送的數據內容。
+                    理解這三個要素，就能讓你的 ESP32 與任何伺服器進行精確的對話。
+                </p>
+
+                <h2>HTTP 方法：GET 與 POST</h2>
+                <p>
+                    HTTP 定義了多種請求方法（也稱為「動詞」），其中最常用的兩個是 <code>GET</code> 和 <code>POST</code>。
+                    在物聯網開發中，你幾乎每天都會使用它們：
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th style="width:18%">比較項目</th>
+                            <th>GET</th>
+                            <th>POST</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>用途</strong></td>
+                            <td>讀取資源（查詢、獲取資料）</td>
+                            <td>提交資料（新增、修改）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>參數位置</strong></td>
+                            <td>附在 URL 的 Query String 中</td>
+                            <td>封裝在請求的 Body 中</td>
+                        </tr>
+                        <tr>
+                            <td><strong>安全性</strong></td>
+                            <td>參數暴露在網址列，不適合傳密碼</td>
+                            <td>參數隱藏在 Body 中，較安全</td>
+                        </tr>
+                        <tr>
+                            <td><strong>資料長度</strong></td>
+                            <td>受 URL 長度限制（約 2048 字元）</td>
+                            <td>理論上無限制</td>
+                        </tr>
+                        <tr>
+                            <td><strong>IoT 場景</strong></td>
+                            <td>讀取感測器數值、查詢設備狀態</td>
+                            <td>上傳溫濕度數據、發送控制指令</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        切勿使用 GET 方法傳輸敏感資料！GET 的參數會出現在瀏覽器歷史紀錄、伺服器日誌，甚至會被搜尋引擎索引。
+                        例如 <code>http://api.com/login?password=1234</code> 會讓密碼完全暴露。
+                    </div>
+                </div>
+
+                <h2>URL 結構解析</h2>
+                <p>
+                    在 ESP32 開發中，你經常需要手動組裝請求的目標 URL。一個完整的 URL 由以下部分組成：
+                </p>
+                <div class="ms-code">
+                    <span class="c-comment">// URL 結構拆解</span><br>
+                    <span class="c-str">http://</span><span class="c-kw">192.168.4.1</span><span class="c-white">:</span><span class="c-val">80</span><span class="c-white">/</span><span class="c-tag">move</span><span class="c-white">?</span><span class="c-attr">dir</span><span class="c-white">=</span><span class="c-str">forward</span><span class="c-white">&amp;</span><span class="c-attr">speed</span><span class="c-white">=</span><span class="c-str">200</span><br><br>
+                    <span class="c-comment">// 拆解：</span><br>
+                    <span class="c-comment">//   協議 (Protocol) : http://</span><br>
+                    <span class="c-comment">//   主機 (Host)     : 192.168.4.1</span><br>
+                    <span class="c-comment">//   埠號 (Port)     : 80 (預設可省略)</span><br>
+                    <span class="c-comment">//   路徑 (Path)     : /move</span><br>
+                    <span class="c-comment">//   查詢 (Query)    : dir=forward&amp;speed=200</span>
+                </div>
+
+                <h2>HTTP 標頭（Headers）</h2>
+                <p>
+                    標頭是 HTTP 訊息中的「附加說明」，以 <code>Key: Value</code> 的形式傳送。它們不承載實際的數據內容，
+                    但提供了伺服器理解與處理請求所需的關鍵後設資料（metadata）。以下是物聯網開發中最常見的標頭：
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th style="width:30%">標頭名稱</th>
+                            <th>說明</th>
+                            <th style="width:30%">範例值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>Content-Type</code></td>
+                            <td>告訴伺服器 Body 中的資料格式</td>
+                            <td><code>application/json</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>Authorization</code></td>
+                            <td>攜帶身分驗證憑證（Token）</td>
+                            <td><code>Bearer eyJhbG...</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>User-Agent</code></td>
+                            <td>識別客戶端的類型與版本</td>
+                            <td><code>ESP32HTTPClient</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>Accept</code></td>
+                            <td>告訴伺服器客戶端能接受的回應格式</td>
+                            <td><code>application/json</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        當你使用 POST 傳送 JSON 數據時，<strong>必須</strong>手動設定 <code>Content-Type: application/json</code> 標頭。
+                        如果遺漏了這個標頭，伺服器將無法正確解析你傳送的 JSON 資料，通常會回傳 <code>400 Bad Request</code> 錯誤。
+                    </div>
+                </div>
+
+                <h2>ESP32 POST 請求實作範例</h2>
+                <p>
+                    以下是一個完整的 ESP32 POST 請求範例，展示如何設定標頭並將感測器數據以 JSON 格式傳送到伺服器：
+                </p>
+                <div class="ms-code">
+                    <span class="c-tag">HTTPClient</span> <span class="c-attr">http</span><span class="c-white">;</span><br>
+                    <span class="c-attr">http</span><span class="c-white">.</span><span class="c-kw">begin</span><span class="c-white">(</span><span class="c-str">"http://api.example.com/sensor"</span><span class="c-white">);</span><br><br>
+                    <span class="c-comment">// 設定標頭——告訴伺服器我們傳的是 JSON</span><br>
+                    <span class="c-attr">http</span><span class="c-white">.</span><span class="c-kw">addHeader</span><span class="c-white">(</span><span class="c-str">"Content-Type"</span><span class="c-white">,</span> <span class="c-str">"application/json"</span><span class="c-white">);</span><br><br>
+                    <span class="c-comment">// 組裝 JSON 正文</span><br>
+                    <span class="c-tag">String</span> <span class="c-attr">body</span> <span class="c-white">= </span><span class="c-str">"{\"temperature\":25.3,\"humidity\":68}"</span><span class="c-white">;</span><br><br>
+                    <span class="c-comment">// 發送 POST 並取得狀態碼</span><br>
+                    <span class="c-kw">int</span> <span class="c-attr">code</span> <span class="c-white">=</span> <span class="c-attr">http</span><span class="c-white">.</span><span class="c-kw">POST</span><span class="c-white">(</span><span class="c-attr">body</span><span class="c-white">);</span><br>
+                    <span class="c-tag">Serial</span><span class="c-white">.</span><span class="c-kw">printf</span><span class="c-white">(</span><span class="c-str">"HTTP Code: %d\n"</span><span class="c-white">,</span> <span class="c-attr">code</span><span class="c-white">);</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        手動拼接 JSON 字串容易出錯（漏掉逗號、引號跳脫錯誤等）。建議使用 <code>ArduinoJson</code> 函式庫來序列化數據，
+                        它會自動處理格式問題，產出合法的 JSON 字串。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -706,33 +868,143 @@ http://<span class="text-blue-400 font-bold text-justify uppercase tracking-wide
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🏷️ 3. 狀態碼</h1>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 text-justify uppercase tracking-widest font-black text-left border border-slate-800">
-<div class="p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-emerald-500 transition group text-justify font-black">
-<h4 class="font-bold mb-4 text-xl text-emerald-400 text-justify font-black uppercase tracking-widest">
-                                200 OK</h4>
-<p class="text-slate-500 leading-relaxed font-light text-xs text-justify font-black uppercase tracking-widest italic">
-                                成功！資料送達。</p>
-</div>
-<div class="p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-orange-500 transition group text-justify font-black uppercase tracking-widest">
-<h4 class="font-bold mb-4 text-xl text-orange-400 text-justify uppercase tracking-widest font-black">
-                                404 Found</h4>
-<p class="text-slate-500 leading-relaxed font-light text-xs text-justify uppercase tracking-widest font-black italic">
-                                找不到。網址錯了。</p>
-</div>
-<div class="p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-red-500 transition group text-justify font-black uppercase tracking-widest">
-<h4 class="font-bold mb-4 text-xl text-red-400 text-justify uppercase tracking-widest font-black uppercase tracking-widest">
-                                500 Error</h4>
-<p class="text-slate-500 leading-relaxed font-light text-xs text-justify text-left uppercase tracking-tighter font-black italic uppercase tracking-widest">
-                                崩潰。邏輯有誤。</p>
-</div>
-</div>
+                <h1>狀態碼</h1>
+
+                <p>
+                    每次 HTTP 回應的第一行都會包含一個三位數的<strong>狀態碼（Status Code）</strong>，它就像伺服器給你的「成績單」——
+                    一看數字，就能立即判斷這次請求是成功、失敗，還是需要進一步處理。
+                    對 ESP32 開發者來說，正確解讀狀態碼是實現自動化錯誤處理與重試機制的基礎。
+                </p>
+
+                <h2>狀態碼的五大家族</h2>
+                <p>
+                    HTTP 狀態碼的第一位數字代表「回應類別」，共分為五大家族。在物聯網開發中，你最常遇到的是 <strong>2xx、4xx、5xx</strong> 三個類別：
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th style="width:12%">範圍</th>
+                            <th style="width:18%">類別</th>
+                            <th>說明</th>
+                            <th style="width:25%">IoT 場景範例</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>1xx</strong></td>
+                            <td>資訊性</td>
+                            <td>請求已收到，繼續處理中</td>
+                            <td>較少遇到，通常由底層處理</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2xx</strong></td>
+                            <td>成功</td>
+                            <td>請求已被成功接收、理解並處理</td>
+                            <td>數據成功上傳到雲端</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3xx</strong></td>
+                            <td>重新導向</td>
+                            <td>需要進一步操作才能完成請求</td>
+                            <td>API 網址已搬遷</td>
+                        </tr>
+                        <tr>
+                            <td><strong>4xx</strong></td>
+                            <td>客戶端錯誤</td>
+                            <td>請求包含錯誤，伺服器無法處理</td>
+                            <td>ESP32 發送的 URL 拼錯</td>
+                        </tr>
+                        <tr>
+                            <td><strong>5xx</strong></td>
+                            <td>伺服器錯誤</td>
+                            <td>伺服器無法完成合法的請求</td>
+                            <td>雲端伺服器當機或程式崩潰</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>ESP32 開發者必知的關鍵狀態碼</h2>
+                <p>以下是你在物聯網開發中最常遇到的狀態碼，以及對應的處理策略：</p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th style="width:15%">狀態碼</th>
+                            <th style="width:25%">意義</th>
+                            <th>ESP32 應對策略</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>200 OK</strong></td>
+                            <td>請求成功，回應包含數據</td>
+                            <td>正常解析回應正文，繼續執行</td>
+                        </tr>
+                        <tr>
+                            <td><strong>201 Created</strong></td>
+                            <td>資源已成功建立</td>
+                            <td>POST 上傳數據成功，可記錄日誌</td>
+                        </tr>
+                        <tr>
+                            <td><strong>400 Bad Request</strong></td>
+                            <td>請求格式錯誤</td>
+                            <td>檢查 JSON 格式或缺少的 Header</td>
+                        </tr>
+                        <tr>
+                            <td><strong>404 Not Found</strong></td>
+                            <td>請求的資源不存在</td>
+                            <td>檢查 URL 是否正確，不重試</td>
+                        </tr>
+                        <tr>
+                            <td><strong>500 Internal Error</strong></td>
+                            <td>伺服器內部錯誤</td>
+                            <td>等待後重試（伺服器端問題）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        ESP32 的 <code>HTTPClient</code> 函式庫在<strong>網路層級錯誤</strong>（如 DNS 解析失敗、連線逾時）時，
+                        回傳的不是標準 HTTP 狀態碼，而是<strong>負數</strong>的錯誤碼（例如 <code>-1</code> 表示連線失敗）。
+                        在撰寫判斷邏輯時，必須先排除負數的情況。
+                    </div>
+                </div>
+
+                <h2>實作狀態碼分流處理</h2>
+                <p>
+                    以下範例展示如何根據不同的狀態碼執行不同的處理邏輯，並實作基於 <code>millis()</code> 的非阻塞重試機制：
+                </p>
+                <div class="ms-code">
+                    <span class="c-kw">int</span> <span class="c-attr">code</span> <span class="c-white">=</span> <span class="c-attr">http</span><span class="c-white">.</span><span class="c-kw">GET</span><span class="c-white">();</span><br><br>
+                    <span class="c-kw">if</span> <span class="c-white">(</span><span class="c-attr">code</span> <span class="c-white">==</span> <span class="c-val">200</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">String</span> <span class="c-attr">data</span> <span class="c-white">=</span> <span class="c-attr">http</span><span class="c-white">.</span><span class="c-kw">getString</span><span class="c-white">();</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">Serial</span><span class="c-white">.</span><span class="c-kw">println</span><span class="c-white">(</span><span class="c-str">"成功取得: "</span> <span class="c-white">+</span> <span class="c-attr">data</span><span class="c-white">);</span><br>
+                    <span class="c-white">}</span> <span class="c-kw">else if</span> <span class="c-white">(</span><span class="c-attr">code</span> <span class="c-white">==</span> <span class="c-val">404</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">Serial</span><span class="c-white">.</span><span class="c-kw">println</span><span class="c-white">(</span><span class="c-str">"資源不存在，請檢查 URL"</span><span class="c-white">);</span><br>
+                    <span class="c-white">}</span> <span class="c-kw">else if</span> <span class="c-white">(</span><span class="c-attr">code</span> <span class="c-white">==</span> <span class="c-val">500</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">Serial</span><span class="c-white">.</span><span class="c-kw">println</span><span class="c-white">(</span><span class="c-str">"伺服器錯誤，稍後重試..."</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">retryAt</span> <span class="c-white">=</span> <span class="c-kw">millis</span><span class="c-white">() +</span> <span class="c-val">5000</span><span class="c-white">;</span>
+                    <span class="c-comment"> // 5 秒後重試</span><br>
+                    <span class="c-white">}</span> <span class="c-kw">else if</span> <span class="c-white">(</span><span class="c-attr">code</span> <span class="c-white">&lt;</span> <span class="c-val">0</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">Serial</span><span class="c-white">.</span><span class="c-kw">println</span><span class="c-white">(</span><span class="c-str">"網路連線失敗!"</span><span class="c-white">);</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在重試邏輯中，<strong>嚴禁使用 <code>delay()</code></strong>！它會阻塞整個 <code>loop()</code> 循環，
+                        導致感測器採樣、LED 閃爍等其他任務全部停擺。請使用基於 <code>millis()</code> 的「非阻塞狀態機」來實現定時重試。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -811,16 +1083,75 @@ http://<span class="text-blue-400 font-bold text-justify uppercase tracking-wide
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
-
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: QUIZ ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <div class="quiz-question">
+                        <p>1. 為什麼不應使用 GET 方法傳輸機密資料（如密碼）？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 因為 GET 方法的傳輸速度較慢</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 因為 GET 參數附在 URL 中，會出現在瀏覽器歷史紀錄、伺服器日誌，甚至被搜尋引擎索引</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 因為 GET 方法不支援中文字元</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>2. 使用 ESP32 的 HTTPClient 發送 POST 請求時，若忘記設定 Content-Type: application/json 標頭，伺服器通常會回傳什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 200 OK</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 400 Bad Request</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 500 Internal Server Error</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>3. ESP32 的 HTTPClient 在 DNS 解析失敗或連線逾時等網路層級錯誤時，回傳的 httpCode 有什麼特徵？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 回傳 0</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 回傳負數（如 -1）</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 回傳 503</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>4. 收到 HTTP 500 狀態碼時，ESP32 應採取什麼策略？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 立即停止所有通訊，等待人工干預</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 檢查 URL 是否拼寫正確，不重試</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 等待一段時間後重試，因為這是伺服器端問題，可能會自行恢復</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -878,9 +1209,9 @@ http://<span class="text-blue-400 font-bold text-justify uppercase tracking-wide
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「HTTP 協議：請求與回應」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「HTTP 協議：請求與回應」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -896,8 +1227,17 @@ http://<span class="text-blue-400 font-bold text-justify uppercase tracking-wide
         { id: 3, label: '️ 2. 方法、標頭、正文', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🏷️ 3. 狀態碼', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '150 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',              time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'c' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！GET 的參數透過 Query String 附在 URL 上（如 ?password=1234），完全暴露在網址列、日誌與快取中，極不安全。機密資料應使用 POST 封裝在 Body 中。' },
+        q2: { b: '正確！缺少 Content-Type 標頭時，伺服器無法知道 Body 中的資料格式，因此無法正確解析 JSON，通常回傳 400 Bad Request 錯誤。' },
+        q3: { b: '正確！HTTPClient 在網路層級錯誤時回傳負數錯誤碼（如 -1 表示連線失敗），而非標準 HTTP 狀態碼。撰寫判斷邏輯時必須先排除負數。' },
+        q4: { c: '正確！500 是伺服器內部錯誤，可能因暫時過載或程式崩潰造成。合理的策略是使用基於 millis() 的非阻塞機制等待後重試。' },
+    };
+
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -916,6 +1256,7 @@ http://<span class="text-blue-400 font-bold text-justify uppercase tracking-wide
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1019,6 +1360,7 @@ http://<span class="text-blue-400 font-bold text-justify uppercase tracking-wide
 
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 06：HTTP 與 Web 通訊';
 </script>
 
 <!-- Define Resources -->

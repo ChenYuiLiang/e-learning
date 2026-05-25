@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>限制與飽和：PWM 的物理極限 - Vibe Coding Learn</title>
+    <title>限制與飽和：PWM 的物理極限 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 10 - PWM 極限</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">限制與飽和：PWM 的物理極限</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 10</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>限制與飽和：PWM 的物理極限</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 10</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,14 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>限制與飽和：PWM 的物理極限</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    數學公式算出的理想轉速可能是 300，但 ESP32 的 PWM 上限只有 255——當計算遇上物理天花板，會發生什麼？
+                    本模組聚焦於 <strong>PWM 飽和與馬達死區</strong>這兩大硬體限制，教你如何透過等比例縮放與線性補償演算法，
+                    在不破壞左右輪速比例的前提下，讓車體即使降速也能維持精確的轉彎軌跡。
                 </p>
 
                 <div class="ms-scenario">
                     <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    你的機器人在高速轉彎時突然偏離了預期路線，明明公式都是對的——問題出在哪裡？答案很可能是「飽和裁剪」悄悄破壞了你的速度比例。先花 3 分鐘觀看下方影片，理解為什麼簡單的 constrain() 會成為幾何精度的隱形殺手，以及工程師如何用「縮放」取代「裁剪」來守護控制品質。
                 </div>
 
                 <h2>教學影片</h2>
@@ -591,41 +590,100 @@
                 </div>
 
                 <h1>🛑 1. 什麼是 PWM 飽和？ (15 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                物理世界是有天花板的。ESP32 的 8-bit PWM 上限是 255；當幾何公式計算出「需要 300 電力」時，直接裁剪（Clipping）會破壞左右輪的速度比例。
-                            </p>
-<div class="bg-red-50 p-6 rounded-2xl border border-red-100">
-<h4 class="font-bold text-red-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
-                                    System Bottleneck</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify text-justify">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1 text-justify"></span>
-<div><strong>比例失衡</strong>：原本 2:1 的速度比，因為一方飽和而變回 1.7:1，導致轉彎半徑偏離。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1 text-justify"></span>
-<div><strong>指令溢位</strong>：未妥善處理的 0-255 映射會導致馬達驅動異常。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-red-500/5 group-hover:bg-red-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-justify">
-                                Clipping vs. Scaling</h4>
-<div class="relative z-10 flex flex-col items-center gap-2 text-justify">
-<div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-<div class="bg-red-500 h-full w-[120%] -translate-x-4 animate-pulse"></div>
-</div>
-<span class="text-[8px] text-red-400 font-mono tracking-tighter uppercase">Signal
-                                    Overflow detected</span>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic text-center">
-                                Differential Fidelity Loss</p>
-</div>
-</div>
+
+                <p>
+                    在差速驅動的運動學公式中，我們可以自由地計算出任意大小的左右輪速需求。
+                    然而，物理世界有不可逾越的天花板：ESP32 的 8-bit PWM 解析度意味著輸出值的有效範圍僅為 <strong>0 到 255</strong>。
+                    當幾何公式計算出「左輪需要 PWM = 300」時，系統必須做出抉擇——而這個抉擇的方式，
+                    將決定你的車體是精確沿著圓弧行駛，還是偏離預期軌跡。
+                </p>
+
+                <h2>飽和裁剪（Clipping）的陷阱</h2>
+                <p>
+                    最直覺的處理方式是使用 <code>constrain()</code> 函式，將超出範圍的值直接裁剪到 255。
+                    這看似合理，實際上卻是幾何精度的<strong>隱形殺手</strong>。原因在於：裁剪會破壞左右輪的速度比例，
+                    而差速驅動的轉彎半徑完全取決於這個比例。
+                </p>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        差速驅動的轉彎半徑公式 \(R = \frac{L}{2} \cdot \frac{V_L + V_R}{V_L - V_R}\) 完全由速度<strong>比值</strong>決定。
+                        當 Clipping 改變了這個比值，轉彎半徑就會偏離計算的理論值，導致軌跡變形。
+                    </div>
+                </div>
+
+                <h2>實例：Clipping 如何破壞軌跡</h2>
+                <p>
+                    假設運動學公式計算出左輪需要 PWM = 300、右輪需要 PWM = 150（比例 2:1，對應特定轉彎半徑）。
+                    以下比較兩種處理方式的結果：
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>處理方式</th>
+                            <th>左輪 PWM</th>
+                            <th>右輪 PWM</th>
+                            <th>實際速比</th>
+                            <th>對軌跡的影響</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>理論需求</td>
+                            <td>300</td>
+                            <td>150</td>
+                            <td>2.00 : 1</td>
+                            <td>理想圓弧</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Clipping（裁剪）</strong></td>
+                            <td>255</td>
+                            <td>150</td>
+                            <td>1.70 : 1</td>
+                            <td>半徑增大，圓弧變形</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Scaling（縮放）</strong></td>
+                            <td>255</td>
+                            <td>127.5</td>
+                            <td>2.00 : 1</td>
+                            <td>速度降低但半徑正確</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-code">
+                    <span class="c-comment">// ❌ 錯誤做法：直接裁剪（破壞速比）</span><br>
+                    <span class="c-kw">int</span> <span class="c-attr">pwmL</span> <span class="c-white">= constrain(300, 0, 255);</span>  <span class="c-comment">// → 255</span><br>
+                    <span class="c-kw">int</span> <span class="c-attr">pwmR</span> <span class="c-white">= constrain(150, 0, 255);</span>  <span class="c-comment">// → 150</span><br>
+                    <span class="c-comment">// 比例從 2:1 變成 1.7:1 → 軌跡偏離！</span><br>
+                    <br>
+                    <span class="c-comment">// ✅ 正確做法：等比例縮放（保持速比）</span><br>
+                    <span class="c-kw">float</span> <span class="c-attr">maxVal</span> <span class="c-white">= max(300, 150);</span>  <span class="c-comment">// = 300</span><br>
+                    <span class="c-kw">float</span> <span class="c-attr">factor</span> <span class="c-white">= 255.0 /</span> <span class="c-attr">maxVal</span><span class="c-white">;</span>  <span class="c-comment">// = 0.85</span><br>
+                    <span class="c-kw">int</span> <span class="c-attr">pwmL</span> <span class="c-white">= 300 *</span> <span class="c-attr">factor</span><span class="c-white">;</span>  <span class="c-comment">// → 255</span><br>
+                    <span class="c-kw">int</span> <span class="c-attr">pwmR</span> <span class="c-white">= 150 *</span> <span class="c-attr">factor</span><span class="c-white">;</span>  <span class="c-comment">// → 127  比例依然 ≈ 2:1</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        飽和問題通常在「高速 + 小半徑轉彎」時最為嚴重——因為此時外側輪的速度需求最高。
+                        如果你發現機器人在高速轉彎時軌跡突然「拉直」，幾乎可以確定是 Clipping 造成的比例失衡。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        記住這個核心原則：<strong>寧可降速，也不可破壞比例</strong>。
+                        Scaling 讓車體「變慢但精確」，而 Clipping 讓車體「維持速度但失控」。在機器人控制中，精度永遠優先於速度。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -645,35 +703,97 @@
                 </div>
 
                 <h1>👻 2. 死區 (Dead Zone) 現象 (15 min)</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                並非 PWM &gt; 1 馬達就會轉。受限於靜摩擦力，馬達在低速區間僅會發出嗡嗡聲。理解「有效作業區間」是實作絲滑緩啟動的關鍵。
-                            </p>
-<div class="bg-slate-50 p-8 rounded-3xl border border-slate-100 text-center text-justify text-left text-justify">
-<h4 class="text-slate-900 font-bold mb-4 text-xs uppercase tracking-widest text-left text-justify">
-                                    Operating Range</h4>
-<div class="flex items-center gap-2 text-[10px] text-slate-600 font-mono text-justify">
-<div class="p-2 bg-red-100 rounded text-red-700 text-justify">0-40 (Dead)</div>
-<span class="text-justify">➔</span>
-<div class="p-2 bg-emerald-100 rounded text-emerald-700 text-justify">41-255
-                                        (Linear)</div>
-</div>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-slate-500/5 text-justify"></div>
-<h4 class="text-slate-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-justify">
-                                Linearization Map</h4>
-<div class="text-[9px] font-mono text-slate-500 space-y-1 text-justify text-justify">
-<div>$PWM_{out} = \text{map}(X, 0, 255, 40, 255)$</div>
-<div class="text-emerald-500">// Offset compensation applied</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic text-center">
-                                Torque-Voltage Bridge</p>
-</div>
-</div>
+
+                <p>
+                    你可能以為只要 PWM 值大於 0，馬達就會開始轉動——但事實並非如此。
+                    由於<strong>靜摩擦力（Static Friction）</strong>的存在，馬達需要一個最低的驅動電壓才能克服靜止慣性開始旋轉。
+                    在這個臨界值以下的 PWM 區間，馬達只會發出嗡嗡聲卻不會轉動，這就是<strong>死區（Dead Zone）</strong>。
+                </p>
+
+                <h2>死區的物理成因</h2>
+                <p>
+                    直流馬達的轉子需要產生足夠的電磁扭矩來克服以下阻力之後才會啟動：
+                </p>
+                <ul>
+                    <li><strong>軸承摩擦力</strong>：轉軸與軸承之間的機械摩擦</li>
+                    <li><strong>齒輪系靜摩擦</strong>：減速齒輪組的嚙合阻力</li>
+                    <li><strong>負載慣性</strong>：車輪與車體的質量慣性矩</li>
+                    <li><strong>輪胎與地面的接觸摩擦</strong>：尤其在粗糙表面上更為顯著</li>
+                </ul>
+                <p>
+                    每台車的死區值都不同，即使是同一批次的馬達，左右兩側的死區也可能存在差異。
+                    因此，死區補償必須透過<strong>逐台校準（Per-Unit Calibration）</strong>來完成。
+                </p>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        死區對差速驅動的影響在<strong>低速轉彎</strong>時最為嚴重。
+                        如果內側輪的 PWM 落入死區而不轉，外側輪卻在轉，車體會變成意料之外的「單輪旋轉」——
+                        實際 ICC 位置與計算值完全不同，軌跡誤差可能高達數十公分。
+                    </div>
+                </div>
+
+                <h2>測量你的馬達死區</h2>
+                <p>
+                    死區測量是一個簡單但重要的校準步驟。對每顆馬達獨立測量，找出讓馬達「剛好開始穩定轉動」的最小 PWM 值：
+                </p>
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>從 PWM = 0 開始逐步遞增</h4>
+                            <p>每次增加 5，觀察馬達是否開始轉動。記錄<strong>首次穩定旋轉</strong>的 PWM 值。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>對左右馬達分別測量</h4>
+                            <p>記錄 \(PWM_{min,L}\) 和 \(PWM_{min,R}\)。典型值介於 30–60 之間。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>在不同表面重複測量</h4>
+                            <p>地毯的摩擦力較大，死區值通常會比磁磚高出 10–20。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>線性映射補償</h2>
+                <p>
+                    測量完死區後，我們使用 <code>map()</code> 函式建立一個<strong>虛擬的線性控制通道</strong>：
+                    將軟體層的 0–255 指令映射到硬體層的 \(PWM_{min}\)–255 輸出，
+                    確保軟體端的「0」代表停止、「1」就代表最低的實際轉速。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 死區補償：線性映射</span><br>
+                    <span class="c-kw">const int</span> <span class="c-attr">DEAD_ZONE_L</span> <span class="c-white">= 42;</span>  <span class="c-comment">// 左馬達實測死區</span><br>
+                    <span class="c-kw">const int</span> <span class="c-attr">DEAD_ZONE_R</span> <span class="c-white">= 38;</span>  <span class="c-comment">// 右馬達實測死區</span><br>
+                    <br>
+                    <span class="c-kw">int</span> <span class="c-attr">compensate</span><span class="c-white">(</span><span class="c-kw">int</span> <span class="c-attr">input</span><span class="c-white">,</span> <span class="c-kw">int</span> <span class="c-attr">deadZone</span><span class="c-white">) {</span><br>
+                    <span class="c-white">    </span><span class="c-kw">if</span><span class="c-white"> (</span><span class="c-attr">input</span><span class="c-white"> == 0) </span><span class="c-kw">return</span><span class="c-white"> 0;</span>  <span class="c-comment">// 0 就是停止</span><br>
+                    <span class="c-white">    </span><span class="c-kw">return</span><span class="c-white"> map(</span><span class="c-attr">input</span><span class="c-white">, 1, 255, </span><span class="c-attr">deadZone</span><span class="c-white">, 255);</span><br>
+                    <span class="c-white">}</span><br>
+                    <br>
+                    <span class="c-comment">// 使用範例</span><br>
+                    <span class="c-kw">int</span> <span class="c-attr">pwmL</span> <span class="c-white">= compensate(50,</span> <span class="c-attr">DEAD_ZONE_L</span><span class="c-white">);</span>  <span class="c-comment">// 50 → 83（跳過死區）</span><br>
+                    <span class="c-kw">int</span> <span class="c-attr">pwmR</span> <span class="c-white">= compensate(50,</span> <span class="c-attr">DEAD_ZONE_R</span><span class="c-white">);</span>  <span class="c-comment">// 50 → 81</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        將死區校準值存放在 <code>CALIBRATION.md</code> 或 <code>config.h</code> 中，
+                        而不是寫死（Hard-code）在運動學函式裡。這樣每台車可以有自己的校準檔案，
+                        程式碼不需要為每台車做修改。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -693,39 +813,166 @@
                 </div>
 
                 <h1>⚖️ 3. 等比例縮放演算法</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
-                                當最大輪需求超過 255，我們使用「縮放（Scaling）」而非「裁剪（Clipping）」。計算縮放係數 $Factor = 255 / \max(L,
-                                R)$，確保運動幾何關係不變。
-                            </p>
-<div class="bg-blue-500/10 p-8 rounded-3xl border border-blue-500/20 shadow-inner text-justify text-justify">
-<h4 class="font-bold text-blue-400 mb-4 text-xs uppercase tracking-widest text-center text-justify text-left">
-                                    Geometric Scaling</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify text-justify">
-<li class="flex items-start gap-2 text-justify text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">維繫比例</strong>：即使速度變慢，轉彎半徑依然維持理論預期。
-                                        </div>
-</li>
-<li class="flex items-start gap-2 text-justify text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify text-justify"></span>
-<div><strong class="text-white text-justify">平滑過渡</strong>：防止在高負擔動作下車體發生劇烈抖動或打滑。
-                                        </div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-blue-600/10 p-10 rounded-3xl border border-blue-500/20 text-center relative overflow-hidden group">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-blue-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-blue-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">
-                                Fidelity Shield</h4>
-<div class="text-4xl font-extrabold text-white mb-2">1:1 Ratio</div>
-<p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center text-justify text-left">
-                                "物理極限是限制，但縮放讓幾何依然自由。"
-                            </p>
-</div>
-</div>
+
+                <p>
+                    理解了飽和裁剪的危害和死區的成因之後，我們終於要來實作解決方案：
+                    <strong>等比例縮放（Proportional Scaling）</strong>演算法。
+                    核心思想非常簡單——當任一輪的 PWM 需求超過 255 時，
+                    計算一個縮放係數 \(Factor = \frac{255}{\max(V_L, V_R)}\)，
+                    並將<strong>兩輪同時乘以此係數</strong>，從而在降低速度的同時完美保持速度比例。
+                </p>
+
+                <h2>演算法步驟</h2>
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>計算原始輪速需求</h4>
+                            <p>透過 ICC 逆向運動學公式，得到左右輪的理想 PWM 值 \((V_L, V_R)\)。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>檢測是否超出上限</h4>
+                            <p>取得兩輪的最大絕對值：<code>maxVal = max(abs(V_L), abs(V_R))</code>。如果 <code>maxVal &lt;= 255</code>，無需縮放。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>計算並套用縮放係數</h4>
+                            <p>縮放係數 \(f = 255 / maxVal\)。將兩輪同時乘以 \(f\)：<code>V_L *= f; V_R *= f;</code></p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>套用死區補償</h4>
+                            <p>縮放後的值可能落入死區。最後一步需通過死區映射確保馬達確實會轉動。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>完整實作程式碼</h2>
+                <div class="ms-code">
+                    <span class="c-kw">struct</span> <span class="c-tag">NormalizedPWM</span> <span class="c-white">{</span> <span class="c-kw">int</span> <span class="c-attr">left</span><span class="c-white">;</span> <span class="c-kw">int</span> <span class="c-attr">right</span><span class="c-white">;</span> <span class="c-kw">bool</span> <span class="c-attr">scaled</span><span class="c-white">; };</span><br>
+                    <br>
+                    <span class="c-tag">NormalizedPWM</span> <span class="c-white">normalizePWM(</span><span class="c-kw">float</span> <span class="c-attr">vL</span><span class="c-white">,</span> <span class="c-kw">float</span> <span class="c-attr">vR</span><span class="c-white">) {</span><br>
+                    <span class="c-white">    </span><span class="c-tag">NormalizedPWM</span> <span class="c-attr">result</span><span class="c-white">;</span><br>
+                    <span class="c-white">    </span><span class="c-attr">result</span><span class="c-white">.scaled = </span><span class="c-kw">false</span><span class="c-white">;</span><br>
+                    <br>
+                    <span class="c-white">    </span><span class="c-kw">float</span> <span class="c-attr">maxVal</span> <span class="c-white">= max(abs(</span><span class="c-attr">vL</span><span class="c-white">), abs(</span><span class="c-attr">vR</span><span class="c-white">));</span><br>
+                    <span class="c-white">    </span><span class="c-kw">if</span><span class="c-white"> (</span><span class="c-attr">maxVal</span><span class="c-white"> &gt; 255) {</span><br>
+                    <span class="c-white">        </span><span class="c-kw">float</span> <span class="c-attr">factor</span> <span class="c-white">= 255.0 / </span><span class="c-attr">maxVal</span><span class="c-white">;</span><br>
+                    <span class="c-white">        </span><span class="c-attr">vL</span> <span class="c-white">*= </span><span class="c-attr">factor</span><span class="c-white">;</span><br>
+                    <span class="c-white">        </span><span class="c-attr">vR</span> <span class="c-white">*= </span><span class="c-attr">factor</span><span class="c-white">;</span><br>
+                    <span class="c-white">        </span><span class="c-attr">result</span><span class="c-white">.scaled = </span><span class="c-kw">true</span><span class="c-white">;</span><br>
+                    <span class="c-white">    }</span><br>
+                    <br>
+                    <span class="c-white">    </span><span class="c-attr">result</span><span class="c-white">.left  = (</span><span class="c-kw">int</span><span class="c-white">)</span><span class="c-attr">vL</span><span class="c-white">;</span><br>
+                    <span class="c-white">    </span><span class="c-attr">result</span><span class="c-white">.right = (</span><span class="c-kw">int</span><span class="c-white">)</span><span class="c-attr">vR</span><span class="c-white">;</span><br>
+                    <span class="c-white">    </span><span class="c-kw">return</span> <span class="c-attr">result</span><span class="c-white">;</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <h2>驗證：縮放是否守住了比例？</h2>
+                <p>
+                    以下表格展示了多組輸入經過等比例縮放後，速度比是否依然正確：
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>輸入 \(V_L\)</th>
+                            <th>輸入 \(V_R\)</th>
+                            <th>原始比例</th>
+                            <th>縮放後 \(V_L\)</th>
+                            <th>縮放後 \(V_R\)</th>
+                            <th>縮放比例</th>
+                            <th>比例守恆？</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>300</td>
+                            <td>150</td>
+                            <td>2.00</td>
+                            <td>255</td>
+                            <td>127</td>
+                            <td>2.01</td>
+                            <td><span class="check"><i class="fas fa-check"></i></span></td>
+                        </tr>
+                        <tr>
+                            <td>400</td>
+                            <td>200</td>
+                            <td>2.00</td>
+                            <td>255</td>
+                            <td>127</td>
+                            <td>2.01</td>
+                            <td><span class="check"><i class="fas fa-check"></i></span></td>
+                        </tr>
+                        <tr>
+                            <td>510</td>
+                            <td>170</td>
+                            <td>3.00</td>
+                            <td>255</td>
+                            <td>85</td>
+                            <td>3.00</td>
+                            <td><span class="check"><i class="fas fa-check"></i></span></td>
+                        </tr>
+                        <tr>
+                            <td>200</td>
+                            <td>180</td>
+                            <td>1.11</td>
+                            <td>200</td>
+                            <td>180</td>
+                            <td>1.11</td>
+                            <td><span class="check"><i class="fas fa-check"></i></span> 無需縮放</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        微小的比例誤差（如 2.00 vs 2.01）是因為整數取整（truncation）造成的。
+                        在實際應用中，這個精度等級完全可以接受。如果需要更高精度，
+                        可以使用 <code>round()</code> 取代直接的整數截斷。
+                    </div>
+                </div>
+
+                <h2>整合：縮放 + 死區補償的完整流程</h2>
+                <p>
+                    在完整的馬達驅動流程中，等比例縮放與死區補償應按照正確的順序串聯：
+                    先進行縮放以保護比例，再套用死區映射以消除靜摩擦。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 完整的 PWM 輸出管線</span><br>
+                    <span class="c-kw">void</span> <span class="c-attr">applyMotorOutput</span><span class="c-white">(</span><span class="c-kw">float</span> <span class="c-attr">rawL</span><span class="c-white">,</span> <span class="c-kw">float</span> <span class="c-attr">rawR</span><span class="c-white">) {</span><br>
+                    <span class="c-white">    </span><span class="c-comment">// Step 1: 等比例縮放</span><br>
+                    <span class="c-white">    </span><span class="c-tag">NormalizedPWM</span> <span class="c-attr">n</span> <span class="c-white">= normalizePWM(</span><span class="c-attr">rawL</span><span class="c-white">,</span> <span class="c-attr">rawR</span><span class="c-white">);</span><br>
+                    <br>
+                    <span class="c-white">    </span><span class="c-comment">// Step 2: 死區補償</span><br>
+                    <span class="c-white">    </span><span class="c-kw">int</span> <span class="c-attr">finalL</span> <span class="c-white">= compensate(</span><span class="c-attr">n</span><span class="c-white">.left, </span> <span class="c-attr">DEAD_ZONE_L</span><span class="c-white">);</span><br>
+                    <span class="c-white">    </span><span class="c-kw">int</span> <span class="c-attr">finalR</span> <span class="c-white">= compensate(</span><span class="c-attr">n</span><span class="c-white">.right,</span> <span class="c-attr">DEAD_ZONE_R</span><span class="c-white">);</span><br>
+                    <br>
+                    <span class="c-white">    </span><span class="c-comment">// Step 3: 輸出至馬達</span><br>
+                    <span class="c-white">    analogWrite(</span><span class="c-attr">PIN_L</span><span class="c-white">,</span> <span class="c-attr">finalL</span><span class="c-white">);</span><br>
+                    <span class="c-white">    analogWrite(</span><span class="c-attr">PIN_R</span><span class="c-white">,</span> <span class="c-attr">finalR</span><span class="c-white">);</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        記住核心原則：<strong>先縮放，再補償</strong>。如果順序相反（先補償死區再縮放），
+                        死區映射產生的偏移量也會被縮放，導致補償效果失真。
+                        正確的管線順序是：運動學計算 → 等比例縮放 → 死區補償 → PWM 輸出。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -809,16 +1056,81 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>測試你對本模組核心概念的掌握程度。請選出每題的最佳答案，提交後可查看詳細解析。</p>
+
+                <form id="quiz-form" onsubmit="return false;">
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">1. PWM 飽和 (Saturation) 是什麼意思？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="A" style="margin-right:8px;"> A. PWM 訊號的頻率達到最大值</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 佔空比已達到 0% 或 100% 的極限，無法再增減</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="C" style="margin-right:8px;"> C. PWM 訊號停止輸出</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="D" style="margin-right:8px;"> D. PWM 的電壓超過安全範圍</label>
+                        <div id="exp-1" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">2. 死區 (Dead Zone) 現象指的是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 馬達轉速過快導致停機</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 低 PWM 值時馬達無法克服靜摩擦力而無法轉動</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 電池耗盡</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 感測器失去訊號</label>
+                        <div id="exp-2" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">3. 等比例縮放 (Proportional Scaling) 演算法的目的是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 讓兩顆馬達都以最大速度運轉</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 當某一輪的 PWM 值飽和時，保持左右輪速差的比例關係</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 將 PWM 值全部設為零</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 增加 PWM 的頻率</label>
+                        <div id="exp-3" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">4. PWM 飽和對 PID 控制器中的積分項 (I) 會造成什麼影響？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 沒有任何影響</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 積分項持續累加卻無法輸出，造成積分飽和 (Integral Windup)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 積分項會自動歸零</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 積分項會反向減少</label>
+                        <div id="exp-4" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+                </form>
+
+                <div style="display:flex;gap:12px;margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+                <div id="quiz-result" style="display:none;margin-top:20px;padding:16px;border-radius:6px;font-size:14px;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -876,9 +1188,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「限制與飽和：PWM 的物理極限」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「限制與飽和：PWM 的物理極限」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -894,7 +1206,8 @@
         { id: 3, label: '👻 2. 死區 (Dead Zone) 現象 (15 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '️ 3. 等比例縮放演算法', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -914,6 +1227,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1015,8 +1329,61 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'B', q3: 'B', q4: 'B' };
+    const QUIZ_EXPLANATIONS = { q1: 'PWM 飽和指佔空比達到極限（0% 或 100%），即使控制器要求更大的輸出，實際的 PWM 值也無法再增加或減少。', q2: '死區是指 PWM 值低於某個門檻時，馬達的扭力不足以克服機械靜摩擦力，導致馬達完全不動。', q3: '等比例縮放在某輪 PWM 即將超出範圍時，將兩輪的 PWM 值等比例縮小，確保控制器計算出的轉向比例不被破壞。', q4: 'PWM 飽和時，輸出無法增加但誤差仍存在，積分項持續累加形成「Integral Windup」，解除飽和時會產生嚴重的超調。' };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const idx = q.slice(1);
+            const exp = document.getElementById(`exp-${idx}`);
+            if (!selected) continue;
+            if (selected.value === correct) {
+                score++;
+                exp.style.display = 'block';
+                exp.style.background = '#dff6dd';
+                exp.style.borderLeftColor = '#107c10';
+                exp.innerHTML = '<i class="fas fa-check-circle" style="color:#107c10;margin-right:6px;"></i>' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#dff6dd';
+                selected.parentElement.style.borderColor = '#107c10';
+            } else {
+                exp.style.display = 'block';
+                exp.style.background = '#fde7e9';
+                exp.style.borderLeftColor = '#d13438';
+                exp.innerHTML = '<i class="fas fa-times-circle" style="color:#d13438;margin-right:6px;"></i>正確答案是 ' + correct + '。' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#fde7e9';
+                selected.parentElement.style.borderColor = '#d13438';
+            }
+        }
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === total) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.innerHTML = '<strong style="color:#107c10;">🎉 滿分！' + score + ' / ' + total + '</strong><br>你完全掌握了本模組的核心概念！';
+            markDone(6);
+        } else {
+            resultEl.style.background = '#fff4ce';
+            resultEl.innerHTML = '<strong style="color:#8a6914;">得分：' + score + ' / ' + total + '</strong><br>建議複習錯題的解析說明，再試一次！';
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= 4; i++) {
+            const exp = document.getElementById('exp-' + i);
+            if (exp) { exp.style.display = 'none'; exp.style.background = ''; exp.style.borderLeftColor = 'transparent'; }
+        }
+        document.querySelectorAll('#quiz-form label').forEach(l => { l.style.background = ''; l.style.borderColor = '#e1dfdd'; });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 10：差速驅動控制';
 </script>
 
 <!-- Define Resources -->

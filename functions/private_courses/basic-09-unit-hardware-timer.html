@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>硬體定時器 (Hardware Timer) 與 ISR - Vibe Coding Learn</title>
+    <title>硬體定時器 (Hardware Timer) 與 ISR - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -465,6 +467,37 @@
             .compare-grid { grid-template-columns: 1fr; }
         }
 
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
+            border: 1px solid #e1dfdd;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background .1s, border-color .1s;
+            font-size: 14px;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback {
+            display: none;
+            margin-top: 8px;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
+        .quiz-submit { margin-top: 16px; }
+
     </style>
 </head>
 
@@ -472,9 +505,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 9 - 多工處理</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +519,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">硬體定時器 (Hardware Timer) 與 ISR</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 9</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -521,9 +552,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>什麼是硬體定時器？</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>🚫 2. ISR 三大禁忌</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>🛡️ 3. volatile 變數共享</strong> 的調校技巧與穩定性測試。</li>
+                    <li>能夠配置 ESP32 硬體定時器並撰寫帶有 <code>IRAM_ATTR</code> 屬性的 ISR，驗證即使 <code>loop()</code> 被阻塞，定時任務仍精準執行。</li>
+                    <li>能夠遵守 ISR 的「快進快出」原則——禁止在中斷內使用 <code>delay()</code>、<code>Serial.print()</code> 或複雜運算，並說明違反規則的後果。</li>
+                    <li>能夠正確使用 <code>volatile</code> 關鍵字與臨界區保護（<code>portENTER_CRITICAL</code>）確保 ISR 與主程式間共享變數的數據一致性。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -554,15 +585,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>硬體定時器 (Hardware Timer) 與 ISR</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    當你需要「精確到微秒」的定時觸發——例如固定頻率的 PID 控制迴圈或感測器取樣——軟體 <code>millis()</code> 就不夠用了。
+                    ESP32 內建硬體定時器，能透過中斷服務常式（ISR）在指定週期自動觸發，完全不受主迴圈負載影響。
+                    本單元教你設定硬體 Timer、撰寫安全的 ISR，並理解 ISR 中的限制與注意事項。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的循線車需要每 10ms 精確讀取一次光感測器陣列，再即時計算 PID 修正量。
+                    如果把讀取邏輯放在 <code>loop()</code> 裡用 <code>millis()</code> 計時，任何一段阻塞程式碼都會導致取樣抖動。
+                    掛載硬體定時器後，無論主程式在忙什麼，每 10ms ISR 都會準時觸發——穩定性天差地別。
                 </div>
 
                 <h2>教學影片</h2>
@@ -590,39 +622,132 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⏰ 1. 什麼是硬體定時器？</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tight">
-                                處理器內部「小鬧鐘」。時間一到，「強行暫停」主程式 (Loop) 執行緊急任務。
-                            </p>
-<div class="p-6 rounded-2xl border border-blue-100 bg-blue-50 text-justify uppercase tracking-widest">
-<h4 class="font-bold text-blue-900 mb-4 text-xs uppercase tracking-widest leading-relaxed text-justify">
-                                    Active vs Passive</h4>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-justify">
-<div class="p-4 rounded-xl shadow-sm bg-white text-justify">
-<p class="text-blue-800 font-bold mb-1 text-[10px] text-justify">millis() - 被動
-                                        </p>
-<p class="text-slate-500 text-[9px] text-justify">loop 中手動檢查。易受阻塞失效。</p>
-</div>
-<div class="p-4 rounded-xl shadow-sm border border-blue-200 bg-white text-justify">
-<p class="text-indigo-800 font-bold mb-1 text-[10px] text-justify">Timer - 主動
-                                        </p>
-<p class="text-slate-500 text-[9px] text-justify">強迫中斷 loop。精度極高。</p>
-</div>
-</div>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center bg-slate-900 text-justify uppercase tracking-widest font-black">
-<h4 class="font-bold text-slate-500 mb-6 uppercase tracking-widest text-[10px] text-justify">
-                                ESP32 Hardware Resource</h4>
-<div class="text-2xl font-mono text-cyan-400 mb-2 text-justify uppercase tracking-widest font-black">
-                                \[4 \times Hardware Timers\]</div>
-<p class="text-slate-500 italic text-[10px] text-justify uppercase tracking-tighter">
-                                Resolution: Microseconds (\(\mu s\))</p>
-</div>
-</div>
+                <h1>什麼是硬體定時器？</h1>
+
+                <p>硬體定時器（Hardware Timer）是微控制器內部的一個<strong>獨立計數電路</strong>。它由處理器的時鐘訊號驅動，以固定頻率遞增或遞減一個暫存器。當計數器達到預設值時，它會自動產生一個<strong>中斷訊號</strong>，強制 CPU 暫停當前工作、跳轉到你指定的中斷服務常式（ISR）執行。</p>
+
+                <p>與 <code>millis()</code> 相比，硬體定時器的核心差異在於「主動」vs「被動」：</p>
+
+                <ul>
+                    <li><code>millis()</code> 是<strong>被動</strong>的——你必須在 <code>loop()</code> 中主動檢查時間差。如果 loop 被某段長程式碼阻塞，檢查就會延遲。</li>
+                    <li>硬體定時器是<strong>主動</strong>的——無論 CPU 正在執行什麼程式碼，時間一到就「搶佔」CPU 的控制權，跳轉執行 ISR。</li>
+                </ul>
+
+                <h2>ESP32 的定時器資源</h2>
+
+                <p>ESP32 內建 <strong>4 組通用硬體定時器</strong>（Timer 0~3），分為 2 組（Group 0 和 Group 1），每組各 2 個。這些定時器的特性如下：</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>特性</th>
+                            <th>規格</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>計數器位元數</td>
+                            <td>64-bit（可計數極長時間）</td>
+                        </tr>
+                        <tr>
+                            <td>基準時鐘</td>
+                            <td>APB Clock = 80 MHz</td>
+                        </tr>
+                        <tr>
+                            <td>預分頻器 (Prescaler)</td>
+                            <td>16-bit（1 ~ 65,536）</td>
+                        </tr>
+                        <tr>
+                            <td>最小解析度</td>
+                            <td>12.5 ns（80MHz 下）</td>
+                        </tr>
+                        <tr>
+                            <td>實用精度</td>
+                            <td>1 μs（prescaler = 80 時）</td>
+                        </tr>
+                        <tr>
+                            <td>中斷觸發</td>
+                            <td>警報值匹配時自動產生 IRQ</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>Prescaler 的作用</strong>
+                        預分頻器將 80 MHz 的時鐘除頻後送入計數器。設定 prescaler = 80 時，計數器每 1 微秒（μs）加 1，非常方便換算。設定 prescaler = 8000 時，每 100μs 加 1，適合較長週期的定時。
+                    </div>
+                </div>
+
+                <h2>配置硬體定時器（Arduino-ESP32）</h2>
+
+                <p>以下範例配置 Timer 0 以 1 秒為週期觸發中斷：</p>
+
+                <div class="ms-code">
+<span class="c-attr">hw_timer_t</span><span class="c-white"> *timer = </span><span class="c-val">NULL</span><span class="c-white">;</span>
+<span class="c-white"></span>
+<span class="c-kw">void</span> <span class="c-tag">setup</span><span class="c-white">() {</span>
+<span class="c-white">    </span><span class="c-comment">// 第 1 步：初始化 Timer 0，prescaler = 80 → 每 1μs 計數一次</span>
+<span class="c-white">    timer = </span><span class="c-tag">timerBegin</span><span class="c-white">(</span><span class="c-val">0</span><span class="c-white">, </span><span class="c-val">80</span><span class="c-white">, </span><span class="c-val">true</span><span class="c-white">);  </span><span class="c-comment">// timer_id, prescaler, count-up</span>
+<span class="c-white"></span>
+<span class="c-white">    </span><span class="c-comment">// 第 2 步：綁定 ISR 函式</span>
+<span class="c-white">    </span><span class="c-tag">timerAttachInterrupt</span><span class="c-white">(timer, &amp;onTimer, </span><span class="c-val">true</span><span class="c-white">);</span>
+<span class="c-white"></span>
+<span class="c-white">    </span><span class="c-comment">// 第 3 步：設定警報值 = 1,000,000 μs = 1 秒</span>
+<span class="c-white">    </span><span class="c-tag">timerAlarmWrite</span><span class="c-white">(timer, </span><span class="c-val">1000000</span><span class="c-white">, </span><span class="c-val">true</span><span class="c-white">);  </span><span class="c-comment">// 值, 自動重載</span>
+<span class="c-white"></span>
+<span class="c-white">    </span><span class="c-comment">// 第 4 步：啟動定時器</span>
+<span class="c-white">    </span><span class="c-tag">timerAlarmEnable</span><span class="c-white">(timer);</span>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>millis() vs 硬體定時器比較</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>面向</th>
+                            <th>millis() 軟體計時</th>
+                            <th>Hardware Timer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>觸發方式</td>
+                            <td>被動：loop 中手動檢查</td>
+                            <td>主動：硬體中斷搶佔</td>
+                        </tr>
+                        <tr>
+                            <td>受阻塞影響</td>
+                            <td><span class="cross"><i class="fas fa-times-circle"></i></span> 是</td>
+                            <td><span class="check"><i class="fas fa-check-circle"></i></span> 否</td>
+                        </tr>
+                        <tr>
+                            <td>精度</td>
+                            <td>毫秒級（受 loop 速度影響）</td>
+                            <td>微秒級（硬體保證）</td>
+                        </tr>
+                        <tr>
+                            <td>適用場景</td>
+                            <td>LED 閃爍、定期回報</td>
+                            <td>PID 控制、精確取樣、安全監控</td>
+                        </tr>
+                        <tr>
+                            <td>程式複雜度</td>
+                            <td>低</td>
+                            <td>中（需遵守 ISR 規範）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>何時該用硬體定時器？</strong>
+                        當你的任務對時間精度有嚴格要求（如固定頻率 PID、精確的 PWM 產生、或安全相關的超時監控），且不容許被主程式中的任何延遲干擾時，就該使用硬體定時器。一般的 LED 閃爍或狀態回報，用 <code>millis()</code> 就足夠了。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -641,45 +766,118 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🚫 2. ISR 三大禁忌</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify uppercase tracking-widest">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tighter">
-                                中斷代碼必須「快進快出」。執行太久會導致系統 Watchdog 重啟甚至崩潰。
-                            </p>
-<div class="grid grid-cols-1 gap-4 text-justify font-black">
-<div class="flex items-center gap-4 p-4 rounded-2xl border border-rose-100 bg-rose-50 text-justify">
-<span class="w-2 h-2 bg-red-500 rounded-full animate-ping text-justify"></span>
-<p class="text-rose-900 font-bold uppercase tracking-widest text-[10px] text-justify">
-                                        NO delay() &amp; Serial.print()</p>
-</div>
-<div class="flex items-center gap-4 p-4 rounded-2xl border border-orange-100 bg-orange-50 text-justify uppercase tracking-tighter">
-<span class="w-2 h-2 bg-orange-500 rounded-full text-justify"></span>
-<p class="text-orange-900 font-bold uppercase tracking-widest text-[10px] text-justify uppercase tracking-widest">
-                                        NO Complex Calculation</p>
-</div>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 relative overflow-hidden group bg-slate-900 text-justify">
-<div class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent text-justify">
-</div>
-<div class="flex items-center gap-3 mb-6 relative z-10 text-justify">
-<span class="w-3 h-3 bg-red-400 rounded-full"></span>
-<span class="w-3 h-3 bg-amber-400 rounded-full"></span>
-<span class="w-3 h-3 bg-emerald-400 rounded-full"></span>
-<span class="ml-auto text-[10px] text-slate-500 font-mono tracking-widest uppercase text-justify uppercase tracking-widest font-black">IRAM
-                                    ATTRIBUTE</span>
-</div>
-<pre class="text-xs md:text-sm leading-relaxed overflow-x-auto text-rose-300 font-mono relative z-10 text-justify uppercase tracking-widest font-black text-left">
-<span class="text-slate-500 text-justify uppercase tracking-widest font-black">// ISR 存放在 RAM 獲取極速響應</span>
-<span class="text-purple-400 text-justify">void</span> <span class="text-yellow-400 text-justify uppercase tracking-widest">IRAM_ATTR</span> <span class="text-emerald-400 text-justify">onTimer</span>() {
-  <span class="text-purple-400 text-justify uppercase tracking-widest">digitalWrite</span>(LED_P, !<span class="text-purple-400 uppercase tracking-widest">digitalRead</span>(LED_P));
-}
+                <h1>ISR 三大禁忌</h1>
 
-<span class="text-slate-500 text-justify uppercase tracking-widest font-black">// Fast in, Fast out.</span></pre>
-</div>
-</div>
+                <p>中斷服務常式（ISR）是在中斷觸發時由硬體「強行」呼叫的函式。在 ISR 執行期間，正常的程式流程被暫停，其他中斷也可能被遮罩。因此 ISR 必須遵守<strong>「快進快出」</strong>原則——只做最必要的操作，然後立即返回。</p>
+
+                <p>如果 ISR 執行時間過長，會導致：系統看門狗 (WDT) 觸發重啟、其他中斷被延遲、主程式的執行時間被壓縮。以下是 ESP32 ISR 中的三條鐵律。</p>
+
+                <h2>禁忌一：禁止使用 delay() 或任何阻塞函式</h2>
+
+                <p><code>delay()</code> 依賴系統 tick 中斷來計時，但在 ISR 內部，中斷已被禁用——呼叫 <code>delay()</code> 會導致程式<strong>永久卡死</strong>（因為計時中斷永遠不會觸發）。同理，任何依賴中斷的阻塞操作（如 <code>pulseIn()</code>、<code>Wire.requestFrom()</code>）都不可使用。</p>
+
+                <h2>禁忌二：禁止使用 Serial.print() 或任何 I/O 函式</h2>
+
+                <p><code>Serial.print()</code> 需要操作 UART 緩衝區，涉及中斷驅動的佇列管理。在 ISR 內呼叫會造成遞迴中斷衝突或資料損毀。同理，<code>WiFi</code>、<code>BLE</code>、<code>SPI</code> 等通訊函式也絕對禁止在 ISR 中使用。</p>
+
+                <h2>禁忌三：禁止複雜運算或長時間邏輯</h2>
+
+                <p>浮點數運算、迴圈遍歷、動態記憶體分配（<code>malloc</code>/<code>new</code>）都不應出現在 ISR 中。ESP32 的 Xtensa 核心在 ISR 內的浮點運算會觸發額外的上下文保存開銷，嚴重影響效能。</p>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>違反後果</strong>
+                        違反以上規則的常見症狀包括：系統無預警重啟（WDT reset）、Serial Monitor 出現亂碼「Guru Meditation Error」、程式行為不可預測。這些問題非常難以除錯，因為症狀可能與觸發原因在時間上分離。
+                    </div>
+                </div>
+
+                <h2>ISR 的正確寫法</h2>
+
+                <p>ISR 的標準模式是：在中斷內<strong>只設定旗標 (flag)</strong>，在 <code>loop()</code> 中檢查旗標並執行實際工作。</p>
+
+                <div class="ms-code">
+<span class="c-kw">volatile bool</span> <span class="c-attr">timerFired</span> <span class="c-white">= </span><span class="c-val">false</span><span class="c-white">;</span>
+<span class="c-white"></span>
+<span class="c-comment">// ✅ 正確的 ISR：只做最少的事</span>
+<span class="c-kw">void</span> <span class="c-tag">IRAM_ATTR</span> <span class="c-white">onTimer() {</span>
+<span class="c-white">    timerFired = </span><span class="c-val">true</span><span class="c-white">;  </span><span class="c-comment">// 設定旗標，立即返回</span>
+<span class="c-white">}</span>
+<span class="c-white"></span>
+<span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span>
+<span class="c-white">    </span><span class="c-kw">if</span> <span class="c-white">(timerFired) {</span>
+<span class="c-white">        timerFired = </span><span class="c-val">false</span><span class="c-white">;</span>
+<span class="c-white">        </span><span class="c-comment">// 在這裡安全地執行複雜操作</span>
+<span class="c-white">        Serial.println(</span><span class="c-str">"Timer triggered!"</span><span class="c-white">);</span>
+<span class="c-white">        readSensorData();</span>
+<span class="c-white">    }</span>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>IRAM_ATTR 屬性的必要性</h2>
+
+                <p>ESP32 的程式碼預設儲存在外部 Flash 記憶體中，透過 Cache 載入 CPU 執行。但中斷發生時，若 ISR 的程式碼恰好不在 Cache 中，就需要從 Flash 載入——這會產生不可預測的延遲。</p>
+
+                <p>加上 <code>IRAM_ATTR</code> 屬性，強制將 ISR 函式存放在內部 RAM（IRAM），確保中斷觸發時能<strong>零延遲</strong>執行：</p>
+
+                <div class="ms-code">
+<span class="c-comment">// IRAM_ATTR 確保此函式永遠在 RAM 中</span>
+<span class="c-kw">void</span> <span class="c-tag">IRAM_ATTR</span> <span class="c-white">onTimer() {</span>
+<span class="c-white">    </span><span class="c-tag">digitalWrite</span><span class="c-white">(LED_PIN, !</span><span class="c-tag">digitalRead</span><span class="c-white">(LED_PIN));</span>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>忘記 IRAM_ATTR 的後果</strong>
+                        若省略此屬性，在 Flash Cache Miss 時呼叫 ISR 會觸發 <code>LoadProhibited</code> 例外，導致系統崩潰。這是 ESP32 開發中非常常見的初學者錯誤。
+                    </div>
+                </div>
+
+                <h2>ISR 規範速查表</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>操作</th>
+                            <th>可否在 ISR 中使用</th>
+                            <th>替代方案</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>digitalWrite()</code></td>
+                            <td><span class="check"><i class="fas fa-check-circle"></i></span> 可以</td>
+                            <td>—</td>
+                        </tr>
+                        <tr>
+                            <td>設定 <code>volatile</code> 旗標</td>
+                            <td><span class="check"><i class="fas fa-check-circle"></i></span> 可以</td>
+                            <td>—</td>
+                        </tr>
+                        <tr>
+                            <td><code>delay()</code></td>
+                            <td><span class="cross"><i class="fas fa-times-circle"></i></span> 禁止</td>
+                            <td>在 loop 中計時</td>
+                        </tr>
+                        <tr>
+                            <td><code>Serial.print()</code></td>
+                            <td><span class="cross"><i class="fas fa-times-circle"></i></span> 禁止</td>
+                            <td>設旗標後在 loop 印出</td>
+                        </tr>
+                        <tr>
+                            <td>浮點運算</td>
+                            <td><span class="cross"><i class="fas fa-times-circle"></i></span> 避免</td>
+                            <td>改用整數運算</td>
+                        </tr>
+                        <tr>
+                            <td><code>malloc()</code> / <code>new</code></td>
+                            <td><span class="cross"><i class="fas fa-times-circle"></i></span> 禁止</td>
+                            <td>預先配置靜態記憶體</td>
+                        </tr>
+                    </tbody>
+                </table>
                 
             </div>
             <div class="unit-nav">
@@ -698,43 +896,134 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🛡️ 3. volatile 變數共享</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify uppercase tracking-tighter">
-                                當 Loop 與中斷共用變數時，告訴編譯器：不准優化暫存。
-                            </p>
-<div class="p-8 rounded-3xl border border-amber-500/20 shadow-inner bg-amber-500/10 text-justify uppercase tracking-widest font-black">
-<h4 class="font-bold text-amber-400 mb-4 text-xs uppercase tracking-widest text-justify">
-                                    Memory Visibility</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify uppercase tracking-widest">
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">volatile
-                                                修飾字</strong>：每次都從內存讀取，不可讀取暫存器副本。</div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">數據完整性</strong>：防止主程式讀到「舊時空」過期數據。
-                                        </div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mt-1"></span>
-<div><strong class="text-white">臨界區保護</strong>：多位元數值需原子操作。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 p-10 rounded-3xl border border-amber-500/20 text-center relative overflow-hidden group bg-amber-600/10 text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-amber-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify">
-</div>
-<h4 class="text-amber-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-justify uppercase tracking-widest font-black">
-                                Data Integrity</h4>
-<p class="text-slate-500 leading-relaxed font-light mb-8 italic text-[11px] text-justify uppercase tracking-tighter">
-                                "硬體計數核心在於確保 Loop 與中斷『看見』真相。"
-                            </p>
-<div class="inline-block px-8 py-3 bg-amber-500 text-white rounded-xl font-bold text-[10px] shadow-lg text-justify uppercase tracking-widest font-black">
-                                Apply Volatile Guard</div>
-</div>
-</div>
+                <h1>volatile 變數共享</h1>
+
+                <p>當 ISR 與 <code>loop()</code> 需要共享資料時（例如 ISR 遞增計數器，loop 讀取計數器計算 RPM），就會面臨一個隱藏的陷阱：<strong>編譯器最佳化</strong>可能讓 <code>loop()</code> 永遠讀不到 ISR 更新的值。</p>
+
+                <h2>為什麼需要 volatile？</h2>
+
+                <p>C/C++ 編譯器在最佳化時，會假設變數只能被「可見的程式流程」修改。如果它發現 <code>loop()</code> 中沒有任何程式碼修改某個變數，就可能把這個變數<strong>快取到 CPU 暫存器</strong>中，不再每次從記憶體讀取。</p>
+
+                <p>但 ISR 是在<strong>你看不到的時間點</strong>被硬體呼叫的——編譯器無法預見這件事。結果就是 <code>loop()</code> 可能永遠讀到舊值，即使 ISR 早已更新了記憶體中的資料。</p>
+
+                <div class="ms-code">
+<span class="c-comment">// ❌ 錯誤：缺少 volatile，loop 可能永遠看不到 ISR 的更新</span>
+<span class="c-kw">int</span> <span class="c-attr">counter</span> <span class="c-white">= </span><span class="c-val">0</span><span class="c-white">;</span>
+<span class="c-white"></span>
+<span class="c-kw">void</span> <span class="c-tag">IRAM_ATTR</span> <span class="c-white">onTimer() { counter++; }</span>
+<span class="c-white"></span>
+<span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span>
+<span class="c-white">    </span><span class="c-comment">// 編譯器可能把 counter 暫存在暫存器，永不重新讀取</span>
+<span class="c-white">    Serial.println(counter);  </span><span class="c-comment">// 可能永遠印出 0</span>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-code">
+<span class="c-comment">// ✅ 正確：volatile 強制每次從記憶體讀取</span>
+<span class="c-kw">volatile int</span> <span class="c-attr">counter</span> <span class="c-white">= </span><span class="c-val">0</span><span class="c-white">;</span>
+<span class="c-white"></span>
+<span class="c-kw">void</span> <span class="c-tag">IRAM_ATTR</span> <span class="c-white">onTimer() { counter++; }</span>
+<span class="c-white"></span>
+<span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span>
+<span class="c-white">    Serial.println(counter);  </span><span class="c-comment">// 每次都讀到最新值</span>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>volatile 的真正含義</strong>
+                        <code>volatile</code> 告訴編譯器：「這個變數可能在任何時候被外部因素改變（如中斷、DMA、硬體暫存器），你不可以對它做任何快取或優化假設。每次存取都必須直接讀寫記憶體。」
+                    </div>
+                </div>
+
+                <h2>臨界區保護（Critical Section）</h2>
+
+                <p><code>volatile</code> 只解決了「可見性」問題，但對於<strong>多位元組</strong>的資料（如 <code>unsigned long</code>、<code>float</code>、結構體），還存在「原子性」問題。</p>
+
+                <p>ESP32 是 32-bit 處理器，讀寫一個 32-bit 整數是原子操作（一條指令完成）。但 64-bit 的 <code>unsigned long long</code> 需要兩條指令——如果讀取到一半時 ISR 觸發並修改了值，你就會讀到「一半舊、一半新」的錯亂資料。</p>
+
+                <p>解決方案是使用<strong>臨界區 (Critical Section)</strong>：暫時禁用中斷，確保讀取操作不被打斷。</p>
+
+                <div class="ms-code">
+<span class="c-kw">volatile unsigned long</span> <span class="c-attr">pulseCount</span> <span class="c-white">= </span><span class="c-val">0</span><span class="c-white">;</span>
+<span class="c-attr">portMUX_TYPE</span> <span class="c-attr">timerMux</span> <span class="c-white">= </span><span class="c-tag">portMUX_INITIALIZER_UNLOCKED</span><span class="c-white">;</span>
+<span class="c-white"></span>
+<span class="c-kw">void</span> <span class="c-tag">IRAM_ATTR</span> <span class="c-white">onEncoder() {</span>
+<span class="c-white">    </span><span class="c-tag">portENTER_CRITICAL_ISR</span><span class="c-white">(&amp;timerMux);</span>
+<span class="c-white">    pulseCount++;</span>
+<span class="c-white">    </span><span class="c-tag">portEXIT_CRITICAL_ISR</span><span class="c-white">(&amp;timerMux);</span>
+<span class="c-white">}</span>
+<span class="c-white"></span>
+<span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span>
+<span class="c-white">    </span><span class="c-kw">unsigned long</span> <span class="c-attr">count</span><span class="c-white">;</span>
+<span class="c-white"></span>
+<span class="c-white">    </span><span class="c-comment">// 安全讀取：禁用中斷期間複製變數</span>
+<span class="c-white">    </span><span class="c-tag">portENTER_CRITICAL</span><span class="c-white">(&amp;timerMux);</span>
+<span class="c-white">    count = pulseCount;</span>
+<span class="c-white">    pulseCount = </span><span class="c-val">0</span><span class="c-white">;  </span><span class="c-comment">// 讀取後歸零</span>
+<span class="c-white">    </span><span class="c-tag">portEXIT_CRITICAL</span><span class="c-white">(&amp;timerMux);</span>
+<span class="c-white"></span>
+<span class="c-white">    </span><span class="c-comment">// 安全地使用 count 進行計算</span>
+<span class="c-white">    </span><span class="c-kw">float</span> <span class="c-attr">rpm</span> <span class="c-white">= count * </span><span class="c-val">60.0</span> <span class="c-white">/ PULSES_PER_REV;</span>
+<span class="c-white">    Serial.println(rpm);</span>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>臨界區時間必須極短</strong>
+                        <code>portENTER_CRITICAL()</code> 會禁用中斷。如果在臨界區內執行太長時間，其他中斷會被延遲，可能導致資料遺失或系統行為異常。只在臨界區內做「複製」操作，複雜計算放在臨界區之外。
+                    </div>
+                </div>
+
+                <h2>共享變數防護清單</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>資料型別</th>
+                            <th>需要 volatile？</th>
+                            <th>需要臨界區？</th>
+                            <th>說明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>bool</code> / <code>uint8_t</code></td>
+                            <td><span class="check"><i class="fas fa-check-circle"></i></span> 是</td>
+                            <td>通常不需要</td>
+                            <td>8-bit 讀寫是原子操作</td>
+                        </tr>
+                        <tr>
+                            <td><code>int</code> / <code>uint32_t</code></td>
+                            <td><span class="check"><i class="fas fa-check-circle"></i></span> 是</td>
+                            <td>通常不需要</td>
+                            <td>32-bit 在 ESP32 上是原子的</td>
+                        </tr>
+                        <tr>
+                            <td><code>uint64_t</code> / <code>double</code></td>
+                            <td><span class="check"><i class="fas fa-check-circle"></i></span> 是</td>
+                            <td><span class="check"><i class="fas fa-check-circle"></i></span> 需要</td>
+                            <td>64-bit 需要兩次讀寫</td>
+                        </tr>
+                        <tr>
+                            <td>結構體 / 陣列</td>
+                            <td><span class="check"><i class="fas fa-check-circle"></i></span> 是</td>
+                            <td><span class="check"><i class="fas fa-check-circle"></i></span> 需要</td>
+                            <td>多欄位必須整體保護</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>最佳實踐模式</strong>
+                        養成習慣：所有在 ISR 中寫入、在 <code>loop()</code> 中讀取的變數，一律加上 <code>volatile</code>。遇到多位元組或需要同時讀取多個相關變數時，一律使用臨界區。寧可多保護也不要少保護——Data Race 的 Bug 極難復現和除錯。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -818,16 +1107,82 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
-                    <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div class="unit-completed-badge" id="badge-6" style="display:none">
+                        <i class="fas fa-check"></i> 已完成
+                    </div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <!-- Q1 -->
+                    <div class="quiz-question" id="q1">
+                        <p>1. 硬體定時器與 <code>millis()</code> 軟體計時的核心差異是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> <code>millis()</code> 更精確，硬體定時器的精度較低</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 硬體定時器能主動搶佔 CPU 執行 ISR，不受 <code>loop()</code> 阻塞影響</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 硬體定時器只能用於 LED 閃爍，無法用於感測器取樣</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="quiz-question" id="q2">
+                        <p>2. 以下哪個操作在 ISR（中斷服務常式）中是被<strong>禁止</strong>的？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 設定 <code>volatile bool</code> 旗標為 <code>true</code></label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 使用 <code>digitalWrite()</code> 切換 LED 腳位</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 呼叫 <code>Serial.print()</code> 輸出除錯訊息</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="quiz-question" id="q3">
+                        <p>3. 為什麼 ISR 函式必須加上 <code>IRAM_ATTR</code> 屬性？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 確保函式存放在內部 RAM，避免 Flash Cache Miss 導致系統崩潰</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 讓函式能夠使用更多的記憶體空間進行運算</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 使函式可以同時被多個硬體定時器呼叫</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="quiz-question" id="q4">
+                        <p>4. 在 ESP32 上，ISR 與 <code>loop()</code> 共享一個 <code>uint64_t</code> 變數時，為什麼僅使用 <code>volatile</code> 不足夠？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 因為 <code>volatile</code> 會大幅降低程式執行效能</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 因為 64 位元讀寫需要兩條指令，中間可能被中斷導致資料錯亂</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 因為 <code>volatile</code> 只對 <code>bool</code> 型別有效</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" style="margin-left:8px; display:none;" id="quiz-reset-btn">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -885,9 +1240,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「硬體定時器 (Hardware Timer) 與 ISR」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「硬體定時器 (Hardware Timer) 與 ISR」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -903,8 +1258,17 @@
         { id: 3, label: '🚫 2. ISR 三大禁忌', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🛡️ 3. volatile 變數共享', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '4 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'c', q3: 'a', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '硬體定時器透過中斷機制主動搶佔 CPU，無論 loop() 正在執行什麼，時間到了就會強制跳轉執行 ISR。' },
+        q2: { c: 'Serial.print() 需要操作 UART 緩衝區並依賴中斷驅動的佇列管理，在 ISR 內呼叫會造成遞迴中斷衝突或資料損毀。' },
+        q3: { a: 'IRAM_ATTR 強制將 ISR 函式存放在內部 RAM（IRAM），確保中斷觸發時能零延遲執行，避免 Flash Cache Miss 導致 LoadProhibited 例外。' },
+        q4: { b: 'ESP32 是 32-bit 處理器，64 位元的讀寫需要兩條指令。若讀取到一半時 ISR 觸發並修改了值，就會讀到一半舊、一半新的錯亂資料，因此需要臨界區保護。' },
+    };
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -923,6 +1287,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1024,8 +1389,74 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        let total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            const options = document.querySelectorAll(`input[name="${qid}"]`);
+
+            options.forEach(opt => {
+                opt.disabled = true;
+                const label = opt.parentElement;
+                if (opt.value === answer) label.classList.add('correct');
+                if (opt.checked && opt.value !== answer) label.classList.add('wrong');
+            });
+
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                const exp = QUIZ_EXPLANATIONS[qid][answer];
+                feedbackEl.textContent = '✗ 不正確。' + exp;
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        scoreEl.style.display = 'block';
+        const pct = Math.round(correct / total * 100);
+        const pass = pct >= 75;
+        scoreEl.innerHTML = `
+            <span style="font-size:20px;">${pass ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pass ? '通過！你已掌握本模組的核心概念。' : '建議回顧相關單元後再試一次。'}</div>
+        `;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => {
+            el.classList.remove('correct','wrong');
+        });
+        document.querySelectorAll('input[type=radio]').forEach(el => {
+            el.checked = false;
+            el.disabled = false;
+        });
+        document.querySelectorAll('.quiz-feedback').forEach(el => {
+            el.className = 'quiz-feedback';
+            el.textContent = '';
+        });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 09：多工處理';
 </script>
 
 <!-- Define Resources -->

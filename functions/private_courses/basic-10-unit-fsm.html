@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>有限狀態機 (FSM) 入門 - Vibe Coding Learn</title>
+    <title>有限狀態機 (FSM) 入門 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -457,6 +459,37 @@
         .achievement-text h3 { margin: 0 0 4px; font-size: 18px; }
         .achievement-text p { margin: 0; font-size: 14px; opacity: .9; }
 
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
+            border: 1px solid #e1dfdd;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background .1s, border-color .1s;
+            font-size: 14px;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback {
+            display: none;
+            margin-top: 8px;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
+        .quiz-submit { margin-top: 16px; }
+
         @media (max-width: 768px) {
             .ms-sidebar { display: none; }
             .unit-content { padding: 20px 16px 40px; }
@@ -472,9 +505,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 10 - 邏輯架構</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +519,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">有限狀態機 (FSM) 入門</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 10</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +541,7 @@
                 <h1>有限狀態機 (FSM) 入門</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 10</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -521,9 +552,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>🤖 1. 什麼是 FSM (有限狀態機)？</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>🎨 2. 狀態轉移圖</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>💻 3. switch...case 與 enum</strong> 的調校技巧與穩定性測試。</li>
+                    <li>能夠使用 <code>enum</code> 定義系統狀態並以 <code>switch-case</code> 結構取代混亂的 <code>if-else</code> 巢狀判斷，使程式碼結構清晰且易於擴充。</li>
+                    <li>能夠繪製狀態轉移圖（State Diagram），窮舉所有狀態與轉移條件，確保系統在任何輸入下都不會進入死鎖或未定義行為。</li>
+                    <li>能夠實作具備最高優先權的緊急停止（EMERGENCY）狀態，使其能從任何模式瞬間接管控制權，並設計嚴謹的解鎖序列防止誤觸恢復。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -554,15 +585,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>有限狀態機 (FSM) 入門</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    當裝置的行為隨「目前處於什麼狀態」而改變時，你需要的就是有限狀態機（FSM）。
+                    FSM 把複雜的流程拆解成若干明確的狀態與轉移條件，讓程式碼結構清晰、易於擴充與除錯。
+                    無論是遙控車的「待機 → 行駛 → 停車」還是連線流程的「掃描 → 連線 → 已連線」，FSM 都是最自然的建模工具。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的車子有四種模式：待機、手動遙控、自動循線、緊急停止。
+                    沒有 FSM 時，程式裡散布著大量 <code>if-else</code> 巢狀判斷，新增一個模式就要到處修改、容易遺漏。
+                    改用 FSM 後，每個狀態獨立封裝、轉移條件集中管理——新增模式只需定義一個新狀態與其轉移規則。
                 </div>
 
                 <h2>教學影片</h2>
@@ -590,38 +622,86 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🤖 1. 什麼是 FSM (有限狀態機)？</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tight">
-                                系統在任何時間點處於「有限狀態」中。行為變得「可預測」。
-                            </p>
-<div class="grid grid-cols-2 gap-4 text-justify uppercase tracking-widest leading-relaxed">
-<div class="p-4 rounded-xl border border-blue-100 shadow-sm bg-blue-50 text-justify">
-<h4 class="font-bold text-blue-800 mb-1 text-[10px] text-justify">State</h4>
-<p class="text-slate-500 text-[9px] text-justify uppercase tracking-tighter">
-                                        「正在做什麼」。如：待機、急停。</p>
-</div>
-<div class="p-4 rounded-xl border border-purple-100 shadow-sm bg-purple-50 text-justify">
-<h4 class="font-bold text-purple-800 mb-1 text-[10px] text-justify">Event</h4>
-<p class="text-slate-500 text-[9px] text-justify uppercase tracking-widest">
-                                        「發生了什麼」。如：按下按鈕。</p>
-</div>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center bg-slate-900 text-justify uppercase tracking-widest font-black">
-<h4 class="font-bold text-slate-500 mb-4 uppercase tracking-widest text-[10px] text-justify">
-                                Deterministic Architecture</h4>
-<div class="flex items-center justify-around gap-2 text-justify">
-<div class="w-16 h-16 rounded-full border-2 border-dashed border-blue-400 p-2 flex items-center justify-center text-[8px] text-justify">
-                                    IDLE</div>
-<div class="text-blue-400 animate-pulse text-justify">→</div>
-<div class="w-16 h-16 rounded-full border-2 border-blue-500 p-2 flex items-center justify-center text-[8px] bg-blue-500/10 shadow-[0_0_15px_rgba(59,130,246,0.5)] text-justify">
-                                    DRIVING</div>
-</div>
-</div>
-</div>
+                <h1>什麼是 FSM (有限狀態機)？</h1>
+
+                <p>
+                    有限狀態機（Finite State Machine, FSM）是一種數學計算模型，用來描述系統在<strong>有限數量的狀態</strong>之間如何根據輸入事件進行轉移。在嵌入式系統開發中，FSM 是最基礎也最強大的架構設計工具——它讓你的程式碼從「隨機反應」進化到「確定性運算」。
+                </p>
+
+                <p>
+                    一台遙控車可能同時面對多種需求：遙控行駛、自動循線、緊急停止。若沒有 FSM，你可能會寫出層層嵌套的 <code>if-else</code> 判斷來處理這些情境，導致程式碼難以閱讀、容易出錯、擴充困難。FSM 提供了一套結構化的方法，將每種「行為模式」定義為獨立的狀態，再透過明確的事件觸發轉移——讓系統行為完全可預測。
+                </p>
+
+                <h2>FSM 的三大核心元素</h2>
+
+                <p>每一個有限狀態機都由三個基本元素組成：</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>元素</th>
+                            <th>定義</th>
+                            <th>車載範例</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>狀態 (State)</strong></td>
+                            <td>系統當前「正在做什麼」的描述</td>
+                            <td><code>IDLE</code>（待機）、<code>REMOTE</code>（遙控）、<code>AUTO</code>（自動）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>事件 (Event)</strong></td>
+                            <td>觸發狀態變更的外部輸入或條件</td>
+                            <td>按下按鍵 A、偵測到障礙物、通訊斷線</td>
+                        </tr>
+                        <tr>
+                            <td><strong>轉移 (Transition)</strong></td>
+                            <td>從一個狀態切換到另一個狀態的動作</td>
+                            <td><code>IDLE</code> → 按鍵 A → <code>REMOTE</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        「有限」的意義在於：系統的所有可能行為都可以被窮舉。這代表你可以在設計階段就驗證所有邊界情況，確保沒有「未定義行為」導致系統當機或失控。
+                    </div>
+                </div>
+
+                <h2>確定性運算 (Deterministic Computing)</h2>
+
+                <p>
+                    FSM 的最大優勢在於<strong>確定性</strong>：給定相同的當前狀態和相同的輸入事件，系統永遠會轉移到相同的下一個狀態。這意味著你的機器人行為完全可重現、可測試、可驗證——這在安全性要求高的場景（如自動駕駛、工業控制）中至關重要。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 確定性行為範例：相同輸入 → 相同結果</span><br>
+<span class="c-kw">if</span> <span class="c-white">(currentState == IDLE && buttonA_pressed) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;currentState = REMOTE;</span> <span class="c-comment">// 永遠是這個結果</span><br>
+<span class="c-white">}</span><br>
+<br>
+<span class="c-comment">// 非確定性行為（不好的寫法）：結果取決於隱藏條件</span><br>
+<span class="c-kw">if</span> <span class="c-white">(buttonA_pressed && !someFlag && timer > 500) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;mode = 2;</span> <span class="c-comment">// 2 是什麼？哪個模式？</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>為什麼不用 if-else？</h2>
+
+                <p>
+                    當系統只有兩三個判斷條件時，<code>if-else</code> 夠用。但當你的車子有四種模式、每個模式有三四種退出條件，再加上錯誤處理邏輯，巢狀的 <code>if-else</code> 會迅速變成「義大利麵條碼（Spaghetti Code）」——難以追蹤程式流向，新增一個模式就要修改十幾處，漏改一處就是一個 bug。
+                </p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        FSM 的核心價值不只是「程式碼更乾淨」，而是讓你能在動筆寫程式之前，就用狀態圖<strong>窮舉所有系統行為</strong>——找出潛在的死鎖或漏洞。這是真正的「設計先行」工程思維。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -640,42 +720,126 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🎨 2. 狀態轉移圖</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify uppercase tracking-tighter">
-                                圓圈代表狀態，箭頭代表條件。圖面是你編寫邏輯的「戰略地圖」。
-                            </p>
-<div class="p-8 rounded-3xl border border-emerald-100 bg-emerald-50 text-justify uppercase tracking-widest font-black">
-<h4 class="text-emerald-900 font-bold mb-4 text-xs uppercase tracking-widest text-justify">
-                                    Traffic Light Example</h4>
-<div class="flex items-center gap-2 overflow-x-auto py-4 text-justify">
-<div class="px-4 py-2 bg-red-500 rounded-full text-white text-[9px] font-bold text-justify">
-                                        RED</div>
-<div class="text-slate-300 text-justify">→</div>
-<div class="px-4 py-2 bg-green-500 rounded-full text-white text-[9px] font-bold text-justify">
-                                        GREEN</div>
-<div class="text-slate-300 text-justify">→</div>
-<div class="px-4 py-2 bg-yellow-500 rounded-full text-white text-[9px] font-bold text-justify">
-                                        YELLOW</div>
-</div>
-<p class="text-slate-400 mt-4 italic font-light text-[10px] text-justify uppercase tracking-tighter">
-                                    "邊界條件均導向合理狀態。"</p>
-</div>
-</div>
-<div class="p-10 rounded-3xl shadow-2xl border border-slate-700 text-center relative overflow-hidden group bg-slate-900 text-justify">
-<div class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent text-justify">
-</div>
-<h4 class="text-emerald-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-justify uppercase tracking-widest font-black">
-                                Design Thinking</h4>
-<p class="text-slate-500 leading-relaxed font-light mb-8 italic text-[11px] text-justify uppercase tracking-widest font-black">
-                                "好的邏輯是畫出來的。狀態圖讓 Bug 在動筆前無所遁形。"
-                            </p>
-<div class="inline-block px-8 py-3 bg-emerald-500 text-white rounded-xl font-bold text-[10px] shadow-lg text-justify uppercase tracking-widest font-black">
-                                Start Logic Drawing</div>
-</div>
-</div>
+                <h1>狀態轉移圖</h1>
+
+                <p>
+                    狀態轉移圖（State Transition Diagram）是 FSM 的視覺化表示法。它使用圓圈代表狀態、箭頭代表轉移、箭頭上的標籤代表觸發事件。在你開始撰寫任何一行程式碼之前，先畫出狀態轉移圖，是避免邏輯漏洞最有效的方法。
+                </p>
+
+                <p>
+                    一張完整的狀態轉移圖能讓你在設計階段就回答以下問題：系統有幾種可能的狀態？每個狀態在什麼條件下會轉移到哪裡？是否存在「死鎖」——某個狀態永遠無法離開？是否存在「未覆蓋的邊界」——某個事件在某個狀態下沒有被處理？
+                </p>
+
+                <h2>狀態圖的組成元素</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>符號</th>
+                            <th>意義</th>
+                            <th>繪製規則</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>○ 圓圈</td>
+                            <td>一個狀態</td>
+                            <td>內部標注狀態名稱，如 <code>IDLE</code></td>
+                        </tr>
+                        <tr>
+                            <td>→ 箭頭</td>
+                            <td>一個轉移</td>
+                            <td>從來源狀態指向目標狀態</td>
+                        </tr>
+                        <tr>
+                            <td>箭頭上標籤</td>
+                            <td>觸發條件（事件）</td>
+                            <td>標注什麼條件會觸發此轉移</td>
+                        </tr>
+                        <tr>
+                            <td>◉ 雙圈 / 粗框</td>
+                            <td>初始狀態</td>
+                            <td>系統上電後的起始點</td>
+                        </tr>
+                        <tr>
+                            <td>✖ 叉號圈</td>
+                            <td>終止狀態（選用）</td>
+                            <td>系統完全關閉（嵌入式少用）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>範例：遙控車三模系統</h2>
+
+                <p>
+                    以本課程的遙控車為例，我們定義三種運行模式與一個安全模式。使用 Mermaid 語法可以這樣描述：
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// Mermaid 狀態圖語法</span><br>
+<span class="c-kw">stateDiagram-v2</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;[*] --> IDLE</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;IDLE --> REMOTE : 按鍵A</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;REMOTE --> AUTO : 按鍵A</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;AUTO --> IDLE : 按鍵A</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;REMOTE --> IDLE : 按鍵B</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;AUTO --> IDLE : 按鍵B</span><br>
+<br>
+<span class="c-comment">&nbsp;&nbsp;&nbsp;&nbsp;%% 緊急狀態可從任何地方進入</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;IDLE --> EMERGENCY : 異常偵測</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;REMOTE --> EMERGENCY : 異常偵測</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;AUTO --> EMERGENCY : 異常偵測</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;EMERGENCY --> IDLE : 解鎖序列完成</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        繪製狀態圖時，務必檢查每個狀態是否都有「離開的路徑」。如果某個狀態只有進入箭頭、沒有離開箭頭，代表系統可能陷入死鎖（Deadlock）。唯一允許的例外是有意設計的終止狀態。
+                    </div>
+                </div>
+
+                <h2>設計流程</h2>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>列舉所有狀態</h4>
+                            <p>把系統所有可能的運行模式寫下來，包括錯誤處理與安全模式。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>定義所有事件</h4>
+                            <p>列出所有可能的輸入：按鈕、感測器訊號、計時器超時、通訊事件等。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>填寫轉移表</h4>
+                            <p>對每一對「狀態 × 事件」組合，決定下一個狀態。空白格代表「忽略該事件」或「保持原狀態」。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>驗證安全性</h4>
+                            <p>確認 EMERGENCY 可以從任何狀態進入，且每個正常狀態至少有一條通往 IDLE 的路徑。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        建議將狀態圖存放在專案的 <code>docs/state_map.md</code> 中，使用 Mermaid 語法撰寫。GitHub 能直接渲染 Mermaid 圖表，讓團隊成員能在 PR 審查時一目了然地理解你的邏輯設計。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -694,49 +858,127 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>💻 3. switch...case 與 enum</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify uppercase tracking-tighter">
-                                擺脫魔術數字。使用 <code>enum</code> 定義語義。
-                            </p>
-<div class="p-8 rounded-3xl border border-indigo-500/20 shadow-inner bg-indigo-500/10 text-justify uppercase tracking-widest font-black">
-<h4 class="font-bold text-indigo-400 mb-4 text-xs uppercase tracking-widest text-justify">
-                                    Clean Architecture</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify uppercase tracking-widest">
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">消滅 Magic Numbers</strong>：用
-                                            <code>IDLE</code> 代替 <code>0</code>。</div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">高擴充性</strong>：新增模式只需在 switch 增加
-                                            case。</div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">事件驅動</strong>：由條件觸發轉移。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-96 text-justify uppercase tracking-widest font-black">
-<div class="p-6 rounded-2xl border border-slate-800 shadow-inner font-mono text-[10px] text-blue-300 bg-slate-950 text-justify uppercase tracking-widest font-black text-left">
-<span class="text-purple-400 text-justify uppercase tracking-widest">enum</span> State {
-                                IDLE, AUTO };<br/>
-                                State s = IDLE;<br/><br/>
-<span class="text-purple-400 text-justify uppercase tracking-widest">switch</span>(s)
-                                {<br/>
-                                  <span class="text-purple-400 text-justify uppercase tracking-widest">case</span> IDLE:<br/>
-                                    <span class="text-purple-400 text-justify uppercase tracking-widest">if</span>(btn) s =
-                                AUTO;<br/>
-                                    <span class="text-purple-400 text-justify uppercase tracking-widest">break</span>;<br/>
-                                  <span class="text-purple-400 text-justify uppercase tracking-widest">case</span> AUTO:<br/>
-                                    motorOn();<br/>
-                                    <span class="text-purple-400 text-justify uppercase tracking-widest">break</span>;<br/>
-                                }
-                            </div>
-</div>
-</div>
+                <h1>switch...case 與 enum</h1>
+
+                <p>
+                    在 C/C++ 中實作 FSM，最經典也最清晰的結構就是 <code>enum</code> 搭配 <code>switch...case</code>。<code>enum</code> 讓每個狀態擁有語義化的名稱，<code>switch...case</code> 則提供了一對一對應的分支結構——每個 <code>case</code> 就是一個狀態的行為定義。
+                </p>
+
+                <h2>為什麼需要 enum？消滅魔術數字</h2>
+
+                <p>
+                    所謂「魔術數字（Magic Number）」是指程式碼中出現的裸數字常數，例如 <code>if (state == 2)</code>。三個月後你再看這行程式碼，還記得 <code>2</code> 代表什麼嗎？使用 <code>enum</code> 定義狀態，可以讓程式碼自我說明：
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// ❌ 不好的寫法：魔術數字</span><br>
+<span class="c-kw">int</span> <span class="c-attr">state</span> <span class="c-white">= 0;</span><br>
+<span class="c-kw">if</span> <span class="c-white">(state == 0) { </span><span class="c-comment">/* 待機？*/</span><span class="c-white"> }</span><br>
+<span class="c-kw">if</span> <span class="c-white">(state == 1) { </span><span class="c-comment">/* 遙控？*/</span><span class="c-white"> }</span><br>
+<span class="c-kw">if</span> <span class="c-white">(state == 2) { </span><span class="c-comment">/* 自動？*/</span><span class="c-white"> }</span><br>
+<br>
+<span class="c-comment">// ✅ 正確寫法：語義化 enum</span><br>
+<span class="c-kw">enum</span> <span class="c-tag">SystemState</span> <span class="c-white">{</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;IDLE,</span> <span class="c-comment">// 待機模式 — 紅燈</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;REMOTE,</span> <span class="c-comment">// 遙控模式 — 藍燈</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;AUTO,</span> <span class="c-comment">// 自動模式 — 綠燈</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;EMERGENCY</span> <span class="c-comment">// 緊急停止 — 紅燈閃爍</span><br>
+<span class="c-white">};</span><br>
+<br>
+<span class="c-tag">SystemState</span> <span class="c-attr">currentState</span> <span class="c-white">= IDLE;</span>
+                </div>
+
+                <h2>switch...case 實作狀態調度</h2>
+
+                <p>
+                    <code>switch...case</code> 結構天然適合 FSM：每個 <code>case</code> 對應一個狀態，內部處理該狀態的行為與轉移條件。相比多層 <code>if-else</code>，<code>switch</code> 更扁平、更容易添加新狀態。
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">void</span> <span class="c-attr">loop</span><span class="c-white">() {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">switch</span> <span class="c-white">(currentState) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">case</span> <span class="c-white">IDLE:</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setLED(RED);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(buttonA()) currentState = REMOTE;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">break</span><span class="c-white">;</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">case</span> <span class="c-white">REMOTE:</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setLED(BLUE);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;handleRemoteControl();</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(buttonA()) currentState = AUTO;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(buttonB()) currentState = IDLE;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">break</span><span class="c-white">;</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">case</span> <span class="c-white">AUTO:</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setLED(GREEN);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;runLineFollowing();</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(buttonA()) currentState = IDLE;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(buttonB()) currentState = IDLE;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">break</span><span class="c-white">;</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">case</span> <span class="c-white">EMERGENCY:</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;flashLED(RED);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stopAllMotors();</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(unlockSequenceComplete()) currentState = IDLE;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">break</span><span class="c-white">;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 全域檢查：緊急條件優先於一切</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(detectAnomaly() && currentState != EMERGENCY) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentState = EMERGENCY;</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        永遠不要忘記 <code>break</code>！在 C/C++ 中，<code>switch</code> 語句如果省略 <code>break</code>，程式會「穿透（fall-through）」到下一個 case，導致多個狀態的程式碼被同時執行——這是 FSM 中最常見的低階 bug。
+                    </div>
+                </div>
+
+                <h2>架構優勢對比</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>面向</th>
+                            <th>if-else 巢狀</th>
+                            <th>enum + switch</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>可讀性</td>
+                            <td>隨狀態數量指數下降</td>
+                            <td>每個 case 獨立清晰</td>
+                        </tr>
+                        <tr>
+                            <td>擴充性</td>
+                            <td>新增模式需修改多處</td>
+                            <td>新增一個 case 即可</td>
+                        </tr>
+                        <tr>
+                            <td>除錯</td>
+                            <td>難以追蹤當前分支</td>
+                            <td>印出 <code>currentState</code> 即知</td>
+                        </tr>
+                        <tr>
+                            <td>編譯器輔助</td>
+                            <td>無法檢查遺漏</td>
+                            <td>可警告未處理的 enum 值</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>最佳實踐</strong>
+                        將所有 <code>enum</code> 定義集中放在 <code>include/FSM_Definitions.h</code> 標頭檔中。這不僅讓狀態定義一目了然，也方便多個 <code>.cpp</code> 檔案共用相同的狀態定義，避免重複宣告造成的不一致。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -820,16 +1062,82 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
-                    <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div class="unit-completed-badge" id="badge-6" style="display:none">
+                        <i class="fas fa-check"></i> 已完成
+                    </div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <!-- Q1 -->
+                    <div class="quiz-question" id="q1">
+                        <p>1. 有限狀態機（FSM）的三大核心元素是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 輸入、輸出、反饋</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 狀態（State）、事件（Event）、轉移（Transition）</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 變數、函式、迴圈</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="quiz-question" id="q2">
+                        <p>2. 在 C/C++ 中使用 enum 定義 FSM 狀態，最主要的目的是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 提高程式執行速度</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 減少記憶體使用量</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 消滅魔術數字，讓程式碼具備語義化可讀性</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="quiz-question" id="q3">
+                        <p>3. 在 switch...case 結構中，如果忘記加 break 會發生什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 編譯器會自動補上 break</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 程式會「穿透（fall-through）」到下一個 case，導致多個狀態的程式碼被同時執行</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 程式會直接跳到 default 區塊</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="quiz-question" id="q4">
+                        <p>4. EMERGENCY（緊急停止）狀態在 FSM 設計中的關鍵特性是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 只能從 IDLE 狀態進入</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 可以從任何狀態進入，且具備最高優先權</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 自動在 5 秒後恢復到上一個狀態</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" style="margin-left:8px; display:none;" id="quiz-reset-btn">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -887,9 +1195,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「有限狀態機 (FSM) 入門」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「有限狀態機 (FSM) 入門」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -905,8 +1213,17 @@
         { id: 3, label: '🎨 2. 狀態轉移圖', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '💻 3. switch...case 與 enum', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '4 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'c', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: 'FSM 由狀態（State）、事件（Event）與轉移（Transition）三大核心元素組成，用來描述系統在有限狀態間如何根據輸入進行轉換。' },
+        q2: { c: 'enum 讓每個狀態擁有語義化的名稱（如 IDLE、REMOTE），取代難以理解的裸數字常數（魔術數字），使程式碼自我說明。' },
+        q3: { b: '在 C/C++ 的 switch 語句中省略 break 會導致程式「穿透」到下一個 case，這是 FSM 實作中最常見的低階 bug。' },
+        q4: { b: 'EMERGENCY 狀態必須能從任何模式（IDLE、REMOTE、AUTO）瞬間接管控制權，具備最高優先權以確保系統安全。' },
+    };
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -925,6 +1242,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1026,8 +1344,74 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        let total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            const options = document.querySelectorAll(`input[name="${qid}"]`);
+
+            options.forEach(opt => {
+                opt.disabled = true;
+                const label = opt.parentElement;
+                if (opt.value === answer) label.classList.add('correct');
+                if (opt.checked && opt.value !== answer) label.classList.add('wrong');
+            });
+
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                const exp = QUIZ_EXPLANATIONS[qid][answer];
+                feedbackEl.textContent = '✗ 不正確。' + exp;
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        scoreEl.style.display = 'block';
+        const pct = Math.round(correct / total * 100);
+        const pass = pct >= 75;
+        scoreEl.innerHTML = `
+            <span style="font-size:20px;">${pass ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pass ? '通過！你已掌握本模組的核心概念。' : '建議回顧相關單元後再試一次。'}</div>
+        `;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => {
+            el.classList.remove('correct','wrong');
+        });
+        document.querySelectorAll('input[type=radio]').forEach(el => {
+            el.checked = false;
+            el.disabled = false;
+        });
+        document.querySelectorAll('.quiz-feedback').forEach(el => {
+            el.className = 'quiz-feedback';
+            el.textContent = '';
+        });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 10：有限狀態機';
 </script>
 
 <!-- Define Resources -->

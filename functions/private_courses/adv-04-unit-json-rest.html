@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON 數據打包與 RESTful 回傳 - Vibe Coding Learn</title>
+    <title>JSON 數據打包與 RESTful 回傳 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -471,9 +473,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">進階課程 4</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +487,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">JSON 數據打包與 RESTful 回傳</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">進階課程 4</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,13 +509,13 @@
                 <h1>JSON 數據打包與 RESTful 回傳</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">進階課程 4</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
                 </div>
 
-                <p></p>
+                <p>將底層硬體接入現代網際網路生態，用語義化的 RESTful 動詞與標準 HTTP 狀態碼，打造優雅且健壯的 IoT 端點接口。</p>
 
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
@@ -553,15 +553,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>JSON 數據打包與 RESTful 回傳</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    當硬體端採集到感測器數據後，如何讓網頁前端「聽得懂」？
+                    本模組將教你用 <strong>JSON 格式封裝語義化數據</strong>，並透過 RESTful API 設計標準化的通訊接口，
+                    讓你的 ESP32 不再只是一塊開發板，而是一個符合現代軟體工程規範的 IoT 端點。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的無人車已經能讀取感測器數據了，但網頁控制面板收到的卻是一串難以解讀的逗號分隔數字。
+                    當你想新增一個「電量」欄位時，前後端同時崩潰。
+                    這時你才意識到：缺少標準化的數據格式與 API 規範，整合工作將變成噩夢。
                 </div>
 
                 <h2>教學影片</h2>
@@ -575,7 +576,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -589,21 +590,130 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>📦 1. 數據打包 (20 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg leading-relaxed">
-<p><strong>從「亂碼」到「字典」：</strong>學習如何利用鍵值對 (Key-Value) 建立具有意義的封包。為什麼不能只傳傳感器的數字？</p>
-<p>在設計物聯網通訊協定時，單純傳送二進位或逗號分隔的純文字（如 <code>"25.5,60,1"</code>）雖然省流量，但極難擴充與維護。透過 JSON 格式，我們可以明確定義每個數值的物理意義（如溫度、濕度、狀態），讓前後端開發高度解耦。</p>
-<div class="bg-emerald-50 p-6 rounded-xl border border-emerald-100">
-<h4 class="font-bold text-emerald-800 mb-2 flex items-center gap-2"><span>💡</span> 任務</h4>
-<p class="text-sm text-emerald-700">將「車速 50, 電量 80%, 偵測到紅球」設計成一個層次分明的 JSON 物件，這將會是後續作業的核心封包結構。</p>
-</div>
-</div>
+                <h1>數據打包</h1>
+
+                <p>
+                    在物聯網系統中，感測器採集到的原始數據需要被「打包」成結構化的格式，才能在設備與伺服器之間有效傳遞。<strong>JSON (JavaScript Object Notation)</strong> 是目前最廣泛使用的輕量級數據交換格式，它具備人類可讀、機器可解析的雙重優勢，已成為 RESTful API 的事實標準。
+                </p>
+
+                <h2>為什麼不能只傳原始數字？</h2>
+
+                <p>
+                    許多初學者傾向使用逗號分隔的純文字格式（如 <code>"25.5,60,1,0.85"</code>）來傳送感測器數據。雖然這種方式簡潔省頻寬，但在實際開發中會快速陷入維護地獄：
+                </p>
+
+                <ul>
+                    <li><strong>缺乏語義</strong>：接收端無法知道 <code>25.5</code> 是溫度、距離還是電壓，必須仰賴雙方約定的「欄位順序」。</li>
+                    <li><strong>無法擴充</strong>：當你需要新增「電池電壓」欄位時，所有解析程式碼都必須同步修改。</li>
+                    <li><strong>錯誤難排</strong>：少了一個逗號或多了一個空格，整串數據就會錯位解析。</li>
+                </ul>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        JSON 格式的自我描述性（每個值都有對應的鍵名）是它最大的優勢。單看一段 JSON，就能立即理解每個數值的物理意義——這在多人協作與長期維護中至關重要。
+                    </div>
+                </div>
+
+                <h2>JSON 基礎語法</h2>
+
+                <p>
+                    JSON 的核心結構是<strong>鍵值對 (Key-Value Pair)</strong>，支援字串、數字、布林值、陣列和巢狀物件等資料型別。以下是一個典型的感測器數據封包：
+                </p>
+
+                <div class="ms-code">
+<span class="c-white">{</span>
+    <span class="c-attr">"device_id"</span><span class="c-white">:</span> <span class="c-str">"ESP32-CAR-001"</span><span class="c-white">,</span>
+    <span class="c-attr">"timestamp"</span><span class="c-white">:</span> <span class="c-val">1716600000</span><span class="c-white">,</span>
+    <span class="c-attr">"sensors"</span><span class="c-white">: {</span>
+        <span class="c-attr">"temperature"</span><span class="c-white">:</span> <span class="c-val">25.5</span><span class="c-white">,</span>
+        <span class="c-attr">"humidity"</span><span class="c-white">:</span> <span class="c-val">60</span><span class="c-white">,</span>
+        <span class="c-attr">"distance_cm"</span><span class="c-white">:</span> <span class="c-val">34.2</span>
+    <span class="c-white">},</span>
+    <span class="c-attr">"battery"</span><span class="c-white">: {</span>
+        <span class="c-attr">"voltage"</span><span class="c-white">:</span> <span class="c-val">3.85</span><span class="c-white">,</span>
+        <span class="c-attr">"percent"</span><span class="c-white">:</span> <span class="c-val">80</span>
+    <span class="c-white">},</span>
+    <span class="c-attr">"status"</span><span class="c-white">:</span> <span class="c-str">"running"</span>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>在 ESP32 上使用 ArduinoJson</h2>
+
+                <p>
+                    在嵌入式環境中，我們使用 <strong>ArduinoJson</strong> 程式庫來處理 JSON 的序列化（物件 → 字串）與反序列化（字串 → 物件）。以下範例示範如何將感測器讀數封裝為 JSON 字串：
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">#include</span> <span class="c-str">&lt;ArduinoJson.h&gt;</span>
+
+<span class="c-tag">String</span> <span class="c-white">buildTelemetryPayload(</span><span class="c-kw">float</span> <span class="c-attr">temp</span><span class="c-white">,</span> <span class="c-kw">int</span> <span class="c-attr">humidity</span><span class="c-white">) {</span>
+    <span class="c-tag">JsonDocument</span> <span class="c-attr">doc</span><span class="c-white">;</span>
+    <span class="c-attr">doc</span><span class="c-white">[</span><span class="c-str">"device_id"</span><span class="c-white">] =</span> <span class="c-str">"ESP32-CAR-001"</span><span class="c-white">;</span>
+    <span class="c-attr">doc</span><span class="c-white">[</span><span class="c-str">"timestamp"</span><span class="c-white">] = millis();</span>
+
+    <span class="c-tag">JsonObject</span> <span class="c-attr">sensors</span> <span class="c-white">=</span> <span class="c-attr">doc</span><span class="c-white">[</span><span class="c-str">"sensors"</span><span class="c-white">].to&lt;</span><span class="c-tag">JsonObject</span><span class="c-white">&gt;();</span>
+    <span class="c-attr">sensors</span><span class="c-white">[</span><span class="c-str">"temperature"</span><span class="c-white">] =</span> <span class="c-attr">temp</span><span class="c-white">;</span>
+    <span class="c-attr">sensors</span><span class="c-white">[</span><span class="c-str">"humidity"</span><span class="c-white">] =</span> <span class="c-attr">humidity</span><span class="c-white">;</span>
+
+    <span class="c-tag">String</span> <span class="c-attr">output</span><span class="c-white">;</span>
+    <span class="c-white">serializeJson(</span><span class="c-attr">doc</span><span class="c-white">,</span> <span class="c-attr">output</span><span class="c-white">);</span>
+    <span class="c-kw">return</span> <span class="c-attr">output</span><span class="c-white">;</span>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        ArduinoJson v7 使用 <code>JsonDocument</code> 取代了舊版的 <code>StaticJsonDocument</code>，能自動管理記憶體配置。在記憶體受限的 ESP32 上，建議使用 <code>serializeJson()</code> 直接輸出至 <code>WiFiClient</code>，避免建立中間字串佔用額外 RAM。
+                    </div>
+                </div>
+
+                <h2>格式比較：CSV vs JSON</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>特性</th>
+                            <th>CSV（逗號分隔）</th>
+                            <th>JSON（鍵值對）</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>可讀性</td>
+                            <td>低（需對照欄位順序表）</td>
+                            <td>高（鍵名即說明文件）</td>
+                        </tr>
+                        <tr>
+                            <td>擴充性</td>
+                            <td>低（新增欄位需修改所有解析器）</td>
+                            <td>高（新增鍵值不影響既有解析）</td>
+                        </tr>
+                        <tr>
+                            <td>封包大小</td>
+                            <td>小（約 20–30 bytes）</td>
+                            <td>較大（約 100–200 bytes）</td>
+                        </tr>
+                        <tr>
+                            <td>巢狀結構</td>
+                            <td class="cross"><i class="fas fa-times"></i> 不支援</td>
+                            <td class="check"><i class="fas fa-check"></i> 原生支援</td>
+                        </tr>
+                        <tr>
+                            <td>前端整合</td>
+                            <td>需自行解析</td>
+                            <td><code>JSON.parse()</code> 一行搞定</td>
+                        </tr>
+                    </tbody>
+                </table>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -617,21 +727,148 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🗣️ 2. RESTful 動詞與語意化操作 (20 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg leading-relaxed">
-<p><strong>語義化操作：</strong>GET 索取狀態、POST 下達指令、PUT 更新參數、DELETE 刪除任務。提高路徑命名的可讀性。</p>
-<p>RESTful API 的核心概念是將所有事物視為「資源」（Resource），並使用標準 HTTP 方法對其進行操作。例如：</p>
-<ul class="list-disc list-inside space-y-2 text-gray-600 text-base">
-<li><code>GET /api/car/status</code>：讀取車輛狀態（無副作用）。</li>
-<li><code>POST /api/car/control</code>：下達移動指令（會改變車輛狀態）。</li>
-</ul>
-</div>
+                <h1>RESTful 動詞與語意化操作</h1>
+
+                <p>
+                    REST (Representational State Transfer) 是一種軟體架構風格，它將系統中的每個實體視為<strong>「資源 (Resource)」</strong>，並使用標準化的 HTTP 方法（動詞）來對這些資源執行操作。在物聯網場景中，你的 ESP32 就是一個提供多種資源（感測器數據、控制指令、設備狀態）的微型伺服器。
+                </p>
+
+                <h2>HTTP 方法與 IoT 操作對應</h2>
+
+                <p>
+                    RESTful API 的核心在於<strong>語義化</strong>：看到 URL 和 HTTP 方法就能理解這個操作的意圖，無需額外文件說明。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>HTTP 方法</th>
+                            <th>語義</th>
+                            <th>IoT 範例</th>
+                            <th>是否有副作用</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>GET</strong></td>
+                            <td>讀取資源</td>
+                            <td><code>GET /api/sensors</code> — 取得所有感測器數據</td>
+                            <td>否（安全、冪等）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>POST</strong></td>
+                            <td>建立資源 / 執行動作</td>
+                            <td><code>POST /api/control</code> — 下達移動指令</td>
+                            <td>是</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PUT</strong></td>
+                            <td>完整更新資源</td>
+                            <td><code>PUT /api/config</code> — 更新 PID 參數組</td>
+                            <td>是（冪等）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>DELETE</strong></td>
+                            <td>刪除資源</td>
+                            <td><code>DELETE /api/tasks/3</code> — 取消排程任務</td>
+                            <td>是（冪等）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        <strong>冪等 (Idempotent)</strong> 是指重複執行同一操作，結果不會改變。GET 和 PUT 是冪等的（讀 10 次、更新 10 次，結果與 1 次相同），而 POST 通常不是（每次 POST 可能產生新資源）。理解冪等性有助於設計可靠的重試機制。
+                    </div>
+                </div>
+
+                <h2>路徑命名規範</h2>
+
+                <p>
+                    良好的 REST API 路徑應遵循「<strong>名詞代表資源，動詞由 HTTP 方法承擔</strong>」的原則：
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>設計</th>
+                            <th>路徑範例</th>
+                            <th>評價</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="check"><i class="fas fa-check"></i> 正確</td>
+                            <td><code>GET /api/car/status</code></td>
+                            <td>資源名詞 + HTTP 動詞，語義清晰</td>
+                        </tr>
+                        <tr>
+                            <td class="check"><i class="fas fa-check"></i> 正確</td>
+                            <td><code>POST /api/car/control</code></td>
+                            <td>動作由 POST 承擔，路徑為資源名</td>
+                        </tr>
+                        <tr>
+                            <td class="cross"><i class="fas fa-times"></i> 錯誤</td>
+                            <td><code>GET /api/getCarStatusNow</code></td>
+                            <td>動詞放入路徑，違反 REST 原則</td>
+                        </tr>
+                        <tr>
+                            <td class="cross"><i class="fas fa-times"></i> 錯誤</td>
+                            <td><code>POST /api/doMoveForward</code></td>
+                            <td>動詞洩漏，應改用 POST Body 攜帶指令</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>ESP32 WebServer 實作範例</h2>
+
+                <p>
+                    以下範例示範如何在 ESP32 上使用 <code>WebServer</code> 程式庫建立 RESTful 端點：
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">#include</span> <span class="c-str">&lt;WebServer.h&gt;</span>
+
+<span class="c-tag">WebServer</span> <span class="c-attr">server</span><span class="c-white">(</span><span class="c-val">80</span><span class="c-white">);</span>
+
+<span class="c-kw">void</span> <span class="c-tag">handleGetStatus</span><span class="c-white">() {</span>
+    <span class="c-tag">String</span> <span class="c-attr">json</span> <span class="c-white">= buildTelemetryPayload();</span>
+    <span class="c-attr">server</span><span class="c-white">.send(</span><span class="c-val">200</span><span class="c-white">,</span> <span class="c-str">"application/json"</span><span class="c-white">,</span> <span class="c-attr">json</span><span class="c-white">);</span>
+<span class="c-white">}</span>
+
+<span class="c-kw">void</span> <span class="c-tag">handlePostControl</span><span class="c-white">() {</span>
+    <span class="c-tag">String</span> <span class="c-attr">body</span> <span class="c-white">=</span> <span class="c-attr">server</span><span class="c-white">.arg(</span><span class="c-str">"plain"</span><span class="c-white">);</span>
+    <span class="c-tag">JsonDocument</span> <span class="c-attr">doc</span><span class="c-white">;</span>
+    <span class="c-kw">if</span> <span class="c-white">(deserializeJson(</span><span class="c-attr">doc</span><span class="c-white">,</span> <span class="c-attr">body</span><span class="c-white">)) {</span>
+        <span class="c-attr">server</span><span class="c-white">.send(</span><span class="c-val">400</span><span class="c-white">,</span> <span class="c-str">"application/json"</span><span class="c-white">,</span>
+            <span class="c-str">"{\"error\":\"Invalid JSON\"}"</span><span class="c-white">);</span>
+        <span class="c-kw">return</span><span class="c-white">;</span>
+    <span class="c-white">}</span>
+    <span class="c-attr">server</span><span class="c-white">.send(</span><span class="c-val">200</span><span class="c-white">,</span> <span class="c-str">"application/json"</span><span class="c-white">,</span>
+        <span class="c-str">"{\"status\":\"ok\"}"</span><span class="c-white">);</span>
+<span class="c-white">}</span>
+
+<span class="c-kw">void</span> <span class="c-tag">setup</span><span class="c-white">() {</span>
+    <span class="c-attr">server</span><span class="c-white">.on(</span><span class="c-str">"/api/car/status"</span><span class="c-white">,</span> <span class="c-val">HTTP_GET</span><span class="c-white">,</span> <span class="c-attr">handleGetStatus</span><span class="c-white">);</span>
+    <span class="c-attr">server</span><span class="c-white">.on(</span><span class="c-str">"/api/car/control"</span><span class="c-white">,</span> <span class="c-val">HTTP_POST</span><span class="c-white">,</span> <span class="c-attr">handlePostControl</span><span class="c-white">);</span>
+    <span class="c-attr">server</span><span class="c-white">.begin();</span>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        注意每個回應都明確設定了 <code>Content-Type: application/json</code>。這不只是「好習慣」，而是 HTTP 標準要求——它告訴客戶端如何正確解析回應 Body。遺漏此 Header 可能導致瀏覽器的 <code>fetch()</code> 或 <code>XMLHttpRequest</code> 解析失敗。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -645,22 +882,160 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🤝 3. 狀態碼與回饋機制 (20 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg leading-relaxed">
-<p><strong>溝通禮儀：</strong>理解為什麼需要狀態碼？200 OK、400 Bad Request、500 Error 分散處理各種通訊情境。</p>
-<p>在網路通訊中，設備不能只在出錯時無響應。正確回傳 HTTP 狀態碼是確保系統健壯性的關鍵：</p>
-<ul class="list-disc list-inside space-y-2 text-gray-600 text-base">
-<li><code>200 OK</code>：成功處理請求，並回傳請求的資料。</li>
-<li><code>400 Bad Request</code>：用戶端傳入的 JSON 格式錯誤或缺少必要欄位。</li>
-<li><code>500 Internal Server Error</code>：硬體內部異常（如感測器讀取失敗或記憶體不足）。</li>
-</ul>
-</div>
+                <h1>狀態碼與回饋機制</h1>
+
+                <p>
+                    HTTP 狀態碼是伺服器對客戶端請求的「回覆簡訊」：三位數字就能精確傳達請求的處理結果。在物聯網場景中，正確使用狀態碼不僅能讓前端準確判斷設備狀態，更能在異常發生時提供清晰的診斷線索。一個好的 API 不會在出錯時「沉默不語」。
+                </p>
+
+                <h2>IoT 常用 HTTP 狀態碼</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>狀態碼</th>
+                            <th>名稱</th>
+                            <th>語義</th>
+                            <th>ESP32 應用場景</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>200</strong></td>
+                            <td>OK</td>
+                            <td>請求成功，回傳結果</td>
+                            <td>成功讀取感測器數據並回傳 JSON</td>
+                        </tr>
+                        <tr>
+                            <td><strong>201</strong></td>
+                            <td>Created</td>
+                            <td>資源建立成功</td>
+                            <td>成功註冊新的排程任務</td>
+                        </tr>
+                        <tr>
+                            <td><strong>400</strong></td>
+                            <td>Bad Request</td>
+                            <td>客戶端送出無效請求</td>
+                            <td>JSON 格式錯誤、缺少必要欄位、參數超出範圍</td>
+                        </tr>
+                        <tr>
+                            <td><strong>404</strong></td>
+                            <td>Not Found</td>
+                            <td>資源不存在</td>
+                            <td>請求了不存在的 API 路徑</td>
+                        </tr>
+                        <tr>
+                            <td><strong>500</strong></td>
+                            <td>Internal Server Error</td>
+                            <td>伺服器內部異常</td>
+                            <td>感測器讀取失敗、記憶體不足、I2C 匯流排鎖死</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        最常見的反模式是「<strong>萬用 200</strong>」——無論成功或失敗都回傳 200 OK，把錯誤訊息塞在 Body 裡。這會讓前端的錯誤處理邏輯變得混亂。請務必使用正確的狀態碼，讓 <code>fetch()</code> 的 <code>.catch()</code> 或 <code>response.ok</code> 判斷能正常運作。
+                    </div>
+                </div>
+
+                <h2>錯誤回應格式標準化</h2>
+
+                <p>
+                    除了正確的狀態碼，回應 Body 中也應包含<strong>結構化的錯誤資訊</strong>，幫助開發者快速定位問題。以下是建議的標準錯誤回應格式：
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 400 Bad Request 回應範例</span>
+<span class="c-white">{</span>
+    <span class="c-attr">"error"</span><span class="c-white">:</span> <span class="c-str">"INVALID_PAYLOAD"</span><span class="c-white">,</span>
+    <span class="c-attr">"message"</span><span class="c-white">:</span> <span class="c-str">"Missing required field: cmd"</span><span class="c-white">,</span>
+    <span class="c-attr">"timestamp"</span><span class="c-white">:</span> <span class="c-val">1716600123</span>
+<span class="c-white">}</span>
+
+<span class="c-comment">// 500 Internal Server Error 回應範例</span>
+<span class="c-white">{</span>
+    <span class="c-attr">"error"</span><span class="c-white">:</span> <span class="c-str">"SENSOR_FAILURE"</span><span class="c-white">,</span>
+    <span class="c-attr">"message"</span><span class="c-white">:</span> <span class="c-str">"I2C bus timeout on MPU6050 (0x68)"</span><span class="c-white">,</span>
+    <span class="c-attr">"timestamp"</span><span class="c-white">:</span> <span class="c-val">1716600456</span>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>ESP32 完整錯誤處理實作</h2>
+
+                <p>
+                    以下範例示範如何在 ESP32 WebServer 中實作完整的請求驗證與錯誤回饋機制：
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">void</span> <span class="c-tag">handlePostControl</span><span class="c-white">() {</span>
+    <span class="c-tag">String</span> <span class="c-attr">body</span> <span class="c-white">=</span> <span class="c-attr">server</span><span class="c-white">.arg(</span><span class="c-str">"plain"</span><span class="c-white">);</span>
+    <span class="c-tag">JsonDocument</span> <span class="c-attr">doc</span><span class="c-white">;</span>
+
+    <span class="c-comment">// 階段 1：JSON 格式驗證</span>
+    <span class="c-kw">if</span> <span class="c-white">(deserializeJson(</span><span class="c-attr">doc</span><span class="c-white">,</span> <span class="c-attr">body</span><span class="c-white">)) {</span>
+        <span class="c-attr">server</span><span class="c-white">.send(</span><span class="c-val">400</span><span class="c-white">,</span> <span class="c-str">"application/json"</span><span class="c-white">,</span>
+            <span class="c-str">"{\"error\":\"PARSE_ERROR\"}"</span><span class="c-white">);</span>
+        <span class="c-kw">return</span><span class="c-white">;</span>
+    <span class="c-white">}</span>
+
+    <span class="c-comment">// 階段 2：必要欄位檢查</span>
+    <span class="c-kw">if</span> <span class="c-white">(!doc[</span><span class="c-str">"cmd"</span><span class="c-white">].is&lt;</span><span class="c-kw">const char*</span><span class="c-white">&gt;()) {</span>
+        <span class="c-attr">server</span><span class="c-white">.send(</span><span class="c-val">400</span><span class="c-white">,</span> <span class="c-str">"application/json"</span><span class="c-white">,</span>
+            <span class="c-str">"{\"error\":\"MISSING_FIELD\"}"</span><span class="c-white">);</span>
+        <span class="c-kw">return</span><span class="c-white">;</span>
+    <span class="c-white">}</span>
+
+    <span class="c-comment">// 階段 3：執行控制邏輯</span>
+    <span class="c-kw">bool</span> <span class="c-attr">ok</span> <span class="c-white">= executeCommand(doc[</span><span class="c-str">"cmd"</span><span class="c-white">]);</span>
+    <span class="c-kw">if</span> <span class="c-white">(!</span><span class="c-attr">ok</span><span class="c-white">) {</span>
+        <span class="c-attr">server</span><span class="c-white">.send(</span><span class="c-val">500</span><span class="c-white">,</span> <span class="c-str">"application/json"</span><span class="c-white">,</span>
+            <span class="c-str">"{\"error\":\"EXEC_FAILED\"}"</span><span class="c-white">);</span>
+        <span class="c-kw">return</span><span class="c-white">;</span>
+    <span class="c-white">}</span>
+
+    <span class="c-attr">server</span><span class="c-white">.send(</span><span class="c-val">200</span><span class="c-white">,</span> <span class="c-str">"application/json"</span><span class="c-white">,</span>
+        <span class="c-str">"{\"status\":\"ok\"}"</span><span class="c-white">);</span>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在生產環境中，建議將錯誤碼設計為可被程式判讀的常數字串（如 <code>PARSE_ERROR</code>），而 message 欄位則提供人類可讀的描述。這樣前端可以根據 error code 自動處理已知錯誤，同時也方便開發者在 console 中快速定位問題。
+                    </div>
+                </div>
+
+                <h2>前端 JavaScript 搭配範例</h2>
+
+                <p>
+                    以下展示前端如何配合 ESP32 的 RESTful API 進行數據請求與錯誤處理：
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">async function</span> <span class="c-tag">sendCommand</span><span class="c-white">(</span><span class="c-attr">cmd</span><span class="c-white">) {</span>
+    <span class="c-kw">try</span> <span class="c-white">{</span>
+        <span class="c-kw">const</span> <span class="c-attr">res</span> <span class="c-white">=</span> <span class="c-kw">await</span> <span class="c-white">fetch(</span><span class="c-str">"/api/car/control"</span><span class="c-white">, {</span>
+            <span class="c-attr">method</span><span class="c-white">:</span> <span class="c-str">"POST"</span><span class="c-white">,</span>
+            <span class="c-attr">headers</span><span class="c-white">: {</span> <span class="c-str">"Content-Type"</span><span class="c-white">:</span> <span class="c-str">"application/json"</span> <span class="c-white">},</span>
+            <span class="c-attr">body</span><span class="c-white">: JSON.stringify({</span> <span class="c-attr">cmd</span> <span class="c-white">})</span>
+        <span class="c-white">});</span>
+        <span class="c-kw">const</span> <span class="c-attr">data</span> <span class="c-white">=</span> <span class="c-kw">await</span> <span class="c-attr">res</span><span class="c-white">.json();</span>
+        <span class="c-kw">if</span> <span class="c-white">(!</span><span class="c-attr">res</span><span class="c-white">.ok)</span> <span class="c-kw">throw new</span> <span class="c-tag">Error</span><span class="c-white">(</span><span class="c-attr">data</span><span class="c-white">.error);</span>
+        <span class="c-white">console.log(</span><span class="c-str">"Success:"</span><span class="c-white">,</span> <span class="c-attr">data</span><span class="c-white">);</span>
+    <span class="c-white">}</span> <span class="c-kw">catch</span> <span class="c-white">(</span><span class="c-attr">err</span><span class="c-white">) {</span>
+        <span class="c-white">console.error(</span><span class="c-str">"API Error:"</span><span class="c-white">,</span> <span class="c-attr">err</span><span class="c-white">.message);</span>
+    <span class="c-white">}</span>
+<span class="c-white">}</span>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -739,16 +1114,113 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>請回答以下問題，測試你對本模組內容的理解程度。每題僅有一個正確答案。</p>
+
+                <form id="quiz-form" onsubmit="return false;" style="margin-top:24px;">
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">1. 在 RESTful API 中，GET 方法的語意化操作是什麼？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 新增資源
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 讀取/查詢資源
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 修改資源
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 刪除資源
+                        </label>
+                        <div id="fb-q1" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">2. HTTP 狀態碼 404 代表什麼意思？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 請求成功
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 伺服器內部錯誤
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 請求的資源不存在
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 未經授權的存取
+                        </label>
+                        <div id="fb-q2" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">3. 使用 JSON 封裝感測器數據相比逗號分隔字串的主要優勢是？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 資料量更小
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 具有自描述性的鍵值結構，易於擴展維護
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 傳輸速度更快
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 不需要解析
+                        </label>
+                        <div id="fb-q3" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">4. 在 RESTful API 中，HTTP 狀態碼 201 代表什麼？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 請求成功 (OK)
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 資源已成功建立 (Created)
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 未找到資源
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 請求格式錯誤
+                        </label>
+                        <div id="fb-q4" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="display:flex;gap:12px;margin-top:20px;">
+                        <button type="button" class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button type="button" class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                    </div>
+                    <div id="quiz-result" style="margin-top:16px;font-size:15px;font-weight:600;display:none;"></div>
+                </form>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -806,9 +1278,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「JSON 數據打包與 RESTful 回傳」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「JSON 數據打包與 RESTful 回傳」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -824,7 +1296,8 @@
         { id: 3, label: '🗣️ 2. RESTful 動詞與語意化操作 (20 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🤝 3. 狀態碼與回饋機制 (20 min)', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',     time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -844,6 +1317,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -945,8 +1419,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'C', q3: 'B', q4: 'B' };
+    const QUIZ_EXPLANATIONS = {
+        q1: 'RESTful 的 GET 方法對應「讀取」操作，具有冪等性（多次呼叫結果相同），不應產生副作用。',
+        q2: '404 Not Found 表示伺服器無法找到請求的資源。常見的 4xx 系列為客戶端錯誤，5xx 為伺服器錯誤。',
+        q3: 'JSON 的鍵值對結構讓每個欄位都有明確名稱，新增或刪除欄位不會影響既有解析邏輯，大幅提升可維護性。',
+        q4: '201 Created 表示請求成功且伺服器已建立新資源，通常用於 POST 請求的回應。200 OK 則是一般性成功。'
+    };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const fb = document.getElementById(`fb-${q}`);
+            if (!selected) {
+                fb.style.display = 'block';
+                fb.innerHTML = '<span style="color:#d13438;">⚠ 請選擇一個答案</span>';
+                continue;
+            }
+            fb.style.display = 'block';
+            if (selected.value === correct) {
+                score++;
+                fb.innerHTML = `<span style="color:#107c10;">✔ 正確！</span> ${QUIZ_EXPLANATIONS[q]}`;
+            } else {
+                fb.innerHTML = `<span style="color:#d13438;">✘ 不正確。正確答案是 ${correct}。</span> ${QUIZ_EXPLANATIONS[q]}`;
+            }
+        }
+        const result = document.getElementById('quiz-result');
+        result.style.display = 'block';
+        if (score === total) {
+            result.innerHTML = `<span style="color:#107c10;">🎉 滿分！你答對了全部 ${total} 題！</span>`;
+            markDone(6);
+        } else {
+            result.innerHTML = `<span style="color:#d13438;">你答對了 ${score} / ${total} 題。再試一次吧！</span>`;
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= Object.keys(QUIZ_ANSWERS).length; i++) {
+            const fb = document.getElementById(`fb-q${i}`);
+            if (fb) { fb.style.display = 'none'; fb.innerHTML = ''; }
+        }
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 04：感測器整合';
 </script>
 
 <!-- Define Resources -->

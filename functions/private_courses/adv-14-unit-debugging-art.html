@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>軟體工程的除錯藝術 - Vibe Coding Learn</title>
+    <title>軟體工程的除錯藝術 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 14 - 除錯藝術</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">軟體工程的除錯藝術</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 14</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>軟體工程的除錯藝術</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 14</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>軟體工程的除錯藝術</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    歡迎來到本模組！本單元聚焦於 <strong>軟體工程的除錯藝術</strong>。
+                    Bug 不會自動消失，而「剛才明明還是好的」從來不是有效的除錯策略。本模組將帶你從盲目猜測升級到科學驗證——學會像偵探一樣觀察現象、建立假說、隔離變因，並用專業工具（斷點、堆疊追蹤、封包比對）精準鎖定犯罪現場。
+                    最終，你將掌握防禦性重構技巧，讓代碼從根本上具備免疫力。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境設定</div>
+                    你的機器人在直線行駛時完全正常，但每次右轉超過 45 度就會突然停頓兩秒再恢復。你反覆檢查馬達驅動代碼，怎麼看都沒問題。
+                    真正的元兇藏在通訊層——一個 JSON 欄位的大小寫不一致導致韌體解析失敗並觸發了隱形的超時重試。
+                    請先觀看教學影片，學習如何用系統化方法在數分鐘內定位這類「幽靈 Bug」。
                 </div>
 
                 <h2>教學影片</h2>
@@ -576,7 +577,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -591,57 +592,121 @@
                 </div>
 
                 <h1>🦆 1. 除錯心理學與科學方法</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                除錯不僅是技術，更是嚴謹的心理戰。我們常被「剛才明明還是好的」這種經驗主義蒙蔽。學會利用科學檢驗流程與「橡皮鴨除錯法」來系統化定位問題。
-                            </p>
-<div class="bg-violet-50 p-6 rounded-2xl border border-violet-100 text-justify">
-<h4 class="font-bold text-violet-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed text-center text-justify">
-                                    Scientific Cycle</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify text-justify">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-violet-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify text-left">現象記錄</strong>：不帶成見地觀察 Bug
-                                            觸發的精確硬體與軟體條件。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-violet-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-justify">建立假說</strong>：邏輯推演可能的原因（如：整數溢位、反向映射、競態條件）。
-                                        </div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-violet-500 rounded-full mt-1 text-justify text-left"></span>
-<div><strong class="text-justify">隔離實驗</strong>：縮小代碼範圍，驗證假說是否正確，直到鎖定「犯罪現場」。
-                                        </div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-violet-500/5 group-hover:bg-violet-500/10 transition-colors text-justify">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-center text-justify">
-                                Isolation Troubleshooting</h4>
-<div class="relative z-10 flex flex-col items-center gap-2 text-justify">
-<div class="text-[9px] text-slate-500 mb-2 text-justify uppercase font-black text-center">
-                                    BINARY SEARCH METHOD</div>
-<div class="flex gap-1 text-justify">
-<div class="w-4 h-4 bg-red-500 rounded-sm text-justify"></div>
-<div class="w-4 h-4 bg-red-500 rounded-sm text-justify"></div>
-<div class="w-4 h-4 bg-indigo-500 rounded-sm animate-pulse text-justify"></div>
-<div class="w-4 h-4 bg-indigo-500 rounded-sm text-justify"></div>
-</div>
-<div class="text-[7px] text-violet-400 mt-2 tracking-widest uppercase text-justify italic font-black">
-                                    Isolate and Test 50% of the Logic</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-8 font-mono tracking-widest text-center text-justify">
-                                SYSTEMATIC ELIMINATION ACTIVE</p>
-</div>
-</div>
+
+                <p>
+                    除錯（Debugging）不僅是一項技術操作，更是一場嚴謹的<strong>心理與邏輯博弈</strong>。多數開發者在遇到 Bug 時，第一反應是「剛才明明還是好的」——這種依賴記憶與直覺的經驗主義，恰恰是除錯效率低落的根本原因。真正的專業工程師，會將除錯過程視為一場科學實驗：從觀察現象出發，建立假說，設計實驗來驗證或推翻假說，最終精準鎖定根因。
+                </p>
+
+                <p>
+                    本單元將帶你建立一套可重複、可驗證的<strong>科學除錯流程</strong>，讓你從「碰運氣修 Bug」升級為「系統化獵殺 Bug」。這套方法論不僅適用於嵌入式系統開發，在任何軟體工程場景中都是頂尖工程師的核心素養。
+                </p>
+
+                <h2>科學除錯的三步循環</h2>
+
+                <p>
+                    所有有效的除錯行為，都遵循以下三個階段的迭代循環。每一次迭代都會將問題空間縮小，直到精確定位到根因為止。
+                </p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>現象記錄（Observe）</h4>
+                            <p>不帶任何成見地觀察 Bug 觸發的精確條件。記錄硬體狀態、輸入數據、觸發時序與錯誤訊息。關鍵在於<strong>區分「事實」與「推測」</strong>——「馬達不轉」是事實，「馬達驅動壞了」是推測。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>建立假說（Hypothesize）</h4>
+                            <p>根據觀察到的現象，邏輯推演可能的原因。常見的假說方向包括：整數溢位、變數作用域污染、競態條件（Race Condition）、通訊協議欄位不一致等。每次只針對<strong>一個假說</strong>進行驗證。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>隔離驗證（Isolate & Test）</h4>
+                            <p>透過縮小代碼範圍或控制變因，設計最小化實驗來驗證假說。如果假說被推翻，回到步驟 1 重新觀察；如果假說被證實，你就找到了「犯罪現場」。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        「橡皮鴨除錯法」（Rubber Duck Debugging）要求你把問題完整地解釋給一隻橡皮鴨（或任何非技術對象）聽。在組織語言的過程中，你往往會自行發現邏輯漏洞。這個看似荒謬的方法，在 Google、Microsoft 等公司被廣泛實踐。
+                    </div>
+                </div>
+
+                <h2>二分搜尋除錯法（Binary Search Debugging）</h2>
+
+                <p>
+                    當問題涉及大量代碼且難以直接定位時，<strong>二分搜尋法</strong>是最有效率的隔離策略。其核心思想是：每次將可疑代碼範圍對半切割，判斷 Bug 出現在哪一半，再繼續對該半段進行切割，直到精確鎖定問題行。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 二分搜尋除錯策略示意</span><br>
+                    <span class="c-comment">// 假設 500 行的 loop() 出現異常</span><br><br>
+                    <span class="c-comment">// 第 1 輪：註解掉後半段（第 250-500 行），測試前半段</span><br>
+                    <span class="c-comment">//   → 問題消失 → Bug 在後半段</span><br><br>
+                    <span class="c-comment">// 第 2 輪：恢復後半段，註解第 375-500 行</span><br>
+                    <span class="c-comment">//   → 問題仍在 → Bug 在第 250-375 行</span><br><br>
+                    <span class="c-comment">// 第 3 輪：繼續對半，縮小到第 310-375 行</span><br>
+                    <span class="c-comment">//   → 最終定位到第 342 行：整數溢位！</span><br><br>
+                    <span class="c-kw">int</span> <span class="c-attr">speed</span> <span class="c-white">= </span><span class="c-attr">sensorValue</span> <span class="c-white">* </span><span class="c-val">256</span><span class="c-white">;</span>  <span class="c-comment">// 當 sensorValue > 127 時溢位！</span>
+                </div>
+
+                <h2>常見的心理偏誤陷阱</h2>
+
+                <p>
+                    除錯過程中，工程師經常會落入以下心理偏誤，導致在錯誤的方向上浪費大量時間：
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>心理偏誤</th>
+                            <th>典型表現</th>
+                            <th>對策</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>確認偏誤</strong></td>
+                            <td>只尋找支持自己假說的證據，忽略矛盾線索</td>
+                            <td>主動嘗試「推翻」自己的假說</td>
+                        </tr>
+                        <tr>
+                            <td><strong>近因偏誤</strong></td>
+                            <td>「我剛改過這段代碼，所以問題一定在這」</td>
+                            <td>使用 <code>git diff</code> 客觀比對變更</td>
+                        </tr>
+                        <tr>
+                            <td><strong>可用性偏誤</strong></td>
+                            <td>上次是記憶體洩漏，這次「肯定也是」</td>
+                            <td>從現象重新推導，不依賴過往經驗</td>
+                        </tr>
+                        <tr>
+                            <td><strong>沉沒成本</strong></td>
+                            <td>「我已經在這個方向花了 2 小時，不想放棄」</td>
+                            <td>設定時間盒（Time Box），超時即切換方向</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        永遠不要在沒有記錄的情況下連續嘗試多種修復。如果你同時改了三個地方然後 Bug 消失了，你無法確定哪個修改才是真正的解方——這會埋下未來的隱患。<strong>一次只改一個變因</strong>，是科學除錯的鐵律。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -656,54 +721,119 @@
                 </div>
 
                 <h1>🛠️ 2. 工具箱深度應用：做代碼的偵探</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                停止盲目的 <code>console.log</code>。學會利用瀏覽器 Network 面板追蹤數據包、設定條件斷點 (Breakpoints) 與讀取堆疊追蹤
-                                (Stack Trace)。
-                            </p>
-<div class="bg-pink-50 p-8 rounded-3xl border border-pink-100 text-justify">
-<h4 class="text-pink-900 font-bold mb-4 text-xs uppercase tracking-widest text-center text-justify text-justify">
-                                    Inspection Toolkit</h4>
-<div class="grid grid-cols-2 gap-2 text-[9px] text-slate-500 font-mono text-justify">
-<div class="p-2 border rounded border-pink-200 text-justify text-left text-justify">
-                                        Payload Sniffing</div>
-<div class="p-2 border rounded border-pink-200 text-justify text-left text-justify">
-                                        Stack-Trace Analysis</div>
-<div class="p-2 border rounded border-pink-200 text-justify text-left text-justify">
-                                        Conditional Breaks</div>
-<div class="p-2 border rounded border-pink-200 text-justify text-left text-justify">
-                                        Serial Data Plotting</div>
-</div>
-<p class="text-[10px] text-slate-400 mt-4 italic font-light text-center text-justify text-justify">
-                                    看懂堆疊追蹤：定位「犯罪第一現場」的上下文環境</p>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-pink-500/5 text-justify"></div>
-<h4 class="text-pink-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-center text-justify">
-                                Real-time Telemetry Trace</h4>
-<div class="w-full h-24 bg-black/40 rounded border border-slate-800 p-2 relative text-justify">
-<div class="absolute inset-0 opacity-10 bg-[radial-gradient(#ec4899_1px,transparent_1px)] bg-[size:10px_10px] text-justify">
-</div>
-<div class="w-full h-px bg-slate-700 absolute top-1/2 text-justify"></div>
-<div class="flex items-end gap-px h-full text-justify">
-<div class="w-1 bg-pink-500 h-[20%] text-justify"></div>
-<div class="w-1 bg-pink-500 h-[30%] text-justify"></div>
-<div class="w-1 bg-red-500 h-[90%] animate-ping text-justify"></div>
-<div class="w-1 bg-pink-500 h-[40%] text-justify"></div>
-</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-8 font-mono tracking-widest uppercase text-center text-justify italic font-black">
-                                Anomaly Spike Detected</p>
-</div>
-</div>
+
+                <p>
+                    當你掌握了科學除錯的心法之後，下一步就是熟練運用專業的<strong>除錯工具</strong>。就像刑事鑑識人員不會只靠肉眼辦案，軟體工程師也不應該只依賴 <code>console.log</code> 來追蹤問題。本單元將帶你深入學習三大核心工具：<strong>條件斷點（Conditional Breakpoints）</strong>、<strong>堆疊追蹤（Stack Trace）</strong>與<strong>網路封包檢視器（Network Inspector）</strong>。
+                </p>
+
+                <p>
+                    這些工具的共同價值在於：它們讓你能夠在<strong>不修改原始碼</strong>的前提下，深入觀察程式在執行期間的內部狀態。這就像是為你的代碼裝上了 X 光機——你可以透視每一個變數的數值、每一次函式呼叫的順序、以及每一個網路封包的內容。
+                </p>
+
+                <h2>條件斷點（Conditional Breakpoints）</h2>
+
+                <p>
+                    普通斷點會在每次執行到該行時暫停程式，但在迴圈或高頻呼叫的場景中，這樣做會讓你淹沒在大量無關的停頓中。<strong>條件斷點</strong>允許你指定觸發條件，只有當條件成立時才會暫停，大幅提升除錯效率。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 在 VS Code 或 Chrome DevTools 中設定條件斷點</span><br>
+                    <span class="c-comment">// 右鍵點擊行號 → 「Add Conditional Breakpoint」</span><br><br>
+                    <span class="c-kw">for</span> <span class="c-white">(</span><span class="c-kw">let</span> <span class="c-attr">i</span> <span class="c-white">= 0; </span><span class="c-attr">i</span> <span class="c-white">&lt; </span><span class="c-val">1000</span><span class="c-white">; </span><span class="c-attr">i</span><span class="c-white">++) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">let</span> <span class="c-attr">value</span> <span class="c-white">= </span><span class="c-attr">sensor</span><span class="c-white">.</span><span class="c-tag">read</span><span class="c-white">(</span><span class="c-attr">i</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">processData</span><span class="c-white">(</span><span class="c-attr">value</span><span class="c-white">);</span> <span class="c-comment">// 條件斷點：value &lt; 0 || value &gt; 255</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        在 Chrome DevTools 中，你還可以使用「Logpoint」——它會在觸發時輸出訊息到 Console，但<strong>不會暫停程式執行</strong>。這在生產環境的即時偵錯中特別有用。
+                    </div>
+                </div>
+
+                <h2>堆疊追蹤（Stack Trace）解讀</h2>
+
+                <p>
+                    當程式拋出例外（Exception）時，堆疊追蹤會顯示從錯誤發生點到最外層呼叫者的完整函式呼叫鏈。學會閱讀堆疊追蹤，就等於掌握了定位「犯罪第一現場」的能力。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-str">Uncaught TypeError: Cannot read property 'x' of undefined</span><br>
+                    <span class="c-white">&nbsp;&nbsp;at </span><span class="c-tag">parseCommand</span> <span class="c-white">(</span><span class="c-str">comm_handler.js:42</span><span class="c-white">)</span>  <span class="c-comment">← 犯罪現場</span><br>
+                    <span class="c-white">&nbsp;&nbsp;at </span><span class="c-tag">onMessageReceived</span> <span class="c-white">(</span><span class="c-str">ble_manager.js:118</span><span class="c-white">)</span><br>
+                    <span class="c-white">&nbsp;&nbsp;at </span><span class="c-tag">WebSocket.onmessage</span> <span class="c-white">(</span><span class="c-str">transport.js:67</span><span class="c-white">)</span>  <span class="c-comment">← 事件源頭</span>
+                </div>
+
+                <p>
+                    閱讀堆疊追蹤的原則是<strong>由上往下</strong>：最上方是直接拋出錯誤的位置（犯罪現場），往下則是一路追溯到事件源頭（誰觸發了這個呼叫鏈）。通常，Bug 的<strong>根因</strong>不在最頂層，而是在中間某一層傳入了不正確的參數。
+                </p>
+
+                <h2>網路封包檢視器（Network Inspector）</h2>
+
+                <p>
+                    在物聯網開發中，前端與韌體之間的通訊經常是 Bug 的重災區。瀏覽器的 <strong>Network 面板</strong>允許你即時檢視每一個 HTTP/WebSocket 請求的完整內容，包括請求標頭、Payload 與回應碼。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>檢查項目</th>
+                            <th>正常狀態</th>
+                            <th>異常徵兆</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>HTTP 狀態碼</td>
+                            <td><code>200 OK</code></td>
+                            <td><code>404</code>（路徑錯誤）、<code>500</code>（伺服器崩潰）</td>
+                        </tr>
+                        <tr>
+                            <td>JSON 欄位名稱</td>
+                            <td>前後端欄位一致</td>
+                            <td>大小寫不一致（如 <code>Speed</code> vs <code>speed</code>）</td>
+                        </tr>
+                        <tr>
+                            <td>Payload 大小</td>
+                            <td>符合預期的 byte 數</td>
+                            <td>異常膨脹（可能含未編碼的二進位資料）</td>
+                        </tr>
+                        <tr>
+                            <td>請求頻率</td>
+                            <td>穩定間隔</td>
+                            <td>突然密集重試（可能是超時重連邏輯失控）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        在模組簡介中提到的「右轉 45 度停頓」幽靈 Bug，正是因為 JSON 欄位名稱 <code>"Direction"</code>（首字母大寫）與韌體端期待的 <code>"direction"</code>（全小寫）不一致，導致解析失敗並觸發了隱形的超時重試。只要在 Network 面板中比對一次送出的 Payload，即可在數秒內定位此問題。
+                    </div>
+                </div>
+
+                <h2>Serial Monitor 與韌體端偵錯</h2>
+
+                <p>
+                    對於 ESP32 等嵌入式裝置，<strong>Serial Monitor</strong>（序列埠監控器）是你觀察韌體內部行為的主要窗口。在 PlatformIO 中按下 <code>Ctrl+Shift+M</code> 即可開啟，搭配 <code>Serial.println()</code> 可輸出變數狀態與執行流程。進階做法是將 Serial 輸出格式化為 CSV，再用 Serial Plotter 繪製即時數據曲線，直觀地發現異常抖動或數值突變。
+                </p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        結合前端 Network 面板與韌體端 Serial Monitor 進行「全鏈路比對」，是診斷通訊層 Bug 的終極手段。從前端發出的 JSON 封包，到韌體端接收到的原始字串，任何差異都可能是問題根源。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -718,48 +848,117 @@
                 </div>
 
                 <h1>🛡️ 3. 防禦性重構：寫出「不壞」的代碼</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
-                                除錯的最高境界是「不需要除錯」。透過邊界驗證、異常捕獲 (Try-Catch) 與非同步流程管理，建立代碼的免疫能力。
-                            </p>
-<div class="bg-pink-500/10 p-8 rounded-3xl border border-pink-500/20 shadow-inner text-justify text-justify">
-<h4 class="font-bold text-pink-400 mb-4 text-xs uppercase tracking-widest text-center text-justify text-left">
-                                    Robustness Archetypes</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify text-left text-justify">
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-pink-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">邊界防禦 (Edge Case
-                                                Guard)</strong>：主動預測並攔截 NaN、Null 與負值溢位。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-pink-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">競態保護 (Race
-                                                Buffer)</strong>：確保非同步指令依序執行，防止任務衝突。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-pink-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">感知型報錯 (Verbose
-                                                UX)</strong>：故障發生時給予診斷引導，而非靜默當機。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-pink-600/10 p-10 rounded-3xl border border-pink-500/20 text-center relative overflow-hidden group text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-pink-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify">
-</div>
-<h4 class="text-pink-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center text-justify">
-                                Shielding Active</h4>
-<div class="inline-block px-8 py-3 border border-pink-500/30 text-pink-500 rounded-xl font-bold text-[10px] uppercase tracking-widest text-justify">
-                                Fail-safe Logic: ON</div>
-<p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center text-justify text-left text-justify">
-                                "專業的程式碼像防彈玻璃，即便遭受重擊，受損也會被侷限在可控範圍內。"
-                            </p>
-</div>
-</div>
+
+                <p>
+                    除錯的最高境界不是「更快地修好 Bug」，而是<strong>「讓 Bug 根本無法發生」</strong>。防禦性程式設計（Defensive Programming）的核心理念是：假設所有外部輸入都是不可信的，假設所有非同步操作都可能失敗，然後在代碼層面建立層層防禦機制。這就像為你的程式碼穿上防彈衣——即便遭受攻擊，受損也會被侷限在可控範圍內。
+                </p>
+
+                <p>
+                    本單元將教你三大防禦性重構策略：<strong>邊界驗證（Edge Case Guard）</strong>、<strong>異常捕獲（Try-Catch）</strong>與<strong>感知型報錯（Verbose UX）</strong>，並以實際的物聯網控制場景作為範例。
+                </p>
+
+                <h2>策略一：邊界驗證（Edge Case Guard）</h2>
+
+                <p>
+                    在嵌入式系統中，感測器可能回傳 <code>NaN</code>（因為斷線）、<code>null</code>（因為初始化未完成）或超出預期範圍的負值。如果這些異常值直接被送入 PID 運算或馬達驅動，輕則控制失效，重則硬體損壞。防禦性代碼必須在<strong>數據入口處</strong>主動攔截這些邊界情況。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 防禦性邊界驗證：確保馬達指令永遠在安全範圍內</span><br>
+                    <span class="c-kw">function</span> <span class="c-tag">safeMotorWrite</span><span class="c-white">(</span><span class="c-attr">rawValue</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(</span><span class="c-kw">typeof</span> <span class="c-attr">rawValue</span> <span class="c-white">!== </span><span class="c-str">'number'</span> <span class="c-white">|| </span><span class="c-tag">isNaN</span><span class="c-white">(</span><span class="c-attr">rawValue</span><span class="c-white">)) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">console</span><span class="c-white">.</span><span class="c-tag">warn</span><span class="c-white">(</span><span class="c-str">'非法馬達指令值：'</span><span class="c-white">, </span><span class="c-attr">rawValue</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-val">0</span><span class="c-white">;</span> <span class="c-comment">// 安全歸零</span><br>
+                    <span class="c-white">&nbsp;&nbsp;}</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">clamped</span> <span class="c-white">= </span><span class="c-tag">Math</span><span class="c-white">.</span><span class="c-tag">min</span><span class="c-white">(</span><span class="c-val">255</span><span class="c-white">, </span><span class="c-tag">Math</span><span class="c-white">.</span><span class="c-tag">max</span><span class="c-white">(</span><span class="c-val">0</span><span class="c-white">, </span><span class="c-tag">Math</span><span class="c-white">.</span><span class="c-tag">round</span><span class="c-white">(</span><span class="c-attr">rawValue</span><span class="c-white">)));</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">return</span> <span class="c-attr">clamped</span><span class="c-white">;</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <h2>策略二：異常捕獲與優雅降級</h2>
+
+                <p>
+                    <code>try-catch</code> 機制讓你的程式在遭遇不可預期的錯誤時，能夠<strong>優雅地降級</strong>（Graceful Degradation），而非直接崩潰。在控制系統中，這意味著即使通訊中斷或數據損毀，系統也應該安全停車而非失控暴衝。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-kw">try</span> <span class="c-white">{</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">cmd</span> <span class="c-white">= </span><span class="c-tag">JSON</span><span class="c-white">.</span><span class="c-tag">parse</span><span class="c-white">(</span><span class="c-attr">rawPayload</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">safeSpeed</span> <span class="c-white">= </span><span class="c-tag">safeMotorWrite</span><span class="c-white">(</span><span class="c-attr">cmd</span><span class="c-white">.</span><span class="c-attr">speed</span><span class="c-white">);</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">sendToRobot</span><span class="c-white">(</span><span class="c-attr">safeSpeed</span><span class="c-white">);</span><br>
+                    <span class="c-white">} </span><span class="c-kw">catch</span> <span class="c-white">(</span><span class="c-attr">e</span><span class="c-white">) {</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">emergencyStop</span><span class="c-white">();</span> <span class="c-comment">// 安全停車</span><br>
+                    <span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">showToast</span><span class="c-white">(</span><span class="c-str">'⚠️ 偵測到異常指令：'</span> <span class="c-white">+ </span><span class="c-attr">e</span><span class="c-white">.</span><span class="c-attr">message</span><span class="c-white">);</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <h2>策略三：感知型報錯（Verbose UX）</h2>
+
+                <p>
+                    最糟糕的使用者體驗不是「看到錯誤訊息」，而是<strong>「什麼都沒發生」</strong>。當機器人停止回應時，操作者需要知道：是通訊斷了？是電池沒電了？還是韌體崩潰了？感知型報錯要求系統在每一種故障模式下，都能給予操作者<strong>具體的診斷引導</strong>。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>故障模式</th>
+                            <th>靜默失敗（壞做法）</th>
+                            <th>感知型報錯（好做法）</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>通訊超時</td>
+                            <td>車子不動，畫面無變化</td>
+                            <td>UI 亮紅燈 + Toast：「藍牙連線逾時，嘗試重新連接中...」</td>
+                        </tr>
+                        <tr>
+                            <td>JSON 解析失敗</td>
+                            <td><code>undefined</code> 靜默傳入下游</td>
+                            <td>Console 警告 + 自動切換為安全模式</td>
+                        </tr>
+                        <tr>
+                            <td>馬達值溢位</td>
+                            <td>PWM 輸出異常數值</td>
+                            <td>自動鉗位至 0–255 + Serial 日誌記錄溢位事件</td>
+                        </tr>
+                        <tr>
+                            <td>感測器斷線</td>
+                            <td>讀取到 <code>NaN</code>，PID 計算崩壞</td>
+                            <td>偵測到 NaN 後切換為上一個有效值 + 警告閃爍</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        在韌體端（如 <code>include/hard_logic.h</code>），防禦性邊界檢查<strong>必須</strong>在寫入硬體暫存器之前執行。一旦非法的 PWM 值被寫入馬達驅動 IC，可能導致硬體過熱甚至燒毀。這不是軟體層面的 Bug，而是可能造成實體損害的安全漏洞。
+                    </div>
+                </div>
+
+                <h2>防禦性重構的核心原則</h2>
+
+                <ul>
+                    <li><strong>永不信任外部輸入</strong>——所有來自網路、感測器或使用者的數據，都必須經過驗證才能進入核心邏輯。</li>
+                    <li><strong>失敗時安全停止</strong>——系統遇到不可處理的錯誤時，必須進入已知的安全狀態（如停車），而非繼續帶病運行。</li>
+                    <li><strong>錯誤可被觀測</strong>——每一個被捕獲的異常都應該留下日誌痕跡，方便事後分析根因。</li>
+                    <li><strong>降級優於崩潰</strong>——即使部分功能失效，系統的核心安全功能必須維持運作。</li>
+                </ul>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        專業的程式碼就像防彈玻璃——即便遭受重擊，受損也會被侷限在可控範圍內。這種「故障隔離」的設計哲學，正是航太、醫療與自動駕駛領域的工程標準。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -838,16 +1037,134 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>
+                    請回答以下問題，測試你對「<strong>除錯藝術</strong>」的理解程度。
+                    選擇完畢後點擊「送出答案」查看結果與解析。
+                </p>
+
+                <div id="quiz-container" style="margin:24px 0;">
+
+                    <div class="quiz-question" id="quiz-q0" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">1. 系統性除錯的第一步應該是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt0">
+                            <input type="radio" name="quiz-q0" value="0" style="accent-color:var(--ms-blue);">
+                            <span>隨機修改程式碼看看會不會好</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt1">
+                            <input type="radio" name="quiz-q0" value="1" style="accent-color:var(--ms-blue);">
+                            <span>穩定重現問題，確認觸發條件與症狀</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt2">
+                            <input type="radio" name="quiz-q0" value="2" style="accent-color:var(--ms-blue);">
+                            <span>直接重寫整個模組</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt3">
+                            <input type="radio" name="quiz-q0" value="3" style="accent-color:var(--ms-blue);">
+                            <span>詢問 AI 助手</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp0" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q1" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">2. 「二分法除錯（Binary Search Debugging）」的策略是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt0">
+                            <input type="radio" name="quiz-q1" value="0" style="accent-color:var(--ms-blue);">
+                            <span>一次只改一行程式碼</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt1">
+                            <input type="radio" name="quiz-q1" value="1" style="accent-color:var(--ms-blue);">
+                            <span>將問題範圍對半切分，逐步縮小到最小可重現範圍</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt2">
+                            <input type="radio" name="quiz-q1" value="2" style="accent-color:var(--ms-blue);">
+                            <span>同時修改所有可疑的地方</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt3">
+                            <input type="radio" name="quiz-q1" value="3" style="accent-color:var(--ms-blue);">
+                            <span>從最後一行開始往回看</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp1" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q2" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">3. 在嵌入式系統中，為什麼 <code>Serial.print()</code> 除錯有時會改變程式行為？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt0">
+                            <input type="radio" name="quiz-q2" value="0" style="accent-color:var(--ms-blue);">
+                            <span>Serial 會修改變數值</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt1">
+                            <input type="radio" name="quiz-q2" value="1" style="accent-color:var(--ms-blue);">
+                            <span>Serial 輸出佔用時間，改變了程式的時序特性（海森堡效應）</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt2">
+                            <input type="radio" name="quiz-q2" value="2" style="accent-color:var(--ms-blue);">
+                            <span>Serial 會讓電壓不穩</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt3">
+                            <input type="radio" name="quiz-q2" value="3" style="accent-color:var(--ms-blue);">
+                            <span>Serial 會停用中斷</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp2" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q3" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">4. 當遇到「時有時無」的間歇性 Bug 時，最有效的策略是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt0">
+                            <input type="radio" name="quiz-q3" value="0" style="accent-color:var(--ms-blue);">
+                            <span>忽略它，反正不常發生</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt1">
+                            <input type="radio" name="quiz-q3" value="1" style="accent-color:var(--ms-blue);">
+                            <span>增加日誌記錄，統計觸發條件的共同模式</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt2">
+                            <input type="radio" name="quiz-q3" value="2" style="accent-color:var(--ms-blue);">
+                            <span>加長 delay 時間</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt3">
+                            <input type="radio" name="quiz-q3" value="3" style="accent-color:var(--ms-blue);">
+                            <span>升級硬體</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp3" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">送出答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+
+                <div id="quiz-result" style="display:none; margin-top:20px; padding:16px 20px; border-radius:6px; font-weight:600;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -905,9 +1222,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「軟體工程的除錯藝術」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「軟體工程的除錯藝術」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -923,7 +1240,8 @@
         { id: 3, label: '🛠️ 2. 工具箱深度應用：做代碼的偵探', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🛡️ 3. 防禦性重構：寫出「不壞」的代碼', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -943,6 +1261,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1044,8 +1363,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = [1, 1, 1, 1];
+    const QUIZ_EXPLANATIONS = ["除錯的基礎是能穩定重現問題，唯有確認「什麼情況下必定出錯」，才能有效縮小排查範圍。","二分法每次排除一半的可能範圍，用最少的步驟定位問題所在，效率為 O(log n)。","這是觀察者效應（海森堡 Bug）：加入除錯輸出改變了執行時序，原本的競態條件或時序問題可能暫時消失。","間歇性 Bug 通常有特定觸發模式（如時序競態、邊界值），透過大量日誌與統計分析能找出共同觸發條件。"];
+
+    function submitQuiz() {
+        let score = 0;
+        QUIZ_ANSWERS.forEach((ans, i) => {
+            const selected = document.querySelector(`input[name="quiz-q${i}"]:checked`);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            const qEl = document.getElementById(`quiz-q${i}`);
+            if (selected && parseInt(selected.value) === ans) {
+                score++;
+                qEl.style.borderColor = '#107c10';
+                expEl.style.background = '#dff6dd';
+                expEl.innerHTML = '<strong style="color:#107c10;">✓ 正確！</strong> ' + QUIZ_EXPLANATIONS[i];
+            } else {
+                qEl.style.borderColor = '#d13438';
+                expEl.style.background = '#fde7e9';
+                expEl.innerHTML = '<strong style="color:#d13438;">✗ 不正確。</strong> ' + QUIZ_EXPLANATIONS[i];
+            }
+            expEl.style.display = 'block';
+        });
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === QUIZ_ANSWERS.length) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.style.color = '#107c10';
+            resultEl.textContent = `🎉 滿分！你答對了全部 ${QUIZ_ANSWERS.length} 題！`;
+        } else {
+            resultEl.style.background = '#deecf9';
+            resultEl.style.color = '#005a9e';
+            resultEl.textContent = `你答對了 ${score} / ${QUIZ_ANSWERS.length} 題，請查看解析後再試一次。`;
+        }
+    }
+
+    function resetQuiz() {
+        QUIZ_ANSWERS.forEach((_, i) => {
+            const radios = document.querySelectorAll(`input[name="quiz-q${i}"]`);
+            radios.forEach(r => r.checked = false);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            expEl.style.display = 'none';
+            const qEl = document.getElementById(`quiz-q${i}`);
+            qEl.style.borderColor = '#e1dfdd';
+        });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 14：除錯的藝術';
 </script>
 
 <!-- Define Resources -->

@@ -1089,19 +1089,13 @@ async function initFirebaseFeatures() {
     const { getAuth } = await import("https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js");
     const { getFunctions, httpsCallable } = await import("https://www.gstatic.com/firebasejs/12.6.0/firebase-functions.js");
     const { getFirestore } = await import("https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js");
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCO6Y6Pa7b7zbieJIErysaNF6-UqbT8KJw",
-            authDomain: "e-learning-942f7.firebaseapp.com",
-            projectId: "e-learning-942f7",
-            storageBucket: "e-learning-942f7.firebasestorage.app",
-            messagingSenderId: "878397058574",
-            appId: "1:878397058574:web:28aaa07a291ee3baab165f"
-        };
+    const { firebaseConfig, connectFirebaseEmulators } = await import("./firebase-local.js");
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
         const functions = getFunctions(app, 'asia-east1');
+        connectFirebaseEmulators({ auth, db, functions });
         
         // [MOD] Expose globally for other parts of course-shared.js
         window.vibeApp = app;
@@ -1240,7 +1234,8 @@ async function initFirebaseFeatures() {
             // Fallback prefix check
             if (fileName.startsWith('adv-')) return 'advanced';
             if (fileName.startsWith('basic-')) return 'basic';
-            if (fileName.startsWith('start-') || fileName.match(/^[0-9]/)) return 'started';
+            if (fileName.startsWith('start-')) return 'started';
+            if (fileName.match(/^[0-9]/)) return 'prepare';
             return 'basic';
         };
 
@@ -1357,7 +1352,7 @@ async function initFirebaseFeatures() {
             const unitId = fileName.replace('.html', '');
             
             // Only render on unit HTML pages (skip generic index pages)
-            if (fileName === 'basic.html' || fileName === 'advanced.html' || fileName === 'prepare.html' || fileName === 'started.html' || fileName === 'index.html' || fileName === 'payment-return.html') {
+            if (fileName === 'basic.html' || fileName === 'advanced.html' || fileName === 'prepare.html' || fileName === 'start.html' || fileName === 'index.html' || fileName === 'payment-return.html') {
                 return;
             }
 
@@ -2319,7 +2314,8 @@ async function findCourseIdByUnit(fileName) {
     }
     
     // Fallback logic
-    const fallbackId = fileName.startsWith('02-') ? '02-master-ai-agents.html' : (fileName.split('-')[0] + "-master");
+    const fallbackId = fileName.startsWith('prepare-') ? 'prepare'
+        : (fileName.split('-')[0] + "-master");
     console.log(`[CourseShared] Fallback resolution for ${fileName} -> ${fallbackId}`);
     return fallbackId;
 }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP32 架構與開發板導覽 - Vibe Coding Learn</title>
+    <title>ESP32 架構與開發板導覽 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -81,6 +81,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -471,9 +472,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 1 - 核心架構</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +486,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">ESP32 架構與開發板導覽</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 1</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,7 +508,7 @@
                 <h1>ESP32 架構與開發板導覽</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 1</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -520,10 +519,10 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>為什麼選擇 ESP32？</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>🔬 開發板外觀大解剖</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>💻 軟體環境預熱</strong> 的調校技巧與穩定性測試。</li>
-                    <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
+                    <li>能夠解釋 ESP32 雙核心、內建 Wi-Fi/藍牙與豐富外設的架構優勢，並說明其相較傳統微控制器的差異。</li>
+                    <li>能夠辨識開發板上的關鍵元件（ESP-WROOM-32 模組、橋接晶片、LDO 穩壓器），並判斷 GPIO 的 3.3V 電壓限制。</li>
+                    <li>能夠使用 ESP-IDF API（<code>esp_chip_info()</code>、<code>esp_read_mac()</code>）提取晶片資訊，並實作 GPIO 控制完成 SOS 摩斯密碼閃爍。</li>
+                    <li>能夠分析 Bootloader 啟動日誌中的 Flash Mode 與晶振頻率，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
                 <h2>必要條件</h2>
@@ -553,15 +552,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>ESP32 架構與開發板導覽</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    ESP32 是物聯網開發的瑞士刀——雙核處理器、內建 Wi-Fi 與藍牙、豐富的外設接口，全部整合在一顆不到百元的晶片上。
+                    然而，如果你不了解開發板上每個元件的角色與電壓限制，就可能在接線時燒毀晶片，或在除錯時找不到問題根源。
+                    本單元帶你從硬體層面認識這顆「電子大腦」，為後續所有實作建立穩固的認知地圖。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    小明剛拿到 ESP32 開發板，興奮地用 5V 電源直接接到 GPIO 腳位想讀取感測器——結果晶片瞬間發燙、程式再也燒不進去。
+                    他不知道 ESP32 的 GPIO 最高只能承受 3.3V，也分不清板子上的 LDO 穩壓器、橋接晶片與主晶片各自的功能。
+                    如果他在開始前花幾分鐘瀏覽開發板的架構圖，這場「燒板慘劇」完全可以避免。
                 </div>
 
                 <h2>教學影片</h2>
@@ -575,7 +575,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -589,39 +589,108 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚡ 為什麼選擇 ESP32？</h1>
+                <h1>為什麼選擇 ESP32？</h1>
                 
-                <p class="text-gray-500 mb-8 text-lg">相較於傳統 Micro-controllers，ESP32 是一個質的飛躍。</p><div class="grid md:grid-cols-3 gap-8">
-<!-- Dual Core -->
-<div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 transition hover:shadow-lg">
-<div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-2xl mb-4 shadow-sm text-justify">🧠</div>
-<h3 class="text-lg font-bold text-gray-800 mb-2 text-justify">雙核心 (Dual-Core)</h3>
-<p class="text-sm text-gray-600 leading-relaxed text-justify">
-                                運算速度高達 <strong>240MHz</strong>。一核處理通訊，一核專注執行邏輯。
-                            </p>
-</div>
-<!-- Wireless -->
-<div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 transition hover:shadow-lg">
-<div class="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center text-2xl mb-4 shadow-sm text-justify">📡</div>
-<h3 class="text-lg font-bold text-gray-800 mb-2 text-justify">無線連線能力</h3>
-<p class="text-sm text-gray-600 leading-relaxed text-justify">
-                                內建 <strong>Wi-Fi</strong> 與 <strong>雙模藍牙</strong>。這是物聯網神器的核心。
-                            </p>
-</div>
-<!-- Peripherals -->
-<div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 transition hover:shadow-lg">
-<div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center text-2xl mb-4 shadow-sm text-justify">🔌</div>
-<h3 class="text-lg font-bold text-gray-800 mb-2 text-justify">豐富的外設</h3>
-<p class="text-sm text-gray-600 leading-relaxed text-justify">
-                                內建觸控、感應、多組序列接口。輕鬆驅動馬達與讀取感測器。
-                            </p>
-</div>
-</div>
+                <p>在嵌入式系統的世界中，微控制器（Microcontroller, MCU）是一切裝置的核心大腦。從家用電器到工業自動化，MCU 無處不在。然而，傳統的 MCU（如 Arduino UNO 上的 ATmega328P）在處理能力、無線連線與外設整合方面存在明顯的侷限性。ESP32 的出現，徹底改變了這個格局。</p>
+
+                <p>ESP32 由樂鑫科技（Espressif Systems）設計，是一款整合了 <strong>Xtensa 雙核心 32 位元處理器</strong>、<strong>Wi-Fi</strong>、<strong>藍牙（Classic + BLE）</strong>的系統單晶片（SoC）。它的時脈頻率可達 240 MHz，搭配 520 KB SRAM，足以處理複雜的即時運算與多工任務——而這一切的價格不到一杯咖啡。</p>
+
+                <p>對物聯網（IoT）開發者而言，ESP32 最令人興奮的特點在於它的「<strong>All-in-One</strong>」設計哲學。傳統方案中，你可能需要一塊 MCU 主板加上一塊獨立的 Wi-Fi 模組（如 ESP8266），再加上藍牙轉接器，光是接線就容易出錯。ESP32 把這些通通整合到一顆晶片中，大幅降低了系統複雜度與功耗。</p>
+
+                <h2>ESP32 vs 傳統微控制器</h2>
+
+                <p>以下表格比較了 ESP32 與常見入門級 MCU 的關鍵規格差異：</p>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>特性</th>
+                        <th>Arduino UNO (ATmega328P)</th>
+                        <th>ESP32</th>
+                    </tr>
+                    <tr>
+                        <td>處理器核心</td>
+                        <td>單核 8-bit AVR</td>
+                        <td>雙核 32-bit Xtensa LX6</td>
+                    </tr>
+                    <tr>
+                        <td>時脈頻率</td>
+                        <td>16 MHz</td>
+                        <td>最高 240 MHz</td>
+                    </tr>
+                    <tr>
+                        <td>SRAM</td>
+                        <td>2 KB</td>
+                        <td>520 KB</td>
+                    </tr>
+                    <tr>
+                        <td>Flash</td>
+                        <td>32 KB</td>
+                        <td>4 MB（外掛）</td>
+                    </tr>
+                    <tr>
+                        <td>Wi-Fi</td>
+                        <td><span class="cross"><i class="fas fa-times"></i></span> 無</td>
+                        <td><span class="check"><i class="fas fa-check"></i></span> 802.11 b/g/n</td>
+                    </tr>
+                    <tr>
+                        <td>藍牙</td>
+                        <td><span class="cross"><i class="fas fa-times"></i></span> 無</td>
+                        <td><span class="check"><i class="fas fa-check"></i></span> Classic + BLE 4.2</td>
+                    </tr>
+                    <tr>
+                        <td>ADC 通道</td>
+                        <td>6 個（10-bit）</td>
+                        <td>18 個（12-bit）</td>
+                    </tr>
+                    <tr>
+                        <td>觸控感測</td>
+                        <td><span class="cross"><i class="fas fa-times"></i></span> 無</td>
+                        <td><span class="check"><i class="fas fa-check"></i></span> 10 組電容觸控</td>
+                    </tr>
+                    <tr>
+                        <td>參考售價</td>
+                        <td>約 NT$200~350</td>
+                        <td>約 NT$80~150</td>
+                    </tr>
+                </table>
+
+                <h2>雙核心架構的威力</h2>
+
+                <p>ESP32 擁有兩顆獨立的 CPU 核心（稱為 <strong>PRO_CPU</strong> 與 <strong>APP_CPU</strong>），它們可以同時執行不同的任務。在 FreeRTOS 即時作業系統的調度下，一顆核心可以專門處理 Wi-Fi/藍牙通訊協定堆疊，另一顆核心則專注於你的應用程式邏輯（例如讀取感測器、控制馬達）。這種分工模式確保了通訊的穩定性，同時不犧牲應用程式的反應速度。</p>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>小技巧</strong>
+                        在 Arduino 框架下，你的 <code>setup()</code> 與 <code>loop()</code> 預設運行在 APP_CPU（Core 1）上。如果需要將特定任務固定到 PRO_CPU（Core 0），可以使用 FreeRTOS 的 <code>xTaskCreatePinnedToCore()</code> API 來指定核心。
+                    </div>
+                </div>
+
+                <h2>豐富的外設接口</h2>
+
+                <p>除了無線通訊能力，ESP32 還內建了極為豐富的硬體外設，讓你幾乎不需要額外的擴充晶片就能完成各種應用：</p>
+
+                <ul>
+                    <li><strong>GPIO</strong>：多達 34 個通用輸入/輸出腳位，支援中斷與 PWM 輸出</li>
+                    <li><strong>ADC</strong>：18 個 12-bit 類比數位轉換通道，可讀取感測器的類比訊號</li>
+                    <li><strong>DAC</strong>：2 個 8-bit 數位類比轉換通道，可輸出真正的類比電壓</li>
+                    <li><strong>I2C / SPI / UART</strong>：多組序列通訊介面，輕鬆連接各種感測器與顯示模組</li>
+                    <li><strong>電容觸控</strong>：10 組觸控感測引腳，無需外接按鈕即可實現觸控互動</li>
+                    <li><strong>霍爾感測器</strong>：內建磁場偵測功能</li>
+                </ul>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        並非所有 GPIO 都能自由使用。部分引腳（如 GPIO 6~11）連接到內部 Flash，不可作為一般 I/O 使用；GPIO 34~39 僅支援輸入模式，無法設為輸出。在設計電路前，務必參考官方的引腳對照表。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -635,55 +704,77 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔬 開發板外觀大解剖</h1>
+                <h1>開發板外觀大解剖</h1>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-<div class="bg-slate-900 rounded-2xl p-12 flex justify-center items-center shadow-2xl relative overflow-hidden group">
-<div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-50"></div>
-<!-- Hardware Representation -->
-<div class="w-64 h-44 bg-gray-800 rounded-xl border-2 border-gray-600 relative shadow-[0_0_50px_rgba(0,0,0,0.5)] transform transition group-hover:scale-105 duration-500">
-<div class="absolute top-4 left-4 w-36 h-28 bg-gradient-to-br from-zinc-400 to-zinc-500 rounded border border-zinc-600/50 flex items-center justify-center overflow-hidden">
-<div class="text-[10px] text-zinc-700 font-bold tracking-tight text-center leading-tight">ESP-WROOM-32<br/>CE FCC</div>
-<div class="absolute bottom-1 right-1 w-4 h-4 bg-zinc-600/20 rounded-full blur-sm text-justify"></div>
-</div>
-<div class="absolute bottom-px left-12 w-14 h-5 bg-zinc-700 rounded-t-sm border-t border-zinc-600"></div>
-<div class="absolute right-3 top-3 bottom-3 flex flex-col justify-around">
-<div class="w-1.5 h-1.5 bg-yellow-500/80 rounded-full shadow-[0_0_5px_rgba(234,179,8,0.5)]"></div>
-<div class="w-1.5 h-1.5 bg-yellow-500/80 rounded-full"></div>
-<div class="w-1.5 h-1.5 bg-yellow-500/80 rounded-full"></div>
-<div class="w-1.5 h-1.5 bg-yellow-500/80 rounded-full"></div>
-</div>
-</div>
-</div>
-<div class="space-y-6">
-<div class="flex gap-5 group">
-<div class="w-10 h-10 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center font-bold shadow-sm group-hover:bg-cyan-600 group-hover:text-white transition-colors duration-300">1</div>
-<div>
-<h4 class="font-bold text-gray-800 text-lg text-justify uppercase tracking-widest">ESP-WROOM-32 模組</h4>
-<p class="text-sm text-gray-500 leading-relaxed text-justify">藏著 CPU 與 Flash，負責保護精密晶片不受電磁干擾。</p>
-</div>
-</div>
-<div class="flex gap-5 group">
-<div class="w-10 h-10 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center font-bold shadow-sm group-hover:bg-cyan-600 group-hover:text-white transition-colors duration-300">2</div>
-<div>
-<h4 class="font-bold text-gray-800 text-lg text-justify">橋接晶片</h4>
-<p class="text-sm text-gray-500 leading-relaxed text-justify">翻譯官，負責將 USB 訊號轉換為 UART 訊號通訊。</p>
-</div>
-</div>
-<div class="flex gap-5 group">
-<div class="w-10 h-10 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center font-bold shadow-sm group-hover:bg-cyan-600 group-hover:text-white transition-colors duration-300">3</div>
-<div>
-<h4 class="font-bold text-gray-800 text-lg text-justify">LDO 電壓調節器</h4>
-<p class="text-sm text-gray-500 leading-relaxed text-justify">將 5V 降至 <span class="text-red-500 font-bold italic">3.3V</span>。過高電壓會直接燒毀核心。</p>
-</div>
-</div>
-</div>
-</div>
+                <p>拿到一塊 ESP32 開發板（如常見的 ESP32 DevKit V1），第一件事不是急著寫程式，而是先認識板子上每個元件的角色。理解硬體佈局能幫助你快速定位問題、避免接線錯誤，並且在除錯時知道該從哪裡下手。</p>
+
+                <p>一塊典型的 ESP32 開發板由以下幾個關鍵區域組成：頂部的 <strong>ESP-WROOM-32 模組</strong>（銀色金屬屏蔽蓋）、底部的 <strong>USB 連接埠</strong>與<strong>橋接晶片</strong>，以及兩側排列整齊的 <strong>GPIO 排針</strong>。此外，板上還有 <strong>LDO 穩壓器</strong>、<strong>電源指示燈</strong>、以及兩顆關鍵按鍵。</p>
+
+                <h2>核心元件詳解</h2>
+
+                <h3>ESP-WROOM-32 模組</h3>
+                <p>這是開發板的「心臟」。銀色金屬屏蔽蓋下方封裝了 ESP32 SoC 晶片與外掛的 Flash 記憶體（通常為 4 MB）。金屬蓋的作用是提供電磁屏蔽（EMI Shielding），防止高頻無線訊號干擾內部電路或被外部雜訊影響。模組側邊的蛇形走線是板載 PCB 天線，負責收發 Wi-Fi 與藍牙訊號。</p>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>天線區域注意</strong>
+                        模組頂端的天線區域不應被金屬物遮蔽或被手指長時間觸碰，否則會嚴重影響無線訊號品質。在設計外殼時，天線區域應盡量外露或使用非金屬材質覆蓋。
+                    </div>
+                </div>
+
+                <h3>USB-to-UART 橋接晶片</h3>
+                <p>位於 USB 連接埠旁的小型 IC，常見型號為 <strong>CP2102</strong>（Silicon Labs）或 <strong>CH340</strong>（南京沁恒）。它的職責是在 USB 協定與 UART 序列協定之間進行轉換，讓電腦能夠透過 USB 線與 ESP32 通訊。不同品牌的開發板使用的橋接晶片可能不同，這也是為什麼有些板子需要額外安裝驅動程式的原因。</p>
+
+                <h3>LDO 穩壓器</h3>
+                <p>USB 供電電壓為 5V，但 ESP32 的核心工作電壓僅為 <strong>3.3V</strong>。LDO（Low Dropout Regulator）線性穩壓器負責將 5V 降壓至穩定的 3.3V，為晶片與 GPIO 提供工作電源。這意味著 ESP32 的所有 GPIO 輸出電壓皆為 3.3V，而非 Arduino UNO 的 5V。</p>
+
+                <div class="ms-important">
+                    <i class="fas fa-exclamation-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>電壓限制 — 非常重要</strong>
+                        ESP32 的 GPIO 腳位最高只能承受 <strong>3.3V</strong> 的輸入電壓。如果直接接入 5V 訊號（例如某些 5V 感測器的輸出），將可能永久損壞晶片。連接 5V 設備時，必須使用電位轉換器（Level Shifter）或分壓電路。
+                    </div>
+                </div>
+
+                <h2>兩顆關鍵按鍵</h2>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>按鍵</th>
+                        <th>標示</th>
+                        <th>功能</th>
+                        <th>使用時機</th>
+                    </tr>
+                    <tr>
+                        <td><strong>RESET</strong></td>
+                        <td>EN / RST</td>
+                        <td>重置晶片，等同斷電重開</td>
+                        <td>程式卡死或需要重新觀察啟動日誌時按下</td>
+                    </tr>
+                    <tr>
+                        <td><strong>BOOT</strong></td>
+                        <td>BOOT / IO0</td>
+                        <td>將晶片切換至下載模式</td>
+                        <td>燒錄失敗時，按住 BOOT 再按 RESET 可強制進入燒錄模式</td>
+                    </tr>
+                </table>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>小技巧</strong>
+                        大多數新款開發板已內建自動下載電路（Auto-Download Circuit），在燒錄時會自動觸發 BOOT 模式，不需要手動按鍵。但如果遇到燒錄超時的問題，手動操作「按住 BOOT → 按一下 RESET → 放開 BOOT」仍然是最可靠的解法。
+                    </div>
+                </div>
+
+                <h2>GPIO 排針佈局</h2>
+                <p>開發板兩側各有一排排針，總共提供約 30 個可用腳位。每個腳位旁邊通常印有編號（如 GPIO2、GPIO4），並非所有編號都是連續的。規劃接線前，建議先列印一份開發板的 <strong>Pinout Diagram</strong>（引腳圖），貼在工作桌旁隨時參考。</p>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -697,25 +788,91 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>💻 軟體環境預熱</h1>
+                <h1>軟體環境預熱</h1>
                 
-                <p class="text-slate-400 mb-8 text-lg font-light leading-relaxed text-justify">
-                                開始編碼前，必須確保電腦能夠識別連上的裝置。
-                            </p><div class="space-y-6">
-<div class="group p-6 bg-slate-800/50 rounded-2xl border border-slate-700 hover:border-indigo-500/50 transition duration-300">
-<h3 class="font-bold text-indigo-400 mb-2 flex items-center gap-2"><span>1.</span> 安裝專業 IDE</h3>
-<p class="text-sm text-slate-300 leading-relaxed text-justify">推薦 <strong>VS Code + PlatformIO</strong>。提供自動補全與強大專案管理。</p>
-</div>
-<div class="group p-6 bg-slate-800/50 rounded-2xl border border-slate-700 hover:border-indigo-500/50 transition duration-300">
-<h3 class="font-bold text-emerald-400 mb-2 flex items-center gap-2"><span>2.</span> 識別通訊埠</h3>
-<p class="text-sm text-slate-300 leading-relaxed text-justify">安裝正確驅動。沒有它，電腦就只是在對著磚頭講話。</p>
-</div>
-</div>
+                <p>硬體已經認識完畢，接下來要確保你的電腦能「看見」並「對話」這塊開發板。這個步驟看似簡單，卻是許多初學者卡關最久的地方——因為它涉及到驅動程式安裝、通訊埠識別、以及開發工具的正確配置。</p>
+
+                <p>整個軟體環境的建置可以分為三大層次：<strong>IDE 開發環境</strong>（你撰寫與編譯程式碼的地方）、<strong>驅動程式</strong>（讓作業系統識別開發板的橋接晶片）、以及<strong>通訊埠設定</strong>（確保電腦知道要透過哪個「門」與開發板對話）。</p>
+
+                <h2>步驟一：安裝 IDE 開發環境</h2>
+
+                <p>我們推薦使用 <strong>VS Code + PlatformIO</strong> 作為主要開發環境。相較於傳統的 Arduino IDE，PlatformIO 提供了更專業的功能：IntelliSense 智慧補全能減少拼寫錯誤、內建的專案管理讓多檔案結構井然有序、而 <code>platformio.ini</code> 配置檔則讓環境設定可重複、可分享。</p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>下載並安裝 VS Code</h4>
+                            <p>前往 <a href="https://code.visualstudio.com" target="_blank">code.visualstudio.com</a> 下載適合你作業系統的版本（Windows / macOS / Linux）。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>安裝 PlatformIO 擴充套件</h4>
+                            <p>開啟 VS Code 後，點選左側的「Extensions」圖示，搜尋 <code>PlatformIO IDE</code> 並安裝。安裝完成後，左側工具列會出現一個外星人圖示。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>等待初始化完成</h4>
+                            <p>首次安裝後，PlatformIO 會自動下載必要的工具鏈（Toolchain），這可能需要 5~10 分鐘。下方狀態列會顯示安裝進度。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>步驟二：安裝橋接晶片驅動程式</h2>
+
+                <p>開發板透過 USB 線連接電腦時，作業系統需要正確的驅動程式才能與板上的橋接晶片（CP2102 或 CH340）通訊。Windows 10/11 與 macOS 通常會自動安裝 CP2102 的驅動，但 CH340 則幾乎總是需要手動安裝。</p>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>如何判斷橋接晶片型號？</strong>
+                        翻到開發板背面或 USB 連接埠附近，找到一顆小型 IC 晶片。上面的刻字通常會標示 <code>CP2102</code> 或 <code>CH340G</code>。若看不清楚，可以搜尋你購買的開發板型號查詢規格表。
+                    </div>
+                </div>
+
+                <h2>步驟三：驗證通訊埠</h2>
+
+                <p>驅動安裝成功後，插上開發板，你應該能在系統中看到新出現的通訊埠（COM Port）。驗證方法因作業系統而異：</p>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>作業系統</th>
+                        <th>查看方法</th>
+                        <th>典型埠名稱</th>
+                    </tr>
+                    <tr>
+                        <td>Windows</td>
+                        <td>裝置管理員 → 連接埠 (COM 和 LPT)</td>
+                        <td><code>COM3</code>、<code>COM4</code></td>
+                    </tr>
+                    <tr>
+                        <td>macOS</td>
+                        <td>終端機：<code>ls /dev/tty.*</code></td>
+                        <td><code>/dev/tty.usbserial-0001</code></td>
+                    </tr>
+                    <tr>
+                        <td>Linux</td>
+                        <td>終端機：<code>ls /dev/ttyUSB*</code></td>
+                        <td><code>/dev/ttyUSB0</code></td>
+                    </tr>
+                </table>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>找不到埠號？</strong>
+                        如果插上開發板後完全看不到任何新裝置出現，請依序檢查：(1) USB 線是否為「數據線」而非僅能充電的線；(2) 橋接晶片驅動是否已正確安裝；(3) USB 埠是否正常運作（換一個埠試試）。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -809,16 +966,69 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+                <div id="quiz-form">
+                    <div class="quiz-question">
+                        <p>1. ESP32 相較於 Arduino UNO (ATmega328P) 最顯著的架構差異是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> ESP32 使用 8-bit 單核處理器，但時脈更高</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> ESP32 擁有雙核 32-bit 處理器，並內建 Wi-Fi 與藍牙</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> ESP32 的 SRAM 只有 2KB，但 Flash 更大</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>2. ESP32 開發板上的 LDO 穩壓器主要負責什麼功能？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 將 USB 的 5V 電壓降壓至 3.3V 供晶片使用</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 放大 GPIO 輸出訊號至 5V</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 將藍牙訊號轉換為 Wi-Fi 訊號</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>3. 當 ESP32 燒錄失敗時，手動進入燒錄模式的正確操作是？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 連續快速按五次 RESET 鍵</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 按住 BOOT 鍵，再按一下 RESET 鍵，然後放開 BOOT</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 拔掉 USB 線等待 10 秒後重新插入</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+                    <div class="quiz-question">
+                        <p>4. 關於 ESP32 的 GPIO 引腳，以下哪個敘述是正確的？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 所有 GPIO 引腳都支援輸入和輸出，且最高可承受 5V</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> GPIO 6~11 連接內部 Flash，不可作為一般 I/O 使用；GPIO 34~39 僅支援輸入</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> ESP32 只有 10 個可用的 GPIO 引腳</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -876,9 +1086,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「ESP32 架構與開發板導覽」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「ESP32 架構與開發板導覽」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -894,8 +1104,17 @@
         { id: 3, label: '🔬 開發板外觀大解剖', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '💻 軟體環境預熱', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '150 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'a', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！ESP32 擁有雙核 32-bit Xtensa LX6 處理器（最高 240MHz）、內建 Wi-Fi 與藍牙，而 Arduino UNO 僅有單核 8-bit 處理器。' },
+        q2: { a: '正確！LDO 穩壓器將 USB 供電的 5V 降壓至穩定的 3.3V，這是 ESP32 晶片與 GPIO 的工作電壓。' },
+        q3: { b: '正確！按住 BOOT → 按一下 RESET → 放開 BOOT，可強制 ESP32 進入下載（燒錄）模式。' },
+        q4: { b: '正確！GPIO 6~11 連接內部 SPI Flash 不可用；GPIO 34~39 僅支援輸入模式，無法設為輸出。且所有 GPIO 最高只能承受 3.3V。' },
+    };
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -917,6 +1136,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1018,8 +1238,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            document.querySelectorAll(`input[name="${qid}"]`).forEach(opt => {
+                opt.disabled = true;
+                if (opt.value === answer) opt.parentElement.classList.add('correct');
+                if (opt.checked && opt.value !== answer) opt.parentElement.classList.add('wrong');
+            });
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                feedbackEl.textContent = '✗ 不正確。' + QUIZ_EXPLANATIONS[qid][answer];
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        const pct = Math.round(correct / total * 100);
+        scoreEl.style.display = 'block';
+        scoreEl.innerHTML = `<span style="font-size:20px;">${pct >= 75 ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pct >= 75 ? '通過！繼續前往下一個單元。' : '建議回顧相關單元後再試一次。'}</div>`;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => el.classList.remove('correct','wrong'));
+        document.querySelectorAll('input[type=radio]').forEach(el => { el.checked = false; el.disabled = false; });
+        document.querySelectorAll('.quiz-feedback').forEach(el => { el.className = 'quiz-feedback'; el.textContent = ''; });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 01：開發環境建置';
 </script>
 
 <!-- Define Resources -->

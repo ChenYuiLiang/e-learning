@@ -52,18 +52,11 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCO6Y6Pa7b7zbieJIErysaNF6-UqbT8KJw",
-            authDomain: "e-learning-942f7.firebaseapp.com",
-            projectId: "e-learning-942f7",
-            storageBucket: "e-learning-942f7.firebasestorage.app",
-            messagingSenderId: "878397058574",
-            appId: "1:878397058574:web:28aaa07a291ee3baab165f"
-        };
+        import { firebaseConfig, isLocalDev, connectFirebaseEmulators } from "./js/firebase-local.js";
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        connectFirebaseEmulators({ auth });
 
         const AUTO_LOGIN_KEY = 'vc_auto_google_login_started_at';
 
@@ -99,7 +92,7 @@
             } catch (error) {
                 console.error(error);
                 errorMsg.classList.remove('hidden');
-                errorMsg.innerText = "Google 登入失敗，請稍後再試。";
+                errorMsg.innerText = `Google 登入失敗：${error.code || error.message}`;
             } finally {
                 btnText.style.opacity = '1';
                 btnLoader.style.display = 'none';
@@ -142,6 +135,15 @@
                 if (user) {
                     sessionStorage.removeItem(AUTO_LOGIN_KEY);
                     redirectAfterLogin();
+                    return;
+                }
+
+                // 本地模擬器：略過自動 redirect（127.0.0.1 無法完成 OAuth 跳轉）
+                if (isLocalDev()) {
+                    const hint = document.querySelector('p.text-sm.text-slate-500');
+                    if (hint) {
+                        hint.textContent = '本地模擬器模式：請點擊下方按鈕，在彈出視窗完成 Google 登入。';
+                    }
                     return;
                 }
 

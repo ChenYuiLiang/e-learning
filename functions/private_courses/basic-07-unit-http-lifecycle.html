@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTTP 協議與請求生命週期 - Vibe Coding Learn</title>
+    <title>HTTP 協議與請求生命週期 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -464,6 +466,37 @@
             .compare-grid { grid-template-columns: 1fr; }
         }
 
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
+            border: 1px solid #e1dfdd;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background .1s, border-color .1s;
+            font-size: 14px;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback {
+            display: none;
+            margin-top: 8px;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
+        .quiz-submit { margin-top: 16px; }
+
     </style>
 </head>
 
@@ -471,9 +504,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 7 - 應用通訊協議</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +518,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">HTTP 協議與請求生命週期</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 7</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,7 +540,7 @@
                 <h1>HTTP 協議與請求生命週期</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 7</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -520,9 +551,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>📦 1. 封包裡裝了什麼？</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>🚀 2. 請求生命週期</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>Keep-Alive 的力量</strong> 的調校技巧與穩定性測試。</li>
+                    <li>能夠使用瀏覽器 F12 Network 面板擷取 HTTP 請求的瀑布圖（Waterfall），並識別 DNS 查詢、TCP 連線與 TTFB 各階段的耗時。</li>
+                    <li>能夠在 ESP32 上實作符合 RESTful 規範的 API 路由（GET/POST），正確配置 JSON 標頭與 HTTP 狀態碼。</li>
+                    <li>能夠解釋 Keep-Alive 長連線為何能減少高頻控制的延遲，並透過量化實驗對比「一發一斷」與「連線複用」的效能差異。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -553,15 +584,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>HTTP 協議與請求生命週期</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    當瀏覽器對 ESP32 發出一個請求，背後其實經歷了 DNS 解析、TCP 三次交握、HTTP 報文收發與連線關閉等多個階段。
+                    掌握這條完整的「請求生命週期」，你才能判斷延遲瓶頸出在哪一層，
+                    也才知道為什麼有時候網頁已經刷新、裝置卻還沒收到指令。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你用手機網頁控制 ESP32 馬達，但按下「前進」後總覺得有零點幾秒的延遲。
+                    問題出在哪？是 Wi-Fi 訊號弱、TCP 建連太慢、還是你的 handler 阻塞了回應？
+                    理解 HTTP 請求從發出到回應的每一步，才能精準定位這類延遲問題。
                 </div>
 
                 <h2>教學影片</h2>
@@ -589,47 +621,84 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>📦 1. 封包裡裝了什麼？</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify">
-                                底層都是透過一封封「HTTP 報文 (Message)」在傳遞。
-                            </p>
-<div class="space-y-4 text-justify uppercase tracking-widest">
-<div class="flex items-start gap-4 p-5 rounded-2xl border border-blue-100 bg-blue-50 text-justify">
-<span class="bg-blue-500 text-white px-2 py-1 rounded font-bold mt-1 text-[9px] text-justify uppercase tracking-widest">REQ</span>
-<div>
-<p class="text-xs font-bold text-blue-900 mb-1 text-justify">Request (請求)</p>
-<p class="text-slate-500 leading-relaxed font-light text-[10px] text-justify uppercase tracking-widest">
-                                            包含 Method、Headers 與 Body。</p>
-</div>
-</div>
-<div class="flex items-start gap-4 p-5 rounded-2xl border border-emerald-100 bg-emerald-50 text-justify uppercase tracking-tighter">
-<span class="bg-emerald-500 text-white px-2 py-1 rounded font-bold mt-1 text-[9px] text-justify uppercase tracking-widest">RES</span>
-<div>
-<p class="text-xs font-bold text-emerald-900 mb-1 text-justify uppercase tracking-widest">
-                                            Response (回應)</p>
-<p class="text-slate-500 leading-relaxed font-light text-[10px] text-justify">
-                                            關鍵在於 Status Code 與回應正文。</p>
-</div>
-</div>
-</div>
-</div>
-<div class="p-8 rounded-3xl shadow-2xl border border-slate-700 text-white bg-slate-900 text-justify uppercase tracking-widest font-black">
-<h4 class="font-bold text-slate-500 mb-6 uppercase tracking-widest text-[10px] text-justify">
-                                Protocol Anatomy</h4>
-<div class="font-mono space-y-2 leading-relaxed text-blue-300 text-[10px] text-justify uppercase tracking-tighter">
-<p><span class="text-purple-400 text-justify">POST</span> /api/move HTTP/1.1</p>
-<p><span class="text-emerald-400 text-justify">Host</span>: 192.168.4.1</p>
-<p><span class="text-emerald-400 text-justify">Content-Type</span>: application/json</p>
-<hr class="border-slate-800 my-4 text-justify"/>
-<p class="text-amber-200 text-justify">{ "dir": "F", "speed": 100 }</p>
-<p class="text-slate-500 italic mt-4 text-justify">// 控制馬達的 Payload</p>
-</div>
-</div>
-</div>
-                
+                <h1>封包裡裝了什麼？</h1>
+
+                <p>
+                    每當瀏覽器向 ESP32 發出一個控制指令，底層實際上是透過一封封 <strong>HTTP 報文（Message）</strong>在傳遞。
+                    HTTP 報文分為<strong>請求（Request）</strong>與<strong>回應（Response）</strong>兩種。
+                    理解報文的結構，是你調試「為什麼指令沒收到」或「回應格式不正確」的第一步。
+                </p>
+
+                <h2>HTTP 請求（Request）結構</h2>
+
+                <p>
+                    一個完整的 HTTP 請求由三部分組成：<strong>請求行（Request Line）</strong>、
+                    <strong>標頭（Headers）</strong>、以及可選的<strong>主體（Body）</strong>。
+                    以下是一個控制 ESP32 馬達的典型 POST 請求：
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">POST</span><span class="c-white"> /api/command HTTP/1.1</span><br/>
+<span class="c-tag">Host</span><span class="c-white">: 192.168.4.1</span><br/>
+<span class="c-tag">Content-Type</span><span class="c-white">: application/json</span><br/>
+<span class="c-tag">Content-Length</span><span class="c-white">: 30</span><br/>
+<br/>
+<span class="c-str">{ "direction": "F", "speed": 200 }</span>
+                </div>
+
+                <p>
+                    請求行中的 <code>POST</code> 是 HTTP 方法（Method），<code>/api/command</code> 是資源路徑，
+                    <code>HTTP/1.1</code> 是協定版本。標頭區段提供了元資料——告訴伺服器「我送的是 JSON 格式、長度 30 位元組」。
+                    空行之後就是實際的 Payload（載荷）。
+                </p>
+
+                <h2>常見 HTTP 方法</h2>
+
+                <table class="ms-table">
+                    <tr><th>方法</th><th>語義</th><th>有 Body</th><th>ESP32 應用範例</th></tr>
+                    <tr><td><code>GET</code></td><td>讀取資源</td><td class="cross">✕</td><td>取得感測器數值、系統狀態</td></tr>
+                    <tr><td><code>POST</code></td><td>建立 / 執行動作</td><td class="check">✓</td><td>發送馬達指令、更新設定</td></tr>
+                    <tr><td><code>PUT</code></td><td>完整更新資源</td><td class="check">✓</td><td>覆寫整組設定檔</td></tr>
+                    <tr><td><code>DELETE</code></td><td>刪除資源</td><td class="cross">✕</td><td>清除日誌、重置設定</td></tr>
+                </table>
+
+                <h2>HTTP 回應（Response）結構</h2>
+
+                <p>
+                    ESP32 收到請求後，必須回傳一個結構正確的 HTTP 回應。回應同樣包含<strong>狀態行</strong>、
+                    <strong>標頭</strong>與<strong>主體</strong>三部分：
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">HTTP/1.1</span><span class="c-white"> </span><span class="c-val">200</span><span class="c-white"> OK</span><br/>
+<span class="c-tag">Content-Type</span><span class="c-white">: application/json</span><br/>
+<span class="c-tag">Connection</span><span class="c-white">: keep-alive</span><br/>
+<br/>
+<span class="c-str">{ "status": "ok", "speed": 200 }</span>
+                </div>
+
+                <p>
+                    狀態碼（Status Code）是回應中最關鍵的資訊。它用三位數字告訴客戶端「請求的處理結果」：
+                </p>
+
+                <table class="ms-table">
+                    <tr><th>狀態碼</th><th>含義</th><th>ESP32 使用時機</th></tr>
+                    <tr><td><code>200</code></td><td>OK — 成功</td><td>指令已執行、數據已回傳</td></tr>
+                    <tr><td><code>400</code></td><td>Bad Request — 請求格式錯誤</td><td>缺少必要參數或 JSON 解析失敗</td></tr>
+                    <tr><td><code>404</code></td><td>Not Found — 路徑不存在</td><td>存取了未定義的路由</td></tr>
+                    <tr><td><code>500</code></td><td>Internal Error — 伺服器內部錯誤</td><td>硬體操作異常或記憶體不足</td></tr>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        在 ESP32 上實作 API 時，務必為所有回應加上正確的 <code>Content-Type</code> 標頭。
+                        若回傳 JSON 卻沒有宣告 <code>application/json</code>，瀏覽器可能會將回應當作純文字處理，
+                        導致前端的 <code>fetch().json()</code> 解析失敗。
+                    </div>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
@@ -647,49 +716,91 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🚀 2. 請求生命週期</h1>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-4 gap-8 relative text-justify">
-<div class="hidden sm:block absolute top-10 left-10 right-10 h-0.5 bg-slate-100 -z-10 text-justify">
-</div>
-<div class="text-center group text-justify">
-<div class="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-blue-200 group-hover:scale-110 transition shadow-sm bg-blue-100 text-blue-600 text-justify">
-<span class="text-2xl font-bold text-justify">1</span>
-</div>
-<h4 class="text-xs font-bold text-slate-800 mb-1 text-justify uppercase tracking-widest font-black">
-                                DNS / IP</h4>
-<p class="text-slate-400 leading-relaxed font-light px-4 text-[9px] text-justify">將名稱轉為 IP。
-                            </p>
-</div>
-<div class="text-center group text-justify">
-<div class="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-indigo-200 group-hover:scale-110 transition shadow-sm bg-indigo-100 text-indigo-600 text-justify uppercase tracking-widest font-black">
-<span class="text-2xl font-bold text-justify">2</span>
-</div>
-<h4 class="text-xs font-bold text-slate-800 mb-1 text-justify uppercase tracking-tighter">
-                                TCP Connect</h4>
-<p class="text-slate-400 leading-relaxed font-light px-4 text-[9px] text-justify">建立可靠握手。
-                            </p>
-</div>
-<div class="text-center group text-justify">
-<div class="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-purple-200 group-hover:scale-110 transition shadow-sm bg-purple-100 text-purple-600 text-justify">
-<span class="text-2xl font-bold text-justify">3</span>
-</div>
-<h4 class="text-xs font-bold text-slate-800 mb-1 text-justify uppercase tracking-widest font-black">
-                                Send Payload</h4>
-<p class="text-slate-400 leading-relaxed font-light px-4 text-[9px] text-justify uppercase tracking-widest">
-                                傳輸指令 Body。</p>
-</div>
-<div class="text-center group text-justify">
-<div class="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-pink-200 group-hover:scale-110 transition shadow-sm bg-pink-100 text-pink-600 text-justify font-black">
-<span class="text-2xl font-bold text-justify uppercase tracking-widest font-black">4</span>
-</div>
-<h4 class="text-xs font-bold text-slate-800 mb-1 text-justify uppercase tracking-tighter">
-                                Render Result</h4>
-<p class="text-slate-400 leading-relaxed font-light px-4 text-[9px] text-justify uppercase tracking-widest">
-                                接收回應更新 UI。</p>
-</div>
-</div>
-                
+                <h1>請求生命週期</h1>
+
+                <p>
+                    當你在瀏覽器輸入 ESP32 的 IP 位址按下 Enter 後，看似瞬間完成的「載入網頁」，
+                    背後其實經歷了多個精密的網路階段。理解這條完整的<strong>請求生命週期（Request Lifecycle）</strong>，
+                    你才能在控制延遲時精準定位「瓶頸到底出在哪一層」。
+                </p>
+
+                <h2>四大階段詳解</h2>
+
+                <h3>階段一：DNS 解析（Domain → IP）</h3>
+                <p>
+                    如果你使用的是網域名稱（如 <code>mycar.local</code>），瀏覽器必須先透過 DNS 查詢將名稱轉為 IP 位址。
+                    在 ESP32 的 AP 模式下，由於客戶端直接使用 <code>192.168.4.1</code> 連線，這個階段通常耗時 <strong>0ms</strong>。
+                    但如果啟用了 mDNS（如 <code>MDNS.begin("mycar")</code>），則首次解析可能需要 20–100ms。
+                </p>
+
+                <h3>階段二：TCP 三向交握（Three-Way Handshake）</h3>
+                <p>
+                    HTTP 基於 TCP 協定，因此在傳送任何資料前，客戶端與 ESP32 必須先建立可靠的連線通道。
+                    這個過程需要三個封包來回：<strong>SYN → SYN-ACK → ACK</strong>。
+                    在區域網路中，這個步驟通常耗時 <strong>1–5ms</strong>；但如果 Wi-Fi 訊號不佳（RSSI < -75dBm），
+                    封包重傳可能將耗時拉高到 50ms 以上。
+                </p>
+
+                <h3>階段三：HTTP 請求與回應</h3>
+                <p>
+                    TCP 連線建立後，瀏覽器發送 HTTP 請求，ESP32 的 Web Server 接收、處理、並回傳回應。
+                    從「請求送出」到「收到回應第一個位元組」的時間稱為 <strong>TTFB（Time To First Byte）</strong>。
+                    TTFB 直接反映了 ESP32 的處理效能——如果你的 handler 中有 <code>delay()</code> 或耗時的感測器讀取，
+                    TTFB 就會飆升。
+                </p>
+
+                <h3>階段四：內容下載與渲染</h3>
+                <p>
+                    瀏覽器收到回應後，開始下載 HTML/CSS/JS 並渲染畫面。
+                    對 ESP32 而言，關鍵是回應的<strong>Content-Length</strong>——
+                    如果 HTML 檔案過大（超過 10KB），在低頻寬的 Soft-AP 環境下可能需要數百毫秒才能傳輸完畢。
+                </p>
+
+                <h2>生命週期時間軸</h2>
+
+                <table class="ms-table">
+                    <tr><th>階段</th><th>典型耗時（區網）</th><th>瓶頸來源</th><th>優化方向</th></tr>
+                    <tr><td>DNS 解析</td><td>0–100ms</td><td>mDNS 首次查詢</td><td>直接使用 IP 位址</td></tr>
+                    <tr><td>TCP 交握</td><td>1–5ms</td><td>Wi-Fi 訊號差、封包遺失</td><td>使用 Keep-Alive 免重連</td></tr>
+                    <tr><td>TTFB</td><td>1–50ms</td><td>handler 中有阻塞操作</td><td>非同步處理、快取數據</td></tr>
+                    <tr><td>內容下載</td><td>5–200ms</td><td>HTML 檔案過大</td><td>壓縮回應、精簡 HTML</td></tr>
+                </table>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        打開 Chrome 或 Edge 的 <strong>F12 開發者工具 → Network 面板</strong>，
+                        點擊任一請求即可看到 <strong>Timing（時序）</strong>標籤，裡面會將每個階段的耗時以瀑布圖（Waterfall）呈現。
+                        這是診斷 ESP32 通訊延遲最有力的工具。
+                    </div>
+                </div>
+
+                <h2>用 F12 擷取時序資訊</h2>
+
+                <p>
+                    在瀏覽器開發者工具的 Network 面板中，每筆請求的 Timing 標籤都會顯示以下關鍵指標。
+                    學會閱讀這些數字，你就能從「覺得慢」進化到「知道哪裡慢」：
+                </p>
+
+                <ul>
+                    <li><strong>Stalled / Queueing</strong>：瀏覽器排隊等待的時間（通常因為連線數已滿）</li>
+                    <li><strong>DNS Lookup</strong>：名稱解析耗時</li>
+                    <li><strong>Initial Connection</strong>：TCP 交握 + TLS 協商（HTTP 無 TLS 則只有 TCP）</li>
+                    <li><strong>Waiting (TTFB)</strong>：等待伺服器回應第一個位元組</li>
+                    <li><strong>Content Download</strong>：下載回應本體的時間</li>
+                </ul>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        若你在 AP 模式下使用 IP 位址連線，DNS Lookup 應該始終為 0ms。
+                        如果看到非零值，表示瀏覽器可能在嘗試反向 DNS 查詢——這可以透過直接輸入
+                        <code>http://192.168.4.1</code>（加上 <code>http://</code> 前綴）來避免。
+                    </div>
+                </div>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
@@ -707,44 +818,96 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚡ 3. Keep-Alive 的力量</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify uppercase tracking-widest">
-                                頻繁控制時，傳統「一發一斷」會浪費大量握手時間。
-                            </p>
-<div class="p-8 rounded-3xl border border-emerald-500/20 shadow-inner bg-emerald-500/10 text-justify uppercase tracking-widest font-black">
-<h4 class="font-bold text-emerald-400 mb-4 text-xs uppercase tracking-widest text-justify">
-                                    Optimized Connectivity</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify uppercase tracking-tighter">
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">Keep-Alive</strong>：讓 TCP 暢通。1
-                                            次握手，多次指令。</div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
-<div><strong class="text-white">TTFB</strong>：診斷 ESP32 負載的黃金標準。</div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1"></span>
-<div><strong class="text-white text-justify">批次通訊</strong>：降低 JSON 轉義開銷是效能關鍵。
-                                        </div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 p-10 rounded-3xl border border-emerald-500/20 text-center relative overflow-hidden group bg-emerald-600/10 text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-emerald-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-justify">
-                                Latency Inspector</h4>
-<p class="text-slate-500 leading-relaxed font-light mb-8 italic text-[11px] text-justify uppercase tracking-tighter font-black">
-                                "差 200ms 的延遲，就是撞牆與過彎區別。"
-                            </p>
-<div class="inline-block px-8 py-3 bg-emerald-500 text-white rounded-xl font-bold text-[10px] shadow-lg text-justify uppercase tracking-widest">
-                                UDP vs HTTP Lab</div>
-</div>
-</div>
-                
+                <h1>Keep-Alive 的力量</h1>
+
+                <p>
+                    在預設情況下，每次 HTTP 請求完成後，TCP 連線就會被關閉（<code>Connection: close</code>）。
+                    下一次請求必須重新執行完整的三向交握。當你的應用需要<strong>高頻率通訊</strong>時——
+                    例如每 50ms 發送一次馬達控制指令——這些重複的握手開銷將嚴重拖慢反應速度。
+                </p>
+
+                <p>
+                    <strong>Keep-Alive（長連線）</strong>的核心思想很簡單：一次握手，多次通訊。
+                    TCP 連線在第一次請求完成後不關閉，後續請求直接複用同一條連線通道。
+                    這意味著從第二次請求開始，<strong>TCP 交握的時間成本降為零</strong>。
+                </p>
+
+                <h2>一發一斷 vs. 連線複用</h2>
+
+                <p>
+                    以下對比清楚展示了兩種模式在高頻通訊場景下的效能差異。
+                    假設 TCP 交握需要 3ms，每次 HTTP 往返需要 2ms：
+                </p>
+
+                <table class="ms-table">
+                    <tr><th>指標</th><th>Connection: close</th><th>Connection: keep-alive</th></tr>
+                    <tr><td>50 次請求的 TCP 交握次數</td><td>50 次</td><td><strong>1 次</strong></td></tr>
+                    <tr><td>TCP 交握總耗時</td><td>150ms (50 × 3ms)</td><td><strong>3ms</strong></td></tr>
+                    <tr><td>HTTP 往返總耗時</td><td>100ms (50 × 2ms)</td><td>100ms (50 × 2ms)</td></tr>
+                    <tr><td>50 次請求總耗時</td><td>250ms</td><td><strong>103ms</strong></td></tr>
+                    <tr><td>節省時間</td><td>—</td><td><strong>約 59%</strong></td></tr>
+                </table>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在 ESPAsyncWebServer 中，Keep-Alive 是<strong>預設啟用</strong>的，你不需要額外設定。
+                        但如果你使用的是同步版的 <code>WebServer.h</code>，需要手動在回應標頭中加入
+                        <code>Connection: keep-alive</code>。
+                    </div>
+                </div>
+
+                <h2>在 ESP32 上啟用 Keep-Alive</h2>
+
+                <p>
+                    以下範例展示如何在同步式 Web Server 中手動設定 Keep-Alive 標頭。
+                    注意 <code>Content-Length</code> 在長連線中特別重要——它告訴客戶端「這筆回應到哪裡結束」，
+                    否則客戶端無法判斷何時開始發送下一個請求。
+                </p>
+
+                <div class="ms-code">
+<span class="c-tag">server</span><span class="c-white">.</span><span class="c-tag">on</span><span class="c-white">(</span><span class="c-str">"/api/status"</span><span class="c-white">, HTTP_GET,</span><br/>
+<span class="c-white">&nbsp;&nbsp;[](AsyncWebServerRequest *</span><span class="c-attr">req</span><span class="c-white">) {</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;String json = </span><span class="c-str">"{\"heap\":" </span><span class="c-white">+ String(ESP.getFreeHeap()) + </span><span class="c-str">"}"</span><span class="c-white">;</span><br/>
+<br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;AsyncWebServerResponse *</span><span class="c-attr">res</span><span class="c-white"> =</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;req-></span><span class="c-tag">beginResponse</span><span class="c-white">(200, </span><span class="c-str">"application/json"</span><span class="c-white">, json);</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;res->addHeader(</span><span class="c-str">"Connection"</span><span class="c-white">, </span><span class="c-str">"keep-alive"</span><span class="c-white">);</span><br/>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;req-></span><span class="c-tag">send</span><span class="c-white">(res);</span><br/>
+<span class="c-white">});</span>
+                </div>
+
+                <h2>TTFB：診斷 ESP32 效能的黃金指標</h2>
+
+                <p>
+                    <strong>TTFB（Time To First Byte，首位元組時間）</strong>衡量的是從「請求送出」到「收到回應第一個位元組」的延遲。
+                    在 ESP32 上，TTFB 直接反映了你的 handler 函式的執行效率：
+                </p>
+
+                <ul>
+                    <li><strong>TTFB &lt; 5ms</strong>：優秀。handler 中沒有阻塞操作。</li>
+                    <li><strong>TTFB 5–50ms</strong>：可接受。可能有感測器讀取或少量計算。</li>
+                    <li><strong>TTFB &gt; 100ms</strong>：需要優化。檢查是否有 <code>delay()</code>、同步 I2C 讀取或大量字串拼接。</li>
+                </ul>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        ESP32 的 TCP 連線數量有限（預設為 <strong>最多 4–5 條</strong>同時連線）。
+                        如果多個客戶端同時使用 Keep-Alive 佔滿連線池，新的請求將被拒絕。
+                        在多使用者場景中，應設定合理的 <code>Keep-Alive: timeout</code> 值（如 5–10 秒），
+                        讓閒置連線能被自動回收。
+                    </div>
+                </div>
+
+                <p>
+                    掌握了 Keep-Alive 與 TTFB 的概念後，你已經具備了對物聯網通訊進行「量化診斷」的能力。
+                    差 200ms 的延遲在普通網頁上或許感覺不出來，但對一台高速移動的遙控車而言，
+                    那就是「順利過彎」和「直接撞牆」的區別。
+                </p>
+
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
@@ -827,16 +990,82 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
-                    <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div class="unit-completed-badge" id="badge-6" style="display:none">
+                        <i class="fas fa-check"></i> 已完成
+                    </div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <!-- Q1 -->
+                    <div class="quiz-question" id="q1">
+                        <p>1. HTTP 請求中，Content-Type: application/json 標頭的作用是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 告訴伺服器使用加密傳輸</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 告訴伺服器請求主體的資料格式是 JSON</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 指定回應應使用 JSON 格式回傳</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="quiz-question" id="q2">
+                        <p>2. HTTP 請求生命週期中，TTFB（Time To First Byte）主要反映的是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> DNS 查詢的速度</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> TCP 三向交握的耗時</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 伺服器處理請求並開始回應的時間</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="quiz-question" id="q3">
+                        <p>3. 使用 Keep-Alive 長連線相比 Connection: close，最主要的效能優勢是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 減少 HTTP 回應的資料量</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 省去重複的 TCP 三向交握開銷，大幅降低高頻通訊延遲</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 自動壓縮傳輸資料以提升速度</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="quiz-question" id="q4">
+                        <p>4. 在瀏覽器 F12 Network 面板中，若 DNS Lookup 顯示為 0ms，最可能的原因是？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 瀏覽器尚未完成頁面載入</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 使用了 IP 位址直接連線，不需要 DNS 解析</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 伺服器啟用了 HTTP/2 協定</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" style="margin-left:8px; display:none;" id="quiz-reset-btn">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -894,9 +1123,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「HTTP 協議與請求生命週期」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「HTTP 協議與請求生命週期」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -912,8 +1141,17 @@
         { id: 3, label: '🚀 2. 請求生命週期', time: '10 分鐘', type: 'unit' },
         { id: 4, label: 'Keep-Alive 的力量', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '4 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'c', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: 'Content-Type 標頭宣告請求主體（Body）的資料格式。設為 application/json 表示傳送的內容是 JSON，伺服器才能正確解析。' },
+        q2: { c: 'TTFB 衡量從「請求送出」到「收到回應第一個位元組」的延遲，直接反映了 ESP32 handler 函式的處理效率。' },
+        q3: { b: 'Keep-Alive 讓 TCP 連線在請求完成後不關閉，後續請求直接複用同一連線，從第二次起 TCP 交握成本降為零，在高頻控制場景可節省超過 50% 延遲。' },
+        q4: { b: '當直接使用 IP 位址（如 192.168.4.1）連線時，不需要 DNS 解析，因此 DNS Lookup 耗時為 0ms。' },
+    };
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -932,6 +1170,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1033,8 +1272,74 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        let total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            const options = document.querySelectorAll(`input[name="${qid}"]`);
+
+            options.forEach(opt => {
+                opt.disabled = true;
+                const label = opt.parentElement;
+                if (opt.value === answer) label.classList.add('correct');
+                if (opt.checked && opt.value !== answer) label.classList.add('wrong');
+            });
+
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                const exp = QUIZ_EXPLANATIONS[qid][answer];
+                feedbackEl.textContent = '✗ 不正確。' + exp;
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        scoreEl.style.display = 'block';
+        const pct = Math.round(correct / total * 100);
+        const pass = pct >= 75;
+        scoreEl.innerHTML = `
+            <span style="font-size:20px;">${pass ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pass ? '通過！你已掌握本模組的核心概念。' : '建議回顧相關單元後再試一次。'}</div>
+        `;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => {
+            el.classList.remove('correct','wrong');
+        });
+        document.querySelectorAll('input[type=radio]').forEach(el => {
+            el.checked = false;
+            el.disabled = false;
+        });
+        document.querySelectorAll('.quiz-feedback').forEach(el => {
+            el.className = 'quiz-feedback';
+            el.textContent = '';
+        });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 07：WiFi 模式與 WebServer';
 </script>
 
 <!-- Define Resources -->

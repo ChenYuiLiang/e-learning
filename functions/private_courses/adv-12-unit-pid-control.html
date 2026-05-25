@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>為什麼需要 PID？ - Vibe Coding Learn</title>
+    <title>為什麼需要 PID？ - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 12 - 控制原理</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">為什麼需要 PID？</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 12</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>為什麼需要 PID？</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 12</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,14 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>為什麼需要 PID？</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    給馬達一個固定的 PWM 值，讓它跑 2 秒然後停下——聽起來很簡單，但換到地毯上就完全跑歪了。
+                    本模組將帶你親身體驗<strong>開迴路控制的致命缺陷</strong>，理解為什麼「不看路的駕駛」注定失敗，
+                    並引導你踏入閉迴路控制的世界：透過感測器觀察誤差、即時修正出力，最終理解 PID 三項機制為何缺一不可。
                 </p>
 
                 <div class="ms-scenario">
                     <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    想像你在淋浴時調水溫：先感受太冷，轉大熱水；發現太燙，趕緊回調——這個「感知-比較-修正」的過程就是最原始的閉迴路控制。但如果你反應太猛烈，水溫會在冷熱之間瘋狂擺盪。觀看下方影片，看看機器人世界裡的同樣困境，以及 PID 如何優雅地解決這個問題。
                 </div>
 
                 <h2>教學影片</h2>
@@ -576,7 +575,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -591,46 +590,94 @@
                 </div>
 
                 <h1>🙈 1. 開迴路控制：盲目的信任</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                系統僅根據事先設定的指令做事，完全不觀察輸出的結果。就像蒙著眼睛走路。雖然簡單，但在物理環境變動時（如路面摩擦、電壓波動）極易失控。
-                            </p>
-<div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 text-justify">
-<h4 class="font-bold text-slate-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
-                                    System Characteristics</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify">
-<li class="flex items-center gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-slate-500 rounded-full text-justify text-left"></span>
-<strong>無反饋 (No Feedback)</strong>：輸出不影響輸入，僅憑時序控制。</li>
-<li class="flex items-center gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-slate-500 rounded-full text-justify text-left text-justify"></span>
-<strong>抗干擾力弱</strong>：電壓下降、摩擦力增加會直接導致任務偏差。</li>
-<li class="flex items-center gap-2 text-justify text-left text-justify"><span class="w-1.5 h-1.5 bg-slate-500 rounded-full text-justify text-left"></span>
-<strong>常見範例</strong>：舊式微波爐定時器、傳統洗衣機、無感測馬達驅動。</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-slate-500/5 group-hover:bg-slate-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-justify">
-                                Blind Command Path</h4>
-<div class="relative z-10 flex items-center justify-center gap-4 text-justify">
-<div class="px-3 py-1 bg-slate-700 rounded text-[10px] border border-slate-600 text-justify text-left">
-                                    INPUT PWM (Fixed)</div>
-<div class="text-slate-500 text-justify">➡️</div>
-<div class="px-3 py-1 bg-slate-800 rounded text-[10px] border border-slate-700 italic text-slate-500 text-justify text-left">
-                                    UNKNOWN RESULT</div>
-</div>
-<p class="text-[9px] text-slate-500 mt-6 font-mono tracking-widest text-center text-justify">
-                                STATE ERROR IS NOT CALCULATED...</p>
-</div>
-</div>
+
+                <p>
+                    在控制工程中，<strong>開迴路控制 (Open-Loop Control)</strong> 是最原始也最簡單的控制方式。系統僅根據事先設定好的指令執行動作，完全不觀察輸出結果是否符合預期。就像你蒙著眼睛走路——你知道自己要走十步，但完全不知道走到了哪裡。
+                </p>
+
+                <p>
+                    想像你用微波爐加熱牛奶：你設定了 30 秒，按下開始。微波爐不會量測牛奶的溫度，它只管轉 30 秒就停。如果今天放的是冷凍牛奶，30 秒可能還是冰的；如果是常溫牛奶，30 秒可能已經燙到溢出。這就是開迴路控制的本質——<strong>輸出完全不影響輸入決策</strong>。
+                </p>
+
+                <h2>開迴路系統的方塊圖</h2>
+
+                <p>
+                    開迴路系統的信號流非常單純：由控制器產生一個固定指令，經由致動器 (Actuator) 作用於受控體 (Plant)，產生輸出。但輸出結果並沒有任何路徑回傳給控制器做比較。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 開迴路系統方塊圖示意</span><br>
+<span class="c-white">┌─────────┐    ┌──────────┐    ┌────────┐</span><br>
+<span class="c-white">│ 固定指令 │───▶│ 馬達驅動  │───▶│ 車輪轉動│───▶ 輸出 (位置)</span><br>
+<span class="c-white">│ (PWM=200)│    │(Actuator) │    │ (Plant) │</span><br>
+<span class="c-white">└─────────┘    └──────────┘    └────────┘</span><br>
+<span class="c-comment">//                                           ↑ 無反饋路徑！</span>
+                </div>
+
+                <h2>程式碼範例：固定 PWM 驅動</h2>
+                <p>
+                    以下是一段典型的開迴路 Arduino 程式碼。馬達以固定 PWM 值運轉 2 秒後停止，完全不管車子跑到了哪裡：
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 開迴路：給定固定出力，持續固定時間</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">analogWrite</span><span class="c-white">(MOTOR_PIN, </span><span class="c-val">200</span><span class="c-white">);&nbsp;&nbsp;</span><span class="c-comment">// 固定 PWM = 200</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">delay</span><span class="c-white">(</span><span class="c-val">2000</span><span class="c-white">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 跑 2 秒</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">analogWrite</span><span class="c-white">(MOTOR_PIN, </span><span class="c-val">0</span><span class="c-white">);&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 停止</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">while</span><span class="c-white">(</span><span class="c-val">true</span><span class="c-white">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 永久停機</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        這段程式在磁磚地板上可能停在 1.5 公尺處，但換到地毯上可能只走了 0.8 公尺。同樣的程式、同樣的指令，結果卻天差地遠——這就是開迴路控制在真實物理世界中的致命弱點。
+                    </div>
+                </div>
+
+                <h2>開迴路控制的特性總結</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>特性</th>
+                            <th>說明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>無反饋</strong></td>
+                            <td>輸出不影響輸入，系統僅憑事先設定的時序或數值運行</td>
+                        </tr>
+                        <tr>
+                            <td><strong>抗干擾力極弱</strong></td>
+                            <td>電壓波動、路面摩擦改變、負載變化都會直接導致偏差</td>
+                        </tr>
+                        <tr>
+                            <td><strong>結構簡單</strong></td>
+                            <td>不需要感測器，硬體成本低，程式碼短</td>
+                        </tr>
+                        <tr>
+                            <td><strong>適用場景有限</strong></td>
+                            <td>僅適合環境極度穩定且不需要精準度的場合（如定時烤箱）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>學習重點</strong>
+                        開迴路控制本身並不是「壞的」設計——在環境完全可預測的情境下，它反而是最經濟高效的方案。但在真實物理世界中，擾動 (Disturbance) 無處不在，因此我們需要引入反饋機制來應對不確定性。下一單元將揭示閉迴路控制如何解決這個問題。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -645,43 +692,125 @@
                 </div>
 
                 <h1>👁️ 2. 閉迴路控制：觀察與修正的智慧</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                系統具備感測器，能將目前的輸出（如速度、位置）反饋回來與目標值對比，算出「誤差 (Error)」，並隨時調整出力以導正軌跡。
-                            </p>
-<div class="bg-cyan-50 p-8 rounded-3xl border border-cyan-100 text-justify">
-<h4 class="text-cyan-900 font-bold mb-4 text-xs uppercase tracking-widest text-center text-justify text-justify">
-                                    The Core Equation</h4>
-<div class="text-xl font-mono text-cyan-600 text-center text-justify text-justify">
-                                    \[Error = Target - Measured\]
-                                </div>
-<p class="text-[10px] text-slate-400 mt-4 italic font-light text-center text-justify text-justify">
-                                    自動化控制的核心：依據誤差進行負回饋修正 (Negative Feedback)</p>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-cyan-500/5 text-justify"></div>
-<h4 class="text-cyan-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-center text-justify">
-                                Real-time Correction Flow</h4>
-<div class="w-full h-1 bg-slate-800 relative z-10 mb-6 text-justify">
-<div class="absolute left-0 top-0 h-full bg-cyan-500 w-2/3 shadow-[0_0_15px_rgba(6,182,212,0.5)] text-justify">
-</div>
-</div>
-<div class="flex justify-between w-full text-[9px] font-mono text-slate-500 relative z-10 text-justify">
-<span class="text-justify text-left">TARGET: 100cm</span>
-<span class="text-cyan-400 animate-pulse font-bold text-justify">CURRENT: 68cm</span>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic text-center text-justify">
-                                Error Sensitivity Engagement</p>
-</div>
-</div>
+
+                <p>
+                    <strong>閉迴路控制 (Closed-Loop Control)</strong> 的核心思想只有一句話：<strong>觀察結果、計算誤差、修正行為</strong>。系統具備感測器，能將目前的實際輸出（如位置、速度、溫度）即時回傳，與目標值進行比較，計算出「誤差 (Error)」，然後根據誤差大小調整出力。
+                </p>
+
+                <p>
+                    回到淋浴調水溫的比喻：你用手感受水溫（感測器），發現太冷（誤差為正），於是轉大熱水（增加出力）；感覺差不多了（誤差趨近零），就停止調整。這個「感知→比較→修正」的持續循環，就是閉迴路控制的本質。
+                </p>
+
+                <h2>負反饋的核心公式</h2>
+
+                <p>
+                    閉迴路系統最關鍵的運算只需一行：
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 負反饋核心公式</span><br>
+<span class="c-attr">error</span><span class="c-white"> = </span><span class="c-attr">target</span><span class="c-white"> - </span><span class="c-attr">measured</span><span class="c-white">;</span><br><br>
+<span class="c-comment">// 其中：</span><br>
+<span class="c-comment">//   target   = 你希望到達的目標值（如 150 cm）</span><br>
+<span class="c-comment">//   measured = 感測器回報的當前值（如 92 cm）</span><br>
+<span class="c-comment">//   error    = 150 - 92 = 58 cm（還差 58 公分）</span>
+                </div>
+
+                <p>
+                    當 <code>error</code> 為正，代表尚未到達目標，系統應持續出力；當 <code>error</code> 為負，代表超過目標，系統需要反向修正；當 <code>error</code> 等於零，系統完美地停在目標位置。
+                </p>
+
+                <h2>閉迴路系統方塊圖</h2>
+
+                <div class="ms-code">
+<span class="c-comment">// 閉迴路系統 — 反饋路徑是關鍵差異</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌─────────┐&nbsp;&nbsp;&nbsp;┌──────────┐&nbsp;&nbsp;&nbsp;┌────────┐</span><br>
+<span class="c-white"> Target ──(+)──▶│ 控制器&nbsp;&nbsp; │──▶│ 馬達驅動&nbsp; │──▶│ 車輪轉動│──▶ Output</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ▲&nbsp;&nbsp; └─────────┘&nbsp;&nbsp;&nbsp;└──────────┘&nbsp;&nbsp;&nbsp;└────────┘&nbsp;&nbsp;&nbsp;&nbsp;│</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌──────────┐&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └────(-)─────│ 感測器&nbsp;&nbsp;&nbsp;│◀────────────────────┘</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└──────────┘</span><br>
+<span class="c-comment">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↑ 這條回傳路徑就是「反饋 (Feedback)」</span>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>觀念</strong>
+                        「負反饋」中的「負」不代表壞事——它代表系統會朝<strong>減少誤差</strong>的方向修正。如果沒有這個「負號」，系統會越跑越偏，形成災難性的正反饋（如麥克風靠近喇叭產生尖嘯）。
+                    </div>
+                </div>
+
+                <h2>開迴路 vs. 閉迴路比較</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>比較項目</th>
+                            <th>開迴路 (Open-Loop)</th>
+                            <th>閉迴路 (Closed-Loop)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>反饋機制</td>
+                            <td><span class="cross"><i class="fas fa-times"></i></span> 無</td>
+                            <td><span class="check"><i class="fas fa-check"></i></span> 有感測器回傳</td>
+                        </tr>
+                        <tr>
+                            <td>抗干擾能力</td>
+                            <td>極弱，環境一變就失準</td>
+                            <td>強，能即時補償擾動</td>
+                        </tr>
+                        <tr>
+                            <td>精準度</td>
+                            <td>取決於校正品質，難以保證</td>
+                            <td>可持續逼近目標值</td>
+                        </tr>
+                        <tr>
+                            <td>硬體複雜度</td>
+                            <td>低（無需感測器）</td>
+                            <td>較高（需要感測器與運算）</td>
+                        </tr>
+                        <tr>
+                            <td>穩定性風險</td>
+                            <td>不會震盪，但可能永遠偏離</td>
+                            <td>若控制器設計不當，可能產生震盪</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>最簡單的閉迴路控制實作</h2>
+
+                <p>
+                    以下程式碼展示了最基本的閉迴路架構：讀取感測器 → 計算誤差 → 決定出力方向：
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">float</span><span class="c-white"> </span><span class="c-attr">currentPos</span><span class="c-white"> = </span><span class="c-tag">readEncoder</span><span class="c-white">();&nbsp;&nbsp;</span><span class="c-comment">// 讀取當前位置</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">float</span><span class="c-white"> </span><span class="c-attr">error</span><span class="c-white"> = targetPos - currentPos;&nbsp;</span><span class="c-comment">// 計算誤差</span><br><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-white"> (error > </span><span class="c-val">0</span><span class="c-white">) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">motorForward</span><span class="c-white">();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 尚未到達，前進</span><br>
+<span class="c-white">&nbsp;&nbsp;} </span><span class="c-kw">else</span><span class="c-white"> {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">motorStop</span><span class="c-white">();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 到達或超過，停止</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>思考題</strong>
+                        上面的程式已經是閉迴路了，但它只做了「到達就停」的簡單判斷。如果目標還很遠，馬達全速衝；快到的時候呢？它依然全速衝——直到衝過頭才急停。這就引出了下一個問題：<strong>我們需要更聰明的控制策略，讓出力與誤差「成比例」</strong>。這正是 PID 登場的前奏。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -696,48 +825,92 @@
                 </div>
 
                 <h1>🎛️ 3. 進化：為什麼需要 PID？</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
-                                單純的比例修正 (P) 常因物理阻力無法到達精確點。PID 結合成熟的歷史累積 (I) 與未來預測 (D)，達成全自動且絲滑的運動路徑。
-                            </p>
-<div class="bg-blue-500/10 p-8 rounded-3xl border border-blue-500/20 shadow-inner text-justify text-justify">
-<h4 class="font-bold text-blue-400 mb-4 text-xs uppercase tracking-widest text-center text-justify text-left">
-                                    Control Evolution</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify text-justify">
-<li class="flex items-start gap-2 text-justify text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">P
-                                                (Proportional)</strong>：當下的衝勁。誤差越大出力越猛。</div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify text-justify">I
-                                                (Integral)</strong>：過去的記性。剷除累積的殘留誤差與阻力。</div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify text-justify">D
-                                                (Derivative)</strong>：未來的預感。提前減速防止慣性衝過頭。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-blue-600/10 p-10 rounded-3xl border border-blue-500/20 text-center relative overflow-hidden group text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-blue-500/5 rounded-full group-hover:scale-150 transition-transform duration-700 text-justify">
-</div>
-<h4 class="text-blue-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center text-justify">
-                                Full Autonomy</h4>
-<p class="text-[11px] text-slate-500 leading-relaxed font-light mb-8 italic text-center text-justify text-left">
-                                "讓機器人具備像人類淋浴調溫般的感知與修正能力，是控制工程的最高境界。"
-                            </p>
-<div class="inline-block px-8 py-3 bg-blue-500 text-white rounded-xl font-bold text-[10px] shadow-lg cursor-pointer hover:bg-blue-400 transition-colors text-center text-justify">
-                                Start Analysis</div>
-</div>
-</div>
+
+                <p>
+                    你可能會想：閉迴路控制已經有了反饋機制，為什麼還需要 PID？答案很簡單——<strong>單純的「有誤差就出力」太粗暴了</strong>。比例控制 (P) 雖然讓系統學會了「看路」，但它有三個致命缺陷：靜態誤差、震盪、慣性過衝。PID 正是為了解決這三個問題而誕生。
+                </p>
+
+                <h2>純比例控制的三大困境</h2>
+
+                <div class="ms-scenario">
+                    <div class="ms-scenario-label">情境</div>
+                    你的機器人使用 P 控制，目標距離 150 cm。一開始跑得很好，但到了 145 cm 時，剩餘誤差只有 5 cm，P 控制器的出力太小，不足以克服靜摩擦力——機器人卡住了，永遠差那最後 5 公分。
+                </div>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>困境</th>
+                            <th>現象描述</th>
+                            <th>PID 解法</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>靜態誤差</strong><br>(Steady-State Error)</td>
+                            <td>誤差很小時，P 輸出低於馬達啟動電壓，系統卡在終點前</td>
+                            <td><strong>I (積分)</strong>：隨時間累積誤差，持續增加推力直到克服阻力</td>
+                        </tr>
+                        <tr>
+                            <td><strong>震盪</strong><br>(Oscillation)</td>
+                            <td>Kp 太大時，系統在目標附近來回擺動，無法收斂</td>
+                            <td><strong>D (微分)</strong>：偵測誤差變化速率，在衝過頭之前提前踩煞車</td>
+                        </tr>
+                        <tr>
+                            <td><strong>慣性過衝</strong><br>(Overshoot)</td>
+                            <td>高速接近目標時，機械慣性使系統衝過目標點</td>
+                            <td><strong>D (微分)</strong>：預判趨勢，提前減速讓系統平滑收斂</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>PID 三兄弟的直覺</h2>
+
+                <p>PID 控制器由三個獨立的項組合而成，各自處理不同的時間維度：</p>
+
+                <ul>
+                    <li><strong>P (Proportional) — 現在</strong>：「離目標還有多遠？」——誤差越大，出力越猛。提供即時反應力。</li>
+                    <li><strong>I (Integral) — 過去</strong>：「已經偏離目標多久了？」——累積歷史誤差，剷除頑固的殘留偏差。</li>
+                    <li><strong>D (Derivative) — 未來</strong>：「正在以多快的速度接近目標？」——預判趨勢，防止過衝。</li>
+                </ul>
+
+                <div class="ms-code">
+<span class="c-comment">// PID 完整公式（連續時間）</span><br>
+<span class="c-white">Output = </span><span class="c-attr">Kp</span><span class="c-white"> × Error</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ </span><span class="c-attr">Ki</span><span class="c-white"> × ∫ Error dt</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ </span><span class="c-attr">Kd</span><span class="c-white"> × d(Error)/dt</span><br><br>
+<span class="c-comment">// 離散化實作（嵌入式系統）</span><br>
+<span class="c-attr">output</span><span class="c-white"> = Kp * error</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ Ki * (integral += error * dt)</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ Kd * (error - lastError) / dt;</span>
+                </div>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>關鍵觀念</strong>
+                        PID 的威力不在於三個公式有多複雜，而在於它們<strong>協同作戰</strong>：P 提供反應速度，I 提供精度保證，D 提供穩定性。三者缺一不可——只有 P 會卡住，加了 I 會衝過頭，再加 D 才能優雅收斂。
+                    </div>
+                </div>
+
+                <h2>從學術到實戰</h2>
+
+                <p>
+                    PID 控制器發明於 1920 年代，至今仍是工業界使用最廣泛的控制演算法。據統計，全世界超過 90% 的工業控制迴路使用某種形式的 PID。從你家的冷氣溫控、汽車的定速巡航、到無人機的姿態穩定——底層都是同一套 PID 邏輯。
+                </p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>下一步</strong>
+                        理解了「為什麼需要 PID」之後，下一個模組將深入每一項的數學公式與物理直覺，並帶你在 ESP32 上完成從零到一的 PID 控制器實作。準備好動手了嗎？
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -816,16 +989,134 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>
+                    請回答以下問題，測試你對「<strong>PID 控制</strong>」的理解程度。
+                    選擇完畢後點擊「送出答案」查看結果與解析。
+                </p>
+
+                <div id="quiz-container" style="margin:24px 0;">
+
+                    <div class="quiz-question" id="quiz-q0" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">1. PID 控制器中，P（比例）項的主要作用是什麼？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt0">
+                            <input type="radio" name="quiz-q0" value="0" style="accent-color:var(--ms-blue);">
+                            <span>消除穩態誤差</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt1">
+                            <input type="radio" name="quiz-q0" value="1" style="accent-color:var(--ms-blue);">
+                            <span>根據當前誤差大小產生即時修正力</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt2">
+                            <input type="radio" name="quiz-q0" value="2" style="accent-color:var(--ms-blue);">
+                            <span>預測未來誤差趨勢</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q0-opt3">
+                            <input type="radio" name="quiz-q0" value="3" style="accent-color:var(--ms-blue);">
+                            <span>限制輸出的最大值</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp0" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q1" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">2. 當系統存在持續的穩態誤差（Steady-State Error）時，應該調整 PID 的哪一項？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt0">
+                            <input type="radio" name="quiz-q1" value="0" style="accent-color:var(--ms-blue);">
+                            <span>增大 P（比例）增益</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt1">
+                            <input type="radio" name="quiz-q1" value="1" style="accent-color:var(--ms-blue);">
+                            <span>增大 I（積分）增益</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt2">
+                            <input type="radio" name="quiz-q1" value="2" style="accent-color:var(--ms-blue);">
+                            <span>增大 D（微分）增益</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q1-opt3">
+                            <input type="radio" name="quiz-q1" value="3" style="accent-color:var(--ms-blue);">
+                            <span>降低取樣頻率</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp1" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q2" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">3. D（微分）項在 PID 控制中扮演什麼角色？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt0">
+                            <input type="radio" name="quiz-q2" value="0" style="accent-color:var(--ms-blue);">
+                            <span>累積過去的誤差</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt1">
+                            <input type="radio" name="quiz-q2" value="1" style="accent-color:var(--ms-blue);">
+                            <span>預測誤差變化趨勢，抑制超調與振盪</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt2">
+                            <input type="radio" name="quiz-q2" value="2" style="accent-color:var(--ms-blue);">
+                            <span>設定目標值</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q2-opt3">
+                            <input type="radio" name="quiz-q2" value="3" style="accent-color:var(--ms-blue);">
+                            <span>限制輸出範圍</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp2" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                    <div class="quiz-question" id="quiz-q3" style="background:#faf9f8; border:1px solid #e1dfdd; border-radius:6px; padding:20px; margin-bottom:16px;">
+                        <p style="font-weight:600; margin-bottom:12px;">4. 以下哪種現象最可能是 I（積分）增益過大導致的？</p>
+                        
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt0">
+                            <input type="radio" name="quiz-q3" value="0" style="accent-color:var(--ms-blue);">
+                            <span>系統完全沒有響應</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt1">
+                            <input type="radio" name="quiz-q3" value="1" style="accent-color:var(--ms-blue);">
+                            <span>輸出持續振盪且幅度越來越大（積分飽和）</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt2">
+                            <input type="radio" name="quiz-q3" value="2" style="accent-color:var(--ms-blue);">
+                            <span>系統響應太慢</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:4px; cursor:pointer; margin-bottom:6px; border:1px solid transparent; transition:all .15s;" onmouseover="this.style.background='#f3f2f1'" onmouseout="this.style.background=''" id="quiz-q3-opt3">
+                            <input type="radio" name="quiz-q3" value="3" style="accent-color:var(--ms-blue);">
+                            <span>輸出始終為零</span>
+                        </label>
+                        <div class="quiz-explanation" id="quiz-exp3" style="display:none; margin-top:12px; padding:10px 14px; border-radius:4px; font-size:13px;"></div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">送出答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+
+                <div id="quiz-result" style="display:none; margin-top:20px; padding:16px 20px; border-radius:6px; font-weight:600;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -883,9 +1174,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「為什麼需要 PID？」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「為什麼需要 PID？」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -901,7 +1192,8 @@
         { id: 3, label: '👁️ 2. 閉迴路控制：觀察與修正的智慧', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🎛️ 3. 進化：為什麼需要 PID？', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '150 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -921,6 +1213,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1022,8 +1315,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = [1, 1, 1, 1];
+    const QUIZ_EXPLANATIONS = ["P 項的輸出與當前誤差成正比，誤差越大修正力越強，提供快速的初始響應。","I 項累積歷史誤差，即使誤差很小也會持續累加修正量，最終消除穩態偏差。","D 項根據誤差的變化率（微分）提前施加阻尼，當誤差快速減小時減緩修正，防止超調。","積分增益過大會導致累積量快速膨脹，造成嚴重超調與振盪，即「積分飽和（Integral Windup）」現象。"];
+
+    function submitQuiz() {
+        let score = 0;
+        QUIZ_ANSWERS.forEach((ans, i) => {
+            const selected = document.querySelector(`input[name="quiz-q${i}"]:checked`);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            const qEl = document.getElementById(`quiz-q${i}`);
+            if (selected && parseInt(selected.value) === ans) {
+                score++;
+                qEl.style.borderColor = '#107c10';
+                expEl.style.background = '#dff6dd';
+                expEl.innerHTML = '<strong style="color:#107c10;">✓ 正確！</strong> ' + QUIZ_EXPLANATIONS[i];
+            } else {
+                qEl.style.borderColor = '#d13438';
+                expEl.style.background = '#fde7e9';
+                expEl.innerHTML = '<strong style="color:#d13438;">✗ 不正確。</strong> ' + QUIZ_EXPLANATIONS[i];
+            }
+            expEl.style.display = 'block';
+        });
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === QUIZ_ANSWERS.length) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.style.color = '#107c10';
+            resultEl.textContent = `🎉 滿分！你答對了全部 ${QUIZ_ANSWERS.length} 題！`;
+        } else {
+            resultEl.style.background = '#deecf9';
+            resultEl.style.color = '#005a9e';
+            resultEl.textContent = `你答對了 ${score} / ${QUIZ_ANSWERS.length} 題，請查看解析後再試一次。`;
+        }
+    }
+
+    function resetQuiz() {
+        QUIZ_ANSWERS.forEach((_, i) => {
+            const radios = document.querySelectorAll(`input[name="quiz-q${i}"]`);
+            radios.forEach(r => r.checked = false);
+            const expEl = document.getElementById(`quiz-exp${i}`);
+            expEl.style.display = 'none';
+            const qEl = document.getElementById(`quiz-q${i}`);
+            qEl.style.borderColor = '#e1dfdd';
+        });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 12：PID 控制';
 </script>
 
 <!-- Define Resources -->

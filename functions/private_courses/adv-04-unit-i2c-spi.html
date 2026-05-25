@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>通訊協議與硬體實戰 - Vibe Coding Learn</title>
+    <title>通訊協議與硬體實戰 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -471,9 +473,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">進階課程 4 - 單元 1</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +487,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">通訊協議與硬體實戰</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">進階課程 4</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,13 +509,13 @@
                 <h1>通訊協議與硬體實戰</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">進階課程 4</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
                 </div>
 
-                <p></p>
+                <p>深入 I2C 廣播定址與 SPI 全雙工高速傳輸的物理本質，從時序圖判讀到暫存器級位元運算，學會直接與晶片對話。</p>
 
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
@@ -553,15 +553,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>通訊協議與硬體實戰</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    每一顆感測器、每一塊顯示器，都需要透過通訊協議與微控制器交換數據。
+                    本模組將帶你深入 <strong>I2C 與 SPI</strong> 兩大硬體通訊標準的物理本質，
+                    從時序圖判讀到暫存器級的位元運算，讓你從「只會呼叫 Library」跨越到「能直接與晶片對話」的層次。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你接上了一顆 MPU6050 慣性感測器，程式碼編譯成功，但串列監視器上全是 0。
+                    問題出在哪？是地址寫錯了？上拉電阻沒接？還是 SPI 模式設反了？
+                    要排除這類硬體通訊問題，你必須真正理解 I2C 與 SPI 的訊號機制。
                 </div>
 
                 <h2>教學影片</h2>
@@ -575,7 +576,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -589,27 +590,114 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>📢 I2C：省線的「廣播系統」</h1>
-                
-                <ul class="space-y-4 text-gray-600 leading-relaxed text-sm">
-<li class="flex gap-3">
-<span class="text-blue-500 font-bold">●</span>
-<span><strong>僅需兩根線：</strong>SDA（數據）與 SCL（時鐘）。</span>
-</li>
-<li class="flex gap-3">
-<span class="text-blue-500 font-bold">●</span>
-<span><strong>定址機制：</strong>主機透過廣播「地址」來決定與哪個設備通訊。</span>
-</li>
-<li class="flex gap-3">
-<span class="text-blue-500 font-bold">●</span>
-<span><strong>Open-Drain 架構：</strong>理解為什麼 I2C 總線需要上拉電阻。</span>
-</li>
-</ul>
+                <h1>I2C：省線的「廣播系統」</h1>
+
+                <p>
+                    I2C (Inter-Integrated Circuit) 是由 Philips 半導體（現為 NXP）在 1982 年發明的串列通訊協議。它僅需<strong>兩根訊號線</strong>即可讓多個設備掛載在同一條匯流排上，因此被廣泛應用於感測器、EEPROM、OLED 顯示器等低速設備的通訊。對於接腳資源有限的微控制器（如 ESP32），I2C 是連接多個感測器的首選方案。
+                </p>
+
+                <h2>I2C 匯流排架構</h2>
+
+                <p>
+                    I2C 匯流排由兩條線組成：<strong>SDA (Serial Data)</strong> 負責傳輸數據，<strong>SCL (Serial Clock)</strong> 負責提供時鐘同步。所有設備——無論是主機 (Master) 還是從機 (Slave)——都共用這兩條線。主機負責產生時鐘訊號並發起通訊，從機則在被呼叫時回應。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>訊號線</th>
+                            <th>名稱</th>
+                            <th>功能</th>
+                            <th>ESP32 預設腳位</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>SDA</strong></td>
+                            <td>Serial Data</td>
+                            <td>雙向數據傳輸（地址 + 數據 + ACK）</td>
+                            <td>GPIO 21</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SCL</strong></td>
+                            <td>Serial Clock</td>
+                            <td>由主機產生的時鐘訊號，同步所有通訊</td>
+                            <td>GPIO 22</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>定址機制：7-bit Address</h2>
+
+                <p>
+                    I2C 使用 <strong>7-bit 地址</strong>來識別匯流排上的每個從機設備。當主機要與某個感測器通訊時，它會在匯流排上「廣播」該設備的地址加上一個讀寫位元（R/W bit）。只有地址匹配的從機會回應 ACK（應答）訊號，其他設備則保持靜默。
+                </p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        常見感測器的 I2C 地址：MPU6050 慣性感測器為 <code>0x68</code>（AD0 接地）或 <code>0x69</code>（AD0 接高），SSD1306 OLED 顯示器為 <code>0x3C</code>。如果你不確定設備地址，可以使用 I2C Scanner 掃描工具逐一偵測。
+                    </div>
+                </div>
+
+                <h2>Open-Drain 與上拉電阻</h2>
+
+                <p>
+                    I2C 的 SDA 和 SCL 都採用 <strong>Open-Drain（開洩極）</strong>架構：設備只能將線路「拉低」至 GND，無法主動「推高」至 VCC。因此，匯流排需要外接<strong>上拉電阻 (Pull-up Resistor)</strong>，將閒置狀態的電壓保持在高電平。典型值為 4.7kΩ（標準模式 100kHz）或 2.2kΩ（快速模式 400kHz）。
+                </p>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        忘記接上拉電阻是 I2C 通訊失敗最常見的原因之一。如果你的 I2C 設備偵測不到、回傳全 0，第一步就是檢查上拉電阻是否正確安裝。許多開發板（如 GY-521 MPU6050 模組）已內建上拉電阻，但若同時掛載多個模組，可能需要調整電阻值。
+                    </div>
+                </div>
+
+                <h2>ESP32 上的 I2C 操作範例</h2>
+
+                <p>
+                    以下範例示範如何在 ESP32 上透過 Arduino <code>Wire</code> 程式庫讀取 MPU6050 的加速度計原始數據：
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">#include</span> <span class="c-str">&lt;Wire.h&gt;</span>
+
+<span class="c-kw">#define</span> <span class="c-attr">MPU_ADDR</span>  <span class="c-val">0x68</span>
+<span class="c-kw">#define</span> <span class="c-attr">ACCEL_REG</span> <span class="c-val">0x3B</span>  <span class="c-comment">// ACCEL_XOUT_H 暫存器</span>
+
+<span class="c-kw">void</span> <span class="c-tag">setup</span><span class="c-white">() {</span>
+    <span class="c-white">Wire.begin(</span><span class="c-val">21</span><span class="c-white">,</span> <span class="c-val">22</span><span class="c-white">);</span>  <span class="c-comment">// SDA=21, SCL=22</span>
+    <span class="c-white">Wire.beginTransmission(</span><span class="c-attr">MPU_ADDR</span><span class="c-white">);</span>
+    <span class="c-white">Wire.write(</span><span class="c-val">0x6B</span><span class="c-white">);</span>  <span class="c-comment">// PWR_MGMT_1 暫存器</span>
+    <span class="c-white">Wire.write(</span><span class="c-val">0</span><span class="c-white">);</span>     <span class="c-comment">// 喚醒 MPU6050</span>
+    <span class="c-white">Wire.endTransmission();</span>
+<span class="c-white">}</span>
+
+<span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span>
+    <span class="c-white">Wire.beginTransmission(</span><span class="c-attr">MPU_ADDR</span><span class="c-white">);</span>
+    <span class="c-white">Wire.write(</span><span class="c-attr">ACCEL_REG</span><span class="c-white">);</span>
+    <span class="c-white">Wire.endTransmission(</span><span class="c-kw">false</span><span class="c-white">);</span>  <span class="c-comment">// 不釋放匯流排</span>
+    <span class="c-white">Wire.requestFrom(</span><span class="c-attr">MPU_ADDR</span><span class="c-white">,</span> <span class="c-val">6</span><span class="c-white">);</span>
+    <span class="c-kw">int16_t</span> <span class="c-attr">ax</span> <span class="c-white">= Wire.read() &lt;&lt;</span> <span class="c-val">8</span> <span class="c-white">| Wire.read();</span>
+    <span class="c-kw">int16_t</span> <span class="c-attr">ay</span> <span class="c-white">= Wire.read() &lt;&lt;</span> <span class="c-val">8</span> <span class="c-white">| Wire.read();</span>
+    <span class="c-kw">int16_t</span> <span class="c-attr">az</span> <span class="c-white">= Wire.read() &lt;&lt;</span> <span class="c-val">8</span> <span class="c-white">| Wire.read();</span>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        <code>endTransmission(false)</code> 中的 <code>false</code> 參數代表「不發送 STOP 條件」，這使得主機可以緊接著發起 <code>requestFrom()</code> 進行連續讀取（Repeated Start），避免其他主機搶佔匯流排。這是 I2C 暫存器讀取的標準模式。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -623,27 +711,148 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚡ SPI：高速的「專線系統」</h1>
-                
-                <ul class="space-y-4 text-gray-600 leading-relaxed text-sm">
-<li class="flex gap-3">
-<span class="text-indigo-500 font-bold">●</span>
-<span><strong>通常四根線：</strong>SCK、MOSI、MISO、CS（片選）。</span>
-</li>
-<li class="flex gap-3">
-<span class="text-indigo-500 font-bold">●</span>
-<span><strong>全雙工傳輸：</strong>數據可同時雙向移動，速度極快 (MHz)。</span>
-</li>
-<li class="flex gap-3">
-<span class="text-indigo-500 font-bold">●</span>
-<span><strong>點對點機制：</strong>主機利用專屬的 CS 線啟動特定設備。</span>
-</li>
-</ul>
+                <h1>SPI：高速的「專線系統」</h1>
+
+                <p>
+                    SPI (Serial Peripheral Interface) 是由 Motorola 開發的同步串列通訊協議。與 I2C 的「共用匯流排」不同，SPI 採用<strong>獨立的數據輸入/輸出線</strong>，實現全雙工 (Full-duplex) 通訊，速率可達數十 MHz。它是 TFT 顯示器、SD 卡、Flash 記憶體等高速設備的首選通訊介面。
+                </p>
+
+                <h2>SPI 四線架構</h2>
+
+                <p>
+                    標準 SPI 由四條訊號線組成，每條線都有明確的單向職責：
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>訊號線</th>
+                            <th>全名</th>
+                            <th>方向</th>
+                            <th>功能說明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>SCK</strong></td>
+                            <td>Serial Clock</td>
+                            <td>主機 → 從機</td>
+                            <td>由主機產生的時鐘訊號，決定通訊速率</td>
+                        </tr>
+                        <tr>
+                            <td><strong>MOSI</strong></td>
+                            <td>Master Out Slave In</td>
+                            <td>主機 → 從機</td>
+                            <td>主機傳送指令或數據給從機</td>
+                        </tr>
+                        <tr>
+                            <td><strong>MISO</strong></td>
+                            <td>Master In Slave Out</td>
+                            <td>從機 → 主機</td>
+                            <td>從機回傳數據給主機</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CS / SS</strong></td>
+                            <td>Chip Select</td>
+                            <td>主機 → 從機</td>
+                            <td>低電平有效，選擇要通訊的特定從機</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        與 I2C 不同，SPI 沒有地址機制。主機透過拉低某個從機的 CS 線來「點名」它。這意味著每增加一個 SPI 設備，主機就需要多分配一個 GPIO 腳位作為該設備的 CS 線。
+                    </div>
+                </div>
+
+                <h2>全雙工通訊的優勢</h2>
+
+                <p>
+                    SPI 最大的優勢是<strong>全雙工 (Full-duplex)</strong>：MOSI 和 MISO 兩條線可以同時傳輸數據，主機在「發送指令」的同時就能「接收回應」。這使得 SPI 的實際吞吐量遠高於半雙工的 I2C。ESP32 的 SPI 時鐘最高可達 <strong>80 MHz</strong>，非常適合驅動高解析度 TFT 顯示器。
+                </p>
+
+                <h2>ESP32 上的 SPI 操作範例</h2>
+
+                <p>
+                    以下範例示範如何在 ESP32 上使用 SPI 讀取一個暫存器的值：
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">#include</span> <span class="c-str">&lt;SPI.h&gt;</span>
+
+<span class="c-kw">#define</span> <span class="c-attr">CS_PIN</span> <span class="c-val">5</span>
+
+<span class="c-kw">void</span> <span class="c-tag">setup</span><span class="c-white">() {</span>
+    <span class="c-white">SPI.begin();</span>
+    <span class="c-white">pinMode(</span><span class="c-attr">CS_PIN</span><span class="c-white">,</span> <span class="c-val">OUTPUT</span><span class="c-white">);</span>
+    <span class="c-white">digitalWrite(</span><span class="c-attr">CS_PIN</span><span class="c-white">,</span> <span class="c-val">HIGH</span><span class="c-white">);</span>  <span class="c-comment">// 預設不選中</span>
+<span class="c-white">}</span>
+
+<span class="c-kw">uint8_t</span> <span class="c-tag">readRegister</span><span class="c-white">(</span><span class="c-kw">uint8_t</span> <span class="c-attr">reg</span><span class="c-white">) {</span>
+    <span class="c-white">SPI.beginTransaction(SPISettings(</span><span class="c-val">1000000</span><span class="c-white">,</span> <span class="c-val">MSBFIRST</span><span class="c-white">,</span> <span class="c-val">SPI_MODE0</span><span class="c-white">));</span>
+    <span class="c-white">digitalWrite(</span><span class="c-attr">CS_PIN</span><span class="c-white">,</span> <span class="c-val">LOW</span><span class="c-white">);</span>   <span class="c-comment">// 選中設備</span>
+    <span class="c-white">SPI.transfer(</span><span class="c-attr">reg</span> <span class="c-white">|</span> <span class="c-val">0x80</span><span class="c-white">);</span>   <span class="c-comment">// 最高位=1 表示「讀取」</span>
+    <span class="c-kw">uint8_t</span> <span class="c-attr">val</span> <span class="c-white">= SPI.transfer(</span><span class="c-val">0x00</span><span class="c-white">);</span> <span class="c-comment">// 發送空字節以接收數據</span>
+    <span class="c-white">digitalWrite(</span><span class="c-attr">CS_PIN</span><span class="c-white">,</span> <span class="c-val">HIGH</span><span class="c-white">);</span>  <span class="c-comment">// 釋放設備</span>
+    <span class="c-white">SPI.endTransaction();</span>
+    <span class="c-kw">return</span> <span class="c-attr">val</span><span class="c-white">;</span>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>I2C vs SPI 比較總覽</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>比較項目</th>
+                            <th>I2C</th>
+                            <th>SPI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>訊號線數量</td>
+                            <td>2 條（SDA + SCL）</td>
+                            <td>4 條 + 每設備 1 條 CS</td>
+                        </tr>
+                        <tr>
+                            <td>通訊模式</td>
+                            <td>半雙工</td>
+                            <td>全雙工</td>
+                        </tr>
+                        <tr>
+                            <td>最大速率</td>
+                            <td>3.4 MHz（High-speed mode）</td>
+                            <td>數十 MHz（ESP32 最高 80 MHz）</td>
+                        </tr>
+                        <tr>
+                            <td>設備定址</td>
+                            <td>7-bit 地址（軟體定址）</td>
+                            <td>CS 線（硬體定址）</td>
+                        </tr>
+                        <tr>
+                            <td>典型應用</td>
+                            <td>感測器、EEPROM、RTC</td>
+                            <td>TFT 顯示器、SD 卡、Flash</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        SPI 的高頻通訊對走線品質敏感。在 10 MHz 以上的速率下，過長的杜邦線（&gt;15 cm）可能產生寄生電容與反射，導致數據錯誤（畫面雪花、讀取失敗）。建議高速 SPI 應用使用短線或 PCB 直連。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -657,31 +866,133 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>📈 時序圖判讀與訊號擷取</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-<div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
-<h4 class="font-bold text-slate-800 mb-2">開始位元 (Start Condition)</h4>
-<p class="text-sm text-slate-600 leading-relaxed">
-                                I2C 的獨家通訊協議：當 SCL 為高電平時，SDA 從高變低，標誌著對話的開始。
-                            </p>
-</div>
-<div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
-<h4 class="font-bold text-slate-800 mb-2">時鐘極性與相位 (CPOL/CPHA)</h4>
-<p class="text-sm text-slate-600 leading-relaxed">
-                                SPI 的四種模式。決定數據是在時鐘的「上升沿」還是「下降沿」被固定並讀取。
-                            </p>
-</div>
-</div><div class="bg-amber-50 p-6 rounded-2xl border border-amber-100">
-<p class="text-amber-900 text-sm font-medium">
-                            💡 <strong>Datasheet 尋寶：</strong>嘗試找出 MPU6050 的預設 I2C 地址，以及它在通訊時的最高時鐘頻率限制。
-                        </p>
-</div>
+                <h1>時序圖判讀與訊號擷取</h1>
+
+                <p>
+                    要真正精通 I2C 和 SPI 通訊，你不能只停留在「呼叫 Library 函式」的層面。當通訊失敗、數據錯亂時，你需要能夠<strong>閱讀時序圖 (Timing Diagram)</strong>、分析訊號波形，從位元層級定位問題。這是從「會用」跨越到「能修」的關鍵技能。
+                </p>
+
+                <h2>I2C 通訊時序解析</h2>
+
+                <p>
+                    I2C 的每一次通訊都遵循嚴格的時序規範。理解以下四個關鍵信號，你就能讀懂任何 I2C 交易：
+                </p>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>Start Condition（起始條件）</h4>
+                            <p>當 SCL 維持高電平時，SDA 從高電平跳變至低電平。這是 I2C 通訊的「開場白」，所有從機收到此信號後進入接收模式。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>Address + R/W Bit（地址 + 讀寫位元）</h4>
+                            <p>主機接著發送 7-bit 設備地址與 1-bit 讀寫旗標（0 = 寫入，1 = 讀取），共 8 個位元。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>ACK / NACK（應答 / 非應答）</h4>
+                            <p>從機在第 9 個時鐘週期將 SDA 拉低表示 ACK（「我收到了」）。若 SDA 維持高電平，則為 NACK——表示該地址無設備回應。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">4</div>
+                        <div class="ms-step-body">
+                            <h4>Stop Condition（停止條件）</h4>
+                            <p>當 SCL 維持高電平時，SDA 從低電平跳變至高電平。這告訴所有從機：「本次通訊結束，匯流排已釋放。」</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>SPI 時鐘模式 (CPOL / CPHA)</h2>
+
+                <p>
+                    SPI 定義了四種時鐘模式，由兩個參數組合而成：<strong>CPOL</strong>（時鐘極性，閒置狀態的電平）和 <strong>CPHA</strong>（時鐘相位，在哪個邊沿取樣數據）。選錯模式是 SPI 通訊失敗最常見的原因之一。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>SPI Mode</th>
+                            <th>CPOL</th>
+                            <th>CPHA</th>
+                            <th>時鐘閒置電平</th>
+                            <th>數據取樣邊沿</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Mode 0</strong></td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>低</td>
+                            <td>上升沿 (Rising Edge)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mode 1</strong></td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>低</td>
+                            <td>下降沿 (Falling Edge)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mode 2</strong></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>高</td>
+                            <td>下降沿 (Falling Edge)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mode 3</strong></td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>高</td>
+                            <td>上升沿 (Rising Edge)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-important">
+                    <div class="note-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        你必須從設備的 Datasheet 中查找正確的 SPI Mode。例如，MPU6050 使用 <strong>Mode 0 或 Mode 3</strong>，而 SD 卡使用 <strong>Mode 0</strong>。配置錯誤的 CPOL/CPHA 會導致主機在錯誤的時鐘邊沿讀取數據，產生隨機的位元翻轉。
+                    </div>
+                </div>
+
+                <h2>暫存器級位元運算</h2>
+
+                <p>
+                    感測器的原始數據通常存放在多個 8-bit 暫存器中。要取得完整的測量值，你需要將 High Byte 和 Low Byte 正確拼接為 16-bit 整數。以下是 MPU6050 加速度計 X 軸的讀取方式：
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// MPU6050: ACCEL_XOUT_H = 0x3B, ACCEL_XOUT_L = 0x3C</span>
+<span class="c-kw">uint8_t</span>  <span class="c-attr">highByte</span> <span class="c-white">= readRegister(</span><span class="c-val">0x3B</span><span class="c-white">);</span>
+<span class="c-kw">uint8_t</span>  <span class="c-attr">lowByte</span>  <span class="c-white">= readRegister(</span><span class="c-val">0x3C</span><span class="c-white">);</span>
+<span class="c-kw">int16_t</span>  <span class="c-attr">rawAccX</span>  <span class="c-white">= (</span><span class="c-attr">highByte</span> <span class="c-white">&lt;&lt;</span> <span class="c-val">8</span><span class="c-white">) |</span> <span class="c-attr">lowByte</span><span class="c-white">;</span>
+
+<span class="c-comment">// 根據量程設定換算為物理單位 (±2g → 16384 LSB/g)</span>
+<span class="c-kw">float</span> <span class="c-attr">accelX</span> <span class="c-white">=</span> <span class="c-attr">rawAccX</span> <span class="c-white">/</span> <span class="c-val">16384.0</span><span class="c-white">;</span>  <span class="c-comment">// 單位：g (9.81 m/s²)</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        使用 <code>int16_t</code>（有號 16 位整數）而非 <code>uint16_t</code>（無號），因為加速度計的讀數可以是負值（如：設備倒置時 Z 軸為 −1g）。位元拼接時要注意 Big-endian（MPU6050）與 Little-endian 的差異——順序搞反會得到荒謬的數值。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -760,16 +1071,113 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>請回答以下問題，測試你對本模組內容的理解程度。每題僅有一個正確答案。</p>
+
+                <form id="quiz-form" onsubmit="return false;" style="margin-top:24px;">
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">1. I2C 通訊協議需要幾根訊號線？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 1 根
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 2 根 (SDA + SCL)
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 4 根
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 8 根
+                        </label>
+                        <div id="fb-q1" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">2. SPI 協議的「全雙工」特性意味著什麼？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 可以連接無限多個從機
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 可同時進行數據傳送與接收
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 傳輸速度是 I2C 的兩倍
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 不需要時鐘線
+                        </label>
+                        <div id="fb-q2" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">3. I2C 使用什麼機制來辨識不同的從機裝置？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 每個從機使用獨立的資料線
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 透過 7-bit 或 10-bit 裝置地址定址
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 使用 CS 選擇線
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 透過不同的時鐘頻率
+                        </label>
+                        <div id="fb-q3" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">4. SPI 通訊中 CS (Chip Select) 線的作用是什麼？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 傳輸時鐘同步信號
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 選擇要通訊的特定從機裝置
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 提供電源給從機
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 傳送確認 (ACK) 信號
+                        </label>
+                        <div id="fb-q4" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="display:flex;gap:12px;margin-top:20px;">
+                        <button type="button" class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button type="button" class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                    </div>
+                    <div id="quiz-result" style="margin-top:16px;font-size:15px;font-weight:600;display:none;"></div>
+                </form>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -827,9 +1235,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「通訊協議與硬體實戰」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「通訊協議與硬體實戰」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -845,7 +1253,8 @@
         { id: 3, label: 'SPI：高速的「專線系統」', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '📈 時序圖判讀與訊號擷取', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',     time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -865,6 +1274,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -966,8 +1376,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'B', q3: 'B', q4: 'B' };
+    const QUIZ_EXPLANATIONS = {
+        q1: 'I2C 僅需 SDA（資料線）與 SCL（時鐘線）兩根訊號線，即可讓多個設備掛載在同一條匯流排上。',
+        q2: 'SPI 使用獨立的 MOSI（主→從）和 MISO（從→主）線路，可在同一個時鐘週期內同時傳送與接收數據。',
+        q3: 'I2C 透過在 SDA 上發送從機的唯一裝置地址（7-bit 或 10-bit）來選擇通訊對象，無需額外的選擇線。',
+        q4: 'CS（Chip Select）線拉低時啟動對應的從機，每個從機需要一條獨立的 CS 線。這是 SPI 相比 I2C 的主要缺點之一。'
+    };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const fb = document.getElementById(`fb-${q}`);
+            if (!selected) {
+                fb.style.display = 'block';
+                fb.innerHTML = '<span style="color:#d13438;">⚠ 請選擇一個答案</span>';
+                continue;
+            }
+            fb.style.display = 'block';
+            if (selected.value === correct) {
+                score++;
+                fb.innerHTML = `<span style="color:#107c10;">✔ 正確！</span> ${QUIZ_EXPLANATIONS[q]}`;
+            } else {
+                fb.innerHTML = `<span style="color:#d13438;">✘ 不正確。正確答案是 ${correct}。</span> ${QUIZ_EXPLANATIONS[q]}`;
+            }
+        }
+        const result = document.getElementById('quiz-result');
+        result.style.display = 'block';
+        if (score === total) {
+            result.innerHTML = `<span style="color:#107c10;">🎉 滿分！你答對了全部 ${total} 題！</span>`;
+            markDone(6);
+        } else {
+            result.innerHTML = `<span style="color:#d13438;">你答對了 ${score} / ${total} 題。再試一次吧！</span>`;
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= Object.keys(QUIZ_ANSWERS).length; i++) {
+            const fb = document.getElementById(`fb-q${i}`);
+            if (fb) { fb.style.display = 'none'; fb.innerHTML = ''; }
+        }
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 04：感測器整合';
 </script>
 
 <!-- Define Resources -->

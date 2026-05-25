@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP32 記憶體分區表 (Partition Table) - Vibe Coding Learn</title>
+    <title>ESP32 記憶體分區表 (Partition Table) - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -84,6 +84,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -107,6 +108,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -482,6 +484,36 @@
         .achievement-text h3 { margin: 0 0 4px; font-size: 18px; }
         .achievement-text p { margin: 0; font-size: 14px; opacity: .9; }
 
+        /* Quiz */
+        .quiz-question { margin-bottom: 32px; }
+        .quiz-question p { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+        .quiz-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
+            border: 1px solid #e1dfdd;
+            border-radius: 4px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background .1s;
+        }
+        .quiz-option:hover { background: #f3f2f1; border-color: #c8c6c4; }
+        .quiz-option input[type=radio] { margin-top: 2px; accent-color: var(--ms-blue); flex-shrink: 0; }
+        .quiz-option.correct { background: #dff6dd; border-color: var(--ms-green); }
+        .quiz-option.wrong { background: #fde7e9; border-color: var(--ms-red); }
+        .quiz-feedback {
+            display: none;
+            margin-top: 8px;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .quiz-feedback.correct { background: #dff6dd; color: #107c10; display: block; }
+        .quiz-feedback.wrong { background: #fde7e9; color: #d13438; display: block; }
+        .quiz-submit { margin-top: 16px; }
+
         @media (max-width: 768px) {
             .ms-sidebar { display: none; }
             .unit-content { padding: 20px 16px 40px; }
@@ -497,9 +529,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 2 - 儲存架構</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -509,25 +543,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">ESP32 記憶體分區表 (Partition Table)</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 190 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 2</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -535,7 +565,7 @@
                 <h1>ESP32 記憶體分區表 (Partition Table)</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 2</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -546,9 +576,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>🗺️ 為什麼需要分區表？</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>🛠️ 預設 vs. 自定義分區</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>💾 持久化存儲的決擇</strong> 的調校技巧與穩定性測試。</li>
+                    <li>能夠解釋 ESP32 Flash 分區表的作用，說明 App、NVS、OTAData、SPIFFS 各分區的用途與 4KB 對齊規則。</li>
+                    <li>能夠編輯 <code>partitions.csv</code> 自定義分區佈局，將 App 空間擴大至 2MB 以解決 <code>Region overflowed</code> 編譯錯誤。</li>
+                    <li>能夠使用 <code>Preferences</code> 函式庫實作 NVS 持久化存儲（如開機次數），並透過 LittleFS 掛載與讀取靜態網頁資源。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -579,15 +609,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>ESP32 記憶體分區表 (Partition Table)</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    ESP32 的 Flash 記憶體容量有限（通常 4MB），而你的韌體、OTA 備份區、檔案系統與設定資料全都要擠在裡面。
+                    分區表就是這塊 Flash 的「藍圖」，決定了每個區域的起始位址與大小。配置不當，你的程式會因為空間不足而無法燒錄，或 OTA 更新因為沒有備份分區而失敗。
+                    掌握分區表的規劃邏輯，才能在有限資源中做出最佳分配。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    阿傑在專案中同時整合了 BLE、Wi-Fi Web Server 和 OTA 功能，編譯後韌體大小飆到 1.8MB。
+                    當他嘗試燒錄時，終端機噴出「Error: app partition is too small」的錯誤——預設分區表只給應用程式留了 1.2MB 的空間。
+                    他必須學會自訂分區表，重新分配 Flash 空間，才能讓功能完整的韌體順利進駐晶片。
                 </div>
 
                 <h2>教學影片</h2>
@@ -601,7 +632,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -615,55 +646,94 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🗺️ 為什麼需要分區表？</h1>
-                
-                <p class="text-gray-500 mb-10 text-lg font-light">
-                        ESP32 的 4/16MB Flash 不是一個空箱，而是被精細劃分的「數位地產」。
-                    </p><div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-10">
-<div class="space-y-6">
-<h3 class="text-xl font-bold text-gray-800 flex items-center gap-2 border-l-4 border-indigo-500 pl-4">
-                                數位地段規劃</h3>
-<p class="text-gray-600 leading-relaxed text-justify">
-                                Flash 就是一個大型倉儲。分區表清楚寫明：每個功能數據從哪個「偏移地址 (Offset)」開始，租用多長空間。
-                            </p>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-<div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
-<div class="font-bold text-indigo-700 mb-1">App 0 / App 1</div>
-<p class="text-xs text-slate-500">存放程式碼。OTA 更新需要兩個對分空間。</p>
-</div>
-<div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
-<div class="font-bold text-indigo-700 mb-1">NVS (Data)</div>
-<p class="text-xs text-slate-500">存放 Wi-Fi 設定、參數等長度固定的數據。</p>
-</div>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 text-blue-300 font-mono text-xs md:text-sm shadow-inner relative overflow-hidden group">
-<div class="absolute inset-0 bg-blue-500/5 opacity-30"></div>
-<h4 class="text-white font-bold mb-4 uppercase tracking-widest flex items-center gap-2">
-<span class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
-                                Partition Types
-                            </h4>
-<div class="space-y-4">
-<div class="flex justify-between border-b border-blue-900/50 pb-2 hover:bg-white/5 transition px-2 rounded">
-<span class="font-bold">otadata</span>
-<span class="text-slate-500 text-justify">OTA 引導標記 (8KB)</span>
-</div>
-<div class="flex justify-between border-b border-blue-900/50 pb-2 hover:bg-white/5 transition px-2 rounded">
-<span class="font-bold">nvs</span>
-<span class="text-slate-500 text-justify">非揮發性存儲 (16KB+)</span>
-</div>
-<div class="flex justify-between border-b border-blue-900/50 pb-2 hover:bg-white/5 transition px-2 rounded">
-<span class="font-bold">spiffs</span>
-<span class="text-slate-500 text-justify">文件系統：存圖檔</span>
-</div>
-</div>
-</div>
-</div>
+                <h1>為什麼需要分區表？</h1>
+
+                <p>ESP32 的 Flash 記憶體就像一塊有限的「數位土地」——通常只有 4MB 到 16MB。你的應用程式、OTA 備份、Wi-Fi 設定、檔案系統資源全都要存放在這塊土地上。<strong>分區表（Partition Table）</strong>就是這塊土地的「地籍圖」，它精確定義了每個分區的起始位址（Offset）、大小（Size）與用途（Type/SubType）。</p>
+
+                <p>如果沒有分區表，ESP32 不知道程式碼從哪裡開始、設定資料存在哪裡、哪個區域可以安全地被覆寫。分區表是 Bootloader 啟動時讀取的第一份「指令文件」，它決定了整個系統的記憶體佈局。</p>
+
+                <h2>Flash 記憶體的基本結構</h2>
+
+                <p>ESP32 的 Flash 從位址 <code>0x0000</code> 開始，前 <code>0x8000</code>（32KB）被保留給 Bootloader 使用。分區表本身佔據 <code>0x8000</code> 到 <code>0x9000</code> 的 4KB 空間。從 <code>0x9000</code> 開始，才是你可以自由規劃的區域。</p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>分區類型</th>
+                            <th>SubType</th>
+                            <th>用途說明</th>
+                            <th>典型大小</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>app</code></td>
+                            <td>factory / ota_0 / ota_1</td>
+                            <td>存放可執行的韌體二進位檔</td>
+                            <td>1～2 MB</td>
+                        </tr>
+                        <tr>
+                            <td><code>data</code></td>
+                            <td>nvs</td>
+                            <td>Non-Volatile Storage，鍵值對存儲</td>
+                            <td>16～24 KB</td>
+                        </tr>
+                        <tr>
+                            <td><code>data</code></td>
+                            <td>ota</td>
+                            <td>OTA 引導資訊（otadata）</td>
+                            <td>8 KB</td>
+                        </tr>
+                        <tr>
+                            <td><code>data</code></td>
+                            <td>spiffs / littlefs</td>
+                            <td>檔案系統，存放網頁、圖片等靜態資源</td>
+                            <td>512 KB～2 MB</td>
+                        </tr>
+                        <tr>
+                            <td><code>data</code></td>
+                            <td>coredump</td>
+                            <td>程式崩潰時的除錯記憶體傾印</td>
+                            <td>64 KB</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>4KB 對齊規則</h2>
+
+                <p>ESP32 的 Flash 硬體以 4KB（<code>0x1000</code>）為最小擦除單位。這意味著所有分區的<strong>起始位址和大小都必須是 4KB 的整數倍</strong>。若你在 <code>partitions.csv</code> 中設定了非對齊的數值，編譯時會產生錯誤。</p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        常見的對齊換算：16KB = <code>0x4000</code>、64KB = <code>0x10000</code>、1MB = <code>0x100000</code>、2MB = <code>0x200000</code>。在規劃分區表時，建議使用十六進位表示法以避免計算錯誤。
+                    </div>
+                </div>
+
+                <h2>沒有分區表會發生什麼事？</h2>
+
+                <p>嚴格來說，ESP32 無法在沒有分區表的情況下運作——Bootloader 會因為找不到有效的分區資訊而拒絕啟動。但更常見的問題是使用了<strong>不適當的預設分區表</strong>：</p>
+
+                <ul>
+                    <li>韌體超過預設 App 分區大小 → 編譯錯誤 <code>Region 'iram0_0_seg' overflowed</code></li>
+                    <li>沒有 OTA 分區 → 無法進行無線更新，每次都要接線燒錄</li>
+                    <li>檔案系統空間不足 → 網頁資源或資料檔案無法存入裝置</li>
+                    <li>分區地址重疊 → 資料互相覆蓋，導致不可預期的行為</li>
+                </ul>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        當你遇到「sketch too big」或「region overflowed」錯誤時，第一步就是檢查分區表。通常只需要將 App 分區從 1.2MB 擴大到 2MB 就能解決問題。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -677,35 +747,91 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🛠️ 預設 vs. 自定義分區</h1>
-                
-                <p class="text-gray-600 mb-8 leading-relaxed text-left text-justify">
-                                引入大型庫時，常遇 `Region overflowed`。這時 1MB 空間已不足，需重新規劃。
-                            </p><div class="space-y-6">
-<div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-r-2xl">
-<h4 class="font-bold text-red-900 mb-2">突破限制：partitions.csv</h4>
-<p class="text-sm text-red-800 text-justify">透過 CSV 文件，可縮減文件系統，將空間騰給 App，實現最大單體燒錄。
-                                    </p>
-</div>
-<div class="code-block group">
-<div class="flex justify-between items-center mb-2 border-b border-slate-700 pb-2">
-<span class="text-[10px] text-slate-500 uppercase font-bold tracking-widest text-justify">partitions.csv
-                                            format</span>
-<span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
-</div>
-<span class="text-slate-500 italic text-justify"># Name, Type, SubType, Offset,
-                                        Size, Flags</span><br/>
-                                    nvs, data, nvs, , 0x4000,<br/>
-                                    otadata, data, ota, , 0x2000,<br/>
-<span class="text-emerald-400">factory, app, factory, , 2M,</span><br/>
-                                    storage, data, spiffs, , 1.5M,
-                                </div>
-</div>
+                <h1>預設 vs. 自定義分區</h1>
+
+                <p>ESP32 開發框架（Arduino Core 或 ESP-IDF）提供了數種預設分區表供你選用。但隨著專案功能增長——加入 BLE、Wi-Fi Web Server、OTA、TLS 等大型函式庫——預設的 1.2MB App 空間很快就會不夠用，導致令人頭痛的 <code>Region overflowed</code> 編譯錯誤。</p>
+
+                <p>這時，你需要學會建立自定義的 <code>partitions.csv</code> 檔案，依照專案需求重新分配 Flash 空間。這就像城市規劃師重新劃分土地用途——你可以縮減不需要的區域，將空間讓給需要擴張的功能。</p>
+
+                <h2>預設分區表的限制</h2>
+
+                <p>Arduino ESP32 最常使用的預設分區表為 <code>default.csv</code>，其配置如下：</p>
+
+                <pre class="ms-code"><span class="c-comment"># Name,   Type, SubType, Offset,   Size,    Flags</span>
+<span class="c-white">nvs,      data, nvs,     0x9000,   0x5000,</span>
+<span class="c-white">otadata,  data, ota,     0xe000,   0x2000,</span>
+<span class="c-white">app0,     app,  ota_0,   0x10000,  0x140000,</span>
+<span class="c-white">app1,     app,  ota_1,   0x150000, 0x140000,</span>
+<span class="c-white">spiffs,   data, spiffs,  0x290000, 0x170000,</span></pre>
+
+                <p>在這個配置中，每個 App 分區只有 <code>0x140000</code>（1.25MB）。一旦你的韌體編譯輸出超過 1.25MB，就會立即觸發溢位錯誤。常見的觸發場景包括：</p>
+
+                <ul>
+                    <li>同時啟用 Wi-Fi + BLE（各自佔約 300～500KB）</li>
+                    <li>引入 TLS/SSL 加密（增加約 200KB）</li>
+                    <li>使用 ArduinoJSON、AsyncWebServer 等大型函式庫</li>
+                    <li>啟用 OTA 除錯資訊或 Core Dump 功能</li>
+                </ul>
+
+                <h2>自定義 partitions.csv</h2>
+
+                <p>建立自定義分區表的步驟很簡單：在專案根目錄建立一個 <code>partitions.csv</code> 文件，並在 <code>platformio.ini</code> 中指向它。CSV 格式的每一行代表一個分區：</p>
+
+                <pre class="ms-code"><span class="c-comment"># Name,   Type, SubType, Offset,   Size,     Flags</span>
+<span class="c-white">nvs,      data, nvs,     0x9000,   0x4000,</span>
+<span class="c-white">otadata,  data, ota,     0xd000,   0x2000,</span>
+<span class="c-attr">app0,     app,  ota_0,   0x10000,  0x200000,</span>
+<span class="c-attr">app1,     app,  ota_1,   0x210000, 0x200000,</span>
+<span class="c-white">storage,  data, spiffs,  0x410000, 0x1F0000,</span></pre>
+
+                <p>上方的配置將每個 App 分區擴大至 2MB（<code>0x200000</code>），適用於 4MB Flash 的開發板。注意每個分區的 Offset 等於前一個分區的 Offset + Size，確保不會重疊。</p>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        所有分區的總大小不得超過 Flash 晶片的實際容量。若你的開發板使用 4MB Flash（<code>0x400000</code>），所有分區加上 Bootloader 區域的總和必須 ≤ 4MB。超出範圍會導致燒錄失敗。
+                    </div>
+                </div>
+
+                <h2>在 PlatformIO 中啟用自定義分區表</h2>
+
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>建立分區表檔案</h4>
+                            <p>在專案根目錄建立 <code>partitions.csv</code>，依照上方格式填入各分區定義。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>修改 platformio.ini</h4>
+                            <p>加入 <code>board_build.partitions = partitions.csv</code> 設定項，讓 PlatformIO 使用你的自定義分區表而非預設值。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>重新編譯並燒錄</h4>
+                            <p>執行 <code>pio run --target upload</code>。PlatformIO 會自動將新的分區表連同韌體一起寫入 Flash。首次變更分區表時建議先執行 <code>pio run --target erase</code> 清除整個 Flash。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        若你不需要 OTA 功能，可以將雙 App 分區改為單一 <code>factory</code> 分區，最大可達 3.5MB 以上。但這表示未來每次更新都需要接線燒錄。在專案初期就規劃好 OTA 支援，能為日後的維護省下大量時間。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -719,42 +845,132 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>💾 持久化存儲的決擇</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-<div class="group p-8 bg-slate-800/50 rounded-3xl border border-slate-700 hover:border-blue-500 transition-all duration-300 transform hover:-translate-y-2">
-<div class="w-16 h-16 bg-blue-500/20 text-blue-400 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-lg group-hover:bg-blue-500 group-hover:text-white transition-colors text-justify">
-                                🔑</div>
-<h3 class="font-bold text-2xl text-white mb-4 text-justify">NVS (Non-Volatile Storage)</h3>
-<p class="text-sm text-slate-400 leading-relaxed mb-6 text-justify">
-                                專為 <strong>「小而碎」</strong> 參數設計。Key-Value 結構，適合存 PID 常數或最後記錄。
-                            </p>
-<div class="pt-6 border-t border-slate-700 flex justify-between items-center text-justify">
-<span class="text-xs text-blue-300 font-mono tracking-widest uppercase">Preferences.h</span>
-<span class="px-2 py-1 bg-blue-500/10 rounded text-[10px] text-blue-400 border border-blue-500/20 text-justify">4KB
-                                    Aligned</span>
-</div>
-</div>
-<div class="group p-8 bg-slate-800/50 rounded-3xl border border-slate-700 hover:border-emerald-500 transition-all duration-300 transform hover:-translate-y-2">
-<div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-lg group-hover:bg-emerald-500 group-hover:text-white transition-colors text-justify">
-                                📁</div>
-<h3 class="font-bold text-2xl text-white mb-4 text-justify uppercase tracking-widest">
-                                LittleFS / SPIFFS</h3>
-<p class="text-sm text-slate-400 leading-relaxed mb-6 text-justify">
-                                正式文件系統。適合存放 <strong>「大而靜態」</strong> 資源：如 HTML、CSS 或圖檔。
-                            </p>
-<div class="pt-6 border-t border-slate-700 flex justify-between items-center text-justify">
-<span class="text-xs text-emerald-300 font-mono tracking-widest uppercase text-justify">LittleFS.h</span>
-<span class="px-2 py-1 bg-emerald-500/10 rounded text-[10px] text-emerald-400 border border-emerald-500/20 text-justify">Dir
-                                    Tree Structure</span>
-</div>
-</div>
-</div>
+                <h1>持久化存儲的決擇</h1>
+
+                <p>ESP32 提供了兩種截然不同的持久化存儲方案：<strong>NVS（Non-Volatile Storage）</strong>與<strong>檔案系統（LittleFS / SPIFFS）</strong>。它們各有專長的使用場景——選錯了方案不會導致程式崩潰，但會讓你的程式碼效率低落、維護困難。理解兩者的差異，是設計穩健 IoT 系統的基礎能力。</p>
+
+                <h2>NVS：鍵值對存儲</h2>
+
+                <p>NVS 採用 Key-Value（鍵值對）結構，專為<strong>小型、結構化的設定資料</strong>而設計。每筆資料以一個字串鍵（最長 15 字元）對應一個值（支援整數、字串、Blob 等型別）。NVS 的底層使用磨損平衡（Wear Leveling）演算法，能有效延長 Flash 的壽命。</p>
+
+                <p>在 Arduino 框架中，你可以透過 <code>Preferences</code> 函式庫輕鬆操作 NVS：</p>
+
+                <pre class="ms-code"><span class="c-kw">#include</span> <span class="c-str">&lt;Preferences.h&gt;</span>
+<span class="c-tag">Preferences</span> <span class="c-attr">prefs</span>;
+
+<span class="c-kw">void</span> <span class="c-attr">setup</span>() {
+  Serial.<span class="c-attr">begin</span>(115200);
+  prefs.<span class="c-attr">begin</span>(<span class="c-str">"my-app"</span>, <span class="c-kw">false</span>); <span class="c-comment">// namespace, readOnly</span>
+
+  <span class="c-comment">// 讀取開機次數（若不存在則預設為 0）</span>
+  <span class="c-kw">unsigned int</span> <span class="c-attr">bootCount</span> = prefs.<span class="c-attr">getUInt</span>(<span class="c-str">"boot_count"</span>, 0);
+  bootCount++;
+  prefs.<span class="c-attr">putUInt</span>(<span class="c-str">"boot_count"</span>, bootCount);
+
+  Serial.<span class="c-attr">printf</span>(<span class="c-str">"第 %u 次開機\n"</span>, bootCount);
+}</pre>
+
+                <p>NVS 最適合的使用場景包括：</p>
+                <ul>
+                    <li>Wi-Fi SSID 與密碼（裝置重啟後不需重新設定）</li>
+                    <li>裝置 ID、校正係數、PID 控制參數</li>
+                    <li>開機次數、最後運行狀態、錯誤計數器</li>
+                    <li>使用者偏好設定（亮度、音量、模式）</li>
+                </ul>
+
+                <h2>LittleFS / SPIFFS：檔案系統</h2>
+
+                <p>當你需要存放<strong>大型、結構化的檔案</strong>時（如 HTML 頁面、CSS 樣式表、JavaScript 腳本、JSON 設定檔、圖片等），應使用檔案系統。LittleFS 是 SPIFFS 的現代替代方案，支援目錄結構、具備更好的斷電保護，且在大量小檔案的場景下效能更優。</p>
+
+                <pre class="ms-code"><span class="c-kw">#include</span> <span class="c-str">&lt;LittleFS.h&gt;</span>
+
+<span class="c-kw">void</span> <span class="c-attr">setup</span>() {
+  <span class="c-kw">if</span> (!LittleFS.<span class="c-attr">begin</span>(<span class="c-kw">true</span>)) { <span class="c-comment">// true = 若掛載失敗則格式化</span>
+    Serial.<span class="c-attr">println</span>(<span class="c-str">"LittleFS 掛載失敗"</span>);
+    <span class="c-kw">return</span>;
+  }
+
+  <span class="c-comment">// 讀取 Web 頁面並回傳給客戶端</span>
+  <span class="c-tag">File</span> <span class="c-attr">file</span> = LittleFS.<span class="c-attr">open</span>(<span class="c-str">"/index.html"</span>, <span class="c-str">"r"</span>);
+  <span class="c-kw">if</span> (file) {
+    <span class="c-tag">String</span> content = file.<span class="c-attr">readString</span>();
+    file.<span class="c-attr">close</span>();
+  }
+}</pre>
+
+                <h2>NVS vs. LittleFS 完整比較</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>特性</th>
+                            <th>NVS (Preferences)</th>
+                            <th>LittleFS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>資料結構</td>
+                            <td>Key-Value 鍵值對</td>
+                            <td>檔案與目錄樹</td>
+                        </tr>
+                        <tr>
+                            <td>適合資料類型</td>
+                            <td>小型參數（整數、短字串）</td>
+                            <td>大型檔案（HTML、圖片、Log）</td>
+                        </tr>
+                        <tr>
+                            <td>單筆資料大小</td>
+                            <td>最大約 4KB</td>
+                            <td>僅受分區大小限制</td>
+                        </tr>
+                        <tr>
+                            <td>磨損平衡</td>
+                            <td>內建</td>
+                            <td>內建</td>
+                        </tr>
+                        <tr>
+                            <td>目錄支援</td>
+                            <td>否（使用 namespace 分類）</td>
+                            <td>是</td>
+                        </tr>
+                        <tr>
+                            <td>上傳工具</td>
+                            <td>程式碼中直接寫入</td>
+                            <td>PlatformIO Upload Filesystem Image</td>
+                        </tr>
+                        <tr>
+                            <td>典型分區大小</td>
+                            <td>16～24 KB</td>
+                            <td>512 KB～2 MB</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        SPIFFS 已被官方標記為「不建議用於新專案」。LittleFS 在所有方面（效能、可靠性、功能）都優於 SPIFFS。若你正在開始新專案，請直接使用 LittleFS。在 PlatformIO 中，只需在 <code>platformio.ini</code> 加入 <code>board_build.filesystem = littlefs</code> 即可切換。
+                    </div>
+                </div>
+
+                <h2>如何選擇？</h2>
+
+                <p>簡單的判斷原則：<strong>如果資料可以用一個變數表示，用 NVS；如果資料是一個完整的檔案，用 LittleFS。</strong> 在實務中，大多數 IoT 專案會同時使用兩者——NVS 存放運行參數與狀態，LittleFS 存放網頁資源與大型設定檔。</p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在 PlatformIO 中上傳檔案至 LittleFS 非常簡單：將檔案放入專案根目錄下的 <code>data/</code> 資料夾，然後在終端機執行 <code>pio run --target uploadfs</code>。所有 <code>data/</code> 中的檔案都會被打包並寫入 Flash 的 LittleFS 分區。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -833,16 +1049,80 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 4 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <!-- Q1 -->
+                    <div class="quiz-question" id="q1">
+                        <p>1. ESP32分區表中所有分區的起始位址和大小必須遵守什麼規則？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 必須是1MB的整數倍</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 必須是4KB（0x1000）的整數倍</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 可以任意設定不需要對齊</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="quiz-question" id="q2">
+                        <p>2. 當編譯時出現「Region overflowed」錯誤，最直接的解決方法是？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 減少程式碼中的註解以縮小檔案</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 自定義partitions.csv將App分區從1.2MB擴大至2MB</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 降低ESP32的時脈頻率</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="quiz-question" id="q3">
+                        <p>3. NVS(Non-Volatile Storage)最適合儲存哪一類資料？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 大型HTML網頁檔案與圖片</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> Wi-Fi密碼、開機次數等小型鍵值對參數</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 韌體的備份副本</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="quiz-question" id="q4">
+                        <p>4. 關於LittleFS與SPIFFS的比較，以下哪個敘述正確？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> SPIFFS是較新的技術，效能優於LittleFS</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> LittleFS支援目錄結構且斷電保護更好，官方建議新專案使用LittleFS</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 兩者完全相同，只是名稱不同</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" style="margin-left:8px; display:none;" id="quiz-reset-btn">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -900,9 +1180,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「ESP32 記憶體分區表 (Partition Table)」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「ESP32 記憶體分區表 (Partition Table)」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -918,8 +1198,17 @@
         { id: 3, label: '🛠️ 預設 vs. 自定義分區', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '💾 持久化存儲的決擇', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '150 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '4 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！ESP32 Flash以4KB為最小擦除單位，所有分區的起始位址和大小都必須是4KB（0x1000）的整數倍，否則編譯時會產生錯誤。' },
+        q2: { b: '正確！預設分區表的App空間只有約1.25MB，當韌體超過此大小時就會溢位。自定義partitions.csv將App分區擴大至2MB即可解決。' },
+        q3: { b: '正確！NVS採用Key-Value結構，專為小型結構化設定資料設計，適合Wi-Fi密碼、開機次數、校正係數等參數的持久化存儲。' },
+        q4: { b: '正確！LittleFS支援目錄結構、具備更好的斷電保護，且在大量小檔案場景下效能更優。SPIFFS已被官方標記為不建議用於新專案。' },
+    };
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -938,6 +1227,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#e1dfdd;padding:1px 5px;border-radius:2px;color:#605e5c;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1039,8 +1329,74 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        let total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            const options = document.querySelectorAll(`input[name="${qid}"]`);
+
+            options.forEach(opt => {
+                opt.disabled = true;
+                const label = opt.parentElement;
+                if (opt.value === answer) label.classList.add('correct');
+                if (opt.checked && opt.value !== answer) label.classList.add('wrong');
+            });
+
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                const exp = QUIZ_EXPLANATIONS[qid][answer];
+                feedbackEl.textContent = '✗ 不正確。' + exp;
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        scoreEl.style.display = 'block';
+        const pct = Math.round(correct / total * 100);
+        const pass = pct >= 75;
+        scoreEl.innerHTML = `
+            <span style="font-size:20px;">${pass ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pass ? '通過！你已掌握本模組的核心概念。' : '建議回顧相關單元後再試一次。'}</div>
+        `;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => {
+            el.classList.remove('correct','wrong');
+        });
+        document.querySelectorAll('input[type=radio]').forEach(el => {
+            el.checked = false;
+            el.disabled = false;
+        });
+        document.querySelectorAll('.quiz-feedback').forEach(el => {
+            el.className = 'quiz-feedback';
+            el.textContent = '';
+        });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 02：OTA 更新架構';
 </script>
 
 <!-- Define Resources -->

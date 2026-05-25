@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>H 橋驅動原理：解鎖馬達控制的鑰匙 - Vibe Coding Learn</title>
+    <title>H 橋驅動原理：解鎖馬達控制的鑰匙 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 4 - 馬達驅動架構</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">H 橋驅動原理：解鎖馬達控制的鑰匙</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 4</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>H 橋驅動原理：解鎖馬達控制的鑰匙</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 4</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -521,10 +521,10 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>🏗️ 1. H 橋的構造：電流的幾何學</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>🕹️ 2. 四種核心邏輯狀態</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>速度與制動的整合</strong> 的調校技巧與穩定性測試。</li>
-                    <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
+                    <li>能夠解釋 H 橋電路的拓撲結構，說明對角線導通如何決定電流方向以控制馬達正反轉。</li>
+                    <li>能夠辨識 H 橋的四種邏輯狀態（正轉、反轉、短路煞車、空轉），並實測真值表驗證 IN1/IN2 組合對應的物理動作。</li>
+                    <li>能夠封裝 <code>drive(int speed)</code> 動力控制 API，以正負數控制方向、零值執行煞車，並加入 <code>constrain</code> 邊界保護。</li>
+                    <li>能夠量化比較急煞（Brake）與空轉（Coast）的停車距離差異，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
                 <h2>必要條件</h2>
@@ -554,15 +554,15 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>H 橋驅動原理：解鎖馬達控制的鑰匙</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    <strong>H 橋</strong>是控制直流馬達正反轉的核心電路——四個開關排成「H」字型，透過對角線導通改變電流方向。
+                    本單元將帶你理解正轉、反轉、急煞與空轉四種邏輯狀態的物理意義，
+                    並學會將複雜的引腳操作封裝為一個專業的 <code>drive(speed)</code> API。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的遙控車在直行時表現正常，但按下「後退」鍵卻毫無反應，按下「停止」後車輛又繼續慣性滑行了好幾秒才停下。
+                    你猜測引腳邏輯配置有誤，而且不確定該用「短路煞車」還是「自然空轉」來應對不同的行駛場景。
                 </div>
 
                 <h2>教學影片</h2>
@@ -576,7 +576,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -590,35 +590,88 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🏗️ 1. H 橋的構造：電流的幾何學</h1>
+                <h1>H 橋的構造：電流的幾何學</h1>
                 
-                <div class="space-y-6 text-gray-600">
-<p class="text-lg leading-relaxed text-justify">
-<strong>拓撲原理：</strong> 想像一個「H」型電路，中間是<strong>馬達</strong>，四個支柱是<strong>開關</strong>。
-                                </p>
-<p class="text-lg leading-relaxed font-light text-justify">
-                                    對角線導通，導引電流「左右」流經馬達控制旋轉方向。
-                                </p>
-<div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 mt-4 text-justify">
-<h4 class="font-bold text-blue-900 mb-4 text-xs uppercase tracking-widest text-justify">
-                                        構造核心要素</h4>
-<ul class="space-y-3 text-xs text-slate-600 text-justify">
-<li class="flex items-start gap-2">
-<span class="text-blue-500 mt-0.5">●</span>
-<span>四個電子開關 (S1-S4) 構成控流矩陣。</span>
-</li>
-<li class="flex items-start gap-2">
-<span class="text-blue-500 mt-0.5">●</span>
-<span>對角線一對導通，代表一個動力向量。</span>
-</li>
-</ul>
-</div>
-</div>
+                <p>
+                    要讓直流馬達正轉和反轉，我們需要能夠<strong>改變流經馬達的電流方向</strong>。這聽起來簡單，但僅靠一個 GPIO 腳位的 HIGH/LOW 切換是做不到的——GPIO 只能決定「有沒有電流」，不能決定「電流往哪個方向走」。<strong>H 橋（H-Bridge）</strong>電路正是為了解決這個問題而誕生的經典拓撲。
+                </p>
+
+                <h2>H 型拓撲結構</h2>
+
+                <p>
+                    H 橋由<strong>四個電子開關</strong>（可以是 MOSFET 或 BJT 電晶體）排列成英文字母「H」的形狀：兩個開關在左側（上臂 S1、下臂 S3），兩個開關在右側（上臂 S2、下臂 S4），馬達橫跨在 H 的中間橫槓上。電源（V+）連接在 H 的頂部，接地（GND）連接在底部。
+                </p>
+
+                <p>
+                    透過選擇性地導通不同的開關對，電流就能從不同方向流經馬達：
+                </p>
+
+                <ul>
+                    <li><strong>S1 + S4 導通</strong>（左上 + 右下）：電流從左流向右，馬達正轉。</li>
+                    <li><strong>S2 + S3 導通</strong>（右上 + 左下）：電流從右流向左，馬達反轉。</li>
+                    <li><strong>S3 + S4 導通</strong>（左下 + 右下）：馬達兩端同時接地，形成短路煞車。</li>
+                    <li><strong>全部斷開</strong>：馬達與電源完全隔離，靠慣性自由空轉。</li>
+                </ul>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>禁忌：直通短路（Shoot-through）</strong>
+                        絕對不能同時導通同一側的上臂與下臂開關（例如 S1 + S3 或 S2 + S4）！這會造成電源直接對地短路，瞬間產生極大電流，可能燒毀開關元件甚至整塊電路板。專業的 H 橋驅動 IC（如 TB6612FNG）內建了防直通邏輯，但理解這個禁忌是工程師的基本素養。
+                    </div>
+                </div>
+
+                <h2>為什麼不直接用繼電器？</h2>
+
+                <p>
+                    機械繼電器雖然也能切換電流方向，但它的切換速度僅約 10–20ms，無法承受 PWM 所需的每秒數千次高頻切換。電子式 H 橋使用 MOSFET 或 BJT 作為開關元件，切換速度可達奈秒等級，完美適配 PWM 的高頻需求。這也是為什麼在需要「速度控制」的場景中，H 橋 + PWM 是唯一的正確選擇。
+                </p>
+
+                <h2>常見的 H 橋驅動 IC</h2>
+
+                <p>
+                    在教學與原型開發中，我們通常不會自己用離散元件搭建 H 橋，而是使用整合好的驅動 IC。以下是常見的選擇：
+                </p>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>IC 型號</th>
+                        <th>驅動電壓</th>
+                        <th>最大電流</th>
+                        <th>特色</th>
+                    </tr>
+                    <tr>
+                        <td><strong>TB6612FNG</strong></td>
+                        <td>2.5–13.5V</td>
+                        <td>1.2A（峰值 3.2A）</td>
+                        <td>雙路輸出、內建防直通、待命引腳</td>
+                    </tr>
+                    <tr>
+                        <td>L298N</td>
+                        <td>5–35V</td>
+                        <td>2A</td>
+                        <td>經典模組、體積較大、效率較低</td>
+                    </tr>
+                    <tr>
+                        <td>DRV8833</td>
+                        <td>2.7–10.8V</td>
+                        <td>1.5A（峰值 2A）</td>
+                        <td>微型封裝、低壓友好</td>
+                    </tr>
+                </table>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        本課程使用 <strong>TB6612FNG</strong> 模組。它提供兩組獨立的 H 橋（可同時驅動兩顆馬達），每組有 IN1、IN2（方向控制）和 PWM（速度控制）三個輸入腳位，以及一個 STBY（待命）引腳用於全局啟用/停用。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -632,89 +685,133 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🕹️ 2. 四種核心邏輯狀態</h1>
+                <h1>四種核心邏輯狀態</h1>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-<div class="space-y-6">
-<div class="grid grid-cols-2 gap-4">
-<div class="p-6 bg-emerald-50 rounded-2xl border border-emerald-100 shadow-sm text-justify">
-<h4 class="font-bold text-emerald-800 mb-2 text-sm text-justify">正轉 (Forward)</h4>
-<p class="text-[11px] text-emerald-600 font-light text-justify">對角線導通，通正向電流。</p>
-</div>
-<div class="p-6 bg-blue-50 rounded-2xl border border-blue-100 shadow-sm text-justify">
-<h4 class="font-bold text-blue-800 mb-2 text-sm text-justify uppercase tracking-widest">
-                                        反轉 (Reverse)</h4>
-<p class="text-[11px] text-blue-600 font-light text-justify">對角線導通，通反向電流。</p>
-</div>
-<div class="p-6 bg-rose-50 rounded-2xl border border-rose-100 shadow-sm text-justify">
-<h4 class="font-bold text-rose-800 mb-2 text-sm text-justify">煞車 (Brake)</h4>
-<p class="text-[11px] text-rose-600 font-light text-justify">低側同時導通，短接線圈。</p>
-</div>
-<div class="p-6 bg-slate-50 rounded-2xl border border-slate-200 shadow-sm text-justify">
-<h4 class="font-bold text-slate-800 mb-2 text-sm text-justify">空轉 (Coast)</h4>
-<p class="text-[11px] text-slate-600 font-light text-justify">切斷所有，靠慣性滑行。</p>
-</div>
-</div>
-<div class="bg-amber-50 p-6 rounded-2xl border-l-[6px] border-amber-400 text-justify">
-<h4 class="flex items-center gap-2 mb-3 text-amber-900 font-bold text-sm text-justify">
-<span class="text-xl">⚠️</span> 禁忌：直通短路 (Shoot-through)
-                                </h4>
-<p class="text-xs text-amber-700 leading-relaxed font-light text-justify">
-                                    不能同時導通同側上下開關！電源對地短路會燒毀驅動。
-                                </p>
-</div>
-</div>
-<div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm text-justify">
-<div class="bg-slate-50 p-4 border-b border-slate-200">
-<h4 class="text-sm font-bold text-slate-700 uppercase tracking-widest text-justify">
-                                    驅動邏輯真值表</h4>
-</div>
-<div class="overflow-x-auto p-4">
-<table class="w-full text-xs text-left">
-<thead>
-<tr class="text-slate-400 border-b">
-<th class="pb-3 px-2 font-medium text-justify">IN1</th>
-<th class="pb-3 px-2 font-medium text-justify">IN2</th>
-<th class="pb-3 px-2 font-medium text-justify uppercase tracking-tighter">
-                                                PWM (EN)</th>
-<th class="pb-3 px-2 font-medium text-justify">動作結果</th>
-</tr>
-</thead>
-<tbody class="text-slate-600">
-<tr class="border-b hover:bg-slate-50 transition">
-<td class="py-3 px-2 font-mono text-justify uppercase tracking-widest">HIGH
-                                            </td>
-<td class="py-3 px-2 font-mono text-justify uppercase tracking-widest">LOW
-                                            </td>
-<td class="py-3 px-2 font-mono text-justify">255</td>
-<td class="py-3 px-2 font-bold text-emerald-600 text-justify">正轉 (全速)</td>
-</tr>
-<tr class="border-b hover:bg-slate-50 transition">
-<td class="py-3 px-2 font-mono text-justify uppercase tracking-widest">LOW
-                                            </td>
-<td class="py-3 px-2 font-mono text-justify uppercase tracking-widest">HIGH
-                                            </td>
-<td class="py-3 px-2 font-mono text-justify">128</td>
-<td class="py-3 px-2 font-bold text-blue-600 text-justify">反轉 (半速)</td>
-</tr>
-<tr class="border-b hover:bg-slate-50 transition">
-<td class="py-3 px-2 font-mono text-justify uppercase tracking-widest">HIGH
-                                            </td>
-<td class="py-3 px-2 font-mono text-justify uppercase tracking-widest">HIGH
-                                            </td>
-<td class="py-3 px-2 font-mono text-justify">ANY</td>
-<td class="py-3 px-2 font-bold text-rose-600 text-justify">急煞 (Brake)</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
+                <p>
+                    H 橋驅動 IC（如 TB6612FNG）透過兩個邏輯輸入腳位（IN1、IN2）的 HIGH/LOW 組合，加上一個 PWM 使能腳位（EN/PWM），可以產生<strong>四種完全不同的物理動作</strong>。理解這四種狀態是正確使用 H 橋的基礎——每一種都有其獨特的電氣行為與應用場景。
+                </p>
+
+                <h2>狀態一：正轉（Forward）</h2>
+
+                <p>
+                    當 <code>IN1 = HIGH</code>、<code>IN2 = LOW</code> 時，H 橋內部的 S1（左上）與 S4（右下）導通，電流從馬達的 A 端流入、B 端流出。馬達以 PWM 占空比決定的功率正向旋轉。PWM 值越大，轉速越快。
+                </p>
+
+                <h2>狀態二：反轉（Reverse）</h2>
+
+                <p>
+                    當 <code>IN1 = LOW</code>、<code>IN2 = HIGH</code> 時，S2（右上）與 S3（左下）導通，電流方向反轉——從 B 端流入、A 端流出。馬達反向旋轉，速度同樣由 PWM 占空比控制。
+                </p>
+
+                <h2>狀態三：短路煞車（Brake）</h2>
+
+                <p>
+                    當 <code>IN1 = HIGH</code>、<code>IN2 = HIGH</code>（或兩者皆 LOW，取決於 IC 型號）時，馬達兩端被短接到同一電位。此時馬達的旋轉慣性會在線圈中產生<strong>反向電動勢（Back-EMF）</strong>，由於線圈兩端短路，這個反向電壓會驅動一個與旋轉方向相反的電流，形成強大的<strong>電磁制動力</strong>。馬達會快速減速並停止。
+                </p>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        短路煞車的制動力來自電磁感應，而非機械摩擦。馬達轉速越快，產生的 Back-EMF 越大，制動力也越強。這意味著煞車是「自適應」的——高速時制動力強，接近停止時制動力趨近於零。
+                    </div>
+                </div>
+
+                <h2>狀態四：空轉（Coast）</h2>
+
+                <p>
+                    當所有開關斷開（或 STBY 引腳拉低）時，馬達與驅動電路完全隔離。馬達純粹依靠機械慣性繼續旋轉，直到摩擦力自然使其停下。相比短路煞車，空轉的減速過程要緩慢得多。
+                </p>
+
+                <h2>驅動邏輯真值表（TB6612FNG）</h2>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>IN1</th>
+                        <th>IN2</th>
+                        <th>PWM (EN)</th>
+                        <th>STBY</th>
+                        <th>馬達動作</th>
+                    </tr>
+                    <tr>
+                        <td><code>HIGH</code></td>
+                        <td><code>LOW</code></td>
+                        <td>占空比值</td>
+                        <td><code>HIGH</code></td>
+                        <td><strong>正轉</strong>（速度 = PWM%）</td>
+                    </tr>
+                    <tr>
+                        <td><code>LOW</code></td>
+                        <td><code>HIGH</code></td>
+                        <td>占空比值</td>
+                        <td><code>HIGH</code></td>
+                        <td><strong>反轉</strong>（速度 = PWM%）</td>
+                    </tr>
+                    <tr>
+                        <td><code>HIGH</code></td>
+                        <td><code>HIGH</code></td>
+                        <td>任意</td>
+                        <td><code>HIGH</code></td>
+                        <td><strong>短路煞車</strong>（快速停止）</td>
+                    </tr>
+                    <tr>
+                        <td><code>LOW</code></td>
+                        <td><code>LOW</code></td>
+                        <td>任意</td>
+                        <td><code>HIGH</code></td>
+                        <td><strong>空轉</strong>（慣性滑行）</td>
+                    </tr>
+                    <tr>
+                        <td>任意</td>
+                        <td>任意</td>
+                        <td>任意</td>
+                        <td><code>LOW</code></td>
+                        <td><strong>全局停用</strong>（所有輸出斷開）</td>
+                    </tr>
+                </table>
+
+                <h2>煞車 vs. 空轉：何時使用？</h2>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>特性</th>
+                        <th>短路煞車 (Brake)</th>
+                        <th>空轉 (Coast)</th>
+                    </tr>
+                    <tr>
+                        <td>停止速度</td>
+                        <td>快速（電磁制動）</td>
+                        <td>緩慢（自然摩擦）</td>
+                    </tr>
+                    <tr>
+                        <td>精度控制</td>
+                        <td>高（可精準定位）</td>
+                        <td>低（有慣性滑行）</td>
+                    </tr>
+                    <tr>
+                        <td>能耗</td>
+                        <td>略高（制動電流消耗）</td>
+                        <td>零（完全斷電）</td>
+                    </tr>
+                    <tr>
+                        <td>適用場景</td>
+                        <td>避障急停、精準停車</td>
+                        <td>節能滑行、柔順減速</td>
+                    </tr>
+                </table>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在作業 4-2 中，你將實測比較煞車與空轉的停車距離差異。這個實驗能幫助你建立「什麼場景該用什麼停止模式」的工程直覺——例如自動避障車必須用 Brake 才能及時停下，而長距離巡航時用 Coast 更省電。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -728,22 +825,96 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚡ 3. 速度與制動的整合</h1>
+                <h1>速度與制動的整合</h1>
                 
-                <p class="text-slate-400 font-light leading-relaxed text-justify">
-                                透過疊加 <strong>PWM</strong> 訊號，控制平均功率實現精細加減速。
-                            </p><div class="p-6 bg-white/5 rounded-2xl border border-white/10 group hover:border-indigo-500/50 transition text-justify">
-<h4 class="text-sm font-bold text-indigo-400 mb-2 uppercase tracking-widest italic text-justify">
-                                    Professional API Logic</h4>
-<p class="text-xs text-slate-400 font-light leading-relaxed text-justify">
-                                    封裝 <code>drive(int speed)</code>：正數驅動、負數倒車、零則煞車。
-                                </p>
-</div>
+                <p>
+                    到目前為止，我們已經學會了如何透過 IN1/IN2 控制方向，也知道了四種邏輯狀態。但真實的馬達控制不只是「全速前進」或「全速後退」——我們需要<strong>精細的速度調節</strong>。這就是 PWM 與 H 橋結合的威力所在：H 橋決定方向，PWM 決定功率。
+                </p>
+
+                <h2>PWM + H 橋 = 完整動力控制</h2>
+
+                <p>
+                    在 TB6612FNG 模組上，每組馬達驅動有三個輸入：<code>IN1</code>、<code>IN2</code> 控制旋轉方向，<code>PWM</code>（EN 腳位）控制功率大小。PWM 腳位接收的占空比決定了馬達接收到的平均電壓——50% 占空比約等於半速運轉，25% 約等於四分之一速，以此類推。
+                </p>
+
+                <p>
+                    這種架構的優雅之處在於：方向邏輯（IN1/IN2）是靜態設定，而速度控制（PWM）是動態調變。你可以先設好「前進」方向，然後只透過調整 PWM 值實現從怠速到全速的平滑過渡。
+                </p>
+
+                <h2>封裝 drive() API</h2>
+
+                <p>
+                    在專業的韌體開發中，我們不會在主程式中直接操作 IN1、IN2 和 PWM 腳位。正確的做法是將這些底層邏輯<strong>封裝成一個簡潔的 API</strong>——<code>drive(int speed)</code>：
+                </p>
+
+                <ul>
+                    <li><strong>正數（1 ~ 255）</strong>：設定 IN1=HIGH, IN2=LOW，PWM 輸出 <code>speed</code> 值。馬達正轉。</li>
+                    <li><strong>負數（-255 ~ -1）</strong>：設定 IN1=LOW, IN2=HIGH，PWM 輸出 <code>abs(speed)</code> 值。馬達反轉。</li>
+                    <li><strong>零（0）</strong>：設定 IN1=HIGH, IN2=HIGH，執行短路煞車。馬達立即制動。</li>
+                </ul>
+
+                <div class="ms-code">
+<span class="c-kw">void</span> <span class="c-tag">drive</span><span class="c-white">(</span><span class="c-kw">int</span> <span class="c-attr">speed</span><span class="c-white">) {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-attr">speed</span> <span class="c-white">=</span> <span class="c-tag">constrain</span><span class="c-white">(</span><span class="c-attr">speed</span><span class="c-white">, -255, 255);</span> <span class="c-comment">// 邊界保護</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(</span><span class="c-attr">speed</span> <span class="c-white">&gt; 0) {</span> <span class="c-comment">// 正轉</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">digitalWrite</span><span class="c-white">(</span><span class="c-attr">AIN1</span><span class="c-white">, HIGH);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">digitalWrite</span><span class="c-white">(</span><span class="c-attr">AIN2</span><span class="c-white">, LOW);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">ledcWrite</span><span class="c-white">(</span><span class="c-attr">MOTOR_CH</span><span class="c-white">,</span> <span class="c-attr">speed</span><span class="c-white">);</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span> <span class="c-kw">else if</span> <span class="c-white">(</span><span class="c-attr">speed</span> <span class="c-white">&lt; 0) {</span> <span class="c-comment">// 反轉</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">digitalWrite</span><span class="c-white">(</span><span class="c-attr">AIN1</span><span class="c-white">, LOW);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">digitalWrite</span><span class="c-white">(</span><span class="c-attr">AIN2</span><span class="c-white">, HIGH);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">ledcWrite</span><span class="c-white">(</span><span class="c-attr">MOTOR_CH</span><span class="c-white">,</span> <span class="c-tag">abs</span><span class="c-white">(</span><span class="c-attr">speed</span><span class="c-white">));</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span> <span class="c-kw">else</span> <span class="c-white">{</span> <span class="c-comment">// 煞車</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">digitalWrite</span><span class="c-white">(</span><span class="c-attr">AIN1</span><span class="c-white">, HIGH);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">digitalWrite</span><span class="c-white">(</span><span class="c-attr">AIN2</span><span class="c-white">, HIGH);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">ledcWrite</span><span class="c-white">(</span><span class="c-attr">MOTOR_CH</span><span class="c-white">, 0);</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        <code>constrain(speed, -255, 255)</code> 是不可省略的安全防護。如果上層程式意外傳入超範圍的值（例如導航算法計算出 300），沒有邊界保護可能導致數值溢位，使馬達產生不可預期的行為。所有對外的 API 都必須在入口處進行輸入驗證。
+                    </div>
+                </div>
+
+                <h2>動作序列（Sequencer）設計模式</h2>
+
+                <p>
+                    有了 <code>drive()</code> API，你就可以用極簡的程式碼撰寫複雜的動作序列。以下是一個典型的功能驗證序列：
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">drive</span><span class="c-white">(200);</span>&nbsp;&nbsp;&nbsp;<span class="c-comment">// 全速前進</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">delay</span><span class="c-white">(2000);</span>&nbsp;&nbsp;<span class="c-comment">// 持續 2 秒</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">drive</span><span class="c-white">(0);</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-comment">// 急煞</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">delay</span><span class="c-white">(500);</span>&nbsp;&nbsp;&nbsp;<span class="c-comment">// 等待 0.5 秒</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">drive</span><span class="c-white">(-128);</span>&nbsp;&nbsp;<span class="c-comment">// 半速後退</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">delay</span><span class="c-white">(1000);</span>&nbsp;&nbsp;<span class="c-comment">// 持續 1 秒</span><br>
+<br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">drive</span><span class="c-white">(0);</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-comment">// 停止</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">delay</span><span class="c-white">(3000);</span>&nbsp;&nbsp;<span class="c-comment">// 休息 3 秒後重複</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在作業 4-3 中，你將實作完整的 <code>drive()</code> API 並設計一組測試序列來驗證所有運動狀態。好的 API 設計讓使用者只需思考「我要馬達怎麼動」，而不需要記住底層的引腳邏輯組合。這就是<strong>軟體抽象</strong>的價值。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -822,16 +993,75 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
-
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: QUIZ ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <div class="quiz-question">
+                        <p>1. H 橋電路中，同時導通同一側的上臂與下臂開關（如 S1 + S3）會發生什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 馬達急煞停止</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 電源直接對地短路（Shoot-through），可能燒毀電路</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 馬達反轉</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>2. 在 TB6612FNG 驅動 IC 中，設定 IN1=HIGH、IN2=HIGH 會產生什麼物理動作？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 馬達正轉</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 馬達空轉（慣性滑行）</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 短路煞車（快速停止）</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>3. 封裝 drive(int speed) API 時，為什麼必須加入 constrain(speed, -255, 255)？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 因為 ESP32 的 GPIO 只能輸出正值</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 因為超範圍的值可能導致數值溢位，使馬達產生不可預期的行為</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 因為馬達在超過 255 的 PWM 下會過熱損壞</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>4. 相較於短路煞車（Brake），空轉（Coast）模式的特點是什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 停止速度更快，精度控制更高</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 馬達完全斷電，靠慣性自然減速，能耗為零但有慣性滑行</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 馬達反向旋轉以抵消慣性</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -889,9 +1119,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「H 橋驅動原理：解鎖馬達控制的鑰匙」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「H 橋驅動原理：解鎖馬達控制的鑰匙」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -907,8 +1137,17 @@
         { id: 3, label: '🕹️ 2. 四種核心邏輯狀態', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '速度與制動的整合', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',              time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'c', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！同時導通同一側的上下臂會造成「直通短路（Shoot-through）」，電源直接經由兩個開關短路到地，產生極大電流，可能燒毀元件。' },
+        q2: { c: '正確！IN1 與 IN2 同時為 HIGH 時，馬達兩端被短接到同一電位，旋轉慣性產生的反向電動勢（Back-EMF）會驅動反向電流，形成電磁制動力，快速減速。' },
+        q3: { b: '正確！邊界保護是所有對外 API 的必備安全防護。上層程式可能意外傳入超範圍值（如導航算法計算出 300），沒有 constrain 會導致數值溢位。' },
+        q4: { b: '正確！Coast 模式下所有開關斷開，馬達與驅動電路完全隔離，純粹依靠機械摩擦力自然減速，適合節能滑行場景。' },
+    };
+
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -927,6 +1166,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1030,6 +1270,7 @@
 
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 04：PWM 馬達控制';
 </script>
 
 <!-- Define Resources -->

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>從幾何到代碼：API 封裝設計 - Vibe Coding Learn</title>
+    <title>從幾何到代碼：API 封裝設計 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 10 - API 封裝</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">從幾何到代碼：API 封裝設計</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 10</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>從幾何到代碼：API 封裝設計</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 10</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,14 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>從幾何到代碼：API 封裝設計</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    上一個單元我們推導了 ICC 的數學公式，但直接在應用層操作三角函數與 PWM 映射既容易出錯又難以維護。
+                    本模組的核心任務是將這些複雜的運動學計算<strong>封裝成簡潔、直覺且健壯的 API</strong>，
+                    讓上層程式碼只需呼叫 <code>driveArc(radius, speed)</code> 就能精確控制車體軌跡，徹底實現「關注分離」的軟體工程理念。
                 </p>
 
                 <div class="ms-scenario">
                     <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    假設你的隊友需要用你寫的程式庫完成一個「8 字形」繞行任務，但他完全不懂 ICC 公式。如果你的介面設計得好，他只需要兩行程式碼就能搞定；設計得差，他得翻遍原始碼才敢動手。先觀看下方影片，了解如何設計出「自述性 (Self-documenting)」的控制接口。
                 </div>
 
                 <h2>教學影片</h2>
@@ -591,39 +590,96 @@
                 </div>
 
                 <h1>📦 1. 為什麼要封裝 API？ (15 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-justify">
-<div class="space-y-6 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                好的 API 就像駕駛座的方向盤，駕駛者不需要知道引擎內部的閥門如何開合，只需要轉動方向盤即可。這就是資訊隱藏的力量。
-                            </p>
-<div class="bg-purple-50 p-6 rounded-2xl border border-purple-100">
-<h4 class="font-bold text-purple-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
-                                    Abstraction Layer</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify text-justify">
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1 text-justify"></span>
-<div><strong>解譯複雜度</strong>：呼叫 <code>move(radius, speed)</code> 而非處理三角函數。</div>
-</li>
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1 text-justify"></span>
-<div><strong>解耦硬體</strong>：更換馬達只需修改 API 內部，上層邏輯無需變動。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-purple-500/5 group-hover:bg-purple-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10 text-justify">
-                                Safety Intercept</h4>
-<div class="relative z-10 font-mono text-[9px] text-left text-slate-400 space-y-1">
-<div>if (radius &lt; MIN_LIMIT) {</div>
-<div class="text-purple-400 ml-4">radius = MIN_LIMIT; // Auto-Clamp</div>
-<div>}</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic text-center">
-                                    Shielding Hardware Limits</p>
-</div>
-</div>
+
+                <p>
+                    在上一個單元中，我們推導了 ICC 的數學公式，能夠從目標半徑 \(R\) 和速度 \(V\) 計算出左右輪速。
+                    但如果每次需要轉彎時，都得在應用層直接操作三角函數、處理 PWM 映射和邊界條件，
+                    不僅容易出錯，更會讓程式碼變得極難維護。這正是 <strong>API 封裝（API Encapsulation）</strong>的價值所在。
+                </p>
+
+                <h2>資訊隱藏（Information Hiding）的力量</h2>
+                <p>
+                    軟體工程大師 David Parnas 在 1972 年提出的「資訊隱藏」原則指出：模組應該隱藏其內部的設計決策，
+                    只透過穩定的介面與外部溝通。對差速驅動車而言，這意味著上層程式碼不需要知道
+                    \(R = \frac{L}{2} \cdot \frac{V_L + V_R}{V_L - V_R}\) 這個公式怎麼推導的——它只需要呼叫
+                    <code>driveArc(radius, speed)</code> 就能精確控制車體軌跡。
+                </p>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        好的 API 就像方向盤：駕駛者不需要理解齒輪齒條機構或動力輔助泵浦的液壓原理，只需轉動方向盤就能控制車輛方向。
+                        這就是抽象層的精髓——降低使用者的認知負擔。
+                    </div>
+                </div>
+
+                <h2>封裝帶來的三大工程優勢</h2>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>優勢</th>
+                            <th>未封裝（直接操作 PWM）</th>
+                            <th>封裝後（透過 API）</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>可讀性</strong></td>
+                            <td><code>analogWrite(pinL, 200); analogWrite(pinR, 133);</code></td>
+                            <td><code>driveArc(0.5, 100);</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>可維護性</strong></td>
+                            <td>更換馬達驅動板需修改每一處 PWM 呼叫</td>
+                            <td>只需修改 API 內部的硬體抽象層</td>
+                        </tr>
+                        <tr>
+                            <td><strong>安全性</strong></td>
+                            <td>忘記邊界檢查可能導致馬達過載</td>
+                            <td>API 內部自動攔截非法參數</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>一個具體的對比範例</h2>
+                <p>
+                    假設你的隊友需要讓機器人沿著半徑 50 cm 的圓弧行駛。以下是「未封裝」和「封裝後」的程式碼對比：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// ❌ 未封裝：隊友必須理解完整的運動學公式</span><br>
+                    <span class="c-kw">float</span> <span class="c-attr">R</span> <span class="c-white">= 0.50;</span>  <span class="c-comment">// 目標半徑 (m)</span><br>
+                    <span class="c-kw">float</span> <span class="c-attr">V</span> <span class="c-white">= 0.20;</span>  <span class="c-comment">// 目標線速度 (m/s)</span><br>
+                    <span class="c-kw">float</span> <span class="c-attr">omega</span> <span class="c-white">=</span> <span class="c-attr">V</span> <span class="c-white">/</span> <span class="c-attr">R</span><span class="c-white">;</span><br>
+                    <span class="c-kw">float</span> <span class="c-attr">V_L</span> <span class="c-white">=</span> <span class="c-attr">omega</span> <span class="c-white">* (</span><span class="c-attr">R</span> <span class="c-white">+</span> <span class="c-attr">L</span><span class="c-white">/2);</span><br>
+                    <span class="c-kw">float</span> <span class="c-attr">V_R</span> <span class="c-white">=</span> <span class="c-attr">omega</span> <span class="c-white">* (</span><span class="c-attr">R</span> <span class="c-white">-</span> <span class="c-attr">L</span><span class="c-white">/2);</span><br>
+                    <span class="c-kw">int</span> <span class="c-attr">pwmL</span> <span class="c-white">= map(</span><span class="c-attr">V_L</span><span class="c-white">, 0, maxV, 0, 255);</span><br>
+                    <span class="c-kw">int</span> <span class="c-attr">pwmR</span> <span class="c-white">= map(</span><span class="c-attr">V_R</span><span class="c-white">, 0, maxV, 0, 255);</span><br>
+                    <span class="c-comment">// 還需自行處理飽和、死區、負值...</span><br>
+                    <br>
+                    <span class="c-comment">// ✅ 封裝後：一行搞定</span><br>
+                    <span class="c-attr">drive</span><span class="c-white">.arc(0.50, 0.20);</span>  <span class="c-comment">// 半徑 50cm，速度 0.2 m/s</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        封裝不只是「讓程式碼變短」。API 內部應包含<strong>安全攔截邏輯</strong>：
+                        當輸入的半徑 \(R\) 小於物理可達到的最小值，或速度超過 PWM 上限時，
+                        API 應自動進行 Clamp（箝位）或 Scaling（縮放），而不是讓硬體進入未定義行為。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        設計 API 時，問自己一個問題：「如果我的隊友完全不懂 ICC 公式，他能不能只看函式名稱和參數就知道怎麼用？」
+                        如果答案是「可以」，那你的 API 就達到了<strong>自述性（Self-documenting）</strong>的標準。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -643,36 +699,105 @@
                 </div>
 
                 <h1>🎛️ 2. 設計良好的控制接口 (20 min)</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify text-justify">
-                                設計介面時應考慮「語法層級」。是讓機器人執行幾何圓弧？還是旋轉特定角度？命名的一致性決定了代碼的自癒能力。
-                            </p>
-<div class="bg-blue-50 p-8 rounded-3xl border border-blue-100 text-center text-justify">
-<h4 class="text-blue-900 font-bold mb-4 text-xs uppercase tracking-widest text-justify">
-                                    Parametric Hierarchy</h4>
-<div class="grid grid-cols-2 gap-2 text-[10px] text-slate-600 font-mono text-justify">
-<div class="p-2 bg-white rounded border text-justify">Geometric (R, V)</div>
-<div class="p-2 bg-white rounded border text-justify">Temporal (θ, ω)</div>
-</div>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-blue-500/5 text-justify"></div>
-<h4 class="text-blue-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-justify">
-                                Naming Semantics</h4>
-<ul class="w-full text-[9px] font-mono text-slate-400 space-y-1 px-4 relative z-10 text-justify">
-<li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> driveArc()
-                                </li>
-<li class="flex items-center gap-2"><span class="text-emerald-500">✓</span>
-                                    stopGradually()</li>
-<li class="flex items-center gap-2 text-slate-600 italic"><span class="text-red-500">✗</span> go() // Vague</li>
-</ul>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic text-center text-justify">
-                                Fluent Control Interface Patterns</p>
-</div>
-</div>
+
+                <p>
+                    API 設計不只是「寫個函式」這麼簡單。一個設計良好的控制接口，應該讓使用者在<strong>不閱讀原始碼</strong>的情況下，
+                    僅憑函式名稱和參數就能正確使用。這種品質稱為<strong>自述性（Self-documenting）</strong>——
+                    它是區分業餘程式碼與專業程式庫的關鍵分水嶺。
+                </p>
+
+                <h2>參數層級：幾何 vs. 時間</h2>
+                <p>
+                    在設計差速驅動 API 時，首先要決定的是<strong>參數的語意層級</strong>。
+                    我們可以用不同抽象度的參數來描述同一個動作：
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>層級</th>
+                            <th>參數形式</th>
+                            <th>函式範例</th>
+                            <th>使用者需要理解的知識</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>底層（PWM）</strong></td>
+                            <td>左右 PWM 值</td>
+                            <td><code>setMotors(200, 100)</code></td>
+                            <td>PWM 與馬達的映射關係</td>
+                        </tr>
+                        <tr>
+                            <td><strong>幾何層</strong></td>
+                            <td>半徑 \(R\)、線速度 \(V\)</td>
+                            <td><code>driveArc(0.5, 0.2)</code></td>
+                            <td>基本幾何概念（半徑、速度）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>任務層</strong></td>
+                            <td>角度、距離</td>
+                            <td><code>turnAngle(90, 30)</code></td>
+                            <td>幾乎不需要額外知識</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        良好的 API 應該提供<strong>多個層級的接口</strong>。進階使用者可以直接操作幾何層以獲得最大彈性，
+                        而初學者可以使用任務層快速完成目標。這就是所謂的<strong>漸進式揭露（Progressive Disclosure）</strong>設計原則。
+                    </div>
+                </div>
+
+                <h2>命名規範與一致性</h2>
+                <p>
+                    函式命名是 API 設計中最容易被忽略、卻影響最深遠的決策。以下是差速驅動控制 API 的命名建議：
+                </p>
+                <div class="ms-code">
+                    <span class="c-comment">// ✅ 好的命名：動詞 + 名詞，語意清晰</span><br>
+                    <span class="c-kw">void</span> <span class="c-attr">driveArc</span><span class="c-white">(</span><span class="c-kw">float</span> <span class="c-attr">radius</span><span class="c-white">,</span> <span class="c-kw">float</span> <span class="c-attr">speed</span><span class="c-white">);</span>     <span class="c-comment">// 沿圓弧行駛</span><br>
+                    <span class="c-kw">void</span> <span class="c-attr">driveStraight</span><span class="c-white">(</span><span class="c-kw">float</span> <span class="c-attr">speed</span><span class="c-white">);</span>              <span class="c-comment">// 直線行駛</span><br>
+                    <span class="c-kw">void</span> <span class="c-attr">spinInPlace</span><span class="c-white">(</span><span class="c-kw">float</span> <span class="c-attr">angularVelocity</span><span class="c-white">);</span>    <span class="c-comment">// 原地旋轉</span><br>
+                    <span class="c-kw">void</span> <span class="c-attr">stopGradually</span><span class="c-white">(</span><span class="c-kw">unsigned long</span> <span class="c-attr">ms</span><span class="c-white">);</span>    <span class="c-comment">// 緩減速停車</span><br>
+                    <span class="c-kw">void</span> <span class="c-attr">emergencyStop</span><span class="c-white">();</span>                     <span class="c-comment">// 緊急煞車</span><br>
+                    <br>
+                    <span class="c-comment">// ❌ 壞的命名：模糊、不一致</span><br>
+                    <span class="c-kw">void</span> <span class="c-attr">go</span><span class="c-white">(</span><span class="c-kw">int</span> <span class="c-attr">a</span><span class="c-white">,</span> <span class="c-kw">int</span> <span class="c-attr">b</span><span class="c-white">);</span>        <span class="c-comment">// a 和 b 是什麼？</span><br>
+                    <span class="c-kw">void</span> <span class="c-attr">doThing</span><span class="c-white">(</span><span class="c-kw">float</span> <span class="c-attr">x</span><span class="c-white">);</span>       <span class="c-comment">// 做什麼事？</span><br>
+                    <span class="c-kw">void</span> <span class="c-attr">motor_set_L_R</span><span class="c-white">(...);</span>   <span class="c-comment">// 暴露了硬體細節</span>
+                </div>
+
+                <h2>邊界保護與防禦性設計</h2>
+                <p>
+                    良好的 API 不會讓使用者輕易犯錯。每個公開函式都應包含<strong>參數驗證</strong>邏輯，
+                    在輸入值超出合理範圍時，自動進行箝位（Clamp）或拋出清楚的錯誤訊息。
+                </p>
+                <div class="ms-code">
+                    <span class="c-kw">void</span> <span class="c-attr">driveArc</span><span class="c-white">(</span><span class="c-kw">float</span> <span class="c-attr">radius</span><span class="c-white">,</span> <span class="c-kw">float</span> <span class="c-attr">speed</span><span class="c-white">) {</span><br>
+                    <span class="c-white">    </span><span class="c-comment">// 邊界保護：半徑過小 → 自動切換為原地旋轉</span><br>
+                    <span class="c-white">    </span><span class="c-kw">if</span><span class="c-white"> (abs(</span><span class="c-attr">radius</span><span class="c-white">) &lt; 0.001) {</span><br>
+                    <span class="c-white">        spinInPlace(</span><span class="c-attr">speed</span><span class="c-white"> &gt; 0 ? 1.0 : -1.0);</span><br>
+                    <span class="c-white">        </span><span class="c-kw">return</span><span class="c-white">;</span><br>
+                    <span class="c-white">    }</span><br>
+                    <span class="c-white">    </span><span class="c-comment">// 邊界保護：半徑過大 → 視為直線行駛</span><br>
+                    <span class="c-white">    </span><span class="c-kw">if</span><span class="c-white"> (abs(</span><span class="c-attr">radius</span><span class="c-white">) &gt; 1000) {</span><br>
+                    <span class="c-white">        driveStraight(</span><span class="c-attr">speed</span><span class="c-white">);</span><br>
+                    <span class="c-white">        </span><span class="c-kw">return</span><span class="c-white">;</span><br>
+                    <span class="c-white">    }</span><br>
+                    <span class="c-white">    </span><span class="c-comment">// 正常 ICC 運算...</span><br>
+                    <span class="c-white">}</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        設計 API 時，用這個測試檢驗你的命名品質：把函式簽名（不含實作）列印出來，
+                        拿給一位不懂運動學的同學看。如果他能在 10 秒內猜出每個函式的用途，你的 API 就通過了自述性測試。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -692,34 +817,129 @@
                 </div>
 
                 <h1>🏗️ 3. 數據結構與返回類型</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
-                                API 不應只是執行動作，還應負責資料的打包與狀態回報。透過自定義結構體，我們可以同步回傳左右馬達的實際物理速率，供上層進行 PID 閉環。
-                            </p>
-<div class="bg-emerald-500/10 p-8 rounded-3xl border border-emerald-500/20 shadow-inner">
-<h4 class="font-bold text-emerald-400 mb-4 text-xs uppercase tracking-widest text-center text-justify">
-                                    Return Objects</h4>
-<div class="font-mono text-[10px] text-slate-300 space-y-1 bg-black/30 p-4 rounded text-justify">
-<div>struct WheelSpeeds {</div>
-<div class="ml-4">float left_m_s;</div>
-<div class="ml-4">float right_m_s;</div>
-<div>}</div>
-</div>
-</div>
-</div>
-<div class="lg:w-80 bg-emerald-600/10 p-10 rounded-3xl border border-emerald-500/20 text-center relative overflow-hidden group">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-emerald-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">
-                                API Contract</h4>
-<div class="text-2xl font-extrabold text-white mb-2">IO Standard</div>
-<p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center text-justify text-left">
-                                "封裝不只是隱藏，而是為了建立更高維度的對話。"
-                            </p>
-</div>
-</div>
+
+                <p>
+                    一個成熟的控制 API 不應只是「發出指令然後結束」——它還需要負責<strong>資料的打包與狀態回報</strong>。
+                    透過精心設計的自定義結構體（Struct），我們可以讓 API 同步回傳運動學計算結果、
+                    馬達的實際物理速率、以及執行狀態碼，為上層的 PID 閉環控制或遙測系統提供可靠的數據介面。
+                </p>
+
+                <h2>設計返回結構體</h2>
+                <p>
+                    與其讓函式回傳單一的 <code>void</code> 或 <code>bool</code>，
+                    不如設計一個包含完整運算結果的結構體。以下是差速驅動控制 API 推薦的數據結構設計：
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 運動學計算結果結構體</span><br>
+                    <span class="c-kw">struct</span> <span class="c-tag">KinematicsResult</span> <span class="c-white">{</span><br>
+                    <span class="c-white">    </span><span class="c-kw">float</span> <span class="c-attr">left_speed_ms</span><span class="c-white">;</span>   <span class="c-comment">// 左輪目標線速度 (m/s)</span><br>
+                    <span class="c-white">    </span><span class="c-kw">float</span> <span class="c-attr">right_speed_ms</span><span class="c-white">;</span>  <span class="c-comment">// 右輪目標線速度 (m/s)</span><br>
+                    <span class="c-white">    </span><span class="c-kw">int</span>   <span class="c-attr">left_pwm</span><span class="c-white">;</span>        <span class="c-comment">// 左輪 PWM 輸出值 (0-255)</span><br>
+                    <span class="c-white">    </span><span class="c-kw">int</span>   <span class="c-attr">right_pwm</span><span class="c-white">;</span>       <span class="c-comment">// 右輪 PWM 輸出值 (0-255)</span><br>
+                    <span class="c-white">    </span><span class="c-kw">bool</span>  <span class="c-attr">was_clamped</span><span class="c-white">;</span>     <span class="c-comment">// 是否觸發了飽和縮放</span><br>
+                    <span class="c-white">    </span><span class="c-kw">float</span> <span class="c-attr">actual_radius</span><span class="c-white">;</span>   <span class="c-comment">// 經箝位後的實際半徑</span><br>
+                    <span class="c-white">};</span><br>
+                    <br>
+                    <span class="c-comment">// 控制狀態枚舉</span><br>
+                    <span class="c-kw">enum</span> <span class="c-tag">DriveState</span> <span class="c-white">{</span><br>
+                    <span class="c-white">    </span><span class="c-attr">IDLE</span><span class="c-white">,</span>         <span class="c-comment">// 停止中</span><br>
+                    <span class="c-white">    </span><span class="c-attr">DRIVING_ARC</span><span class="c-white">,</span>  <span class="c-comment">// 沿圓弧行駛中</span><br>
+                    <span class="c-white">    </span><span class="c-attr">DRIVING_LINE</span><span class="c-white">,</span> <span class="c-comment">// 直線行駛中</span><br>
+                    <span class="c-white">    </span><span class="c-attr">SPINNING</span><span class="c-white">,</span>     <span class="c-comment">// 原地旋轉中</span><br>
+                    <span class="c-white">    </span><span class="c-attr">TURNING</span>       <span class="c-comment">// 角度轉向中（非阻塞）</span><br>
+                    <span class="c-white">};</span>
+                </div>
+
+                <h2>API 方法總覽</h2>
+                <p>
+                    下表列出了完整的 <code>DriveSystem</code> 類別應該提供的公開方法及其簽名：
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>方法簽名</th>
+                            <th>返回類型</th>
+                            <th>說明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>driveArc(float R, float V)</code></td>
+                            <td><code>KinematicsResult</code></td>
+                            <td>沿指定半徑的圓弧行駛</td>
+                        </tr>
+                        <tr>
+                            <td><code>driveStraight(float V)</code></td>
+                            <td><code>KinematicsResult</code></td>
+                            <td>直線行駛</td>
+                        </tr>
+                        <tr>
+                            <td><code>spinInPlace(float omega)</code></td>
+                            <td><code>KinematicsResult</code></td>
+                            <td>原地旋轉</td>
+                        </tr>
+                        <tr>
+                            <td><code>turnAngle(float deg, float omega)</code></td>
+                            <td><code>void</code></td>
+                            <td>非阻塞式角度轉向</td>
+                        </tr>
+                        <tr>
+                            <td><code>getState()</code></td>
+                            <td><code>DriveState</code></td>
+                            <td>查詢當前運動狀態</td>
+                        </tr>
+                        <tr>
+                            <td><code>emergencyStop()</code></td>
+                            <td><code>void</code></td>
+                            <td>立即停止所有馬達</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        注意 <code>driveArc()</code> 回傳的 <code>KinematicsResult</code> 包含一個 <code>was_clamped</code> 欄位。
+                        這讓上層程式碼可以得知「系統是否因為 PWM 飽和而進行了速度縮放」，
+                        從而決定是否需要降低整體速度或調整軌跡規劃。
+                    </div>
+                </div>
+
+                <h2>封裝的存取控制</h2>
+                <p>
+                    良好的 C++ 類別設計應嚴格區分 <code>public</code> 和 <code>private</code> 成員。
+                    物理參數（輪距 \(L\)、輪徑、死區值等）應設為 <code>private</code>，
+                    只能透過建構函式初始化，防止外部程式碼意外修改。
+                </p>
+
+                <div class="ms-code">
+                    <span class="c-kw">class</span> <span class="c-tag">DriveSystem</span> <span class="c-white">{</span><br>
+                    <span class="c-kw">public</span><span class="c-white">:</span><br>
+                    <span class="c-white">    </span><span class="c-tag">DriveSystem</span><span class="c-white">(</span><span class="c-kw">float</span> <span class="c-attr">wheelBase</span><span class="c-white">,</span> <span class="c-kw">float</span> <span class="c-attr">wheelDiam</span><span class="c-white">,</span><br>
+                    <span class="c-white">               </span><span class="c-kw">int</span> <span class="c-attr">pinL</span><span class="c-white">,</span> <span class="c-kw">int</span> <span class="c-attr">pinR</span><span class="c-white">);</span><br>
+                    <span class="c-white">    </span><span class="c-tag">KinematicsResult</span> <span class="c-attr">driveArc</span><span class="c-white">(</span><span class="c-kw">float</span> <span class="c-attr">R</span><span class="c-white">,</span> <span class="c-kw">float</span> <span class="c-attr">V</span><span class="c-white">);</span><br>
+                    <span class="c-white">    </span><span class="c-kw">void</span> <span class="c-attr">emergencyStop</span><span class="c-white">();</span><br>
+                    <br>
+                    <span class="c-kw">private</span><span class="c-white">:</span><br>
+                    <span class="c-white">    </span><span class="c-kw">float</span> <span class="c-attr">_wheelBase</span><span class="c-white">;</span>    <span class="c-comment">// 外部無法直接修改</span><br>
+                    <span class="c-white">    </span><span class="c-kw">float</span> <span class="c-attr">_wheelDiam</span><span class="c-white">;</span>    <span class="c-comment">// 只能透過建構函式設定</span><br>
+                    <span class="c-white">    </span><span class="c-kw">int</span>   <span class="c-attr">_deadZoneL</span><span class="c-white">,</span> <span class="c-attr">_deadZoneR</span><span class="c-white">;</span><br>
+                    <span class="c-white">    </span><span class="c-kw">void</span>  <span class="c-attr">_applyPWM</span><span class="c-white">(</span><span class="c-kw">int</span> <span class="c-attr">left</span><span class="c-white">,</span> <span class="c-kw">int</span> <span class="c-attr">right</span><span class="c-white">);</span><br>
+                    <span class="c-white">};</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在你的 <code>DriveSystem.h</code> 標頭檔中，只放置公開介面的宣告。
+                        所有實作細節都放在 <code>DriveSystem.cpp</code> 中。
+                        這就是 C++ 的<strong>介面與實作分離</strong>原則——讓使用者只看到「能做什麼」，
+                        而不需要關心「怎麼做」。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -803,16 +1023,81 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>測試你對本模組核心概念的掌握程度。請選出每題的最佳答案，提交後可查看詳細解析。</p>
+
+                <form id="quiz-form" onsubmit="return false;">
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">1. 封裝 API 的主要目的是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 讓程式碼更長</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 隱藏複雜的實作細節，對外提供簡潔一致的操作接口</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 增加系統延遲</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 減少程式碼的可讀性</label>
+                        <div id="exp-1" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">2. 良好的函式命名應遵循什麼原則？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 越短越好，最好用單字母</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 動詞 + 名詞的語意化組合，如 setSpeed()、getPosition()</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 使用隨機的代號</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 統一使用 func1、func2 編號</label>
+                        <div id="exp-2" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">3. 函式返回值使用物件 (Object) 而非多個獨立變數的好處是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 執行速度更快</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 擴展性佳——新增欄位不破壞現有呼叫端，且屬性命名清晰</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 佔用更少記憶體</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 只有 JavaScript 支援這種做法</label>
+                        <div id="exp-3" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">4. 控制接口設計中，參數驗證 (Validation) 的目的是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 讓程式碼看起來更多</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 防止無效輸入（如超出範圍的值）導致系統異常或硬體損壞</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 增加函式的執行時間</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 限制 API 的使用次數</label>
+                        <div id="exp-4" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+                </form>
+
+                <div style="display:flex;gap:12px;margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+                <div id="quiz-result" style="display:none;margin-top:20px;padding:16px;border-radius:6px;font-size:14px;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -870,9 +1155,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「從幾何到代碼：API 封裝設計」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「從幾何到代碼：API 封裝設計」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -888,7 +1173,8 @@
         { id: 3, label: '🎛️ 2. 設計良好的控制接口 (20 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🏗️ 3. 數據結構與返回類型', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -908,6 +1194,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1009,8 +1296,61 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'B', q3: 'B', q4: 'B' };
+    const QUIZ_EXPLANATIONS = { q1: 'API 封裝的核心價值是「抽象化」——使用者只需知道「怎麼用」，不需了解底層複雜的數學計算或硬體操作。', q2: '語意化命名（如 setSpeed、calculateAngle）讓使用者一看函式名就知道用途，大幅降低學習成本與錯誤率。', q3: '返回物件如 { speed, angle, timestamp } 比回傳三個獨立值更具自我描述性，且未來新增欄位不會破壞既有的解構語法。', q4: '參數驗證確保輸入值在合法範圍內（如 PWM 0–255），避免因極端值導致馬達過載、電路損壞等安全問題。' };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const idx = q.slice(1);
+            const exp = document.getElementById(`exp-${idx}`);
+            if (!selected) continue;
+            if (selected.value === correct) {
+                score++;
+                exp.style.display = 'block';
+                exp.style.background = '#dff6dd';
+                exp.style.borderLeftColor = '#107c10';
+                exp.innerHTML = '<i class="fas fa-check-circle" style="color:#107c10;margin-right:6px;"></i>' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#dff6dd';
+                selected.parentElement.style.borderColor = '#107c10';
+            } else {
+                exp.style.display = 'block';
+                exp.style.background = '#fde7e9';
+                exp.style.borderLeftColor = '#d13438';
+                exp.innerHTML = '<i class="fas fa-times-circle" style="color:#d13438;margin-right:6px;"></i>正確答案是 ' + correct + '。' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#fde7e9';
+                selected.parentElement.style.borderColor = '#d13438';
+            }
+        }
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === total) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.innerHTML = '<strong style="color:#107c10;">🎉 滿分！' + score + ' / ' + total + '</strong><br>你完全掌握了本模組的核心概念！';
+            markDone(6);
+        } else {
+            resultEl.style.background = '#fff4ce';
+            resultEl.innerHTML = '<strong style="color:#8a6914;">得分：' + score + ' / ' + total + '</strong><br>建議複習錯題的解析說明，再試一次！';
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= 4; i++) {
+            const exp = document.getElementById('exp-' + i);
+            if (exp) { exp.style.display = 'none'; exp.style.background = ''; exp.style.borderLeftColor = 'transparent'; }
+        }
+        document.querySelectorAll('#quiz-form label').forEach(l => { l.style.background = ''; l.style.borderColor = '#e1dfdd'; });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 10：差速驅動控制';
 </script>
 
 <!-- Define Resources -->

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML5 Canvas 影像繪製與處理 - Vibe Coding Learn</title>
+    <title>HTML5 Canvas 影像繪製與處理 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -471,9 +473,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">進階課程 2 - 單元 2</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +487,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">HTML5 Canvas 影像繪製與處理</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">進階課程 2</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,13 +509,13 @@
                 <h1>HTML5 Canvas 影像繪製與處理</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">進階課程 2</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
                 </div>
 
-                <p></p>
+                <p>掌握 Canvas 像素級操控的魔法，從 RGBA 一維陣列索引公式到即時灰階濾鏡與 ROI 提取，打造前端視覺處理引擎。</p>
 
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
@@ -553,15 +553,14 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>HTML5 Canvas 影像繪製與處理</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    從 ESP32 接收到的影像要在瀏覽器上做即時處理——畫框線、標記質心、提取像素顏色——這一切都得透過 <strong>HTML5 Canvas</strong> 來實現。
+                    Canvas 不只是顯示圖片的容器，它是你在前端執行電腦視覺邏輯的核心工具。
+                    本模組將帶你掌握 Canvas 座標系、<code>drawImage</code> 繪圖流程，以及 <code>ImageData</code> 像素級操作，為後續的即時視覺演算法開發打好基礎。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的遙控車已經能透過 MJPEG 將即時影像傳到網頁上了，但現在你想更進一步：在畫面上即時標記追蹤目標的位置框，並在螢幕中央畫一條準心線。你發現用純 CSS 疊加 div 不但卡頓嚴重，座標也對不準。你需要一個能直接在影像像素層級操作的工具——這就是 Canvas 登場的時機。學會它，你就能在瀏覽器端實現從「被動觀看」到「主動分析」的跨越。
                 </div>
 
                 <h2>教學影片</h2>
@@ -575,7 +574,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -589,55 +588,125 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🎨 1. Canvas 畫布：數位繪圖的物理基礎 (20 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg leading-relaxed">
-<p>
-<strong>座標系統：</strong>理解 Canvas 的原點 <strong>(0, 0)</strong> 位在左上角。$x$ 軸向右增加，$y$
-                                    軸向下增加（這與傳統笛卡兒座標系不同）。
-                                </p>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
-<div class="bg-indigo-50 p-6 rounded-xl border border-indigo-100">
-<h4 class="font-bold text-indigo-800 mb-2 flex items-center gap-2">
-<span>🖌️</span>
-                                            Context (2D)
-                                        </h4>
-<p class="text-sm text-indigo-700">
-                                            它是你的「畫筆」，所有的繪圖指令（如 <code>fillRect</code>, <code>drawImage</code>）都必須透過它發送。
-                                        </p>
-</div>
-<div class="bg-purple-50 p-6 rounded-xl border border-purple-100">
-<h4 class="font-bold text-purple-800 mb-2 flex items-center gap-2">
-<span>📷</span> 影像來源
-                                        </h4>
-<p class="text-sm text-purple-700">
-                                            學習如何將 <code>&lt;img&gt;</code> 標籤或 <code>&lt;video&gt;</code> 標籤的內容「捕捉」到
-                                            Canvas 中實施即時處理。
-                                        </p>
-</div>
-</div>
-<div class="bg-slate-800 text-purple-300 p-6 rounded-xl border border-slate-700 font-mono text-sm leading-relaxed">
-<p class="text-white font-bold mb-2">座標對比：</p>
-<ul class="list-disc list-inside space-y-1">
-<li>Web Canvas: y 軸<strong>向下</strong>為正</li>
-<li>常見數學: y 軸<strong>向上</strong>為正</li>
-</ul>
-</div>
-<div class="bg-indigo-50 p-6 rounded-xl border border-indigo-100 mt-6">
-<h4 class="font-bold text-indigo-800 mb-3 flex items-center gap-2">
-<span>🔍</span> 學習任務
-                                    </h4>
-<p class="text-indigo-700">
-                                        在紙上畫出一個 $320 \times 240$ 的網格，標註出 $(160, 120)$ 的位置，並思考為什麼高頻率重繪（如 30 FPS）需要
-                                        <code>requestAnimationFrame</code>。
-                                    </p>
-</div>
-</div>
+                <h1>Canvas 畫布：數位繪圖的物理基礎</h1>
+
+                <p>
+                    HTML5 <code>&lt;canvas&gt;</code> 元素是瀏覽器提供的<strong>像素級繪圖介面</strong>。與 <code>&lt;img&gt;</code> 標籤被動顯示圖片不同，Canvas 讓你能在 JavaScript 中主動控制每一個像素的繪製——畫線、填色、貼圖、甚至逐像素修改色彩值。對物聯網影像應用而言，Canvas 是你在前端實現即時視覺處理（如疊加準心線、標記追蹤框、計算像素統計值）的核心工具。
+                </p>
+
+                <h2>Canvas 座標系統</h2>
+
+                <p>
+                    Canvas 的座標系統與傳統數學的笛卡兒座標系有一個關鍵差異：<strong>原點 (0, 0) 位在畫布的左上角</strong>，x 軸向右為正，y 軸<strong>向下為正</strong>。這套座標系統與螢幕像素的排列方式一致——螢幕從左上角開始逐行掃描，因此 y 值越大表示越靠近畫面底部。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>座標系統</th>
+                            <th>原點位置</th>
+                            <th>x 軸方向</th>
+                            <th>y 軸方向</th>
+                            <th>使用場景</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Web Canvas / 螢幕座標</td>
+                            <td>左上角</td>
+                            <td>→ 向右</td>
+                            <td>↓ 向下</td>
+                            <td>瀏覽器、影像處理、遊戲開發</td>
+                        </tr>
+                        <tr>
+                            <td>笛卡兒座標（數學）</td>
+                            <td>左下角（或中心）</td>
+                            <td>→ 向右</td>
+                            <td>↑ 向上</td>
+                            <td>數學繪圖、物理模擬</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        座標系統混淆是初學者最常犯的錯誤。如果你的準心線畫在「上下顛倒」的位置，幾乎可以確定是 y 軸方向搞反了。在 Canvas 中，<code>y = 0</code> 是畫面頂端，<code>y = height</code> 是畫面底端。
+                    </div>
+                </div>
+
+                <h2>取得 2D 繪圖上下文</h2>
+
+                <p>
+                    Canvas 元素本身只是一塊「空白畫布」，所有繪圖操作都必須透過<strong>繪圖上下文（Context）</strong>來執行。你可以把 Context 想像成你的畫筆——沒有畫筆，畫布再大也畫不出任何東西。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 步驟 1：取得 Canvas 元素</span>
+<span class="c-kw">const</span> <span class="c-attr">canvas</span> <span class="c-white">= document.</span><span class="c-tag">getElementById</span><span class="c-white">(</span><span class="c-str">'myCanvas'</span><span class="c-white">);</span>
+
+<span class="c-comment">// 步驟 2：取得 2D 繪圖上下文（你的「畫筆」）</span>
+<span class="c-kw">const</span> <span class="c-attr">ctx</span> <span class="c-white">= canvas.</span><span class="c-tag">getContext</span><span class="c-white">(</span><span class="c-str">'2d'</span><span class="c-white">);</span>
+
+<span class="c-comment">// 步驟 3：使用畫筆繪製圖形</span>
+<span class="c-white">ctx.</span><span class="c-attr">fillStyle</span> <span class="c-white">=</span> <span class="c-str">'#0078d4'</span><span class="c-white">;</span>
+<span class="c-white">ctx.</span><span class="c-tag">fillRect</span><span class="c-white">(10, 10, 100, 50);  </span><span class="c-comment">// x, y, width, height</span>
+                </div>
+
+                <h2>將影像繪製到 Canvas</h2>
+
+                <p>
+                    <code>drawImage()</code> 是 Canvas 最常用的 API 之一。它可以將 <code>&lt;img&gt;</code>、<code>&lt;video&gt;</code>、甚至另一個 <code>&lt;canvas&gt;</code> 的內容繪製到當前畫布上。在物聯網影像應用中，你通常會把 MJPEG 串流的每一幀「畫」到 Canvas 上，然後再進行後續的像素處理。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 將 &lt;img&gt; 元素的內容繪製到 Canvas</span>
+<span class="c-kw">const</span> <span class="c-attr">img</span> <span class="c-white">= document.</span><span class="c-tag">getElementById</span><span class="c-white">(</span><span class="c-str">'stream-img'</span><span class="c-white">);</span>
+<span class="c-white">ctx.</span><span class="c-tag">drawImage</span><span class="c-white">(img, 0, 0, canvas.width, canvas.height);</span>
+
+<span class="c-comment">// 將 Blob 轉換為影像再繪製</span>
+<span class="c-kw">const</span> <span class="c-attr">blob</span> <span class="c-white">= </span><span class="c-kw">await</span> <span class="c-tag">fetch</span><span class="c-white">(</span><span class="c-str">'/stream'</span><span class="c-white">).then(r =&gt; r.</span><span class="c-tag">blob</span><span class="c-white">());</span>
+<span class="c-kw">const</span> <span class="c-attr">bitmap</span> <span class="c-white">= </span><span class="c-kw">await</span> <span class="c-tag">createImageBitmap</span><span class="c-white">(blob);</span>
+<span class="c-white">ctx.</span><span class="c-tag">drawImage</span><span class="c-white">(bitmap, 0, 0);</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        使用 <code>createImageBitmap()</code> 搭配 Blob 是效能最佳的做法——它在背景執行緒解碼影像，不會阻塞主執行緒的 UI 渲染。相比之下，透過 <code>new Image()</code> 搭配 <code>img.src = URL.createObjectURL(blob)</code> 的做法會在主執行緒解碼，可能造成畫面卡頓。
+                    </div>
+                </div>
+
+                <h2>使用 requestAnimationFrame 實現連續繪製</h2>
+
+                <p>
+                    當你需要以 30 或 60 FPS 的速率持續更新 Canvas（例如即時顯示串流影像並疊加 UI 標註），不應該使用 <code>setInterval</code>，而應該使用 <code>requestAnimationFrame</code>。後者會自動與瀏覽器的重繪週期同步，避免不必要的 CPU 消耗，並在頁面不可見時自動暫停。
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">function</span> <span class="c-tag">renderLoop</span><span class="c-white">() {</span>
+    <span class="c-white">ctx.</span><span class="c-tag">drawImage</span><span class="c-white">(videoElement, 0, 0);</span>  <span class="c-comment">// 繪製最新幀</span>
+    <span class="c-white">ctx.</span><span class="c-attr">strokeStyle</span> <span class="c-white">=</span> <span class="c-str">'#00ff00'</span><span class="c-white">;</span>
+    <span class="c-white">ctx.</span><span class="c-tag">strokeRect</span><span class="c-white">(100, 80, 120, 80);  </span><span class="c-comment">// 疊加追蹤框</span>
+    <span class="c-tag">requestAnimationFrame</span><span class="c-white">(renderLoop); </span><span class="c-comment">// 排程下一幀</span>
+<span class="c-white">}</span>
+<span class="c-tag">renderLoop</span><span class="c-white">();</span>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        Canvas 的繪圖結果是<strong>即時光柵化</strong>的——一旦像素被畫上去，你無法「選取並移動」它。如果要移動一個矩形框，你必須先清除整個畫布（或該區域），重新繪製影像底圖，再把框畫在新位置。這就是為什麼連續動畫需要在每一幀「清除→重繪」的循環。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -651,47 +720,129 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🧬 2. ImageData：揭開像素的秘密 (25 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg leading-relaxed">
-<p>
-<strong>RGBA 陣列：</strong>當我們執行 <code>getImageData()</code> 時，會得到一個超長的一維陣列
-                            <code>Uint8ClampedArray</code>。
-                        </p>
-<div class="bg-slate-900 text-pink-300 p-6 rounded-xl font-mono text-sm mb-6">
-<h4 class="text-white font-bold mb-3">儲存規律：每 4 個數字代表一個像素</h4>
-<div class="flex items-center gap-2 mb-4">
-<span class="bg-red-900/50 text-red-300 px-3 py-1 rounded border border-red-500/30">R</span>
-<span class="bg-green-900/50 text-green-300 px-3 py-1 rounded border border-green-500/30">G</span>
-<span class="bg-blue-900/50 text-blue-300 px-3 py-1 rounded border border-blue-500/30">B</span>
-<span class="bg-gray-700 text-gray-300 px-3 py-1 rounded border border-gray-500/30">A</span>
-<span class="text-gray-500">...</span>
-</div>
-<ul class="space-y-2 text-xs">
-<li><span class="text-white font-bold">R, G, B:</span> 紅綠藍 (0-255)</li>
-<li><span class="text-white font-bold">A:</span> 透明度 (Alpha, 0-255)</li>
-</ul>
-</div>
-<div class="bg-pink-50 p-8 rounded-2xl border border-pink-100">
-<h4 class="text-pink-900 font-bold text-xl mb-4 flex items-center gap-2">
-<span>📐</span> 索引公式 (Index Formula)
-                            </h4>
-<p class="text-pink-800 mb-4 text-lg">
-                                學習如何在二維影像中定位一維陣列的索引：
-                            </p>
-<div class="bg-white p-6 rounded-xl text-center text-2xl font-bold text-pink-600 shadow-inner">
-                                $Index = (y \times Width + x) \times 4$
-                            </div>
-<p class="mt-4 text-sm text-pink-700 italic text-center">
-                                * 乘以 4 是因為每個像素包含 R, G, B, A 四個分量。
-                            </p>
-</div>
-</div>
+                <h1>ImageData：揭開像素的秘密</h1>
+
+                <p>
+                    當你在 Canvas 上繪製了一張影像後，這些像素資料就儲存在 Canvas 的內部緩衝區中。透過 <code>getImageData()</code> API，你可以將這些像素「取出」到 JavaScript 的記憶體中，直接讀取或修改每一個像素的色彩值。這是實作灰階濾鏡、色彩偵測、特徵提取等功能的基礎。
+                </p>
+
+                <h2>Uint8ClampedArray：像素的一維排列</h2>
+
+                <p>
+                    <code>getImageData()</code> 回傳的 <code>ImageData</code> 物件包含一個 <code>Uint8ClampedArray</code> 型別的 <code>data</code> 屬性。這是一個<strong>超長的一維陣列</strong>，將二維影像的所有像素「攤平」成一條直線。每 4 個連續的元素代表一個像素的 R（紅）、G（綠）、B（藍）、A（透明度）四個分量，每個值的範圍是 0–255。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 取得 Canvas 上的像素資料</span>
+<span class="c-kw">const</span> <span class="c-attr">imageData</span> <span class="c-white">= ctx.</span><span class="c-tag">getImageData</span><span class="c-white">(0, 0, canvas.width, canvas.height);</span>
+<span class="c-kw">const</span> <span class="c-attr">data</span> <span class="c-white">= imageData.data;  </span><span class="c-comment">// Uint8ClampedArray</span>
+
+<span class="c-comment">// 陣列結構：[R0, G0, B0, A0, R1, G1, B1, A1, R2, ...]</span>
+<span class="c-comment">// 第 0 個像素: data[0]=R, data[1]=G, data[2]=B, data[3]=A</span>
+<span class="c-comment">// 第 1 個像素: data[4]=R, data[5]=G, data[6]=B, data[7]=A</span>
+
+<span class="c-comment">// 陣列總長度 = 寬 × 高 × 4</span>
+<span class="c-white">console.</span><span class="c-tag">log</span><span class="c-white">(data.length);  </span><span class="c-comment">// 320 × 240 × 4 = 307,200</span>
+                </div>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>分量</th>
+                            <th>索引偏移</th>
+                            <th>範圍</th>
+                            <th>說明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>R</strong>（紅色）</td>
+                            <td><code>i + 0</code></td>
+                            <td>0 – 255</td>
+                            <td>0 = 無紅色，255 = 最大紅色</td>
+                        </tr>
+                        <tr>
+                            <td><strong>G</strong>（綠色）</td>
+                            <td><code>i + 1</code></td>
+                            <td>0 – 255</td>
+                            <td>0 = 無綠色，255 = 最大綠色</td>
+                        </tr>
+                        <tr>
+                            <td><strong>B</strong>（藍色）</td>
+                            <td><code>i + 2</code></td>
+                            <td>0 – 255</td>
+                            <td>0 = 無藍色，255 = 最大藍色</td>
+                        </tr>
+                        <tr>
+                            <td><strong>A</strong>（透明度）</td>
+                            <td><code>i + 3</code></td>
+                            <td>0 – 255</td>
+                            <td>0 = 完全透明，255 = 完全不透明</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>索引公式：從 (x, y) 定位像素</h2>
+
+                <p>
+                    影像是二維的（有 x 和 y 座標），但 <code>data</code> 陣列是一維的。要找到座標 <code>(x, y)</code> 的像素在陣列中的起始位置，你需要使用以下公式：
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 核心公式：(x, y) 座標 → 一維陣列索引</span>
+<span class="c-kw">const</span> <span class="c-attr">index</span> <span class="c-white">= (y * </span><span class="c-attr">width</span> <span class="c-white">+ x) * </span><span class="c-val">4</span><span class="c-white">;</span>
+
+<span class="c-comment">// 讀取該像素的 RGBA 值</span>
+<span class="c-kw">const</span> <span class="c-attr">r</span> <span class="c-white">= data[index + </span><span class="c-val">0</span><span class="c-white">];</span>
+<span class="c-kw">const</span> <span class="c-attr">g</span> <span class="c-white">= data[index + </span><span class="c-val">1</span><span class="c-white">];</span>
+<span class="c-kw">const</span> <span class="c-attr">b</span> <span class="c-white">= data[index + </span><span class="c-val">2</span><span class="c-white">];</span>
+<span class="c-kw">const</span> <span class="c-attr">a</span> <span class="c-white">= data[index + </span><span class="c-val">3</span><span class="c-white">];</span>
+
+<span class="c-comment">// 範例：取得座標 (160, 120) 的像素（畫面中央）</span>
+<span class="c-comment">// index = (120 × 320 + 160) × 4 = 154,880</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        公式中 <code>× 4</code> 的原因是每個像素佔用 4 個陣列位置（R、G、B、A）。忘記乘以 4 是最常見的 Bug——你會讀到隔壁像素的色彩分量，導致「顏色偏移」的詭異現象。
+                    </div>
+                </div>
+
+                <h2>修改像素並寫回 Canvas</h2>
+
+                <p>
+                    修改 <code>data</code> 陣列中的值後，使用 <code>putImageData()</code> 將修改後的像素寫回 Canvas。這是實作所有像素級濾鏡的核心流程：取出 → 修改 → 寫回。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 完整流程：取出 → 修改 → 寫回</span>
+<span class="c-kw">const</span> <span class="c-attr">imageData</span> <span class="c-white">= ctx.</span><span class="c-tag">getImageData</span><span class="c-white">(0, 0, w, h);</span>
+<span class="c-kw">const</span> <span class="c-attr">data</span> <span class="c-white">= imageData.data;</span>
+
+<span class="c-comment">// 將座標 (10, 20) 的像素改成紅色</span>
+<span class="c-kw">const</span> <span class="c-attr">idx</span> <span class="c-white">= (20 * w + 10) * 4;</span>
+<span class="c-white">data[idx]     = </span><span class="c-val">255</span><span class="c-white">;  </span><span class="c-comment">// R</span>
+<span class="c-white">data[idx + 1] = </span><span class="c-val">0</span><span class="c-white">;    </span><span class="c-comment">// G</span>
+<span class="c-white">data[idx + 2] = </span><span class="c-val">0</span><span class="c-white">;    </span><span class="c-comment">// B</span>
+<span class="c-white">data[idx + 3] = </span><span class="c-val">255</span><span class="c-white">;  </span><span class="c-comment">// A（不透明）</span>
+
+<span class="c-white">ctx.</span><span class="c-tag">putImageData</span><span class="c-white">(imageData, 0, 0);  </span><span class="c-comment">// 寫回畫布</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        <code>getImageData()</code> 與 <code>putImageData()</code> 會進行大量的記憶體複製操作。在 320×240 的解析度下，每次呼叫都要搬移 307,200 個數字。如果你每幀都做全畫面的 <code>getImageData</code>，在高 FPS 下可能成為效能瓶頸。後續單元會介紹如何用「局部取出（ROI 提取）」來降低開銷。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -705,44 +856,131 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🧮 3. 濾波與變換的數學邏輯 (15 min)</h1>
-                
-                <div class="space-y-6 text-gray-600 text-lg">
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-<div class="p-6 border-l-4 border-pink-500 bg-gray-50">
-<h4 class="font-bold mb-2">影像處理核心概念</h4>
-<ul class="text-sm space-y-3">
-<li><strong>灰階化：</strong>將 R、G、B 取平均值。</li>
-<li><strong>水平翻轉 (Mirroring)：</strong>座標變換的應用。</li>
-<li><strong>二進位影像 (Blob)：</strong>學習如何將 Blob 繪製到畫布。</li>
-</ul>
-</div>
-<div class="p-6 border-l-4 border-rose-500 bg-gray-50">
-<h4 class="font-bold mb-2">效能與優化</h4>
-<p class="text-sm text-gray-500 mb-2"><code>&lt;img&gt;</code> 標籤與
-                                    <code>&lt;canvas&gt;</code> 繪圖的效能差異。
-                                </p>
-<p class="text-sm font-bold text-rose-600">線上任務：</p>
-<p class="text-xs text-rose-700">撰寫 JS，實作在影像上方疊加「十字準星」或「網格線」。</p>
-</div>
-</div>
-<div class="bg-rose-100 p-8 rounded-2xl border border-rose-200 mt-8">
-<h4 class="text-rose-900 font-bold text-xl mb-4 flex items-center gap-2">
-<span>🚀</span> 延伸思考
-                            </h4>
-<p class="text-rose-800 mb-4 text-lg">
-                                為什麼我們不直接使用 CSS 濾鏡處理，而是要手動操作 ImageData？
-                            </p>
-<div class="bg-white/50 p-4 rounded-lg text-sm text-rose-700 italic">
-                                提示：當我們需要計算影像中的「紅點座標」或「追蹤物體」時，CSS 濾鏡能提供這些數據嗎？
-                            </div>
-</div>
-</div>
+                <h1>濾波與變換的數學邏輯</h1>
+
+                <p>
+                    現在你已經知道如何存取每個像素的 RGBA 值，接下來要學習如何<strong>有目的地修改這些數值</strong>來實現各種視覺效果。無論是灰階化、水平翻轉還是色彩偵測，每一種影像處理操作的背後都是一條明確的數學公式。
+                </p>
+
+                <h2>灰階化 (Grayscale Conversion)</h2>
+
+                <p>
+                    將彩色影像轉換為灰階，是最基礎的像素操作。原理是將每個像素的 R、G、B 三個色彩分量<strong>取平均值</strong>，然後將平均值同時寫回 R、G、B（保持 Alpha 不變）。當三個分量相同時，人眼感知到的就是灰色。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 灰階化：(R+G+B)/3 的簡單平均法</span>
+<span class="c-kw">const</span> <span class="c-attr">imageData</span> <span class="c-white">= ctx.</span><span class="c-tag">getImageData</span><span class="c-white">(0, 0, w, h);</span>
+<span class="c-kw">const</span> <span class="c-attr">data</span> <span class="c-white">= imageData.data;</span>
+
+<span class="c-kw">for</span> <span class="c-white">(</span><span class="c-kw">let</span> <span class="c-attr">i</span> <span class="c-white">= 0; i &lt; data.length; i += 4) {</span>
+    <span class="c-kw">const</span> <span class="c-attr">avg</span> <span class="c-white">= (data[i] + data[i+1] + data[i+2]) / 3;</span>
+    <span class="c-white">data[i]     = avg;  </span><span class="c-comment">// R</span>
+    <span class="c-white">data[i + 1] = avg;  </span><span class="c-comment">// G</span>
+    <span class="c-white">data[i + 2] = avg;  </span><span class="c-comment">// B</span>
+    <span class="c-comment">// data[i + 3] 保持不變（Alpha）</span>
+<span class="c-white">}</span>
+
+<span class="c-white">ctx.</span><span class="c-tag">putImageData</span><span class="c-white">(imageData, 0, 0);</span>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        簡單平均法 <code>(R+G+B)/3</code> 在學習階段足夠使用。但在專業影像處理中，常使用<strong>亮度加權公式</strong>：<code>0.299×R + 0.587×G + 0.114×B</code>，因為人眼對綠色最敏感、紅色次之、藍色最不敏感。加權後的灰階影像在視覺上更接近人眼的真實感受。
+                    </div>
+                </div>
+
+                <h2>水平翻轉 (Mirror / Flip)</h2>
+
+                <p>
+                    ESP32-CAM 的前置鏡頭（自拍模式）拍出的畫面是左右相反的——你向左移動，畫面中的你卻向右移動。這在遙控場景中會造成致命的操控錯誤。水平翻轉可以修正這個問題，原理是<strong>將每一行的像素左右對調</strong>。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 水平翻轉：逐行交換對稱位置的像素</span>
+<span class="c-kw">for</span> <span class="c-white">(</span><span class="c-kw">let</span> <span class="c-attr">y</span> <span class="c-white">= 0; y &lt; h; y++) {</span>
+    <span class="c-kw">for</span> <span class="c-white">(</span><span class="c-kw">let</span> <span class="c-attr">x</span> <span class="c-white">= 0; x &lt; w / 2; x++) {</span>
+        <span class="c-kw">const</span> <span class="c-attr">left</span>  <span class="c-white">= (y * w + x) * 4;</span>
+        <span class="c-kw">const</span> <span class="c-attr">right</span> <span class="c-white">= (y * w + (w - 1 - x)) * 4;</span>
+        <span class="c-comment">// 交換 R, G, B, A 四個分量</span>
+        <span class="c-kw">for</span> <span class="c-white">(</span><span class="c-kw">let</span> <span class="c-attr">c</span> <span class="c-white">= 0; c &lt; 4; c++) {</span>
+            <span class="c-kw">const</span> <span class="c-attr">tmp</span> <span class="c-white">= data[left + c];</span>
+            <span class="c-white">data[left + c]  = data[right + c];</span>
+            <span class="c-white">data[right + c] = tmp;</span>
+        <span class="c-white">}</span>
+    <span class="c-white">}</span>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>圖層分離：為什麼需要兩個 Canvas？</h2>
+
+                <p>
+                    在工業級影像處理系統中，「原始影像」和「UI 標註」必須嚴格分離到<strong>不同的 Canvas 圖層</strong>。如果你把準心線直接畫在原始影像的 Canvas 上，當你下次呼叫 <code>getImageData()</code> 時，取出的資料會<strong>包含準心線的像素</strong>——這會污染後續的色彩偵測或 AI 分析。
+                </p>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>圖層</th>
+                            <th>Canvas ID</th>
+                            <th>用途</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>底層：影像層</strong></td>
+                            <td><code>#video-canvas</code></td>
+                            <td>存放原始影像資料</td>
+                            <td><code>drawImage</code>、<code>getImageData</code>（濾鏡處理）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>頂層：標註層</strong></td>
+                            <td><code>#overlay-canvas</code></td>
+                            <td>繪製 UI 元素（準心、框線、文字）</td>
+                            <td><code>strokeRect</code>、<code>moveTo / lineTo</code>、<code>fillText</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-code">
+<span class="c-comment">// 雙層 Canvas 的 HTML 結構</span>
+<span class="c-white">&lt;</span><span class="c-tag">div</span> <span class="c-attr">style</span><span class="c-white">=</span><span class="c-str">"position:relative"</span><span class="c-white">&gt;</span>
+    <span class="c-white">&lt;</span><span class="c-tag">canvas</span> <span class="c-attr">id</span><span class="c-white">=</span><span class="c-str">"video-canvas"</span><span class="c-white">&gt;&lt;/</span><span class="c-tag">canvas</span><span class="c-white">&gt;</span>
+    <span class="c-white">&lt;</span><span class="c-tag">canvas</span> <span class="c-attr">id</span><span class="c-white">=</span><span class="c-str">"overlay-canvas"</span>
+        <span class="c-attr">style</span><span class="c-white">=</span><span class="c-str">"position:absolute; top:0; left:0"</span><span class="c-white">&gt;</span>
+    <span class="c-white">&lt;/</span><span class="c-tag">canvas</span><span class="c-white">&gt;</span>
+<span class="c-white">&lt;/</span><span class="c-tag">div</span><span class="c-white">&gt;</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        圖層分離不只是「好習慣」——它是<strong>架構正確性的保證</strong>。在你的遙控車專案中，如果 AI 色彩偵測模組把「準心的綠色線條」誤判為追蹤目標，整個系統的行為都會出錯。分離圖層讓影像處理管線只看到純淨的感測器資料。
+                    </div>
+                </div>
+
+                <h2>為什麼不用 CSS 濾鏡？</h2>
+
+                <p>
+                    CSS 提供了 <code>filter: grayscale(100%)</code> 等便捷的濾鏡效果，但它們只是<strong>視覺上的變化</strong>——你無法從 CSS 濾鏡中取得處理後的像素數據。當你需要「計算畫面中紅色區塊的質心座標」或「判斷某個像素是否符合特定色彩閾值」時，只有透過 <code>ImageData</code> 的像素級操作才能取得這些數值資訊。
+                </p>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在效能敏感的場景中，可以結合兩種方式：用 CSS 濾鏡處理純視覺效果（如亮度調整），用 <code>ImageData</code> 處理需要計算結果的操作（如色彩偵測）。這樣可以減少 <code>getImageData</code> 的呼叫次數，提升整體 FPS。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -821,16 +1059,113 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>請回答以下問題，測試你對本模組內容的理解程度。每題僅有一個正確答案。</p>
+
+                <form id="quiz-form" onsubmit="return false;" style="margin-top:24px;">
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">1. HTML5 Canvas 座標系統的原點 (0, 0) 位於哪裡？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 畫布中央
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 畫布左下角
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 畫布左上角
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 畫布右上角
+                        </label>
+                        <div id="fb-q1" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">2. Canvas 的 ImageData 中，每個像素佔用幾個位元組？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 1 (灰階)
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 2 (RGB565)
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 3 (RGB)
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 4 (RGBA)
+                        </label>
+                        <div id="fb-q2" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">3. 要存取 Canvas 中座標 (x, y) 像素的紅色 (R) 分量，正確的一維索引公式為？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="A" style="margin-right:8px;"> A. y × width + x
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="B" style="margin-right:8px;"> B. (x × height + y) × 4
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="C" style="margin-right:8px;"> C. (y × width + x) × 4
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q3" value="D" style="margin-right:8px;"> D. (y × width + x) × 3
+                        </label>
+                        <div id="fb-q3" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="background:#f9f9f9;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;">4. <code>getImageData()</code> 方法返回的像素資料陣列是什麼型態？</p>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="A" style="margin-right:8px;"> A. Array
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="B" style="margin-right:8px;"> B. Float32Array
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="C" style="margin-right:8px;"> C. Uint8Array
+                        </label>
+                        <label style="display:block;padding:6px 0;cursor:pointer;">
+                            <input type="radio" name="q4" value="D" style="margin-right:8px;"> D. Uint8ClampedArray
+                        </label>
+                        <div id="fb-q4" style="margin-top:10px;font-size:13px;display:none;"></div>
+                    </div>
+
+                    <div style="display:flex;gap:12px;margin-top:20px;">
+                        <button type="button" class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button type="button" class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                    </div>
+                    <div id="quiz-result" style="margin-top:16px;font-size:15px;font-weight:600;display:none;"></div>
+                </form>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -888,9 +1223,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「HTML5 Canvas 影像繪製與處理」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「HTML5 Canvas 影像繪製與處理」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -906,7 +1241,8 @@
         { id: 3, label: '🧬 2. ImageData：揭開像素的秘密 (25 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🧮 3. 濾波與變換的數學邏輯 (15 min)', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',     time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -926,6 +1262,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1027,8 +1364,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'C', q2: 'D', q3: 'C', q4: 'D' };
+    const QUIZ_EXPLANATIONS = {
+        q1: 'Canvas 座標系原點在左上角，x 軸向右為正，y 軸向下為正，與螢幕像素掃描順序一致。',
+        q2: 'ImageData 使用 RGBA 格式，每像素 4 bytes：紅 (R)、綠 (G)、藍 (B)、透明度 (A)。',
+        q3: 'ImageData.data 是一維 RGBA 陣列，每像素佔 4 bytes。第 (x,y) 像素的 R 分量索引 = (y × width + x) × 4。',
+        q4: 'getImageData() 返回的 data 屬性是 Uint8ClampedArray，值域自動限制在 0-255，防止溢出。'
+    };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const fb = document.getElementById(`fb-${q}`);
+            if (!selected) {
+                fb.style.display = 'block';
+                fb.innerHTML = '<span style="color:#d13438;">⚠ 請選擇一個答案</span>';
+                continue;
+            }
+            fb.style.display = 'block';
+            if (selected.value === correct) {
+                score++;
+                fb.innerHTML = `<span style="color:#107c10;">✔ 正確！</span> ${QUIZ_EXPLANATIONS[q]}`;
+            } else {
+                fb.innerHTML = `<span style="color:#d13438;">✘ 不正確。正確答案是 ${correct}。</span> ${QUIZ_EXPLANATIONS[q]}`;
+            }
+        }
+        const result = document.getElementById('quiz-result');
+        result.style.display = 'block';
+        if (score === total) {
+            result.innerHTML = `<span style="color:#107c10;">🎉 滿分！你答對了全部 ${total} 題！</span>`;
+            markDone(6);
+        } else {
+            result.innerHTML = `<span style="color:#d13438;">你答對了 ${score} / ${total} 題。再試一次吧！</span>`;
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= Object.keys(QUIZ_ANSWERS).length; i++) {
+            const fb = document.getElementById(`fb-q${i}`);
+            if (fb) { fb.style.display = 'none'; fb.innerHTML = ''; }
+        }
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 02：影像串流技術';
 </script>
 
 <!-- Define Resources -->

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP32 LEDC 控制器語法 - Vibe Coding Learn</title>
+    <title>ESP32 LEDC 控制器語法 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -471,9 +473,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 4 - 核心控制器語法</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +487,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">ESP32 LEDC 控制器語法</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 4</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,7 +509,7 @@
                 <h1>ESP32 LEDC 控制器語法</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 4</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -520,9 +520,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>🎼 1. 硬體 PWM 三部曲</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>️ 2. 關鍵語法與核心 API</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>為什麼不直接用 analogWrite？</strong> 的調校技巧與穩定性測試。</li>
+                    <li>能夠解釋 ESP32 LEDC 的層級架構（Timer → Channel → GPIO），並正確使用 <code>ledcSetup</code>、<code>ledcAttachPin</code>、<code>ledcWrite</code> 三步驟語法。</li>
+                    <li>能夠規劃多路 PWM 資源分配，將不同頻率需求（如馬達 20kHz 與 LED 5kHz）配置在獨立的 Timer 上以避免衝突。</li>
+                    <li>能夠封裝 <code>setMotorSpeed(int percent)</code> 抽象控制介面，處理百分比與解析度之間的數學轉換及邊界保護（Clamping）。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -553,15 +553,15 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>ESP32 LEDC 控制器語法</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    ESP32 內建的 <strong>LEDC</strong> 模組提供 16 個獨立硬體 PWM 頻道，讓你精確分配定時器、頻率與解析度。
+                    本單元將帶你掌握 <code>ledcSetup</code>、<code>ledcAttachPin</code>、<code>ledcWrite</code> 三步驟語法，
+                    並理解為何專業韌體開發不使用 <code>analogWrite</code>，而是透過 LEDC 實現動態變頻與多路資源管理。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的無人車需要同時驅動兩顆馬達（20kHz）和一組車頭燈（5kHz），但發現把它們設在同一個定時器上時，
+                    頻率被強制統一，燈光開始閃爍、馬達發出刺耳嘯叫。你意識到需要正確規劃 LEDC 的硬體資源分配。
                 </div>
 
                 <h2>教學影片</h2>
@@ -575,7 +575,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -589,37 +589,83 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🎼 1. 硬體 PWM 三部曲</h1>
+                <h1>硬體 PWM 三部曲</h1>
                 
-                <p class="text-gray-500 mb-10 text-lg font-light leading-relaxed text-justify">
-                                在 ESP32 中，PWM 是具備層級架構的精密模組。
-                            </p><div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-justify">
-<div class="bg-emerald-50 p-6 rounded-2xl border-l-[6px] border-emerald-500 hover:shadow-md transition text-justify">
-<h4 class="font-bold text-emerald-800 mb-2 text-justify">⏱️ 定時器 (Timer)</h4>
-<p class="text-xs text-slate-600 leading-relaxed text-justify">決定頻率。共用定時器的頻道，頻率必須一致。
-                                    </p>
-</div>
-<div class="bg-blue-50 p-6 rounded-2xl border-l-[6px] border-blue-500 hover:shadow-md transition text-justify">
-<h4 class="font-bold text-blue-800 mb-2 text-justify">🔢 頻道 (Channel)</h4>
-<p class="text-xs text-slate-600 leading-relaxed text-justify">16 個獨立頻道
-                                        (0-15)，獨立控制強度。</p>
-</div>
-<div class="bg-purple-50 p-6 rounded-2xl border-l-[6px] border-purple-500 hover:shadow-md transition text-justify">
-<h4 class="font-bold text-purple-800 mb-2 text-justify">🧩 解析度 (Resolution)</h4>
-<p class="text-xs text-slate-600 leading-relaxed text-justify">控制精細度。8-bit 對應 256
-                                        階；13-bit 對應 8192 階。</p>
-</div>
-<div class="bg-amber-50 p-6 rounded-2xl border-l-[6px] border-amber-500 hover:shadow-md transition text-justify">
-<h4 class="font-bold text-amber-800 mb-2 text-justify">🔗 腳位綁定 (Attach)</h4>
-<p class="text-xs text-slate-600 leading-relaxed text-justify">頻道可映射到幾乎任何物理 GPIO 腳位。
-                                    </p>
-</div>
-</div>
+                <p>
+                    ESP32 的 LEDC 模組不是一個簡單的「輸出 PWM」指令，而是一個具備<strong>三層硬體架構</strong>的精密資源管理系統。理解這個層級結構，是正確使用 LEDC 的前提——如果你隨意分配資源，將會遇到頻率衝突、頻道佔用等難以除錯的問題。
+                </p>
+
+                <h2>第一層：Timer（定時器）</h2>
+
+                <p>
+                    ESP32 擁有 <strong>4 個高速定時器</strong>（Timer 0–3，使用 80MHz 時鐘源）和 <strong>4 個低速定時器</strong>（Timer 0–3，使用 8MHz 時鐘源），總計 8 個獨立時鐘基準。每個 Timer 負責產生一個特定頻率的計數時鐘，所有綁定到同一 Timer 的頻道（Channel）將共享相同的 PWM 頻率與解析度。
+                </p>
+
+                <p>
+                    這意味著：如果你的馬達需要 20kHz 而 LED 需要 5kHz，它們<strong>絕對不能</strong>共用同一個 Timer。你必須將它們分配到不同的 Timer 上。
+                </p>
+
+                <h2>第二層：Channel（頻道）</h2>
+
+                <p>
+                    ESP32 提供 <strong>16 個 PWM 頻道</strong>（高速 8 個 + 低速 8 個）。每個頻道獨立維護自己的占空比數值，但其頻率由所綁定的 Timer 決定。你可以將頻道想像成「音量旋鈕」——所有旋鈕播放的音調（頻率）由 Timer 決定，但每個旋鈕的音量（占空比）可以獨立調整。
+                </p>
+
+                <h2>第三層：GPIO（腳位綁定）</h2>
+
+                <p>
+                    最後一步是將邏輯上的 Channel 映射到物理上的 GPIO 腳位。ESP32 的 GPIO 矩陣非常靈活，幾乎所有 GPIO 腳位都可以被指派為 PWM 輸出（少數例外如 GPIO 34–39 為純輸入腳位）。一個 Channel 通常綁定一個 GPIO，但技術上你可以將同一個 Channel 映射到多個 GPIO 以獲得同步輸出。
+                </p>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        LEDC 架構的資源分配邏輯為：<code>Timer → Channel → GPIO</code>。設定時必須按照此順序進行——先配置 Timer（頻率 + 解析度），再將 Channel 綁定到 Timer，最後將 GPIO 映射到 Channel。
+                    </div>
+                </div>
+
+                <h2>層級架構一覽</h2>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>層級</th>
+                        <th>數量</th>
+                        <th>決定的參數</th>
+                        <th>共享規則</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Timer</strong></td>
+                        <td>8 個（高速 4 + 低速 4）</td>
+                        <td>頻率、解析度</td>
+                        <td>同 Timer 下所有 Channel 頻率相同</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Channel</strong></td>
+                        <td>16 個（高速 8 + 低速 8）</td>
+                        <td>占空比（Duty）</td>
+                        <td>各 Channel 的占空比獨立控制</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GPIO</strong></td>
+                        <td>幾乎所有輸出腳位</td>
+                        <td>物理輸出位置</td>
+                        <td>每個 GPIO 僅能綁定一個 Channel</td>
+                    </tr>
+                </table>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        實務上，Arduino-ESP32 框架的 <code>ledcSetup(channel, freq, resolution)</code> 會自動為你分配 Timer。Channel 0–1 共用 Timer 0，Channel 2–3 共用 Timer 1，以此類推。因此，如果你需要不同頻率，請選擇不屬於同一 Timer 群組的 Channel 編號。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -633,61 +679,100 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚙️ 2. 關鍵語法與核心 API</h1>
+                <h1>關鍵語法與核心 API</h1>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-<div class="space-y-6">
-<div class="space-y-4">
-<div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 group hover:border-blue-400 transition text-justify">
-<code class="text-blue-700 font-bold text-sm text-justify">ledcSetup(ch, freq, res);</code>
-<p class="text-xs text-slate-500 mt-2 font-light text-justify">初始化：指定頻道、頻率、解析度。</p>
-</div>
-<div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 group hover:border-blue-400 transition text-justify">
-<code class="text-blue-700 font-bold text-sm text-justify">ledcAttachPin(gpio, ch);</code>
-<p class="text-xs text-slate-500 mt-2 font-light text-justify">映射：腳位導通至邏輯頻道。</p>
-</div>
-<div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 group hover:border-blue-400 transition text-justify">
-<code class="text-blue-700 font-bold text-sm text-justify">ledcWrite(ch, val);</code>
-<p class="text-xs text-slate-500 mt-2 font-light text-justify">輸出：更新占空比。上限取決於
-                                        Resolution。</p>
-</div>
-</div>
-<div class="bg-blue-900 text-white p-8 rounded-3xl shadow-lg relative overflow-hidden group border border-white/10 text-justify">
-<div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-x-12 -translate-y-12">
-</div>
-<h4 class="text-blue-400 font-bold mb-4 text-xs uppercase tracking-widest text-justify">
-                                    思考題</h4>
-<p class="text-sm font-light leading-relaxed mb-4 text-justify">
-                                    播放「音階」時，改變 Freq 還是 Duty？為什麼？
-                                </p>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl relative border border-slate-700 text-justify">
-<div class="flex items-center gap-3 mb-6">
-<span class="w-3 h-3 bg-red-400 rounded-full"></span>
-<span class="w-3 h-3 bg-amber-400 rounded-full"></span>
-<span class="w-3 h-3 bg-emerald-400 rounded-full"></span>
-<span class="ml-auto text-[10px] text-slate-500 font-mono tracking-widest text-justify">C++
-                                    FRAMEWORK</span>
-</div>
-<pre class="text-xs md:text-sm leading-relaxed overflow-x-auto text-blue-300 font-mono text-justify">
-<span class="text-slate-500 text-justify">// 步驟：設定 -&gt; 綁定 -&gt; 驅動</span>
-<span class="text-blue-500">void</span> <span class="text-emerald-400">setup</span>() {
-  <span class="text-emerald-400">ledcSetup</span>(0, 5000, 8);  <span class="text-slate-500">// 5kHz, 8bit</span>
-  <span class="text-emerald-400">ledcAttachPin</span>(14, 0);   <span class="text-slate-500">// GPIO14 -&gt; CH0</span>
-}
+                <p>
+                    使用 ESP32 LEDC 模組控制 PWM 輸出只需要三個核心函式。這三個函式對應了 LEDC 架構的三個配置步驟——初始化 Timer、綁定 GPIO、設定輸出值。讓我們逐一深入了解每個 API 的參數意義與使用細節。
+                </p>
 
-<span class="text-blue-500">void</span> <span class="text-emerald-400">loop</span>() {
-  <span class="text-emerald-400">ledcWrite</span>(0, 128);      <span class="text-slate-500">// 50% Power</span>
-  <span class="text-blue-500">delay</span>(1000);
-}</pre>
-</div>
-</div>
+                <h2>步驟一：ledcSetup() — 初始化頻道</h2>
+
+                <p>
+                    <code>ledcSetup(channel, freq, resolution_bits)</code> 負責配置指定頻道的 PWM 參數。此函式會自動將頻道綁定到對應的 Timer，並回傳實際設定成功的頻率值（可能與請求值略有差異，因為硬體除頻器只能產生特定頻率）。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 語法</span><br>
+<span class="c-kw">double</span> <span class="c-tag">ledcSetup</span><span class="c-white">(</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">uint8_t</span> <span class="c-attr">channel</span><span class="c-white">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-comment">// 頻道編號 (0–15)</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">double</span>&nbsp;&nbsp;<span class="c-attr">freq</span><span class="c-white">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-comment">// 目標頻率 (Hz)</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">uint8_t</span> <span class="c-attr">resolution_bits</span> <span class="c-comment">// 解析度位元數 (1–20)</span><br>
+<span class="c-white">);</span>
+                </div>
+
+                <h2>步驟二：ledcAttachPin() — 綁定腳位</h2>
+
+                <p>
+                    <code>ledcAttachPin(pin, channel)</code> 將物理 GPIO 腳位連接到邏輯頻道。呼叫後，該 GPIO 的輸出權將完全由 LEDC 硬體接管，你不能再用 <code>digitalWrite()</code> 控制它（除非先呼叫 <code>ledcDetachPin()</code> 解除綁定）。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 語法</span><br>
+<span class="c-kw">void</span> <span class="c-tag">ledcAttachPin</span><span class="c-white">(</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">uint8_t</span> <span class="c-attr">pin</span><span class="c-white">,</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-comment">// GPIO 腳位編號</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">uint8_t</span> <span class="c-attr">channel</span> <span class="c-comment">// 頻道編號 (0–15)</span><br>
+<span class="c-white">);</span>
+                </div>
+
+                <h2>步驟三：ledcWrite() — 輸出占空比</h2>
+
+                <p>
+                    <code>ledcWrite(channel, duty)</code> 更新指定頻道的占空比。<code>duty</code> 參數的有效範圍取決於初始化時設定的解析度：8-bit 為 0–255，10-bit 為 0–1023，以此類推。設為 0 代表持續低電位（0% 占空比），設為最大值代表持續高電位（100% 占空比）。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 語法</span><br>
+<span class="c-kw">void</span> <span class="c-tag">ledcWrite</span><span class="c-white">(</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">uint8_t</span>&nbsp;&nbsp;<span class="c-attr">channel</span><span class="c-white">,</span> <span class="c-comment">// 頻道編號 (0–15)</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">uint32_t</span> <span class="c-attr">duty</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-comment">// 占空比值 (0 ~ 2^resolution - 1)</span><br>
+<span class="c-white">);</span>
+                </div>
+
+                <h2>完整範例：LED 呼吸燈</h2>
+
+                <div class="ms-code">
+<span class="c-kw">#define</span> <span class="c-attr">LED_PIN</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-val">14</span><br>
+<span class="c-kw">#define</span> <span class="c-attr">PWM_CHANNEL</span> <span class="c-val">0</span><br>
+<span class="c-kw">#define</span> <span class="c-attr">PWM_FREQ</span>&nbsp;&nbsp;&nbsp;<span class="c-val">5000</span>&nbsp;&nbsp;<span class="c-comment">// 5 kHz</span><br>
+<span class="c-kw">#define</span> <span class="c-attr">PWM_RES</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-val">8</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-comment">// 8-bit → 0~255</span><br>
+<br>
+<span class="c-kw">void</span> <span class="c-tag">setup</span><span class="c-white">() {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">ledcSetup</span><span class="c-white">(</span><span class="c-attr">PWM_CHANNEL</span><span class="c-white">,</span> <span class="c-attr">PWM_FREQ</span><span class="c-white">,</span> <span class="c-attr">PWM_RES</span><span class="c-white">);</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">ledcAttachPin</span><span class="c-white">(</span><span class="c-attr">LED_PIN</span><span class="c-white">,</span> <span class="c-attr">PWM_CHANNEL</span><span class="c-white">);</span><br>
+<span class="c-white">}</span><br>
+<br>
+<span class="c-kw">void</span> <span class="c-tag">loop</span><span class="c-white">() {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">for</span><span class="c-white">(</span><span class="c-kw">int</span> <span class="c-attr">duty</span> <span class="c-white">= 0;</span> <span class="c-attr">duty</span> <span class="c-white">&lt;= 255;</span> <span class="c-attr">duty</span><span class="c-white">++) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">ledcWrite</span><span class="c-white">(</span><span class="c-attr">PWM_CHANNEL</span><span class="c-white">,</span> <span class="c-attr">duty</span><span class="c-white">);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">delay</span><span class="c-white">(10);</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">for</span><span class="c-white">(</span><span class="c-kw">int</span> <span class="c-attr">duty</span> <span class="c-white">= 255;</span> <span class="c-attr">duty</span> <span class="c-white">&gt;= 0;</span> <span class="c-attr">duty</span><span class="c-white">--) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">ledcWrite</span><span class="c-white">(</span><span class="c-attr">PWM_CHANNEL</span><span class="c-white">,</span> <span class="c-attr">duty</span><span class="c-white">);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-tag">delay</span><span class="c-white">(10);</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>警告</strong>
+                        <code>ledcWrite()</code> 的 <code>duty</code> 值不能超過 <code>2^resolution - 1</code>。例如 8-bit 解析度下寫入 256 會導致溢位歸零，輸出瞬間從最亮變成全暗。務必使用 <code>constrain()</code> 或手動檢查邊界。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>思考題</strong>
+                        如果你想用蜂鳴器播放「Do Re Mi」音階，應該改變的是 <code>freq</code>（頻率）還是 <code>duty</code>（占空比）？答案是頻率——因為音高由振動頻率決定（A4 = 440Hz），占空比只影響音量大小。可使用 <code>ledcWriteTone(channel, freq)</code> 來動態切換頻率。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -701,29 +786,120 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚡ 3. 為什麼不直接用 analogWrite？</h1>
+                <h1>為什麼不直接用 analogWrite？</h1>
                 
-                <div class="space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-justify">
-                                    LEDC 提供「硬體層級」精確資源控制。零延遲修改頻率（變頻）或更改映射，是運動控制必備能力。
-                                </p>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-justify">
-<div class="p-6 bg-white/5 rounded-2xl border border-white/10 group hover:border-emerald-500/50 transition">
-<h4 class="text-emerald-400 font-bold mb-2 text-sm uppercase">動態變頻</h4>
-<p class="text-[11px] text-slate-500 font-light">優化馬達在不同轉速下的發熱與噪音。</p>
-</div>
-<div class="p-6 bg-white/5 rounded-2xl border border-white/10 group hover:border-emerald-500/50 transition">
-<h4 class="text-emerald-400 font-bold mb-2 text-sm uppercase">位元對比</h4>
-<p class="text-[11px] text-slate-500 font-light">12-bit 下 4096 階控制，讓起步更穩健不暴衝。
-                                        </p>
-</div>
-</div>
-</div>
+                <p>
+                    如果你有 Arduino UNO 的使用經驗，可能習慣了 <code>analogWrite(pin, value)</code> 這個簡潔的函式。它在 Arduino 框架中確實好用，但在 ESP32 上，直接使用 LEDC API 有著不可替代的優勢。讓我們來比較兩者的差異，理解為什麼專業的 ESP32 韌體開發應該選擇 LEDC。
+                </p>
+
+                <h2>analogWrite 的限制</h2>
+
+                <p>
+                    在傳統 Arduino 中，<code>analogWrite()</code> 有以下根本性限制：
+                </p>
+
+                <ul>
+                    <li><strong>頻率固定</strong>：Arduino UNO 的 PWM 頻率固定為 490Hz 或 980Hz（取決於腳位），無法自訂。ESP32 早期版本雖然也移植了 <code>analogWrite()</code>，但它本質上只是 LEDC 的簡化包裝。</li>
+                    <li><strong>解析度固定</strong>：一律為 8-bit（0–255），無法提升精細度。</li>
+                    <li><strong>無法動態變頻</strong>：一旦初始化就無法在運行時改變頻率，無法實現蜂鳴器音效或馬達噪音優化。</li>
+                    <li><strong>資源不可控</strong>：無法指定哪個 Timer 和 Channel，多路 PWM 容易產生衝突。</li>
+                </ul>
+
+                <h2>LEDC 的核心優勢</h2>
+
+                <table class="ms-table">
+                    <tr>
+                        <th>能力</th>
+                        <th>analogWrite</th>
+                        <th>LEDC API</th>
+                    </tr>
+                    <tr>
+                        <td>頻率控制</td>
+                        <td>固定，無法修改</td>
+                        <td>1Hz – 40MHz，可動態調整</td>
+                    </tr>
+                    <tr>
+                        <td>解析度</td>
+                        <td>固定 8-bit (256 階)</td>
+                        <td>1-bit 至 20-bit 可選</td>
+                    </tr>
+                    <tr>
+                        <td>頻道管理</td>
+                        <td>自動分配，不可控</td>
+                        <td>16 頻道手動規劃</td>
+                    </tr>
+                    <tr>
+                        <td>動態變頻</td>
+                        <td>不支援</td>
+                        <td><code>ledcChangeFrequency()</code></td>
+                    </tr>
+                    <tr>
+                        <td>音調產生</td>
+                        <td>需手動計算</td>
+                        <td><code>ledcWriteTone(ch, freq)</code></td>
+                    </tr>
+                    <tr>
+                        <td>腳位解綁</td>
+                        <td>不支援</td>
+                        <td><code>ledcDetachPin(pin)</code></td>
+                    </tr>
+                </table>
+
+                <h2>實際應用場景</h2>
+
+                <p>
+                    以下是幾個只有 LEDC 能做到、<code>analogWrite()</code> 無法實現的進階操作：
+                </p>
+
+                <h3>場景一：動態變頻降噪</h3>
+                <p>
+                    馬達在低轉速時使用較低的 PWM 頻率以獲得更好的扭力響應，高轉速時切換到 20kHz 以上以消除嘯叫噪音。這需要在運行時即時修改頻率：
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 根據轉速動態調整 PWM 頻率</span><br>
+<span class="c-kw">if</span> <span class="c-white">(speed &lt; 30) {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">ledcChangeFrequency</span><span class="c-white">(</span><span class="c-attr">MOTOR_CH</span><span class="c-white">, 1000, 10);</span> <span class="c-comment">// 低速: 1kHz</span><br>
+<span class="c-white">}</span> <span class="c-kw">else</span> <span class="c-white">{</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-tag">ledcChangeFrequency</span><span class="c-white">(</span><span class="c-attr">MOTOR_CH</span><span class="c-white">, 20000, 10);</span> <span class="c-comment">// 高速: 20kHz</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <h3>場景二：多路異頻共存</h3>
+                <p>
+                    同時驅動 5kHz 的車頭 LED 與 20kHz 的馬達，各自使用獨立 Timer，互不干擾：
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// LED 使用 Channel 0 (Timer 0) — 5kHz, 8-bit</span><br>
+<span class="c-tag">ledcSetup</span><span class="c-white">(0, 5000, 8);</span><br>
+<span class="c-tag">ledcAttachPin</span><span class="c-white">(</span><span class="c-attr">LED_PIN</span><span class="c-white">, 0);</span><br>
+<br>
+<span class="c-comment">// 馬達使用 Channel 2 (Timer 1) — 20kHz, 10-bit</span><br>
+<span class="c-tag">ledcSetup</span><span class="c-white">(2, 20000, 10);</span><br>
+<span class="c-tag">ledcAttachPin</span><span class="c-white">(</span><span class="c-attr">MOTOR_PIN</span><span class="c-white">, 2);</span>
+                </div>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        從 ESP32 Arduino Core 3.x 版本開始，<code>analogWrite()</code> 已被官方移除，所有 PWM 操作必須透過 LEDC API 完成。即便在舊版本中，<code>analogWrite()</code> 內部也只是對 LEDC 的薄包裝。直接使用 LEDC 不僅功能更強，也避免了版本升級後的相容性問題。
+                    </div>
+                </div>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在作業 4-2 中，你將封裝一個 <code>setMotorSpeed(int percent)</code> 函式，將百分比（0–100%）自動映射到當前解析度的正確 duty 值。這種「抽象封裝」正是 LEDC 架構讓你能做到、而 <code>analogWrite()</code> 做不到的工程實踐。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -802,16 +978,75 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
-
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: QUIZ ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <div class="quiz-question">
+                        <p>1. ESP32 LEDC 的三層硬體架構正確順序為何？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> GPIO → Channel → Timer</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> Channel → Timer → GPIO</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> Timer → Channel → GPIO</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>2. 使用 ledcSetup(channel, freq, resolution) 時，若兩個 Channel 需要不同頻率，應如何處理？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> 將它們設定在同一個 Timer 群組即可，系統會自動分配</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> 將它們分配到不屬於同一 Timer 群組的 Channel 編號</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> 不可能實現，ESP32 所有 Channel 只能用同一頻率</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>3. 為什麼專業的 ESP32 開發不建議使用 analogWrite()？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 因為 analogWrite() 無法控制 LED</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 因為 analogWrite() 頻率固定、解析度固定、無法動態變頻或管理多路 PWM 資源</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 因為 analogWrite() 只能在 Arduino UNO 上使用，ESP32 完全不支援</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>4. ledcWrite() 的 duty 值若超過 2^resolution - 1 會發生什麼？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> 系統會自動限制在最大值</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> 數值溢位歸零，輸出瞬間從最亮變成全暗</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> ESP32 會重新啟動</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -869,9 +1104,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「ESP32 LEDC 控制器語法」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「ESP32 LEDC 控制器語法」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -887,8 +1122,17 @@
         { id: 3, label: '️ 2. 關鍵語法與核心 API', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '為什麼不直接用 analogWrite？', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',              time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+    const QUIZ_ANSWERS = { q1: 'c', q2: 'b', q3: 'b', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { c: '正確！LEDC 的資源分配邏輯為 Timer（決定頻率與解析度）→ Channel（設定占空比）→ GPIO（物理輸出腳位）。' },
+        q2: { b: '正確！共用同一 Timer 的 Channel 會被強制使用相同頻率。若需不同頻率，必須選擇不同 Timer 群組的 Channel 編號（如 Channel 0 與 Channel 2）。' },
+        q3: { b: '正確！analogWrite() 的頻率固定、解析度僅 8-bit、無法動態變頻或指定 Timer/Channel。LEDC API 提供完整的硬體資源管控能力。' },
+        q4: { b: '正確！duty 值超過最大範圍會導致溢位歸零，造成輸出從全功率瞬間降為零。務必使用 constrain() 做邊界保護。' },
+    };
+
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -907,6 +1151,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1010,6 +1255,7 @@
 
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 04：PWM 馬達控制';
 </script>
 
 <!-- Define Resources -->

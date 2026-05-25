@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Speech API 原理與限制 - Vibe Coding Learn</title>
+    <title>Web Speech API 原理與限制 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -59,6 +59,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -82,6 +83,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -472,9 +474,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">單元課程 進階 9 - Web Speech</span>
+    <a href="/advanced.html" target="_top" class="nav-label">進階課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -484,25 +488,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">Web Speech API 原理與限制</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 201 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">單元課程 進階 9</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -510,7 +510,7 @@
                 <h1>Web Speech API 原理與限制</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">單元課程 進階 9</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -554,15 +554,12 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>Web Speech API 原理與限制</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    本單元深入解析瀏覽器內建的 <strong>Web Speech API</strong>，涵蓋語音辨識（Speech Recognition）與語音合成（Speech Synthesis）兩大功能。你將了解這組 API 的運作架構、支援的語言與瀏覽器相容性，以及它在離線環境、隱私保護與辨識精度上的已知限制，幫助你判斷何時該使用它、何時該選擇其他方案。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你想為物聯網控制面板加入語音操作功能：使用者對著瀏覽器說出「溫度調高兩度」，系統就自動送出指令給空調設備。Web Speech API 是最快的實作途徑——不需後端、不需額外套件、幾行 JavaScript 就能啟用麥克風辨識。然而當你把原型搬到 Firefox 上時，才發現它完全不支援；到了嘈雜環境中辨識率更是驟降。這些限制從何而來？又該如何因應？本單元將為你完整解答。
                 </div>
 
                 <h2>教學影片</h2>
@@ -590,42 +587,96 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🏛️ 1. Web Speech API 的兩大支柱 (30 min)</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
-<div class="space-y-6">
-<p class="text-lg text-gray-600 leading-relaxed font-light">
-                                現代瀏覽器內建了處理人類自然語言的能力。我們可以透過 <code>SpeechRecognition</code> 讓網頁跟機器人「聽」指令，並利用
-                                <code>SpeechSynthesis</code> 讓它開口說話。
-                            </p>
-<div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-<h4 class="font-bold text-blue-900 mb-2 text-[10px] uppercase tracking-widest leading-relaxed">
-                                    System Architecture</h4>
-<ul class="text-[9px] text-slate-500 space-y-2 font-light text-justify">
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span>
-<div><strong>SpeechRecognition</strong>：STT (音轉文)。通常需要雲端引擎支援，具備語義語法分析。</div>
-</li>
-<li class="flex items-start gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></span>
-<div><strong>SpeechSynthesis</strong>：TTS (文轉音)。利用端點裝置內建語音包，反應速度極快。</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 text-white flex flex-col justify-center text-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors">
-</div>
-<h4 class="text-[10px] font-bold text-slate-500 mb-6 uppercase tracking-widest relative z-10">
-                                Vocal Waveform</h4>
-<div class="relative z-10 flex justify-center items-end gap-1 h-12">
-<div class="w-1 bg-blue-500 h-1/2 animate-bounce"></div>
-<div class="w-1 bg-blue-400 h-full animate-bounce" style="animation-delay: 0.1s"></div>
-<div class="w-1 bg-blue-300 h-3/4 animate-bounce" style="animation-delay: 0.2s"></div>
-<div class="w-1 bg-blue-500 h-1/4 animate-bounce" style="animation-delay: 0.3s"></div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic">Natural
-                                Language Interaction Mode</p>
-</div>
-</div>
+                <h1>Web Speech API 的兩大支柱</h1>
+
+                <p>
+                    Web Speech API 是 W3C 標準化的瀏覽器原生介面，讓前端開發者無需安裝額外套件即可在網頁中實現語音互動。它由兩個獨立的子系統組成：<strong>語音辨識（Speech Recognition）</strong>將人聲轉為文字，<strong>語音合成（Speech Synthesis）</strong>則將文字轉為人聲。
+                </p>
+
+                <h2>SpeechRecognition：語音轉文字 (STT)</h2>
+                <p>
+                    <code>SpeechRecognition</code>（在 Chrome 中需使用 <code>webkitSpeechRecognition</code>）啟動後會開啟麥克風，將收音的音訊串流送至雲端語音辨識引擎（Google Speech Services），返回辨識出的文字結果。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 基礎語音辨識設定</span><br>
+<span class="c-kw">const</span> <span class="c-attr">recognition</span> <span class="c-white">= </span><span class="c-kw">new</span> <span class="c-white">webkitSpeechRecognition();</span><br>
+<span class="c-attr">recognition.lang</span> <span class="c-white">= </span><span class="c-str">'zh-TW'</span><span class="c-white">;</span> <span class="c-comment">// 繁體中文</span><br>
+<span class="c-attr">recognition.continuous</span> <span class="c-white">= </span><span class="c-kw">true</span><span class="c-white">;</span> <span class="c-comment">// 持續監聽（不自動停止）</span><br>
+<span class="c-attr">recognition.interimResults</span> <span class="c-white">= </span><span class="c-kw">true</span><span class="c-white">;</span> <span class="c-comment">// 取得中間結果</span><br><br>
+<span class="c-attr">recognition.onresult</span> <span class="c-white">= (event) =&gt; {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">result</span> <span class="c-white">= event.results[event.resultIndex];</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">transcript</span> <span class="c-white">= result[0].transcript;</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">confidence</span> <span class="c-white">= result[0].confidence;</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">isFinal</span> <span class="c-white">= result.isFinal;</span><br>
+<span class="c-white">&nbsp;&nbsp;console.log(`[${isFinal ? </span><span class="c-str">'最終'</span> <span class="c-white">: </span><span class="c-str">'中間'</span><span class="c-white">}] ${transcript} (${confidence})`);</span><br>
+<span class="c-white">};</span><br><br>
+<span class="c-white">recognition.start();</span>
+                </div>
+
+                <h2>SpeechSynthesis：文字轉語音 (TTS)</h2>
+                <p>
+                    與 STT 不同，TTS 完全在<strong>本地端</strong>執行——利用作業系統內建的語音引擎與語音包。這意味著它不需要網路連線，延遲極低（通常 &lt; 50ms），非常適合用於即時回饋。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 語音合成：讓瀏覽器開口說話</span><br>
+<span class="c-kw">function</span> <span class="c-attr">speak</span><span class="c-white">(text) {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">utterance</span> <span class="c-white">= </span><span class="c-kw">new</span> <span class="c-white">SpeechSynthesisUtterance(text);</span><br>
+<span class="c-white">&nbsp;&nbsp;utterance.lang = </span><span class="c-str">'zh-TW'</span><span class="c-white">;</span><br>
+<span class="c-white">&nbsp;&nbsp;utterance.rate = 1.2;</span> <span class="c-comment">// 語速（0.1~10）</span><br>
+<span class="c-white">&nbsp;&nbsp;utterance.pitch = 1.0;</span> <span class="c-comment">// 音調（0~2）</span><br>
+<span class="c-white">&nbsp;&nbsp;speechSynthesis.speak(utterance);</span><br>
+<span class="c-white">}</span><br><br>
+<span class="c-white">speak(</span><span class="c-str">'收到指令，即將前進'</span><span class="c-white">);</span>
+                </div>
+
+                <h2>兩者的關鍵差異</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>面向</th>
+                            <th>SpeechRecognition (STT)</th>
+                            <th>SpeechSynthesis (TTS)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>處理位置</td>
+                            <td>雲端（音訊上傳至 Google 伺服器）</td>
+                            <td>本地端（使用系統語音引擎）</td>
+                        </tr>
+                        <tr>
+                            <td>網路需求</td>
+                            <td>必須有網路連線</td>
+                            <td>離線可用</td>
+                        </tr>
+                        <tr>
+                            <td>延遲</td>
+                            <td>200~800ms（含網路往返）</td>
+                            <td>&lt; 50ms</td>
+                        </tr>
+                        <tr>
+                            <td>瀏覽器支援</td>
+                            <td>僅 Chromium 系列完整支援</td>
+                            <td>主流瀏覽器皆支援</td>
+                        </tr>
+                        <tr>
+                            <td>隱私風險</td>
+                            <td>音訊會傳至第三方伺服器</td>
+                            <td>資料不離開裝置</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        在 IoT 控制場景中，你可以建立一個<strong>「聽說閉迴路」</strong>：STT 接收使用者語音指令 → 解析意圖 → 透過 BLE 發送控制碼 → TTS 回報執行狀態。這種雙向語音互動大幅提升了操控的安全性與使用者體驗。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -644,37 +695,104 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚡ 2. 事件驅動與非同步生命週期 (30 min)</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 text-justify">
-<div class="space-y-8 text-justify">
-<p class="text-lg text-gray-600 leading-relaxed font-light text-justify">
-                                語音辨識是非同步且事件驅動的。理解 <code>onstart</code>、<code>onresult</code> 與 <code>onerror</code>
-                                的狀態切換，是實作穩定「聲控系統」的基礎，特別是針對網路不穩或背景噪音。
-                            </p>
-<div class="bg-emerald-50 p-8 rounded-3xl border border-emerald-100 text-center text-justify">
-<h4 class="text-emerald-900 font-bold mb-4 text-xs uppercase tracking-widest text-justify">
-                                    Async State Machine</h4>
-<div class="grid grid-cols-3 gap-2 text-[10px] text-slate-600 font-mono text-justify">
-<div class="p-2 bg-white rounded border text-justify">IDLE</div>
-<span class="mt-2 text-justify">➔</span>
-<div class="p-2 bg-white rounded border text-justify">CONTINUOUS LISTENING</div>
-</div>
-</div>
-</div>
-<div class="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-700 flex flex-col items-center justify-center relative overflow-hidden group text-justify">
-<div class="absolute inset-0 bg-emerald-500/5 text-justify"></div>
-<h4 class="text-emerald-400 font-bold mb-6 text-[10px] uppercase tracking-widest relative z-10 text-justify">
-                                Event Logger</h4>
-<div class="w-full text-[9px] font-mono text-slate-400 space-y-1 px-4 relative z-10 text-justify">
-<div>[0ms] recognition.start()</div>
-<div class="text-emerald-500">[240ms] recognition.onresult: "GO"</div>
-<div>[320ms] BLE.write("forward")</div>
-</div>
-<p class="text-[9px] text-slate-600 mt-6 font-mono tracking-widest uppercase italic text-center text-justify">
-                                Real-time Intent Parsing Cycle</p>
-</div>
-</div>
+                <h1>事件驅動與非同步生命週期</h1>
+
+                <p>
+                    <code>SpeechRecognition</code> 是一個典型的事件驅動非同步 API——你無法同步地「呼叫一個函式取得辨識結果」。取而代之的是，你註冊一系列事件處理器，在辨識過程的不同階段接收通知。深入理解這些事件的觸發時機與順序，是建構穩定語音控制系統的核心基礎。
+                </p>
+
+                <h2>生命週期事件一覽</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>事件</th>
+                            <th>觸發時機</th>
+                            <th>常見用途</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>onstart</code></td>
+                            <td>辨識引擎成功啟動，麥克風開始收音</td>
+                            <td>更新 UI 狀態指示燈為「聆聽中」</td>
+                        </tr>
+                        <tr>
+                            <td><code>onaudiostart</code></td>
+                            <td>偵測到音訊輸入（使用者開始說話）</td>
+                            <td>顯示音波動畫</td>
+                        </tr>
+                        <tr>
+                            <td><code>onresult</code></td>
+                            <td>收到辨識結果（中間或最終）</td>
+                            <td>解析語意、觸發控制指令</td>
+                        </tr>
+                        <tr>
+                            <td><code>onspeechend</code></td>
+                            <td>偵測到使用者停止說話</td>
+                            <td>準備處理最終結果</td>
+                        </tr>
+                        <tr>
+                            <td><code>onerror</code></td>
+                            <td>發生錯誤（網路斷線、權限拒絕等）</td>
+                            <td>錯誤處理與重試邏輯</td>
+                        </tr>
+                        <tr>
+                            <td><code>onend</code></td>
+                            <td>辨識服務斷開連線</td>
+                            <td>自動重啟以維持長效監聽</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>中間結果 vs. 最終結果</h2>
+                <p>
+                    當 <code>interimResults = true</code> 時，辨識引擎會在使用者還在說話的過程中不斷回傳「中間猜測」。這些中間結果可能隨時改變（例如先猜「前」再修正為「前進」），但對於即時性要求極高的控制場景非常有價值——你可以在使用者話還沒說完時就預先準備動作。
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// 區分中間結果與最終結果</span><br>
+<span class="c-attr">recognition.onresult</span> <span class="c-white">= (event) =&gt; {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">result</span> <span class="c-white">= event.results[event.resultIndex];</span><br><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(result.isFinal) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 最終確認結果 → 執行指令</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">intent</span> <span class="c-white">= parseIntent(result[0].transcript);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span> <span class="c-white">(intent &amp;&amp; result[0].confidence &gt; 0.8) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;executeCommand(intent);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+<span class="c-white">&nbsp;&nbsp;} </span><span class="c-kw">else</span> <span class="c-white">{</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-comment">// 中間結果 → 即時顯示在 UI</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;updateLiveTranscript(result[0].transcript);</span><br>
+<span class="c-white">&nbsp;&nbsp;}</span><br>
+<span class="c-white">};</span>
+                </div>
+
+                <h2>自動重啟與指數退避</h2>
+                <p>
+                    瀏覽器會在多種情況下自動觸發 <code>onend</code>：長時間靜默、網路中斷、系統資源不足等。對於需要「永遠在聽」的語音控制系統，你必須在 <code>onend</code> 中實作自動重啟。但若重啟過於頻繁（如網路持續斷線），會觸發瀏覽器的節流機制。建議使用<strong>指數退避（Exponential Backoff）</strong>策略：
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">let</span> <span class="c-attr">retryDelay</span> <span class="c-white">= 100;</span> <span class="c-comment">// 初始重試延遲 100ms</span><br><br>
+<span class="c-attr">recognition.onend</span> <span class="c-white">= () =&gt; {</span><br>
+<span class="c-white">&nbsp;&nbsp;setTimeout(() =&gt; {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">try</span> <span class="c-white">{</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;recognition.start();</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;retryDelay = 100;</span> <span class="c-comment">// 成功後重置</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;} </span><span class="c-kw">catch</span> <span class="c-white">(e) {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;retryDelay = Math.min(retryDelay * 2, 5000);</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br>
+<span class="c-white">&nbsp;&nbsp;}, retryDelay);</span><br>
+<span class="c-white">};</span>
+                </div>
+
+                <div class="ms-tip">
+                    <div class="note-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在 UI 上顯示辨識引擎的即時狀態（IDLE / LISTENING / PROCESSING / ERROR）對於除錯與使用者體驗都非常重要。建議維護一個簡單的狀態機，在每個事件觸發時更新狀態並反映到介面的指示燈或文字上。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -693,43 +811,101 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🔒 3. 安全與隱私限制 (20 min)</h1>
-                
-                <div class="flex flex-col lg:flex-row gap-16 items-center text-justify">
-<div class="flex-1 space-y-6 text-justify">
-<p class="text-slate-400 font-light leading-relaxed text-lg text-justify text-justify">
-                                因為麥克風涉及使用者隱私，Web Speech API 受到瀏覽器的嚴格限制。它必須在 HTTPS 環境下運作，且每一次的「持續監聽」都需要明確的使用者授權。
-                            </p>
-<div class="bg-red-500/10 p-8 rounded-3xl border border-red-500/20 shadow-inner text-justify">
-<h4 class="font-bold text-red-400 mb-4 text-xs uppercase tracking-widest text-center text-justify">
-                                    Security Constraints</h4>
-<ul class="grid grid-cols-1 gap-4 text-[11px] text-slate-400 font-light text-justify">
-<li class="flex items-start gap-2 text-justify"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1 text-justify"></span>
-<div><strong class="text-white text-justify">HTTPS
-                                                Mandatory</strong>：非安全來源禁止訪問麥克風設備。</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1 text-justify text-left"></span>
-<div><strong class="text-white text-justify text-left">自動結束機制</strong>：靜默過久會自動
-                                            `onend`。如何透過手動重啟維持機器人的「長聽」狀態？</div>
-</li>
-<li class="flex items-start gap-2 text-justify text-left"><span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1 text-justify text-left"></span>
-<div><strong class="text-white text-justify">權限持久化</strong>：理解不同作業系統下，對於網頁權限彈窗的記憶策略。
-                                        </div>
-</li>
-</ul>
-</div>
-</div>
-<div class="lg:w-80 bg-red-600/10 p-10 rounded-3xl border border-red-500/20 text-center relative overflow-hidden group text-justify">
-<div class="absolute -right-8 -top-8 w-32 h-32 bg-red-500/5 rounded-full group-hover:scale-150 transition-transform duration-700">
-</div>
-<h4 class="text-red-400 font-bold mb-4 text-[10px] uppercase tracking-widest text-center">
-                                Privacy Guard</h4>
-<div class="text-5xl font-extrabold text-white mb-2">HTTPS</div>
-<p class="text-[11px] text-slate-500 mt-8 leading-relaxed font-light italic text-center text-justify">
-                                "保護使用者的隱私，是建立智慧應用的底線。"
-                            </p>
-</div>
-</div>
+                <h1>安全與隱私限制</h1>
+
+                <p>
+                    麥克風是高度敏感的硬體資源——它能錄下使用者的私密對話、環境聲音與個人資訊。因此，瀏覽器對 Web Speech API 施加了嚴格的安全限制。理解這些限制不僅能幫助你避免開發期間的詭異 Bug，更能讓你設計出尊重使用者隱私的負責任應用。
+                </p>
+
+                <h2>核心安全限制</h2>
+
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>限制項目</th>
+                            <th>行為說明</th>
+                            <th>開發者因應方式</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>HTTPS 強制</strong></td>
+                            <td>非安全來源（HTTP）下 <code>SpeechRecognition</code> 完全無法啟動</td>
+                            <td>使用 <code>mkcert</code> 建立本地開發憑證，或使用 <code>localhost</code>（例外允許）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>使用者授權</strong></td>
+                            <td>首次呼叫 <code>.start()</code> 會彈出麥克風權限提示</td>
+                            <td>在明確的使用者互動（按鈕點擊）後才啟動辨識</td>
+                        </tr>
+                        <tr>
+                            <td><strong>靜默自動停止</strong></td>
+                            <td>Chrome 約在靜默 5~7 秒後自動觸發 <code>onend</code></td>
+                            <td>實作 <code>onend</code> 自動重啟邏輯</td>
+                        </tr>
+                        <tr>
+                            <td><strong>雲端傳輸</strong></td>
+                            <td>所有音訊片段都會上傳至 Google 伺服器處理</td>
+                            <td>在隱私政策中明確告知使用者</td>
+                        </tr>
+                        <tr>
+                            <td><strong>瀏覽器相容</strong></td>
+                            <td>Firefox 與 Safari 不支援 STT 部分</td>
+                            <td>進行 Feature Detection，提供降級方案</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>瀏覽器相容性與降級策略</h2>
+                <p>
+                    Web Speech API 的語音辨識功能目前僅在 <strong>Chromium 系列瀏覽器</strong>（Chrome、Edge、Opera）中完整可用。在不支援的瀏覽器中，你的應用應優雅降級而非直接崩潰：
+                </p>
+
+                <div class="ms-code">
+<span class="c-comment">// Feature Detection：檢查 API 可用性</span><br>
+<span class="c-kw">const</span> <span class="c-attr">SpeechRecognition</span> <span class="c-white">= window.SpeechRecognition</span><br>
+<span class="c-white">&nbsp;&nbsp;|| window.webkitSpeechRecognition;</span><br><br>
+<span class="c-kw">if</span> <span class="c-white">(!SpeechRecognition) {</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 降級方案：顯示文字輸入框替代語音</span><br>
+<span class="c-white">&nbsp;&nbsp;showTextInputFallback();</span><br>
+<span class="c-white">&nbsp;&nbsp;console.warn(</span><span class="c-str">'此瀏覽器不支援語音辨識，已切換為文字輸入模式'</span><span class="c-white">);</span><br>
+<span class="c-white">} </span><span class="c-kw">else</span> <span class="c-white">{</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">recognition</span> <span class="c-white">= </span><span class="c-kw">new</span> <span class="c-white">SpeechRecognition();</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-comment">// 正常初始化...</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <h2>自激迴路問題（Echo Loop）</h2>
+                <p>
+                    當你的應用同時使用 STT（聽）和 TTS（說）時，會遇到一個經典問題：<strong>機器人說出的話被自己的麥克風接收，觸發新的辨識結果，導致無限迴圈</strong>。解決方案是在 TTS 播放期間暫停辨識：
+                </p>
+
+                <div class="ms-code">
+<span class="c-kw">function</span> <span class="c-attr">speakAndPause</span><span class="c-white">(text) {</span><br>
+<span class="c-white">&nbsp;&nbsp;recognition.stop();</span> <span class="c-comment">// 暫停聆聽</span><br>
+<span class="c-white">&nbsp;&nbsp;</span><span class="c-kw">const</span> <span class="c-attr">utterance</span> <span class="c-white">= </span><span class="c-kw">new</span> <span class="c-white">SpeechSynthesisUtterance(text);</span><br>
+<span class="c-white">&nbsp;&nbsp;utterance.onend = () =&gt; {</span><br>
+<span class="c-white">&nbsp;&nbsp;&nbsp;&nbsp;setTimeout(() =&gt; recognition.start(), 300);</span> <span class="c-comment">// 延遲恢復</span><br>
+<span class="c-white">&nbsp;&nbsp;};</span><br>
+<span class="c-white">&nbsp;&nbsp;speechSynthesis.speak(utterance);</span><br>
+<span class="c-white">}</span>
+                </div>
+
+                <div class="ms-warning">
+                    <div class="note-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        Chrome 在使用者未與頁面互動前，會阻止自動播放音訊（包括 TTS）。這是 <strong>Autoplay Policy</strong> 的一部分。確保你的 TTS 呼叫是在使用者按鈕點擊事件鏈中觸發的，否則 <code>speechSynthesis.speak()</code> 會靜默失敗。
+                    </div>
+                </div>
+
+                <div class="ms-note">
+                    <div class="note-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        對於需要離線語音辨識的場景（如嵌入式設備、隱私敏感環境），Web Speech API 並非合適選擇。替代方案包括：本地端的 <strong>Vosk</strong>（開源離線 STT）、<strong>Picovoice Porcupine</strong>（輕量喚醒詞引擎）、或直接在 ESP32 上執行的 <strong>TFLite Micro KWS</strong> 模型。這些方案犧牲了語言理解深度，但換來了完全離線與零隱私風險。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
@@ -813,16 +989,81 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+
+        <!-- ══════════ PAGE 6: 知識測驗 ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+
+                <p>測試你對本模組核心概念的掌握程度。請選出每題的最佳答案，提交後可查看詳細解析。</p>
+
+                <form id="quiz-form" onsubmit="return false;">
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">1. Web Speech API 包含哪兩大核心功能？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="A" style="margin-right:8px;"> A. 影像辨識 + 語音合成</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="B" style="margin-right:8px;"> B. 語音辨識 (Speech Recognition) + 語音合成 (Speech Synthesis)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="C" style="margin-right:8px;"> C. 文字翻譯 + 語音辨識</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q1" value="D" style="margin-right:8px;"> D. 音樂播放 + 錄音</label>
+                        <div id="exp-1" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">2. SpeechRecognition 的運作模式是什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="A" style="margin-right:8px;"> A. 同步阻塞 (Blocking)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="B" style="margin-right:8px;"> B. 非同步事件驅動 (Event-driven)</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="C" style="margin-right:8px;"> C. 多執行緒平行處理</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q2" value="D" style="margin-right:8px;"> D. 定時輪詢</label>
+                        <div id="exp-2" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">3. 瀏覽器使用麥克風進行語音辨識時，必須滿足什麼安全條件？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="A" style="margin-right:8px;"> A. 不需要任何條件</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="B" style="margin-right:8px;"> B. 必須取得使用者的明確授權 (Permission)，且頁面需為 HTTPS</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="C" style="margin-right:8px;"> C. 只需要 HTTP 協定即可</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q3" value="D" style="margin-right:8px;"> D. 只能在桌面瀏覽器中使用</label>
+                        <div id="exp-3" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+
+                    <div class="quiz-question" style="background:#faf9f8;border:1px solid #e1dfdd;border-radius:6px;padding:20px;margin-bottom:16px;">
+                        <p style="font-weight:600;margin-bottom:12px;font-size:15px;">4. SpeechRecognition 的 continuous 屬性設為 true 代表什麼？</p>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="A" style="margin-right:8px;"> A. 辨識到第一句話後立即停止</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="B" style="margin-right:8px;"> B. 持續辨識，不會在偵測到停頓時自動結束</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="C" style="margin-right:8px;"> C. 只辨識最後一句話</label>
+                        <label style="display:block;padding:8px 12px;margin:4px 0;border:1px solid #e1dfdd;border-radius:4px;cursor:pointer;font-size:14px;transition:background .1s;"><input type="radio" name="q4" value="D" style="margin-right:8px;"> D. 自動翻譯辨識結果</label>
+                        <div id="exp-4" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;font-size:13px;border-left:4px solid transparent;"></div>
+                    </div>
+                </form>
+
+                <div style="display:flex;gap:12px;margin-top:24px;">
+                    <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                    <button class="ms-btn-ghost" onclick="resetQuiz()">重新作答</button>
+                </div>
+                <div id="quiz-result" style="display:none;margin-top:20px;padding:16px;border-radius:6px;font-size:14px;"></div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -880,9 +1121,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「Web Speech API 原理與限制」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「Web Speech API 原理與限制」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -898,7 +1139,8 @@
         { id: 3, label: '事件驅動與非同步生命週期 (30 min)', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '🔒 3. 安全與隱私限制 (20 min)', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '165 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',       time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
 
     let currentUnit = 0;
@@ -918,6 +1160,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">QUIZ</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1019,8 +1262,61 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+
+    /* ─── QUIZ ─── */
+    const QUIZ_ANSWERS = { q1: 'B', q2: 'B', q3: 'B', q4: 'B' };
+    const QUIZ_EXPLANATIONS = { q1: 'Web Speech API 包含 SpeechRecognition（將語音轉為文字）和 SpeechSynthesis（將文字轉為語音）兩大支柱。', q2: 'SpeechRecognition 使用事件驅動模式，透過 onresult、onerror、onend 等事件回呼處理辨識結果，不會阻塞主執行緒。', q3: '基於隱私保護，瀏覽器要求麥克風存取必須經過使用者明確授權，且頁面需透過 HTTPS 安全協定載入。', q4: 'continuous = true 讓辨識器持續聆聽，即使使用者暫停說話也不會自動停止，適合需要長時間語音互動的應用。' };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        for (const [q, correct] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const idx = q.slice(1);
+            const exp = document.getElementById(`exp-${idx}`);
+            if (!selected) continue;
+            if (selected.value === correct) {
+                score++;
+                exp.style.display = 'block';
+                exp.style.background = '#dff6dd';
+                exp.style.borderLeftColor = '#107c10';
+                exp.innerHTML = '<i class="fas fa-check-circle" style="color:#107c10;margin-right:6px;"></i>' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#dff6dd';
+                selected.parentElement.style.borderColor = '#107c10';
+            } else {
+                exp.style.display = 'block';
+                exp.style.background = '#fde7e9';
+                exp.style.borderLeftColor = '#d13438';
+                exp.innerHTML = '<i class="fas fa-times-circle" style="color:#d13438;margin-right:6px;"></i>正確答案是 ' + correct + '。' + QUIZ_EXPLANATIONS[q];
+                selected.parentElement.style.background = '#fde7e9';
+                selected.parentElement.style.borderColor = '#d13438';
+            }
+        }
+        const resultEl = document.getElementById('quiz-result');
+        resultEl.style.display = 'block';
+        if (score === total) {
+            resultEl.style.background = '#dff6dd';
+            resultEl.innerHTML = '<strong style="color:#107c10;">🎉 滿分！' + score + ' / ' + total + '</strong><br>你完全掌握了本模組的核心概念！';
+            markDone(6);
+        } else {
+            resultEl.style.background = '#fff4ce';
+            resultEl.innerHTML = '<strong style="color:#8a6914;">得分：' + score + ' / ' + total + '</strong><br>建議複習錯題的解析說明，再試一次！';
+        }
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        for (let i = 1; i <= 4; i++) {
+            const exp = document.getElementById('exp-' + i);
+            if (exp) { exp.style.display = 'none'; exp.style.background = ''; exp.style.borderLeftColor = 'transparent'; }
+        }
+        document.querySelectorAll('#quiz-form label').forEach(l => { l.style.background = ''; l.style.borderColor = '#e1dfdd'; });
+        document.getElementById('quiz-result').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='進階 09：AI 辨識應用';
 </script>
 
 <!-- Define Resources -->

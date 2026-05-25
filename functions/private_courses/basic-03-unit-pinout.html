@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP32 引腳地圖與功能 - Vibe Coding Learn</title>
+    <title>ESP32 引腳地圖與功能 - Vibe Coding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -58,6 +58,7 @@
             text-decoration: none;
         }
         .ms-topnav .divider { width: 1px; height: 20px; background: rgba(255,255,255,.3); }
+        .border-t.pt-3 > span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .ms-topnav .nav-label { color: rgba(255,255,255,.9); font-size: 14px; }
 
         /* ─── LAYOUT ─── */
@@ -81,6 +82,7 @@
             border-bottom: 1px solid #e1dfdd;
         }
         .ms-sidebar-header .module-label {
+            display: none;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .08em;
@@ -471,9 +473,11 @@
 
 <!-- TOP NAV -->
 <nav class="ms-topnav">
-    <a href="#" class="brand"><i class="fas fa-graduation-cap"></i> Vibe Coding Learn</a>
+    <a href="/" target="_top" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
     <div class="divider"></div>
-    <span class="nav-label">基礎 3 - I/O 硬體藍圖</span>
+    <a href="/basic.html" target="_top" class="nav-label">基礎課程</a>
+    <div class="divider"></div>
+    <span id="nav-course-name" style="color:rgba(255,255,255,.85);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
 </nav>
 
 <div class="ms-layout">
@@ -483,25 +487,21 @@
         <div class="ms-sidebar-header">
             <div class="module-label">模組</div>
             <div class="module-title">ESP32 引腳地圖與功能</div>
-            <div class="meta"><i class="far fa-clock"></i> 約 186 分鐘 · 6 個單元</div>
+            <div class="meta"><i class="far fa-clock"></i> 約 191 分鐘 · 7 個單元</div>
         </div>
         <nav class="ms-unit-list" id="sidebar-nav"></nav>
         <div class="sidebar-progress">
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="progress-text" id="progress-text">0 / 6 已完成</div>
+            <div class="progress-text" id="progress-text">0 / 7 已完成</div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main class="ms-content">
 
-        <div class="ms-breadcrumb">
-            <a href="#">Vibe Coding</a><span>›</span>
-            <a href="#">基礎 3</a><span>›</span>
-            <span id="bc-current">課程總覽</span>
-        </div>
+        <div class="ms-breadcrumb"><a onclick="goToUnit(0)" style="cursor:pointer" id="bc-module-link"></a> ›<span id="bc-current"></span></div>
 
         <!-- ══════════ PAGE 0: INDEX ══════════ -->
         <div class="ms-unit-page visible" id="page-index">
@@ -509,7 +509,7 @@
                 <h1>ESP32 引腳地圖與功能</h1>
                 <div class="module-meta-tags">
                     <span class="ms-tag">模組</span>
-                    <span class="ms-tag">6 個單元</span>
+                    <span class="ms-tag">7 個單元</span>
                     <span class="ms-tag green">基礎 3</span>
                     <span class="ms-tag blue">硬體開發</span>
                     <span class="ms-tag blue">物聯網</span>
@@ -520,9 +520,9 @@
                 <h2>學習目標</h2>
                 <p>完成本模組後，你將能夠：</p>
                 <ul>
-                    <li>理解並掌握 <strong>🗺️ 1. 認識引腳地圖 (Pinout Map)</strong> 的核心觀念與操作實務。</li>
-                    <li>學會 <strong>💣 2. 絕對不能忽視的「地雷引腳」</strong> 的關鍵原理，並能將其應用於開發。</li>
-                    <li>掌握 <strong>供電腳位與安全電流</strong> 的調校技巧與穩定性測試。</li>
+                    <li>能夠區分 ESP32 各類引腳功能（GPIO、ADC、DAC、觸控感應、UART/I2C/SPI 匯流排），並根據需求選擇正確的腳位。</li>
+                    <li>能夠辨識「地雷引腳」——僅限輸入腳位（GPIO 34-39）與啟動配置腳位（Strapping Pins），避免因選錯引腳導致開機失敗或功能異常。</li>
+                    <li>能夠針對複雜系統（如無人車）規劃完整的引腳分配方案，避開 ADC2/Wi-Fi 衝突區域並確保供電安全。</li>
                     <li>完成三項實作作業，並以 Git 提交成果到 GitHub Classroom。</li>
                 </ul>
 
@@ -553,15 +553,16 @@
                 <h1>簡介</h1>
 
                 <p>
-                    歡迎來到本模組！本單元的核心主題是 <strong>ESP32 引腳地圖與功能</strong>。
-                    在現代 Vibe Coding 開發模式中，AI 能幫你生成程式碼，
-                    但要建立一套高可用、穩定的物聯網硬體系統，你必須確實理解底層的硬體連線、更新與控制協定。
+                    ESP32 有超過 30 支 GPIO 腳位，但它們並非全部等價——有些只能輸入、有些在開機時有特殊用途（Strapping Pins）、有些與內部 Flash 共用而禁止使用。
+                    如果你隨意選腳接線，可能會遇到開機失敗、ADC 讀值異常、或 Wi-Fi 功能被干擾等難以除錯的問題。
+                    本單元幫你建立完整的腳位認知地圖，讓每次接線都能精準選擇正確的 GPIO。
                 </p>
 
                 <div class="ms-scenario">
-                    <div class="ms-scenario-label">學習指引</div>
-                    「工欲善其事，必先利其器。」在開始寫代碼與接線之前，請先花 3 分鐘觀看下方的教學影片，
-                    這能幫助你快速建構完整的系統架構觀，減少後續排除故障的時間。
+                    <div class="ms-scenario-label">情境</div>
+                    你的遙控車專案需要同時接 2 顆馬達驅動器、1 個超音波感測器和 1 顆按鈕。你隨手把按鈕接到 GPIO 0——結果每次上電，ESP32 都進入下載模式而非正常運行。
+                    查了半天才發現 GPIO 0 是 Strapping Pin，開機時若被拉低就會進入燒錄模式。
+                    如果一開始就查閱腳位功能表，選擇安全的通用 GPIO，這個問題根本不會發生。
                 </div>
 
                 <h2>教學影片</h2>
@@ -575,7 +576,7 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(0)">‹ &nbsp;總覽</button>
-                <span class="unit-page-indicator">1 / 6</span>
+                <span class="unit-page-indicator">1 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(1); goToUnit(2)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -589,41 +590,78 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>🗺️ 1. 認識引腳地圖 (Pinout Map)</h1>
-                
-                <p class="text-gray-500 mb-10 text-lg font-light leading-relaxed text-justify">
-                                ESP32 是「瑞士軍刀」。引腳在不同配置下，能變幻出截然不同的身分。
-                            </p><div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-<div class="p-5 bg-blue-50 border border-blue-100 rounded-2xl group hover:bg-blue-600 transition-all duration-300 text-justify">
-<h3 class="font-bold text-blue-800 group-hover:text-white mb-1 text-justify">GPIO
-                                        (General Purpose)</h3>
-<p class="text-xs text-blue-600 group-hover:text-white/80 text-justify">數位開關。讀取按鈕 or
-                                        點亮 LED。</p>
-</div>
-<div class="p-5 bg-purple-50 border border-purple-100 rounded-2xl group hover:bg-purple-600 transition-all duration-300 text-justify">
-<h3 class="font-bold text-purple-800 group-hover:text-white mb-1 text-justify">ADC &amp;
-                                        DAC</h3>
-<p class="text-xs text-purple-600 group-hover:text-white/80 text-justify">
-                                        類比魔法門。處理電壓變化。</p>
-</div>
-<div class="p-5 bg-amber-50 border border-amber-100 rounded-2xl group hover:bg-amber-600 transition-all duration-300 text-justify">
-<h3 class="font-bold text-amber-800 group-hover:text-white mb-1 text-justify uppercase tracking-widest">
-                                        Capacitive Touch</h3>
-<p class="text-xs text-amber-600 group-hover:text-white/80 text-justify">
-                                        內建電容感應。隔著塑膠殼也能操作。</p>
-</div>
-<div class="p-5 bg-emerald-50 border border-emerald-100 rounded-2xl group hover:bg-emerald-600 transition-all duration-300 text-justify">
-<h3 class="font-bold text-emerald-800 group-hover:text-white mb-1 text-justify uppercase tracking-tighter">
-                                        Hardware Bus</h3>
-<p class="text-xs text-emerald-600 group-hover:text-white/80 text-justify">
-                                        通訊高速公路：UART、I2C 與 SPI。</p>
-</div>
-</div>
+                <h1>認識引腳地圖 (Pinout Map)</h1>
+
+                <p>
+                    ESP32 擁有超過 30 支 GPIO（General Purpose Input/Output，通用輸入輸出）引腳，但它們並非全都一樣。每支引腳除了基本的數位輸入/輸出功能外，還可能身兼數職——有些具備 ADC 能力、有些能輸出類比訊號（DAC）、有些是通訊匯流排的專屬腳位。ESP32 就像一把「瑞士軍刀」，引腳在不同的配置下，能變幻出截然不同的身分。
+                </p>
+                <p>
+                    要正確地使用 ESP32 開發複雜的物聯網專案，第一步就是學會閱讀<strong>引腳配置圖（Pinout Diagram）</strong>。這張圖記載了每支引腳的編號、功能分類與使用限制，是硬體設計的基本依據。
+                </p>
+
+                <h2>ESP32 的四大引腳功能類別</h2>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>功能類別</th>
+                            <th>說明</th>
+                            <th>常用引腳</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>GPIO（數位 I/O）</strong></td>
+                            <td>最基本的功能。讀取按鈕（HIGH/LOW）或驅動 LED、繼電器。支援 PWM 輸出以控制馬達轉速或 LED 亮度。</td>
+                            <td>GPIO 2, 4, 5, 13–33</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ADC &amp; DAC（類比轉換）</strong></td>
+                            <td>ADC 將類比電壓轉為數位值；DAC 則反向輸出類比電壓。ESP32 有 2 組 ADC（共 18 通道）與 2 組 8-bit DAC。</td>
+                            <td>ADC1: GPIO 32–39<br>DAC: GPIO 25, 26</td>
+                        </tr>
+                        <tr>
+                            <td><strong>電容觸控（Touch Sensor）</strong></td>
+                            <td>ESP32 內建 10 組電容感測器，可偵測手指觸碰導電表面。不需按鈕即可實現觸控操作，甚至隔著薄塑膠殼也能感應。</td>
+                            <td>Touch0–Touch9 (GPIO 4, 0, 2, 15, 13, 12, 14, 27, 33, 32)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>通訊匯流排</strong></td>
+                            <td>硬體層級的高速通訊介面。UART（序列通訊）、I2C（感測器/螢幕）、SPI（高速裝置如 SD 卡）。ESP32 的匯流排引腳可透過 GPIO 矩陣自由映射。</td>
+                            <td>預設 I2C: SDA=21, SCL=22<br>預設 SPI: MOSI=23, MISO=19, CLK=18</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-note">
+                    <i class="fas fa-info-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>備註</strong>
+                        ESP32 的一大優勢是<strong>引腳多工（Pin Multiplexing）</strong>。大多數周邊功能（UART、I2C、SPI）都可以透過內部的 GPIO 矩陣映射到任意引腳，不像 Arduino Uno 那樣固定死。但 ADC、DAC 和觸控感測器是硬體綁定的，只能使用特定引腳。
+                    </div>
+                </div>
+
+                <h2>如何閱讀引腳配置圖</h2>
+                <p>
+                    當你拿到一塊 ESP32 開發板（如 DevKitC 或 NodeMCU-32S），板子上印刷的引腳標記通常是 GPIO 編號。但你會發現不同廠商的開發板，引腳排列可能不同。以下是閱讀引腳圖的基本原則：
+                </p>
+                <ul>
+                    <li><strong>GPIO 編號</strong>是程式碼中使用的數字，例如 <code>pinMode(14, OUTPUT)</code> 代表操作 GPIO 14。</li>
+                    <li>同一支 GPIO 可能同時具備多種功能（如 GPIO 32 既是數位 I/O，也是 ADC1_CH4 與 Touch9），但同一時間只能使用一種功能。</li>
+                    <li>部分引腳有<strong>使用限制</strong>（僅限輸入、啟動配置等），下一個單元會詳細說明。</li>
+                </ul>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        建議將你手邊的 ESP32 開發板型號搭配官方引腳圖一起查閱。不同開發板（30-pin vs 38-pin）的引腳佈局不同，且部分引腳可能未引出。養成查閱 Datasheet 的習慣，是從業餘走向專業的重要一步。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(1)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">2 / 6</span>
+                <span class="unit-page-indicator">2 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(2); goToUnit(3)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -637,51 +675,100 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>💣 2. 絕對不能忽視的「地雷引腳」</h1>
-                
-                <div class="grid md:grid-cols-2 gap-12 items-start">
-<div class="space-y-6">
-<div class="flex gap-4 p-6 bg-red-50 rounded-2xl border border-red-100 hover:shadow-md transition text-justify">
-<div class="w-12 h-12 bg-red-100 text-red-600 rounded-xl flex items-center justify-center text-2xl shrink-0 text-justify">
-                                    🚫</div>
-<div>
-<h4 class="font-bold text-red-900 mb-1 text-justify">僅限輸入 (Input Only)</h4>
-<p class="text-sm text-gray-600 leading-relaxed text-justify">
-                                        GPIO 34, 35, 36, 39 無輸出。適合感測器，<strong>不能</strong>推動 LED。
-                                    </p>
-</div>
-</div>
-<div class="flex gap-4 p-6 bg-orange-50 rounded-2xl border border-orange-100 hover:shadow-md transition text-justify">
-<div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center text-2xl shrink-0 text-justify">
-                                    ⚙️</div>
-<div>
-<h4 class="font-bold text-orange-900 mb-1 text-justify">啟動配置 (Strapping)</h4>
-<p class="text-sm text-gray-600 leading-relaxed text-left text-justify">
-                                        GPIO 0, 2, 5, 12, 15 掌握開機「生殺大權」。接錯電阻，板子就會死鎖。
-                                    </p>
-</div>
-</div>
-</div>
-<div class="bg-slate-900 p-10 rounded-3xl border border-slate-700 relative overflow-hidden group shadow-2xl text-justify">
-<div class="absolute -right-6 -top-6 p-4 opacity-5 text-9xl text-white">⚠️</div>
-<h4 class="text-xl font-bold text-white mb-6 flex items-center gap-2 text-justify">
-<span class="w-2 h-2 bg-red-500 rounded-full"></span>
-                                硬體生存守則 (Case Study)
-                            </h4>
-<p class="text-slate-400 leading-relaxed mb-6 font-light text-justify">
-                                「為什麼專案接上外部電源就燒錄不進去？<br/><br/>
-                                通常是因為在 <span class="text-amber-400 font-bold">GPIO 0</span> 接了上拉按鈕，導致開機誤入 Boot 模式。」
-                            </p>
-<div class="p-4 bg-white/5 rounded-2xl border border-white/10 text-xs text-slate-500 italic text-justify">
-                                * 專業建議：優先使用 GPIO 12 以後的通用引腳。
-                            </div>
-</div>
-</div>
+                <h1>絕對不能忽視的「地雷引腳」</h1>
+
+                <p>
+                    並非所有 GPIO 都是平等的。ESP32 有一些引腳帶有硬體層級的限制——如果你不了解它們就隨意使用，輕則功能異常，重則整塊板子鎖死無法燒錄。這些引腳在 ESP32 社群中被形象地稱為<strong>「地雷引腳」</strong>。
+                </p>
+
+                <h2>僅限輸入引腳（Input-Only Pins）</h2>
+                <p>
+                    <strong>GPIO 34、35、36（VP）、39（VN）</strong>這四支引腳在硬體設計上<strong>只有輸入能力，無法輸出任何訊號</strong>。它們內部缺少輸出驅動電路，因此即使你在程式中寫了 <code>pinMode(34, OUTPUT)</code>，然後執行 <code>digitalWrite(34, HIGH)</code>，引腳上也不會有任何電壓變化。
+                </p>
+                <p>
+                    這些引腳的優勢在於它們屬於 ADC1 群組，且在 Wi-Fi 開啟時仍可正常進行類比讀取。因此，它們非常適合連接不需要供電控制的被動感測器，如光敏電阻、熱敏電阻或分壓偵測電路。
+                </p>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        GPIO 34–39 也<strong>沒有內部上拉 / 下拉電阻</strong>。如果你要在這些引腳上連接按鈕或開關，必須外接實體的上拉（或下拉）電阻，否則引腳會處於浮空狀態。
+                    </div>
+                </div>
+
+                <h2>啟動配置引腳（Strapping Pins）</h2>
+                <p>
+                    ESP32 在每次上電或重啟時，會讀取特定引腳的電位來決定啟動模式（正常執行 or 燒錄模式）以及 Flash 電壓等系統級設定。這些引腳被稱為 <strong>Strapping Pins</strong>：
+                </p>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>引腳</th>
+                            <th>啟動時的角色</th>
+                            <th>需要的電位</th>
+                            <th>誤用後果</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>GPIO 0</strong></td>
+                            <td>選擇啟動模式</td>
+                            <td>HIGH = 正常執行</td>
+                            <td>若被拉低 → 進入下載（燒錄）模式，無法正常運行</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GPIO 2</strong></td>
+                            <td>搭配 GPIO 0 決定啟動模式</td>
+                            <td>LOW 或浮空</td>
+                            <td>在某些開發板上，開機時若為 HIGH 可能導致燒錄失敗</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GPIO 5</strong></td>
+                            <td>控制啟動時序列輸出</td>
+                            <td>HIGH = 啟動時印出 log</td>
+                            <td>影響不大，但會產生開機雜訊訊息</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GPIO 12</strong></td>
+                            <td>設定 Flash 工作電壓</td>
+                            <td>LOW = 3.3V Flash</td>
+                            <td>若被拉高 → Flash 讀取失敗，系統完全鎖死</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GPIO 15</strong></td>
+                            <td>控制啟動 log 靜默</td>
+                            <td>HIGH = 正常 log</td>
+                            <td>若被拉低 → 開機時不印出除錯訊息</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ms-important">
+                    <i class="fas fa-exclamation-circle note-icon"></i>
+                    <div class="note-body">
+                        <strong>重要</strong>
+                        <strong>GPIO 0 和 GPIO 12 是最危險的地雷</strong>。GPIO 0 被外部電路拉低會導致每次上電都進入燒錄模式；GPIO 12 被拉高會導致 Flash 電壓配置錯誤，整塊板子完全無法啟動。初學者應<strong>優先避開這五支引腳</strong>，改用 GPIO 13、14、16–33 等安全的通用引腳。
+                    </div>
+                </div>
+
+                <h2>內部 Flash 佔用引腳</h2>
+                <p>
+                    <strong>GPIO 6–11</strong> 已經被 ESP32 內部用來連接 SPI Flash 記憶體（存放你的程式碼）。這些引腳<strong>絕對不能用於任何外部用途</strong>，否則會導致 Flash 讀寫錯誤、程式崩潰甚至板子變磚。大多數開發板也不會將這些引腳引出到排針上。
+                </p>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        記住一條簡單的安全規則：<strong>GPIO 13、14、16–19、21–23、25–27、32、33</strong> 是最安全、限制最少的通用引腳。當你設計新專案時，優先從這些引腳開始配置。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(2)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">3 / 6</span>
+                <span class="unit-page-indicator">3 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(3); goToUnit(4)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -695,34 +782,111 @@
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 10 分鐘</div>
                 </div>
 
-                <h1>⚡ 3. 供電腳位與安全電流</h1>
-                
-                <p class="text-slate-400 font-light leading-relaxed text-justify">
-                                ESP32 不是電源供應器。過度汲取電流會直接燒毀內部的 I/O 閘道。
-                            </p><div class="space-y-6 text-justify">
-<div class="flex items-center gap-6 p-4 bg-white/5 rounded-2xl border border-white/10 group hover:border-blue-500/50 transition text-justify">
-<div class="w-14 h-14 bg-indigo-500/20 text-indigo-400 rounded-xl flex items-center justify-center font-bold text-xl text-justify">
-                                        Vin</div>
-<div>
-<h4 class="font-bold text-justify">Voltage Input (5V)</h4>
-<p class="text-xs text-slate-500 text-justify">外部電源入口，通常由 USB 提供。</p>
-</div>
-</div>
-<div class="flex items-center gap-6 p-4 bg-white/5 rounded-2xl border border-white/10 group hover:border-emerald-500/50 transition text-justify">
-<div class="w-14 h-14 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center font-bold text-xl text-center leading-none text-justify">
-                                        3V3</div>
-<div>
-<h4 class="font-bold text-justify uppercase tracking-widest">LDO Output (3.3V)
-                                        </h4>
-<p class="text-xs text-slate-500 text-justify">穩定輸出，專供精密感測器使用。</p>
-</div>
-</div>
-</div>
+                <h1>供電腳位與安全電流</h1>
+
+                <p>
+                    ESP32 開發板上不只有 GPIO 引腳，還有幾組<strong>電源相關引腳</strong>。理解它們的功能與限制，是避免燒毀晶片或周邊元件的基本功。記住一個核心觀念：<strong>ESP32 不是電源供應器</strong>——它的 GPIO 引腳能提供的電流非常有限，過度汲取電流會直接損壞內部的 I/O 驅動電路。
+                </p>
+
+                <h2>開發板上的電源引腳</h2>
+                <table class="ms-table">
+                    <thead>
+                        <tr>
+                            <th>引腳名稱</th>
+                            <th>電壓</th>
+                            <th>功能說明</th>
+                            <th>典型用途</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Vin (5V)</strong></td>
+                            <td>5V</td>
+                            <td>外部電源輸入，連接到板載 LDO 穩壓器的輸入端。也可反向用來從 USB 取出 5V 電源。</td>
+                            <td>供電給需要 5V 的外部模組（如部分馬達驅動板、繼電器模組）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3V3</strong></td>
+                            <td>3.3V</td>
+                            <td>板載 LDO 穩壓器的輸出端，提供穩定的 3.3V。也可以從這裡為外部低功耗感測器供電。</td>
+                            <td>供電給 I2C 感測器、小型 OLED 螢幕、電位計</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GND</strong></td>
+                            <td>0V</td>
+                            <td>接地腳。所有電路的共同參考點。ESP32 開發板通常提供多個 GND 引腳。</td>
+                            <td>必須與所有外部元件共地</td>
+                        </tr>
+                        <tr>
+                            <td><strong>EN</strong></td>
+                            <td>—</td>
+                            <td>晶片致能引腳（Enable）。拉低此引腳可以將 ESP32 強制關機（進入深度睡眠前的硬體級別斷電）。</td>
+                            <td>外部看門狗、省電控制</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>GPIO 的電流承載限制</h2>
+                <p>
+                    每一支 GPIO 引腳能安全<strong>灌入（Sink）或驅出（Source）</strong>的電流上限約為 <strong>12mA</strong>（ESP32 官方建議），絕對最大值為 40mA。超過此限制會造成晶片內部的 MOSFET 過熱甚至永久損壞。
+                </p>
+                <p>
+                    一顆標準 LED 通常需要 10~20mA 的驅動電流。這意味著你可以直接用一支 GPIO 點亮一顆 LED（搭配 220Ω~330Ω 限流電阻），但<strong>絕對不能</strong>直接用 GPIO 驅動馬達、繼電器線圈或多顆高亮度 LED。這些高功率負載必須透過電晶體（MOSFET）或馬達驅動 IC 來間接控制。
+                </p>
+
+                <div class="ms-warning">
+                    <i class="fas fa-exclamation-triangle note-icon"></i>
+                    <div class="note-body">
+                        <strong>注意</strong>
+                        ESP32 所有 GPIO 的<strong>總輸出電流</strong>也有上限（約 1200mA 由 3.3V LDO 供應，但分配給 GPIO 的部分遠低於此）。即使每支引腳都在安全範圍內，同時驅動太多 LED 仍可能超過總負載能力，導致電壓下降或系統不穩定。
+                    </div>
+                </div>
+
+                <h2>安全供電設計原則</h2>
+                <div class="ms-steps">
+                    <div class="ms-step">
+                        <div class="ms-step-num">1</div>
+                        <div class="ms-step-body">
+                            <h4>LED 必須搭配限流電阻</h4>
+                            <p>計算公式：R = (3.3V − V<sub>LED</sub>) ÷ I<sub>LED</sub>。以紅色 LED（V<sub>LED</sub> ≈ 2V, I = 10mA）為例：R = (3.3 − 2) ÷ 0.01 = 130Ω，實務上常用 220Ω。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">2</div>
+                        <div class="ms-step-body">
+                            <h4>高功率負載使用驅動電路</h4>
+                            <p>馬達、繼電器、伺服機等元件的工作電流遠超 GPIO 能力。使用 MOSFET（如 IRLZ44N）或專用驅動 IC（如 L298N、TB6612）來放大控制訊號。</p>
+                        </div>
+                    </div>
+                    <div class="ms-step">
+                        <div class="ms-step-num">3</div>
+                        <div class="ms-step-body">
+                            <h4>獨立供電，共同接地</h4>
+                            <p>高功率元件應使用獨立電源（如 12V 電池）供電，而非從 ESP32 的 3V3 引腳取電。但<strong>所有電源的 GND 必須互相連接</strong>，否則訊號參考點不同，邏輯判讀會出錯。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ms-code">
+                    <span class="c-comment">// 正確做法：用 GPIO 控制 MOSFET 來驅動馬達</span><br>
+                    <span class="c-comment">// GPIO → MOSFET Gate → 馬達由外部電源驅動</span><br><br>
+                    <span class="c-kw">const int</span> <span class="c-attr">MOTOR_PIN</span> <span class="c-white">= </span><span class="c-val">16</span><span class="c-white">;</span><br>
+                    <span class="c-white">pinMode(</span><span class="c-attr">MOTOR_PIN</span><span class="c-white">, OUTPUT);</span><br>
+                    <span class="c-white">analogWrite(</span><span class="c-attr">MOTOR_PIN</span><span class="c-white">, </span><span class="c-val">200</span><span class="c-white">);</span> <span class="c-comment">// PWM 訊號控制 MOSFET</span>
+                </div>
+
+                <div class="ms-tip">
+                    <i class="fas fa-lightbulb note-icon"></i>
+                    <div class="note-body">
+                        <strong>提示</strong>
+                        在設計無人車或機器人專案時，建議先計算所有元件的總電流需求，再選擇合適的電源方案。ESP32 本身在 Wi-Fi 傳輸時的峰值電流就可能達到 300~500mA，這已經佔用了 USB 供電的很大一部分容量。
+                    </div>
+                </div>
                 
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(3)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">4 / 6</span>
+                <span class="unit-page-indicator">4 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(4); goToUnit(5)">下一個單元 &nbsp;›</button>
             </div>
         </div>
@@ -801,16 +965,76 @@
             </div>
             <div class="unit-nav">
                 <button class="nav-btn-prev" onclick="goToUnit(4)">‹ &nbsp;上一個單元</button>
-                <span class="unit-page-indicator">5 / 6</span>
+                <span class="unit-page-indicator">5 / 7</span>
                 <button class="nav-btn-next" onclick="markDone(5); goToUnit(6)">下一個單元 &nbsp;›</button>
             </div>
         </div>
 
-        <!-- ══════════ PAGE 6: 摘要與資源 ══════════ -->
+        <!-- ══════════ PAGE 6: QUIZ ══════════ -->
         <div class="ms-unit-page" id="page-6">
             <div class="unit-content">
                 <div class="unit-status-bar">
                     <div class="unit-completed-badge" id="badge-6" style="display:none"><i class="fas fa-check"></i> 已完成</div>
+                    <div></div>
+                    <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 5 分鐘</div>
+                </div>
+
+                <h1>知識測驗</h1>
+                <p>為每個問題選出最佳答案，確認你對本模組的理解。</p>
+
+                <div id="quiz-form">
+
+                    <div class="quiz-question">
+                        <p>1. ESP32的GPIO 34~39有什麼硬體限制？</p>
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> 只能用於SPI通訊</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> 僅支援輸入，無法輸出訊號，且沒有內部上拉電阻</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> 只能在Wi-Fi關閉時使用</label>
+                        <div class="quiz-feedback" id="q1-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>2. 為什麼不應該將按鈕接在GPIO 0上？</p>
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> GPIO 0不支援數位讀取</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> GPIO 0是Strapping Pin，開機時若被拉低會進入燒錄模式而非正常運行</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> GPIO 0已被Wi-Fi功能永久佔用</label>
+                        <div class="quiz-feedback" id="q2-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>3. 每支ESP32 GPIO引腳能安全驅出的最大電流約為多少？</p>
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> 500mA</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> 100mA</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> 12mA</label>
+                        <div class="quiz-feedback" id="q3-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p>4. 設計需要Wi-Fi功能的專案時，類比感測器應該接在哪些引腳上？</p>
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> ADC2的引腳（GPIO 0, 2, 4, 12-15, 25-27）</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> ADC1的引腳（GPIO 32-39），因為ADC2在Wi-Fi開啟時無法使用</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> 任意GPIO引腳都可以</label>
+                        <div class="quiz-feedback" id="q4-feedback"></div>
+                    </div>
+
+                    <div class="quiz-submit">
+                        <button class="ms-btn" onclick="submitQuiz()">提交答案</button>
+                        <button class="ms-btn-ghost" onclick="resetQuiz()" id="quiz-reset-btn" style="margin-left:8px; display:none;">重新作答</button>
+                    </div>
+                    <div id="quiz-score" style="display:none; margin-top:16px; padding:16px; background:#f3f2f1; border-radius:4px; font-size:14px;"></div>
+                </div>
+            </div>
+            <div class="unit-nav">
+                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <span class="unit-page-indicator">6 / 7</span>
+                <button class="nav-btn-next" onclick="markDone(6); goToUnit(7)">下一個單元 &nbsp;›</button>
+            </div>
+        </div>
+
+        <!-- ══════════ PAGE 7: 摘要與資源 ══════════ -->
+        <div class="ms-unit-page" id="page-7">
+            <div class="unit-content">
+                <div class="unit-status-bar">
+                    <div class="unit-completed-badge" id="badge-7" style="display:none"><i class="fas fa-check"></i> 已完成</div>
                     <div></div>
                     <div class="unit-time-badge"><i class="far fa-clock"></i>&nbsp; 3 分鐘</div>
                 </div>
@@ -868,9 +1092,9 @@
                 </a>
             </div>
             <div class="unit-nav">
-                <button class="nav-btn-prev" onclick="goToUnit(5)">‹ &nbsp;上一個單元</button>
+                <button class="nav-btn-prev" onclick="goToUnit(6)">‹ &nbsp;上一個單元</button>
                 <span class="unit-page-indicator" style="font-weight:600; color:#107c10;">✓ 模組完成</span>
-                <button class="ms-btn" onclick="markDone(6); alert('🎉 恭喜完成「ESP32 引腳地圖與功能」模組！')">完成模組</button>
+                <button class="ms-btn" onclick="markDone(7); alert('🎉 恭喜完成「ESP32 引腳地圖與功能」模組！')">完成模組</button>
             </div>
         </div>
 
@@ -886,8 +1110,16 @@
         { id: 3, label: '💣 2. 絕對不能忽視的「地雷引腳」', time: '10 分鐘', type: 'unit' },
         { id: 4, label: '供電腳位與安全電流', time: '10 分鐘', type: 'unit' },
         { id: 5, label: '實戰挑戰',       time: '150 分鐘', type: 'lab'   },
-        { id: 6, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
+        { id: 6, label: '知識測驗',              time: '5 分鐘',  type: 'quiz'  },
+        { id: 7, label: '摘要與資源',     time: '3 分鐘',  type: 'unit'  },
     ];
+    const QUIZ_ANSWERS = { q1: 'b', q2: 'b', q3: 'c', q4: 'b' };
+    const QUIZ_EXPLANATIONS = {
+        q1: { b: '正確！GPIO 34~39在硬體設計上只有輸入能力，內部也缺少上拉/下拉電阻。若要在這些引腳接按鈕，必須外接實體電阻。' },
+        q2: { b: '正確！GPIO 0是Strapping Pin，ESP32每次上電時會讀取此引腳電位決定啟動模式。若被外部電路拉低，會每次都進入燒錄模式而無法正常運行。' },
+        q3: { c: '正確！ESP32官方建議每支GPIO的最大驅出/灌入電流約為12mA。驅動馬達或繼電器等高功率負載必須透過MOSFET或驅動IC間接控制。' },
+        q4: { b: '正確！ADC2的控制權會被Wi-Fi驅動程式搶走。需要Wi-Fi的專案必須將所有類比感測器接在ADC1（GPIO 32-39）上才能正常讀取。' },
+    };
 
     let currentUnit = 0;
     let doneSet = new Set();
@@ -906,6 +1138,7 @@
         const nav = document.getElementById('sidebar-nav');
         nav.innerHTML = UNITS.map(u => {
             const badge = u.type === 'lab' ? ' <span style="font-size:10px;background:#eef6ff;color:#005a9e;padding:1px 5px;border-radius:2px;">LAB</span>'
+                        : u.type === 'quiz' ? ' <span style="font-size:10px;background:#fff4ce;color:#8a6914;padding:1px 5px;border-radius:2px;">測驗</span>'
                         : '';
             return `
             <div class="ms-unit-item" id="nav-${u.id}" onclick="goToUnit(${u.id})">
@@ -1007,8 +1240,57 @@
         el.innerHTML = el.classList.contains('checked') ? '<i class="fas fa-check" style="font-size:10px;"></i>' : '';
     }
 
+    /* ─── QUIZ ─── */
+    function submitQuiz() {
+        let correct = 0;
+        const total = Object.keys(QUIZ_ANSWERS).length;
+        let allAnswered = true;
+
+        for (const [qid, answer] of Object.entries(QUIZ_ANSWERS)) {
+            const selected = document.querySelector(`input[name="${qid}"]:checked`);
+            if (!selected) { allAnswered = false; continue; }
+            const val = selected.value;
+            const feedbackEl = document.getElementById(`${qid}-feedback`);
+            document.querySelectorAll(`input[name="${qid}"]`).forEach(opt => {
+                opt.disabled = true;
+                if (opt.value === answer) opt.parentElement.classList.add('correct');
+                if (opt.checked && opt.value !== answer) opt.parentElement.classList.add('wrong');
+            });
+            if (val === answer) {
+                correct++;
+                feedbackEl.className = 'quiz-feedback correct';
+                feedbackEl.textContent = '✓ ' + QUIZ_EXPLANATIONS[qid][answer];
+            } else {
+                feedbackEl.className = 'quiz-feedback wrong';
+                feedbackEl.textContent = '✗ 不正確。' + QUIZ_EXPLANATIONS[qid][answer];
+            }
+        }
+
+        if (!allAnswered) { alert('請回答所有問題後再提交。'); return; }
+
+        const scoreEl = document.getElementById('quiz-score');
+        const pct = Math.round(correct / total * 100);
+        scoreEl.style.display = 'block';
+        scoreEl.innerHTML = `<span style="font-size:20px;">${pct >= 75 ? '🎉' : '📖'}</span>
+            <strong style="margin-left:8px;">你答對了 ${correct} / ${total} 題（${pct}%）</strong>
+            <div style="margin-top:6px; color:#605e5c;">${pct >= 75 ? '通過！繼續前往下一個單元。' : '建議回顧相關單元後再試一次。'}</div>`;
+
+        document.querySelector('.quiz-submit .ms-btn').disabled = true;
+        document.getElementById('quiz-reset-btn').style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+        document.querySelectorAll('.quiz-option').forEach(el => el.classList.remove('correct','wrong'));
+        document.querySelectorAll('input[type=radio]').forEach(el => { el.checked = false; el.disabled = false; });
+        document.querySelectorAll('.quiz-feedback').forEach(el => { el.className = 'quiz-feedback'; el.textContent = ''; });
+        document.getElementById('quiz-score').style.display = 'none';
+        document.querySelector('.quiz-submit .ms-btn').disabled = false;
+        document.getElementById('quiz-reset-btn').style.display = 'none';
+    }
+
     /* ─── START ─── */
     init();
+    var mt=document.querySelector('.module-title');var ml=document.getElementById('bc-module-link');if(mt&&ml)ml.textContent=mt.textContent;var nc=document.getElementById('nav-course-name');if(nc)nc.textContent='基礎 03：IO 腳位對應';
 </script>
 
 <!-- Define Resources -->
