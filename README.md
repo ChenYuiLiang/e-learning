@@ -36,6 +36,7 @@
 - **[🚚 物流管理 MVP](docs/logistics-mvp.md)**：硬體訂單出貨流程與 Admin Logistics 分頁規格。
 - **[✅ 合格教師管理 MVP](docs/tutor-management-mvp.md)**：申請、推薦、審核與授權流程。
 - **[💸 多層級分潤規格](docs/recursive-sharing.md)**：分潤公式、上線鏈條、冪等與對帳流程。
+- **[🧭 平台擴張整合規劃](docs/platform-expansion-plan.md)**：整合課程架構升級、外部私有內容倉 i18n MVP、導師/代理/課程開發分潤參數化規劃。
 - **[🤝 導師與學生的互動層 MVP](docs/tutor-student-interaction-mvp.md)**：自動評分之外的教學互動設計（卡點、提示階梯、成長軌跡、介入任務）。
 - **[🧩 單元 Repo 協作改善流程](docs/unit-repo-collaboration-workflow.md)**：學生、導師、管理員共同迭代 README、tutor-guide 與測試/流程設定的提案與審核流程。
 - **[🤖 Autograde 全自動化](docs/autograde-full-automation.md)**：批次設定 `userId+unitId` 對應、workflow 觸發策略與分數回寫模式。
