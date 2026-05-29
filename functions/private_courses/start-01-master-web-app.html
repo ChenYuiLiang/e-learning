@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web App 全端開發入門 - Vibe Coding</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style.css?v=2026.05.29.mobile-nav">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
 
@@ -13,7 +13,7 @@
 
 <body id="page-started" class="bg-gray-50 flex flex-col min-h-screen font-[Inter]">
 
-    <script src="/js/course-shared.js?v=2026.05.21.V21.DISABLE_UNIFIED_SUPPORT_HUB"></script>
+    <script src="/js/course-shared.js?v=2026.05.29.auth-persist"></script>
     
 
     <!-- Tab Navigation Bar -->
@@ -47,6 +47,27 @@
         const tabHtml5 = document.getElementById('tab-html5');
         const tabFlexbox = document.getElementById('tab-flexbox');
         const tabUiux = document.getElementById('tab-uiux');
+
+        function applyFastTabIframeLayout() {
+            try {
+                const doc = iframe.contentDocument;
+                if (!doc) return;
+                if (doc.getElementById('fasttab-iframe-hide-sidebar')) return;
+
+                const style = doc.createElement('style');
+                style.id = 'fasttab-iframe-hide-sidebar';
+                style.textContent = `
+                    .ms-topnav { display: none !important; }
+                    .ms-layout { display: block !important; }
+                    .ms-sidebar { display: none !important; }
+                    .ms-content { width: 100% !important; max-width: none !important; }
+                    .unit-content { max-width: 980px !important; margin: 0 auto !important; }
+                `;
+                doc.head.appendChild(style);
+            } catch (e) {
+                console.warn('[start-01-master] applyFastTabIframeLayout failed:', e);
+            }
+        }
 
         // Initial Load
         loadContent('start-01-unit-html5-basics.html');
@@ -90,6 +111,7 @@
                 iframe.src = query ? `${url}${separator}${query}` : url;
 
                 iframe.onload = () => {
+                    applyFastTabIframeLayout();
                     iframe.style.opacity = '1';
                 };
             }, 300);

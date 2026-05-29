@@ -30,6 +30,7 @@ const {
     sendAutogradeResultToStudent, sendAutogradeResultToTutor, sendOrderShippedEmail,
     sendTutorRecommendationCandidateEmail, sendAutogradeFailureAlertEmail
 } = require('./emailService');
+const { proxyHttpRequest } = require('./emulator-proxy');
 
 admin.initializeApp({
     projectId: "e-learning-942f7"
@@ -1316,8 +1317,61 @@ exports.serveCourse = onRequest(async (req, res) => {
 
     // 2. Security Check (Token)
     const token = req.query.token;
+    const isDemoMode = String(req.query.demo || '').trim() === '1';
+    const isEmulator = process.env.FUNCTIONS_EMULATOR === 'true' || !!process.env.FIREBASE_EMULATOR_HUB;
 
     console.log(`[serveCourse] Path: ${urlPath}, FileName: ${fileName}, Token Provided: ${!!token}`);
+
+    // Demo bypass (emulator-only): allow external sharing links without token.
+    if (isDemoMode && isEmulator) {
+        let demoFileName = normalizeCourseFile(fileName);
+        if (fileName.match(/^0[1-5]-/) && !fileName.includes('-master-')) {
+            const asIsPath = path.join(__dirname, 'private_courses', fileName);
+            if (!fs.existsSync(asIsPath)) {
+                demoFileName = 'start-' + fileName;
+            }
+        }
+        let demoPath = path.join(__dirname, 'private_courses', demoFileName);
+        if (!fs.existsSync(demoPath)) {
+            let altFileName;
+            if (fileName.startsWith('start-')) altFileName = fileName.replace('start-', '');
+            else if (fileName.match(/^0[1-5]-/)) altFileName = 'start-' + fileName;
+            if (altFileName) {
+                const altPath = path.join(__dirname, 'private_courses', altFileName);
+                if (fs.existsSync(altPath)) demoPath = altPath;
+            }
+        }
+        if (!fs.existsSync(demoPath)) {
+            return res.status(404).send("File not found.");
+        }
+
+        let content = fs.readFileSync(demoPath, 'utf8');
+        const firebaseConfig = {
+            apiKey: "AIzaSyCO6Y6Pa7b7zbieJIErysaNF6-UqbT8KJw",
+            authDomain: "e-learning-942f7.firebaseapp.com",
+            projectId: "e-learning-942f7",
+            storageBucket: "e-learning-942f7.firebasestorage.app",
+            messagingSenderId: "878397058574",
+            appId: "1:878397058574:web:28aaa07a291ee3baab165f"
+        };
+        const bootstrapper = `
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+            import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-functions.js";
+            const config = ${JSON.stringify(firebaseConfig)};
+            const app = initializeApp(config);
+            window.vibeApp = app;
+            window.getFunctions = getFunctions;
+            window.httpsCallable = httpsCallable;
+            window.resizeIframe = (obj) => { if(obj && obj.contentWindow) obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px'; };
+        </script>
+        `;
+        if (content.includes('</body>')) content = content.replace('</body>', `${bootstrapper}</body>`);
+        else content += bootstrapper;
+
+        res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+        return res.send(content);
+    }
 
     if (!token) {
         console.warn(`[serveCourse] Access Denied: No token. Query:`, req.query);
@@ -1497,6 +1551,24 @@ exports.serveCourse = onRequest(async (req, res) => {
         console.error(e);
         res.status(403).send("Access Denied: Token error.");
     }
+});
+
+// ==========================================
+// Emulator HTTPS proxies (ngrok + local Hosting)
+// Forward same-origin requests to Auth / Firestore / Functions emulators.
+// ==========================================
+const emulatorProxyOpts = { region: "asia-east1", memory: "128MiB", maxInstances: 2 };
+
+exports.emulatorProxyAuth = onRequest(emulatorProxyOpts, (req, res) => {
+    proxyHttpRequest(9099, "", req, res);
+});
+
+exports.emulatorProxyFirestore = onRequest(emulatorProxyOpts, (req, res) => {
+    proxyHttpRequest(8080, "", req, res);
+});
+
+exports.emulatorProxyFunctions = onRequest(emulatorProxyOpts, (req, res) => {
+    proxyHttpRequest(5001, "", req, res);
 });
 
 const getRole = async (uid) => {
@@ -4457,9 +4529,9 @@ exports.bindTutorByPromotionCode = onCall(async (request) => {
         }
 
         const DEFAULT_TUTOR_EMAIL = 'rover.k.chen@gmail.com';
-        const normalizedInput = promoCodeRaw;
-        const promotionCode = normalizedInput.toUpperCase();
+        const normalizedInput = promoCodeRaw.trim();
         const looksLikeEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedInput);
+        const promotionCode = looksLikeEmail ? normalizedInput.toLowerCase() : normalizedInput.toUpperCase();
         let tutorSnap;
         let resolvedPromotionCode = promotionCode;
 
@@ -4470,7 +4542,7 @@ exports.bindTutorByPromotionCode = onCall(async (request) => {
                 .get();
         } else if (looksLikeEmail) {
             tutorSnap = await db.collection('users')
-                .where('email', '==', normalizedInput.toLowerCase())
+                .where('email', '==', promotionCode)
                 .limit(1)
                 .get();
         } else if (promotionCode) {

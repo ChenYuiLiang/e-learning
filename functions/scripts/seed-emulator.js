@@ -438,11 +438,69 @@ const courses = [
   },
 ];
 
-const TEST_USER_UID = 'ZONzbNOyljRgSA11qKgnT4nJFRnv';
 const TEST_USER_EMAIL = 'chen.yuiliang@gmail.com';
+const DEFAULT_TUTOR_EMAIL = 'rover.k.chen@gmail.com';
+const DEFAULT_TUTOR_PROMOTION_CODE = 'ROVERKC';
+const PLACEHOLDER_CLASSROOM_URL = 'https://classroom.github.com/a/vibe-coding-dev';
+
+function buildDefaultTutorConfigs(allCourses) {
+  const tutorConfigs = {};
+  const now = admin.firestore.Timestamp.now();
+  for (const course of allCourses) {
+    for (const unitId of course.courseUnits || []) {
+      tutorConfigs[unitId] = {
+        authorized: true,
+        assignmentUrl: PLACEHOLDER_CLASSROOM_URL,
+        githubClassroomUrl: PLACEHOLDER_CLASSROOM_URL,
+        courseId: course.courseId,
+        updatedAt: now,
+      };
+    }
+  }
+  return tutorConfigs;
+}
+
+/** 與 Auth Emulator 登入帳號對齊（Google 登入後 UID 以 emulator 為準） */
+async function resolveAuthUserUid(email, displayName) {
+  const auth = admin.auth();
+  try {
+    const existing = await auth.getUserByEmail(email);
+    return existing.uid;
+  } catch (err) {
+    if (err.code !== 'auth/user-not-found') throw err;
+    const created = await auth.createUser({
+      email,
+      emailVerified: true,
+      displayName,
+    });
+    console.log(`  🔐 已在 Auth Emulator 建立 ${email} (uid: ${created.uid})`);
+    return created.uid;
+  }
+}
+
+async function resolveTestUserUid() {
+  return resolveAuthUserUid(TEST_USER_EMAIL, 'chen.yuliang');
+}
 
 async function seed() {
   console.log('🌱 開始寫入種子資料到本地 Firestore 模擬器...\n');
+
+  const testUserUid = await resolveTestUserUid();
+  console.log(`  🔑 測試帳號 UID：${testUserUid}\n`);
+
+  const defaultTutorUid = await resolveAuthUserUid(DEFAULT_TUTOR_EMAIL, 'Rover Chen');
+  const defaultTutorConfigs = buildDefaultTutorConfigs(courses);
+  await db.collection('users').doc(defaultTutorUid).set({
+    email: DEFAULT_TUTOR_EMAIL,
+    role: 'admin',
+    name: 'Rover Chen',
+    displayName: 'Rover Chen',
+    promotionCode: DEFAULT_TUTOR_PROMOTION_CODE,
+    tutorConfigs: defaultTutorConfigs,
+    createdAt: admin.firestore.Timestamp.now(),
+    updatedAt: admin.firestore.Timestamp.now(),
+  }, { merge: true });
+  console.log(`  👨‍🏫 預設導師 ${DEFAULT_TUTOR_EMAIL} (uid: ${defaultTutorUid}, code: ${DEFAULT_TUTOR_PROMOTION_CODE})`);
 
   for (const course of courses) {
     const { id, ...data } = course;
@@ -450,13 +508,14 @@ async function seed() {
     console.log(`  ✅ ${id} (courseId: ${data.courseId})`);
   }
 
-  // Seed user document
-  await db.collection('users').doc(TEST_USER_UID).set({
+  // Seed user document（UID 必須與 Auth Emulator 登入一致）
+  await db.collection('users').doc(testUserUid).set({
     email: TEST_USER_EMAIL,
     role: 'user',
+    displayName: 'chen.yuliang',
     createdAt: admin.firestore.Timestamp.now(),
   }, { merge: true });
-  console.log(`\n  👤 使用者 ${TEST_USER_EMAIL} (uid: ${TEST_USER_UID})`);
+  console.log(`\n  👤 使用者 ${TEST_USER_EMAIL} (uid: ${testUserUid})`);
 
   // Seed orders for basic + advanced courses
   const paidCourses = courses.filter(c => c.category === 'basic' || c.category === 'advanced');
@@ -468,8 +527,8 @@ async function seed() {
     items[c.courseId] = { title: c.title, price: c.price };
   }
 
-  await db.collection('orders').doc('seed-order-all-paid').set({
-    uid: TEST_USER_UID,
+  await db.collection('orders').doc('seed-order-basic-advanced').set({
+    uid: testUserUid,
     email: TEST_USER_EMAIL,
     status: 'SUCCESS',
     items,
@@ -477,7 +536,14 @@ async function seed() {
     createdAt: admin.firestore.Timestamp.now(),
     paidAt: admin.firestore.Timestamp.now(),
   });
-  console.log(`  🧾 訂單 seed-order-all-paid (${paidCourses.length} 門課程，到期 ${expiryDate.toLocaleDateString('zh-TW')})`);
+  console.log(`  🧾 訂單 seed-order-basic-advanced (${paidCourses.length} 門：基礎+進階，到期 ${expiryDate.toLocaleDateString('zh-TW')})`);
+
+  // 移除舊版錯誤 UID 的種子訂單（若存在）
+  const legacyOrder = await db.collection('orders').doc('seed-order-all-paid').get();
+  if (legacyOrder.exists && legacyOrder.data()?.uid !== testUserUid) {
+    await db.collection('orders').doc('seed-order-all-paid').delete();
+    console.log('  🗑️  已刪除舊訂單 seed-order-all-paid（UID 與登入帳號不符）');
+  }
 
   console.log(`\n✨ 完成！共寫入 ${courses.length} 筆課程資料`);
   console.log('📌 可在 http://127.0.0.1:4000/firestore 查看資料');

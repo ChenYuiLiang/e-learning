@@ -18,16 +18,20 @@
   ],
   "emulators": {
     "auth": {
-      "port": 9099
+      "port": 9099,
+      "host": "0.0.0.0"
     },
     "functions": {
-      "port": 5001
+      "port": 5001,
+      "host": "0.0.0.0"
     },
     "firestore": {
-      "port": 8080
+      "port": 8080,
+      "host": "0.0.0.0"
     },
     "hosting": {
-      "port": 5002
+      "port": 5002,
+      "host": "0.0.0.0"
     },
     "ui": {
       "enabled": true,
@@ -50,6 +54,36 @@
       {
         "source": "/courses/**",
         "function": "serveCourse",
+        "region": "asia-east1"
+      },
+      {
+        "source": "/emulator/auth/**",
+        "function": "emulatorProxyAuth",
+        "region": "asia-east1"
+      },
+      {
+        "source": "/identitytoolkit.googleapis.com/**",
+        "function": "emulatorProxyAuth",
+        "region": "asia-east1"
+      },
+      {
+        "source": "/securetoken.googleapis.com/**",
+        "function": "emulatorProxyAuth",
+        "region": "asia-east1"
+      },
+      {
+        "source": "/www.googleapis.com/**",
+        "function": "emulatorProxyAuth",
+        "region": "asia-east1"
+      },
+      {
+        "source": "/google.firestore.v1.Firestore/**",
+        "function": "emulatorProxyFirestore",
+        "region": "asia-east1"
+      },
+      {
+        "source": "/e-learning-942f7/**",
+        "function": "emulatorProxyFunctions",
         "region": "asia-east1"
       }
     ]

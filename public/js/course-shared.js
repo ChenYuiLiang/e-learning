@@ -11,8 +11,24 @@ if (window.__courseSharedLoaded) {
 window.__courseSharedLoaded = true;
 
 // Initializer
+function patchAppHomeLinks() {
+    try {
+        const home = `${window.location.origin}/index.html`;
+        document.querySelectorAll('a.brand').forEach((a) => {
+            const href = (a.getAttribute('href') || '').trim();
+            if (href === '/' || href === '' || href === '#') {
+                a.setAttribute('href', home);
+            }
+        });
+    } catch (e) {
+        console.warn('[CourseShared] patchAppHomeLinks failed:', e);
+    }
+}
+
 function init() {
     console.log("[CourseShared] Initializing...");
+    patchAppHomeLinks();
+    enhanceMasterUnitTabsToFastTab();
     applyHideTabsPreference();
     upgradeLegacyStartUnitToMsLayout();
     applyStartUnitModernTheme();
@@ -21,6 +37,513 @@ function init() {
     enhanceAssignmentEntryButtons();
     initFirebaseFeatures(); // [NEW] Start Firebase (Tracking + Assignments)
     initGithubReadme(); // [V8.2] Fetch and render GitHub README if applicable
+}
+
+/**
+ * Master page FastTab (BC-like):
+ * - Each unit row is collapsible (> / V)
+ * - Each row can expand independently
+ * - Expanded row shows that unit's browse list
+ */
+function enhanceMasterUnitTabsToFastTab() {
+    try {
+        const pathname = (window.location.pathname || '').toLowerCase();
+        const file = pathname.split('/').pop() || '';
+        const masterMatch = file.match(/^(start|basic|adv)-(\d{2})-master-.*\.html$/);
+        if (!masterMatch) return;
+        const track = masterMatch[1];
+        const lessonNo = masterMatch[2];
+
+        const unitTabsWrapper = document.querySelector('.unit-tabs-wrapper');
+        const tabsFlex = document.getElementById('course-tabs-container');
+        if (!unitTabsWrapper || !tabsFlex) return;
+        if (document.querySelector('.fasttab-course-layout')) return;
+
+        const contentArea = unitTabsWrapper.nextElementSibling;
+        const buttons = Array.from(tabsFlex.querySelectorAll('.unit-tab-btn'));
+        if (buttons.length === 0) return;
+
+        const tabUrlMap = {};
+        const scripts = Array.from(document.querySelectorAll('script')).map(s => s.textContent || '').join('\n');
+        const branchRegex = /(if|else if)\s*\(tab\s*===\s*'([^']+)'\)\s*\{[\s\S]*?url\s*=\s*'([^']+)'/g;
+        let m;
+        while ((m = branchRegex.exec(scripts)) !== null) {
+            tabUrlMap[m[2]] = m[3];
+        }
+        // Support direct call style inside branch:
+        // if (tab === 'foo') { ... loadContent('bar.html'); ... }
+        const directLoadRegex = /(if|else if)\s*\(tab\s*===\s*'([^']+)'\)\s*\{[\s\S]*?loadContent\(\s*'([^']+)'\s*\)/g;
+        while ((m = directLoadRegex.exec(scripts)) !== null) {
+            if (!tabUrlMap[m[2]]) tabUrlMap[m[2]] = m[3];
+        }
+        // Support object-map style, e.g. const tabs = { unit1: { id:'tab-unit1', url:'xxx.html' } }
+        const objectMapRegex = /([a-zA-Z0-9_-]+)\s*:\s*\{\s*id:\s*'[^']+'\s*,\s*url:\s*'([^']+)'/g;
+        while ((m = objectMapRegex.exec(scripts)) !== null) {
+            if (!tabUrlMap[m[1]]) tabUrlMap[m[1]] = m[2];
+        }
+        // Support plain file map style, e.g. const files = { 'data-flow': 'adv-15-unit-data-flow.html' }
+        const plainFileMapRegex = /['"]([a-zA-Z0-9_-]+)['"]\s*:\s*['"]([^'"]+\.html)['"]/g;
+        while ((m = plainFileMapRegex.exec(scripts)) !== null) {
+            if (!tabUrlMap[m[1]]) tabUrlMap[m[1]] = m[2];
+        }
+
+        const layout = document.createElement('section');
+        layout.className = 'fasttab-course-layout';
+        const list = document.createElement('div');
+        list.className = 'fasttab-list';
+
+        const getTabKey = (btn) => {
+            const onclick = btn.getAttribute('onclick') || '';
+            const mm = onclick.match(/switchTab\('([^']+)'\)/);
+            return mm ? mm[1] : '';
+        };
+
+        const extractSidebarDataFromHtml = (htmlText) => {
+            const doc = new DOMParser().parseFromString(htmlText, 'text/html');
+            const moduleTitle = (doc.querySelector('#page-index h1')?.textContent || '').trim();
+            const moduleMeta = (doc.querySelector('.ms-sidebar-header .meta')?.textContent || '').trim().replace(/\s+/g, ' ');
+
+            const unitData = [];
+            const unitDataBlock = htmlText.match(/const\s+(?:unitData|UNITS)\s*=\s*\[([\s\S]*?)\];/);
+            if (unitDataBlock && unitDataBlock[1]) {
+                // Parse object entries robustly regardless of spacing/line breaks.
+                const entryRegex = /id:\s*(\d+)\s*,\s*label:\s*'([^']+)'\s*,\s*time:\s*'([^']*)'\s*,\s*type:\s*'([^']+)'/g;
+                let m;
+                while ((m = entryRegex.exec(unitDataBlock[1])) !== null) {
+                    const id = Number(m[1]);
+                    if (id === 0) continue; // Skip index entry
+                    unitData.push({
+                        label: (m[2] || '').trim(),
+                        time: (m[3] || '').trim(),
+                        type: (m[4] || 'unit').trim()
+                    });
+                }
+
+                // Fallback for files where key order may differ.
+                if (unitData.length === 0) {
+                    const objRegex = /\{[\s\S]*?\}/g;
+                    let o;
+                    while ((o = objRegex.exec(unitDataBlock[1])) !== null) {
+                        const objText = o[0];
+                        const idRaw = (objText.match(/id:\s*(\d+)/) || [])[1];
+                        const id = Number(idRaw);
+                        if (!Number.isNaN(id) && id === 0) continue;
+                        const label = (objText.match(/label:\s*'([^']+)'/) || [])[1];
+                        const time = (objText.match(/time:\s*'([^']*)'/) || [])[1] || '';
+                        const type = (objText.match(/type:\s*'([^']+)'/) || [])[1] || 'unit';
+                        if (!label) continue;
+                        unitData.push({ label, time, type });
+                    }
+                }
+            }
+
+            return {
+                moduleTitle: moduleTitle || '課程總覽',
+                moduleMeta: moduleMeta || '',
+                units: unitData
+            };
+        };
+
+        const renderSubList = async (itemEl, btn) => {
+            const panel = itemEl.querySelector('.fasttab-children');
+            if (!panel) return;
+            if (panel.dataset.loaded === '1') return;
+
+            const tabKey = getTabKey(btn);
+            const unitUrl = tabUrlMap[tabKey];
+            let sidebarData = null;
+            if (unitUrl) {
+                try {
+                    const sep = unitUrl.includes('?') ? '&' : '?';
+                    const qs = window.location.search ? window.location.search.substring(1) : '';
+                    const requestUrl = qs ? `${unitUrl}${sep}${qs}` : unitUrl;
+                    const res = await fetch(requestUrl, { credentials: 'same-origin' });
+                    if (res.ok) {
+                        const html = await res.text();
+                        sidebarData = extractSidebarDataFromHtml(html);
+                    }
+                } catch (err) {
+                    console.warn('[CourseShared] FastTab fetch sublist failed:', err);
+                }
+            }
+            // Fallback: if current iframe already loaded this unit, parse directly from iframe document.
+            if (!sidebarData || !Array.isArray(sidebarData.units) || sidebarData.units.length === 0) {
+                const frame = document.getElementById('content-frame');
+                try {
+                    if (frame && frame.contentWindow && frame.contentWindow.location) {
+                        const current = String(frame.contentWindow.location.pathname || '');
+                        if (unitUrl && current.endsWith(unitUrl)) {
+                            const iframeDoc = frame.contentDocument;
+                            if (iframeDoc) {
+                                sidebarData = extractSidebarDataFromHtml(iframeDoc.documentElement.outerHTML);
+                            }
+                        }
+                    }
+                } catch (err) {
+                    console.warn('[CourseShared] FastTab iframe fallback parse failed:', err);
+                }
+            }
+            if (!sidebarData) {
+                sidebarData = { moduleTitle: '課程總覽', moduleMeta: '', units: [] };
+            }
+            if (!Array.isArray(sidebarData.units) || sidebarData.units.length === 0) {
+                sidebarData.units = [
+                    { label: '簡介', time: '', type: 'unit' },
+                    { label: '重點整理', time: '', type: 'unit' },
+                    { label: '摘要與資源', time: '', type: 'unit' }
+                ];
+            }
+
+            const unitRows = sidebarData.units.map((u, idx) => {
+                const typeTag = u.type === 'lab'
+                    ? '<span class="fasttab-unit-tag lab">LAB</span>'
+                    : (u.type === 'quiz' ? '<span class="fasttab-unit-tag quiz">測驗</span>' : '');
+                const timeText = u.time ? `<div class="fasttab-unit-time"><i class="far fa-clock"></i> ${u.time}</div>` : '';
+                return `
+                    <button type="button" class="fasttab-unit-row" data-unit-id="${idx + 1}">
+                        <div class="fasttab-unit-index">${idx + 1}</div>
+                        <div class="fasttab-unit-main">
+                            <div class="fasttab-unit-label">${u.label} ${typeTag}</div>
+                            ${timeText}
+                        </div>
+                    </button>
+                `;
+            }).join('');
+
+            panel.innerHTML = `
+                <div class="fasttab-overview-card">
+                    <div class="fasttab-overview-head">
+                        <div class="fasttab-overview-title">${sidebarData.moduleTitle}</div>
+                        ${sidebarData.moduleMeta ? `<div class="fasttab-overview-meta">${sidebarData.moduleMeta}</div>` : ''}
+                    </div>
+                    <div class="fasttab-overview-section">課程總覽</div>
+                    <div class="fasttab-unit-rows">${unitRows}</div>
+                    <div class="fasttab-progress-wrap">
+                        <div class="fasttab-progress-bar"><div class="fasttab-progress-fill" style="width:0%"></div></div>
+                        <div class="fasttab-progress-text">0 / ${sidebarData.units.length} 已完成</div>
+                    </div>
+                </div>
+            `;
+
+            // Make each row a real link-like action to iframe unit pages.
+            const frame = document.getElementById('content-frame');
+            panel.querySelectorAll('.fasttab-unit-row').forEach((row) => {
+                row.addEventListener('click', () => {
+                    const unitId = Number(row.getAttribute('data-unit-id') || '0');
+                    if (!unitId || !frame) return;
+                    try {
+                        if (frame.contentWindow && typeof frame.contentWindow.goToUnit === 'function') {
+                            frame.contentWindow.goToUnit(unitId);
+                        }
+                    } catch (err) {
+                        console.warn('[CourseShared] FastTab unit link failed:', err);
+                    }
+                });
+            });
+            panel.dataset.loaded = '1';
+        };
+
+        buttons.forEach((btn) => {
+            const emojiSpan = btn.querySelector('span');
+            const emoji = emojiSpan ? (emojiSpan.textContent || '').trim() : '';
+            const fullText = (btn.textContent || '').trim().replace(/\s+/g, ' ');
+            const labelText = emoji ? fullText.replace(emoji, '').trim() : fullText;
+
+            btn.classList.add('fasttab-strip');
+            btn.type = 'button';
+            btn.innerHTML = `
+                <span class="fasttab-chevron" aria-hidden="true">></span>
+                <span class="fasttab-title">${labelText}</span>
+            `;
+
+            const tabKey = getTabKey(btn);
+
+            const item = document.createElement('section');
+            item.className = 'fasttab-item';
+            item.dataset.tabKey = tabKey || '';
+            item.appendChild(btn);
+
+            const children = document.createElement('div');
+            children.className = 'fasttab-children';
+            children.dataset.loaded = '0';
+            item.appendChild(children);
+
+            btn.addEventListener('click', async () => {
+                const wasOpen = item.classList.contains('is-open');
+                const open = item.classList.toggle('is-open');
+                btn.querySelector('.fasttab-chevron').textContent = open ? 'V' : '>';
+                if (open && !wasOpen) {
+                    activateFastTabModule(tabKey, tabUrlMap, item, btn, layout);
+                    await renderSubList(item, btn);
+                }
+            });
+
+            list.appendChild(item);
+        });
+
+        layout.appendChild(list);
+
+        if (contentArea) {
+            contentArea.classList.add('fasttab-main-content');
+            layout.appendChild(contentArea);
+        }
+
+        unitTabsWrapper.replaceWith(layout);
+
+        // Full-width top blue bar above FastTab area.
+        if (!document.querySelector('.fasttab-master-topbar')) {
+            const titleClean = (document.title || '')
+                .replace(/\s*-\s*Vibe Coding\s*$/i, '')
+                .trim();
+            const trackLabel = track === 'adv' ? '進階' : (track === 'basic' ? '基礎' : '入門');
+            const listHref = track === 'adv' ? '/advanced.html' : (track === 'basic' ? '/basic.html' : '/start.html');
+            const listLabel = track === 'adv' ? '進階課程' : (track === 'basic' ? '基礎課程' : '入門課程');
+            const courseTitle = titleClean ? `${trackLabel} ${lessonNo}：${titleClean}` : `${trackLabel} ${lessonNo}`;
+            const topbar = document.createElement('nav');
+            topbar.className = 'fasttab-master-topbar';
+            const homeUrl = `${window.location.origin}/index.html`;
+            topbar.innerHTML = `
+                <a href="${homeUrl}" class="brand"><i class="fas fa-rocket"></i> Vibe Coding</a>
+                <div class="divider"></div>
+                <a href="${listHref}" class="nav-label-link">${listLabel}</a>
+                <div class="divider divider-soft"></div>
+                <div class="course-name-dropdown">
+                    <button type="button" class="course-name-trigger" aria-haspopup="true" aria-expanded="false">
+                        <span class="course-name-text">${courseTitle}</span>
+                        <svg class="course-name-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="course-name-menu" role="menu" hidden></div>
+                </div>
+            `;
+            document.body.insertBefore(topbar, layout);
+        }
+
+        bindCourseNameDropdown(document.querySelector('.fasttab-master-topbar'), layout, tabUrlMap, renderSubList);
+        bindMobileFastTabNav(layout, document.querySelector('.fasttab-master-topbar'));
+
+        // Hide duplicated topnav/sidebar inside iframe for start/basic master pages.
+        const iframe = document.getElementById('content-frame');
+        if (iframe && !iframe.dataset.fasttabIframePatchBound) {
+            iframe.dataset.fasttabIframePatchBound = '1';
+            const patchIframeLayout = () => {
+                try {
+                    const doc = iframe.contentDocument;
+                    if (!doc || doc.getElementById('fasttab-iframe-hide-sidebar')) return;
+                    const style = doc.createElement('style');
+                    style.id = 'fasttab-iframe-hide-sidebar';
+                    style.textContent = `
+                        .ms-topnav { display: none !important; }
+                        .ms-layout { display: block !important; }
+                        .ms-sidebar { display: none !important; }
+                        .ms-content { width: 100% !important; max-width: none !important; }
+                        .unit-content { max-width: 980px !important; margin: 0 auto !important; }
+                    `;
+                    doc.head.appendChild(style);
+                    const home = `${window.location.origin}/index.html`;
+                    doc.querySelectorAll('a.brand').forEach((a) => {
+                        const href = (a.getAttribute('href') || '').trim();
+                        if (href === '/' || href === '' || href === '#') {
+                            a.setAttribute('href', home);
+                        }
+                    });
+                } catch (err) {
+                    console.warn('[CourseShared] fasttab iframe layout patch failed:', err);
+                }
+            };
+            iframe.addEventListener('load', patchIframeLayout);
+            setTimeout(patchIframeLayout, 0);
+        }
+    } catch (e) {
+        console.warn('[CourseShared] enhanceMasterUnitTabsToFastTab failed:', e);
+    }
+}
+
+function activateFastTabModule(tabKey, tabUrlMap, targetItem, targetBtn, layout) {
+    if (tabKey && typeof window.switchTab === 'function') {
+        window.switchTab(tabKey);
+    } else {
+        const unitUrl = tabUrlMap[tabKey];
+        if (unitUrl && typeof window.loadContent === 'function') {
+            window.loadContent(unitUrl);
+        }
+    }
+
+    if (layout) {
+        layout.querySelectorAll('.fasttab-item.is-open').forEach((el) => {
+            if (el !== targetItem) {
+                el.classList.remove('is-open');
+                const chev = el.querySelector('.fasttab-chevron');
+                if (chev) chev.textContent = '>';
+            }
+        });
+    }
+
+    if (targetItem && !targetItem.classList.contains('is-open')) {
+        targetItem.classList.add('is-open');
+        const chev = targetBtn?.querySelector('.fasttab-chevron');
+        if (chev) chev.textContent = 'V';
+    }
+
+    syncCourseNameDropdownActive(tabKey, tabUrlMap);
+}
+
+function syncCourseNameDropdownActive(tabKey, tabUrlMap) {
+    const dropdown = document.querySelector('.course-name-dropdown');
+    if (!dropdown) return;
+
+    const frame = document.getElementById('content-frame');
+    let activeKey = tabKey || '';
+    if (!activeKey && frame?.src) {
+        try {
+            const currentFile = new URL(frame.src, window.location.href).pathname.split('/').pop() || '';
+            activeKey = Object.keys(tabUrlMap || {}).find((key) => tabUrlMap[key] === currentFile) || '';
+        } catch (e) {
+            activeKey = '';
+        }
+    }
+
+    dropdown.querySelectorAll('.course-name-menu-item').forEach((item) => {
+        item.classList.toggle('is-active', item.dataset.tabKey === activeKey);
+    });
+}
+
+/** 頂列課程名稱下拉：快速切換同課程內的模組單元 */
+function bindCourseNameDropdown(topbar, layout, tabUrlMap, renderSubList) {
+    if (!topbar || !layout || topbar.dataset.courseDropdownBound === '1') return;
+    const dropdown = topbar.querySelector('.course-name-dropdown');
+    const trigger = topbar.querySelector('.course-name-trigger');
+    const menu = topbar.querySelector('.course-name-menu');
+    if (!dropdown || !trigger || !menu) return;
+    topbar.dataset.courseDropdownBound = '1';
+
+    let ignoreOutsideClickUntil = 0;
+
+    const closeMenu = () => {
+        dropdown.classList.remove('is-open');
+        trigger.setAttribute('aria-expanded', 'false');
+        menu.hidden = true;
+        const backdrop = topbar.querySelector('.course-name-menu-backdrop');
+        if (backdrop) backdrop.classList.remove('is-visible');
+    };
+
+    const openMenu = () => {
+        dropdown.classList.add('is-open');
+        trigger.setAttribute('aria-expanded', 'true');
+        menu.hidden = false;
+        ignoreOutsideClickUntil = Date.now() + 350;
+        const backdrop = topbar.querySelector('.course-name-menu-backdrop');
+        if (backdrop) backdrop.classList.add('is-visible');
+    };
+
+    if (!topbar.querySelector('.course-name-menu-backdrop')) {
+        const backdrop = document.createElement('div');
+        backdrop.className = 'course-name-menu-backdrop';
+        backdrop.setAttribute('aria-hidden', 'true');
+        backdrop.addEventListener('click', closeMenu);
+        topbar.appendChild(backdrop);
+    }
+
+    layout.querySelectorAll('.fasttab-item').forEach((itemEl) => {
+        const btn = itemEl.querySelector('.fasttab-strip');
+        if (!btn) return;
+        const tabKey = itemEl.dataset.tabKey || '';
+        const title = btn.querySelector('.fasttab-title')?.textContent?.trim() || '課程單元';
+
+        const menuItem = document.createElement('button');
+        menuItem.type = 'button';
+        menuItem.className = 'course-name-menu-item';
+        menuItem.setAttribute('role', 'menuitem');
+        menuItem.dataset.tabKey = tabKey;
+        menuItem.textContent = title;
+        menuItem.addEventListener('click', async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            closeMenu();
+            activateFastTabModule(tabKey, tabUrlMap, itemEl, btn, layout);
+            if (typeof renderSubList === 'function') {
+                await renderSubList(itemEl, btn);
+            }
+            if (window.innerWidth <= 768) {
+                layout.classList.remove('fasttab-nav-open');
+            }
+        });
+        menu.appendChild(menuItem);
+    });
+
+    trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (dropdown.classList.contains('is-open')) closeMenu();
+        else openMenu();
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!dropdown.classList.contains('is-open')) return;
+        if (Date.now() < ignoreOutsideClickUntil) return;
+        if (!dropdown.contains(e.target)) closeMenu();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeMenu();
+    });
+
+    const frame = document.getElementById('content-frame');
+    if (frame && !frame.dataset.courseDropdownSyncBound) {
+        frame.dataset.courseDropdownSyncBound = '1';
+        frame.addEventListener('load', () => syncCourseNameDropdownActive('', tabUrlMap));
+        syncCourseNameDropdownActive('', tabUrlMap);
+    }
+}
+
+/** 手機版：預設隱藏 FastTab 左欄，與準備課程一致；頂列選單可開啟 */
+function bindMobileFastTabNav(layout, topbar) {
+    if (!layout || layout.dataset.mobileNavBound === '1') return;
+    layout.dataset.mobileNavBound = '1';
+
+    const backdrop = document.createElement('div');
+    backdrop.className = 'fasttab-nav-backdrop';
+    backdrop.setAttribute('aria-hidden', 'true');
+    layout.appendChild(backdrop);
+
+    const closeNav = () => {
+        layout.classList.remove('fasttab-nav-open');
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+    };
+    const openNav = () => {
+        if (window.innerWidth > 768) return;
+        layout.classList.add('fasttab-nav-open');
+        if (toggle) toggle.setAttribute('aria-expanded', 'true');
+    };
+
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'fasttab-nav-toggle';
+    toggle.setAttribute('aria-label', '開啟課程單元清單');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.textContent = '☰';
+    toggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (layout.classList.contains('fasttab-nav-open')) closeNav();
+        else openNav();
+    });
+    backdrop.addEventListener('click', closeNav);
+
+    if (topbar) {
+        topbar.appendChild(toggle);
+    } else {
+        layout.insertBefore(toggle, layout.firstChild);
+    }
+
+    layout.querySelectorAll('.fasttab-unit-row').forEach((row) => {
+        row.addEventListener('click', () => {
+            if (window.innerWidth <= 768) closeNav();
+        });
+    });
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) closeNav();
+    });
 }
 
 function upgradeLegacyStartUnitToMsLayout() {
@@ -463,6 +986,13 @@ function applyStartUnitModernTheme() {
 
 function applyHideTabsPreference() {
     try {
+        // FastTab layout should always keep the unit list visible.
+        if (document.querySelector('.fasttab-course-layout')) return;
+
+        const pathname = (window.location.pathname || '').toLowerCase();
+        const file = pathname.split('/').pop() || '';
+        if (/^(start|basic|adv)-\d{2}-master-.*\.html$/.test(file)) return;
+
         const params = new URLSearchParams(window.location.search);
         const hideTabs = (params.get('hideTabs') || '').toLowerCase();
         if (!(hideTabs === '1' || hideTabs === 'true')) return;
@@ -522,10 +1052,15 @@ window.resizeIframe = function (obj) {
 /**
  * [NEW] Helper to wait for Firebase SDK injection
  */
-async function waitForVibeFirebase(timeout = 5000) {
+async function waitForVibeFirebase(timeout = 12000) {
     const start = Date.now();
     while (Date.now() - start < timeout) {
-        if (typeof window.getFunctions !== 'undefined' && typeof window.httpsCallable !== 'undefined') {
+        if (
+            window.vibeFirebaseReady &&
+            window.vibeApp &&
+            typeof window.getFunctions === 'function' &&
+            typeof window.httpsCallable === 'function'
+        ) {
             return true;
         }
         await new Promise(resolve => setTimeout(resolve, 100));
@@ -542,21 +1077,28 @@ async function vibeFetchLessons() {
         return window.globalLessonsData;
     }
 
-    // Wait for SDK if it's currently being injected
-    const isReady = await waitForVibeFirebase();
+    let isReady = await waitForVibeFirebase();
+    if (!isReady) {
+        try {
+            const shared = await import("./firebase-app-shared.js?v=2026.05.29.auth-persist");
+            await shared.ensureFirebaseReady();
+            shared.exposeFirebaseGlobals();
+            isReady = true;
+        } catch (e) {
+            console.warn("[CourseShared] Firebase bootstrap failed:", e);
+        }
+    }
     if (!isReady) {
         console.warn("[CourseShared] Firebase SDK timed out. Firestore data unavailable.");
         return [];
     }
 
     try {
-        const functions = window.getFunctions(window.vibeApp, 'asia-east1');
-        const getLessonsFunc = window.httpsCallable(functions, 'getLessonsMetadata');
-        
+        const fn = window.getFunctions(window.vibeApp, "asia-east1");
+        const getLessonsFunc = window.httpsCallable(fn, "getLessonsMetadata");
         console.log("[CourseShared] Fetching lessons metadata from Firestore...");
         const result = await getLessonsFunc();
-        
-        if (result.data && result.data.lessons) {
+        if (result.data?.lessons?.length) {
             window.globalLessonsData = result.data.lessons;
             return window.globalLessonsData;
         }
@@ -1085,22 +1627,9 @@ async function initFirebaseFeatures() {
     console.log("[Firebase] Injecting Firebase SDK...");
     const ENABLE_UNIFIED_SUPPORT_HUB = false;
 
-    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js");
-    const { getAuth } = await import("https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js");
-    const { getFunctions, httpsCallable } = await import("https://www.gstatic.com/firebasejs/12.6.0/firebase-functions.js");
-    const { getFirestore } = await import("https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js");
-    const { firebaseConfig, connectFirebaseEmulators } = await import("./firebase-local.js");
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const functions = getFunctions(app, 'asia-east1');
-        connectFirebaseEmulators({ auth, db, functions });
-        
-        // [MOD] Expose globally for other parts of course-shared.js
-        window.vibeApp = app;
-        window.getFunctions = getFunctions;
-        window.httpsCallable = httpsCallable;
+    const { app, auth, db, functions, ensureFirebaseReady, exposeFirebaseGlobals, httpsCallable } = await import("./firebase-app-shared.js?v=2026.05.29.auth-persist");
+    await ensureFirebaseReady();
+    exposeFirebaseGlobals();
 
         const logActivityFn = httpsCallable(functions, 'logActivity');
         const submitAssignmentFn = httpsCallable(functions, 'submitAssignment');
@@ -1901,9 +2430,9 @@ function injectAssignmentLinkModal() {
 
             <div class="mb-6">
                 <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">老師 Promotion code</label>
-                <input type="text" id="link-promotion-code" placeholder="輸入 Promotion code 或 Tutor email（留空使用預設）"
+                <input type="text" id="link-promotion-code" placeholder="例如 rover.k.chen@gmail.com 或 Promotion code"
                     class="w-full border-2 border-gray-100 bg-gray-50 p-4 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 outline-none transition font-mono text-sm">
-                <p class="text-[10px] text-gray-400 mt-2">※ 可填 Promotion code 或 Tutor email；留空將使用預設導師。</p>
+                <p class="text-[10px] text-gray-400 mt-2">※ 可填 Promotion code 或 Tutor email（如 rover.k.chen@gmail.com）；留空將使用預設導師。</p>
             </div>
 
             <div class="flex flex-col gap-3">
@@ -1927,7 +2456,10 @@ window.closeAssignmentLinkModal = function () {
 window.submitBindTutorAction = async function () {
     const btn = document.getElementById('btn-bind-tutor');
     const codeInput = document.getElementById('link-promotion-code');
-    const promotionCode = String(codeInput.value || '').trim().toUpperCase();
+    const rawInput = String(codeInput.value || '').trim();
+    const promotionCode = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawInput)
+        ? rawInput.toLowerCase()
+        : rawInput.toUpperCase();
     const courseId = document.getElementById('link-course-id').value;
     const unitId = document.getElementById('link-unit-id').value;
     const assignmentId = document.getElementById('link-assignment-id').value;
@@ -1949,7 +2481,8 @@ window.submitBindTutorAction = async function () {
         }
     } catch (e) {
         console.error("Binding error:", e);
-        alert("❌ 錯誤：" + e.message);
+        const message = e?.message || e?.details || '綁定失敗，請稍後再試。';
+        alert("❌ 錯誤：" + message);
     } finally {
         btn.disabled = false;
         btn.innerHTML = '<span>✅</span> 驗證並綁定老師';

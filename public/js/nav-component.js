@@ -1,12 +1,6 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-import { firebaseConfig, connectFirebaseEmulators } from "./firebase-local.js";
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-connectFirebaseEmulators({ auth, db });
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { auth, db, ensureFirebaseReady } from "./firebase-app-shared.js?v=2026.05.29.auth-persist";
 
 const NAV_STATE_VERSION = "2026.05.13.FINAL_V9";
 
@@ -378,7 +372,7 @@ function injectDashboardFAB() {
 
 // --- 3. Initializer Bootloader ---
 
-function initNavComponent() {
+async function initNavComponent() {
     const placeholder = document.getElementById('nav-placeholder');
     const root = placeholder ? (placeholder.getAttribute('data-root') || '.') : '/';
     const showAuth = placeholder ? (placeholder.getAttribute('data-show-auth') === 'true') : false;
@@ -393,7 +387,24 @@ function initNavComponent() {
         else { document.addEventListener('DOMContentLoaded', injectDashboardFAB); }
     } catch (e) { console.error("[NavComp] FAB failed:", e); }
 
+    await ensureFirebaseReady();
+
+    const setAuthUiLoading = (loading) => {
+        const ids = ['user-display', 'login-btn', 'mobile-user-display', 'mobile-login-btn'];
+        ids.forEach((id) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.dataset.authPending = loading ? '1' : '';
+            if (loading && id.includes('display')) {
+                el.innerText = '…';
+            }
+        });
+    };
+
+    setAuthUiLoading(true);
+
     onAuthStateChanged(auth, async (user) => {
+        setAuthUiLoading(false);
         const desktopUser = document.getElementById('user-display');
         const desktopLogin = document.getElementById('login-btn');
         const mobileUser = document.getElementById('mobile-user-display');
@@ -402,6 +413,7 @@ function initNavComponent() {
 
         const updateUI = (userDisplay, loginBtn) => {
             if (!userDisplay || !loginBtn) return;
+            if (userDisplay.dataset.authPending === '1') return;
             if (user) {
                 userDisplay.innerText = resolvedDisplayName;
                 userDisplay.classList.remove('hidden');
@@ -417,7 +429,8 @@ function initNavComponent() {
                 loginBtn.innerText = '登入';
                 loginBtn.onclick = () => {
                     const root = placeholder ? (placeholder.getAttribute('data-root') || '.') : '.';
-                    window.location.href = `${root}/login.html`.replace('//', '/');
+                    const returnUrl = encodeURIComponent(window.location.href);
+                    window.location.href = `${root}/login.html?returnUrl=${returnUrl}`.replace('//', '/');
                 };
             }
         };

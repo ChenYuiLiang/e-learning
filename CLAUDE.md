@@ -13,6 +13,11 @@ cd functions && npm install
 # 本地模擬器（Hosting + Functions + Firestore）
 firebase emulators:start --project e-learning-942f7
 
+# 種子資料（Emulator 重啟後必跑）
+cd functions && node scripts/seed-emulator.js
+
+# 詳細步驟（含 ngrok）見 docs/local-development.md
+
 # 部署
 firebase deploy --project e-learning-942f7                    # 全部
 firebase deploy --only functions --project e-learning-942f7   # 僅後端

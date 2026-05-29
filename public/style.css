@@ -879,6 +879,7 @@ body.reading-mode header p {
 }
 
 .unit-tab-btn {
+    position: relative;
     flex-shrink: 0;
     /* Prevent shrinking on mobile */
     padding: 0.75rem 1.25rem;
@@ -953,6 +954,499 @@ body.reading-mode header p {
     right: 0;
     height: 3px;
     background-color: #ffffff;
+}
+
+/* ================================
+   FastTab (BC-like) for master pages
+   ================================ */
+.fasttab-master-topbar {
+    background: #0078d4;
+    height: 48px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 16px;
+    color: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
+    position: sticky;
+    top: 0;
+    z-index: 300;
+    overflow: visible;
+}
+
+.fasttab-master-topbar .brand {
+    color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.fasttab-master-topbar .divider {
+    width: 1px;
+    height: 20px;
+    background: rgba(255, 255, 255, .3);
+}
+
+.fasttab-master-topbar .nav-label {
+    color: rgba(255, 255, 255, .9);
+    font-size: 14px;
+}
+
+.fasttab-master-topbar .nav-label-link {
+    color: rgba(255, 255, 255, .95);
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.fasttab-master-topbar .nav-label-link:hover {
+    text-decoration: underline;
+}
+
+.fasttab-master-topbar .course-name-dropdown {
+    position: relative;
+    min-width: 0;
+    max-width: 50vw;
+    overflow: visible;
+}
+
+.fasttab-master-topbar .course-name-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    padding: 4px 8px;
+    margin: 0 -8px;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: rgba(255, 255, 255, .95);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.fasttab-master-topbar .course-name-trigger:hover,
+.fasttab-master-topbar .course-name-dropdown.is-open .course-name-trigger {
+    background: rgba(255, 255, 255, .14);
+}
+
+.fasttab-master-topbar .course-name-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fasttab-master-topbar .course-name-chevron {
+    flex-shrink: 0;
+    opacity: .85;
+    transition: transform .2s ease;
+}
+
+.fasttab-master-topbar .course-name-dropdown.is-open .course-name-chevron {
+    transform: rotate(180deg);
+}
+
+.fasttab-master-topbar .course-name-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 100010;
+    min-width: 260px;
+    max-width: min(420px, 90vw);
+    max-height: min(60vh, 420px);
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #e1dfdd;
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
+    padding: 6px 0;
+}
+
+.fasttab-master-topbar .course-name-menu-item {
+    display: block;
+    width: 100%;
+    padding: 10px 16px;
+    border: none;
+    background: transparent;
+    color: #323130;
+    font-size: 14px;
+    text-align: left;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fasttab-master-topbar .course-name-menu-item:hover {
+    background: #f3f2f1;
+}
+
+.fasttab-master-topbar .course-name-menu-item.is-active {
+    background: #deecf9;
+    color: #0078d4;
+    font-weight: 600;
+}
+
+.course-name-menu-backdrop {
+    display: none;
+}
+
+.fasttab-master-topbar .divider.divider-soft {
+    background: rgba(255, 255, 255, .45);
+}
+
+.fasttab-course-layout {
+    display: flex;
+    width: 100%;
+    min-height: calc(100vh - 48px);
+    background: #fff;
+}
+
+.fasttab-list {
+    width: 320px;
+    min-width: 320px;
+    border-right: 1px solid #d2d0ce;
+    background: #f3f2f1;
+    overflow-y: auto;
+}
+
+.fasttab-item {
+    border-bottom: 1px solid #e1dfdd;
+}
+
+.fasttab-strip.unit-tab-btn {
+    width: 100%;
+    border: none;
+    background: #f3f2f1;
+    color: #323130;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.fasttab-strip.unit-tab-btn:hover {
+    background: #edebe9;
+}
+
+.fasttab-chevron {
+    width: 14px;
+    color: #605e5c;
+    font-size: 14px;
+    line-height: 1;
+    display: inline-flex;
+    justify-content: center;
+}
+
+.fasttab-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #201f1e;
+    line-height: 1.4;
+}
+
+.fasttab-children {
+    display: none;
+    background: #fff;
+    border-top: 1px solid #edebe9;
+    padding: 8px 0;
+}
+
+.fasttab-item.is-open .fasttab-children {
+    display: block;
+}
+
+.fasttab-child-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px 8px 28px;
+    color: #323130;
+    font-size: 14px;
+}
+
+.fasttab-child-index {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #f3f2f1;
+    color: #605e5c;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fasttab-overview-card {
+    margin: 10px 12px 12px;
+    border: 1px solid #e1dfdd;
+    border-radius: 2px;
+    background: #fff;
+}
+
+.fasttab-overview-head {
+    padding: 10px 12px 8px;
+    border-bottom: 1px solid #edebe9;
+}
+
+.fasttab-overview-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #201f1e;
+    line-height: 1.25;
+}
+
+.fasttab-overview-meta {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #605e5c;
+}
+
+.fasttab-overview-section {
+    padding: 10px 12px 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #0078d4;
+    border-bottom: 1px solid #edebe9;
+}
+
+.fasttab-unit-rows {
+    padding: 4px 0;
+}
+
+.fasttab-unit-row {
+    display: flex;
+    gap: 8px;
+    padding: 7px 12px;
+    width: 100%;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+}
+
+.fasttab-unit-row:hover {
+    background: #f5f5f5;
+}
+
+.fasttab-unit-index {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid #c8c6c4;
+    color: #605e5c;
+    font-size: 11px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.fasttab-unit-main { min-width: 0; }
+
+.fasttab-unit-label {
+    font-size: 14px;
+    color: #201f1e;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.fasttab-unit-time {
+    margin-top: 2px;
+    font-size: 12px;
+    color: #605e5c;
+}
+
+.fasttab-unit-tag {
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    padding: 2px 4px;
+    border-radius: 2px;
+}
+
+.fasttab-unit-tag.lab {
+    color: #005a9e;
+    background: #deecf9;
+}
+
+.fasttab-unit-tag.quiz {
+    color: #8a6f00;
+    background: #fff4ce;
+}
+
+.fasttab-progress-wrap {
+    border-top: 1px solid #edebe9;
+    padding: 10px 12px;
+}
+
+.fasttab-progress-bar {
+    background: #edebe9;
+    border-radius: 3px;
+    height: 6px;
+}
+
+.fasttab-progress-fill {
+    background: #107c10;
+    border-radius: 3px;
+    height: 6px;
+}
+
+.fasttab-progress-text {
+    margin-top: 6px;
+    font-size: 12px;
+    color: #605e5c;
+}
+
+.fasttab-main-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.fasttab-main-content .flex-grow.relative,
+.fasttab-main-content > .flex-grow {
+    position: relative !important;
+}
+
+.fasttab-main-content #content-frame {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* 手機：隱藏左側 FastTab（與準備課程 .ms-sidebar 行為一致），以選單開啟 */
+.fasttab-nav-backdrop {
+    display: none;
+}
+
+.fasttab-nav-toggle {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .fasttab-course-layout {
+        position: relative;
+    }
+
+    .fasttab-course-layout .fasttab-list {
+        display: none;
+        position: fixed;
+        top: 48px;
+        left: 0;
+        bottom: 0;
+        z-index: 210;
+        width: min(320px, 88vw);
+        min-width: 0;
+        box-shadow: 2px 0 16px rgba(0, 0, 0, 0.18);
+    }
+
+    .fasttab-course-layout.fasttab-nav-open .fasttab-list {
+        display: block;
+    }
+
+    .fasttab-nav-backdrop {
+        display: none;
+        position: fixed;
+        inset: 48px 0 0 0;
+        z-index: 200;
+        background: rgba(0, 0, 0, 0.35);
+    }
+
+    .fasttab-course-layout.fasttab-nav-open .fasttab-nav-backdrop {
+        display: block;
+    }
+
+    .fasttab-master-topbar {
+        padding-right: 8px;
+        z-index: 500;
+    }
+
+    .fasttab-master-topbar .brand {
+        flex-shrink: 0;
+    }
+
+    .fasttab-master-topbar .nav-label-link {
+        flex-shrink: 0;
+    }
+
+    .fasttab-master-topbar .divider {
+        flex-shrink: 0;
+    }
+
+    .fasttab-nav-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
+        flex-shrink: 0;
+        width: 40px;
+        height: 36px;
+        border: 1px solid rgba(255, 255, 255, 0.55);
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.12);
+        color: #fff;
+        font-size: 20px;
+        line-height: 1;
+        cursor: pointer;
+    }
+
+    .fasttab-nav-toggle:hover {
+        background: rgba(255, 255, 255, 0.22);
+    }
+
+    .fasttab-master-topbar .course-name-dropdown {
+        flex: 1;
+        min-width: 0;
+        max-width: none;
+        overflow: visible;
+    }
+
+    .fasttab-master-topbar .course-name-trigger {
+        width: 100%;
+        justify-content: flex-start;
+        touch-action: manipulation;
+    }
+
+    .fasttab-master-topbar .course-name-menu {
+        position: fixed;
+        top: 48px;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-width: none;
+        max-height: min(50vh, 320px);
+        border-radius: 0 0 8px 8px;
+        border-left: none;
+        border-right: none;
+        z-index: 501;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, .25);
+    }
+
+    .course-name-menu-backdrop {
+        display: none;
+        position: fixed;
+        inset: 48px 0 0 0;
+        z-index: 500;
+        background: rgba(0, 0, 0, 0.25);
+    }
+
+    .course-name-menu-backdrop.is-visible {
+        display: block;
+    }
 }
 
 /* Code Blocks */

@@ -377,11 +377,18 @@ Admin needs:
 3. Add simulation and warnings
 4. Add order-level `region/channelType/policyId`
 
+### Phase 3
+
+1. Redirect and remove remaining `*-master-*` (30 files)
+2. Gradually migrate legacy `unitId/courseId`
+3. Expand to multi-market pricing/versioning
+4. Support external instructors publishing through the standardized content pipeline
+
 ---
 
-## 7. Implementation Checklist
+## 8. Implementation Checklist
 
-### 7.1 Data model and Firestore
+### 8.1 Data model and Firestore
 
 - [ ] Add `courseKey` to `metadata_lessons`
 - [ ] Add `track` to `metadata_lessons`
@@ -396,7 +403,7 @@ Admin needs:
 - [ ] Add `pricingVersion` to `orders`
 - [ ] Create `revenue_share_policies` collection
 
-### 7.2 Content routing and serving
+### 8.2 Content routing and serving
 
 - [x] Add locale-aware content lookup in `serveCourse`
 - [x] Add old-filename -> new-filename fallback for i18n content paths
@@ -405,7 +412,7 @@ Admin needs:
 - [ ] Convert `*-master-*` pages into compatibility redirects
 - [ ] Remove `*-master-*` dependencies from token generation and entry links
 
-### 7.3 External content repo MVP
+### 8.3 External content repo MVP
 
 - [x] Create `sync_i18n_private_courses.sh` MVP tool
 - [x] Add `--dry-run` support
@@ -414,14 +421,14 @@ Admin needs:
 - [ ] Create external private content repo
 - [ ] Add first `zh-TW` pilot content
 - [ ] Add first `en` pilot content
-- [ ] Define publish SOP: update repo -> sync -> deploy
+- [ ] Define publish SOP: update repo → sync → deploy
 - [ ] Verify fallback order with one migrated unit
 
-### 7.4 Naming migration
+### 8.4 Naming migration
 
 - [x] Confirm new lowercase naming examples
-- [x] Create old filename -> new filename mapping table
-- [x] Create old `unitId` -> `contentRef` mapping table
+- [x] Create old filename → new filename mapping table
+- [x] Create old `unitId` → `contentRef` mapping table
 - [ ] Hide `-unit-` technical prefixes in all UI surfaces
 - [ ] Update `prepare.html` and related entry pages to use new metadata-driven names
 
@@ -432,7 +439,7 @@ Reference artifacts:
 - `docs/examples/master-retirement-mapping.csv`
 - `docs/examples/metadata-lessons-migration-template.csv`
 
-### 7.5 Revenue share system
+### 8.5 Revenue share system
 
 - [ ] Store role-based revenue share policies in Firestore
 - [ ] Add tutor share calculation by policy
@@ -444,7 +451,7 @@ Reference artifacts:
 - [ ] Add admin policy CRUD
 - [ ] Add admin revenue simulation UI
 
-### 7.6 Validation and pilot rollout
+### 8.6 Validation and pilot rollout
 
 - [ ] Pick 1 `tw-common-*` unit as pilot
 - [ ] Pick 1 `tw-car-starter-*` unit as pilot
@@ -457,23 +464,7 @@ Reference artifacts:
 
 ---
 
-## 8. Immediate Next Steps
-
-1. Create the filename mapping tables
-2. Add the new metadata fields in Firestore planning
-3. Refactor `serveCourse` authorization away from `masterFile`
-4. Prepare 1-2 pilot units for external private repo migration
-
-### Phase 3
-
-1. Redirect and remove remaining `*-master-*` (30 files)
-2. Gradually migrate legacy `unitId/courseId`
-3. Expand to multi-market pricing/versioning
-4. Support external instructors publishing through the standardized content pipeline
-
----
-
-## 8. Risks
+## 9. Risks
 
 1. Authorization regressions during route migration
 2. Grade writeback failures during ID migration
@@ -491,9 +482,13 @@ Controls:
 
 ---
 
-## 9. Immediate Next Steps
+## 10. Immediate Next Steps
 
 1. Treat this file as the primary planning document.
 2. Use it to drive implementation tasks in order: naming → entry routing → content repo → revenue share policies.
 3. Keep old planning docs only as compatibility pointers.
 4. Collect 46 missing video/doc URLs for advanced course files from content owners.
+5. Create the filename mapping tables.
+6. Add the new metadata fields in Firestore planning.
+7. Refactor `serveCourse` authorization away from `masterFile`.
+8. Prepare 1-2 pilot units for external private repo migration.

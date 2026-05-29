@@ -1325,15 +1325,17 @@
         buildSidebar();
         buildIndexUnitList();
         
-        if (!window.RESOURCES.video) {
-            const videoSection = document.getElementById('video-section');
-            if (videoSection) videoSection.style.display = 'none';
-            const videoLink = document.getElementById('resource-link-video');
-            if (videoLink) videoLink.style.display = 'none';
-        }
-        if (!window.RESOURCES.doc) {
-            const docLink = document.getElementById('resource-link-doc');
-            if (docLink) docLink.style.display = 'none';
+        if (window.RESOURCES) {
+            if (!window.RESOURCES.video) {
+                const videoSection = document.getElementById('video-section');
+                if (videoSection) videoSection.style.display = 'none';
+                const videoLink = document.getElementById('resource-link-video');
+                if (videoLink) videoLink.style.display = 'none';
+            }
+            if (!window.RESOURCES.doc) {
+                const docLink = document.getElementById('resource-link-doc');
+                if (docLink) docLink.style.display = 'none';
+            }
         }
 
         goToUnit(0);

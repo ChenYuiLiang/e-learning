@@ -13,8 +13,8 @@
 
 <body id="page-advanced" class="flex flex-col min-h-screen">
     <div id="nav-placeholder" data-root="." data-show-auth="true"></div>
-    <script type="module" src="js/nav-component.js?v=2026.05.12"></script>
-    <script src="js/course-shared.js?v=2026.05.21.V21.DISABLE_UNIFIED_SUPPORT_HUB"></script> <!-- Added Shared Logic -->
+    <script type="module" src="js/nav-component.js?v=2026.05.29.auth-persist"></script>
+    <script src="js/course-shared.js?v=2026.05.29.ngrok-https"></script> <!-- Added Shared Logic -->
     
 
     <div class="container mx-auto px-4 py-8 flex-grow">
@@ -35,26 +35,25 @@
     
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-        import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-functions.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-        import { firebaseConfig, connectFirebaseEmulators } from "./js/firebase-local.js";
+        import { onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        import { auth, functions, ensureFirebaseReady, exposeFirebaseGlobals, httpsCallable } from "./js/firebase-app-shared.js?v=2026.05.29.auth-persist";
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const functions = getFunctions(app, 'asia-east1');
-        connectFirebaseEmulators({ auth, db, functions });
-
-        // Expose to window for course-shared.js?v=2026.04.05.FINAL_V6 vibeFetchLessons
-        window.vibeApp = app;
-        window.getFunctions = getFunctions;
-        window.httpsCallable = httpsCallable;
+        await ensureFirebaseReady();
+        exposeFirebaseGlobals();
 
         const checkAuthFunction = httpsCallable(functions, 'checkPaymentAuthorization');
         const CART_URL = 'cart.html';
         const AUTH_URL = '/auth.html?v=' + new Date().getTime(); // Prevent cache
+        const urlParams = new URLSearchParams(window.location.search);
+        const isDemoMode = urlParams.get('demo') === '1';
+
+        function withDemoParam(url) {
+            if (!url) return url;
+            const hasQuery = url.includes('?');
+            const hasDemo = /[?&]demo=1(?:&|$)/.test(url);
+            if (hasDemo) return url;
+            return `${url}${hasQuery ? '&' : '?'}demo=1`;
+        }
 
         function addToCart(productId, productName, productPrice, isPhysical) {
             let cart = JSON.parse(localStorage.getItem('vibeCodingCart') || '{}');
@@ -87,6 +86,7 @@
             const coursePrice = cardElement.dataset.coursePrice;
             const isPhysical = cardElement.dataset.isPhysical === 'true';
             const classroomUrl = cardElement.dataset.classroomUrl;
+            const isFreeCourse = parseInt(coursePrice || "0", 10) === 0;
             const isPricedPhysicalProduct = isPhysical && parseInt(coursePrice || "0", 10) > 0;
 
             // 檢查旁邊是否有影片按鈕，以決定寬度
@@ -97,7 +97,11 @@
             btn.onclick = null;
             btn.disabled = false;
 
-            if (isPricedPhysicalProduct) {
+            if (isDemoMode && classroomUrl) {
+                btn.textContent = '🚀 Demo 進入課程';
+                btn.className = `action-btn ${widthClass} py-2 px-3 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white font-medium transition`;
+                btn.onclick = () => { window.location.href = withDemoParam(classroomUrl); };
+            } else if (isPricedPhysicalProduct) {
                 btn.textContent = `🛒 加入購物車`;
                 btn.className = `action-btn ${widthClass} py-2 px-3 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white font-medium transition`;
                 btn.onclick = () => window.handleAddToCartConfirmation(courseId, courseName, coursePrice, isPhysical);
@@ -110,7 +114,10 @@
                         alert("⚠️ 課程連結尚未備妥，請聯繫客服。");
                         return;
                     }
-                    window.location.href = `${AUTH_URL}&url=${encodeURIComponent(classroomUrl)}&id=${courseId}&price=${coursePrice}`; 
+                    const targetUrl = isDemoMode
+                        ? withDemoParam(classroomUrl)
+                        : `${AUTH_URL}&url=${encodeURIComponent(classroomUrl)}&id=${courseId}&price=${coursePrice}`;
+                    window.location.href = targetUrl;
                 };
             } else if (status === 'NOT_LOGGED_IN') {
                 btn.textContent = isFreeCourse ? '👤 請先登入 (免費)' : '👤 請先登入';
@@ -129,6 +136,10 @@
         }
 
         async function checkLessonAuthorization(cardElement, user) {
+            if (isDemoMode) {
+                updateCardAction(cardElement, 'AUTHORIZED');
+                return;
+            }
             updateCardAction(cardElement, 'LOADING');
             const courseId = cardElement.dataset.courseId;
             const classroomUrl = cardElement.dataset.classroomUrl;
@@ -236,14 +247,32 @@
             }
         }
 
-        vibeFetchLessons()
-            .then(data => {
+        async function loadLessonList() {
+            const container = document.getElementById('lesson-container');
+            try {
+                const getLessonsFunc = httpsCallable(functions, 'getLessonsMetadata');
+                const result = await getLessonsFunc();
+                const data = result.data?.lessons || [];
+                window.globalLessonsData = data;
                 renderLessons(data, 'advanced');
-            })
-            .catch(error => console.error('資料讀取失敗:', error));
+                if (data.length === 0 && container) {
+                    container.innerHTML = `<p class="text-center text-gray-500 w-full col-span-3 py-12">課程資料為空。請執行：<code class="bg-gray-100 px-2 py-1 rounded">cd functions && node scripts/seed-emulator.js</code></p>`;
+                }
+            } catch (error) {
+                console.error('資料讀取失敗:', error);
+                if (container) {
+                    container.innerHTML = `<p class="text-center text-red-500 w-full col-span-3 py-12">課程資料載入失敗：${error.message || error}</p>`;
+                }
+            }
+        }
+        loadLessonList();
 
         window.updateAuthUI = function () {
             const currentCards = document.querySelectorAll('.lesson-card');
+            if (isDemoMode) {
+                currentCards.forEach(card => updateCardAction(card, 'AUTHORIZED'));
+                return;
+            }
             const user = auth.currentUser;
 
             currentCards.forEach(card => {

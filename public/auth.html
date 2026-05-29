@@ -46,18 +46,22 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-        import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-functions.js";
-        import { firebaseConfig, connectFirebaseEmulators } from "./js/firebase-local.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        import { shouldUseEmulators } from "./js/firebase-local.js?v=2026.05.29.auth-persist";
+        import { auth, functions, ensureFirebaseReady, httpsCallable } from "./js/firebase-app-shared.js?v=2026.05.29.auth-persist";
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const functions = getFunctions(app, 'asia-east1');
-        connectFirebaseEmulators({ auth, db, functions });
+        await ensureFirebaseReady();
         const checkAuthFunction = httpsCallable(functions, 'checkPaymentAuthorization');
+
+        function redirectToCourse(targetUrl, token) {
+            let finalUrl = decodeURIComponent(targetUrl);
+            if (token) {
+                finalUrl += `${finalUrl.includes('?') ? '&' : '?'}token=${encodeURIComponent(token)}`;
+            } else if (shouldUseEmulators()) {
+                finalUrl += `${finalUrl.includes('?') ? '&' : '?'}demo=1`;
+            }
+            window.location.replace(finalUrl);
+        }
 
         function showError(message) {
             document.getElementById('loading-ui').classList.add('hidden');
@@ -123,30 +127,39 @@
                 const isTutorMode = localStorage.getItem('adminTutorMode') === 'true';
                 const primaryPageId = courseId || fileName;
 
+                const isFreeCourse = parseInt(price, 10) === 0;
+
                 let result = await checkAuthFunction({
                     pageId: primaryPageId,
                     fileName: fileName,
                     tutorMode: isTutorMode
                 });
 
+                // 免費準備課程：若 courseId 對不到 metadata，改以檔名再查一次
+                if (!result?.data?.authorized && isFreeCourse) {
+                    result = await checkAuthFunction({
+                        pageId: fileName,
+                        fileName: fileName,
+                        tutorMode: isTutorMode
+                    });
+                }
+
                 if (result?.data?.authorized) {
-                    // 驗證成功！
-                    const token = result.data.token;
-                    let finalUrl = decodeURIComponent(targetUrl);
-
-                    // Append token
-                    if (finalUrl.includes('?')) {
-                        finalUrl += `&token=${token}`;
-                    } else {
-                        finalUrl += `?token=${token}`;
-                    }
-
-                    window.location.replace(finalUrl);
+                    redirectToCourse(targetUrl, result.data.token);
+                } else if (shouldUseEmulators() && String(targetUrl).includes('/courses/')) {
+                    // 本機 / ngrok：Emulator 開發模式直接進入課程
+                    redirectToCourse(targetUrl, null);
+                } else if (isFreeCourse) {
+                    showError("無法驗證免費課程權限。若為本機開發，請確認已執行 seed-emulator.js 並已登入。");
                 } else {
                     showError("系統查無您的購買紀錄，請確認是否已登入正確帳號。");
                 }
             } catch (error) {
                 console.error(error);
+                if (shouldUseEmulators() && String(targetUrl).includes('/courses/')) {
+                    redirectToCourse(targetUrl, null);
+                    return;
+                }
                 showError("伺服器連線錯誤，請稍後再試。");
             }
         }
