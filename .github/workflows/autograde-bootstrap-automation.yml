@@ -46,7 +46,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
       - name: Install function dependencies
         run: npm --prefix functions ci
@@ -55,8 +55,16 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
+<<<<<<< HEAD
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
+=======
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+>>>>>>> 517989b (fix(ci): add GCP auth and upgrade Node to 22 in bootstrap workflow)
       - name: Build single-repo csv (event-driven)
         if: >-
           github.event_name == 'repository_dispatch' ||
