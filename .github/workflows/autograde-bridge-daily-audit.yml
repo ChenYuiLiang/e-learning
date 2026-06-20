@@ -17,6 +17,8 @@ jobs:
 
       - name: Run audit
         shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           scripts/audit_autograde_consistency.sh docs/examples/classroom-bridge-sync-units-only.csv

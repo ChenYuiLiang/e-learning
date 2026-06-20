@@ -21,10 +21,10 @@ jobs:
       - name: Install Functions Dependencies
         run: npm install --prefix functions
 
-      - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
         with:
-          args: deploy --only hosting,functions --debug
-        env:
-          GCP_SA_KEY: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_E_LEARNING_942F7 }}'
-          PROJECT_ID: e-learning-942f7
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_E_LEARNING_942F7 }}
+
+      - name: Deploy to Firebase
+        run: npx firebase-tools@latest deploy --only hosting,functions --project e-learning-942f7

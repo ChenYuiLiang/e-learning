@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env bash
 set -euo pipefail
 
 # Bootstrap autograde settings for newly created classroom repos.
@@ -31,7 +31,7 @@ fi
 
 MODE="$1"
 CSV="$2"
-GH=/opt/homebrew/bin/gh
+GH="${GH_BIN:-gh}"
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 TEMPLATE_DIR="$ROOT_DIR/scripts/workflow-templates"
 OUT="/tmp/bootstrap_classroom_repo_autograde_$(date +%Y%m%d_%H%M%S).csv"
