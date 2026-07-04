@@ -52,19 +52,13 @@ jobs:
 
       - name: Install function dependencies
         run: npm --prefix functions ci
-      # - name: Authenticate to Google Cloud
-      #   if: >-
-      #     github.event_name == 'schedule' ||
-      #     (github.event_name == 'workflow_dispatch' && inputs.mode == 'daily_backfill')
-      #   uses: google-github-actions/auth@v2
-      #   with:
-      #     credentials_json: ${{ secrets.GCP_SA_KEY }}
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      # - name: Set up Cloud SDK
-      #   if: >-
-      #     github.event_name == 'schedule' ||
-      #     (github.event_name == 'workflow_dispatch' && inputs.mode == 'daily_backfill')
-      #   uses: google-github-actions/setup-gcloud@v2
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
       - name: Build single-repo csv (event-driven)
         if: >-
           github.event_name == 'repository_dispatch' ||
