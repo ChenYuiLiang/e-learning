@@ -100,8 +100,11 @@ install_workflow_template() {
   local repo_dir="/tmp/bootstrap-$(echo "$repo" | tr '/' '-')"
   local prev_dir
   prev_dir="$(pwd)"
-  rm -rf "$repo_dir"
-  git clone "https://github.com/${repo}.git" "$repo_dir" >/dev/null 2>&1
+  local clone_url="https://github.com/${repo}.git"
+  if [[ -n "${GH_TOKEN:-}" ]]; then
+    clone_url="https://x-access-token:${GH_TOKEN}@github.com/${repo}.git"
+  fi
+  git clone "$clone_url" "$repo_dir" >/dev/null 2>&1
   cd "$repo_dir"
   mkdir -p .github/workflows
   cp "$selected" .github/workflows/autograde-and-sync.yml
